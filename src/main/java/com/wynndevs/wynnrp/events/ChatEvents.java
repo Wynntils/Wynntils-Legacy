@@ -52,7 +52,7 @@ public class ChatEvents {
             return;
         }
         if(e.getMessage().getFormattedText().toLowerCase().contains("you are now entering") && !e.getMessage().getFormattedText().contains("/")) {
-            if(ConfigValues.enteringNotifier) {
+            if(ConfigValues.wynnRichPresence.enteringNotifier) {
                 String loc = e.getMessage().getFormattedText();
                 LocationGUI.location = RichUtils.stripColor(loc.replace("[You are now entering ", "").replace("]", ""));
                 e.setCanceled(true);
@@ -60,7 +60,7 @@ public class ChatEvents {
             return;
         }
         if(e.getMessage().getFormattedText().toLowerCase().contains("you are now leaving") && !e.getMessage().getFormattedText().contains("/")) {
-            if(ConfigValues.enteringNotifier) {
+            if(ConfigValues.wynnRichPresence.enteringNotifier) {
                 LocationGUI.last_loc = "Waiting";
                 LocationGUI.location = "Waiting";
                 e.setCanceled(true);

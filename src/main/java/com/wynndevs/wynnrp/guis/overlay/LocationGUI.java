@@ -33,7 +33,7 @@ public class LocationGUI extends WRPGui {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
-        if(!ConfigValues.enteringNotifier || !WynnRichPresence.getData().onServer()) {
+        if(!ConfigValues.wynnRichPresence.enteringNotifier || !WynnRichPresence.getData().onServer()) {
             return;
         }
 

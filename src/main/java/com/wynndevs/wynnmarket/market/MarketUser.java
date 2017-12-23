@@ -1,5 +1,7 @@
 package com.wynndevs.wynnmarket.market;
 
+import com.wynndevs.wynnmarket.WynnMarket;
+import com.wynndevs.wynnrp.WynnRichPresence;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -85,6 +87,7 @@ public class MarketUser {
                 JSONObject obj = new JSONObject(json);
 
                 if(obj.has("error")) {
+                    WynnRichPresence.logger.warn(obj.getString("error"));
                     whenComplete.accept(false);
                     return;
                 }

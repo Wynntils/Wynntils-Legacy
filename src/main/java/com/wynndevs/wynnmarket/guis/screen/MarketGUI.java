@@ -7,6 +7,7 @@ import com.wynndevs.wynnmarket.market.AnnounceProfile;
 import com.wynndevs.wynnmarket.market.WrappedStack;
 import com.wynndevs.wynnmarket.profiles.ItemDataProfile;
 import com.wynndevs.wynnmarket.utils.MarketUtils;
+import com.wynndevs.wynnrp.WynnRichPresence;
 import com.wynndevs.wynnrp.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -31,6 +32,8 @@ public class MarketGUI extends WMGuiScreen {
 
     private static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID + ":textures/market-gui.png");
     private static final ResourceLocation gui = new ResourceLocation(Reference.MOD_ID + ":textures/marketplace.png");
+
+    public static ArrayList<String> i = new ArrayList<>();
 
     int inventory_page = 1;
     int actual_page = 1;
@@ -359,6 +362,8 @@ public class MarketGUI extends WMGuiScreen {
                                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1.0F));
                             }
                         });
+                    }else{
+                        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1.0F));
                     }
                 }catch (Exception ignored) { }
             });
@@ -416,6 +421,7 @@ public class MarketGUI extends WMGuiScreen {
             AnnounceProfile[] ann = WynnMarket.getMarket().getAnnounces().values().toArray(new AnnounceProfile[] {});
             for(int i = 0; i < 5; i++) {
                 if(WynnMarket.getMarket().getAnnounces().size() <= i) {
+                    WynnRichPresence.logger.warn("sem anuncios próprios");
                     break;
                 }
 

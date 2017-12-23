@@ -65,7 +65,7 @@ public class RichUtils {
 
     public static String getPlayerInfo() {
         Minecraft mc = Minecraft.getMinecraft();
-        return ConfigValues.discordConfig.showNicknameAndClass ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() : null;
+        return ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() : null;
     }
 
 

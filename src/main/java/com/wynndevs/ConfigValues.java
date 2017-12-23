@@ -12,14 +12,21 @@ import java.util.UUID;
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public class ConfigValues {
 
-    @Config.LangKey("config.wynnrp.discord")
-    public static Discord discordConfig = new Discord();
+    @Config.LangKey("config.wynnrp")
+    public static WynncraftRichPresence wynnRichPresence = new WynncraftRichPresence();
 
-    @Config.LangKey("config.wynnrp.marketaccount")
+    @Config.LangKey("config.market")
     public static ConfigValues.Account marketAccount = new Account();
 
-    @Config.Comment("Do you want to receive entering notifications?")
-    public static boolean enteringNotifier = true;
+    public static class WynncraftRichPresence {
+
+        @Config.Comment("Do you want to receive entering notifications?")
+        public boolean enteringNotifier = true;
+
+        @Config.LangKey("config.wynnrp.discord")
+        public Discord discordConfig = new Discord();
+
+    }
 
     public static class Discord {
 
@@ -40,7 +47,7 @@ public class ConfigValues {
         @Config.RequiresMcRestart
         public String accountPass = RichUtils.generatePassword(15);
 
-        @Config.LangKey("config.wynnrp.resetaccount")
+        @Config.LangKey("config.market.resetaccount")
         public ResetAccount resetAccount = ResetAccount.NO;
 
     }

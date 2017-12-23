@@ -27,7 +27,7 @@ public class WynnRichPresence {
         WynnRichPresence.logger = e.getModLog();
 
         try{
-            richPresence = new RichProfile(387266678607577088L, ConfigValues.discordConfig.discordBuild);
+            richPresence = new RichProfile(387266678607577088L, ConfigValues.wynnRichPresence.discordConfig.discordBuild);
 
             //events
             MinecraftForge.EVENT_BUS.register(new ServerEvents());
@@ -47,4 +47,5 @@ public class WynnRichPresence {
     public static DataProfile getData() {
         return modData;
     }
+
 }
