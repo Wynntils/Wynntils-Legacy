@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "1.0"
-group = "com.wynnexpansion"
+group = "com.wynndevs"
 archivesBaseName = "WynnExpansion"
 
 sourceCompatibility = "1.8"
@@ -70,8 +70,8 @@ shadowJar {
     classifier = null
     version = null
     configurations = [project.configurations.compile]
-    relocate "org.slf4j", "com.wynnexpansion.relocate.org.slf4j"
-    relocate "org.json", "com.wynnexpansion.relocate.org.json"
+    relocate "org.slf4j", "com.expansion.relocate.org.slf4j"
+    relocate "org.json", "com.expansion.relocate.org.json"
 }
 
 task wrapper(type: Wrapper) {

@@ -1,18 +1,18 @@
 package com.wynndevs;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.wynnmarket.enums.ResetAccount;
-import com.wynndevs.wynnrp.utils.RichUtils;
+import com.wynndevs.market.enums.ResetAccount;
+import com.wynndevs.richpresence.utils.RichUtils;
 import com.jagrosh.discordipc.entities.DiscordBuild;
 import net.minecraftforge.common.config.Config;
 
 import java.util.UUID;
 
-@Config.LangKey("config.wynnrp.title")
+@Config.LangKey("config.richpresence.title")
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public class ConfigValues {
 
-    @Config.LangKey("config.wynnrp")
+    @Config.LangKey("config.richpresence")
     public static WynncraftRichPresence wynnRichPresence = new WynncraftRichPresence();
 
     @Config.LangKey("config.market")
@@ -23,7 +23,7 @@ public class ConfigValues {
         @Config.Comment("Do you want to receive entering notifications?")
         public boolean enteringNotifier = true;
 
-        @Config.LangKey("config.wynnrp.discord")
+        @Config.LangKey("config.richpresence.discord")
         public Discord discordConfig = new Discord();
 
     }
@@ -34,7 +34,7 @@ public class ConfigValues {
         public boolean showNicknameAndClass = true;
 
         @Config.RequiresMcRestart
-        @Config.LangKey("config.wynnrp.discordversion")
+        @Config.LangKey("config.richpresence.discordversion")
         @Config.Comment("Your discord version | Availabe: Any, Stable, Canary, PTB")
         public DiscordBuild discordBuild = DiscordBuild.ANY;
     }

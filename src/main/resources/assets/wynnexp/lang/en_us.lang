@@ -3,7 +3,7 @@ language.region= United States
 language.code=en_us
 
 #Config main
-config.wynnrp=Wynncraft RichPresence
+config.wynnrp=RichPresence
 config.wynnrp.tooltip=Click here to edit Wynncraft RichPresence configurations
 config.market=Market Account
 config.market.tooltip=Don't change this if you have no idea what it is
