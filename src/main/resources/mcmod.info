@@ -1,0 +1,16 @@
+[
+{
+  "modid": "scyuwynn",
+  "name": "Wynncraft Expansion",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Scyu","HeyZeer0","EHTYCSCYTHE"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
