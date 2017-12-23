@@ -4,7 +4,7 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.wynnrp.WynnRichPresence;
 import com.wynndevs.wynnrp.guis.overlay.LocationGUI;
 import com.wynndevs.wynnrp.profiles.LocationProfile;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -41,7 +41,7 @@ public class ChatEvents {
                     InputStream st = new URL("https://api.wynncraft.com/public_api.php?action=playerStats&command=" + Minecraft.getMinecraft().player.getName()).openStream();
                     WynnRichPresence.getData().setActualServer(new JSONObject(IOUtils.toString(st)).getString("current_server"));
 
-                    WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), Utils.getPlayerInfo(), null);
+                    WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
                     WynnRichPresence.getData().setOnServer(true);
 
                     startUpdateRegionName();
@@ -54,7 +54,7 @@ public class ChatEvents {
         if(e.getMessage().getFormattedText().toLowerCase().contains("you are now entering") && !e.getMessage().getFormattedText().contains("/")) {
             if(ConfigValues.enteringNotifier) {
                 String loc = e.getMessage().getFormattedText();
-                LocationGUI.location = Utils.stripColor(loc.replace("[You are now entering ", "").replace("]", ""));
+                LocationGUI.location = RichUtils.stripColor(loc.replace("[You are now entering ", "").replace("]", ""));
                 e.setCanceled(true);
             }
             return;
@@ -73,26 +73,26 @@ public class ChatEvents {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             if(WynnRichPresence.getData().getLocId() == -1) {
                 EntityPlayerSP pl = Minecraft.getMinecraft().player;
-                for(int i = 0; i < Utils.locations.size(); i++) {
-                    LocationProfile pf = Utils.locations.get(i);
+                for(int i = 0; i < RichUtils.locations.size(); i++) {
+                    LocationProfile pf = RichUtils.locations.get(i);
                     if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                         WynnRichPresence.getData().setLocation(pf.getName());
                         WynnRichPresence.getData().setLocId(i);
 
-                        WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), Utils.getPlayerInfo(), null);
+                        WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
                         break;
                     }
                 }
             }else{
                 EntityPlayerSP pl = Minecraft.getMinecraft().player;
-                if(!Utils.locations.get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
-                    for(int i = 0; i < Utils.locations.size(); i++) {
-                        LocationProfile pf = Utils.locations.get(i);
+                if(!RichUtils.locations.get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
+                    for(int i = 0; i < RichUtils.locations.size(); i++) {
+                        LocationProfile pf = RichUtils.locations.get(i);
                         if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             WynnRichPresence.getData().setLocation(pf.getName());
                             WynnRichPresence.getData().setLocId(i);
 
-                            WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), Utils.getPlayerInfo(), null);
+                            WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
                             break;
                         }
                     }

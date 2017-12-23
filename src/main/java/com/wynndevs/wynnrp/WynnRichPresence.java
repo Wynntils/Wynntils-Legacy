@@ -2,7 +2,7 @@ package com.wynndevs.wynnrp;
 
 import com.wynndevs.wynnrp.events.ChatEvents;
 import com.wynndevs.wynnrp.guis.overlay.LocationGUI;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.wynnrp.events.ServerEvents;
 import com.wynndevs.wynnrp.profiles.DataProfile;
@@ -21,10 +21,9 @@ public class WynnRichPresence {
     private static RichProfile richPresence;
     private static DataProfile modData = new DataProfile();
 
-
     public static Logger logger;
 
-    public static void startRichPresence(FMLPreInitializationEvent e) {
+    public static void init(FMLPreInitializationEvent e) {
         WynnRichPresence.logger = e.getModLog();
 
         try{
@@ -37,7 +36,7 @@ public class WynnRichPresence {
             //guis
             MinecraftForge.EVENT_BUS.register(new LocationGUI(Minecraft.getMinecraft()));
 
-            Utils.updateRegions();
+            RichUtils.updateRegions();
         }catch (Exception ignored) {}
     }
 

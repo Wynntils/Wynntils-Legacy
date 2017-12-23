@@ -6,7 +6,8 @@ import com.wynndevs.wynnmarket.guis.WMGuiScreen;
 import com.wynndevs.wynnmarket.market.AnnounceProfile;
 import com.wynndevs.wynnmarket.market.WrappedStack;
 import com.wynndevs.wynnmarket.profiles.ItemDataProfile;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnmarket.utils.MarketUtils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
@@ -30,8 +31,6 @@ public class MarketGUI extends WMGuiScreen {
 
     private static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID + ":textures/market-gui.png");
     private static final ResourceLocation gui = new ResourceLocation(Reference.MOD_ID + ":textures/marketplace.png");
-
-    public static ArrayList<String> i = new ArrayList<>();
 
     int inventory_page = 1;
     int actual_page = 1;
@@ -310,7 +309,7 @@ public class MarketGUI extends WMGuiScreen {
                 continue;
             }
 
-            List<String> iLore = Utils.getLore(is);
+            List<String> iLore = MarketUtils.getLore(is);
 
             boolean stop = true;
             for(String lr : iLore) {
@@ -387,14 +386,14 @@ public class MarketGUI extends WMGuiScreen {
                     continue;
                 }
 
-                if(search_box.length() > 0 && !Utils.stripColor(announce.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
+                if(search_box.length() > 0 && !RichUtils.stripColor(announce.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
                     continue;
                 }
 
                 ItemDataProfile item = new ItemDataProfile(x + 175 + (25 * market_amount), y - 118 + (25 * market_floor), announce.getItem());
 
                 item.addDefaultLore(announce.getItem().getDisplayName());
-                item.addDefaultLore(Utils.getLore(announce.getItem()));
+                item.addDefaultLore(MarketUtils.getLore(announce.getItem()));
                 item.addDefaultLore("");
                 item.addDefaultLore("§e[Hold shift to see author info]");
                 item.addDefaultLore("§a[Hold ctrl and click to compare]");
@@ -426,13 +425,13 @@ public class MarketGUI extends WMGuiScreen {
                     continue;
                 }
 
-                if(search_box.length() > 0 && !Utils.stripColor(n.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
+                if(search_box.length() > 0 && !RichUtils.stripColor(n.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
                     continue;
                 }
 
                 ItemDataProfile item = new ItemDataProfile(x + 175 + (25 * market_amount), y - 118, n.getItem());
                 item.addDefaultLore(n.getItem().getDisplayName());
-                item.addDefaultLore(Utils.getLore(n.getItem()));
+                item.addDefaultLore(MarketUtils.getLore(n.getItem()));
                 item.addDefaultLore("");
                 item.addDefaultLore("§a[Hold ctrl and click to compare]");
                 item.addDefaultLore("§c[Hold shift and click to delete]");

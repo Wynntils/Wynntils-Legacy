@@ -3,7 +3,7 @@ package com.wynndevs.wynnrp.guis.overlay;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.wynnrp.WynnRichPresence;
 import com.wynndevs.wynnrp.guis.WRPGui;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -42,7 +42,7 @@ public class LocationGUI extends WRPGui {
         }
 
         if(!showing) {
-            last_loc = Utils.removeAfterChar(location, 15);
+            last_loc = RichUtils.removeAfterChar(location, 15);
         }
 
         showing = true;

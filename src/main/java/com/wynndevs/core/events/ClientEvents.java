@@ -7,7 +7,7 @@ import com.wynndevs.wynnmarket.WynnMarket;
 import com.wynndevs.wynnmarket.enums.ResetAccount;
 import com.wynndevs.wynnmarket.guis.screen.MarketGUI;
 import com.wynndevs.wynnmarket.market.MarketUser;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -41,7 +41,7 @@ public class ClientEvents {
                 WynnMarket.getMarket().deleteAccount((b) -> {
                     if(b) {
                         ConfigValues.marketAccount.accountName = UUID.randomUUID().toString();
-                        ConfigValues.marketAccount.accountPass = Utils.generatePassword(15);
+                        ConfigValues.marketAccount.accountPass = RichUtils.generatePassword(15);
 
                         WynnMarket.setMarket(new MarketUser(ConfigValues.marketAccount.accountName, ConfigValues.marketAccount.accountPass));
                     }

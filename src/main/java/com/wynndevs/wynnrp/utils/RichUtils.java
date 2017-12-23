@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * Created by HeyZeer0 on 04/12/2017.
  * Copyright © HeyZeer0 - 2016
  */
-public class Utils {
+public class RichUtils {
 
     public static ArrayList<LocationProfile> locations = new ArrayList<>();
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
@@ -68,30 +68,6 @@ public class Utils {
         return ConfigValues.discordConfig.showNicknameAndClass ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() : null;
     }
 
-    public static List<String> getLore(ItemStack item) {
-        List<String> lore = new ArrayList<>();
-        if(item == null || !item.hasTagCompound()) {
-            return lore;
-        }
-        if (item.getTagCompound().hasKey("display", 10))
-        {
-            NBTTagCompound nbttagcompound = item.getTagCompound().getCompoundTag("display");
-
-            if (nbttagcompound.getTagId("Lore") == 9)
-            {
-                NBTTagList nbttaglist3 = nbttagcompound.getTagList("Lore", 8);
-
-                if (!nbttaglist3.hasNoTags())
-                {
-                    for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1)
-                    {
-                        lore.add(nbttaglist3.getStringTagAt(l1));
-                    }
-                }
-            }
-        }
-        return lore;
-    }
 
     public static String getPlayerCurrentClass(){
         Minecraft mc = Minecraft.getMinecraft();

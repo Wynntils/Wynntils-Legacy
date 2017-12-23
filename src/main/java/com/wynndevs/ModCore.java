@@ -24,7 +24,7 @@ public class ModCore {
 
         KeyBindings.init();
         WynnMarket.init();
-        WynnRichPresence.startRichPresence(e);
+        WynnRichPresence.init(e);
     }
 
 }

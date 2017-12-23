@@ -2,7 +2,7 @@ package com.wynndevs;
 
 import com.wynndevs.core.Reference;
 import com.wynndevs.wynnmarket.enums.ResetAccount;
-import com.wynndevs.wynnrp.utils.Utils;
+import com.wynndevs.wynnrp.utils.RichUtils;
 import com.jagrosh.discordipc.entities.DiscordBuild;
 import net.minecraftforge.common.config.Config;
 
@@ -38,7 +38,7 @@ public class ConfigValues {
         public String accountName = UUID.randomUUID().toString();
 
         @Config.RequiresMcRestart
-        public String accountPass = Utils.generatePassword(15);
+        public String accountPass = RichUtils.generatePassword(15);
 
         @Config.LangKey("config.wynnrp.resetaccount")
         public ResetAccount resetAccount = ResetAccount.NO;
