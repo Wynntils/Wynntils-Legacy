@@ -49,7 +49,6 @@ public class ItemDataProfile {
         ctrlLore.addAll(x);
     }
 
-
     public void addRunnable(ItemExecutor r) {
         runnable = r;
     }

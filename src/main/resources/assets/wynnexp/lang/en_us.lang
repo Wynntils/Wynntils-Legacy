@@ -2,7 +2,7 @@ language.name=English
 language.region= United States
 language.code=en_us
 
-#Config
+#Config WynnRP
 config.wynnrp.title=Wynncraft RichPresence
 config.wynnrp.discord=Discord Configurations
 config.wynnrp.discord.tooltip=Click here to edit some discord configurations
