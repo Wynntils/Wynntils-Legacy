@@ -1,7 +1,7 @@
 [
-{
-  "modid": "scyuwynn",
-  "name": "Wynncraft Expansion",
+  {
+  "modid": "wynnexp",
+  "name": "WynncraftExopansion",
   "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
@@ -12,5 +12,19 @@
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
-}
+  },
+  {
+    "modid": "wynnrp",
+    "name": "WynncraftRichPresence",
+    "description": "A simple mod who integrates Wynncraft with discord annd provides some extra info",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "www.heyzeer0.cf",
+    "updateUrl": "http://ci.heyzeer0.cf/job/WynncraftRichPresence/",
+    "authorList": ["HeyZeer0"],
+    "credits": "",
+    "logoFile": "assets/logo.png",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

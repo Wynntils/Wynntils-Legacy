@@ -15,7 +15,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "1.0"
 group = "com.wynnexpansion"
-archivesBaseName = "WynncraftExpansion"
+archivesBaseName = "WynnExpansion"
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
