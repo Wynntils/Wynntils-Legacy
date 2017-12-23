@@ -1,11 +1,11 @@
-package com.wynndevs.wynnrp.guis.screen;
+package com.wynndevs.wynnmarket.guis.screen;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.wynnrp.WynnRichPresence;
-import com.wynndevs.wynnrp.guis.WRPGuiScreen;
-import com.wynndevs.wynnrp.market.AnnounceProfile;
-import com.wynndevs.wynnrp.market.WrappedStack;
-import com.wynndevs.wynnrp.profiles.ItemDataProfile;
+import com.wynndevs.wynnmarket.WynnMarket;
+import com.wynndevs.wynnmarket.guis.WMGuiScreen;
+import com.wynndevs.wynnmarket.market.AnnounceProfile;
+import com.wynndevs.wynnmarket.market.WrappedStack;
+import com.wynndevs.wynnmarket.profiles.ItemDataProfile;
 import com.wynndevs.wynnrp.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -26,7 +26,7 @@ import java.util.List;
  * Created by HeyZeer0 on 17/12/2017.
  * Copyright © HeyZeer0 - 2016
  */
-public class MarketGUI extends WRPGuiScreen {
+public class MarketGUI extends WMGuiScreen {
 
     private static final ResourceLocation texture = new ResourceLocation(Reference.MOD_ID + ":textures/market-gui.png");
     private static final ResourceLocation gui = new ResourceLocation(Reference.MOD_ID + ":textures/marketplace.png");
@@ -138,7 +138,7 @@ public class MarketGUI extends WRPGuiScreen {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if(requestAnnounces) {
-            WynnRichPresence.getMarket().getGlobalAnnounces(array -> {
+            WynnMarket.getMarket().getGlobalAnnounces(array -> {
                 if(array != null) {
                     ann.clear();
                     ann.addAll(array);
@@ -345,14 +345,14 @@ public class MarketGUI extends WRPGuiScreen {
 
                     String base64 = WrappedStack.getBase64(item.getItem());
                     boolean valid = true;
-                    for(AnnounceProfile ann : WynnRichPresence.getMarket().getAnnounces().values()) {
+                    for(AnnounceProfile ann : WynnMarket.getMarket().getAnnounces().values()) {
                         if(ann.getBase64().equals(base64)) {
                             valid = false;
                         }
                     }
 
                     if(valid) {
-                        WynnRichPresence.getMarket().createAnnounce(Item.getIdFromItem(item.getItem().getItem()), base64, mc.player.getName(), item.getItem().getItemDamage(), (b) -> {
+                        WynnMarket.getMarket().createAnnounce(Item.getIdFromItem(item.getItem().getItem()), base64, mc.player.getName(), item.getItem().getItemDamage(), (b) -> {
                             if(b) {
                                 requestAnnounces = true;
                                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F));
@@ -414,9 +414,9 @@ public class MarketGUI extends WRPGuiScreen {
             }
         }else{
             int market_amount = 0;
-            AnnounceProfile[] ann = WynnRichPresence.getMarket().getAnnounces().values().toArray(new AnnounceProfile[] {});
+            AnnounceProfile[] ann = WynnMarket.getMarket().getAnnounces().values().toArray(new AnnounceProfile[] {});
             for(int i = 0; i < 5; i++) {
-                if(WynnRichPresence.getMarket().getAnnounces().size() <= i) {
+                if(WynnMarket.getMarket().getAnnounces().size() <= i) {
                     break;
                 }
 
@@ -439,7 +439,7 @@ public class MarketGUI extends WRPGuiScreen {
 
                 item.addRunnable((gui, im) -> {
                     if(isShiftKeyDown()) {
-                        WynnRichPresence.getMarket().deleteAnnounce(n.getId(), (b) -> {
+                        WynnMarket.getMarket().deleteAnnounce(n.getId(), (b) -> {
                             if(b) {
                                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F));
                                 requestAnnounces = true;

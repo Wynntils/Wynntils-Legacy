@@ -1,4 +1,4 @@
-package com.wynndevs.wynnrp.market;
+package com.wynndevs.wynnmarket.market;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;

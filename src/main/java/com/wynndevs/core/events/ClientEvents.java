@@ -3,10 +3,10 @@ package com.wynndevs.core.events;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.input.KeyBindings;
-import com.wynndevs.wynnrp.WynnRichPresence;
-import com.wynndevs.wynnrp.enums.ResetAccount;
-import com.wynndevs.wynnrp.guis.screen.MarketGUI;
-import com.wynndevs.wynnrp.market.MarketUser;
+import com.wynndevs.wynnmarket.WynnMarket;
+import com.wynndevs.wynnmarket.enums.ResetAccount;
+import com.wynndevs.wynnmarket.guis.screen.MarketGUI;
+import com.wynndevs.wynnmarket.market.MarketUser;
 import com.wynndevs.wynnrp.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Config;
@@ -38,12 +38,12 @@ public class ClientEvents {
             if(ConfigValues.marketAccount.resetAccount == ResetAccount.YES) {
                 ConfigValues.marketAccount.resetAccount = ResetAccount.NO;
 
-                WynnRichPresence.getMarket().deleteAccount((b) -> {
+                WynnMarket.getMarket().deleteAccount((b) -> {
                     if(b) {
                         ConfigValues.marketAccount.accountName = UUID.randomUUID().toString();
                         ConfigValues.marketAccount.accountPass = Utils.generatePassword(15);
 
-                        WynnRichPresence.setMarket(new MarketUser(ConfigValues.marketAccount.accountName, ConfigValues.marketAccount.accountPass));
+                        WynnMarket.setMarket(new MarketUser(ConfigValues.marketAccount.accountName, ConfigValues.marketAccount.accountPass));
                     }
                 });
 

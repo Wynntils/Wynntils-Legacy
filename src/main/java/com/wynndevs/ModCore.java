@@ -3,6 +3,7 @@ package com.wynndevs;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.wynnmarket.WynnMarket;
 import com.wynndevs.wynnrp.WynnRichPresence;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,6 +23,7 @@ public class ModCore {
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
 
         KeyBindings.init();
+        WynnMarket.init();
         WynnRichPresence.startRichPresence(e);
     }
 

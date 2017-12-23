@@ -1,6 +1,6 @@
-package com.wynndevs.wynnrp.profiles;
+package com.wynndevs.wynnmarket.profiles;
 
-import com.wynndevs.wynnrp.guis.WRPGuiScreen;
+import com.wynndevs.wynnmarket.guis.WMGuiScreen;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class ItemDataProfile {
 
     public interface ItemExecutor {
 
-        void userClicked(WRPGuiScreen s, ItemDataProfile item);
+        void userClicked(WMGuiScreen s, ItemDataProfile item);
 
     }
 

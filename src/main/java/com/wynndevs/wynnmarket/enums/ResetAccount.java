@@ -1,4 +1,4 @@
-package com.wynndevs.wynnrp.enums;
+package com.wynndevs.wynnmarket.enums;
 
 /**
  * Created by HeyZeer0 on 16/12/2017.

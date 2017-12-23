@@ -1,6 +1,6 @@
-package com.wynndevs.wynnrp.guis;
+package com.wynndevs.wynnmarket.guis;
 
-import com.wynndevs.wynnrp.profiles.ItemDataProfile;
+import com.wynndevs.wynnmarket.profiles.ItemDataProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
@@ -10,11 +10,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.HashMap;
 
-/**
- * Created by HeyZeer0 on 14/12/2017.
- * Copyright © HeyZeer0 - 2016
- */
-public class WRPGuiScreen extends GuiScreen {
+public class WMGuiScreen extends GuiScreen {
 
     public Minecraft mc;
 
@@ -23,7 +19,7 @@ public class WRPGuiScreen extends GuiScreen {
 
     public boolean requestClean = false;
 
-    public WRPGuiScreen(Minecraft mc) {
+    public WMGuiScreen(Minecraft mc) {
         this.mc = mc;
     }
 
