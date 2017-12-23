@@ -3,6 +3,7 @@ package com.wynndevs.wynnrp.profiles;
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.DiscordBuild;
 import com.jagrosh.discordipc.entities.RichPresence;
+import com.wynndevs.wynnrp.utils.FakeRichPresence;
 
 import java.time.OffsetDateTime;
 
@@ -27,7 +28,7 @@ public class RichProfile {
     }
 
     public void updateRichPresence(String state, String details, String largText, OffsetDateTime date) {
-        client.sendRichPresence(new RichPresence(state, details, date, null, "wynn", largText, null, null, null, 1, 1, null, null, null, false));
+        client.sendRichPresence(new FakeRichPresence(state, details, date, null, "wynn", largText, null, null, null, 1, 1, null, null, null, false));
     }
 
     public boolean isReady() {

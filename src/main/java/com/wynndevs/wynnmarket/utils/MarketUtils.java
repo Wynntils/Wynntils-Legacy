@@ -14,18 +14,14 @@ public class MarketUtils {
         if(item == null || !item.hasTagCompound()) {
             return lore;
         }
-        if (item.getTagCompound().hasKey("display", 10))
-        {
+        if (item.getTagCompound().hasKey("display", 10)) {
             NBTTagCompound nbttagcompound = item.getTagCompound().getCompoundTag("display");
 
-            if (nbttagcompound.getTagId("Lore") == 9)
-            {
+            if (nbttagcompound.getTagId("Lore") == 9) {
                 NBTTagList nbttaglist3 = nbttagcompound.getTagList("Lore", 8);
 
-                if (!nbttaglist3.hasNoTags())
-                {
-                    for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1)
-                    {
+                if (!nbttaglist3.hasNoTags()) {
+                    for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
                         lore.add(nbttaglist3.getStringTagAt(l1));
                     }
                 }
