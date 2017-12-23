@@ -1,0 +1,13 @@
+language.name=English
+language.region= United States
+language.code=en_us
+
+#Config
+config.wynnrp.title=Wynncraft RichPresence
+config.wynnrp.discord=Discord Configurations
+config.wynnrp.discord.tooltip=Click here to edit some discord configurations
+config.wynnrp.discordversion.tooltip=Available: Any, Stable, Canary, PTB
+config.wynnrp.bombstelemetry.tooltip=Collect data from your client to provide game bomb info
+config.wynnrp.marketaccount=Market Account
+config.wynnrp.marketaccount.tooltip=Don't change this if you have no idea what it is
+config.wynnrp.resetaccount.tooltip=If you want to reset your market account, set this to YES and save the settings
