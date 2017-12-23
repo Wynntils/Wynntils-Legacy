@@ -1,6 +1,6 @@
-package com.scyu.wynncraft;
+package com.wynnexpansion;
 
-import com.scyu.wynncraft.proxy.CommonProxy;
+import com.wynnexpansion.proxy.CommonProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 @Mod(modid = Reference.MOD_ID, version = Reference.VERSION)
-public class Wynncraft {
+public class WynnExpansion {
 
 
     /**

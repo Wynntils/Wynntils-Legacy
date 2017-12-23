@@ -1,4 +1,4 @@
-package com.scyu.wynncraft.proxy;
+package com.wynnexpansion.proxy;
 
 public class ServerProxy implements CommonProxy {
 

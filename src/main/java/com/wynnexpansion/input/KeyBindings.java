@@ -1,6 +1,6 @@
-package com.scyu.wynncraft.input;
+package com.wynnexpansion.input;
 
-import com.scyu.wynncraft.Reference;
+import com.wynnexpansion.Reference;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
@@ -18,7 +18,6 @@ public class KeyBindings {
 
 
         ClientRegistry.registerKeyBinding(test);
-
     }
 
 }
