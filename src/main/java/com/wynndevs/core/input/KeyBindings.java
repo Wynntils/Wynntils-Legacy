@@ -10,7 +10,7 @@ public class KeyBindings {
     public static KeyBinding MARKET_GUI;
 
     public static void init() {
-        MARKET_GUI = new KeyBinding("key.test", Keyboard.KEY_M, "key.categories." + Reference.MOD_ID);
+        MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "key.categories." + Reference.MOD_ID);
 
         ClientRegistry.registerKeyBinding(MARKET_GUI);
     }
