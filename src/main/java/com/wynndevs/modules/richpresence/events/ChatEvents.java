@@ -2,6 +2,7 @@ package com.wynndevs.modules.richpresence.events;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
 import com.wynndevs.modules.richpresence.guis.overlay.LocationGUI;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
@@ -54,7 +55,9 @@ public class ChatEvents {
 
                     startUpdateRegionName();
 
-                }catch (Exception ex) { WynnRichPresence.logger.warn("Cannot update status", ex); }
+                } catch (Exception ex) {
+                    Reference.LOGGER.warn("Cannot update status", ex);
+                }
             }).start();
 
             return;
