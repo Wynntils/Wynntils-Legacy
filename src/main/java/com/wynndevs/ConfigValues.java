@@ -1,7 +1,7 @@
 package com.wynndevs;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.market.enums.ResetAccount;
+import com.wynndevs.modules.market.enums.ResetAccount;
 import com.jagrosh.discordipc.entities.DiscordBuild;
 import net.minecraftforge.common.config.Config;
 
