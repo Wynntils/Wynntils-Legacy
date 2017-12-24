@@ -12,12 +12,12 @@ import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestTrackingUI;
-import com.wynndevs.modules.expansion.webapi.TerritoryUI;
-import com.wynndevs.modules.expansion.webapi.WebAPI;
-import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import com.wynndevs.modules.expansion.sound.GuiWynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSounds;
+import com.wynndevs.modules.expansion.webapi.TerritoryUI;
+import com.wynndevs.modules.expansion.webapi.WebAPI;
+import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -77,8 +77,10 @@ public class WynnExpansion {
 		//////			   \\\\\\
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
+		MinecraftForge.EVENT_BUS.register(new NetworkFilter(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
-		
+		MinecraftForge.EVENT_BUS.register(new CustomHUD(ModCore.mc()));
+
 		return ModuleResult.SUCCESS;
 	}
 	
