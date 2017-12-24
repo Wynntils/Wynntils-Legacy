@@ -1,6 +1,7 @@
 package com.wynndevs.richpresence.events;
 
 import com.wynndevs.ConfigValues;
+import com.wynndevs.ModCore;
 import com.wynndevs.richpresence.WynnRichPresence;
 import com.wynndevs.richpresence.guis.overlay.LocationGUI;
 import com.wynndevs.richpresence.profiles.LocationProfile;
@@ -71,31 +72,21 @@ public class ChatEvents {
 
     public static void startUpdateRegionName() {
         updateTimer = executor.scheduleAtFixedRate(() -> {
-            if(WynnRichPresence.getData().getLocId() == -1) {
-                EntityPlayerSP pl = Minecraft.getMinecraft().player;
-                for(int i = 0; i < RichUtils.locations.size(); i++) {
-                    LocationProfile pf = RichUtils.locations.get(i);
-                    if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
-                        WynnRichPresence.getData().setLocation(pf.getName());
-                        WynnRichPresence.getData().setLocId(i);
-
-                        WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
-                        break;
-                    }
+            EntityPlayerSP pl = ModCore.mc().player;
+            if(WynnRichPresence.getData().getLocId() != -1) {
+                if(RichUtils.locations.get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
+                    return;
                 }
-            }else{
-                EntityPlayerSP pl = Minecraft.getMinecraft().player;
-                if(!RichUtils.locations.get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
-                    for(int i = 0; i < RichUtils.locations.size(); i++) {
-                        LocationProfile pf = RichUtils.locations.get(i);
-                        if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
-                            WynnRichPresence.getData().setLocation(pf.getName());
-                            WynnRichPresence.getData().setLocId(i);
+            }
 
-                            WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
-                            break;
-                        }
-                    }
+            for(int i = 0; i < RichUtils.locations.size(); i++) {
+                LocationProfile pf = RichUtils.locations.get(i);
+                if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                    WynnRichPresence.getData().setLocation(pf.getName());
+                    WynnRichPresence.getData().setLocId(i);
+
+                    WynnRichPresence.getRichPresence().updateRichPresence("World " + WynnRichPresence.getData().getActualServer().replace("WC", ""), "At " + WynnRichPresence.getData().getLocation(), RichUtils.getPlayerInfo(), null);
+                    break;
                 }
             }
 
