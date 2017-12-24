@@ -2,6 +2,7 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
+import com.wynndevs.webapi.profiles.UpdateProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -12,13 +13,20 @@ import java.util.ArrayList;
 public class WebManager {
 
     private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
+    private static UpdateProfile updateProfile;
 
     public static void init() {
+        updateProfile = new UpdateProfile();
+
         updateTerritories();
     }
 
     public static ArrayList<TerritoryProfile> getTerritories() {
         return territories;
+    }
+
+    public static UpdateProfile getUpdate() {
+        return updateProfile;
     }
 
     public static void updateTerritories() {

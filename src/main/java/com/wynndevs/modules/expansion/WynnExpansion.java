@@ -12,8 +12,6 @@ import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestTrackingUI;
-import com.wynndevs.modules.expansion.update.Update;
-import com.wynndevs.modules.expansion.update.UpdateUI;
 import com.wynndevs.modules.expansion.webapi.TerritoryUI;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
@@ -65,16 +63,9 @@ public class WynnExpansion {
 		
 		ExpReference.VERSION = event.getModMetadata().version;
 		
-		Update.checkLatest();
-		
 		ClientCommandHandler.instance.registerCommand(new CordsCommand());
 		ClientCommandHandler.instance.registerCommand(new InfoCommand());
 		ClientCommandHandler.instance.registerCommand(new TerritoryCommand());
-		
-		ExpReference.ConsoleOut("The current version is: v" + ExpReference.VERSION);
-		if (Update.newUpdate) {
-			ExpReference.ConsoleOut("update v" + Update.latest + " is Available!");
-		}
 		
 		Experience.PreInit();
 		LegacyExperience.PreInit();
@@ -135,12 +126,6 @@ public class WynnExpansion {
 		if (ExpReference.inServer()) {
 			if (TerritoryNews) {
 				new TerritoryUI(ModCore.mc());
-			}
-			if (UpdateCheckDelay.Passed()){
-				Update.checkLatest();
-				UpdateUI.Show = true;
-			}else if (Update.newUpdate) {
-				new UpdateUI(ModCore.mc());
 			}
 			new GuildAttackTimer(ModCore.mc());
 		}
@@ -214,8 +199,6 @@ public class WynnExpansion {
 						}
 					}
 				}
-				if (HeaderVersion) {Update.SetHeader();}
-				
 				if (!ProcessChatQue && ProcessChatQueTimer.Passed()){
 					ProcessChatQue = true;
 				}else if (ProcessChatQue && !ChatQue.isEmpty()){
