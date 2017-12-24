@@ -32,6 +32,12 @@ public class ChatEvents {
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     public static ScheduledFuture updateTimer;
 
+    /**
+     * Handlers for world login and entering notifier
+     *
+     * @param e
+     *        Origem event
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onChatReceive(ClientChatReceivedEvent e) {
@@ -70,6 +76,9 @@ public class ChatEvents {
         }
     }
 
+    /**
+     * Starts to check player location for RichPresence current player territory info
+     */
     public static void startUpdateRegionName() {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
@@ -92,6 +101,5 @@ public class ChatEvents {
 
         }, 0, 3, TimeUnit.SECONDS);
     }
-
 
 }

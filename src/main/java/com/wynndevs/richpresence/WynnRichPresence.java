@@ -25,6 +25,14 @@ public class WynnRichPresence {
 
     public static Logger logger;
 
+    /**
+     * Loads the module
+     *
+     * @param e
+     *        FMLPreInit event
+     *
+     * @return The result of module load
+     */
     public static ModuleResult initModule(FMLPreInitializationEvent e) {
         WynnRichPresence.logger = e.getModLog();
 
@@ -46,10 +54,18 @@ public class WynnRichPresence {
         return ModuleResult.ERROR;
     }
 
+    /**
+     * Get the current RichPresence online instance
+     * @return RichPresence profile
+     */
     public static RichProfile getRichPresence() {
         return richPresence;
     }
 
+    /**
+     * Get the current session saved data
+     * @return Memory data profile
+     */
     public static DataProfile getData() {
         return modData;
     }
