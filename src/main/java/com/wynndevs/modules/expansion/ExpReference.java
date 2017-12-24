@@ -44,6 +44,8 @@ public class ExpReference {
 			return false;
 		}
 	}
+	
+	private static NetworkPlayerInfo FirstSlot = null;
 	public static void UpdateStatus() {
 		InGame = false;
 		Loaded = false;
@@ -62,6 +64,11 @@ public class ExpReference {
 				if (InGame) {
 					Collection<NetworkPlayerInfo> Tablist = Minecraft.getMinecraft().getConnection().getPlayerInfoMap();
 					for (NetworkPlayerInfo TabSlot : Tablist) {
+						if (FirstSlot == null){
+							FirstSlot = TabSlot;
+						}else if (TabSlot.equals(FirstSlot)){
+							return;
+						}
 						if (ModCore.mc().ingameGUI.getTabList().getPlayerName(TabSlot).contains("Global [")) {
 							String ServerCheck = ModCore.mc().ingameGUI.getTabList().getPlayerName(TabSlot);
 							InWar = ServerCheck.contains("WAR");
@@ -71,11 +78,13 @@ public class ExpReference {
 					}
 					
 				}else{
+					FirstSlot = null;
 					InWar = false;
 					InNether = false;
 					LoadedTimer.Reset();
 				}
 			} catch (Exception ignored){
+				FirstSlot = null;
 				InWar = false;
 				InNether = false;
 				LoadedTimer.Reset();
