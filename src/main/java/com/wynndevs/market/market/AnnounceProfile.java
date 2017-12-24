@@ -17,6 +17,14 @@ public class AnnounceProfile {
     String server;
     ItemStack item;
 
+    /**
+     * A simple Announce wrapper
+     *
+     * @param id
+     * @param material
+     * @param base64
+     * @param owner
+     */
     public AnnounceProfile(String id, int material, String base64, String owner) {
         this.id = id;
         this.material = material;
@@ -34,6 +42,14 @@ public class AnnounceProfile {
         }catch (Exception ex) { item = null; }
     }
 
+    /**
+     * A simple Announce wrapper
+     *
+     * @param id
+     * @param material
+     * @param base64
+     * @param owner
+     */
     public AnnounceProfile(String id, int material, String base64, String owner, String server) {
         this.id = id;
         this.material = material;

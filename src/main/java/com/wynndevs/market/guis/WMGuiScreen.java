@@ -17,23 +17,34 @@ public class WMGuiScreen extends GuiScreen {
     HashMap<Integer, ItemDataProfile> renderedItems = new HashMap<>();
     public ItemDataProfile compar;
 
+    /**
+     * Request to re-define all item data locations and handlers
+     */
     public boolean requestClean = false;
 
     public WMGuiScreen(Minecraft mc) {
         this.mc = mc;
     }
 
-    public void drawString(String text, int x, int y, float size, int color) {
-        GL11.glScalef(size,size,size);
-        float mSize = (float)Math.pow(size,-1);
-        this.drawString(mc.fontRenderer, text, x, y, color);
-        GL11.glScalef(mSize,mSize,mSize);
-    }
-
+    /**
+     * A simple shorter method to render a string
+     *
+     * @param text
+     * @param x
+     * @param y
+     * @param color
+     */
     public void drawString(String text, int x, int y, int color) {
         this.drawString(mc.fontRenderer, text, x, y, color);
     }
 
+    /**
+     * Draw an item with executors
+     *
+     * @param data
+     *        ItemData
+     * @param id
+     */
     public void drawItemStack(ItemDataProfile data, int id) {
         if(requestClean) {
             renderedItems.clear();
@@ -48,11 +59,13 @@ public class WMGuiScreen extends GuiScreen {
         itemRender.renderItemAndEffectIntoGUI(data.getItem(), data.getX(), data.getY());
     }
 
-    public void drawItemStack(ItemStack stack, int x, int y) {
-        RenderHelper.enableGUIStandardItemLighting();
-        itemRender.renderItemAndEffectIntoGUI(stack, x, y);
-    }
-
+    /**
+     * Super method to draw all item overlays correctly
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param partialTicks
+     */
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawString(isShiftKeyDown() ? "SHIFT" : "" + (isCtrlKeyDown() ? "CTRL" : ""), mouseX, mouseY + 10, -1);
 
@@ -80,6 +93,14 @@ public class WMGuiScreen extends GuiScreen {
         }
     }
 
+    /**
+     * Super method to handle mouse clicks on items
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param mouseButton
+     * @throws IOException
+     */
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for(int y : renderedItems.keySet()) {
