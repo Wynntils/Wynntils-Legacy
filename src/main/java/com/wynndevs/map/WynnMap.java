@@ -1,11 +1,12 @@
 package com.wynndevs.map;
 
+import com.wynndevs.core.enums.ModuleResult;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class WynnMap {
 
-    public static void init(FMLPreInitializationEvent e) {
-
+    public static ModuleResult initModule(FMLPreInitializationEvent e) {
+        return ModuleResult.SUCCESS;
     }
 
 }

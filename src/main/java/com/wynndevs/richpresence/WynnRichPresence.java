@@ -1,5 +1,6 @@
 package com.wynndevs.richpresence;
 
+import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.richpresence.events.ChatEvents;
 import com.wynndevs.richpresence.guis.overlay.LocationGUI;
 import com.wynndevs.richpresence.utils.RichUtils;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
  * Created by HeyZeer0 on 04/12/2017.
  * Copyright © HeyZeer0 - 2016
  */
+
 public class WynnRichPresence {
 
     private static RichProfile richPresence;
@@ -23,7 +25,7 @@ public class WynnRichPresence {
 
     public static Logger logger;
 
-    public static void init(FMLPreInitializationEvent e) {
+    public static ModuleResult initModule(FMLPreInitializationEvent e) {
         WynnRichPresence.logger = e.getModLog();
 
         try{
@@ -37,7 +39,11 @@ public class WynnRichPresence {
             MinecraftForge.EVENT_BUS.register(new LocationGUI(Minecraft.getMinecraft()));
 
             RichUtils.updateRegions();
+
+            return ModuleResult.SUCCESS;
         }catch (Exception ignored) {}
+
+        return ModuleResult.ERROR;
     }
 
     public static RichProfile getRichPresence() {

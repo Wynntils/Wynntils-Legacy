@@ -23,7 +23,6 @@ public class RichUtils {
 
     public static ArrayList<LocationProfile> locations = new ArrayList<>();
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
-    public static Random r = new Random();
 
     public static void updateRegions() {
         new Thread(() -> {
@@ -94,16 +93,6 @@ public class RichUtils {
             }
         }
         return "";
-    }
-
-    public static String generatePassword(int len) {
-        String dic = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_=+-";
-        String result = "";
-        for (int i = 0; i < len; i++) {
-            int index = r.nextInt(dic.length());
-            result += dic.charAt(index);
-        }
-        return result;
     }
 
 }

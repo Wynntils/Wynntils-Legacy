@@ -1,5 +1,6 @@
 package com.wynndevs.richpresence.events;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.richpresence.WynnRichPresence;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -29,7 +30,7 @@ public class ServerEvents {
         if(server == null || server.serverIP == null) {
             return;
         }
-        if(!server.serverIP.equalsIgnoreCase("play.wynncraft.com")) {
+        if(!Reference.onServer()) {
             return;
         }
 
