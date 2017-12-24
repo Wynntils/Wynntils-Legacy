@@ -1,0 +1,110 @@
+{
+  "horn": {
+    "sounds": [{"name": "wynnexp:horn", "stream": true} ]
+  },
+  "drum": {
+    "sounds": [{"name": "wynnexp:drum", "stream": true} ]
+  },
+  "music_adventure": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/adventure", "stream": true } ]
+  },
+  "music_airship": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/airship", "stream": true } ]
+  },
+  "music_aldorei": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/aldorei", "stream": true } ]
+  },
+  "music_bobs_reincarnation": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/bobs_reincarnation", "stream": true } ]
+  },
+  "music_canyon": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/canyon", "stream": true } ]
+  },
+  "music_canyon_of_the_lost": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/canyon_of_the_lost", "stream": true } ]
+  },
+  "music_castle": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/castle", "stream": true } ]
+  },
+  "music_cinfras": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/cinfras", "stream": true } ]
+  },
+  "music_dark_forest": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/dark_forest", "stream": true } ]
+  },
+  "music_dernal_ruins": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/dernal_ruins", "stream": true } ]
+  },
+    "music_detlas": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/detlas", "stream": true } ]
+  },
+  "music_epic_gavel_2": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/epic_gavel_2", "stream": true } ]
+  },
+  "music_frozen_lands": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/frozen_lands", "stream": true } ]
+  },
+  "music_gavel_adventure": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/gavel_adventure", "stream": true } ]
+  },
+  "music_harmonic_nostalgia": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/harmonic_nostalgia", "stream": true } ]
+  },
+  "music_icy_steps": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/icy_steps", "stream": true } ]
+  },
+  "music_in_the_little_wood": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/in_the_little_wood", "stream": true } ]
+  },
+  "music_kandon_beda": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/kandon_beda", "stream": true } ]
+  },
+  "music_light_forest": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/light_forest", "stream": true } ]
+  },
+  "music_light_realm": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/light_realm", "stream": true } ]
+  },
+  "music_llevigar": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/llevigar", "stream": true } ]
+  },
+  "music_maltic": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/maltic", "stream": true } ]
+  },
+  "music_molten_heights": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/molten_heights", "stream": true } ]
+  },
+  "music_nethers_lament": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/nethers_lament", "stream": true } ]
+  },
+  "music_nivla_woods": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/nivla_woods", "stream": true } ]
+  },
+  "music_olux": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/olux", "stream": true } ]
+  },
+  "music_qira_mistress_of_the_hive": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/qira_mistress_of_the_hive", "stream": true } ]
+  },
+  "music_skeins_march": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/skeins_march", "stream": true } ]
+  },
+  "music_sky_islands": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/sky_islands", "stream": true } ]
+  },
+  "music_stormy_seas": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/stormy_seas", "stream": true } ]
+  },
+  "music_the_legend_begins": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/the_legend_begins", "stream": true } ]
+  },
+  "music_thesead": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/thesead", "stream": true } ]
+  },
+  "music_tomb": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/tomb", "stream": true } ]
+  },
+  "music_troms": {
+    "sounds": [ { "name": "shcmwynn:wynnsound/music/troms", "stream": true } ]
+  }
+}

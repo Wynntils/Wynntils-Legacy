@@ -11,6 +11,7 @@ import com.wynndevs.richpresence.WynnRichPresence;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.util.ArrayList;
@@ -40,7 +41,12 @@ public class ModCore {
             invalidModules.add("Market");
         }
     }
-
+	
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent e) {
+		if (!invalidModules.contains("Expansion")) WynnExpansion.init(e);
+	}
+	
     public static Minecraft mc() {
         return Minecraft.getMinecraft();
     }
