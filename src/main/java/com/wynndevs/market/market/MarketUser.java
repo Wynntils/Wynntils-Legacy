@@ -1,6 +1,5 @@
 package com.wynndevs.market.market;
 
-import com.wynndevs.richpresence.WynnRichPresence;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -23,6 +22,14 @@ public class MarketUser {
 
     boolean ready = false;
 
+    /**
+     * Market Account Handler
+     *
+     * @param user
+     *        Username
+     * @param pass
+     *        Password
+     */
     public MarketUser(String user, String pass) {
         this.user = user;
         this.pass = pass;
@@ -30,10 +37,18 @@ public class MarketUser {
         loadProfile();
     }
 
+    /**
+     * Returns the current available user announces
+     *
+     * @return the current available user announces
+     */
     public HashMap<String, AnnounceProfile> getAnnounces() {
         return announces;
     }
 
+    /**
+     * Loads the user profile
+     */
     private void loadProfile() {
         new Thread(() -> {
             try {
@@ -66,6 +81,20 @@ public class MarketUser {
         }).start();
     }
 
+    /**
+     * Creates an announce
+     *
+     * @param material
+     *        Material ID
+     * @param base64
+     *        Base64 from {@link WrappedStack}
+     * @param owner
+     *        Player who is playing
+     * @param durability
+     *        Item durability
+     * @param whenComplete
+     *        Runnable returning an boolean value(request result) to execute when the request is completed
+     */
     public void createAnnounce(int material, String base64, String owner, int durability, Consumer<Boolean> whenComplete) {
         if(!ready) {
             whenComplete.accept(false);
@@ -99,6 +128,14 @@ public class MarketUser {
         }).start();
     }
 
+    /**
+     * Deletes an announce
+     *
+     * @param id
+     *        Announce UUID
+     * @param whenComplete
+     *        Runnable returning an boolean value(request result) to execute when the request is completed
+     */
     public void deleteAnnounce(String id, Consumer<Boolean> whenComplete) {
         if(!ready) {
             whenComplete.accept(false);
@@ -126,6 +163,12 @@ public class MarketUser {
         }).start();
     }
 
+    /**
+     * Request all available announces
+     *
+     * @param whenComplete
+     *        Runnable returning an {@link ArrayList} containing all available {@link AnnounceProfile} to execute when the request is completed
+     */
     public void getGlobalAnnounces(Consumer<ArrayList<AnnounceProfile>> whenComplete) {
         new Thread(() -> {
             ArrayList<AnnounceProfile> announces = new ArrayList<>();
@@ -149,6 +192,12 @@ public class MarketUser {
         }).start();
     }
 
+    /**
+     * Request account deletion
+     *
+     * @param whenComplete
+     *        Runnable returning an boolean value(request result) to execute when the request is completed
+     */
     public void deleteAccount(Consumer<Boolean> whenComplete) {
         new Thread(() -> {
             try{

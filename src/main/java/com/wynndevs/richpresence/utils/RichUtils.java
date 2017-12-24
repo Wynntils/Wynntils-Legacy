@@ -24,6 +24,9 @@ public class RichUtils {
     public static ArrayList<LocationProfile> locations = new ArrayList<>();
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
 
+    /**
+     * Send a request to WynnAPI and save all regions at {@link com.wynndevs.richpresence.utils.RichUtils#locations}
+     */
     public static void updateRegions() {
         new Thread(() -> {
             try{
@@ -47,10 +50,28 @@ public class RichUtils {
         }).start();
     }
 
+    /**
+     * Removes all color codes from a string
+     *
+     * @param input
+     *        Input string
+     *
+     * @return input string without colored chars
+     */
     public static String stripColor(String input) {
         return input == null ? null : STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
+    /**
+     * Returns a cutted string after x characters
+     *
+     * @param x
+     *        Original String
+     * @param amount
+     *        The max string char amount
+     *
+     * @return Original string cutted after x characters
+     */
     public static String removeAfterChar(String x, int amount) {
         String toReturn = x;
         if(toReturn.length() > amount) {
@@ -60,12 +81,19 @@ public class RichUtils {
         return toReturn;
     }
 
+    /**
+     * Just a simple method to short other ones
+     * @return RichPresence largeImageText
+     */
     public static String getPlayerInfo() {
         Minecraft mc = Minecraft.getMinecraft();
         return ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() : null;
     }
 
-
+    /**
+     * Just a simple way to get the current player class
+     * @return Player Current Class
+     */
     public static String getPlayerCurrentClass(){
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.player.experienceLevel > 0) {

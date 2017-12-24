@@ -28,6 +28,12 @@ public class LocationGUI extends WRPGui {
         super(mc);
     }
 
+    /**
+     * Renders the entering notifier
+     *
+     * @param e
+     *        Origem event
+     */
     @SubscribeEvent(priority= EventPriority.NORMAL)
     public void onRenderExperienceBar(RenderGameOverlayEvent.Post e) {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
@@ -53,13 +59,17 @@ public class LocationGUI extends WRPGui {
         drawString("§a§lYou are now entering", 5, 5 - size, -1);
         drawString("§e" + last_loc, 7,13 - size, 1.5f, 13782543);
 
+        //Animation
         if(size > 0 && !animation) {
+            //Showing
             size-=1;
             timeout = System.currentTimeMillis();
         }else{
+            //Timeout
             if(System.currentTimeMillis() - timeout >= 3000) {
                 animation = true;
             }
+            //Hiding
             if(animation) {
                 if(size < 50) {
                     size+=1;

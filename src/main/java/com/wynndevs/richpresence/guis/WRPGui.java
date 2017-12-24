@@ -16,6 +16,14 @@ public class WRPGui extends Gui {
         this.mc = mc;
     }
 
+    /**
+     * A simple shorter method to render a scaled string
+     *
+     * @param text
+     * @param x
+     * @param y
+     * @param color
+     */
     public void drawString(String text, int x, int y, float size, int color) {
         GL11.glScalef(size,size,size);
         float mSize = (float)Math.pow(size,-1);
@@ -23,6 +31,14 @@ public class WRPGui extends Gui {
         GL11.glScalef(mSize,mSize,mSize);
     }
 
+    /**
+     * A simple shorter method to render a string
+     *
+     * @param text
+     * @param x
+     * @param y
+     * @param color
+     */
     public void drawString(String text, int x, int y, int color) {
         this.drawString(mc.fontRenderer, text, x, y, color);
     }

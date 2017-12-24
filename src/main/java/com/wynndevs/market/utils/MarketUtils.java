@@ -9,6 +9,13 @@ import java.util.List;
 
 public class MarketUtils {
 
+    /**
+     * Get the lore from an item
+     *
+     * @param item
+     *
+     * @return an {@link List} containing all item lore
+     */
     public static List<String> getLore(ItemStack item) {
         List<String> lore = new ArrayList<>();
         if(item == null || !item.hasTagCompound()) {

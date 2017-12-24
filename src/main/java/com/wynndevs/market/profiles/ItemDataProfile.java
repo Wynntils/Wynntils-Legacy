@@ -21,34 +21,77 @@ public class ItemDataProfile {
     ArrayList<String> ctrlLore = new ArrayList<>();
     ItemExecutor runnable;
 
+    /**
+     * A simple wrapper for rendering items
+     *
+     * @param x
+     * @param y
+     * @param item
+     */
     public ItemDataProfile(int x, int y, ItemStack item) {
         this.x = x; this.y = y; this.item = item;
     }
 
+    /**
+     * Adds a string to mouse hover lore
+     *
+     * @param x
+     */
     public void addDefaultLore(String x) {
         defaultLore.add(x);
     }
 
+    /**
+     * Adds the entire {@link List} to the mouse hove lore
+     *
+     * @param x
+     */
     public void addDefaultLore(List<String> x) {
         defaultLore.addAll(x);
     }
 
+    /**
+     * Adds a string to mouse hover + shift lore
+     *
+     * @param x
+     */
     public void addShiftLore(String x) {
         shiftLore.add(x);
     }
 
+    /**
+     * Adds the entire {@link List} to mouse hover + shift lore
+     *
+     * @param x
+     */
     public void addShiftLore(List<String> x) {
         shiftLore.addAll(x);
     }
 
+    /**
+     * Adds the entire {@link List} to mouse hover + ctrl lore
+     *
+     * @param x
+     */
     public void addCtrlLore(String x) {
         ctrlLore.add(x);
     }
 
+    /**
+     * Adds the entire {@link List} to mouse hover + ctrl lore
+     *
+     * @param x
+     */
     public void addCtrlLore(List<String> x) {
         ctrlLore.addAll(x);
     }
 
+    /**
+     * Adds an action when the users click on the item
+     *
+     * @param r
+     *        ItemExecutor runnable
+     */
     public void addRunnable(ItemExecutor r) {
         runnable = r;
     }

@@ -51,6 +51,7 @@ public class MarketGUI extends WMGuiScreen {
     long text_flicker = System.currentTimeMillis();
     boolean keepForTime = false;
 
+    //SearchBox handler
     public void keyTyped(char typedChar, int keyCode) {
         if (keyCode == Keyboard.KEY_BACK) {
             if(search_box.length() <= 0) {
@@ -78,7 +79,7 @@ public class MarketGUI extends WMGuiScreen {
         int x = width / 2 - 225;
         int y = height / 2 - 15;
 
-
+        //Next Inventory page
         if(mouseX > x + 118 && mouseX < x + 124 && mouseY > y + 127 && mouseY < y + 137) {
             if(inventory_page < 2) {
                 inventory_page++;
@@ -88,6 +89,7 @@ public class MarketGUI extends WMGuiScreen {
             }
             return;
         }
+        //Previous Inventory page
         if(mouseX > x + 25 && mouseX < x + 32 && mouseY > y + 127 && mouseY < y + 137) {
             if(inventory_page > 1) {
                 inventory_page--;
@@ -97,7 +99,7 @@ public class MarketGUI extends WMGuiScreen {
             }
             return;
         }
-
+        //To stock button handler
         if(mouseX > x + 34 && mouseX < x + 131 && mouseY > y - 98 && mouseY < y - 71) {
             if(atStock) {
                 onChangeAnimation = true;
@@ -105,7 +107,7 @@ public class MarketGUI extends WMGuiScreen {
             }
             return;
         }
-
+        //To global button handler
         if(mouseX > x + 34 && mouseX < x + 131 && mouseY > y - 63 && mouseY < y - 38) {
             if(!atStock) {
                 onChangeAnimation = true;
@@ -113,7 +115,7 @@ public class MarketGUI extends WMGuiScreen {
             }
             return;
         }
-
+        //Global next page
         if(mouseX > x + 330 && mouseX < x + 337 && mouseY > y + 129 && mouseY < y + 141) {
             int pages = ann.size() <= 100 ? 1 : (int)Math.floor(ann.size() / 100);
             if(actual_page < pages) {
@@ -124,7 +126,7 @@ public class MarketGUI extends WMGuiScreen {
             }
             return;
         }
-
+        //Global previous page
         if(mouseX > x + 247 && mouseX < x + 255 && mouseY > y + 129 && mouseY < y + 141) {
             if(actual_page > 1) {
                 actual_page--;
@@ -139,6 +141,8 @@ public class MarketGUI extends WMGuiScreen {
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
+        //Changing this value will make a request to update all announces
         if(requestAnnounces) {
             WynnMarket.getMarket().getGlobalAnnounces(array -> {
                 if(array != null) {
@@ -151,6 +155,7 @@ public class MarketGUI extends WMGuiScreen {
             });
         }
 
+        //dimensions
         int box = 450;
 
         int x = width / 2 - (box /2);
@@ -158,6 +163,7 @@ public class MarketGUI extends WMGuiScreen {
 
         int pages = ann.size() <= 100 ? 1 : (int)Math.floor(ann.size() / 100);
 
+        //rendering gui texture
         GL11.glPushMatrix();
         {
             mc.getTextureManager().bindTexture(gui);
@@ -166,6 +172,7 @@ public class MarketGUI extends WMGuiScreen {
         }
         GL11.glPopMatrix();
 
+        //redering all item slots
         GL11.glPushMatrix();
         {
             GL11.glTranslatef(x, y, 0F);
@@ -251,7 +258,9 @@ public class MarketGUI extends WMGuiScreen {
 
             drawTexturedModalRect(x + 18, y - 134, 0, 105, 15, 16);
 
+            //global next page button
             if(actual_page < pages) {
+                //hover
                 if(mouseX > x + 330 && mouseX < x + 337 && mouseY > y + 129 && mouseY < y + 141) {
                     drawTexturedModalRect(x + 330, y + 127, 0, 74, 7, 14);
                 }else{
@@ -261,7 +270,9 @@ public class MarketGUI extends WMGuiScreen {
                 drawTexturedModalRect(x + 330, y + 127, 0, 46, 7, 14);
             }
 
+            //global previus page button
             if(actual_page > 1) {
+                //hover
                 if(mouseX > x + 247 && mouseX < x + 255 && mouseY > y + 129 && mouseY < y + 141) {
                     drawTexturedModalRect(x + 248, y + 127, 0, 60, 7, 14);
                 }else{
@@ -271,8 +282,9 @@ public class MarketGUI extends WMGuiScreen {
                 drawTexturedModalRect(x + 248, y + 127, 0, 32, 7, 14);
             }
 
-            //inventory page buttons
+            //inventory next page button
             if(inventory_page < 2) {
+                //hover
                 if(mouseX > x + 118 && mouseX < x + 124 && mouseY > y + 127 && mouseY < y + 137) {
                     drawTexturedModalRect(x + (26 + 92), y + 125, 0, 74, 7, 14);
                 }else {
@@ -282,7 +294,9 @@ public class MarketGUI extends WMGuiScreen {
                 drawTexturedModalRect(x + (26 + 92), y + 125, 0, 46, 7, 14);
             }
 
+            //inventory previus page button
             if(inventory_page > 1) {
+                //hover
                 if(mouseX > x + 25 && mouseX < x + 32 && mouseY > y + 127 && mouseY < y + 137) {
                     drawTexturedModalRect(x + 25, y + 125, 0, 60, 7, 14);
                 }else {
@@ -339,6 +353,7 @@ public class MarketGUI extends WMGuiScreen {
             itempf.addDefaultLore("");
             itempf.addDefaultLore("§a[Hold shift and click to announce]");
 
+            //adding item runnable
             itempf.addRunnable((gui, item) -> {
                 try{
                     if(!isShiftKeyDown()) {
@@ -391,6 +406,7 @@ public class MarketGUI extends WMGuiScreen {
                     continue;
                 }
 
+                //handling searchbox
                 if(search_box.length() > 0 && !RichUtils.stripColor(announce.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
                     continue;
                 }
@@ -427,6 +443,7 @@ public class MarketGUI extends WMGuiScreen {
                     continue;
                 }
 
+                //handling searchbox
                 if(search_box.length() > 0 && !RichUtils.stripColor(n.getItem().getDisplayName().toLowerCase()).startsWith(search_box.toLowerCase())) {
                     continue;
                 }
@@ -438,6 +455,7 @@ public class MarketGUI extends WMGuiScreen {
                 item.addDefaultLore("§a[Hold ctrl and click to compare]");
                 item.addDefaultLore("§c[Hold shift and click to delete]");
 
+                //adding item runnable
                 item.addRunnable((gui, im) -> {
                     if(isShiftKeyDown()) {
                         WynnMarket.getMarket().deleteAnnounce(n.getId(), (b) -> {
@@ -460,13 +478,13 @@ public class MarketGUI extends WMGuiScreen {
         drawString("§lGlobal", x + 75, y - 85, -1);
         drawString("§lPersonal", x + 75, y - 52, -1);
 
+        //searchbox drawing and animation
         if(search_box.length() <= 0) {
             drawString("§7Type to search ", x + 40, y - 128, -1);
         }else{
             if(search_box.length() >= 16) {
                 drawString(search_box.substring(search_box.length() - 16), x + 40, y - 128, -1);
             }else{
-
                 if(System.currentTimeMillis() - text_flicker >= 500) {
                     keepForTime = !keepForTime;
                     text_flicker = System.currentTimeMillis();

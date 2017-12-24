@@ -40,6 +40,7 @@ configurations {
 
 dependencies {
     embed 'com.jagrosh:DiscordIPC:+'
+    compile 'info.journeymap:journeymap-api:1.11.2-1.4'
 }
 
 processResources {

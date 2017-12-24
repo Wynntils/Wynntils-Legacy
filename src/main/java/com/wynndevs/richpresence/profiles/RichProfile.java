@@ -22,14 +22,33 @@ public class RichProfile {
         ready = true;
     }
 
+    /**
+     * Cleans user current RichPresence
+     */
     public void stopRichPresence() {
         client.sendRichPresence(null);
     }
 
+    /**
+     * Update user RichPresence
+     *
+     * @param state
+     *        RichPresence state string
+     * @param details
+     *        RichPresence details string
+     * @param largText
+     *        RichPresence large Text
+     * @param date
+     *        RichPresence Date
+     */
     public void updateRichPresence(String state, String details, String largText, OffsetDateTime date) {
         client.sendRichPresence(new FakeRichPresence(state, details, date, null, "wynn", largText, null, null, null, 1, 1, null, null, null, false));
     }
 
+    /**
+     * Return if the RichClient is ready to go
+     * @return if the RichClient is ready
+     */
     public boolean isReady() {
         return ready;
     }
