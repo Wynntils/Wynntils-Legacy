@@ -418,14 +418,10 @@ public class MarketGUI extends WMGuiScreen {
             }
         }else{
             int market_amount = 0;
-            AnnounceProfile[] ann = WynnMarket.getMarket().getAnnounces().values().toArray(new AnnounceProfile[] {});
-            for(int i = 0; i < 5; i++) {
-                if(WynnMarket.getMarket().getAnnounces().size() <= i) {
-                    WynnRichPresence.logger.warn("sem anuncios próprios");
+            for(AnnounceProfile n : WynnMarket.getMarket().getAnnounces().values()) {
+                if(WynnMarket.getMarket().getAnnounces().size() <= market_amount) {
                     break;
                 }
-
-                AnnounceProfile n = ann[i];
 
                 if(n == null || n.getItem() == null) {
                     continue;

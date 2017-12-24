@@ -45,7 +45,7 @@ public class ConfigValues {
         public String accountName = UUID.randomUUID().toString();
 
         @Config.RequiresMcRestart
-        public String accountPass = RichUtils.generatePassword(15);
+        public String accountPass = UUID.randomUUID().toString();
 
         @Config.LangKey("config.market.resetaccount")
         public ResetAccount resetAccount = ResetAccount.NO;

@@ -86,14 +86,13 @@ public class MarketUser {
                 JSONObject obj = new JSONObject(json);
 
                 if(obj.has("error")) {
-                    WynnRichPresence.logger.warn(obj.getString("error"));
                     whenComplete.accept(false);
                     return;
                 }
 
                 if(obj.has("announceId")) {
                     whenComplete.accept(true);
-                    announces.put(obj.getString("announceId"), new AnnounceProfile(obj.getString("announceId"), material, base64, owner));
+                    announces.put(obj.getString("announceId"), new AnnounceProfile(obj.getString("announceId"), material, base64 + "::" + durability, owner));
                 }
 
             }catch (Exception ignored) {}
@@ -152,8 +151,6 @@ public class MarketUser {
 
     public void deleteAccount(Consumer<Boolean> whenComplete) {
         new Thread(() -> {
-            ArrayList<AnnounceProfile> announces = new ArrayList<>();
-
             try{
 
                 URLConnection st = new URL("http://wynn.heyzeer0.cf/deleteAccount/" + user + "/" + pass).openConnection();
