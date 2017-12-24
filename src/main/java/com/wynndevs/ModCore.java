@@ -3,11 +3,13 @@ package com.wynndevs;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.events.ClientEvents;
+import com.wynndevs.core.gui.UpdateOverlay;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.WynnExpansion;
 import com.wynndevs.modules.map.WynnMap;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
+import com.wynndevs.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -26,11 +28,13 @@ public class ModCore {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        logger = e.getModLog();
-
-        MinecraftForge.EVENT_BUS.register(new ClientEvents());
-
+        WebManager.init();
         KeyBindings.init();
+
+        logger = e.getModLog();
+        MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new UpdateOverlay(mc()));
+
 
         if(WynnRichPresence.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("RichPresence");

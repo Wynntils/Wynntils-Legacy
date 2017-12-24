@@ -10,7 +10,6 @@ import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
 import com.wynndevs.modules.expansion.misc.*;
 import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
-import com.wynndevs.modules.expansion.update.Update;
 import com.wynndevs.modules.expansion.webapi.Territory;
 import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraft.client.Minecraft;
@@ -465,25 +464,10 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		tglAttackColourTimer.active = GuildAttackTimer.AttackColourTimer;
 
 		this.drawCenteredStringPlain(mc.fontRenderer, page + "/" + maxPages, this.width / 2, 53, Integer.parseInt("858585", 16));
-// EASTER EGG HERE
 		if (EnableEgg){
 			btnEgg.visible = true;
-			if (Update.newUpdate){
-				this.drawStringPlain(mc.fontRenderer, ExpReference.VERSION, (this.width / 2) - 109, 15, 0.9f, Integer.parseInt("FFA700", 16));
-				this.drawStringPlain(mc.fontRenderer, "New update:", (this.width / 2) - 115, 25, 0.9f, Integer.parseInt("FFA700", 16));
-				this.drawStringPlain(mc.fontRenderer, "v" + Update.latest, (this.width / 2) - 115, 35, 0.9f, Integer.parseInt("FFA700", 16));
-			}else{
-				this.drawStringPlain(mc.fontRenderer, ExpReference.VERSION, (this.width / 2) - 109, 15, 0.9f, Integer.parseInt("FFA700", 16));
-			}
 		}else{
 			btnEgg.visible = false;
-			if (Update.newUpdate){
-				this.drawStringPlain(mc.fontRenderer, "v" + ExpReference.VERSION, (this.width / 2) - 115, 15, 0.9f, Integer.parseInt("FFA700", 16));
-				this.drawStringPlain(mc.fontRenderer, "New update:", (this.width / 2) - 115, 25, 0.9f, Integer.parseInt("FFA700", 16));
-				this.drawStringPlain(mc.fontRenderer, "v" + Update.latest, (this.width / 2) - 115, 35, 0.9f, Integer.parseInt("FFA700", 16));
-			}else{
-				this.drawStringPlain(mc.fontRenderer, "v" + ExpReference.VERSION, (this.width / 2) - 115, 15, 0.9f, Integer.parseInt("FFA700", 16));
-			}
 		}
 
 		super.drawScreen(mouseX, mouseY, partialTicks);

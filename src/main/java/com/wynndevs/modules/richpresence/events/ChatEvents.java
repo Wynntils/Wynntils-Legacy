@@ -54,7 +54,7 @@ public class ChatEvents {
 
                     startUpdateRegionName();
 
-                }catch (Exception ex) { WynnRichPresence.logger.warn("Cannot update status", ex); }
+                }catch (Exception ex) { ModCore.logger.warn("Cannot update status", ex); }
             }).start();
 
             return;
