@@ -3,6 +3,7 @@ package com.wynndevs.modules.expansion;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.modules.expansion.customhud.HudOverlay;
 import com.wynndevs.modules.expansion.experience.*;
 import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
 import com.wynndevs.modules.expansion.misc.*;
@@ -78,6 +79,7 @@ public class WynnExpansion {
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
+		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
 		
 		return ModuleResult.SUCCESS;
 	}
