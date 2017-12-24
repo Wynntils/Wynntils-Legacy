@@ -22,6 +22,8 @@ public class JourneymapPlugin implements IClientPlugin {
     // API reference
     private IClientAPI jmAPI = null;
 
+    // Forge listener reference
+    private ForgeEventListener forgeEventListener;
 
     /**
      * Called by JourneyMap during the init phase of mod loading.  The IClientAPI reference is how the mod
@@ -34,10 +36,16 @@ public class JourneymapPlugin implements IClientPlugin {
         // Set ClientProxy.SampleModWaypointFactory with an implementation that uses the JourneyMap IClientAPI under the covers.
         this.jmAPI = jmAPI;
 
-        MinecraftForge.EVENT_BUS.register(this);
+        // Register listener for forge events
+        forgeEventListener = new ForgeEventListener(jmAPI);
+        MinecraftForge.EVENT_BUS.register(forgeEventListener);
+
+        Reference.LOGGER.info("Hook with JourneyMap Found");
 
         // Subscribe to desired ClientEvent types from JourneyMap
         this.jmAPI.subscribe(getModId(), EnumSet.of(DEATH_WAYPOINT, MAPPING_STARTED, MAPPING_STOPPED));
+
+        Reference.LOGGER.info("Initialized " + getClass().getName());
     }
 
     /**
@@ -65,7 +73,23 @@ public class JourneymapPlugin implements IClientPlugin {
      */
     @Override
     public void onEvent(ClientEvent event) {
+        try {
+            switch (event.type) {
+                case MAPPING_STARTED:
+                    onMappingStarted(event);
+                    break;
 
+                case MAPPING_STOPPED:
+                    onMappingStopped(event);
+                    break;
+
+                case DEATH_WAYPOINT:
+                    onDeathpoint((DeathWaypointEvent) event);
+                    break;
+            }
+        } catch (Throwable t) {
+            Reference.LOGGER.error(t.getMessage(), t);
+        }
     }
 
     /**
@@ -75,9 +99,12 @@ public class JourneymapPlugin implements IClientPlugin {
      */
     void onMappingStarted(ClientEvent event) {
         // Create a bunch of random Marker Overlays around the player
+        Reference.LOGGER.info("Mapping Started");
         if (jmAPI.playerAccepts(getModId(), DisplayType.Marker)) {
+
             BlockPos pos = ModCore.mc().player.getPosition();
             MarkerOverlayFactory.create(jmAPI, pos, 64, 256);
+            Reference.LOGGER.info("Mapping Done");
         }
     }
 
@@ -88,6 +115,7 @@ public class JourneymapPlugin implements IClientPlugin {
      */
     void onMappingStopped(ClientEvent event) {
         // Clear everything
+        Reference.LOGGER.info("Mapping Stopped");
         jmAPI.removeAll(getModId());
     }
 
