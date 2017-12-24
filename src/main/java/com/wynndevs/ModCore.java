@@ -13,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
@@ -21,9 +22,12 @@ import java.util.ArrayList;
 public class ModCore {
 
     public static ArrayList<String> invalidModules = new ArrayList<>();
+    public static Logger logger;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        logger = e.getModLog();
+
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
 
         KeyBindings.init();

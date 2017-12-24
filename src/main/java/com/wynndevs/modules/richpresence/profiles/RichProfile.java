@@ -30,7 +30,7 @@ public class RichProfile {
     }
 
     /**
-     * Update user RichPresence
+     * update user RichPresence
      *
      * @param state
      *        RichPresence state string

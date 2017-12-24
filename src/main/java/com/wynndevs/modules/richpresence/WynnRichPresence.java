@@ -23,8 +23,6 @@ public class WynnRichPresence {
     private static RichProfile richPresence;
     private static DataProfile modData = new DataProfile();
 
-    public static Logger logger;
-
     /**
      * Loads the module
      *
@@ -34,8 +32,6 @@ public class WynnRichPresence {
      * @return The result of module load
      */
     public static ModuleResult initModule(FMLPreInitializationEvent e) {
-        WynnRichPresence.logger = e.getModLog();
-
         try{
             richPresence = new RichProfile(387266678607577088L, ConfigValues.wynnRichPresence.discordConfig.discordBuild);
 
@@ -45,8 +41,6 @@ public class WynnRichPresence {
 
             //guis
             MinecraftForge.EVENT_BUS.register(new LocationGUI(Minecraft.getMinecraft()));
-
-            RichUtils.updateRegions();
 
             return ModuleResult.SUCCESS;
         }catch (Exception ignored) {}

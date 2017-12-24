@@ -4,8 +4,9 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
 import com.wynndevs.modules.richpresence.guis.overlay.LocationGUI;
-import com.wynndevs.modules.richpresence.profiles.LocationProfile;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
+import com.wynndevs.webapi.WebManager;
+import com.wynndevs.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -83,13 +84,13 @@ public class ChatEvents {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
             if(WynnRichPresence.getData().getLocId() != -1) {
-                if(RichUtils.locations.get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
+                if(WebManager.getTerritories().get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
                     return;
                 }
             }
 
-            for(int i = 0; i < RichUtils.locations.size(); i++) {
-                LocationProfile pf = RichUtils.locations.get(i);
+            for(int i = 0; i < WebManager.getTerritories().size(); i++) {
+                TerritoryProfile pf = WebManager.getTerritories().get(i);
                 if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                     WynnRichPresence.getData().setLocation(pf.getName());
                     WynnRichPresence.getData().setLocId(i);

@@ -3,8 +3,8 @@ package com.wynndevs.modules.expansion;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.Misc.ChatTimeStamp;
-import com.wynndevs.modules.expansion.Misc.Delay;
+import com.wynndevs.modules.expansion.misc.ChatTimeStamp;
+import com.wynndevs.modules.expansion.misc.Delay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiScreen;

@@ -3,23 +3,23 @@ package com.wynndevs.modules.expansion;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
-import com.wynndevs.modules.expansion.Experience.*;
-import com.wynndevs.modules.expansion.ItemGuide.ItemGuideGUI;
-import com.wynndevs.modules.expansion.Misc.*;
-import com.wynndevs.modules.expansion.Options.Config;
-import com.wynndevs.modules.expansion.Options.GuiSHCMWynnOptions;
-import com.wynndevs.modules.expansion.PartyFriendsGuild.*;
-import com.wynndevs.modules.expansion.QuestBook.GuiQuestBook;
-import com.wynndevs.modules.expansion.QuestBook.QuestBook;
-import com.wynndevs.modules.expansion.QuestBook.QuestTrackingUI;
-import com.wynndevs.modules.expansion.Update.Update;
-import com.wynndevs.modules.expansion.Update.UpdateUI;
-import com.wynndevs.modules.expansion.WebAPI.TerritoryUI;
-import com.wynndevs.modules.expansion.WebAPI.WebAPI;
-import com.wynndevs.modules.expansion.WebAPI.WynnTerritory;
-import com.wynndevs.modules.expansion.WynnSound.GuiWynnSound;
-import com.wynndevs.modules.expansion.WynnSound.WynnSound;
-import com.wynndevs.modules.expansion.WynnSound.WynnSounds;
+import com.wynndevs.modules.expansion.experience.*;
+import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
+import com.wynndevs.modules.expansion.misc.*;
+import com.wynndevs.modules.expansion.options.Config;
+import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions;
+import com.wynndevs.modules.expansion.partyfriendsguild.*;
+import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
+import com.wynndevs.modules.expansion.questbook.QuestBook;
+import com.wynndevs.modules.expansion.questbook.QuestTrackingUI;
+import com.wynndevs.modules.expansion.update.Update;
+import com.wynndevs.modules.expansion.update.UpdateUI;
+import com.wynndevs.modules.expansion.webapi.TerritoryUI;
+import com.wynndevs.modules.expansion.webapi.WebAPI;
+import com.wynndevs.modules.expansion.webapi.WynnTerritory;
+import com.wynndevs.modules.expansion.sound.GuiWynnSound;
+import com.wynndevs.modules.expansion.sound.WynnSound;
+import com.wynndevs.modules.expansion.sound.WynnSounds;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -73,7 +73,7 @@ public class WynnExpansion {
 		
 		ExpReference.ConsoleOut("The current version is: v" + ExpReference.VERSION);
 		if (Update.newUpdate) {
-			ExpReference.ConsoleOut("Update v" + Update.latest + " is Available!");
+			ExpReference.ConsoleOut("update v" + Update.latest + " is Available!");
 		}
 		
 		Experience.PreInit();
@@ -82,7 +82,7 @@ public class WynnExpansion {
 		WynnSound.wynnSounds = new WynnSounds();
 		
 		// GENERATE DATA LISTS \\
-		//WebAPI.StartAPI();
+		//webapi.StartAPI();
 		//////			   \\\\\\
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
