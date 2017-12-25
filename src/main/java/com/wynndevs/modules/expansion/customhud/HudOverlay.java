@@ -143,19 +143,11 @@ public class HudOverlay extends WRPGui {
             GlStateManager.disableAlpha();
             GlStateManager.popMatrix();
             GlStateManager.popAttrib();
-            return;
-        }
 
-        if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             //this is to check if the action bar still exists
             if(System.currentTimeMillis() - lastActionBarTime >= 3000) {
                 return;
             }
-            ScaledResolution resolution = new ScaledResolution(mc);
-
-
-            int x = resolution.getScaledWidth();
-            int y = resolution.getScaledHeight();
 
             String[] divisor = lastActionBar.split("/");
             String life = divisor[0].split(" ")[1] + "/" + divisor[1].split(" ")[0];
@@ -179,7 +171,8 @@ public class HudOverlay extends WRPGui {
 
             newBar+= "§b✺ " + mc.player.getFoodStats().getFoodLevel() + "/20";
 
-            drawString(newBar, (x - mc.fontRenderer.getStringWidth(newBar)) / 2, y - 70, 1);
+            drawString(newBar, (resolution.getScaledWidth() - mc.fontRenderer.getStringWidth(newBar)) / 2, y - 70, 1);
+
             return;
         }
     }
