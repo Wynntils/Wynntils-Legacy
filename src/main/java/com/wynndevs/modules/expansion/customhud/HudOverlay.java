@@ -23,26 +23,16 @@ public class HudOverlay extends WRPGui {
     boolean onHealAnimation = false;
     boolean onManaAnimation = false;
 
+    String lastActionBar = "";
+
     public HudOverlay(Minecraft mc) {
         super(mc);
     }
 
     @SubscribeEvent(priority= EventPriority.NORMAL)
-    public void onRender(RenderGameOverlayEvent e) {
-        if(!e.isCancelable()) {
-            return;
-        }
-        if(e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
-            e.setCanceled(true);
-            return;
-        }
-        if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-
-            return;
-        }
-        if(e.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
-            e.setCanceled(true);
-
+    public void onPreRender(RenderGameOverlayEvent.Post e) {
+        //to render only when the survival UI is ready
+        if(e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
             ScaledResolution resolution = new ScaledResolution(mc);
 
             int x = resolution.getScaledWidth() / 2;
@@ -71,46 +61,6 @@ public class HudOverlay extends WRPGui {
                     }
                 }
             }
-
-            GlStateManager.pushMatrix();
-            GlStateManager.pushAttrib();
-            {
-                GlStateManager.enableAlpha();
-                GlStateManager.enableBlend();
-                mc.getTextureManager().bindTexture(bars);
-
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-                drawTexturedModalRect(x + 10, y - 38, 0, 39, 82, 8);
-                if(lastMana != 82) {
-                    if(lastMana > 2) {
-                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-                        drawTexturedModalRect(x + 13 + (82 - lastMana), y - 38, (82 - lastMana) + 3, 10, 82, 8);
-                    }
-                    if(lastMana > 1) {
-                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
-                        drawTexturedModalRect(x + 12 + (82 - lastMana), y - 38, (82 - lastMana) + 2, 10, 82, 8);
-                    }
-                    if(lastMana > 0) {
-                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.25F);
-                        drawTexturedModalRect(x + 11 + (82 - lastMana), y - 38, (82 - lastMana) + 1, 10, 82, 8);
-                    }
-                }else{
-                    drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
-                }
-
-            }
-            GlStateManager.popMatrix();
-            GlStateManager.popAttrib();
-
-            return;
-        }
-        if(e.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
-            e.setCanceled(true);
-
-            ScaledResolution resolution = new ScaledResolution(mc);
-
-            int x = resolution.getScaledWidth() / 2;
-            int y = resolution.getScaledHeight();
 
             int healthBarWidth = (int) (82.0 * ((mc.player.getHealth()) / mc.player.getMaxHealth()));
 
@@ -141,8 +91,26 @@ public class HudOverlay extends WRPGui {
             {
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
-
                 mc.getTextureManager().bindTexture(bars);
+
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+                drawTexturedModalRect(x + 10, y - 38, 0, 39, 82, 8);
+                if(lastMana != 82) {
+                    if(lastMana > 2) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+                        drawTexturedModalRect(x + 13 + (82 - lastMana), y - 38, (82 - lastMana) + 3, 10, 82, 8);
+                    }
+                    if(lastMana > 1) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
+                        drawTexturedModalRect(x + 12 + (82 - lastMana), y - 38, (82 - lastMana) + 2, 10, 82, 8);
+                    }
+                    if(lastMana > 0) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.25F);
+                        drawTexturedModalRect(x + 11 + (82 - lastMana), y - 38, (82 - lastMana) + 1, 10, 82, 8);
+                    }
+                }else{
+                    drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
+                }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
                 drawTexturedModalRect(x - 91, y - 38, 0, 20, 82, 8);
@@ -162,10 +130,41 @@ public class HudOverlay extends WRPGui {
                 }else{
                     drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth, 8);
                 }
+
             }
+
+            GlStateManager.disableBlend();
+            GlStateManager.disableAlpha();
             GlStateManager.popMatrix();
             GlStateManager.popAttrib();
+            return;
+        }
+        if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            String actionBar = getCurrentActionBar();
+            if(!actionBar.equalsIgnoreCase("")) {
+                lastActionBar = actionBar;
+            }
 
+            ScaledResolution resolution = new ScaledResolution(mc);
+
+            int x = resolution.getScaledWidth();
+            int y = resolution.getScaledHeight();
+
+            drawString(lastActionBar, (x - mc.fontRenderer.getStringWidth(lastActionBar)) / 2, y - 70, 1);
+
+            return;
+        }
+    }
+
+    @SubscribeEvent(priority= EventPriority.NORMAL)
+    public void onRender(RenderGameOverlayEvent.Pre e) {
+        if(!e.isCancelable()) {
+            return;
+        }
+
+        //blocking
+        if(e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
+            e.setCanceled(true);
             return;
         }
     }
