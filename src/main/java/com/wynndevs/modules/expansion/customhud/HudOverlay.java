@@ -3,15 +3,20 @@ package com.wynndevs.modules.expansion.customhud;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
+import com.wynndevs.modules.richpresence.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import java.sql.Ref;
+import java.util.logging.LogManager;
 
 public class HudOverlay extends WRPGui {
 
@@ -24,6 +29,7 @@ public class HudOverlay extends WRPGui {
     boolean onManaAnimation = false;
 
     String lastActionBar = "";
+    long lastActionBarTime = System.currentTimeMillis();
 
     public HudOverlay(Minecraft mc) {
         super(mc);
@@ -139,6 +145,43 @@ public class HudOverlay extends WRPGui {
             GlStateManager.popAttrib();
             return;
         }
+
+        if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            //this is to check if the action bar still exists
+            if(System.currentTimeMillis() - lastActionBarTime >= 3000) {
+                return;
+            }
+            ScaledResolution resolution = new ScaledResolution(mc);
+
+
+            int x = resolution.getScaledWidth();
+            int y = resolution.getScaledHeight();
+
+            String[] divisor = lastActionBar.split("/");
+            String life = divisor[0].split(" ")[1] + "/" + divisor[1].split(" ")[0];
+
+            String newBar = "§c❤ " + life + " ";
+
+            //Order:
+            //Powder % | RLR | Sprint | and if there is nothing more coordinates
+            if(lastActionBar.contains("%")) {
+                String[] spaces = lastActionBar.split(" ");
+                newBar+= spaces[7] + " " + spaces[8] + " ";
+            }else if(lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
+                String[] spaces = lastActionBar.split(" ");
+                newBar+= spaces[5] + " ";
+            }else if(RichUtils.stripColor(lastActionBar).contains("Sprint")) {
+                String[] spaces = lastActionBar.split(" ");
+                newBar+= spaces[5] + " ";
+            }else{
+                newBar+= "§7" + (int)mc.player.posZ + " §a§l" + getPlayerDirection(mc.player.rotationYaw) + " §7" + (int)mc.player.posZ + " ";
+            }
+
+            newBar+= "§b✺ " + mc.player.getFoodStats().getFoodLevel() + "/20";
+
+            drawString(newBar, (x - mc.fontRenderer.getStringWidth(newBar)) / 2, y - 70, 1);
+            return;
+        }
     }
 
     @SubscribeEvent(priority= EventPriority.NORMAL)
@@ -153,19 +196,15 @@ public class HudOverlay extends WRPGui {
             return;
         }
 
-        //redering action bar
+        //removing action bar text
         if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             String actionBar = getCurrentActionBar();
             if(!actionBar.equalsIgnoreCase("")) {
                 lastActionBar = actionBar;
+
+                //why i need this time? just to get the actionbar timeout
+                lastActionBarTime = System.currentTimeMillis();
             }
-
-            ScaledResolution resolution = new ScaledResolution(mc);
-
-            int x = resolution.getScaledWidth();
-            int y = resolution.getScaledHeight();
-
-            drawString(lastActionBar, (x - mc.fontRenderer.getStringWidth(lastActionBar)) / 2, y - 70, 1);
             return;
         }
     }
@@ -184,5 +223,32 @@ public class HudOverlay extends WRPGui {
         return null;
     }
 
+    public static String getPlayerDirection(float yaw) {
+        double num = (yaw + 202.5) / 45.0;
+        while (num < 0.0) {
+            num += 360.0;
+        }
+        int dir = (int) (num);
+        dir = dir % 8;
+
+        switch (dir) {
+            case 1:
+                return "NE";
+            case 2:
+                return "E";
+            case 3:
+                return "SE";
+            case 4:
+                return "S";
+            case 5:
+                return "SW";
+            case 6:
+                return "W";
+            case 7:
+                return "NW";
+            default:
+                return "N";
+        }
+    }
 
 }
