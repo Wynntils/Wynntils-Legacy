@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class WRPGui extends Gui {
 
-    Minecraft mc;
+    public Minecraft mc;
 
     public WRPGui(Minecraft mc) {
         this.mc = mc;
