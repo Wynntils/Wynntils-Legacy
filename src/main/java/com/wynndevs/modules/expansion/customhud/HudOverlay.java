@@ -72,9 +72,9 @@ public class HudOverlay extends WRPGui {
                 mc.getTextureManager().bindTexture(bars);
 
                 drawTexturedModalRect(x + 10, y - 38, 0, 20, 82, 8);
-                drawTexturedModalRect(x + 10, y - 38, 0, 10, lastMana, 8);
-                if(lastMana != 82) {
-                    drawTexturedModalRect(x + 6 + lastMana, y - 38, 0, 30, 4, 8);
+                drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
+                if(lastMana != 82 && lastMana > 3) {
+                    drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, 5, 30, 10, 8);
                 }
             }
             GlStateManager.popMatrix();
