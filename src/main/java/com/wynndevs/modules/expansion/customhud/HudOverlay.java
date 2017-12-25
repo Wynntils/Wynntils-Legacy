@@ -174,7 +174,7 @@ public class HudOverlay extends WRPGui {
                 String[] spaces = lastActionBar.split(" ");
                 newBar+= spaces[5] + " ";
             }else{
-                newBar+= "§7" + (int)mc.player.posZ + " §a§l" + getPlayerDirection(mc.player.rotationYaw) + " §7" + (int)mc.player.posZ + " ";
+                newBar+= "§7" + (int)mc.player.posX + " §a§l" + getPlayerDirection(mc.player.rotationYaw) + " §7" + (int)mc.player.posZ + " ";
             }
 
             newBar+= "§b✺ " + mc.player.getFoodStats().getFoodLevel() + "/20";
