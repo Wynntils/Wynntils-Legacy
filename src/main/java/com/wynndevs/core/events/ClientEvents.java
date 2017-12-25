@@ -4,6 +4,7 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.Utils;
+import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
@@ -29,6 +30,9 @@ public class ClientEvents {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (KeyBindings.MARKET_GUI.isKeyDown()) {
             Minecraft.getMinecraft().displayGuiScreen(new MarketGUI());
+        }
+        if(KeyBindings.OPEN_CONFIG_MENU.isKeyDown()) {
+            Minecraft.getMinecraft().displayGuiScreen(new ConfigGui(ModCore.mc()));
         }
     }
 

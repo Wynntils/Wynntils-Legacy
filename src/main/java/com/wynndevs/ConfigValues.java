@@ -1,6 +1,7 @@
 package com.wynndevs;
 
 import com.wynndevs.core.Reference;
+import com.wynndevs.core.config.GuiConfig;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.jagrosh.discordipc.entities.DiscordBuild;
 import net.minecraftforge.common.config.Config;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public class ConfigValues {
 
+    @GuiConfig(title = "Rich Presence", isInstance = true)
     @Config.LangKey("config.richpresence")
     public static WynncraftRichPresence wynnRichPresence = new WynncraftRichPresence();
 
@@ -19,6 +21,7 @@ public class ConfigValues {
 
     public static class WynncraftRichPresence {
 
+        @GuiConfig(title = "Entering Notifier")
         @Config.Comment("Do you want to receive entering notifications?")
         public boolean enteringNotifier = true;
 

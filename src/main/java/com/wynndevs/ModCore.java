@@ -1,6 +1,8 @@
 package com.wynndevs;
 
 import com.wynndevs.core.Reference;
+import com.wynndevs.core.config.ConfigCategory;
+import com.wynndevs.core.config.ConfigParser;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.core.gui.UpdateOverlay;
@@ -48,6 +50,7 @@ public class ModCore {
         if(WynnMarket.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Market");
         }
+
     }
 	
 	@Mod.EventHandler
