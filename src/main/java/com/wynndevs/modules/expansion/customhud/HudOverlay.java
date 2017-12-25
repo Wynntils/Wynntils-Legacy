@@ -139,6 +139,21 @@ public class HudOverlay extends WRPGui {
             GlStateManager.popAttrib();
             return;
         }
+    }
+
+    @SubscribeEvent(priority= EventPriority.NORMAL)
+    public void onRender(RenderGameOverlayEvent.Pre e) {
+        if(!e.isCancelable()) {
+            return;
+        }
+
+        //blocking
+        if(e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
+            e.setCanceled(true);
+            return;
+        }
+
+        //redering action bar
         if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             String actionBar = getCurrentActionBar();
             if(!actionBar.equalsIgnoreCase("")) {
@@ -151,20 +166,6 @@ public class HudOverlay extends WRPGui {
             int y = resolution.getScaledHeight();
 
             drawString(lastActionBar, (x - mc.fontRenderer.getStringWidth(lastActionBar)) / 2, y - 70, 1);
-
-            return;
-        }
-    }
-
-    @SubscribeEvent(priority= EventPriority.NORMAL)
-    public void onRender(RenderGameOverlayEvent.Pre e) {
-        if(!e.isCancelable()) {
-            return;
-        }
-
-        //blocking
-        if(e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
-            e.setCanceled(true);
             return;
         }
     }
