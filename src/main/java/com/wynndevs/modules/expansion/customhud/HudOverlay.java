@@ -32,6 +32,14 @@ public class HudOverlay extends WRPGui {
         if(!e.isCancelable()) {
             return;
         }
+        if(e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
+            e.setCanceled(true);
+            return;
+        }
+        if(e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+
+            return;
+        }
         if(e.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
             e.setCanceled(true);
 
@@ -71,11 +79,25 @@ public class HudOverlay extends WRPGui {
                 GlStateManager.enableBlend();
                 mc.getTextureManager().bindTexture(bars);
 
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
                 drawTexturedModalRect(x + 10, y - 38, 0, 39, 82, 8);
-                drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
-                if(lastMana != 82 && lastMana > 3) {
-                    drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, 5, 30, 10, 8);
+                if(lastMana != 82) {
+                    if(lastMana > 2) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+                        drawTexturedModalRect(x + 13 + (82 - lastMana), y - 38, (82 - lastMana) + 3, 10, 82, 8);
+                    }
+                    if(lastMana > 1) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
+                        drawTexturedModalRect(x + 12 + (82 - lastMana), y - 38, (82 - lastMana) + 2, 10, 82, 8);
+                    }
+                    if(lastMana > 0) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.25F);
+                        drawTexturedModalRect(x + 11 + (82 - lastMana), y - 38, (82 - lastMana) + 1, 10, 82, 8);
+                    }
+                }else{
+                    drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
                 }
+
             }
             GlStateManager.popMatrix();
             GlStateManager.popAttrib();
@@ -119,14 +141,26 @@ public class HudOverlay extends WRPGui {
             {
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F);
 
                 mc.getTextureManager().bindTexture(bars);
 
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
                 drawTexturedModalRect(x - 91, y - 38, 0, 20, 82, 8);
-                drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth, 8);
                 if(lastHealth != 82) {
-                    drawTexturedModalRect(x - 95 + lastHealth, y - 38, 0, 30, 4, 8);
+                    if(lastHealth > 2) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+                        drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 1, 8);
+                    }
+                    if(lastHealth > 1) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
+                        drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 2, 8);
+                    }
+                    if(lastHealth > 0) {
+                        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.25F);
+                        drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 3, 8);
+                    }
+                }else{
+                    drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth, 8);
                 }
             }
             GlStateManager.popMatrix();
