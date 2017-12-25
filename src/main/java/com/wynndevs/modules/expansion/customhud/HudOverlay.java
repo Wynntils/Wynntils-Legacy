@@ -71,7 +71,7 @@ public class HudOverlay extends WRPGui {
                 GlStateManager.enableBlend();
                 mc.getTextureManager().bindTexture(bars);
 
-                drawTexturedModalRect(x + 10, y - 38, 0, 20, 82, 8);
+                drawTexturedModalRect(x + 10, y - 38, 0, 39, 82, 8);
                 drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, (82 - lastMana), 10, 82, 8);
                 if(lastMana != 82 && lastMana > 3) {
                     drawTexturedModalRect(x + 10 + (82 - lastMana), y - 38, 5, 30, 10, 8);
