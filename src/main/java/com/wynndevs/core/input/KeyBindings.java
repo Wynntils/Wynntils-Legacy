@@ -16,12 +16,13 @@ public class KeyBindings {
 	public static KeyBinding TOGGLE_LOCK;
 	public static KeyBinding OPEN_PLAYER_MENU;
 	public static KeyBinding OPEN_ITEM_GUIDE;
+	public static KeyBinding OPEN_CONFIG_MENU;
 
     public static void init() {
         MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion");
+		OPEN_CONFIG_MENU = new KeyBinding("Open Config", Keyboard.KEY_G, "Wynncraft Expansion");
 
         ClientRegistry.registerKeyBinding(MARKET_GUI);
-	
 		ClientRegistry.registerKeyBinding(OPEN_QUEST_BOOK = new KeyBinding("Open Quest Book", Keyboard.KEY_R, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_WYNN_SOUND = new KeyBinding("Open Wynn Sound GUI", Keyboard.KEY_H, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_1 = new KeyBinding("Cast Spell 1", Keyboard.KEY_Z, "Wynncraft Expansion"));
