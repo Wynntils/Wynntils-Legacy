@@ -17,6 +17,8 @@ public class KeyBindings {
 	public static KeyBinding OPEN_PLAYER_MENU;
 	public static KeyBinding OPEN_ITEM_GUIDE;
 	public static KeyBinding OPEN_CONFIG_MENU;
+    public static KeyBinding OPEN_GUILD_CHAT;
+    public static KeyBinding OPEN_PARTY_CHAT;
 
     public static void init() {
         MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion");
@@ -32,6 +34,8 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(TOGGLE_LOCK = new KeyBinding("Toggle Item Lock", Keyboard.KEY_F, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_PLAYER_MENU = new KeyBinding("Open Player Menu", Keyboard.KEY_G, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_ITEM_GUIDE = new KeyBinding("Open Item Guide", Keyboard.KEY_P, "Wynncraft Expansion"));
+        ClientRegistry.registerKeyBinding(OPEN_GUILD_CHAT = new KeyBinding("Open Guild Chat", Keyboard.KEY_U, "Wynncraft Expansion"));
+        ClientRegistry.registerKeyBinding(OPEN_PARTY_CHAT = new KeyBinding("Open Party Chat", Keyboard.KEY_Y, "Wynncraft Expansion"));
     }
 
 }
