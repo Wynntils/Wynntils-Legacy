@@ -19,20 +19,24 @@ public class KeyBindings {
 	public static KeyBinding OPEN_CONFIG_MENU;
     public static KeyBinding OPEN_GUILD_CHAT;
     public static KeyBinding OPEN_PARTY_CHAT;
+	public static KeyBinding TOGGLE_GAMMABRIGHT;
 
     public static void init() {
         MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion");
-		OPEN_CONFIG_MENU = new KeyBinding("Open Config", Keyboard.KEY_G, "Wynncraft Expansion");
+		OPEN_CONFIG_MENU = new KeyBinding("Open Config", Keyboard.KEY_N, "Wynncraft Expansion");
+		TOGGLE_GAMMABRIGHT = new KeyBinding("Toggle Gammabright", Keyboard.KEY_G, "Wynncraft Expansion");
 
         ClientRegistry.registerKeyBinding(MARKET_GUI);
+		ClientRegistry.registerKeyBinding(OPEN_CONFIG_MENU);
+		ClientRegistry.registerKeyBinding(TOGGLE_GAMMABRIGHT);
 		ClientRegistry.registerKeyBinding(OPEN_QUEST_BOOK = new KeyBinding("Open Quest Book", Keyboard.KEY_R, "Wynncraft Expansion"));
-		ClientRegistry.registerKeyBinding(OPEN_WYNN_SOUND = new KeyBinding("Open Wynn Sound GUI", Keyboard.KEY_H, "Wynncraft Expansion"));
+		ClientRegistry.registerKeyBinding(OPEN_WYNN_SOUND = new KeyBinding("Open Wynn Sound GUI", Keyboard.KEY_O, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_1 = new KeyBinding("Cast Spell 1", Keyboard.KEY_Z, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_2 = new KeyBinding("Cast Spell 2", Keyboard.KEY_X, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_3 = new KeyBinding("Cast Spell 3", Keyboard.KEY_C, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_4 = new KeyBinding("Cast Spell 4", Keyboard.KEY_V, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(TOGGLE_LOCK = new KeyBinding("Toggle Item Lock", Keyboard.KEY_F, "Wynncraft Expansion"));
-		ClientRegistry.registerKeyBinding(OPEN_PLAYER_MENU = new KeyBinding("Open Player Menu", Keyboard.KEY_G, "Wynncraft Expansion"));
+		ClientRegistry.registerKeyBinding(OPEN_PLAYER_MENU = new KeyBinding("Open Player Menu", Keyboard.KEY_H, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_ITEM_GUIDE = new KeyBinding("Open Item Guide", Keyboard.KEY_P, "Wynncraft Expansion"));
         ClientRegistry.registerKeyBinding(OPEN_GUILD_CHAT = new KeyBinding("Open Guild Chat", Keyboard.KEY_U, "Wynncraft Expansion"));
         ClientRegistry.registerKeyBinding(OPEN_PARTY_CHAT = new KeyBinding("Open Party Chat", Keyboard.KEY_Y, "Wynncraft Expansion"));

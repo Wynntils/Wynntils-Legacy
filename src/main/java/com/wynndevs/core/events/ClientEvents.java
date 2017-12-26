@@ -17,6 +17,7 @@ import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,6 +25,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.UUID;
 
 public class ClientEvents {
+
+    public static boolean enableGammaBright = false;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -33,6 +36,19 @@ public class ClientEvents {
         }
         if(KeyBindings.OPEN_CONFIG_MENU.isKeyDown()) {
             Minecraft.getMinecraft().displayGuiScreen(new ConfigGui(ModCore.mc()));
+        }
+    }
+
+    @SubscribeEvent
+    public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
+        if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
+            enableGammaBright=!enableGammaBright;
+
+            if(enableGammaBright) {
+                ModCore.mc().gameSettings.gammaSetting = 1000;
+            }else{
+                ModCore.mc().gameSettings.gammaSetting = 1f;
+            }
         }
     }
 

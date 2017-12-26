@@ -1,7 +1,9 @@
 package com.wynndevs.modules.expansion.customhud;
 
+import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
+import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import net.minecraft.client.Minecraft;
@@ -39,7 +41,12 @@ public class HudOverlay extends WRPGui {
     public void onPreRender(RenderGameOverlayEvent.Post e) {
         //to render only when the survival UI is ready
         if(e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
+
             ScaledResolution resolution = new ScaledResolution(mc);
+
+            if(ClientEvents.enableGammaBright) {
+                drawString("§6GammaBright", resolution.getScaledWidth() - 70, 5, -1);
+            }
 
             int x = resolution.getScaledWidth() / 2;
             int y = resolution.getScaledHeight();
