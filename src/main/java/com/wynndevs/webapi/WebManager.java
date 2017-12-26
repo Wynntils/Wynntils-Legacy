@@ -33,6 +33,9 @@ public class WebManager {
         return updateProfile;
     }
 
+    /**
+     * Request a update to territories {@link ArrayList}
+     */
     public static void updateTerritories() {
         new Thread(() -> {
             try{
@@ -57,6 +60,12 @@ public class WebManager {
         }).start();
     }
 
+    /**
+     * Request all guild names to WynnAPI
+     *
+     * @return a {@link ArrayList} containing all guild names
+     * @throws Exception
+     */
     public static ArrayList<String> getGuilds() throws Exception {
         ArrayList<String> guilds = new ArrayList<>();
 
@@ -72,6 +81,14 @@ public class WebManager {
         return guilds;
     }
 
+    /**
+     * Request a guild info to WynnAPI
+     *
+     * @param guild Name of the guild
+     *
+     * @return A wrapper for all guild info
+     * @throws Exception
+     */
     public static GuildProfile getGuildProfile(String guild) throws Exception {
         URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildStats&command=" + guild).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
@@ -95,6 +112,12 @@ public class WebManager {
         return new GuildProfile(obj.getString("name"), obj.getString("prefix"),  obj.getDouble("xp"), obj.getInt("level"), obj.getString("created"), obj.getString("createdFriendly"), obj.getInt("territories"), gmembers);
     }
 
+    /**
+     * Request all online players to WynnAPI
+     *
+     * @return a {@link HashMap} who the key is the server and the value is an array containing all players on it
+     * @throws Exception
+     */
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
         HashMap<String, ArrayList<String>> servers = new HashMap<>();
 
