@@ -157,6 +157,10 @@ public class HudOverlay extends WRPGui {
             }
 
             String[] divisor = lastActionBar.split("/");
+            if(divisor.length < 2) {
+                return;
+            }
+
             String life = divisor[0].split(" ")[1] + "/" + divisor[1].split(" ")[0];
 
             String newBar = "§c❤ " + life + " ";
