@@ -35,8 +35,28 @@ public class ConfigGui extends CoreGuiScreen {
 
         int x = width / 2;
 
+        int real_amount = category.getValues().size() + category.getSubCategories().size();
         if(category.getInheritance() != null) {
-            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 17)) && mouseY < (90 - (slots * 17))) {
+            real_amount++;
+        }
+
+        int max_pages = (real_amount <= 5 ? 1 : (int)Math.ceil(real_amount / 5d));
+
+        if(mouseX > x - 65 && mouseX < x - 38 && mouseY > 52 && mouseY < 65) {
+            if(page >= 2) {
+                page--;
+            }
+            return;
+        }
+        if(mouseX > x + 36 && mouseX < x + 65 && mouseY > 52 && mouseY < 65) {
+            if(max_pages > page) {
+                page++;
+            }
+            return;
+        }
+
+        if(category.getInheritance() != null) {
+            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
                 category = category.getInheritance();
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             }
@@ -48,7 +68,7 @@ public class ConfigGui extends CoreGuiScreen {
                 break;
             }
             if(slots <= category.getSubCategories().size()) {
-                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 17)) && mouseY < (90 - (slots * 17))) {
+                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
                     category = cfg;
                     mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
@@ -65,7 +85,7 @@ public class ConfigGui extends CoreGuiScreen {
                 ConfigCategory.AdvancedField value = category.getValues().get(key);
 
                 if(!value.getValue()) {
-                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (90 + (slots * 20))) {
                         try{
                             value.getField().setBoolean(value.getInstance(), true);
                             category.getValues().put(key, new ConfigCategory.AdvancedField(true, value.getField(), value.getInstance()));
@@ -74,7 +94,7 @@ public class ConfigGui extends CoreGuiScreen {
                         }catch (Exception ex) { }
                     }
                 }else{
-                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (90 + (slots * 20))) {
                         try{
                             value.getField().setBoolean(value.getInstance(), false);
                             category.getValues().put(key, new ConfigCategory.AdvancedField(false, value.getField(), value.getInstance()));
@@ -105,11 +125,33 @@ public class ConfigGui extends CoreGuiScreen {
         mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
         drawTexturedModalRect(x - 128, 5, 768, 256, 256, 193);
 
-        int slots = (page - 1) * 5;
+        if(mouseX > x - 65 && mouseX < x - 38 && mouseY > 52 && mouseY < 65) {
+            if(page >= 2) {
+                drawTexturedModalRect(x - 65, 51, 0, 208, 28, 14);
+            }else{
+                drawTexturedModalRect(x - 65, 51, 0, 194, 28, 14);
+            }
+        }else{
+            drawTexturedModalRect(x - 65, 51, 0, 194, 28, 14);
+        }
+        if(mouseX > x + 36 && mouseX < x + 65 && mouseY > 52 && mouseY < 65) {
+            if(max_pages > page) {
+                drawTexturedModalRect(x + 37, 51, 28, 208, 28, 14);
+            }else{
+                drawTexturedModalRect(x + 37, 51, 28, 194, 28, 14);
+            }
+        }else{
+            drawTexturedModalRect(x + 37, 51, 28, 194, 28, 14);
+        }
+
+
+        int slots = 0;
+
+        int slotPage = (page - 1) * 5;
         int startPage = page * 5;
 
         if(category.getInheritance() != null) {
-            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 17)) && mouseY < (90 - (slots * 17))) {
+            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
                 drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 236, 116, 14);
             }else{
                 drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 222, 116, 14);
@@ -120,12 +162,17 @@ public class ConfigGui extends CoreGuiScreen {
             slots++;
         }
 
+        int catCount = 0;
         for(ConfigCategory cfg : category.getSubCategories()) {
+            catCount++;
+            if(catCount < slotPage + 1) {
+                continue;
+            }
             if(slots > startPage) {
                 break;
             }
             if(slots <= category.getSubCategories().size()) {
-                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 17)) && mouseY < (90 - (slots * 17))) {
+                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
                     drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 236, 116, 14);
                 }else{
                     drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 222, 116, 14);
@@ -138,7 +185,12 @@ public class ConfigGui extends CoreGuiScreen {
             }
         }
 
+        int valCount = 0;
         for(String key : category.getValues().keySet()) {
+            valCount++;
+            if(valCount < slotPage + 1) {
+                continue;
+            }
             if(slots > startPage) {
                 break;
             }
@@ -148,13 +200,13 @@ public class ConfigGui extends CoreGuiScreen {
                 mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 if(!value.getValue()) {
-                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (88 + (slots * 20))) {
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 240, 208, 8, 14);
                     }else {
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 240, 194, 8, 14);
                     }
                 }else{
-                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                    if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (88 + (slots * 20))) {
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 248, 208, 8, 14);
                     }else{
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 248, 194, 8, 14);
@@ -168,9 +220,7 @@ public class ConfigGui extends CoreGuiScreen {
             }
         }
 
-        drawStringPlain("X = " + (mouseX - x) + " Y= " + (mouseY), mouseX, mouseY + 10, 1);
-
-        drawCenteredStringPlain("Page " + page + "/" + max_pages, x, 54, Integer.parseInt("858585", 16));
+        drawCenteredStringPlain("Page " + page + "/" + max_pages, x, 54, 1);
     }
 
 }

@@ -23,19 +23,6 @@ public class ConfigValues {
     @Config.Comment("Do you want to mention notifications ?")
     public static boolean mentionNotification = true;
 
-    @GuiConfig(title = "Teste1")
-    public static boolean iAmATest1 = true;
-    @GuiConfig(title = "Teste2")
-    public static boolean iAmATest2 = true;
-    @GuiConfig(title = "Teste3")
-    public static boolean iAmATest3 = true;
-    @GuiConfig(title = "Teste4")
-    public static boolean iAmATest4 = true;
-    @GuiConfig(title = "Teste5")
-    public static boolean iAmATest5 = true;
-    @GuiConfig(title = "Teste6")
-    public static boolean iAmATest6 = true;
-
     public static class WynncraftRichPresence {
 
         @GuiConfig(title = "Entering Notifier")
