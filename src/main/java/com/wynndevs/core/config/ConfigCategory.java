@@ -1,14 +1,13 @@
 package com.wynndevs.core.config;
 
-import com.wynndevs.modules.expansion.options.Config;
-
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ConfigCategory {
 
     String name;
-    HashMap<String, Boolean> values = new HashMap<>();
+    HashMap<String, AdvancedField> values = new HashMap<>();
     ArrayList<ConfigCategory> subCategories = new ArrayList<>();
     ConfigCategory inheritance;
 
@@ -20,14 +19,14 @@ public class ConfigCategory {
         return name;
     }
 
-    public HashMap<String, Boolean> getValues() {
+    public HashMap<String, AdvancedField> getValues() {
         return values;
     }
 
     public ArrayList<ConfigCategory> getSubCategories() { return subCategories; }
 
-    public void addValue(String key, Boolean value) {
-        values.put(key, value);
+    public void addValue(String key, boolean value, Field f, Object instance) {
+        values.put(key, new AdvancedField(value, f, instance));
     }
 
     public void addSubCategory(ConfigCategory category) {
@@ -44,5 +43,28 @@ public class ConfigCategory {
         return inheritance;
     }
 
+    public static class AdvancedField {
+
+        boolean value; Field f; Object instance;
+
+        public AdvancedField(boolean value, Field f, Object instance) {
+            this.value = value;
+            this.f = f;
+            this.instance = instance;
+        }
+
+        public boolean getValue() {
+            return value;
+        }
+
+        public Field getField() {
+            return f;
+        }
+
+        public Object getInstance() {
+            return instance;
+        }
+
+    }
 
 }
