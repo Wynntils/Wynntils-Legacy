@@ -1,8 +1,10 @@
 package com.wynndevs.modules.expansion;
 
+import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.modules.expansion.customhud.DrawedGui;
 import com.wynndevs.modules.expansion.customhud.HudOverlay;
 import com.wynndevs.modules.expansion.experience.*;
 import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
@@ -19,9 +21,12 @@ import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import com.wynndevs.modules.expansion.sound.GuiWynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSounds;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +34,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -36,8 +42,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class WynnExpansion {
@@ -80,6 +88,7 @@ public class WynnExpansion {
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
 		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
+		MinecraftForge.EVENT_BUS.register(new DrawedGui());
 		
 		return ModuleResult.SUCCESS;
 	}
@@ -279,6 +288,21 @@ public class WynnExpansion {
 			if (!event.isCanceled()) ExperienceAdvancedChat.ChatHandler(msg, msgRaw);
 			if (!event.isCanceled()) DailyChestReminder.ChatHandler(msg);
 			if (!event.isCanceled()) ChatManipulator.ChatHandler(event);
+
+			if(!event.isCanceled()) {
+				if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
+					String[] mm = msgRaw.split(":");
+					if(mm.length < 2) {
+						return;
+					}
+					if(mm[1].contains(ModCore.mc().player.getName())) {
+						String playerName = ModCore.mc().player.getName();
+						String mainMm = StringUtils.join(Arrays.copyOfRange(mm, 1, mm.length), ":");
+						event.setMessage(new TextComponentString(mm[0] + ":" + mainMm.replace(playerName, "§e" + playerName + "§" + mm[1].charAt(1))));
+						ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+					}
+				}
+			}
 		}
 	}
 	
@@ -311,6 +335,9 @@ public class WynnExpansion {
 		String msg = event.getMessage();
 		if (InfoOverrideFind && ExpReference.inServer() && msg.startsWith("/find")){
 			event.setMessage(msg.replace("/find", "/info"));
+		}
+		if(msg.startsWith("/tell")) {
+			event.setMessage(msg.replace("/tell", "/msg"));
 		}
 	}
 	
