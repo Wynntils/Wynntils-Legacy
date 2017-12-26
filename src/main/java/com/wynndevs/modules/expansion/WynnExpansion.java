@@ -290,8 +290,11 @@ public class WynnExpansion {
 			if (!event.isCanceled()) ChatManipulator.ChatHandler(event);
 
 			if(!event.isCanceled()) {
-				if(ConfigValues.mentionNotification && msgRaw.contains("/")) {
+				if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
 					String[] mm = msgRaw.split(":");
+					if(mm.length < 2) {
+						return;
+					}
 					if(mm[1].contains(ModCore.mc().player.getName())) {
 						String playerName = ModCore.mc().player.getName();
 						String mainMm = StringUtils.join(Arrays.copyOfRange(mm, 1, mm.length), ":");
