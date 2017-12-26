@@ -1,20 +1,16 @@
 package com.wynndevs.core.config;
 
-import com.wynndevs.core.Reference;
-
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 public class ConfigParser {
 
-    public static ArrayList<ConfigCategory> getMappedConfig(Class cl) {
+    public static ConfigCategory getMappedConfig(Class cl) {
         try{
             return categoryLoop(cl, "main", null);
-        }catch (Exception ex) { return new ArrayList<>(); }
+        }catch (Exception ex) { return null; }
     }
 
-    private static ArrayList<ConfigCategory> categoryLoop(Class cl, String main, Object instance) throws Exception {
-        ArrayList<ConfigCategory> categories = new ArrayList<>();
+    private static ConfigCategory categoryLoop(Class cl, String main, Object instance) throws Exception {
         ConfigCategory category = new ConfigCategory(main);
         for(Field f : cl.getFields()) {
             GuiConfig a = f.getAnnotation(GuiConfig.class);
@@ -23,7 +19,7 @@ public class ConfigParser {
             }
 
             if(a.isInstance()) {
-                categories.addAll(categoryLoop(f.get(null).getClass(), a.title(), f.get(null)));
+                category.addSubCategory(categoryLoop(f.get(null).getClass(), a.title(), f.get(null)));
                 continue;
             }
 
@@ -32,9 +28,8 @@ public class ConfigParser {
                 continue;
             }
         }
-        categories.add(category);
 
-        return categories;
+        return category;
     }
 
 }

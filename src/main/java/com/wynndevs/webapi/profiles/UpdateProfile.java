@@ -1,6 +1,5 @@
 package com.wynndevs.webapi.profiles;
 
-import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import org.apache.commons.io.IOUtils;
 
