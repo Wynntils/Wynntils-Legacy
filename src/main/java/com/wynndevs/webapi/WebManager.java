@@ -3,6 +3,8 @@ package com.wynndevs.webapi;
 import com.wynndevs.ModCore;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
+import com.wynndevs.webapi.profiles.guild.GuildMember;
+import com.wynndevs.webapi.profiles.guild.GuildProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,6 +70,29 @@ public class WebManager {
         }
 
         return guilds;
+    }
+
+    public static GuildProfile getGuildProfile(String guild) throws Exception {
+        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildStats&command=" + guild).openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONObject obj = new JSONObject(IOUtils.toString(st.getInputStream()));
+
+        if(obj.has("error")) {
+            return null;
+        }
+
+        ArrayList<GuildMember> gmembers = new ArrayList<>();
+        JSONArray members = obj.getJSONArray("members");
+        if(members.length() >= 1) {
+            for(int i = 0; i < members.length(); i++) {
+                JSONObject member = members.getJSONObject(i);
+
+                gmembers.add(new GuildMember(member.getString("name"), member.getString("rank"), member.getInt("contributed"), member.getString("joinedFriendly"), member.getString("joined")));
+            }
+        }
+
+        return new GuildProfile(obj.getString("name"), obj.getString("prefix"),  obj.getDouble("xp"), obj.getInt("level"), obj.getString("created"), obj.getString("createdFriendly"), obj.getInt("territories"), gmembers);
     }
 
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
