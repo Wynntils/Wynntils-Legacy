@@ -116,7 +116,7 @@ public class MarketGUI extends WMGuiScreen {
         }
         //Global next page
         if(mouseX > x + 330 && mouseX < x + 337 && mouseY > y + 129 && mouseY < y + 141) {
-            int pages = ann.size() <= 100 ? 1 : (int)Math.floor(ann.size() / 100);
+            int pages = ann.size() <= 100 ? 1 : (int)Math.ceil(ann.size() / 100d);
             if(actual_page < pages) {
                 actual_page++;
                 requestClean = true;
@@ -160,7 +160,7 @@ public class MarketGUI extends WMGuiScreen {
         int x = width / 2 - (box /2);
         int y = height / 2 - 15;
 
-        int pages = ann.size() <= 100 ? 1 : (int)Math.floor(ann.size() / 100);
+        int pages = ann.size() <= 100 ? 1 : (int)Math.ceil(ann.size() / 100d);
 
         //rendering gui texture
         GL11.glPushMatrix();

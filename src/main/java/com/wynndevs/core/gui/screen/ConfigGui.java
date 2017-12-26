@@ -1,6 +1,7 @@
 package com.wynndevs.core.gui.screen;
 
 import com.wynndevs.ConfigValues;
+import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.config.ConfigCategory;
 import com.wynndevs.core.config.ConfigParser;
@@ -94,7 +95,12 @@ public class ConfigGui extends CoreGuiScreen {
 
         int x = width / 2;
 
-        int max_pages = category.getValues().size() <= 5 ? 1 : (int)Math.floor(category.getValues().size() / 5);
+        int real_amount = category.getValues().size() + category.getSubCategories().size();
+        if(category.getInheritance() != null) {
+            real_amount++;
+        }
+
+        int max_pages = (real_amount <= 5 ? 1 : (int)Math.ceil(real_amount / 5d));
 
         mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
         drawTexturedModalRect(x - 128, 5, 768, 256, 256, 193);
@@ -132,7 +138,6 @@ public class ConfigGui extends CoreGuiScreen {
             }
         }
 
-        mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
         for(String key : category.getValues().keySet()) {
             if(slots > startPage) {
                 break;
@@ -140,8 +145,8 @@ public class ConfigGui extends CoreGuiScreen {
             if(slots <= category.getValues().size()) {
                 ConfigCategory.AdvancedField value = category.getValues().get(key);
 
+                mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
                 if(!value.getValue()) {
                     if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 240, 208, 8, 14);
