@@ -19,6 +19,7 @@ public class ConfigValues {
     @Config.LangKey("config.market")
     public static ConfigValues.Account marketAccount = new Account();
 
+    @GuiConfig(title = "Receive chat mention notifications")
     @Config.Comment("Do you want to mention notifications ?")
     public static boolean mentionNotification = true;
 

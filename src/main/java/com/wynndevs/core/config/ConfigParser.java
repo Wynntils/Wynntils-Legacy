@@ -19,7 +19,7 @@ public class ConfigParser {
             }
 
             if(a.isInstance()) {
-                category.addSubCategory(categoryLoop(f.get(null).getClass(), a.title(), f.get(null)));
+                category.addSubCategory(categoryLoop(f.get(null).getClass(), a.title(), f.get(null)).setInheritance(category));
                 continue;
             }
 

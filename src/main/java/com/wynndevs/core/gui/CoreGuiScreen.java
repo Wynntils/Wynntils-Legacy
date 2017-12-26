@@ -12,9 +12,12 @@ public class CoreGuiScreen extends GuiScreen {
         this.mc = mc;
     }
 
-    public void drawCenteredStringPlain(String text, int x, int y, int color)
-    {
+    public void drawCenteredStringPlain(String text, int x, int y, int color) {
         fontRenderer.drawString(text, (x - fontRenderer.getStringWidth(text) / 2), y, color);
+    }
+
+    public void drawStringPlain(String text, int x, int y, int color) {
+        fontRenderer.drawString(text, x, y, color);
     }
 
 }
