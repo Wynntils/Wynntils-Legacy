@@ -10,7 +10,11 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.text.DecimalFormat;
+
 public class DrawedGui {
+
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     @SubscribeEvent
     public void onGuiDrawed(GuiScreenEvent.DrawScreenEvent.Post e) {
@@ -50,7 +54,7 @@ public class DrawedGui {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
             if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                String value = "$" + money;
+                String value = "$" + decimalFormat.format(money);
                 mc.fontRenderer.drawString(value, x + (80 - mc.fontRenderer.getStringWidth(value)), y - 11, 1);
             }else{
 

@@ -19,6 +19,9 @@ public class ConfigValues {
     @Config.LangKey("config.market")
     public static ConfigValues.Account marketAccount = new Account();
 
+    @Config.Comment("Do you want to mention notifications ?")
+    public static boolean mentionNotification = true;
+
     public static class WynncraftRichPresence {
 
         @GuiConfig(title = "Entering Notifier")
