@@ -4,6 +4,10 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
+import com.wynndevs.modules.expansion.chat.guild.GuildChat;
+import com.wynndevs.modules.expansion.chat.party.GuiParty;
+import com.wynndevs.modules.expansion.chat.party.PartyChat;
 import com.wynndevs.modules.expansion.customhud.DrawedGui;
 import com.wynndevs.modules.expansion.customhud.HudOverlay;
 import com.wynndevs.modules.expansion.experience.*;
@@ -15,12 +19,12 @@ import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestTrackingUI;
-import com.wynndevs.modules.expansion.webapi.TerritoryUI;
-import com.wynndevs.modules.expansion.webapi.WebAPI;
-import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import com.wynndevs.modules.expansion.sound.GuiWynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSounds;
+import com.wynndevs.modules.expansion.webapi.TerritoryUI;
+import com.wynndevs.modules.expansion.webapi.WebAPI;
+import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreenBook;
@@ -34,7 +38,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -66,8 +69,10 @@ public class WynnExpansion {
 	public static List<String> ChatQue = new ArrayList<String>();
 	
 	private static Delay TickRateLimiter = new Delay(0.04f, true);
-	
-	
+
+	private static GuiGuild guild;
+	private static GuiParty party;
+
 	public static ModuleResult initModule(FMLPreInitializationEvent event) {
 		
 		ExpReference.VERSION = event.getModMetadata().version;
@@ -87,9 +92,13 @@ public class WynnExpansion {
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
+		MinecraftForge.EVENT_BUS.register(guild = new GuiGuild(ModCore.mc()));
+		MinecraftForge.EVENT_BUS.register(new GuildChat(ModCore.mc(), guild));
+		MinecraftForge.EVENT_BUS.register(party = new GuiParty(ModCore.mc()));
+		MinecraftForge.EVENT_BUS.register(new PartyChat(ModCore.mc(), party));
 		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new DrawedGui());
-		
+
 		return ModuleResult.SUCCESS;
 	}
 	
