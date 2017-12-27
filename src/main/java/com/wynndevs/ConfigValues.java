@@ -27,6 +27,9 @@ public class ConfigValues {
     @Config.Comment("Do you want to mention notifications ?")
     public static boolean mentionNotification = true;
 
+    @GuiConfig(title = "Allow emerald count at player inventory")
+    public static boolean allowEmeraldCount = true;
+
     public static class WynncraftRichPresence {
 
         @GuiConfig(title = "Entering Notifier")

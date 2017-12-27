@@ -1,8 +1,6 @@
 package com.wynndevs.core.gui;
 
-import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
 import com.wynndevs.webapi.WebManager;
 import net.minecraft.client.Minecraft;

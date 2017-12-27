@@ -2,6 +2,7 @@ package com.wynndevs.modules.expansion;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
@@ -27,8 +28,10 @@ import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -50,6 +53,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.LogManager;
 
 public class WynnExpansion {
 	
@@ -97,7 +101,6 @@ public class WynnExpansion {
 		MinecraftForge.EVENT_BUS.register(party = new GuiParty(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new PartyChat(ModCore.mc(), party));
 		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
-		MinecraftForge.EVENT_BUS.register(new DrawedGui());
 
 		return ModuleResult.SUCCESS;
 	}
@@ -138,6 +141,16 @@ public class WynnExpansion {
 			if (KeyBindings.OPEN_ITEM_GUIDE.isPressed()){
 				ModCore.mc().displayGuiScreen(new ItemGuideGUI());
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onGuiDrawed(GuiOpenEvent e) {
+		if(e.getGui() instanceof GuiInventory) {
+			if(e.getGui() instanceof DrawedGui) {
+				return;
+			}
+			e.setGui(new DrawedGui(ModCore.mc().player));
 		}
 	}
 	
