@@ -26,7 +26,8 @@ import java.util.UUID;
 
 public class ClientEvents {
 
-    public static boolean enableGammaBright = false;
+    public static float lastGamma = 1f;
+    public static boolean errorSended = false;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -37,17 +38,17 @@ public class ClientEvents {
         if(KeyBindings.OPEN_CONFIG_MENU.isKeyDown()) {
             Minecraft.getMinecraft().displayGuiScreen(new ConfigGui(ModCore.mc()));
         }
+
     }
 
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
-            enableGammaBright=!enableGammaBright;
-
-            if(enableGammaBright) {
+            if(ModCore.mc().gameSettings.gammaSetting < 1000) {
+                lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
             }else{
-                ModCore.mc().gameSettings.gammaSetting = 1f;
+                ModCore.mc().gameSettings.gammaSetting = lastGamma;
             }
         }
     }
@@ -78,11 +79,12 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onServerJoin(EntityJoinWorldEvent e) {
-        if(ModCore.invalidModules.size() > 0 && e.getEntity() == ModCore.mc().player) {
+        if(ModCore.invalidModules.size() > 0 && e.getEntity() == ModCore.mc().player && !errorSended) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynn Expansion modules had an error at start"));
             ModCore.mc().player.sendMessage(new TextComponentString("§c" + Utils.arrayWithCommas(ModCore.invalidModules)));
             ModCore.mc().player.sendMessage(new TextComponentString(""));
+            errorSended = true;
         }
     }
 

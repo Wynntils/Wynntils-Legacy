@@ -48,7 +48,7 @@ public class DrawedGui {
                 }
             }
 
-            int money = (liquid * 1000) + (blocks * 64) + emeralds;
+            int money = (liquid * 4096) + (blocks * 64) + emeralds;
 
             GlStateManager.disableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -58,8 +58,8 @@ public class DrawedGui {
                 mc.fontRenderer.drawString(value, x + (80 - mc.fontRenderer.getStringWidth(value)), y - 11, 1);
             }else{
 
-                int leAmount = (int)Math.floor(money / 1000);
-                money-= leAmount * 1000;
+                int leAmount = (int)Math.floor(money / 4096);
+                money-= leAmount * 4096;
 
                 int blockAmount = (int)Math.floor(money / 64);
                 money-= blockAmount * 64;

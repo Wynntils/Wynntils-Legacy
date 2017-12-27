@@ -44,7 +44,7 @@ public class HudOverlay extends WRPGui {
 
             ScaledResolution resolution = new ScaledResolution(mc);
 
-            if(ClientEvents.enableGammaBright) {
+            if(mc.gameSettings.gammaSetting >= 1000) {
                 drawString("§6GammaBright", resolution.getScaledWidth() - 70, 5, -1);
             }
 
