@@ -14,7 +14,7 @@ public class UpdateProfile {
     public UpdateProfile() {
         new Thread(() -> {
             try{
-                URLConnection st = new URL("http://dl.heyzeer0.cf/WynnExp/version").openConnection();
+                URLConnection st = new URL("http://expansion.heyzeer0.cf/VERSION").openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 String msg = IOUtils.toString(st.getInputStream());
 
