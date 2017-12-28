@@ -1,9 +1,7 @@
 package com.wynndevs.modules.expansion.customhud;
 
-import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import net.minecraft.client.Minecraft;
@@ -11,14 +9,10 @@ import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import java.sql.Ref;
-import java.util.logging.LogManager;
 
 public class HudOverlay extends WRPGui {
 
@@ -51,25 +45,25 @@ public class HudOverlay extends WRPGui {
             int x = resolution.getScaledWidth() / 2;
             int y = resolution.getScaledHeight();
 
-            int manaBarWidht = (int) (82.0 * ((float) (mc.player.getFoodStats().getFoodLevel()) / 20.0F));
+            int manaBarWidth = (int) (82.0 * ((float) (mc.player.getFoodStats().getFoodLevel()) / 20.0F));
 
-            if(lastMana != manaBarWidht) {
+            if (lastMana != manaBarWidth) {
                 if(!onManaAnimation) {
                     onManaAnimation = true;
 
-                    lastMana = manaBarWidht;
+                    lastMana = manaBarWidth;
                 }
 
-                if(lastMana > manaBarWidht) {
+                if (lastMana > manaBarWidth) {
                     lastMana--;
-                    if(lastMana < manaBarWidht) {
-                        lastMana = manaBarWidht;
+                    if (lastMana < manaBarWidth) {
+                        lastMana = manaBarWidth;
                         onManaAnimation = false;
                     }
-                }else if(lastMana < manaBarWidht){
+                } else if (lastMana < manaBarWidth) {
                     lastMana++;
-                    if(lastMana > manaBarWidht) {
-                        lastMana = manaBarWidht;
+                    if (lastMana > manaBarWidth) {
+                        lastMana = manaBarWidth;
                         onManaAnimation = false;
                     }
                 }

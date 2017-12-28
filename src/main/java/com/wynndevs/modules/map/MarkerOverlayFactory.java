@@ -63,6 +63,7 @@ class MarkerOverlayFactory {
             try {
                 jmAPI.show(markerOverlay);
                 list.add(markerOverlay);
+                Reference.LOGGER.info("Add marker overlay " + i);
             } catch (Exception e) {
                 Reference.LOGGER.error("Can't add marker overlay", e);
             }

@@ -8,7 +8,6 @@ import journeymap.client.api.display.DisplayType;
 import journeymap.client.api.event.ClientEvent;
 import journeymap.client.api.event.DeathWaypointEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
@@ -22,25 +21,15 @@ public class JourneymapPlugin implements IClientPlugin {
     // API reference
     private IClientAPI jmAPI = null;
 
-    // Forge listener reference
-    private ForgeEventListener forgeEventListener;
-
     /**
      * Called by JourneyMap during the init phase of mod loading.  The IClientAPI reference is how the mod
      * will add overlays, etc. to JourneyMap.
      *
      * @param jmAPI Client API implementation
      */
-    @Override
     public void initialize(final IClientAPI jmAPI) {
         // Set ClientProxy.SampleModWaypointFactory with an implementation that uses the JourneyMap IClientAPI under the covers.
         this.jmAPI = jmAPI;
-
-        // Register listener for forge events
-        forgeEventListener = new ForgeEventListener(jmAPI);
-        MinecraftForge.EVENT_BUS.register(forgeEventListener);
-
-        Reference.LOGGER.info("Hook with JourneyMap Found");
 
         // Subscribe to desired ClientEvent types from JourneyMap
         this.jmAPI.subscribe(getModId(), EnumSet.of(DEATH_WAYPOINT, MAPPING_STARTED, MAPPING_STOPPED));
@@ -51,7 +40,7 @@ public class JourneymapPlugin implements IClientPlugin {
     /**
      * Used by JourneyMap to associate a modId with this plugin.
      */
-    @Override
+
     public String getModId() {
         return Reference.MOD_ID;
     }
@@ -71,7 +60,7 @@ public class JourneymapPlugin implements IClientPlugin {
      *
      * @param event the event
      */
-    @Override
+
     public void onEvent(ClientEvent event) {
         try {
             switch (event.type) {
@@ -103,7 +92,7 @@ public class JourneymapPlugin implements IClientPlugin {
         if (jmAPI.playerAccepts(getModId(), DisplayType.Marker)) {
 
             BlockPos pos = ModCore.mc().player.getPosition();
-            MarkerOverlayFactory.create(jmAPI, pos, 64, 256);
+            MarkerOverlayFactory.create(jmAPI, pos, 10, 20);
             Reference.LOGGER.info("Mapping Done");
         }
     }
