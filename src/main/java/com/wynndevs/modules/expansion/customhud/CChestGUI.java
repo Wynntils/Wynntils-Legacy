@@ -57,15 +57,15 @@ public class CChestGUI extends GuiChest {
 
                 String lore = getStringLore(is);
 
-                if(lore.contains("Legendary Item") && ConfigValues.inventoryConfig.highlightLegendary) {
+                if(lore.contains("Legendary") && ConfigValues.inventoryConfig.highlightLegendary) {
                     r = 0; g = 1; b = 1; alpha = .4f;
-                }else if(lore.contains("Mythic Item") && ConfigValues.inventoryConfig.highlightMythic) {
+                }else if(lore.contains("Mythic") && ConfigValues.inventoryConfig.highlightMythic) {
                     r = 0.3; g = 0; b = 0.3; alpha = .6f;
-                }else if(lore.contains("Rare Item") && ConfigValues.inventoryConfig.highlightRare) {
+                }else if(lore.contains("Rare") && ConfigValues.inventoryConfig.highlightRare) {
                     r = 1; g = 0; b = 1; alpha = .4f;
-                }else if(lore.contains("Unique Item") && ConfigValues.inventoryConfig.highlightUnique) {
+                }else if(lore.contains("Unique") && ConfigValues.inventoryConfig.highlightUnique) {
                     r = 1; g = 1; b = 0; alpha = .4f;
-                }else if(lore.contains("Set Item") && ConfigValues.inventoryConfig.highlightSet) {
+                }else if(lore.contains("Set") && ConfigValues.inventoryConfig.highlightSet) {
                     r = 0; g = 1; b = 0; alpha = .4f;
                 }else{
                     continue;
