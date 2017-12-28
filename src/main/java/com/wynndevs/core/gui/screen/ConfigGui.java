@@ -1,7 +1,6 @@
 package com.wynndevs.core.gui.screen;
 
 import com.wynndevs.ConfigValues;
-import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.config.ConfigCategory;
 import com.wynndevs.core.config.ConfigParser;
@@ -12,11 +11,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-
 import java.io.IOException;
-import java.sql.Ref;
-import java.util.ArrayList;
 
 public class ConfigGui extends CoreGuiScreen {
 

@@ -1,5 +1,7 @@
 package com.wynndevs.core.config;
 
+import com.wynndevs.core.Reference;
+
 import java.lang.reflect.Field;
 
 public class ConfigParser {
@@ -7,19 +9,22 @@ public class ConfigParser {
     public static ConfigCategory getMappedConfig(Class cl) {
         try{
             return categoryLoop(cl, "main", null);
-        }catch (Exception ex) { return null; }
+        }catch (Exception ex) { ex.printStackTrace(); return null; }
     }
 
     private static ConfigCategory categoryLoop(Class cl, String main, Object instance) throws Exception {
         ConfigCategory category = new ConfigCategory(main);
         for(Field f : cl.getFields()) {
             GuiConfig a = f.getAnnotation(GuiConfig.class);
+
             if(a == null) {
                 continue;
             }
 
+            Reference.LOGGER.warn(a.title());
+
             if(a.isInstance()) {
-                category.addSubCategory(categoryLoop(f.get(null).getClass(), a.title(), f.get(null)).setInheritance(category));
+                category.addSubCategory(categoryLoop(f.get(instance).getClass(), a.title(), f.get(instance)).setInheritance(category));
                 continue;
             }
 
