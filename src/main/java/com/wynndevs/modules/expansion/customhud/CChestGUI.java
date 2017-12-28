@@ -1,9 +1,6 @@
 package com.wynndevs.modules.expansion.customhud;
 
-import com.sun.org.apache.regexp.internal.RE;
 import com.wynndevs.ConfigValues;
-import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.options.Config;
 import com.wynndevs.modules.market.utils.MarketUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,8 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 public class CChestGUI extends GuiChest {
 
@@ -122,7 +117,7 @@ public class CChestGUI extends GuiChest {
 
         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             String value = "$" + CInventoryGUI.decimalFormat.format(money);
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 1);
+            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
         }else{
 
             int leAmount = (int)Math.floor(money / 4096);
@@ -140,7 +135,7 @@ public class CChestGUI extends GuiChest {
                 value = value.substring(0, value.length() - 1);
             }
 
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 1);
+            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
         }
 
         GlStateManager.enableLighting();

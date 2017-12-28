@@ -59,7 +59,7 @@ public class CInventoryGUI extends GuiInventory {
 
         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             String value = "$" + decimalFormat.format(money);
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 72 , 1);
+            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 72, 4210752);
         }else{
 
             int leAmount = (int)Math.floor(money / 4096);
@@ -77,7 +77,7 @@ public class CInventoryGUI extends GuiInventory {
                 value = value.substring(0, value.length() - 1);
             }
 
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 72, 1);
+            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 72, 4210752);
         }
 
         GlStateManager.enableLighting();
