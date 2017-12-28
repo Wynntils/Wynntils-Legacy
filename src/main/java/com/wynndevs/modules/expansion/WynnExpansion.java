@@ -190,9 +190,6 @@ public class WynnExpansion {
 			if (QuestBook.selectedQuestTracking && !ExpReference.inWar()) {
 				new QuestTrackingUI(ModCore.mc());
 			}
-			if (((WorldItemName.AnnounceMythic && MythicAnnounce.MythicAnnounce) || (WorldItemName.AnnounceLegendary && MythicAnnounce.LegendaryAnnounce)) && !ExpReference.inWar()){
-				new MythicAnnounce(ModCore.mc());
-			}
 			new Announcments(ModCore.mc());
 		}
 	}

@@ -134,8 +134,9 @@ public class WorldItemName {
 			return Data;
 		}
 	}
-	
-	
+
+    public static Delay MythicDisplayTime = new Delay(5.0f, false);
+    public static Delay LegendaryDisplayTime = new Delay(5.0f, false);
 	public static void t(Minecraft mc) {
 
 		if ((DisplayName || HighlightMythic || HighlightLegendary || HighlightRare || HighlightUnique || HighlightSet) && mc.world != null && mc.world.loadedEntityList != null && refresh.Passed()) {
@@ -287,21 +288,40 @@ public class WorldItemName {
 								for (int j = 0; j < ItemDB.ItemDB.size(); j++) {
 									if (ItemDB.ItemDB.get(j).Name.contentEquals(name)) {
 										switch (ItemDB.ItemDB.get(j).GetRarity()) {
-										case 4:
-											if (NameMythic){name = String.valueOf('\u00a7') + "5" + name;}
-											if (HighlightMythic) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Mythic.getName()); entity.setGlowing(true);}
-											if (!Lore.contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
-												if (MythicSound && !entity.getTags().contains("ITEMTHROWNPLAYER")) {mc.player.playSound(MythicSoundEvent, 2.0f, 2.0f); mc.player.playSound(MythicSoundEvent, 2.0f, 2.0f); mc.player.playSound(MythicSoundEvent, 2.0f, 2.0f);}
-												if (AnnounceMythic && !entity.getTags().contains("ITEMTHROWNPLAYER")) {MythicAnnounce.MythicDisplayTime.Reset(); MythicAnnounce.MythicAnnounce = true;}
-											}
-											break;
-										case 3:
-											if (NameLegendary){name = String.valueOf('\u00a7') + "b" + name;}
-											if (HighlightLegendary) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Legendary.getName()); entity.setGlowing(true);}
-											if (!Lore.contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
-												if (AnnounceLegendary && !entity.getTags().contains("ITEMTHROWNPLAYER")) {MythicAnnounce.LegendaryDisplayTime.Reset(); MythicAnnounce.LegendaryAnnounce = true;}
-											}
-											break;
+                                            case 4:
+                                                if (NameMythic) {
+                                                    name = String.valueOf('\u00a7') + "5" + name;
+                                                }
+                                                if (HighlightMythic) {
+                                                    Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Mythic.getName());
+                                                    entity.setGlowing(true);
+                                                }
+                                                if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")) {
+                                                    if (AnnounceMythic && !entity.getTags().contains("ITEMTHROWNPLAYER") && MythicDisplayTime.Passed()) {
+                                                        if (MythicSound)
+                                                            mc.player.playSound(MythicSoundEvent, 1.0f, 2.0f);
+                                                        mc.ingameGUI.displayTitle("", "\u00A75Mythic item appeared!", 1, 3, 1);
+                                                        mc.ingameGUI.displayTitle(null, "\u00A75Mythic item appeared!", 1, 3, 1);
+                                                        MythicDisplayTime.Reset();
+                                                    }
+                                                }
+                                                break;
+                                            case 3:
+                                                if (NameLegendary) {
+                                                    name = String.valueOf('\u00a7') + "b" + name;
+                                                }
+                                                if (HighlightLegendary) {
+                                                    Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Legendary.getName());
+                                                    entity.setGlowing(true);
+                                                }
+                                                if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")) {
+                                                    if (AnnounceLegendary && !entity.getTags().contains("ITEMTHROWNPLAYER") && LegendaryDisplayTime.Passed()) {
+                                                        mc.ingameGUI.displayTitle("", "\u00A7bLegendary item appeared!", 1, 3, 1);
+                                                        mc.ingameGUI.displayTitle(null, "\u00A7bLegendary item appeared!", 1, 3, 1);
+                                                        LegendaryDisplayTime.Reset();
+                                                    }
+                                                }
+                                                break;
 										case 2:
 											if (NameRare){name = String.valueOf('\u00a7') + "d" + name;}
 											if (HighlightRare) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Rare.getName()); entity.setGlowing(true);}
@@ -384,16 +404,24 @@ public class WorldItemName {
 										if (NameMythic){name = String.valueOf('\u00a7') + "5" + name;}
 										if (HighlightMythic) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Mythic.getName()); entity.setGlowing(true);}
 										if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
-											if (MythicSound && !entity.getTags().contains("ITEMTHROWNPLAYER")) {mc.player.playSound(MythicSoundEvent, 1.0f, 2.0f);}
-											if (AnnounceMythic && !entity.getTags().contains("ITEMTHROWNPLAYER")) {MythicAnnounce.MythicDisplayTime.Reset(); MythicAnnounce.MythicAnnounce = true;}
+                                            if (AnnounceMythic && !entity.getTags().contains("ITEMTHROWNPLAYER") && MythicDisplayTime.Passed()) {
+                                                if (MythicSound) mc.player.playSound(MythicSoundEvent, 1.0f, 2.0f);
+                                                mc.ingameGUI.displayTitle("", "\u00A75Mythic item appeared!", 1, 3, 1);
+                                                mc.ingameGUI.displayTitle(null, "\u00A75Mythic item appeared!", 1, 3, 1);
+                                                MythicDisplayTime.Reset();
+                                            }
 										}
 										break;
 									case 3:
 										if (NameLegendary){name = String.valueOf('\u00a7') + "b" + name;}
 										if (HighlightLegendary) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Legendary.getName()); entity.setGlowing(true);}
 										if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
-											if (AnnounceLegendary && !entity.getTags().contains("ITEMTHROWNPLAYER")) {MythicAnnounce.LegendaryDisplayTime.Reset(); MythicAnnounce.LegendaryAnnounce = true;}
-										}
+                                            if (AnnounceLegendary && !entity.getTags().contains("ITEMTHROWNPLAYER") && LegendaryDisplayTime.Passed()) {
+                                                mc.ingameGUI.displayTitle("", "\u00A7bLegendary item appeared!", 1, 3, 1);
+                                                mc.ingameGUI.displayTitle(null, "\u00A7bLegendary item appeared!", 1, 3, 1);
+                                                LegendaryDisplayTime.Reset();
+                                            }
+                                        }
 										break;
 									case 2:
 										if (NameRare){name = String.valueOf('\u00a7') + "d" + name;}
