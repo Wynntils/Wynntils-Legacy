@@ -2,14 +2,14 @@ package com.wynndevs.modules.expansion;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
-import com.wynndevs.core.Reference;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
 import com.wynndevs.modules.expansion.chat.guild.GuildChat;
 import com.wynndevs.modules.expansion.chat.party.GuiParty;
 import com.wynndevs.modules.expansion.chat.party.PartyChat;
-import com.wynndevs.modules.expansion.customhud.DrawedGui;
+import com.wynndevs.modules.expansion.customhud.CChestGUI;
+import com.wynndevs.modules.expansion.customhud.CInventoryGUI;
 import com.wynndevs.modules.expansion.customhud.HudOverlay;
 import com.wynndevs.modules.expansion.experience.*;
 import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
@@ -28,11 +28,12 @@ import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenBook;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.*;
@@ -50,10 +51,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.LogManager;
 
 public class WynnExpansion {
 	
@@ -147,10 +148,22 @@ public class WynnExpansion {
 	@SubscribeEvent
 	public void onGuiDrawed(GuiOpenEvent e) {
 		if(e.getGui() instanceof GuiInventory) {
-			if(e.getGui() instanceof DrawedGui) {
+			if(e.getGui() instanceof CInventoryGUI) {
 				return;
 			}
-			e.setGui(new DrawedGui(ModCore.mc().player));
+			e.setGui(new CInventoryGUI(ModCore.mc().player));
+			return;
+		}
+		if(e.getGui() instanceof GuiChest) {
+			if(e.getGui() instanceof CChestGUI) {
+				return;
+			}
+			Field f = e.getGui().getClass().getDeclaredFields()[2];
+			f.setAccessible(true);
+
+			try{
+				e.setGui(new CChestGUI(ModCore.mc().player.inventory, (IInventory)f.get(e.getGui())));
+			}catch (Exception ex) { ex.printStackTrace(); }
 		}
 	}
 	

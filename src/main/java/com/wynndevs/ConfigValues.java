@@ -23,12 +23,13 @@ public class ConfigValues {
     @Config.LangKey("config.enhanced")
     public static Enhanced wynnEnhanced = new Enhanced();
 
+    @GuiConfig(title = "Inventory", isInstance = true)
+    @Config.LangKey("config.inventory")
+    public static Inventory inventoryConfig = new Inventory();
+
     @GuiConfig(title = "Receive chat mention notifications")
     @Config.Comment("Do you want to mention notifications ?")
     public static boolean mentionNotification = true;
-
-    @GuiConfig(title = "Allow emerald count at player inventory")
-    public static boolean allowEmeraldCount = true;
 
     public static class WynncraftRichPresence {
 
@@ -38,6 +39,28 @@ public class ConfigValues {
 
         @Config.LangKey("config.richpresence.discord")
         public Discord discordConfig = new Discord();
+
+    }
+
+    public static class Inventory {
+
+        @GuiConfig(title = "Highlight lengendary items in inventories")
+        public boolean highlightLegendary = true;
+
+        @GuiConfig(title = "Highlight mythic items in inventories")
+        public boolean highlightMythic = true;
+
+        @GuiConfig(title = "Highlight set items in inventories")
+        public boolean highlightSet = true;
+
+        @GuiConfig(title = "Highlight unique items in inventories")
+        public boolean highlightUnique = true;
+
+        @GuiConfig(title = "Highlight rare items in inventories")
+        public boolean highlightRare = true;
+
+        @GuiConfig(title = "Allow emerald count at player inventory")
+        public boolean allowEmeraldCount = true;
 
     }
 

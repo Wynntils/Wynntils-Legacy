@@ -55,8 +55,8 @@ public class ConfigGui extends CoreGuiScreen {
             return;
         }
 
-        if(category.getInheritance() != null) {
-            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
+        if(category.getInheritance() != null && page == 1) {
+            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
                 category = category.getInheritance();
                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             }
@@ -68,7 +68,7 @@ public class ConfigGui extends CoreGuiScreen {
                 break;
             }
             if(slots <= category.getSubCategories().size()) {
-                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
+                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
                     category = cfg;
                     mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
@@ -150,11 +150,13 @@ public class ConfigGui extends CoreGuiScreen {
         int slotPage = (page - 1) * 5;
         int startPage = page * 5;
 
-        if(category.getInheritance() != null) {
-            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
-                drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 236, 116, 14);
+        if(category.getInheritance() != null && page == 1) {
+            mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                drawTexturedModalRect(x - 60, 75 + (slots * 17), 0, 236, 116, 14);
             }else{
-                drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 222, 116, 14);
+                drawTexturedModalRect(x - 60, 75 + (slots * 17), 0, 222, 116, 14);
             }
             String text = category.getInheritance().getName();
             drawStringPlain("Back", (width - fontRenderer.getStringWidth(text)) / 2, 78 + (slots * 17), 1);
@@ -172,10 +174,12 @@ public class ConfigGui extends CoreGuiScreen {
                 break;
             }
             if(slots <= category.getSubCategories().size()) {
-                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 - (slots * 20)) && mouseY < (90 - (slots * 20))) {
-                    drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 236, 116, 14);
+                mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                if(mouseX > x - 60 && mouseX < x + 57 && mouseY > (75 + (slots * 17)) && mouseY < (90 + (slots * 17))) {
+                    drawTexturedModalRect(x - 60, 75 + (slots * 17), 0, 236, 116, 14);
                 }else{
-                    drawTexturedModalRect(x - 60, 75 + (slots * 20), 0, 222, 116, 14);
+                    drawTexturedModalRect(x - 60, 75 + (slots * 17), 0, 222, 116, 14);
                 }
                 String text = cfg.getName();
                 drawStringPlain(text, (width - fontRenderer.getStringWidth(text)) / 2, 78 + (slots * 17), 1);

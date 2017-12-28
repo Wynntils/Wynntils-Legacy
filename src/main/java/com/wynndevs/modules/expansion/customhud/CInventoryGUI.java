@@ -12,11 +12,11 @@ import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
 
-public class DrawedGui extends GuiInventory {
+public class CInventoryGUI extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
-    public DrawedGui(EntityPlayer player) {
+    public CInventoryGUI(EntityPlayer player) {
         super(player);
     }
 
@@ -24,7 +24,7 @@ public class DrawedGui extends GuiInventory {
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        if(!ConfigValues.allowEmeraldCount) {
+        if(!ConfigValues.inventoryConfig.allowEmeraldCount) {
             return;
         }
 

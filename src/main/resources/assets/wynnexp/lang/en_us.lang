@@ -8,6 +8,7 @@ config.wynnrp.tooltip=Click here to edit Wynncraft RichPresence configurations
 config.market=Market Account
 config.market.tooltip=Don't change this if you have no idea what it is
 config.enhanced=Enhanced
+config.inventory=Inventory Configs
 
 #Config WynnRP
 config.wynnrp.title=Wynncraft RichPresence
