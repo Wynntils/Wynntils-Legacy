@@ -21,8 +21,6 @@ public class ConfigParser {
                 continue;
             }
 
-            Reference.LOGGER.warn(a.title());
-
             if(a.isInstance()) {
                 category.addSubCategory(categoryLoop(f.get(instance).getClass(), a.title(), f.get(instance)).setInheritance(category));
                 continue;
