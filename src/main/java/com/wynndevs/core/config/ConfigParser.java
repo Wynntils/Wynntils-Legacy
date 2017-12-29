@@ -1,7 +1,5 @@
 package com.wynndevs.core.config;
 
-import com.wynndevs.core.Reference;
-
 import java.lang.reflect.Field;
 
 public class ConfigParser {
