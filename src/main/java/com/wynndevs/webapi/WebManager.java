@@ -1,10 +1,12 @@
 package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
 import com.wynndevs.webapi.profiles.guild.GuildMember;
 import com.wynndevs.webapi.profiles.guild.GuildProfile;
+import com.wynndevs.webapi.profiles.item.ItemProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,15 +20,23 @@ public class WebManager {
 
     private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
     private static UpdateProfile updateProfile;
+    private static HashMap<String, ItemProfile> items = new HashMap<>();
 
     public static void init() {
         updateProfile = new UpdateProfile();
 
         updateTerritories();
+        try{
+            updateItemList();
+        }catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public static ArrayList<TerritoryProfile> getTerritories() {
         return territories;
+    }
+
+    public static HashMap<String, ItemProfile> getItems() {
+        return items;
     }
 
     public static UpdateProfile getUpdate() {
@@ -144,5 +154,36 @@ public class WebManager {
 
         return servers;
     }
+
+    public static void updateItemList() throws Exception {
+        HashMap<String, ItemProfile> citems = new HashMap<>();
+
+        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=itemDB&category=all").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("items");
+
+        for(int i = 0; i < main.length(); i++) {
+            JSONObject item = main.getJSONObject(i);
+            String name = item.getString("name");
+            ItemProfile pf = new ItemProfile();
+
+            for(String key : item.keySet()) {
+                if(!item.isNull(key)) {
+                    if(key.equals("material") && (item.get("material").getClass() == int.class || item.get("material").getClass() == Integer.class)) {
+                        pf.getClass().getField(key).set(pf, String.valueOf(item.get(key)));
+                    }else{
+                        pf.getClass().getField(key).set(pf, item.get(key));
+                    }
+                }
+            }
+
+            citems.put(name, pf);
+        }
+
+        items = citems;
+    }
+
+
 
 }
