@@ -26,6 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.logging.LogManager;
 
 public class ClientEvents {
 
@@ -81,14 +82,12 @@ public class ClientEvents {
 
     public static ArrayList<Runnable> onWorldJoin = new ArrayList<>();
     public static ArrayList<Runnable> onWorldLeft = new ArrayList<>();
+    public static String lastWorld = "";
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onWorldJoin(EntityJoinWorldEvent e) {
-        if(e.getEntity() != ModCore.mc().player) {
-            return;
-        }
-        if(ModCore.invalidModules.size() > 0 && !errorSended) {
+        if(ModCore.invalidModules.size() > 0 && !errorSended && e.getEntity() == ModCore.mc().player) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynn Expansion modules had an error at start"));
             ModCore.mc().player.sendMessage(new TextComponentString("§c" + Utils.arrayWithCommas(ModCore.invalidModules)));
@@ -101,14 +100,18 @@ public class ClientEvents {
         for(NetworkPlayerInfo pl : tab) {
             String name = ModCore.mc().ingameGUI.getTabList().getPlayerName(pl);
             if(name.contains("Global") && name.contains("[") && name.contains("]")) {
-                world = name.substring(name.indexOf("["), name.indexOf("]"));
+                world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
                 break;
             }
         }
 
         Reference.userWorld = world;
+        Reference.LOGGER.warn("world " + world);
 
-        if(world == null) { onWorldLeft.forEach(Runnable::run); }else{ onWorldJoin.forEach(Runnable::run); }
+        if(!lastWorld.equals(world)) {
+            if(world == null) { onWorldLeft.forEach(Runnable::run); }else{ onWorldJoin.forEach(Runnable::run); }
+        }
+        lastWorld = world;
     }
 
 
