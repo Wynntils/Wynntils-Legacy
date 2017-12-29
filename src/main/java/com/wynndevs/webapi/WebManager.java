@@ -25,9 +25,14 @@ public class WebManager {
     public static void init() {
         updateProfile = new UpdateProfile();
 
+        long ms = System.currentTimeMillis();
         updateTerritories();
+        Reference.LOGGER.info("Territory list loaded on " + (System.currentTimeMillis() - ms) + "ms");
+
         try{
+            ms = System.currentTimeMillis();
             updateItemList();
+            Reference.LOGGER.info("Item list loaded on " + (System.currentTimeMillis() - ms) + "ms");
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -155,6 +160,11 @@ public class WebManager {
         return servers;
     }
 
+    /**
+     * Update all Wynn items on the {@link HashMap} items
+     *
+     * @throws Exception
+     */
     public static void updateItemList() throws Exception {
         HashMap<String, ItemProfile> citems = new HashMap<>();
 
