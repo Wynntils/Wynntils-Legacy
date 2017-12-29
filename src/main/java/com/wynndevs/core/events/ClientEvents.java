@@ -4,6 +4,7 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.Utils;
+import com.wynndevs.core.config.GuiConfig;
 import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.market.WynnMarket;
@@ -83,6 +84,7 @@ public class ClientEvents {
     public static ArrayList<Runnable> onWorldJoin = new ArrayList<>();
     public static ArrayList<Runnable> onWorldLeft = new ArrayList<>();
     public static String lastWorld = "";
+    boolean called = true;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -107,13 +109,18 @@ public class ClientEvents {
 
         Reference.userWorld = world;
 
-        if(world == null) {
+        if(world == null && !called) {
             onWorldLeft.forEach(Runnable::run);
-        }else if(lastWorld == null || !lastWorld.equals(world)) {
+            called = true;
+        }else if(world != null && !lastWorld.equals(world)) {
             onWorldJoin.forEach(Runnable::run);
+            called = false;
         }
 
-        lastWorld = world;
+        if(world != null) {
+            lastWorld = world;
+        }
+
     }
 
 
