@@ -67,7 +67,7 @@ public class ChatEvents {
     public static void startUpdateRegionName() {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
-            
+
             if(WynnRichPresence.getData().getLocId() != -1) {
                 if(WebManager.getTerritories().get(WynnRichPresence.getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
                     return;

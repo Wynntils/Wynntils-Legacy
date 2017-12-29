@@ -46,8 +46,10 @@ public class WynnRichPresence {
             ClientEvents.onWorldJoin.add(ChatEvents::startUpdateRegionName);
 
             ClientEvents.onWorldLeft.add(() -> {
-                ChatEvents.updateTimer.cancel(true);
-                getRichPresence().updateRichPresence("At Lobby", null, null, null);
+                if (ChatEvents.updateTimer != null) {
+                    ChatEvents.updateTimer.cancel(true);
+                    getRichPresence().updateRichPresence("At Lobby", null, null, null);
+                }
             });
 
             return ModuleResult.SUCCESS;
