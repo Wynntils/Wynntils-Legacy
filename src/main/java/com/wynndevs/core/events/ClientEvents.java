@@ -107,9 +107,12 @@ public class ClientEvents {
 
         Reference.userWorld = world;
 
-        if(world == null || !lastWorld.equals(world)) {
-            if(world == null) { onWorldLeft.forEach(Runnable::run); }else{ onWorldJoin.forEach(Runnable::run); }
+        if(world == null) {
+            onWorldLeft.forEach(Runnable::run);
+        }else if(lastWorld == null || !lastWorld.equals(world)) {
+            onWorldJoin.forEach(Runnable::run);
         }
+
         lastWorld = world;
     }
 
