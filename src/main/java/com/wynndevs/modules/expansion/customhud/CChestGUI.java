@@ -39,8 +39,8 @@ public class CChestGUI extends GuiChest {
                 ItemStack is = lowerInv.getStackInSlot(i);
 
                 amount++;
-                if(amount >= 8) {
-                    amount = -1;
+                if(amount > 8) {
+                    amount = 0;
                     floor++;
                 }
 
@@ -52,15 +52,17 @@ public class CChestGUI extends GuiChest {
 
                 String lore = getStringLore(is);
 
-                if(lore.contains("§bLegendary") && !lore.contains("Reward") && ConfigValues.inventoryConfig.highlightLegendary) {
+                if(lore.contains("Reward")) {
+                    continue;
+                }else if(lore.contains("§bLegendary") && ConfigValues.inventoryConfig.highlightLegendary) {
                     r = 0; g = 1; b = 1; alpha = .4f;
-                }else if(lore.contains("§5Mythic") && !lore.contains("Reward") && ConfigValues.inventoryConfig.highlightMythic) {
+                }else if(lore.contains("§5Mythic") && ConfigValues.inventoryConfig.highlightMythic) {
                     r = 0.3; g = 0; b = 0.3; alpha = .6f;
-                }else if(lore.contains("§dRare") && !lore.contains("Reward") && ConfigValues.inventoryConfig.highlightRare) {
+                }else if(lore.contains("§dRare") && ConfigValues.inventoryConfig.highlightRare) {
                     r = 1; g = 0; b = 1; alpha = .4f;
-                }else if(lore.contains("§eUnique") && !lore.contains("Reward") && ConfigValues.inventoryConfig.highlightUnique) {
+                }else if(lore.contains("§eUnique") && ConfigValues.inventoryConfig.highlightUnique) {
                     r = 1; g = 1; b = 0; alpha = .4f;
-                }else if(lore.contains("§aSet") && !lore.contains("Reward") && ConfigValues.inventoryConfig.highlightSet) {
+                }else if(lore.contains("§aSet") && ConfigValues.inventoryConfig.highlightSet) {
                     r = 0; g = 1; b = 0; alpha = .4f;
                 }else{
                     continue;
