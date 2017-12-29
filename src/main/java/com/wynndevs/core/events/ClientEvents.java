@@ -11,6 +11,7 @@ import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
 import com.wynndevs.modules.market.market.MarketUser;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -22,6 +23,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 public class ClientEvents {
@@ -76,17 +79,39 @@ public class ClientEvents {
         }
     }
 
+    public static ArrayList<Runnable> onWorldJoin = new ArrayList<>();
+    public static ArrayList<Runnable> onWorldLeft = new ArrayList<>();
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onServerJoin(EntityJoinWorldEvent e) {
-        if(ModCore.invalidModules.size() > 0 && e.getEntity() == ModCore.mc().player && !errorSended) {
+    public void onWorldJoin(EntityJoinWorldEvent e) {
+        if(e.getEntity() != ModCore.mc().player) {
+            return;
+        }
+        if(ModCore.invalidModules.size() > 0 && !errorSended) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynn Expansion modules had an error at start"));
             ModCore.mc().player.sendMessage(new TextComponentString("§c" + Utils.arrayWithCommas(ModCore.invalidModules)));
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             errorSended = true;
         }
+
+        Collection<NetworkPlayerInfo> tab = ModCore.mc().getConnection().getPlayerInfoMap();
+        String world = null;
+        for(NetworkPlayerInfo pl : tab) {
+            String name = ModCore.mc().ingameGUI.getTabList().getPlayerName(pl);
+            if(name.contains("Global") && name.contains("[") && name.contains("]")) {
+                world = name.substring(name.indexOf("["), name.indexOf("]"));
+                break;
+            }
+        }
+
+        Reference.userWorld = world;
+
+        if(world == null) { onWorldLeft.forEach(Runnable::run); }else{ onWorldJoin.forEach(Runnable::run); }
     }
+
+
 
     public static void syncConfig() {
         ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);

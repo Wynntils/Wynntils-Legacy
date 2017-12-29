@@ -15,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ServerEvents {
 
+    private static boolean onServer = false;
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
@@ -35,15 +37,15 @@ public class ServerEvents {
         }
 
         WynnRichPresence.getRichPresence().updateRichPresence("At Lobby", null, null, null);
-        WynnRichPresence.getData().setOnServer(true);
+        onServer = true;
     }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if(WynnRichPresence.getData().onServer()) {
+        if(onServer) {
             WynnRichPresence.getRichPresence().stopRichPresence();
-            WynnRichPresence.getData().setOnServer(false);
+            onServer = false;
 
             if(ChatEvents.updateTimer != null && !ChatEvents.updateTimer.isCancelled()) {
                 ChatEvents.updateTimer.cancel(true);

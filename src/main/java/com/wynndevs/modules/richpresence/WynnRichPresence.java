@@ -1,6 +1,7 @@
 package com.wynndevs.modules.richpresence;
 
 import com.wynndevs.core.enums.ModuleResult;
+import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.modules.richpresence.events.ChatEvents;
 import com.wynndevs.modules.richpresence.guis.overlay.LocationGUI;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
@@ -41,6 +42,13 @@ public class WynnRichPresence {
 
             //guis
             MinecraftForge.EVENT_BUS.register(new LocationGUI(Minecraft.getMinecraft()));
+
+            ClientEvents.onWorldJoin.add(ChatEvents::startUpdateRegionName);
+
+            ClientEvents.onWorldLeft.add(() -> {
+                ChatEvents.updateTimer.cancel(true);
+                getRichPresence().updateRichPresence("At Lobby", null, null, null);
+            });
 
             return ModuleResult.SUCCESS;
         }catch (Exception ignored) {}

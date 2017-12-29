@@ -6,20 +6,10 @@ package com.wynndevs.modules.richpresence.profiles;
  */
 public class DataProfile {
 
-    String actualServer = "none";
-    boolean onServer = false;
     String location = "Waiting";
     int locId = -1;
 
     public void DataProfile() { }
-
-    public String getActualServer() {
-        return actualServer;
-    }
-
-    public boolean onServer() {
-        return onServer;
-    }
 
     public String getLocation() {
         return location;
@@ -27,14 +17,6 @@ public class DataProfile {
 
     public int getLocId() {
         return locId;
-    }
-
-    public void setActualServer(String value) {
-        actualServer = value;
-    }
-
-    public void setOnServer(boolean value) {
-        onServer = value;
     }
 
     public void setLocation(String value) {

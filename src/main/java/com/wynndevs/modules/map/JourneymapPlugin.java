@@ -115,4 +115,5 @@ public class JourneymapPlugin implements IClientPlugin {
         // Could cancel the event, which would prevent the Deathpoint from actually being created.
         // For now, don't do anything.
     }
+
 }
