@@ -153,8 +153,7 @@ public class ConfigGui extends CoreGuiScreen {
             }else{
                 drawTexturedModalRect(x - 60, 75 + (slots * 17), 0, 222, 116, 14);
             }
-            String text = category.getInheritance().getName();
-            drawStringPlain("Back", (width - fontRenderer.getStringWidth(text)) / 2, 78 + (slots * 17), 1);
+            drawStringPlain("Back", (width - fontRenderer.getStringWidth("Back")) / 2, 78 + (slots * 17), 1);
 
             slots++;
         }
