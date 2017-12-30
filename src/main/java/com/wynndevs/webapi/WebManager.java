@@ -2,6 +2,7 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
+import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
 import com.wynndevs.webapi.profiles.guild.GuildMember;
@@ -21,6 +22,7 @@ public class WebManager {
     private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
     private static UpdateProfile updateProfile;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
+    private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
 
     public static void init() {
         updateProfile = new UpdateProfile();
@@ -33,6 +35,11 @@ public class WebManager {
             ms = System.currentTimeMillis();
             updateItemList();
             Reference.LOGGER.info("Loaded " + items.size() + " items on " + (System.currentTimeMillis() - ms) + "ms");
+
+            ms = System.currentTimeMillis();
+            updateMapMarkers();
+            Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers on " + (System.currentTimeMillis() - ms) + "ms");
+
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -42,6 +49,10 @@ public class WebManager {
 
     public static HashMap<String, ItemProfile> getItems() {
         return items;
+    }
+
+    public static ArrayList<MapMarkerProfile> getMapMarkers() {
+        return mapMarkers;
     }
 
     public static UpdateProfile getUpdate() {
@@ -192,6 +203,28 @@ public class WebManager {
         }
 
         items = citems;
+    }
+
+    /**
+     * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
+     *
+     * @throws Exception
+     */
+    public static void updateMapMarkers() throws Exception {
+        ArrayList<MapMarkerProfile> markers = new ArrayList<>();
+
+        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=mapLocations").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("locations");
+
+        for(int i = 0; i < main.length(); i++) {
+            JSONObject loc = main.getJSONObject(i);
+
+            markers.add(new MapMarkerProfile(loc.getString("name"), loc.getInt("x"), loc.getInt("y"), loc.getInt("z")));
+        }
+
+        mapMarkers = markers;
     }
 
 
