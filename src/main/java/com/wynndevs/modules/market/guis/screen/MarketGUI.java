@@ -140,6 +140,7 @@ public class MarketGUI extends WMGuiScreen {
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
         //Changing this value will make a request to update all announces
         if(requestAnnounces) {
