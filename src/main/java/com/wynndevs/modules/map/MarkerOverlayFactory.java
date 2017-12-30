@@ -6,12 +6,14 @@ import journeymap.client.api.display.IOverlayListener;
 import journeymap.client.api.display.MarkerOverlay;
 import journeymap.client.api.model.MapImage;
 import journeymap.client.api.util.UIState;
+import journeymap.common.api.feature.Feature;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -51,10 +53,15 @@ class MarkerOverlayFactory {
             int color = MapColor.COLORS[colorIndex].colorValue;
 
             MapImage icon = new MapImage(sprites, spriteX, spriteY, iconSize, iconSize, color, 1f);
+            icon.setAnchorX(0);
+//            icon.setAnchorY(0);
 
             // Build the overlay
             MarkerOverlay markerOverlay = new MarkerOverlay(Reference.MOD_ID, "sampleMarker" + i, pos, icon);
             markerOverlay.setDimension(0).setTitle("Marker Overlay").setLabel("" + i);
+
+            markerOverlay.setActiveUIs(EnumSet.allOf(Feature.Display.class));
+            markerOverlay.setActiveMapTypes(EnumSet.allOf(Feature.MapType.class));
 
             // Add a listener to it
             markerOverlay.setOverlayListener(new MarkerListener(jmAPI, markerOverlay));

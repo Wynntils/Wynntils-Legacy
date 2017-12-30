@@ -167,7 +167,7 @@ public class HudOverlay extends WRPGui {
             }else if(lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
                 String[] spaces = lastActionBar.split(" ");
                 newBar+= spaces[5] + " ";
-            }else if(RichUtils.stripColor(lastActionBar).contains("Sprint")) {
+            } else if (RichUtils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 newBar+= spaces[5] + " ";
             }else{
