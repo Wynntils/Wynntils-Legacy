@@ -171,13 +171,13 @@ public class CInventoryGUI extends GuiInventory {
                 String color = "§";
 
                 if(percent >= 97) {
-                    color += "b";
+                    if(amount < 0) { color+="c"; }else{ color += "b"; }
                 }else if(percent >= 80) {
-                    color += "a";
+                    if(amount < 0) { color+="e"; }else{ color += "a"; }
                 }else if(percent >= 30) {
-                    color += "e";
+                    if(amount < 0) { color+="a"; }else{ color += "e"; }
                 }else if(percent < 30) {
-                    color += "c";
+                    if(amount < 0) { color+="b"; }else{ color += "c"; }
                 }
 
                 newLore.add(lore + color + " [" + percent + "%]");
