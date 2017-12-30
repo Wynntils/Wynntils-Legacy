@@ -6,7 +6,7 @@ import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
 import com.wynndevs.webapi.profiles.guild.GuildMember;
 import com.wynndevs.webapi.profiles.guild.GuildProfile;
-import com.wynndevs.webapi.profiles.item.ItemProfile;
+import com.wynndevs.webapi.profiles.ItemProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,7 +32,7 @@ public class WebManager {
         try{
             ms = System.currentTimeMillis();
             updateItemList();
-            Reference.LOGGER.info("Item list loaded on " + (System.currentTimeMillis() - ms) + "ms");
+            Reference.LOGGER.info("Loaded " + items.size() + " items on " + (System.currentTimeMillis() - ms) + "ms");
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 

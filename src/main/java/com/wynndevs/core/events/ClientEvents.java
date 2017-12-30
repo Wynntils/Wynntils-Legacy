@@ -4,7 +4,6 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.Utils;
-import com.wynndevs.core.config.GuiConfig;
 import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.market.WynnMarket;
@@ -27,7 +26,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.logging.LogManager;
 
 public class ClientEvents {
 
@@ -49,6 +47,9 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
+
+
+
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
