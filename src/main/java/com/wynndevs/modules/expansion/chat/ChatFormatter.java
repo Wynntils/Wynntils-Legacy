@@ -39,11 +39,27 @@ public class ChatFormatter {
             wynnic.put("⒴", "y");wynnic.put("⒵", "z");
         }
 
+        String msgRaw = e.getMessage().getFormattedText();
+
+        if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
+            String[] mm = msgRaw.split(":");
+            if(mm.length < 2) {
+                return;
+            }
+            if(mm[1].contains(ModCore.mc().player.getName())) {
+                String playerName = ModCore.mc().player.getName();
+                String mainMm = StringUtils.join(Arrays.copyOfRange(mm, 1, mm.length), ":");
+                e.setMessage(new TextComponentString(mm[0] + ":" + mainMm.replace(playerName, "§e" + playerName + "§" + mm[1].charAt(1))));
+                ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+            }
+        }
+
         ChatReformater.reformat(e);
         ChatTimeStamp.timeStamp(e);
 
-        String msgRaw = e.getMessage().getFormattedText();
         String translated = "";
+
+        msgRaw = e.getMessage().getFormattedText();
 
         boolean acceptSpace = false;
 
@@ -63,19 +79,6 @@ public class ChatFormatter {
 
         if(!translated.equals("")) {
             e.setMessage(new TextComponentString(msgRaw).setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("§bWynnic Translation:§e " + translated)))));
-        }
-
-        if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
-            String[] mm = msgRaw.split(":");
-            if(mm.length < 2) {
-                return;
-            }
-            if(mm[1].contains(ModCore.mc().player.getName())) {
-                String playerName = ModCore.mc().player.getName();
-                String mainMm = StringUtils.join(Arrays.copyOfRange(mm, 1, mm.length), ":");
-                e.setMessage(new TextComponentString(mm[0] + ":" + mainMm.replace(playerName, "§e" + playerName + "§" + mm[1].charAt(1))));
-                ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
-            }
         }
 
         msgRaw = e.getMessage().getFormattedText();
