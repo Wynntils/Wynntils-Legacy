@@ -2,12 +2,12 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
+import com.wynndevs.webapi.profiles.ItemProfile;
 import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
 import com.wynndevs.webapi.profiles.guild.GuildMember;
 import com.wynndevs.webapi.profiles.guild.GuildProfile;
-import com.wynndevs.webapi.profiles.ItemProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -221,7 +221,7 @@ public class WebManager {
         for(int i = 0; i < main.length(); i++) {
             JSONObject loc = main.getJSONObject(i);
 
-            markers.add(new MapMarkerProfile(loc.getString("name"), loc.getInt("x"), loc.getInt("y"), loc.getInt("z")));
+            markers.add(new MapMarkerProfile(loc.getString("name"), loc.getInt("x"), loc.getInt("y") + 3, loc.getInt("z"), loc.getString("icon").replace(".png", "")));
         }
 
         mapMarkers = markers;
