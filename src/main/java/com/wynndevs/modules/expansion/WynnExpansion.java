@@ -27,7 +27,9 @@ import com.wynndevs.modules.expansion.webapi.TerritoryUI;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -336,6 +338,46 @@ public class WynnExpansion {
 				}
 			}
 		}
+	}
+
+	public static String lastMessage = "";
+	public static int lastAmount = 1;
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void chatSpamFix(ClientChatReceivedEvent e) {
+		if(e.isCanceled() || e.getType() != 1) {
+			return;
+		}
+		if(e.getMessage().getFormattedText().equals(lastMessage)) {
+			GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
+
+			if(ch == null) {
+				return;
+			}
+
+			try{
+				//getting lines
+				Field lField = ch.getClass().getDeclaredFields()[3];
+				lField.setAccessible(true);
+				List<ChatLine> oldLines = (List<ChatLine>)lField.get(ch);
+
+				if(oldLines == null || oldLines.size() <= 0) {
+					return;
+				}
+
+				//updating first message
+				ChatLine line = oldLines.get(0);
+				Field txt = line.getClass().getDeclaredFields()[1];
+				txt.setAccessible(true);
+				txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]"));
+
+				//refreshing
+				ch.refreshChat();
+				e.setCanceled(true);
+			}catch (Exception  ex) { ex.printStackTrace(); }
+			return;
+		}
+		lastAmount = 1;
+		lastMessage = e.getMessage().getFormattedText();
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
