@@ -1,13 +1,11 @@
 package com.wynndevs.modules.map;
 
-import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.IClientPlugin;
 import journeymap.client.api.display.DisplayType;
 import journeymap.client.api.event.ClientEvent;
 import journeymap.client.api.event.DeathWaypointEvent;
-import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
@@ -89,12 +87,13 @@ public class JourneymapPlugin implements IClientPlugin {
     void onMappingStarted(ClientEvent event) {
         // Create a bunch of random Marker Overlays around the player
         Reference.LOGGER.info("Mapping Started");
-        if (jmAPI.playerAccepts(getModId(), DisplayType.Marker)) {
-
-            BlockPos pos = ModCore.mc().player.getPosition();
-            MarkerOverlayFactory.create(jmAPI, pos, 10, 20);
-            Reference.LOGGER.info("Mapping Done");
+        if (jmAPI.playerAccepts(getModId(), DisplayType.Waypoint)) {
+            MarkerOverlayFactory.create(jmAPI);
         }
+        if (jmAPI.playerAccepts(getModId(), DisplayType.Polygon)) {
+            TerritoryOverlays.create(jmAPI);
+        }
+        Reference.LOGGER.info("Mapping Done");
     }
 
     /**
@@ -114,6 +113,7 @@ public class JourneymapPlugin implements IClientPlugin {
     void onDeathpoint(DeathWaypointEvent event) {
         // Could cancel the event, which would prevent the Deathpoint from actually being created.
         // For now, don't do anything.
+        event.cancel();
     }
 
 }

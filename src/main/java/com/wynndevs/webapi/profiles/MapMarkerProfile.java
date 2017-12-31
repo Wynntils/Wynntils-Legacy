@@ -6,9 +6,14 @@ public class MapMarkerProfile {
     int x;
     int y;
     int z;
+    String icon;
 
-    public MapMarkerProfile(String name, int x, int y, int z) {
-        this.name = name; this.x = x; this.y = y; this.z = z;
+    public MapMarkerProfile(String name, int x, int y, int z, String icon){
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.icon = icon;
     }
 
     public String getName() {
@@ -25,6 +30,10 @@ public class MapMarkerProfile {
 
     public int getZ() {
         return z;
+    }
+
+    public String getIcon(){
+        return icon;
     }
 
 }

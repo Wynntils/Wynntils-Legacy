@@ -1,171 +1,180 @@
 package com.wynndevs.modules.map;
 
 import com.wynndevs.core.Reference;
+import com.wynndevs.webapi.WebManager;
+import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import journeymap.client.api.IClientAPI;
-import journeymap.client.api.display.IOverlayListener;
-import journeymap.client.api.display.MarkerOverlay;
+import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.model.MapImage;
-import journeymap.client.api.util.UIState;
-import net.minecraft.block.material.MapColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Sample factory that generates a list of MarkerOverlays.
  */
 class MarkerOverlayFactory {
-    /**
-     * Generate a bunch of randomly-placed markers on the map, just to show how MarkerOverlays fit together.
-     *
-     * @param center   center position
-     * @param quantity how many markers
-     * @return list of MarkerOverlays (already shown in the API)
-     */
-    static List <MarkerOverlay> create(IClientAPI jmAPI, BlockPos center, int quantity, int maxDistance) {
-        // Use a sprite sheet to vary the icons
-        ResourceLocation sprites = new ResourceLocation(Reference.MOD_ID, "textures/map/sprites.png");
-        int spriteX = 0, spriteY = 0;
-        int iconSize = 64;
-        int iconColumns = 8;
-        int iconRows = 4;
 
-        List <MarkerOverlay> list = new ArrayList <MarkerOverlay>();
-        Random random = new Random();
-        int minX = center.getX() - maxDistance;
-        int minZ = center.getZ() - maxDistance;
+    static List <Waypoint> create(IClientAPI jmAPI){
+        String category;
 
-        int colorIndex = 0;
-        for (int i = 0; i < quantity; i++) {
-            BlockPos pos = new BlockPos(minX + random.nextInt(maxDistance), 70, minZ + random.nextInt(maxDistance));
+        List <Waypoint> list = new ArrayList <>();
 
-            // Lets tint the icon using one Minecraft's map colors (usable range is 1-35)
-            colorIndex++;
-            if (colorIndex > 35) {
-                colorIndex = 1;
+        Waypoint MarkerWaypoint;
+
+        MapImage icon;
+
+
+        for (int i = 0; i < WebManager.getMapMarkers().size(); i++) {
+            MapMarkerProfile pf = WebManager.getMapMarkers().get(i);
+            BlockPos pos = new BlockPos(pf.getX(), pf.getY(), pf.getZ());
+
+            switch (pf.getIcon()) {
+                case "book":
+                    category = "quests";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/book.png"), 32, 32)
+                            .setColor(0xffffff);
+                    continue;
+//                    break;
+                case "dungeon":
+                    category = "dungeons";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/dungeon.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "potion":
+                    category = "potion";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/potion.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "rottenflesh":
+                    category = "rottenflesh";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/rottenflesh.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "paper":
+                    category = "paper";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/paper.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "horse":
+                    category = "horse";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/horse.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "potato":
+                    category = "potato";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/potato.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "bank":
+                    category = "bank";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/bank.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "xpbottle":
+                    category = "xpbottle";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/xpbottle.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "egg":
+                    category = "egg";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/egg.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "weapon":
+                    category = "weapon";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/weapon.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "weaponstrader":
+                    category = "weaponstrader";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/weaponstrader.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "key":
+                    category = "key";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/key.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "name_tag":
+                    category = "name_tag";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/name_tag.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "accessory":
+                    category = "accessory";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/accessory.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "powder_master":
+                case "Powdermaster":
+                    category = "Powdermaster";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/Powdermaster.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "identifier":
+                    category = "identifier";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/eyeofender.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "wool":
+                    category = "wool";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/wool.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "boat":
+                    category = "boat";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/boat.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "bucket":
+                    category = "bucket";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/bucket.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "armor":
+                    category = "armor";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/armor.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "bowl":
+                    category = "bowl";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/bowl.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "item_buyer":
+                    category = "item_buyer";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/item_buyer.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+                case "portal":
+                    category = "portal";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/portal.png"), 32, 32)
+                            .setColor(0xffffff);
+                    break;
+
+                default:
+                    category = "default";
+                    icon = new MapImage(new ResourceLocation(Reference.MOD_ID, "textures/map/NPC.png"), 29, 37)
+                            .setColor(0xffffff);
+                    break;
             }
-            int color = MapColor.COLORS[colorIndex].colorValue;
 
-            MapImage icon = new MapImage(sprites, spriteX, spriteY, iconSize, iconSize, color, 1f);
-            icon.setAnchorX(0);
-//            icon.setAnchorY(0);
+            MarkerWaypoint = new Waypoint(Reference.MOD_ID, "marker_" + category + "_" + i, pf.getName(), 0, pos)
+                    .setLabelColor(-1)
+                    .setIcon(icon);
 
-            // Build the overlay
-            MarkerOverlay markerOverlay = new MarkerOverlay(Reference.MOD_ID, "sampleMarker" + i, pos, icon);
-            markerOverlay.setDimension(0).setTitle("Marker Overlay").setLabel("" + i);
-
-            //markerOverlay.setActiveUIs(EnumSet.allOf(Feature.Display.class));
-            //markerOverlay.setActiveMapTypes(EnumSet.allOf(Feature.MapType.class));
-
-            // Add a listener to it
-            markerOverlay.setOverlayListener(new MarkerListener(jmAPI, markerOverlay));
-
-            // Add to list
             try {
-                jmAPI.show(markerOverlay);
-                list.add(markerOverlay);
-                Reference.LOGGER.info("Add marker overlay " + i);
-            } catch (Exception e) {
-                Reference.LOGGER.error("Can't add marker overlay", e);
-            }
-
-            // Set next sprite coords
-            spriteX += iconSize;
-            if (spriteX >= (iconSize * iconColumns)) {
-                spriteX = 0;
-                spriteY += iconSize;
-            }
-            if (spriteY >= (iconSize * iconRows)) {
-                spriteY = 0;
+                jmAPI.show(MarkerWaypoint);
+                list.add(MarkerWaypoint);
+            } catch (Throwable t) {
+                Reference.LOGGER.error(t.getMessage(), t);
             }
 
         }
 
         return list;
-    }
-
-    /**
-     * Listener for events on a MarkerOverlay instance.
-     */
-    static class MarkerListener implements IOverlayListener {
-        final IClientAPI jmAPI;
-        final MarkerOverlay overlay;
-        final int color;
-        final float opacity;
-
-        MarkerListener(IClientAPI jmAPI, final MarkerOverlay overlay) {
-            this.jmAPI = jmAPI;
-            this.overlay = overlay;
-            this.color = overlay.getIcon().getColor();
-            this.opacity = overlay.getIcon().getOpacity();
-        }
-
-        @Override
-        public void onActivate(UIState uiState) {
-            refresh(uiState);
-        }
-
-        @Override
-        public void onDeactivate(UIState uiState) {
-            refresh(uiState);
-        }
-
-        @Override
-        public void onMouseMove(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition) {
-            // Scale the icon larger and change color and opacity
-            double size = uiState.blockSize * 10;
-
-            if (overlay.getIcon().getDisplayWidth() != size) {
-                // Update the display dimensions and re-center the anchors so the icon
-                // will be centered over it's BlockPos
-                overlay.getIcon()
-                        .setDisplayWidth(size)
-                        .setDisplayHeight(size)
-                        .setAnchorX(size / 2)
-                        .setAnchorY(size);
-
-                // Use sparingly
-                overlay.flagForRerender();
-            }
-        }
-
-        @Override
-        public void onMouseOut(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition) {
-            refresh(uiState);
-        }
-
-        @Override
-        public boolean onMouseClick(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition, int button, boolean doubleClick) {
-            // Remove it on click
-            jmAPI.remove(overlay);
-
-            // Returning true will allow the click event to be used by other overlays
-            return true;
-        }
-
-        /**
-         * Reset properties back to originals, scale display size to zoom level
-         */
-        private void refresh(UIState uiState) {
-            // Lets scale the icon to only span 8 blocks, regardless of zoom level
-            double size = uiState.blockSize * 8;
-
-            // Update the display dimensions and re-center the anchors so the icon
-            // will be centered over it's BlockPos
-            overlay.getIcon()
-                    .setColor(color)
-                    .setOpacity(opacity)
-                    .setDisplayWidth(size)
-                    .setDisplayHeight(size)
-                    .setAnchorX(size / 2)
-                    .setAnchorY(size);
-
-            // Use sparingly
-            overlay.flagForRerender();
-        }
     }
 }
