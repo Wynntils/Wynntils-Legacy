@@ -21,7 +21,7 @@ public class ChatTimeStamp {
 	private static final DateFormat Minutes = new SimpleDateFormat("mm");
 	private static final DateFormat Seconds = new SimpleDateFormat("ss");
 	
-	public static void TimeStamp(ClientChatReceivedEvent event) {
+	public static void timeStamp(ClientChatReceivedEvent event) {
 		if (ShowTimeStamps && !event.getMessage().getUnformattedText().equals("")) {
 			
 			event.setMessage(AddTimeStamp(event.getMessage()));

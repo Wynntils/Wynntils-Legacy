@@ -362,11 +362,6 @@ public class WynnExpansion {
 		lastMessage = e.getMessage().getFormattedText();
 	}
 	
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void eventHandlerTimeStamp(ClientChatReceivedEvent event){
-		if (!event.isCanceled() && event.getType() == 1) ChatTimeStamp.TimeStamp(event);
-	}
-	
 	@SubscribeEvent
 	public void eventHandler(ConfigChangedEvent event) {
 		Config.Refresh();
