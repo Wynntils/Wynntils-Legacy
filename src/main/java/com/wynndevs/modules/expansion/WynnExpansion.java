@@ -4,6 +4,7 @@ import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.modules.expansion.chat.ChatFormatter;
 import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
 import com.wynndevs.modules.expansion.chat.guild.GuildChat;
 import com.wynndevs.modules.expansion.chat.party.GuiParty;
@@ -104,6 +105,7 @@ public class WynnExpansion {
 		MinecraftForge.EVENT_BUS.register(party = new GuiParty(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new PartyChat(ModCore.mc(), party));
 		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
+		MinecraftForge.EVENT_BUS.register(new ChatFormatter());
 
 		return ModuleResult.SUCCESS;
 	}
@@ -304,11 +306,6 @@ public class WynnExpansion {
 		return false;
 	}
 	
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void eventHandlerReformatChat(ClientChatReceivedEvent event){
-		ChatReformater.Reformat(event);
-	}
-	
 	@SubscribeEvent
 	public void eventHandler(ClientChatReceivedEvent event){
 		
@@ -322,26 +319,11 @@ public class WynnExpansion {
 			if (!event.isCanceled()) ExperienceAdvancedChat.ChatHandler(msg, msgRaw);
 			if (!event.isCanceled()) DailyChestReminder.ChatHandler(msg);
 			if (!event.isCanceled()) ChatManipulator.ChatHandler(event);
-
-			if(!event.isCanceled()) {
-				if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
-					String[] mm = msgRaw.split(":");
-					if(mm.length < 2) {
-						return;
-					}
-					if(mm[1].contains(ModCore.mc().player.getName())) {
-						String playerName = ModCore.mc().player.getName();
-						String mainMm = StringUtils.join(Arrays.copyOfRange(mm, 1, mm.length), ":");
-						event.setMessage(new TextComponentString(mm[0] + ":" + mainMm.replace(playerName, "§e" + playerName + "§" + mm[1].charAt(1))));
-						ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
-					}
-				}
-			}
 		}
 	}
 
 	public static String lastMessage = "";
-	public static int lastAmount = 1;
+	public static int lastAmount = 2;
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void chatSpamFix(ClientChatReceivedEvent e) {
 		if(e.isCanceled() || e.getType() != 1) {
@@ -376,7 +358,7 @@ public class WynnExpansion {
 			}catch (Exception  ex) { ex.printStackTrace(); }
 			return;
 		}
-		lastAmount = 1;
+		lastAmount = 2;
 		lastMessage = e.getMessage().getFormattedText();
 	}
 	

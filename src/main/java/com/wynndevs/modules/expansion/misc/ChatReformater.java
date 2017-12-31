@@ -14,13 +14,13 @@ import java.util.regex.Pattern;
 
 public class ChatReformater {
 	
-	public static void Reformat(ClientChatReceivedEvent event) {
+	public static void reformat(ClientChatReceivedEvent event) {
 		ITextComponent ParsedChat = (event.getType() == 1 ? new TextComponentString("") : null);
 		for (ITextComponent ChatPart : event.getMessage().getSiblings()) {
 			if (ParsedChat == null) {
-				ParsedChat = Parse(ChatPart, Boolean.valueOf(event.getType() == 1));
+				ParsedChat = parse(ChatPart, Boolean.valueOf(event.getType() == 1));
 			}else{
-				ParsedChat.appendSibling(Parse(ChatPart, Boolean.valueOf(event.getType() == 1)));
+				ParsedChat.appendSibling(parse(ChatPart, Boolean.valueOf(event.getType() == 1)));
 			}
 		}
 		
@@ -30,11 +30,11 @@ public class ChatReformater {
 				if (event.getMessage().getFormattedText().contains(ParsedChat.getFormattedText())) {
 					int IndexPoint = event.getMessage().getFormattedText().indexOf(ParsedChat.getFormattedText());
 					if (IndexPoint > 0) {
-						ParsedChat = Parse(new TextComponentString(event.getMessage().getFormattedText().substring(0, IndexPoint)), Boolean.valueOf(event.getType() == 1));
+						ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().substring(0, IndexPoint)), Boolean.valueOf(event.getType() == 1));
 						ParsedChat.appendSibling(ParsedChatTmp);
 					}
 				}else{
-					ParsedChat = Parse(new TextComponentString(event.getMessage().getFormattedText().replace(ParsedChat.getFormattedText(), "")), Boolean.valueOf(event.getType() == 1));
+					ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().replace(ParsedChat.getFormattedText(), "")), Boolean.valueOf(event.getType() == 1));
 					ParsedChat.appendSibling(ParsedChatTmp);
 				}
 			}
@@ -43,7 +43,7 @@ public class ChatReformater {
 		}
 	}
 	
-	private static ITextComponent Parse(ITextComponent ChatPart, boolean IsChat) {
+	private static ITextComponent parse(ITextComponent ChatPart, boolean IsChat) {
 		
 		if (ChatPart.getStyle().getClickEvent() == null && ChatPart.getStyle().getHoverEvent() == null && ChatPart.getStyle().getInsertion() == null) {
 			
