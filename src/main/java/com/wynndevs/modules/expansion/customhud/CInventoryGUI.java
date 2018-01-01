@@ -20,7 +20,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import sun.jvm.hotspot.oops.Mark;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
