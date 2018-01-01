@@ -1,4 +1,4 @@
-package com.wynndevs.webapi.profiles;
+package com.wynndevs.webapi.profiles.item;
 
 
 public class ItemProfile {

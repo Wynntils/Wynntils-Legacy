@@ -2,7 +2,8 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.webapi.profiles.ItemProfile;
+import com.wynndevs.webapi.profiles.item.ItemGuessProfile;
+import com.wynndevs.webapi.profiles.item.ItemProfile;
 import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
@@ -23,6 +24,7 @@ public class WebManager {
     private static UpdateProfile updateProfile;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
+    private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     public static void init() {
         updateProfile = new UpdateProfile();
@@ -39,6 +41,10 @@ public class WebManager {
             ms = System.currentTimeMillis();
             updateMapMarkers();
             Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers on " + (System.currentTimeMillis() - ms) + "ms");
+
+            ms = System.currentTimeMillis();
+            updateItemGuesses();
+            Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
 
         }catch (Exception ex) { ex.printStackTrace(); }
     }
@@ -58,6 +64,8 @@ public class WebManager {
     public static UpdateProfile getUpdate() {
         return updateProfile;
     }
+
+    public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
 
     /**
      * Request a update to territories {@link ArrayList}
@@ -225,6 +233,37 @@ public class WebManager {
         }
 
         mapMarkers = markers;
+    }
+
+    /**
+     * Update all Wynn ItemGuesses on the {@link HashMap} itemGuesses
+     *
+     * @throws Exception
+     */
+    public static void updateItemGuesses() throws Exception {
+        HashMap<String, ItemGuessProfile> guessers = new HashMap<>();
+
+        URLConnection st = new URL("https://wynndata.tk/api/unid/data.json").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+
+        for(String range : main.keySet()) {
+            ItemGuessProfile pf = new ItemGuessProfile(range);
+            for (String pieces : main.getJSONObject(range).keySet()) {
+                HashMap<String, String> parts = new HashMap<>();
+
+                for (String rarity : main.getJSONObject(range).getJSONObject(pieces).keySet()) {
+                    parts.put(rarity, main.getJSONObject(range).getJSONObject(pieces).getString(rarity));
+                }
+
+                pf.addItems(pieces, parts);
+            }
+
+            guessers.put(range, pf);
+        }
+
+        itemGuesses = guessers;
     }
 
 
