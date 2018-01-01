@@ -39,14 +39,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
-      - run:
-          command: |
-            gradle build
-            cd build
-            cd libs
-            ls
-
-      - run: curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/wynnexp/downloads/downloads" --form files=@"build/libs/WynnExpansion-1.0.jar"
+      - run: gradle test
 
 
 
