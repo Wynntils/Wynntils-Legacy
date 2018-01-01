@@ -7,6 +7,7 @@ import com.wynndevs.modules.richpresence.utils.RichUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -209,7 +210,7 @@ public class HudOverlay extends WRPGui {
 
     public static String getCurrentActionBar() {
         try {
-            String actionBar = (String) ReflectionHelper.findField(GuiIngame.class, "overlayMessage").get(Minecraft.getMinecraft().ingameGUI);
+            String actionBar = (String) ReflectionHelper.findField(GuiIngame.class, "overlayMessage", "field_73838_g").get(Minecraft.getMinecraft().ingameGUI);
 
             if(!actionBar.equals("")) {
                 ModCore.mc().ingameGUI.setOverlayMessage("", false);

@@ -13,7 +13,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = "1.0"
+def versionObj = new Version(major: 1, minor: 0, revision: 0)
+
+version = versionObj.toString()
 group = "com.wynndevs"
 archivesBaseName = "WynnExpansion"
 
@@ -84,4 +86,16 @@ shadowJar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
+}
+
+class Version {
+    String major, minor, revision
+
+    static String getBuild() {
+        System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER") ?: "DEV"
+    }
+
+    String toString() {
+        "${major}.${minor}.${revision}_$build"
+    }
 }
