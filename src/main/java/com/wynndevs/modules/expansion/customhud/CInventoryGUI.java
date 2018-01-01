@@ -5,7 +5,8 @@ import com.wynndevs.core.Utils;
 import com.wynndevs.modules.market.utils.MarketUtils;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.webapi.WebManager;
-import com.wynndevs.webapi.profiles.ItemProfile;
+import com.wynndevs.webapi.profiles.item.ItemGuessProfile;
+import com.wynndevs.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +42,7 @@ public class CInventoryGUI extends GuiInventory {
         Slot slot = getSlotUnderMouse();
         if (mc.player.inventory.getItemStack().isEmpty() && slot != null && slot.getHasStack()) {
             drawHoverItem(slot.getStack());
+            drawHoverGuess(slot.getStack());
         }
     }
 
@@ -107,11 +109,83 @@ public class CInventoryGUI extends GuiInventory {
         GlStateManager.enableLighting();
     }
 
+    public void drawHoverGuess(ItemStack stack) {
+        if(stack == null || !stack.hasDisplayName() || stack.isEmpty()) {
+            return;
+        }
+
+        if(!stack.getDisplayName().contains("Unidentified")) {
+            return;
+        }
+
+        String displayWC = RichUtils.stripColor(stack.getDisplayName());
+        String itemType = displayWC.split(" ")[1];
+        String level = null;
+
+        List<String> lore = MarketUtils.getLore(stack);
+
+        for(int i = 0; i< lore.size(); i++) {
+            if(lore.get(i).contains("Lv. Range")) {
+                level = RichUtils.stripColor(lore.get(i)).replace("- Lv. Range: ", "");
+                break;
+            }
+        }
+
+        if(itemType == null || level == null) {
+            return;
+        }
+
+        if(!WebManager.getItemGuesses().containsKey(level)) {
+            return;
+        }
+
+        ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
+        if(!igp.getItems().containsKey(itemType)) {
+            return;
+        }
+
+        String items = null;
+        String color = "§";
+
+        if(stack.getDisplayName().startsWith("§b") && igp.getItems().get(itemType).containsKey("Legendary")) {
+            items = igp.getItems().get(itemType).get("Legendary"); color+="b";
+        }else if(stack.getDisplayName().startsWith("§d") && igp.getItems().get(itemType).containsKey("Rare")) {
+            items = igp.getItems().get(itemType).get("Rare"); color+="d";
+        }else if(stack.getDisplayName().startsWith("§e") && igp.getItems().get(itemType).containsKey("Unique")) {
+            items = igp.getItems().get(itemType).get("Unique"); color+="e";
+        }else if(stack.getDisplayName().startsWith("§5") && igp.getItems().get(itemType).containsKey("Mythic")) {
+            items = igp.getItems().get(itemType).get("Mythic"); color+="5";
+        }else if(stack.getDisplayName().startsWith("§a") && igp.getItems().get(itemType).containsKey("Set")) {
+            items = igp.getItems().get(itemType).get("Set"); color+="a";
+        }
+
+        if(items != null) {
+            if(lore.get(lore.size() - 1).contains("7Possibilities")) {
+                return;
+            }
+            lore.add("§a- §7Possibilities: " + color + items);
+
+            NBTTagCompound nbt = stack.getTagCompound();
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            NBTTagList tag = new NBTTagList();
+
+            lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+
+            display.setTag("Lore", tag);
+            nbt.setTag("display", display);
+            stack.setTagCompound(nbt);
+        }
+    }
+
     public void drawHoverItem(ItemStack stack) {
         if(!WebManager.getItems().containsKey(RichUtils.stripColor(stack.getDisplayName()))) {
             return;
         }
         ItemProfile wItem = WebManager.getItems().get(RichUtils.stripColor(stack.getDisplayName()));
+
+        if(!wItem.identified) {
+            return;
+        }
 
         List<String> actualLore = MarketUtils.getLore(stack);
         List<String> newLore = new ArrayList<>();
