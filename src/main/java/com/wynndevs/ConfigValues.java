@@ -1,9 +1,9 @@
 package com.wynndevs;
 
+import com.jagrosh.discordipc.entities.DiscordBuild;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.config.GuiConfig;
 import com.wynndevs.modules.market.enums.ResetAccount;
-import com.jagrosh.discordipc.entities.DiscordBuild;
 import net.minecraftforge.common.config.Config;
 
 import java.util.UUID;
@@ -75,6 +75,41 @@ public class ConfigValues {
 		@GuiConfig(title = "Items", isInstance = true)
 		@Config.LangKey("config.expansion.items")
 		public Items items = new Items();
+
+		@GuiConfig(title = "Chat", isInstance = true)
+		@Config.LangKey("config.expansion.chats")
+		public Chats chat = new Chats();
+
+		public static class Chats {
+			@GuiConfig(title = "Party Chat", isInstance = true)
+			@Config.LangKey("config.expansion.chats.party")
+			public Chat party = new Chat(0);
+
+			@GuiConfig(title = "Guild Chat", isInstance = true)
+			@Config.LangKey("config.expansion.chats.guild")
+			public Chat guild = new Chat(1);
+
+			public static class Chat {
+
+				@GuiConfig(title = "Enable Chat")
+				@Config.LangKey("config.expansion.chat.enabled")
+				@Config.Comment("Show the side chat")
+				public boolean a_enabled = false;
+
+				public Chat(int chat){
+					switch (chat) {
+						case 0:
+							this.a_enabled = true;
+							break;
+						case 1:
+							this.a_enabled = true;
+							break;
+					}
+				}
+
+			}
+
+		}
 		
 		public static class Items {
 			@GuiConfig(title = "Mythic", isInstance = true)

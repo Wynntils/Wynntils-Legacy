@@ -21,6 +21,9 @@ config.market.resetaccount.tooltip=If you want to reset your market account, set
 
 #Config WynnExp
 config.expansion=Expansion
+config.expansion.chats=Chat Settings
+config.expansion.chats.party=Party Chat
+config.expansion.chats.guild=Guild Chat
 config.expansion.items=Items
 config.expansion.items.mythic=§5Mythic
 config.expansion.items.legendary=§bLegendary
