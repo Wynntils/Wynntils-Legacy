@@ -92,7 +92,7 @@ public class ConfigValues {
 			public static class Chat {
 
 				@GuiConfig(title = "Enable Chat")
-				@Config.LangKey("config.expansion.chat.enabled")
+                @Config.LangKey("config.expansion.chats.enabled")
 				@Config.Comment("Show the side chat")
 				public boolean a_enabled = false;
 
