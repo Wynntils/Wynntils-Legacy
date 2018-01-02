@@ -1,7 +1,6 @@
 package com.wynndevs.modules.richpresence.guis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,12 +13,12 @@ import org.lwjgl.opengl.GL11;
  * Created by HeyZeer0 on 14/12/2017.
  * Copyright © HeyZeer0 - 2016
  */
-public class WRPGui extends Gui {
+public class WRPGui extends GuiIngame {
 
     public Minecraft mc;
 
     public WRPGui(Minecraft mc) {
-        super();
+        super(mc);
         this.mc = mc;
     }
 
@@ -56,6 +55,7 @@ public class WRPGui extends Gui {
      * @param scaledRes
      */
     public void renderSelectedItem(ScaledResolution scaledRes){
+        super.renderSelectedItem(scaledRes);
 
         this.mc.mcProfiler.startSection("selectedItemName");
         try {
