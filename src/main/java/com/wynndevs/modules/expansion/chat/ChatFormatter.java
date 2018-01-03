@@ -83,7 +83,7 @@ public class ChatFormatter {
 
         msgRaw = e.getMessage().getFormattedText();
 
-        if(e.getMessage().getFormattedText().equals(lastMessage)) {
+        if (e.getMessage().getFormattedText().equals(lastMessage) && ConfigValues.wynnExpansion.chat.filter) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
 
             if(ch == null) {

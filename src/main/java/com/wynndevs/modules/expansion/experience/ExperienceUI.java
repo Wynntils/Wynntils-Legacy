@@ -65,11 +65,13 @@ public class ExperienceUI extends ModGui {
         // Constant Exp Amount
         if (Experience.getCurrentWynncraftMaxXp() != -1) {
             if (StaticBarShadow) {
-                String exp = "§a   " + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] " + (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
-                drawCenteredString(font, exp, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
+                String exp = "§a" + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
+                String percent = (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
+                drawCenteredString(font, exp + percent, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
             } else {
-                String exp = "§a   " + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] " + (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
-                drawCenteredStringPlain(font, exp, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
+                String exp = "§a" + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
+                String percent = (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
+                drawCenteredStringPlain(font, exp + percent, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
             }
         }
 

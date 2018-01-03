@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class RichUtils {
 
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('\u00A7') + "[0-9A-FK-OR]");
 
     /**
      * Removes all color codes from a string

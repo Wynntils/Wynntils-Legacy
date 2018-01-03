@@ -214,14 +214,14 @@ public class HudOverlay extends WRPGui {
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
-                middle = spaces[7] + " " + spaces[8] + " ";
+                middle = spaces[7] + " " + spaces[8];
             } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
                 String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5] + " ";
+                middle = spaces[5];
                 preference = true;
             } else if (RichUtils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5] + " ";
+                middle = spaces[5];
             } else {
                 l = "§7" + (int) mc.player.posX;
                 middle = "§a§l" + getPlayerDirection(mc.player.rotationYaw);
@@ -238,8 +238,8 @@ public class HudOverlay extends WRPGui {
                 drawString(mc.fontRenderer, r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, 1);
             }
 
-            drawCenteredString(mc.fontRenderer, health, (x - 5 - (87 / 2)), y - 50, 1); // DO NOT EDIT
-            drawCenteredString(mc.fontRenderer, mana, (x + 6 + (82 / 2)), y - 50, 1); // DO NOT EDIT
+            drawCenteredString(mc.fontRenderer, health, (x - 5 - (86 / 2)), y - 50, 1); // DO NOT EDIT
+            drawCenteredString(mc.fontRenderer, mana, (x + 5 + (86 / 2)), y - 50, 1); // DO NOT EDIT
             return;
         }
     }

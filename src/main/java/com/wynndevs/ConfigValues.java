@@ -89,6 +89,9 @@ public class ConfigValues {
 			@Config.LangKey("config.expansion.chats.guild")
 			public Chat guild = new Chat(1);
 
+			@GuiConfig(title = "Chat Filter")
+			public boolean filter = true;
+
 			public static class Chat {
 
 				@GuiConfig(title = "Enable Chat")
