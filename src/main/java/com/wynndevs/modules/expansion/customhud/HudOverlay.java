@@ -229,9 +229,11 @@ public class HudOverlay extends WRPGui {
 
             int padding = 3;
 
-            drawString(mc.fontRenderer, l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, 1);
-            drawCenteredString(mc.fontRenderer, middle, x, y - 65, 1);
-            drawString(mc.fontRenderer, r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, 1);
+            if(!renderItemName(resolution)) {
+                drawString(mc.fontRenderer, l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, 1);
+                drawCenteredString(mc.fontRenderer, middle, x, y - 65, 1);
+                drawString(mc.fontRenderer, r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, 1);
+            }
 
             drawCenteredString(mc.fontRenderer, health, (x - 5 - (87 / 2)), y - 50, 1); // DO NOT EDIT
             drawCenteredString(mc.fontRenderer, mana, (x + 6 + (82 / 2)), y - 50, 1); // DO NOT EDIT
@@ -268,7 +270,7 @@ public class HudOverlay extends WRPGui {
     }
 
 
-    public void renderItemName(ScaledResolution scaledRes){
+    public boolean renderItemName(ScaledResolution scaledRes){
         mc.gameSettings.heldItemTooltips = false;
         super.renderSelectedItem(scaledRes);
         try {
@@ -283,7 +285,7 @@ public class HudOverlay extends WRPGui {
                 }
 
                 int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2;
-                int j = scaledRes.getScaledHeight() - 83;
+                int j = scaledRes.getScaledHeight() - 65;
 
                 if (!this.mc.playerController.shouldDrawHUD()) {
                     j += 14;
@@ -302,11 +304,13 @@ public class HudOverlay extends WRPGui {
                     mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
                     GlStateManager.disableBlend();
                     GlStateManager.popMatrix();
+                    return true;
                 }
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 
