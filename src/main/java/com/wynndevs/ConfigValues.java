@@ -241,41 +241,41 @@ public class ConfigValues {
 					public String name_format = "";
 					
 					@Config.LangKey("config.expansion.items.powders.highlight_colour")
-					@Config.Comment("Code used for Highlights\n§00 §11 §22 §33 §44 §55 §66 §77\n§88 §99 §aa §bb §cc §dd §ee §ff")
-					public char highlight_colour = 'r';
+					@Config.Comment("Code used for Highlights\n\u00a700 \u00a711 \u00a722 \u00a733 \u00a744 \u00a755 \u00a766 \u00a777\n\u00a788 \u00a799 \u00a7aa \u00a7bb \u00a7cc \u00a7dd \u00a7ee \u00a7ff")
+					public String highlight_colour = "r";
 					
 					@GuiConfig(title = "Tier VI", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier6")
 					public Powder Tier6 = new Powder(6);
 					
 					@GuiConfig(title = "Tier V", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier5")
 					public Powder Tier5 = new Powder(5);
 					
 					@GuiConfig(title = "Tier IV", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier4")
 					public Powder Tier4 = new Powder(4);
 					
 					@GuiConfig(title = "Tier III", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier3")
 					public Powder Tier3 = new Powder(3);
 					
 					@GuiConfig(title = "Tier II", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier2")
 					public Powder Tier2 = new Powder(2);
 					
 					@GuiConfig(title = "Tier I", isInstance = true)
-					@Config.LangKey("config.expansion.items.powders.blank")
+					@Config.LangKey("config.expansion.items.powders.tier1")
 					public Powder Tier1 = new Powder(1);
 					
 					private PowderType(int Type){
 						switch (Type) {
-						case 0: this.name_format = "%c✹ Fire Powder %t"; this.highlight_colour = 'c'; break;
-						case 1: this.name_format = "%b❉ Fire Powder %t"; this.highlight_colour = 'b'; break;
-						case 2: this.name_format = "%f❋ Fire Powder %t"; this.highlight_colour = 'f'; break;
-						case 3: this.name_format = "%e✦ Fire Powder %t"; this.highlight_colour = 'e'; break;
-						case 4: this.name_format = "%2✤ Fire Powder %t"; this.highlight_colour = '2'; break;
-						case 5: this.name_format = "%8█ Fire Powder %t"; this.highlight_colour = '8'; break;
+						case 0: this.name_format = "%c\u2739 Fire Powder %t"; this.highlight_colour = "c"; break;
+						case 1: this.name_format = "%b\u2749 Water Powder %t"; this.highlight_colour = "b"; break;
+						case 2: this.name_format = "%f\u274B Air Powder %t"; this.highlight_colour = "f"; break;
+						case 3: this.name_format = "%e\u2726 Thunder Powder %t"; this.highlight_colour = "e"; break;
+						case 4: this.name_format = "%2\u2724 Earth Powder %t"; this.highlight_colour = "2"; break;
+						case 5: this.name_format = "%8\u2723 Blank Powder %t"; this.highlight_colour = "8"; break;
 						default: break;
 						}
 					}
@@ -284,39 +284,39 @@ public class ConfigValues {
 						@GuiConfig(title = "Nameplate")
 						@Config.LangKey("config.expansion.items.powders.name")
 						@Config.Comment("Show Nameplate when on the ground")
-						public boolean name = true;
+						public boolean a_name = true;
 						
 						@GuiConfig(title = "Highlight on ground")
 						@Config.LangKey("config.expansion.items.powders.highlight")
 						@Config.Comment("Highlight when on the ground")
-						public boolean highlights = false;
+						public boolean b_highlights = false;
 						
 						@GuiConfig(title = "Announcments")
 						@Config.LangKey("config.expansion.items.powders.announcement")
 						@Config.Comment("Show Nameplate for T6 powders")
-						public boolean announce = false;
+						public boolean c_announce = false;
 						
 						@Config.LangKey("config.expansion.items.powders.announcement.size")
 						@Config.Comment("Show Nameplate for T6 powders")
-						public float announce_size = 1.0f;
+						public float d_announce_size = 1.0f;
 						
 						@GuiConfig(title = "Sound")
 						@Config.LangKey("config.expansion.items.powders.sound")
 						@Config.Comment("Show Nameplate for T6 powders")
-						public boolean sound = false;
+						public boolean e_sound = false;
 						
 						@Config.LangKey("config.expansion.items.powders.sound.location")
 						@Config.Comment("Show Nameplate for T6 powders")
-						public String sound_location = "wynnexp:drum";
+						public String f_sound_location = "wynnexp:drum";
 						
 						private Powder(int Tier){
 							switch (Tier) {
-							case 1: this.announce = false; this.announce_size = 1.0f; break;
-							case 2: this.announce = false; this.announce_size = 1.125f; break;
-							case 3: this.announce = false; this.announce_size = 1.25f; break;
-							case 4: this.announce = true; this.announce_size = 1.5f; break;
-							case 5: this.announce = false; this.announce_size = 2.0f; break;
-							case 6: this.announce = false; this.announce_size = 2.5f; break;
+							case 1: this.c_announce = false; this.d_announce_size = 1.0f; break;
+							case 2: this.c_announce = false; this.d_announce_size = 1.125f; break;
+							case 3: this.c_announce = false; this.d_announce_size = 1.25f; break;
+							case 4: this.c_announce = true; this.d_announce_size = 1.5f; break;
+							case 5: this.c_announce = false; this.d_announce_size = 2.0f; break;
+							case 6: this.c_announce = false; this.d_announce_size = 2.5f; break;
 							default: break;
 							}
 						}
