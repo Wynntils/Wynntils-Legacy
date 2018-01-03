@@ -56,7 +56,6 @@ public class CChestGUI extends GuiChest {
         {
             GL11.glTranslatef(0, 10, 0F);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_BLEND);
 
             int amount = -1;
             int floor = 0;
@@ -104,7 +103,6 @@ public class CChestGUI extends GuiChest {
                 GL11.glEnd();
             }
 
-            GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
         GL11.glPopMatrix();

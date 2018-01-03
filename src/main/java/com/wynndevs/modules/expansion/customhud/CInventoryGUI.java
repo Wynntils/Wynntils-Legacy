@@ -183,10 +183,6 @@ public class CInventoryGUI extends GuiInventory {
         }
         ItemProfile wItem = WebManager.getItems().get(RichUtils.stripColor(stack.getDisplayName()));
 
-        if(!wItem.identified) {
-            return;
-        }
-
         List<String> actualLore = MarketUtils.getLore(stack);
         List<String> newLore = new ArrayList<>();
         for(int i = 0; i < actualLore.size(); i++) {
@@ -256,7 +252,7 @@ public class CInventoryGUI extends GuiInventory {
 
                 newLore.add(lore + color + " [" + percent + "%]");
 
-            }catch (Exception ex) { ex.printStackTrace(); newLore.add(lore); }
+            }catch (Exception ex) { newLore.add(lore); }
         }
 
         NBTTagCompound nbt = stack.getTagCompound();
