@@ -4,6 +4,7 @@ import com.wynndevs.ModCore;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,6 +14,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QuestBook {
 	public static ItemStack questBook = null;
@@ -97,7 +100,7 @@ public class QuestBook {
 				for (int i = 0; i < pageCount; i++) {
 					String page = pages.get(i).toString();
 					
-					System.out.println("Raw Data: " + page);
+					//System.out.println("Raw Data: " + page);
 					
 					if (page.contains("\\\"color\\\":\\\"")) {
 						quests.add(QuestBook.DecodePageIntoQuest(page, false));
@@ -121,6 +124,7 @@ public class QuestBook {
 				selectedQuestTracking = false;
 			}
 		} catch (Exception ignored) {
+			ignored.printStackTrace();
 			selectedQuestDescription = "";
 			selectedQuestTracking = false;
 			//ignored.printStackTrace();
@@ -256,8 +260,16 @@ public class QuestBook {
 			}
 		}
 		
-		System.out.println("Quest Data: " + questName + " - Lv. " + questLevel + " - " + questLength + " - " + questDifficulty + " - " + questStatus + " - " + builder);
-		return new Quest(questName, Integer.parseInt(questLevel), questLength, questDifficulty, questStatus, builder);
+		Pattern pattern = Pattern.compile("\\[-?[0-9]+,[0-9]{1,3},-?[0-9]+]");
+		Matcher Matcher = pattern.matcher(builder);
+		int[] questCoords = new int[] {0,0,0};
+		if (Matcher.find()){
+			String[] Coords = builder.substring(Matcher.start(), Matcher.end()).split(",");
+			questCoords = new int[]{Integer.parseInt(Coords[0].substring(1)), Integer.parseInt(Coords[1]), Integer.parseInt(Coords[2].substring(0, Coords[2].length() - 1))};
+		}
+		
+		//System.out.println("Quest Data: " + questName + " - Lv. " + questLevel + " - " + questLength + " - " + questDifficulty + " - " + questStatus + " - " + builder + " - [" + questCoords[0] + "," + questCoords[1] + "," + questCoords[2] + "]");
+		return new Quest(questName, Integer.parseInt(questLevel), questLength, questDifficulty, questStatus, builder, questCoords);
 	}
 	
 	private static String ParseCharValues(String Data){

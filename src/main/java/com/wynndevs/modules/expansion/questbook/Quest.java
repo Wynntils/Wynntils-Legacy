@@ -1,5 +1,7 @@
 package com.wynndevs.modules.expansion.questbook;
 
+import jline.internal.Nullable;
+
 public class Quest {
 	private String questName;
 	private int questLevel;
@@ -7,6 +9,7 @@ public class Quest {
 	private QuestDifficulty questDifficulty;
 	private QuestStatus questStatus;
 	private String questDescription;
+	private int[] questCoords;
 
 	public String getQuestName() {
 		return questName;
@@ -30,6 +33,14 @@ public class Quest {
 
 	public String getQuestDescription() {
 		return questDescription;
+	}
+	
+	@Nullable
+	public int[] getQuestCoords() {
+		if (questCoords.equals(new int[] {0,0,0})){
+			return null;
+		}
+		return questCoords;
 	}
 	
 	public enum QuestLength {
@@ -114,13 +125,14 @@ public class Quest {
 		}
 	}
 
-	public Quest(String questName, int questLevel, QuestLength questLength, QuestDifficulty questDifficulty, QuestStatus status, String questDescription) {
+	public Quest(String questName, int questLevel, QuestLength questLength, QuestDifficulty questDifficulty, QuestStatus status, String questDescription, int[] questCoords) {
 		this.questName = questName;//.replace("\\\\u0027", "'");
 		this.questLevel = questLevel;
 		this.questLength = questLength;
 		this.questStatus = status;
 		this.questDifficulty = questDifficulty;
 		this.questDescription = questDescription;//.replace("\\\\u0027", "'");
+		this.questCoords = questCoords;
 
 		//if (questName.contains("Macabre Masquerade"))
 		//	this.questName = "Macabre Masquerade";
