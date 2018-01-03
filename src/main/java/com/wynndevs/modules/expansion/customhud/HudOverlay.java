@@ -208,6 +208,8 @@ public class HudOverlay extends WRPGui {
             String l = "";
             String r = "";
 
+            boolean preference = false;
+
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (lastActionBar.contains("%")) {
@@ -216,6 +218,7 @@ public class HudOverlay extends WRPGui {
             } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5] + " ";
+                preference = true;
             } else if (RichUtils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5] + " ";
@@ -229,7 +232,7 @@ public class HudOverlay extends WRPGui {
 
             int padding = 3;
 
-            if(!renderItemName(resolution)) {
+            if(preference || !renderItemName(resolution)) {
                 drawString(mc.fontRenderer, l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, 1);
                 drawCenteredString(mc.fontRenderer, middle, x, y - 65, 1);
                 drawString(mc.fontRenderer, r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, 1);
@@ -237,8 +240,6 @@ public class HudOverlay extends WRPGui {
 
             drawCenteredString(mc.fontRenderer, health, (x - 5 - (87 / 2)), y - 50, 1); // DO NOT EDIT
             drawCenteredString(mc.fontRenderer, mana, (x + 6 + (82 / 2)), y - 50, 1); // DO NOT EDIT
-
-            renderItemName(resolution);
             return;
         }
     }
