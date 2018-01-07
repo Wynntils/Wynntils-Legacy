@@ -90,6 +90,8 @@ public class ConfigValues {
 			public Chat guild = new Chat(1);
 
 			@GuiConfig(title = "Chat Filter")
+			@Config.Name("Chat Filter")
+			@Config.Comment("Anti spam filter?")
 			public boolean filter = true;
 
 			public static class Chat {

@@ -2,13 +2,13 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.webapi.profiles.item.ItemGuessProfile;
-import com.wynndevs.webapi.profiles.item.ItemProfile;
 import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;
 import com.wynndevs.webapi.profiles.guild.GuildMember;
 import com.wynndevs.webapi.profiles.guild.GuildProfile;
+import com.wynndevs.webapi.profiles.item.ItemGuessProfile;
+import com.wynndevs.webapi.profiles.item.ItemProfile;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,7 +73,7 @@ public class WebManager {
     public static void updateTerritories() {
         new Thread(() -> {
             try{
-                URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=territoryList").openConnection();
+                URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=territoryList").openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
                 JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONObject("territories");
@@ -103,7 +103,7 @@ public class WebManager {
     public static ArrayList<String> getGuilds() throws Exception {
         ArrayList<String> guilds = new ArrayList<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildList").openConnection();
+        URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=guildList").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray array = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("guilds");
@@ -124,7 +124,7 @@ public class WebManager {
      * @throws Exception
      */
     public static GuildProfile getGuildProfile(String guild) throws Exception {
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildStats&command=" + guild).openConnection();
+        URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=guildStats&command=" + guild).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject obj = new JSONObject(IOUtils.toString(st.getInputStream()));
@@ -155,7 +155,7 @@ public class WebManager {
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
         HashMap<String, ArrayList<String>> servers = new HashMap<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=onlinePlayers").openConnection();
+        URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=onlinePlayers").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
@@ -187,7 +187,7 @@ public class WebManager {
     public static void updateItemList() throws Exception {
         HashMap<String, ItemProfile> citems = new HashMap<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=itemDB&category=all").openConnection();
+        URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=itemDB&category=all").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("items");
@@ -221,7 +221,7 @@ public class WebManager {
     public static void updateMapMarkers() throws Exception {
         ArrayList<MapMarkerProfile> markers = new ArrayList<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=mapLocations").openConnection();
+        URLConnection st = new URL("http://api.wynncraft.com/public_api.php?action=mapLocations").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("locations");
@@ -243,7 +243,7 @@ public class WebManager {
     public static void updateItemGuesses() throws Exception {
         HashMap<String, ItemGuessProfile> guessers = new HashMap<>();
 
-        URLConnection st = new URL("https://wynndata.tk/api/unid/data.json").openConnection();
+        URLConnection st = new URL("http://wynndata.tk/api/unid/data.json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
