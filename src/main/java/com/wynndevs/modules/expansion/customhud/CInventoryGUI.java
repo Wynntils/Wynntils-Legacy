@@ -253,6 +253,8 @@ public class CInventoryGUI extends GuiInventory {
                 int percent = (int) ((pVal / intVal) * 100);
 
                 String color = "§";
+                
+                if(amount < 0) percent = 100 - percent;
 
                 if(percent >= 97) {
                     if(amount < 0) { color+="c"; }else{ color += "b"; }
