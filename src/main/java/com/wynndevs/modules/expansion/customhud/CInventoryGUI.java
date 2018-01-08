@@ -20,10 +20,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,8 +31,11 @@ public class CInventoryGUI extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
+    EntityPlayer player;
+
     public CInventoryGUI(EntityPlayer player) {
         super(player);
+        this.player = player;
     }
 
     @Override
@@ -49,6 +52,79 @@ public class CInventoryGUI extends GuiInventory {
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+
+
+        GL11.glPushMatrix();
+        if (false) {
+            GL11.glTranslatef(0, 10, 0F);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+            int amount = -1;
+            int floor = 0;
+            for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
+                ItemStack is = player.inventory.getStackInSlot(i);
+
+                amount++;
+                if (amount > 8) {
+                    amount = 0;
+                    floor++;
+                }
+
+                if (is == null || is.isEmpty() || !is.hasDisplayName()) {
+                    continue;
+                }
+
+                double r, g, b;
+                float alpha;
+
+                String lore = getStringLore(is);
+
+                if (lore.contains("Reward")) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.highlightLegendary) {
+                    r = 0;
+                    g = 1;
+                    b = 1;
+                    alpha = .4f;
+                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.highlightMythic) {
+                    r = 0.3;
+                    g = 0;
+                    b = 0.3;
+                    alpha = .6f;
+                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.highlightRare) {
+                    r = 1;
+                    g = 0;
+                    b = 1;
+                    alpha = .4f;
+                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.highlightUnique) {
+                    r = 1;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.highlightSet) {
+                    r = 0;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                } else {
+                    continue;
+                }
+
+                GL11.glBegin(GL11.GL_QUADS);
+                {
+                    GL11.glColor4d(r, g, b, alpha);
+                    GL11.glVertex2f(24 + (18 * amount), 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), 24 + (18 * floor));
+                    GL11.glVertex2f(24 + (18 * amount), 24 + (18 * floor));
+                }
+                GL11.glEnd();
+            }
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
+        GL11.glPopMatrix();
+
 
         if(!ConfigValues.inventoryConfig.allowEmeraldCount) {
             return;
@@ -243,13 +319,19 @@ public class CInventoryGUI extends GuiInventory {
 
                 int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
                 int min;
+                int max;
                 if (amount < 0) {
-                    min = (int) Math.round(itemVal * 0.7d);
+                    max = (int) Math.min(Math.round(itemVal * 1.3d), -1);
+                    min = (int) Math.min(Math.round(itemVal * 0.7d), -1);
                 } else {
-                    min = (int) Math.round(itemVal * 0.3d);
+                    max = (int) Math.max(Math.round(itemVal * 1.3d), 1);
+                    min = (int) Math.max(Math.round(itemVal * 0.3d), 1);
                 }
 
-                int max = (int) Math.round(itemVal * 1.3d);
+                if (max == min) {
+                    actualLore.set(i, lore);
+                    continue;
+                }
 
 
                 double intVal = (double) (max - min);
@@ -285,6 +367,16 @@ public class CInventoryGUI extends GuiInventory {
         nbt.setTag("display", display);
         stack.setTagCompound(nbt);
 
+    }
+
+    public String getStringLore(ItemStack is){
+        String toReturn = "";
+
+        for (String x : MarketUtils.getLore(is)) {
+            toReturn += x;
+        }
+
+        return toReturn;
     }
 
 }

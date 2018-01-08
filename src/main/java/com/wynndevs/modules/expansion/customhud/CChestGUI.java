@@ -23,7 +23,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -310,13 +309,19 @@ public class CChestGUI extends GuiChest {
 
                 int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
                 int min;
+                int max;
                 if (amount < 0) {
-                    min = (int) Math.round(itemVal * 0.7d);
+                    max = (int) Math.min(Math.round(itemVal * 1.3d), -1);
+                    min = (int) Math.min(Math.round(itemVal * 0.7d), -1);
                 } else {
-                    min = (int) Math.round(itemVal * 0.3d);
+                    max = (int) Math.max(Math.round(itemVal * 1.3d), 1);
+                    min = (int) Math.max(Math.round(itemVal * 0.3d), 1);
                 }
 
-                int max = (int) Math.round(itemVal * 1.3d);
+                if (max == min) {
+                    actualLore.set(i, lore);
+                    continue;
+                }
 
 
                 double intVal = (double) (max - min);
