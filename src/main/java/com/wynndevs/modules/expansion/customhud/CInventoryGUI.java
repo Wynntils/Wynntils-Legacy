@@ -333,7 +333,6 @@ public class CInventoryGUI extends GuiInventory {
                     continue;
                 }
 
-
                 double intVal = (double) (max - min);
                 double pVal = (double) (amount - min);
                 int percent = (int) ((pVal / intVal) * 100);

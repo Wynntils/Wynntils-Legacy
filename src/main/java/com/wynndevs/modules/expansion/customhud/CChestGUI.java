@@ -322,8 +322,7 @@ public class CChestGUI extends GuiChest {
                     actualLore.set(i, lore);
                     continue;
                 }
-
-
+                
                 double intVal = (double) (max - min);
                 double pVal = (double) (amount - min);
                 int percent = (int) ((pVal / intVal) * 100);
