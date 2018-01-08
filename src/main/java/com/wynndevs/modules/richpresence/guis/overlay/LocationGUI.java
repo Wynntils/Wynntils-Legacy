@@ -58,7 +58,7 @@ public class LocationGUI extends WRPGui {
         drawRect(0, 0 - size, 140, 40 - size, -10066329);
 
         drawString("§a§lYou are now entering", 5, 5 - size, -1);
-        drawString("§e" + last_loc, 7,13 - size, 1.5f, 13782543);
+        drawString("§e" + last_loc, 7,20 - size, 1.5f, 13782543);
 
         //Animation
         if(size > 0 && !animation) {

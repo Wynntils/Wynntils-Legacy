@@ -33,7 +33,7 @@ public class WRPGui extends GuiIngame {
     public void drawString(String text, int x, int y, float size, int color) {
         GL11.glScalef(size,size,size);
         float mSize = (float)Math.pow(size,-1);
-        this.drawString(mc.fontRenderer, text, x, y, color);
+        this.drawString(mc.fontRenderer, text, Math.round(x / size),Math.round(y / size), color);
         GL11.glScalef(mSize,mSize,mSize);
     }
 
