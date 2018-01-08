@@ -259,6 +259,10 @@ public class CChestGUI extends GuiChest {
             String lore = actualLore.get(i);
             String wColor = RichUtils.stripColor(lore);
 
+            if(lore.contains("Set") && lore.contains("Bonus")) {
+                break;
+            }
+
             if(!wColor.startsWith("+") && !wColor.startsWith("-")) {
                 actualLore.set(i, lore);
                 continue;
@@ -321,14 +325,16 @@ public class CChestGUI extends GuiChest {
 
                 String color = "§";
 
+                if(amount < 0) percent = 100 - percent;
+
                 if(percent >= 97) {
-                    if(amount < 0) { color+="c"; }else{ color += "b"; }
+                    color += "b";
                 }else if(percent >= 80) {
-                    if(amount < 0) { color+="e"; }else{ color += "a"; }
+                    color += "a";
                 }else if(percent >= 30) {
-                    if(amount < 0) { color+="a"; }else{ color += "e"; }
+                    color += "e";
                 }else if(percent < 30) {
-                    if(amount < 0) { color+="b"; }else{ color += "c"; }
+                    color += "c";
                 }
 
                 actualLore.set(i,lore + color + " [" + percent + "%]");

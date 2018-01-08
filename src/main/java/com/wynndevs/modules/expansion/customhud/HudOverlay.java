@@ -273,7 +273,6 @@ public class HudOverlay extends WRPGui {
 
     public boolean renderItemName(ScaledResolution scaledRes){
         mc.gameSettings.heldItemTooltips = false;
-        super.renderSelectedItem(scaledRes);
         try {
             int remainingHighlightTicks = (int) ReflectionHelper.findField(GuiIngame.class, "remainingHighlightTicks", "field_92017_k").get(Minecraft.getMinecraft().ingameGUI);
             ItemStack highlightingItemStack = (ItemStack) ReflectionHelper.findField(GuiIngame.class, "highlightingItemStack", "field_92016_l").get(Minecraft.getMinecraft().ingameGUI);
