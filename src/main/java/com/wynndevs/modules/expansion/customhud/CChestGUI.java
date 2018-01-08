@@ -284,7 +284,7 @@ public class CChestGUI extends GuiChest {
             boolean raw = !lore.contains("%");
 
             try{
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier", ""));
+                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", ""));
 
                 String fieldName;
                 if(raw) {

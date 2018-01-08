@@ -55,6 +55,7 @@ public class Utils {
             getItemFieldName.put("Exploding", "exploding");
             getItemFieldName.put("Walk Speed", "speed");
             getItemFieldName.put("Attack Speed", "attackSpeedBonus");
+            getItemFieldName.put("tier Attack Speed", "attackSpeedBonus");
             getItemFieldName.put("Poison", "poison");
             getItemFieldName.put("Health", "healthBonus");
             getItemFieldName.put("Soul Point Regen", "soulPoints");
