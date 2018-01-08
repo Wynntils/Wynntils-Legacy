@@ -23,7 +23,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -259,6 +258,10 @@ public class CChestGUI extends GuiChest {
             String lore = actualLore.get(i);
             String wColor = RichUtils.stripColor(lore);
 
+            if(lore.contains("Set") && lore.contains("Bonus")) {
+                break;
+            }
+
             if(!wColor.startsWith("+") && !wColor.startsWith("-")) {
                 actualLore.set(i, lore);
                 continue;
@@ -306,29 +309,36 @@ public class CChestGUI extends GuiChest {
 
                 int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
                 int min;
+                int max;
                 if (amount < 0) {
-                    min = (int) Math.round(itemVal * 0.7d);
+                    max = (int) Math.min(Math.round(itemVal * 1.3d), -1);
+                    min = (int) Math.min(Math.round(itemVal * 0.7d), -1);
                 } else {
-                    min = (int) Math.round(itemVal * 0.3d);
+                    max = (int) Math.max(Math.round(itemVal * 1.3d), 1);
+                    min = (int) Math.max(Math.round(itemVal * 0.3d), 1);
                 }
 
-                int max = (int) Math.round(itemVal * 1.3d);
-
-
+                if (max == min) {
+                    actualLore.set(i, lore);
+                    continue;
+                }
+                
                 double intVal = (double) (max - min);
                 double pVal = (double) (amount - min);
                 int percent = (int) ((pVal / intVal) * 100);
 
                 String color = "§";
 
+                if(amount < 0) percent = 100 - percent;
+
                 if(percent >= 97) {
-                    if(amount < 0) { color+="c"; }else{ color += "b"; }
+                    color += "b";
                 }else if(percent >= 80) {
-                    if(amount < 0) { color+="e"; }else{ color += "a"; }
+                    color += "a";
                 }else if(percent >= 30) {
-                    if(amount < 0) { color+="a"; }else{ color += "e"; }
+                    color += "e";
                 }else if(percent < 30) {
-                    if(amount < 0) { color+="b"; }else{ color += "c"; }
+                    color += "c";
                 }
 
                 actualLore.set(i,lore + color + " [" + percent + "%]");
