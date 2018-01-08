@@ -47,9 +47,6 @@ public class ClientEvents {
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
-
-
-
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;

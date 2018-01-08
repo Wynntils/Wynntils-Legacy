@@ -183,28 +183,31 @@ public class CInventoryGUI extends GuiInventory {
         }
         ItemProfile wItem = WebManager.getItems().get(RichUtils.stripColor(stack.getDisplayName()));
 
+        if(wItem.isIdentified()) {
+            return;
+        }
+
         List<String> actualLore = MarketUtils.getLore(stack);
-        List<String> newLore = new ArrayList<>();
         for(int i = 0; i < actualLore.size(); i++) {
             String lore = actualLore.get(i);
             String wColor = RichUtils.stripColor(lore);
 
             if(!wColor.startsWith("+") && !wColor.startsWith("-")) {
-                newLore.add(lore);
+                actualLore.set(i, lore);
                 continue;
             }
 
             String[] values = wColor.split(" ");
 
             if(values.length < 2) {
-                newLore.add(lore);
+                actualLore.set(i, lore);
                 continue;
             }
 
             String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ");
 
             if(pField == null) {
-                newLore.add(lore);
+                actualLore.set(i, lore);
                 continue;
             }
 
@@ -224,29 +227,19 @@ public class CInventoryGUI extends GuiInventory {
                 }
 
                 if(fieldName == null) {
-                    newLore.add(lore);
+                    actualLore.set(i, lore);
                     continue;
                 }
 
                 Field f = wItem.getClass().getField(fieldName);
                 if(f == null) {
-                    newLore.add(lore);
+                    actualLore.set(i, lore);
                     continue;
                 }
-                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
-                int min;
-                if (amount < 0) {
-                    min = (int) Math.round(itemVal * 0.7d);
-                } else {
-                    min = (int) Math.round(itemVal * 0.3d);
-                }
 
-                int max = (int) Math.round(itemVal * 1.3d);
+                int max = (int)Math.round(Integer.valueOf(String.valueOf(f.get(wItem))) * 1.3d);
 
-
-                double intVal = (double) (max - min);
-                double pVal = (double) (amount - min);
-                int percent = (int) ((pVal / intVal) * 100);
+                int percent = Math.round((amount * 100) / max);
 
                 String color = "§";
 
@@ -260,16 +253,16 @@ public class CInventoryGUI extends GuiInventory {
                     if(amount < 0) { color+="b"; }else{ color += "c"; }
                 }
 
-                newLore.add(lore + color + " [" + percent + "%]");
+                actualLore.set(i,lore + color + " [" + percent + "%]");
 
-            }catch (Exception ex) { newLore.add(lore); }
+            }catch (Exception ex) { actualLore.set(i, lore); }
         }
 
         NBTTagCompound nbt = stack.getTagCompound();
         NBTTagCompound display = nbt.getCompoundTag("display");
         NBTTagList tag = new NBTTagList();
 
-        newLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+        actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
         display.setTag("Lore", tag);
         nbt.setTag("display", display);
