@@ -304,9 +304,20 @@ public class CChestGUI extends GuiChest {
                     continue;
                 }
 
-                int max = (int)Math.round(Integer.valueOf(String.valueOf(f.get(wItem))) * 1.3d);
+                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
+                int min;
+                if (amount < 0) {
+                    min = (int) Math.round(itemVal * 0.7d);
+                } else {
+                    min = (int) Math.round(itemVal * 0.3d);
+                }
 
-                int percent = Math.round((amount * 100) / max);
+                int max = (int) Math.round(itemVal * 1.3d);
+
+
+                double intVal = (double) (max - min);
+                double pVal = (double) (amount - min);
+                int percent = (int) ((pVal / intVal) * 100);
 
                 String color = "§";
 
