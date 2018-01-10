@@ -2,6 +2,7 @@ package com.wynndevs.modules.expansion.chat;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.misc.ChatReformater;
 import com.wynndevs.modules.expansion.misc.ChatTimeStamp;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -82,13 +83,9 @@ public class ChatFormatter {
         }
 
         msgRaw = e.getMessage().getFormattedText();
-
-        if (e.getMessage().getFormattedText().equals(lastMessage)) {
+        Reference.LOGGER.warn(ConfigValues.wynnExpansion.chat.main.filter);
+        if (ConfigValues.wynnExpansion.chat.main.filter && e.getMessage().getFormattedText().equals(lastMessage)) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
-
-            if (!ConfigValues.wynnExpansion.chat.main.filter) {
-                return;
-            }
 
             if(ch == null) {
                 return;
@@ -104,15 +101,18 @@ public class ChatFormatter {
                     return;
                 }
 
-                //updating first message
-                ChatLine line = oldLines.get(0);
-                Field txt = line.getClass().getDeclaredFields()[1];
-                txt.setAccessible(true);
-                txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]"));
+                if (ConfigValues.wynnExpansion.chat.main.filter) {
 
-                //refreshing
-                ch.refreshChat();
-                e.setCanceled(true);
+                    //updating first message
+                    ChatLine line = oldLines.get(0);
+                    Field txt = line.getClass().getDeclaredFields()[1];
+                    txt.setAccessible(true);
+                    txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]" + ConfigValues.wynnExpansion.chat.main.filter));
+
+                    //refreshing
+                    ch.refreshChat();
+                    e.setCanceled(true);
+                }
             }catch (Exception  ex) { ex.printStackTrace(); }
             return;
         }

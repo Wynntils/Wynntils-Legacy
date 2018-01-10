@@ -8,12 +8,12 @@ import net.minecraftforge.common.config.Config;
 
 import java.util.UUID;
 
-@Config.LangKey("config.richpresence.title")
+@Config.LangKey("config.wynutils.title")
 @Config(modid = Reference.MOD_ID, name = Reference.MOD_ID)
 public class ConfigValues {
 
 	@GuiConfig(title = "RichPresence", isInstance = true)
-	@Config.LangKey("config.richpresence")
+	@Config.LangKey("config.wynnrp")
 	public static WynncraftRichPresence wynnRichPresence = new WynncraftRichPresence();
 
 	@Config.LangKey("config.market")
@@ -23,7 +23,7 @@ public class ConfigValues {
 	@Config.LangKey("config.expansion")
 	public static Expansion wynnExpansion = new Expansion();
 
-	@GuiConfig(title = "Inventory")
+	@GuiConfig(title = "Inventory", isInstance = true)
 	@Config.LangKey("config.inventory")
 	public static Inventory inventoryConfig = new Inventory();
 
@@ -33,18 +33,18 @@ public class ConfigValues {
 		@Config.Comment("Do you want to receive entering notifications?")
 		public boolean enteringNotifier = true;
 
-		@Config.LangKey("config.richpresence.discord")
+		@Config.LangKey("config.wynnrp.discord")
 		public Discord discordConfig = new Discord();
 
 	}
 
 	public static class Inventory {
 
-		@GuiConfig(title = "Player Inventory")
+		@GuiConfig(title = "Player Inventory", isInstance = true)
 		@Config.LangKey("config.expansion.inv.player")
 		public PlayerInv playerInv = new PlayerInv();
 
-		@GuiConfig(title = "Chest Inventory")
+		@GuiConfig(title = "Chest Inventory", isInstance = true)
 		@Config.LangKey("config.expansion.inv.chest")
 		public ChestInv chestInv = new ChestInv();
 
@@ -131,15 +131,15 @@ public class ConfigValues {
 		public Chats chat = new Chats();
 
 		public static class Chats {
-			@GuiConfig(title = "Main Chat")
+			@GuiConfig(title = "Main Chat", isInstance = true)
 			@Config.LangKey("config.expansion.chats.main")
 			public MainChat main = new MainChat();
 
-			@GuiConfig(title = "Party Chat")
+			@GuiConfig(title = "Party Chat", isInstance = true)
 			@Config.LangKey("config.expansion.chats.party")
 			public PartyChat party = new PartyChat();
 
-			@GuiConfig(title = "Guild Chat")
+			@GuiConfig(title = "Guild Chat", isInstance = true)
 			@Config.LangKey("config.expansion.chats.guild")
 			public GuildChat guild = new GuildChat();
 
@@ -276,7 +276,7 @@ public class ConfigValues {
 							this.f_announce = false;
 							this.g_announce_size = 1.0f;
 							this.h_sound = false;
-							this.i_sound_location = "wynnexp:drum";
+							this.i_sound_location = "wyntils:drum";
 							break;
 						case 1:
 							this.a_nameplate = true;
@@ -287,7 +287,7 @@ public class ConfigValues {
 							this.f_announce = false;
 							this.g_announce_size = 1.25f;
 							this.h_sound = false;
-							this.i_sound_location = "wynnexp:drum";
+							this.i_sound_location = "wyntils:drum";
 							break;
 						case 2:
 							this.a_nameplate = false;
@@ -298,7 +298,7 @@ public class ConfigValues {
 							this.f_announce = false;
 							this.g_announce_size = 1.25f;
 							this.h_sound = false;
-							this.i_sound_location = "wynnexp:drum";
+							this.i_sound_location = "wyntils:drum";
 							break;
 						case 3:
 							this.a_nameplate = true;
@@ -309,7 +309,7 @@ public class ConfigValues {
 							this.f_announce = false;
 							this.g_announce_size = 1.5f;
 							this.h_sound = false;
-							this.i_sound_location = "wynnexp:drum";
+							this.i_sound_location = "wyntils:drum";
 							break;
 						case 4:
 							this.a_nameplate = true;
@@ -320,7 +320,7 @@ public class ConfigValues {
 							this.f_announce = true;
 							this.g_announce_size = 2.0f;
 							this.h_sound = true;
-							this.i_sound_location = "wynnexp:legendary";
+							this.i_sound_location = "wyntils:legendary";
 							break;
 						case 5:
 							this.a_nameplate = true;
@@ -331,7 +331,7 @@ public class ConfigValues {
 							this.f_announce = true;
 							this.g_announce_size = 4.0f;
 							this.h_sound = true;
-							this.i_sound_location = "wynnexp:mythic";
+							this.i_sound_location = "wyntils:mythic";
 							break;
 					}
 				}
@@ -452,7 +452,7 @@ public class ConfigValues {
 
 						@Config.LangKey("config.expansion.items.powders.sound.location")
 						@Config.Comment("Show Nameplate for T6 powders")
-						public String f_sound_location = "wynnexp:drum";
+						public String f_sound_location = "wyntils:drum";
 
 						private Powder(int Tier){
 							switch (Tier) {
