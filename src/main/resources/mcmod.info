@@ -1,7 +1,7 @@
 [
   {
-  "modid": "wynnexp",
-  "name": "WynncraftExpansion",
+  "modid": "wynutil",
+  "name": "Wynutil",
   "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",

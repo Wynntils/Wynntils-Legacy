@@ -41,7 +41,7 @@ public class ChatFormatter {
 
         String msgRaw = e.getMessage().getFormattedText();
 
-        if(ConfigValues.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
+        if (ConfigValues.Expansion.Chats.MainChat.mentionNotification && msgRaw.contains("/") && msgRaw.contains(":")) {
             String[] mm = msgRaw.split(":");
             if(mm.length < 2) {
                 return;
@@ -83,8 +83,12 @@ public class ChatFormatter {
 
         msgRaw = e.getMessage().getFormattedText();
 
-        if (e.getMessage().getFormattedText().equals(lastMessage) && ConfigValues.wynnExpansion.chat.filter) {
+        if (e.getMessage().getFormattedText().equals(lastMessage)) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
+
+            if (!ConfigValues.wynnExpansion.chat.main.filter) {
+                return;
+            }
 
             if(ch == null) {
                 return;

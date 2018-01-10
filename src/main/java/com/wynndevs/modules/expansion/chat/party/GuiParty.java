@@ -64,7 +64,7 @@ public class GuiParty extends Gui {
         String formatted = event.getMessage().getFormattedText();
         String message = TextFormatting.getTextWithoutFormattingCodes(formatted).replace("&", "\u00A7");
         if (type == 1) {
-            if (message.startsWith("[") && !message.contains("logged in!")) { //Add toggle to turn on and off chat here
+            if (message.startsWith("[") && !message.contains("logged in!") && !message.contains("[!]")) { //Add toggle to turn on and off chat here
                 int index = formatted.indexOf('\u00A7', formatted.indexOf('['));
                 int indexEndbracket = formatted.indexOf(']');
                 if (indexEndbracket > index) {

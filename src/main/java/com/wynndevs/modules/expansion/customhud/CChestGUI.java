@@ -29,11 +29,13 @@ import java.util.List;
 public class CChestGUI extends GuiChest {
 
     IInventory lowerInv;
+    IInventory upperInv;
 
     public CChestGUI(IInventory upperInv, IInventory lowerInv) {
         super(upperInv, lowerInv);
 
         this.lowerInv = lowerInv;
+        this.upperInv = upperInv;
     }
 
     @Override
@@ -77,15 +79,15 @@ public class CChestGUI extends GuiChest {
 
                 if(lore.contains("Reward")) {
                     continue;
-                }else if(lore.contains("§bLegendary") && ConfigValues.inventoryConfig.highlightLegendary) {
+                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
                     r = 0; g = 1; b = 1; alpha = .4f;
-                }else if(lore.contains("§5Mythic") && ConfigValues.inventoryConfig.highlightMythic) {
+                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.chestInv.highlightMythic) {
                     r = 0.3; g = 0; b = 0.3; alpha = .6f;
-                }else if(lore.contains("§dRare") && ConfigValues.inventoryConfig.highlightRare) {
+                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.chestInv.highlightRare) {
                     r = 1; g = 0; b = 1; alpha = .4f;
-                }else if(lore.contains("§eUnique") && ConfigValues.inventoryConfig.highlightUnique) {
+                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.chestInv.highlightUnique) {
                     r = 1; g = 1; b = 0; alpha = .4f;
-                }else if(lore.contains("§aSet") && ConfigValues.inventoryConfig.highlightSet) {
+                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.chestInv.highlightSet) {
                     r = 0; g = 1; b = 0; alpha = .4f;
                 }else{
                     continue;
@@ -101,12 +103,101 @@ public class CChestGUI extends GuiChest {
                 }
                 GL11.glEnd();
             }
+            amount = -1;
+            int invfloor = 0;
+            boolean accessories = ConfigValues.inventoryConfig.chestInv.highlightAccessories;
+            boolean hotbar = ConfigValues.inventoryConfig.chestInv.highlightHotbar;
+            boolean main = ConfigValues.inventoryConfig.chestInv.highlightMain;
+            for (int i = 0; i <= upperInv.getSizeInventory(); i++) {
+                ItemStack is = upperInv.getStackInSlot(i);
+
+                amount++;
+                if (amount > 8) {
+                    amount = 0;
+                    floor++;
+                    invfloor++;
+                }
+
+                int offset = -5;
+
+                if (!accessories && invfloor == 1 && amount < 4) {
+                    continue;
+                }
+                if (!hotbar && invfloor == 0) {
+                    continue;
+                }
+                if (!main) {
+                    if (invfloor == 1 && amount > 3) {
+                        continue;
+                    } else if (invfloor != 1 && invfloor < 4 && invfloor != 0) {
+                        continue;
+                    }
+                }
+
+                if (invfloor >= 4) {
+                    offset = 50;
+                    continue;
+                }
+                if (invfloor == 0) {
+                    offset = 71;
+                }
+
+                if (is == null || is.isEmpty() || !is.hasDisplayName()) {
+                    continue;
+                }
+
+                double r, g, b;
+                float alpha;
+
+                String lore = getStringLore(is);
+
+                if (lore.contains("Reward")) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
+                    r = 0;
+                    g = 1;
+                    b = 1;
+                    alpha = .4f;
+                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.chestInv.highlightMythic) {
+                    r = 0.3;
+                    g = 0;
+                    b = 0.3;
+                    alpha = .6f;
+                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.chestInv.highlightRare) {
+                    r = 1;
+                    g = 0;
+                    b = 1;
+                    alpha = .4f;
+                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.chestInv.highlightUnique) {
+                    r = 1;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.chestInv.highlightSet) {
+                    r = 0;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                } else {
+                    continue;
+                }
+
+                GL11.glBegin(GL11.GL_QUADS);
+                {
+                    GL11.glColor4d(r, g, b, alpha);
+                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
+                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
+                }
+                GL11.glEnd();
+            }
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
         GL11.glPopMatrix();
 
-        if(!ConfigValues.inventoryConfig.allowEmeraldCount) {
+        if (!ConfigValues.inventoryConfig.chestInv.allowEmeraldCount) {
             return;
         }
 

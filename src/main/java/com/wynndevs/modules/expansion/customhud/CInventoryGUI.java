@@ -55,12 +55,22 @@ public class CInventoryGUI extends GuiInventory {
 
 
         GL11.glPushMatrix();
-        if (false) {
+        if (true) {
             GL11.glTranslatef(0, 10, 0F);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
 
             int amount = -1;
+            int extra = 0;
             int floor = 0;
+            int armorfloor = 0;
+            boolean armorcheck = false;
+
+            boolean accessories = ConfigValues.inventoryConfig.playerInv.highlightAccessories;
+            boolean hotbar = ConfigValues.inventoryConfig.playerInv.highlightHotbar;
+            boolean armor = ConfigValues.inventoryConfig.playerInv.highlightArmor;
+            boolean main = ConfigValues.inventoryConfig.playerInv.highlightMain;
+
+
             for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
                 ItemStack is = player.inventory.getStackInSlot(i);
 
@@ -70,9 +80,21 @@ public class CInventoryGUI extends GuiInventory {
                     floor++;
                 }
 
-                if (is == null || is.isEmpty() || !is.hasDisplayName()) {
+
+                if (!accessories && floor == 1 && amount < 4) {
                     continue;
                 }
+                if (!hotbar && floor == 0) {
+                    continue;
+                }
+                if (!main) {
+                    if (floor == 1 && amount > 3) {
+                        continue;
+                    } else if (floor != 1 && floor < 4 && floor != 0) {
+                        continue;
+                    }
+                }
+
 
                 double r, g, b;
                 float alpha;
@@ -81,44 +103,75 @@ public class CInventoryGUI extends GuiInventory {
 
                 if (lore.contains("Reward")) {
                     continue;
-                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.highlightLegendary) {
+                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.playerInv.highlightLegendary) {
                     r = 0;
                     g = 1;
                     b = 1;
                     alpha = .4f;
-                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.highlightMythic) {
+                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.playerInv.highlightMythic) {
                     r = 0.3;
                     g = 0;
                     b = 0.3;
                     alpha = .6f;
-                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.highlightRare) {
+                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.playerInv.highlightRare) {
                     r = 1;
                     g = 0;
                     b = 1;
                     alpha = .4f;
-                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.highlightUnique) {
+                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.playerInv.highlightUnique) {
                     r = 1;
                     g = 1;
                     b = 0;
                     alpha = .4f;
-                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.highlightSet) {
+                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.playerInv.highlightSet) {
                     r = 0;
                     g = 1;
                     b = 0;
                     alpha = .4f;
+                } else if (floor >= 4) {
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                    alpha = 0f;
                 } else {
                     continue;
                 }
+                int offset = floor == 0 ? 124 : 48;
 
-                GL11.glBegin(GL11.GL_QUADS);
-                {
-                    GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + (18 * amount), 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), 24 + (18 * floor));
-                    GL11.glVertex2f(24 + (18 * amount), 24 + (18 * floor));
+                if (floor >= 4 && amount < 4 && armor) {
+                    armorcheck = true;
+                    offset = 62;
+                    floor++;
+                    armorfloor++;
+                } else if (floor >= 4 && amount == 4) {
+                    armorcheck = true;
+                    extra = 69;
+                    offset = 116;
+                    floor++;
+                } else if (floor >= 4 && amount > 4) {
+                    continue;
                 }
-                GL11.glEnd();
+                if (!armorcheck) {
+                    GL11.glBegin(GL11.GL_QUADS);
+                    {
+                        GL11.glColor4d(r, g, b, alpha);
+                        GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
+                        GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
+                        GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
+                        GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
+                    }
+                    GL11.glEnd();
+                } else {
+                    GL11.glBegin(GL11.GL_QUADS);
+                    {
+                        GL11.glColor4d(r, g, b, alpha);
+                        GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
+                        GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
+                        GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
+                        GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
+                    }
+                    GL11.glEnd();
+                }
             }
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -126,7 +179,7 @@ public class CInventoryGUI extends GuiInventory {
         GL11.glPopMatrix();
 
 
-        if(!ConfigValues.inventoryConfig.allowEmeraldCount) {
+        if (!ConfigValues.inventoryConfig.playerInv.allowEmeraldCount) {
             return;
         }
 
@@ -338,7 +391,7 @@ public class CInventoryGUI extends GuiInventory {
                 int percent = (int) ((pVal / intVal) * 100);
 
                 String color = "§";
-                
+
                 if(amount < 0) percent = 100 - percent;
 
                 if(percent >= 97) {

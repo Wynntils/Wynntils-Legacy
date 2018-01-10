@@ -92,7 +92,7 @@ public class GuiGuild extends Gui {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (!ExpReference.inGame() || !ConfigValues.wynnExpansion.chat.party.a_enabled) return;
+        if (!ExpReference.inGame() || !ConfigValues.wynnExpansion.chat.guild.a_enabled) return;
         if (KeyBindings.OPEN_GUILD_CHAT.isPressed()) {
             if (this.chat.chatClosed() && this.mc.currentScreen == null) {
                 this.chat.getChatBox().initGui();
