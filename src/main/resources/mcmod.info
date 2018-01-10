@@ -1,7 +1,7 @@
 [
   {
-  "modid": "wynutil",
-  "name": "Wynutil",
+  "modid": "wyntils",
+  "name": "Wyntils",
   "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
