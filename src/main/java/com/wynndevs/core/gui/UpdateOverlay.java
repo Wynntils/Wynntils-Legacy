@@ -30,7 +30,7 @@ public class UpdateOverlay extends WRPGui {
 
         drawRect(0, 0 - size, 203, 43 - size, -2500134);
         drawRect(0, 0 - size, 200, 40 - size, -10066329);
-        drawString("§a§lWynutils", 5, 3 - size, -1);
+        drawString("§a§lWyntils", 5, 3 - size, -1);
         drawString("Update §av" + WebManager.getUpdate().getLatestUpdate() + "§f is available!", 8, 17 - size, -1);
         drawString("§7Currently using: v" + Reference.VERSION, 8, 27 - size, -1);
         if(size > 0 && !loaded) {
