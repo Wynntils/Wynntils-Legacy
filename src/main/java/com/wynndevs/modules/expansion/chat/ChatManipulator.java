@@ -1,9 +1,10 @@
-package com.wynndevs.modules.expansion.misc;
+package com.wynndevs.modules.expansion.chat;
 
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
+import com.wynndevs.modules.expansion.misc.Announcments;
 import com.wynndevs.modules.expansion.partyfriendsguild.WarTimer;
 import com.wynndevs.modules.expansion.webapi.ItemDB;
 import net.minecraft.util.ResourceLocation;

@@ -2,6 +2,9 @@ package com.wynndevs.modules.expansion.options;
 
 import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
+import com.wynndevs.modules.expansion.WynnExpansion;
+import com.wynndevs.modules.expansion.chat.ChatManipulator;
+import com.wynndevs.modules.expansion.chat.ChatTimeStamp;
 import com.wynndevs.modules.expansion.experience.ExperienceUI;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
 import com.wynndevs.modules.expansion.experience.SoulpointTime;
@@ -10,7 +13,6 @@ import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
 import com.wynndevs.modules.expansion.misc.*;
 import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.webapi.Territory;
-import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -41,8 +43,10 @@ public class Config {
 			
 			if (!config.getString("VERSION", "VERSION", "none", "").equals(Reference.VERSION)){
 				//if (config.getString("VERSION", "VERSION", "none", "").equals("none")) {FirstInstall = true;};
-				if (config.getString("VERSION", "VERSION", "none", "").equals("0.024")) {config.get("WarHornAttack", "Modules", true).set(true);};
-				
+				if (config.getString("VERSION", "VERSION", "none", "").equals("0.024")) {
+					config.get("WarHornAttack", "Modules", true).set(true);
+				}
+
 				config.get("VERSION", "VERSION", "none", "").set(Reference.VERSION);
 				ShowUpdateMessages = true;
 				config.save();

@@ -2,6 +2,9 @@ package com.wynndevs.modules.expansion.options;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
+import com.wynndevs.modules.expansion.WynnExpansion;
+import com.wynndevs.modules.expansion.chat.ChatManipulator;
+import com.wynndevs.modules.expansion.chat.ChatTimeStamp;
 import com.wynndevs.modules.expansion.experience.ExperienceUI;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
 import com.wynndevs.modules.expansion.experience.SoulpointTime;
@@ -11,7 +14,6 @@ import com.wynndevs.modules.expansion.misc.*;
 import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
 import com.wynndevs.modules.expansion.webapi.Territory;
-import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -20,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -464,11 +465,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		tglAttackColourTimer.active = GuildAttackTimer.AttackColourTimer;
 
 		this.drawCenteredStringPlain(mc.fontRenderer, page + "/" + maxPages, this.width / 2, 53, Integer.parseInt("858585", 16));
-		if (EnableEgg){
-			btnEgg.visible = true;
-		}else{
-			btnEgg.visible = false;
-		}
+		btnEgg.visible = EnableEgg;
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -488,7 +485,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		}
 	}
 
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button){
 		if (button.enabled) {
 			switch (button.id) {
 			case -1:

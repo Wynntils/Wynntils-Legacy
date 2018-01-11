@@ -4,6 +4,7 @@ import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.modules.expansion.chat.ChatFormatter;
+import com.wynndevs.modules.expansion.chat.ChatManipulator;
 import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
 import com.wynndevs.modules.expansion.chat.guild.GuildChat;
 import com.wynndevs.modules.expansion.chat.party.GuiParty;

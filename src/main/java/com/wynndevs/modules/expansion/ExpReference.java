@@ -2,7 +2,7 @@ package com.wynndevs.modules.expansion;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.misc.ChatTimeStamp;
+import com.wynndevs.modules.expansion.chat.ChatTimeStamp;
 import net.minecraft.util.text.ITextComponent;
 
 public class ExpReference {

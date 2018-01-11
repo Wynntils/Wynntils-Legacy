@@ -2,8 +2,6 @@ package com.wynndevs.modules.expansion.chat;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
-import com.wynndevs.modules.expansion.misc.ChatReformater;
-import com.wynndevs.modules.expansion.misc.ChatTimeStamp;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;

@@ -1,4 +1,4 @@
-package com.wynndevs.modules.expansion.misc;
+package com.wynndevs.modules.expansion.chat;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
