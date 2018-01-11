@@ -89,13 +89,13 @@ public class CChestGUI extends GuiChest {
                     int count = Integer.parseInt(numbers[0]);
                     is.setCount(count == 0 ? 1 : count);
                 }
-                if (lore.contains("§6Epic")) {
+                if (lore.contains("§6Epic")) { //TODO add to settings
                     r = 1;
                     g = 0.666;
                     b = 0;
                     alpha = .4f;
                     is.setCount(1);
-                } else if (lore.contains("§cGodly")) {
+                } else if (lore.contains("§cGodly")) {//TODO add to settings
                     r = 1;
                     g = 0;
                     b = 0;
@@ -131,7 +131,7 @@ public class CChestGUI extends GuiChest {
                     b = 0;
                     alpha = .4f;
                     is.setCount(1);
-                } else if (lore.contains("§fCommon")) {
+                } else if (lore.contains("§fCommon")) {//TODO add to settings
                     r = 1;
                     g = 1;
                     b = 1;

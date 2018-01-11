@@ -8,8 +8,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -74,6 +78,81 @@ public class HudOverlay extends WRPGui {
                 return "N";
         }
     }
+
+    private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onRender(RenderGameOverlayEvent.Pre e){
+        if (!e.isCancelable()) {
+            return;
+        }
+
+
+        //blocking
+        if (e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR || e.getType() == RenderGameOverlayEvent.ElementType.AIR) {
+            e.setCanceled(true);
+            return;
+        }
+
+        //removing action bar text
+        if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            String actionBar = getCurrentActionBar();
+            if (!actionBar.equalsIgnoreCase("")) {
+                lastActionBar = actionBar;
+
+                //why i need this time? just to get the actionbar timeout
+                lastActionBarTime = System.currentTimeMillis();
+            }
+            return;
+        }
+    }
+
+
+    public boolean renderItemName(ScaledResolution scaledRes){
+        mc.gameSettings.heldItemTooltips = false;
+        try {
+            int remainingHighlightTicks = (int) ReflectionHelper.findField(GuiIngame.class, "remainingHighlightTicks", "field_92017_k").get(Minecraft.getMinecraft().ingameGUI);
+            ItemStack highlightingItemStack = (ItemStack) ReflectionHelper.findField(GuiIngame.class, "highlightingItemStack", "field_92016_l").get(Minecraft.getMinecraft().ingameGUI);
+
+            if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
+                String s = highlightingItemStack.getDisplayName();
+
+                if (highlightingItemStack.hasDisplayName()) {
+                    s = TextFormatting.ITALIC + s;
+                }
+
+                int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2;
+                int j = scaledRes.getScaledHeight() - 65;
+
+                if (!this.mc.playerController.shouldDrawHUD()) {
+                    j += 14;
+                }
+
+                int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
+
+                if (k > 255) {
+                    k = 255;
+                }
+
+                if (k > 0) {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableBlend();
+                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                    mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
+                    GlStateManager.disableBlend();
+                    GlStateManager.popMatrix();
+                    return true;
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    float ticks = 0.0f;
+    float[] rgb = new float[]{255f / 255f, 85f / 255f, 85f / 255f, 1f};
+    private float prevVignetteBrightness = 1.0f;
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onPreRender(RenderGameOverlayEvent.Post e){
@@ -210,6 +289,12 @@ public class HudOverlay extends WRPGui {
 
             boolean preference = false;
 
+            float modifier = 0.123f;
+            double scale = (mc.player.getHealth() / mc.player.getMaxHealth());
+            if (scale <= 0.9f)
+                renderVignette(mc.player.getBrightness(e.getPartialTicks()), (float) (modifier / scale));
+
+
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (lastActionBar.contains("%")) {
@@ -244,74 +329,51 @@ public class HudOverlay extends WRPGui {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void onRender(RenderGameOverlayEvent.Pre e){
-        if (!e.isCancelable()) {
+    public void renderVignette(float lightLevel, float scale){
+
+        float[] rgb = new float[]{255f / 255f, 85f / 255f, 85f / 255f, 1f};
+
+        if (rgb == null)
             return;
+
+        ScaledResolution scaledRes = new ScaledResolution(mc);
+
+        lightLevel = 1.0F - lightLevel;
+        lightLevel = MathHelper.clamp(lightLevel, 0.0F, 1.0F);
+
+        float f = (float) 4;
+        double d0 = Math.min(1000.0f / 10.0f * 10.0f * 1000.0D, Math.abs(1.0f - 30.0f));
+        double d1 = Math.max(200.0f + Math.sin(ticks) * 180f, d0);
+
+        if ((double) f < d1) {
+            f = 1.0F - (float) ((double) f / d1);
+        } else {
+            f = 0.0F;
         }
 
+        this.prevVignetteBrightness = (float) ((double) this.prevVignetteBrightness + (double) (lightLevel - this.prevVignetteBrightness) * 0.01D);
+        GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
 
-        //blocking
-        if (e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR || e.getType() == RenderGameOverlayEvent.ElementType.AIR) {
-            e.setCanceled(true);
-            return;
+        if (f > 0.0F) {
+            GlStateManager.color(rgb[0] * scale, rgb[1] * scale, rgb[2] * scale, 1.0f);
+        } else {
+            GlStateManager.color(this.prevVignetteBrightness, this.prevVignetteBrightness, this.prevVignetteBrightness, 1.0F);
         }
 
-        //removing action bar text
-        if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            String actionBar = getCurrentActionBar();
-            if (!actionBar.equalsIgnoreCase("")) {
-                lastActionBar = actionBar;
-
-                //why i need this time? just to get the actionbar timeout
-                lastActionBarTime = System.currentTimeMillis();
-            }
-            return;
-        }
+        this.mc.getTextureManager().bindTexture(VIGNETTE_TEX_PATH);
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        vertexbuffer.pos(0.0D, (double) scaledRes.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
+        vertexbuffer.pos((double) scaledRes.getScaledWidth(), (double) scaledRes.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
+        vertexbuffer.pos((double) scaledRes.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
+        vertexbuffer.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.depthMask(true);
+        GlStateManager.enableDepth();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
-
-
-    public boolean renderItemName(ScaledResolution scaledRes){
-        mc.gameSettings.heldItemTooltips = false;
-        try {
-            int remainingHighlightTicks = (int) ReflectionHelper.findField(GuiIngame.class, "remainingHighlightTicks", "field_92017_k").get(Minecraft.getMinecraft().ingameGUI);
-            ItemStack highlightingItemStack = (ItemStack) ReflectionHelper.findField(GuiIngame.class, "highlightingItemStack", "field_92016_l").get(Minecraft.getMinecraft().ingameGUI);
-
-            if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
-                String s = highlightingItemStack.getDisplayName();
-
-                if (highlightingItemStack.hasDisplayName()) {
-                    s = TextFormatting.ITALIC + s;
-                }
-
-                int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2;
-                int j = scaledRes.getScaledHeight() - 65;
-
-                if (!this.mc.playerController.shouldDrawHUD()) {
-                    j += 14;
-                }
-
-                int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
-
-                if (k > 255) {
-                    k = 255;
-                }
-
-                if (k > 0) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
-                    GlStateManager.disableBlend();
-                    GlStateManager.popMatrix();
-                    return true;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
 }

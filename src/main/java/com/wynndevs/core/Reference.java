@@ -1,7 +1,6 @@
 package com.wynndevs.core;
 
 import com.wynndevs.ModCore;
-import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
