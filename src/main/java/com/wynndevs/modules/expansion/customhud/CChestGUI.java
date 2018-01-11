@@ -7,6 +7,7 @@ import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.webapi.WebManager;
 import com.wynndevs.webapi.profiles.item.ItemGuessProfile;
 import com.wynndevs.webapi.profiles.item.ItemProfile;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
@@ -31,7 +32,7 @@ public class CChestGUI extends GuiChest {
     IInventory lowerInv;
     IInventory upperInv;
 
-    public CChestGUI(IInventory upperInv, IInventory lowerInv) {
+    public CChestGUI(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
 
         this.lowerInv = lowerInv;
@@ -39,7 +40,7 @@ public class CChestGUI extends GuiChest {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks){
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         Slot slot = getSlotUnderMouse();
@@ -50,7 +51,7 @@ public class CChestGUI extends GuiChest {
     }
 
     @Override
-    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    public void drawGuiContainerForegroundLayer(int mouseX, int mouseY){
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         GL11.glPushMatrix();
@@ -60,43 +61,90 @@ public class CChestGUI extends GuiChest {
 
             int amount = -1;
             int floor = 0;
-            for(int i = 0; i <= lowerInv.getSizeInventory(); i++) {
+            for (int i = 0; i <= lowerInv.getSizeInventory(); i++) {
                 ItemStack is = lowerInv.getStackInSlot(i);
 
                 amount++;
-                if(amount > 8) {
+                if (amount > 8) {
                     amount = 0;
                     floor++;
                 }
 
-                if(is == null || is.isEmpty() || !is.hasDisplayName()) {
+                if (is == null || is.isEmpty() || !is.hasDisplayName()) {
                     continue;
                 }
 
-                double r, g, b; float alpha;
+                double r, g, b;
+                float alpha;
 
                 String lore = getStringLore(is);
 
-                if(lore.contains("Reward")) {
-                    continue;
+                if (lore.contains("points")) {
+                    lore = lore.replace("§", "");
+                    String[] tokens = lore.split("[0-9]{1,3} points");
+                    for (int j = 0; j <= tokens.length - 1; j++) {
+                        lore = lore.replace(tokens[j], "");
+                    }
+                    String[] numbers = lore.split(" ");
+                    int count = Integer.parseInt(numbers[0]);
+                    is.setCount(count == 0 ? 1 : count);
+                }
+                if (lore.contains("§6Epic")) {
+                    r = 1;
+                    g = 0.666;
+                    b = 0;
+                    alpha = .4f;
+                    is.setCount(1);
+                } else if (lore.contains("§cGodly")) {
+                    r = 1;
+                    g = 0;
+                    b = 0;
+                    alpha = .6f;
+                    is.setCount(1);
                 } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
-                    r = 0; g = 1; b = 1; alpha = .4f;
+                    r = 0;
+                    g = 1;
+                    b = 1;
+                    alpha = .4f;
+                    is.setCount(1);
                 } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.chestInv.highlightMythic) {
-                    r = 0.3; g = 0; b = 0.3; alpha = .6f;
+                    r = 0.3;
+                    g = 0;
+                    b = 0.3;
+                    alpha = .6f;
+                    is.setCount(1);
                 } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.chestInv.highlightRare) {
-                    r = 1; g = 0; b = 1; alpha = .4f;
+                    r = 1;
+                    g = 0;
+                    b = 1;
+                    alpha = .4f;
+                    is.setCount(1);
                 } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.chestInv.highlightUnique) {
-                    r = 1; g = 1; b = 0; alpha = .4f;
+                    r = 1;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                    is.setCount(1);
                 } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.chestInv.highlightSet) {
-                    r = 0; g = 1; b = 0; alpha = .4f;
-                }else{
+                    r = 0;
+                    g = 1;
+                    b = 0;
+                    alpha = .4f;
+                    is.setCount(1);
+                } else if (lore.contains("§fCommon")) {
+                    r = 1;
+                    g = 1;
+                    b = 1;
+                    alpha = .4f;
+                    is.setCount(1);
+                } else {
                     continue;
                 }
 
                 GL11.glBegin(GL11.GL_QUADS);
                 {
                     GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + (18 * amount) , 8 + (18 * floor));
+                    GL11.glVertex2f(24 + (18 * amount), 8 + (18 * floor));
                     GL11.glVertex2f(8 + (18 * amount), 8 + (18 * floor));
                     GL11.glVertex2f(8 + (18 * amount), 24 + (18 * floor));
                     GL11.glVertex2f(24 + (18 * amount), 24 + (18 * floor));
@@ -205,22 +253,22 @@ public class CChestGUI extends GuiChest {
         int liquid = 0;
         int emeralds = 0;
 
-        for(int i = 0; i < lowerInv.getSizeInventory(); i++) {
+        for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
             ItemStack it = lowerInv.getStackInSlot(i);
-            if(it == null || it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 continue;
             }
 
-            if(it.getItem() == Items.EMERALD) {
-                emeralds+= it.getCount();
+            if (it.getItem() == Items.EMERALD) {
+                emeralds += it.getCount();
                 continue;
             }
-            if(it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                blocks+= it.getCount();
+            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                blocks += it.getCount();
                 continue;
             }
-            if(it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                liquid+= it.getCount();
+            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                liquid += it.getCount();
                 continue;
             }
         }
@@ -230,23 +278,23 @@ public class CChestGUI extends GuiChest {
         GlStateManager.disableLighting();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
-        if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             String value = "$" + CInventoryGUI.decimalFormat.format(money);
             mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
-        }else{
+        } else {
 
-            int leAmount = (int)Math.floor(money / 4096);
-            money-= leAmount * 4096;
+            int leAmount = (int) Math.floor(money / 4096);
+            money -= leAmount * 4096;
 
-            int blockAmount = (int)Math.floor(money / 64);
-            money-= blockAmount * 64;
+            int blockAmount = (int) Math.floor(money / 64);
+            money -= blockAmount * 64;
 
             String value = "$" + (leAmount > 0 ? leAmount + "LE " : "") + (blockAmount > 0 ? blockAmount + "EB " : "") + (money > 0 ? money + "E" : "");
-            if(value.equalsIgnoreCase("$")) {
+            if (value.equalsIgnoreCase("$")) {
                 value = "$0";
             }
 
-            if(value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
+            if (value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
                 value = value.substring(0, value.length() - 1);
             }
 
@@ -256,22 +304,29 @@ public class CChestGUI extends GuiChest {
         GlStateManager.enableLighting();
     }
 
-    public String getStringLore(ItemStack is) {
+    public String getStringLore(ItemStack is){
         String toReturn = "";
 
-        for(String x : MarketUtils.getLore(is)) {
-            toReturn+=x;
+        for (String x : MarketUtils.getLore(is)) {
+            toReturn += x;
         }
 
         return toReturn;
     }
 
-    public void drawHoverGuess(ItemStack stack) {
-        if(stack == null || !stack.hasDisplayName() || stack.isEmpty()) {
+    public void drawString(FontRenderer fontRendererIn, String text, int x, int y, float size, int color){
+        GL11.glScalef(size, size, size);
+        float mSize = (float) Math.pow(size, -1);
+        this.drawString(fontRendererIn, text, Math.round(x / size), Math.round(y / size), color);
+        GL11.glScalef(mSize, mSize, mSize);
+    }
+
+    public void drawHoverGuess(ItemStack stack){
+        if (stack == null || !stack.hasDisplayName() || stack.isEmpty()) {
             return;
         }
 
-        if(!stack.getDisplayName().contains("Unidentified")) {
+        if (!stack.getDisplayName().contains("Unidentified")) {
             return;
         }
 
@@ -279,45 +334,50 @@ public class CChestGUI extends GuiChest {
         String itemType = displayWC.split(" ")[1];
         String level = null;
 
-        List<String> lore = MarketUtils.getLore(stack);
+        List <String> lore = MarketUtils.getLore(stack);
 
-        for(int i = 0; i< lore.size(); i++) {
-            if(lore.get(i).contains("Lv. Range")) {
+        for (int i = 0; i < lore.size(); i++) {
+            if (lore.get(i).contains("Lv. Range")) {
                 level = RichUtils.stripColor(lore.get(i)).replace("- Lv. Range: ", "");
                 break;
             }
         }
 
-        if(itemType == null || level == null) {
+        if (itemType == null || level == null) {
             return;
         }
 
-        if(!WebManager.getItemGuesses().containsKey(level)) {
+        if (!WebManager.getItemGuesses().containsKey(level)) {
             return;
         }
 
         ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
-        if(!igp.getItems().containsKey(itemType)) {
+        if (!igp.getItems().containsKey(itemType)) {
             return;
         }
 
         String items = null;
         String color = "§";
 
-        if(stack.getDisplayName().startsWith("§b") && igp.getItems().get(itemType).containsKey("Legendary")) {
-            items = igp.getItems().get(itemType).get("Legendary"); color+="b";
-        }else if(stack.getDisplayName().startsWith("§d") && igp.getItems().get(itemType).containsKey("Rare")) {
-            items = igp.getItems().get(itemType).get("Rare"); color+="d";
-        }else if(stack.getDisplayName().startsWith("§e") && igp.getItems().get(itemType).containsKey("Unique")) {
-            items = igp.getItems().get(itemType).get("Unique"); color+="e";
-        }else if(stack.getDisplayName().startsWith("§5") && igp.getItems().get(itemType).containsKey("Mythic")) {
-            items = igp.getItems().get(itemType).get("Mythic"); color+="5";
-        }else if(stack.getDisplayName().startsWith("§a") && igp.getItems().get(itemType).containsKey("Set")) {
-            items = igp.getItems().get(itemType).get("Set"); color+="a";
+        if (stack.getDisplayName().startsWith("§b") && igp.getItems().get(itemType).containsKey("Legendary")) {
+            items = igp.getItems().get(itemType).get("Legendary");
+            color += "b";
+        } else if (stack.getDisplayName().startsWith("§d") && igp.getItems().get(itemType).containsKey("Rare")) {
+            items = igp.getItems().get(itemType).get("Rare");
+            color += "d";
+        } else if (stack.getDisplayName().startsWith("§e") && igp.getItems().get(itemType).containsKey("Unique")) {
+            items = igp.getItems().get(itemType).get("Unique");
+            color += "e";
+        } else if (stack.getDisplayName().startsWith("§5") && igp.getItems().get(itemType).containsKey("Mythic")) {
+            items = igp.getItems().get(itemType).get("Mythic");
+            color += "5";
+        } else if (stack.getDisplayName().startsWith("§a") && igp.getItems().get(itemType).containsKey("Set")) {
+            items = igp.getItems().get(itemType).get("Set");
+            color += "a";
         }
 
-        if(items != null) {
-            if(lore.get(lore.size() - 1).contains("7Possibilities")) {
+        if (items != null) {
+            if (lore.get(lore.size() - 1).contains("7Possibilities")) {
                 return;
             }
             lore.add("§a- §7Possibilities: " + color + items);
@@ -334,66 +394,66 @@ public class CChestGUI extends GuiChest {
         }
     }
 
-    public void drawHoverItem(ItemStack stack) {
-        if(!WebManager.getItems().containsKey(RichUtils.stripColor(stack.getDisplayName()))) {
+    public void drawHoverItem(ItemStack stack){
+        if (!WebManager.getItems().containsKey(RichUtils.stripColor(stack.getDisplayName()))) {
             return;
         }
         ItemProfile wItem = WebManager.getItems().get(RichUtils.stripColor(stack.getDisplayName()));
 
-        if(wItem.isIdentified()) {
+        if (wItem.isIdentified()) {
             return;
         }
 
-        List<String> actualLore = MarketUtils.getLore(stack);
-        for(int i = 0; i < actualLore.size(); i++) {
+        List <String> actualLore = MarketUtils.getLore(stack);
+        for (int i = 0; i < actualLore.size(); i++) {
             String lore = actualLore.get(i);
             String wColor = RichUtils.stripColor(lore);
 
-            if(lore.contains("Set") && lore.contains("Bonus")) {
+            if (lore.contains("Set") && lore.contains("Bonus")) {
                 break;
             }
 
-            if(!wColor.startsWith("+") && !wColor.startsWith("-")) {
+            if (!wColor.startsWith("+") && !wColor.startsWith("-")) {
                 actualLore.set(i, lore);
                 continue;
             }
 
             String[] values = wColor.split(" ");
 
-            if(values.length < 2) {
+            if (values.length < 2) {
                 actualLore.set(i, lore);
                 continue;
             }
 
             String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ");
 
-            if(pField == null) {
+            if (pField == null) {
                 actualLore.set(i, lore);
                 continue;
             }
 
             boolean raw = !lore.contains("%");
 
-            try{
+            try {
                 int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", ""));
 
                 String fieldName;
-                if(raw) {
+                if (raw) {
                     fieldName = Utils.getFieldName("raw" + pField);
-                    if(fieldName == null) {
+                    if (fieldName == null) {
                         fieldName = Utils.getFieldName(pField);
                     }
-                }else{
+                } else {
                     fieldName = Utils.getFieldName(pField);
                 }
 
-                if(fieldName == null) {
+                if (fieldName == null) {
                     actualLore.set(i, lore);
                     continue;
                 }
 
                 Field f = wItem.getClass().getField(fieldName);
-                if(f == null) {
+                if (f == null) {
                     actualLore.set(i, lore);
                     continue;
                 }
@@ -413,28 +473,30 @@ public class CChestGUI extends GuiChest {
                     actualLore.set(i, lore);
                     continue;
                 }
-                
+
                 double intVal = (double) (max - min);
                 double pVal = (double) (amount - min);
                 int percent = (int) ((pVal / intVal) * 100);
 
                 String color = "§";
 
-                if(amount < 0) percent = 100 - percent;
+                if (amount < 0) percent = 100 - percent;
 
-                if(percent >= 97) {
+                if (percent >= 97) {
                     color += "b";
-                }else if(percent >= 80) {
+                } else if (percent >= 80) {
                     color += "a";
-                }else if(percent >= 30) {
+                } else if (percent >= 30) {
                     color += "e";
-                }else if(percent < 30) {
+                } else if (percent < 30) {
                     color += "c";
                 }
 
-                actualLore.set(i,lore + color + " [" + percent + "%]");
+                actualLore.set(i, lore + color + " [" + percent + "%]");
 
-            }catch (Exception ex) { actualLore.set(i, lore); }
+            } catch (Exception ex) {
+                actualLore.set(i, lore);
+            }
         }
 
         NBTTagCompound nbt = stack.getTagCompound();

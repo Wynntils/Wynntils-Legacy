@@ -101,7 +101,7 @@ public class CInventoryGUI extends GuiInventory {
 
                 String lore = getStringLore(is);
 
-                if (lore.contains("Reward")) {
+                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
                 } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.playerInv.highlightLegendary) {
                     r = 0;
