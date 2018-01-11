@@ -2,7 +2,9 @@ package com.wynndevs.modules.expansion.misc;
 
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
+import com.wynndevs.modules.expansion.partyfriendsguild.WarTimer;
 import com.wynndevs.modules.expansion.webapi.ItemDB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -29,6 +31,13 @@ public class ChatManipulator {
 			RemoveBlank = false;
 		}else if (msg.startsWith("To fix this, add play.wynncraft.com") || msg.startsWith("Still not sure how to do it?")){
 			event.setCanceled(true);
+		}
+
+		if (msg.startsWith("Careful! This territory has") && msg.endsWith("mobs protecting it")) {
+			int mobs = Integer.parseInt(msg.replace("Careful! This territory has", "").replace("mobs protecting it", "").replace(" ", ""));
+			Reference.LOGGER.info("Mobs: " + mobs);
+			WarTimer.mobCount = mobs;
+
 		}
 		
 		if (msg.startsWith("VoxelMap: Unknown world! Please select your current world in the Multiworld screen.")){

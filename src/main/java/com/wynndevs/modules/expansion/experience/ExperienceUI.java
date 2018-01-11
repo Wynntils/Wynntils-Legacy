@@ -130,6 +130,7 @@ public class ExperienceUI extends ModGui {
                     try {
                         if (Exp[1].contains("[Lv. ")) {
                             ExpHUDCombo++;
+//                            WarTimer.mobCount--; // DECREASE MOB COUNT
                             if (KillTimeStamp == 0L) KillTimeStamp = System.currentTimeMillis();
                         }
                     } catch (Exception ignore) {
