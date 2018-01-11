@@ -83,7 +83,7 @@ public class ChatFormatter {
         }
 
         msgRaw = e.getMessage().getFormattedText();
-        Reference.LOGGER.warn(ConfigValues.wynnExpansion.chat.main.filter);
+
         if (ConfigValues.wynnExpansion.chat.main.filter && e.getMessage().getFormattedText().equals(lastMessage)) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
 
@@ -107,7 +107,7 @@ public class ChatFormatter {
                     ChatLine line = oldLines.get(0);
                     Field txt = line.getClass().getDeclaredFields()[1];
                     txt.setAccessible(true);
-                    txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]" + ConfigValues.wynnExpansion.chat.main.filter));
+                    txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]"));
 
                     //refreshing
                     ch.refreshChat();

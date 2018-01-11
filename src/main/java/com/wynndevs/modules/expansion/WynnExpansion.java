@@ -321,46 +321,6 @@ public class WynnExpansion {
 			if (!event.isCanceled()) ChatManipulator.ChatHandler(event);
 		}
 	}
-
-	public static String lastMessage = "";
-	public static int lastAmount = 2;
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void chatSpamFix(ClientChatReceivedEvent e) {
-		if(e.isCanceled() || e.getType() != 1) {
-			return;
-		}
-		if(e.getMessage().getFormattedText().equals(lastMessage)) {
-			GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
-
-			if(ch == null) {
-				return;
-			}
-
-			try{
-				//getting lines
-				Field lField = ch.getClass().getDeclaredFields()[3];
-				lField.setAccessible(true);
-				List<ChatLine> oldLines = (List<ChatLine>)lField.get(ch);
-
-				if(oldLines == null || oldLines.size() <= 0) {
-					return;
-				}
-
-				//updating first message
-				ChatLine line = oldLines.get(0);
-				Field txt = line.getClass().getDeclaredFields()[1];
-				txt.setAccessible(true);
-				txt.set(line, new TextComponentString(lastMessage + " §7[" + lastAmount++ + "x]"));
-
-				//refreshing
-				ch.refreshChat();
-				e.setCanceled(true);
-			}catch (Exception  ex) { ex.printStackTrace(); }
-			return;
-		}
-		lastAmount = 2;
-		lastMessage = e.getMessage().getFormattedText();
-	}
 	
 	@SubscribeEvent
 	public void eventHandler(ConfigChangedEvent event) {
