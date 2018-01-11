@@ -593,7 +593,7 @@ public class ConfigValues {
 		ExperienceUI.ExpFlowSlow = false;
 		ExperienceUI.ExpFlowSmall = true;
 	
-		SpellCastingUI.ShowSpellCastingHUD = true;
+		SpellCastingUI.showSpellCastingHUD = true;
 		ExperienceUI.StaticBarShadow = false;
 		ExperienceUI.SideBarHeaderShadow = true;
 		ExperienceUI.SideBarFeedShadow = true;
@@ -601,8 +601,8 @@ public class ConfigValues {
 		
 	
 		DailyChestReminder.DailyChestReminder = true;
-		SkillpointUI.ShowSkillpoints = true;
-		SoulpointTime.SoulPointTime = true;
+		SkillpointUI.showSkillpoints = true;
+		SoulpointTime.soulPointTime = true;
 		WynnExpansion.InfoOverrideFind = true;
 		WynnExpansion.HeaderVersion = false;
 		WynnExpansion.ShowTPS = false;

@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.misc;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.options.Config;
@@ -24,8 +25,8 @@ public class StickyItems {
 	
 	@SubscribeEvent
 	public void InputEventKeyInputEvent(GuiScreenEvent.KeyboardInputEvent.Pre event){
-		if (ExpReference.inGame()){
-			if ((event.getGui() instanceof GuiContainer) == false || event.getGui().mc == null || event.getGui().mc.player == null){
+		if (Reference.onWorld()){
+			if (!(event.getGui() instanceof GuiContainer) || event.getGui().mc == null || event.getGui().mc.player == null){
 				return;
 			}
 			Slot InvSlot = ((GuiContainer) event.getGui()).getSlotUnderMouse();
@@ -82,8 +83,8 @@ public class StickyItems {
 	private static int LastSlot = -1;
 	@SubscribeEvent
 	public void onMouseInputEventPre(GuiScreenEvent.MouseInputEvent.Pre event){
-		if (ExpReference.inGame()){
-			if ((event.getGui() instanceof GuiContainer) == false || event.getGui().mc == null || event.getGui().mc.player == null){
+		if (Reference.onWorld()){
+			if (!(event.getGui() instanceof GuiContainer) || event.getGui().mc == null || event.getGui().mc.player == null){
 				return;
 			}
 			Slot InvSlot = ((GuiContainer) event.getGui()).getSlotUnderMouse();
@@ -111,7 +112,7 @@ public class StickyItems {
 	public static int DropKeyCode = 0;
 	@SubscribeEvent
 	public void eventHandler(MouseInputEvent event){
-		if (ExpReference.inServer()){
+		if (Reference.onServer()){
 			if (DropKeyCode == 0 && CheckLock(ModCore.mc().player.inventory.currentItem) && ModCore.mc().inGameHasFocus){
 				DropKeyCode = ModCore.mc().gameSettings.keyBindDrop.getKeyCode();
 				ModCore.mc().gameSettings.keyBindDrop.setKeyCode(0);
@@ -161,11 +162,11 @@ public class StickyItems {
 	}
 	
 	private static boolean CheckLock(int Slot) {
-		return (ExpReference.Loaded ? StickySlots[ExpReference.Class][Slot] : true);
+		return (Reference.onWorld() ? StickySlots[ExpReference.Class][Slot] : true);
 	}
 	
 	private static void SetLock(int Slot, boolean Lock) {
-		if (ExpReference.Loaded) {
+		if (Reference.onWorld()) {
 			StickySlots[(UseClassLocks ? ExpReference.Class : 0)][Slot] = Lock;
 		}
 	}

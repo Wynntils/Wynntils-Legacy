@@ -65,7 +65,7 @@ public class WorldItemName {
 	
 	public static void SetupItemTables(){
 		try {
-			ExpReference.ConsoleOut("Retrieving Item database [2]");
+			ExpReference.consoleOut("Retrieving Item database [2]");
 			PotionCheck.clear();
 			PotionFormat.clear();
 			PotionFormatShort.clear();
@@ -112,7 +112,7 @@ public class WorldItemName {
 				}
 			}
 			DataFile.close();
-			ExpReference.ConsoleOut("Item database [2] successfully retrieved");
+			ExpReference.consoleOut("Item database [2] successfully retrieved");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

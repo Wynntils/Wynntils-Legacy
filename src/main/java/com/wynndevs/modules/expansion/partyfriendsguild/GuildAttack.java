@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.webapi.Territory;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
@@ -11,8 +12,8 @@ import net.minecraft.util.text.TextComponentString;
 
 public class GuildAttack {
 	
-	private static SoundEvent Horn = new SoundEvent(new ResourceLocation(ExpReference.MOD_ID, "horn"));
-	private static SoundEvent Drum = new SoundEvent(new ResourceLocation(ExpReference.MOD_ID, "drum"));
+	private static SoundEvent Horn = new SoundEvent(new ResourceLocation(Reference.MOD_ID, "horn"));
+	private static SoundEvent Drum = new SoundEvent(new ResourceLocation(Reference.MOD_ID, "drum"));
 	
 	public static boolean GuildWarWaypoints = false;
 	public static boolean AttackTimer = false;
@@ -41,7 +42,7 @@ public class GuildAttack {
 				}
 				if (GuildWarWaypoints) {
 					if (!CurrentTerritory.HasCoords()) {
-							ExpReference.PostToChat(new TextComponentString(String.valueOf('\u00a7') + "c[Coords not found for " + TerritoryName + "]"));
+							ExpReference.postToChat(new TextComponentString(String.valueOf('\u00a7') + "c[Coords not found for " + TerritoryName + "]"));
 					}else{
 						TimeToChat = (int) Math.ceil(Math.random()*300);
 					}

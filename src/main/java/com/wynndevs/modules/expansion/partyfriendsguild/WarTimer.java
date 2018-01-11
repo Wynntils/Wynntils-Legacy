@@ -27,7 +27,7 @@ public class WarTimer extends ModGui{
 			FontRenderer font = mc.fontRenderer;
 			
 			String Message = "WAR: " + String.valueOf('\u00a7') + "b" + new DecimalFormat("00").format(Math.floor(Time / 60L)) + ':' + new DecimalFormat("00").format(Time % 60L);
-			this.drawString(font, Message, (WarTimerLeft ? 4 : width - ExpReference.GetMsgLength(Message, 2.0f) - 2), 4, 2.0f, Integer.parseInt("00AAAA",16));
+			this.drawString(font, Message, (WarTimerLeft ? 4 : width - ExpReference.getMsgLength(Message, 2.0f) - 2), 4, 2.0f, Integer.parseInt("00AAAA",16));
 		}
 		
 		if (Math.floor(Time / 60L) >= 30L) {

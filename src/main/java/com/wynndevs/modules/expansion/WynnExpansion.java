@@ -1,9 +1,8 @@
 package com.wynndevs.modules.expansion;
 
-import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.core.enums.ModuleResult;
-import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.chat.ChatFormatter;
 import com.wynndevs.modules.expansion.chat.guild.GuiGuild;
 import com.wynndevs.modules.expansion.chat.guild.GuildChat;
@@ -13,7 +12,6 @@ import com.wynndevs.modules.expansion.customhud.CChestGUI;
 import com.wynndevs.modules.expansion.customhud.CInventoryGUI;
 import com.wynndevs.modules.expansion.customhud.HudOverlay;
 import com.wynndevs.modules.expansion.experience.*;
-import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
 import com.wynndevs.modules.expansion.misc.*;
 import com.wynndevs.modules.expansion.options.Config;
 import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions;
@@ -21,23 +19,17 @@ import com.wynndevs.modules.expansion.partyfriendsguild.*;
 import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestBook;
 import com.wynndevs.modules.expansion.questbook.QuestTrackingUI;
-import com.wynndevs.modules.expansion.sound.GuiWynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSound;
 import com.wynndevs.modules.expansion.sound.WynnSounds;
 import com.wynndevs.modules.expansion.webapi.TerritoryUI;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
@@ -47,16 +39,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent.NameFormat;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WynnExpansion {
@@ -65,7 +53,6 @@ public class WynnExpansion {
 	public static boolean UseLegacyExperience = false;
 	public static boolean OptimiseWar = false;
 	public static boolean InfoOverrideFind = false;
-	public static Delay UpdateCheckDelay = new Delay(3630.0f, true);
 	public static boolean PotionShiftOff = false;
 	public static boolean PotionEnabled = false;
 	public static boolean DisableFOV = false;
@@ -82,21 +69,14 @@ public class WynnExpansion {
 	private static GuiParty party;
 
 	public static ModuleResult initModule(FMLPreInitializationEvent event) {
-		
-		ExpReference.VERSION = event.getModMetadata().version;
-		
 		ClientCommandHandler.instance.registerCommand(new CordsCommand());
 		ClientCommandHandler.instance.registerCommand(new InfoCommand());
 		ClientCommandHandler.instance.registerCommand(new TerritoryCommand());
 		
-		Experience.PreInit();
-		LegacyExperience.PreInit();
+		Experience.preInit();
+		LegacyExperience.preInit();
 		
 		WynnSound.wynnSounds = new WynnSounds();
-		
-		// GENERATE DATA LISTS \\
-		//webapi.StartAPI();
-		//////			   \\\\\\
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
@@ -112,41 +92,6 @@ public class WynnExpansion {
 	
 	public static void init(FMLInitializationEvent event) {
 		Config.Refresh();
-	}
-	
-	@SubscribeEvent
-	public void eventHandler(InputEvent.KeyInputEvent event) {
-		if (ExpReference.inGame()) {
-			if (KeyBindings.OPEN_QUEST_BOOK.isPressed()){
-				ModCore.mc().displayGuiScreen(new GuiQuestBook());
-				//ModCore.mc().displayGuiScreen(new GuiSHCMWynnOptions());
-			}
-		}
-		if (KeyBindings.OPEN_WYNN_SOUND.isPressed()) {
-			if (ExpReference.inServer()) {
-				ModCore.mc().displayGuiScreen(new GuiWynnSound());
-			}
-		}
-		if (ExpReference.inGame()) {
-			if (KeyBindings.SPELL_1.isPressed()) {
-				SpellCasting.AddSpell("RLR");
-			}
-			if (KeyBindings.SPELL_2.isPressed()) {
-				SpellCasting.AddSpell("RRR");
-			}
-			if (KeyBindings.SPELL_3.isPressed()) {
-				SpellCasting.AddSpell("RLL");
-			}
-			if (KeyBindings.SPELL_4.isPressed()) {
-				SpellCasting.AddSpell("RRL");
-			}
-			if (KeyBindings.OPEN_PLAYER_MENU.isPressed()){
-				ModCore.mc().displayGuiScreen(new PlayerHomeMenu());
-			}
-			if (KeyBindings.OPEN_ITEM_GUIDE.isPressed()){
-				ModCore.mc().displayGuiScreen(new ItemGuideGUI());
-			}
-		}
 	}
 
 	@SubscribeEvent
@@ -173,13 +118,13 @@ public class WynnExpansion {
 	
 	@SubscribeEvent
 	public void eventHandler(RenderGameOverlayEvent.Text event) {
-		if (ExpReference.inServer()) {
+		if (Reference.onServer()) {
 			if (TerritoryNews) {
 				new TerritoryUI(ModCore.mc());
 			}
 			new GuildAttackTimer(ModCore.mc());
 		}
-		if (ExpReference.inGame()) {
+		if (Reference.onWorld()) {
 			new PartyHUD(ModCore.mc());
 			new SkillpointUI(ModCore.mc());
 			new CompassUI(ModCore.mc());
@@ -190,8 +135,8 @@ public class WynnExpansion {
 			} else {
 				new ExperienceUI(ModCore.mc());
 			}
-			if (ExpReference.inWar()) new WarTimer(ModCore.mc());
-			if (QuestBook.selectedQuestTracking && !ExpReference.inWar()) {
+			if (Reference.onWars()) new WarTimer(ModCore.mc());
+			if (QuestBook.selectedQuestTracking && !Reference.onWars()) {
 				new QuestTrackingUI(ModCore.mc());
 			}
 			new Announcments(ModCore.mc());
@@ -205,9 +150,9 @@ public class WynnExpansion {
 			gui = event.getGui();
 		} catch (Exception ignored) {
 		}
-		if (ExpReference.inGame()) {
+		if (Reference.onWorld()) {
 			if (gui != null && gui instanceof GuiScreenBook) {
-				if (!ExpReference.inWar() && !ExpReference.inNether()){
+				if (!Reference.onWars() && !Reference.onNether()){
 					QuestBook.ReloadBook();
 					event.setGui(new GuiQuestBook());
 				}else{
@@ -220,15 +165,14 @@ public class WynnExpansion {
 	@SubscribeEvent//(priority = EventPriority.HIGHEST)
 	public void eventHandler(TickEvent.ClientTickEvent event) {
 		try{
-			if (ProcessChatQue && ShowTPS && ExpReference.inGame() && ModCore.mc().world != null) {
+			if (ProcessChatQue && ShowTPS && Reference.onWorld() && ModCore.mc().world != null) {
 				TpsMonitor.SetFooter();
 			}
 		}catch(Exception ignore) {}
 		
 		if (TickRateLimiter.Passed()){
-			ExpReference.UpdateStatus();
-			if (ExpReference.inGame()) {
-				if (!ExpReference.inWar()) {
+			if (Reference.onWorld()) {
+				if (!Reference.onWars()) {
 					WorldItemName.t(ModCore.mc());
 					DailyChestReminder.CheckDailyChest();
 					GuildAttack.GuildChatWarCoords();
@@ -236,13 +180,13 @@ public class WynnExpansion {
 					PartyHUD.CapturePlayerEntities(ModCore.mc());
 					if (WarTimer.TimeStamp != 0L) WarTimer.TimeStamp = 0L;
 				}
-				if (!ExpReference.inNether()) PlayerGlow.PlayerGlows(ModCore.mc());
+				if (!Reference.onNether()) PlayerGlow.PlayerGlows(ModCore.mc());
 				if (event.phase == TickEvent.Phase.START) {
 					if (!UseLegacyExperience) {
 						Experience.getAddedAmounts();
-						if (((ExperienceUI.EnableScrollingSidebar && (ExperienceUI.ExpFlowShowNames || ExperienceUI.ExpFlowShowLevel)) || ExperienceUI.KillStreak) && !ExpReference.inWar()) {
-							ExperienceAdvanced.EntangleMobs(ModCore.mc());
-							ExperienceAdvanced.GatherExp(ModCore.mc());
+						if (((ExperienceUI.EnableScrollingSidebar && (ExperienceUI.ExpFlowShowNames || ExperienceUI.ExpFlowShowLevel)) || ExperienceUI.KillStreak) && !Reference.onWars()) {
+							ExperienceAdvanced.entangleMobs(ModCore.mc());
+							ExperienceAdvanced.gatherExp(ModCore.mc());
 						}
 					}
 				}
@@ -266,19 +210,19 @@ public class WynnExpansion {
 			}
 			WynnSound.Update();
 			if (event.phase == TickEvent.Phase.START) {
-				SpellCasting.CastSpell();
+				SpellCasting.castSpell();
 			}
-			if ((ExpReference.inServer()) && PlayerHomeMenu.RefreshTimer.Passed() && ModCore.mc().inGameHasFocus && PlayerHomeMenu.PlayersLoaded){
+			if ((Reference.onServer()) && PlayerHomeMenu.RefreshTimer.Passed() && ModCore.mc().inGameHasFocus && PlayerHomeMenu.PlayersLoaded){
 				PlayerHomeMenu.ClearLists();
 			}
-			if (ExpReference.inServer() && !ExpReference.inGame()) {
+			if (Reference.onServer() && !Reference.onWorld()) {
 				Config.PostUpdateMessages();
 			}
 			// Game Rest Stuff
-			if (ExpReference.inServer() && TestPlayerLevel0()){
-				SkillpointUI.Skillpoints = 0;
+			if (Reference.onServer() && TestPlayerLevel0()){
+				SkillpointUI.skillpoints = 0;
 				PotionDisplay.Effects.clear();
-				ExpReference.CleanScoreboards();
+				PlayerGlow.cleanScoreboards();
 				WarTimer.TimeStamp = 0L;
 				TpsMonitor.TpsTimes.clear();
 				ModCore.mc().ingameGUI.getTabList().resetFooterHeader();
@@ -314,9 +258,9 @@ public class WynnExpansion {
 			String msgRaw = event.getMessage().getFormattedText();
 			
 			if (!event.isCanceled()) event.setCanceled(GuildAttack.ChatHandler(msg));
-			if (!event.isCanceled()) event.setCanceled(PlayerGlow.ChatHandler(msg, msgRaw));
+			if (!event.isCanceled()) event.setCanceled(PlayerGlow.chatHandler(msg, msgRaw));
 			if (!event.isCanceled()) PotionDisplay.UsePotion(msg);
-			if (!event.isCanceled()) ExperienceAdvancedChat.ChatHandler(msg, msgRaw);
+			if (!event.isCanceled()) ExperienceAdvancedChat.chatHandler(msg, msgRaw);
 			if (!event.isCanceled()) DailyChestReminder.ChatHandler(msg);
 			if (!event.isCanceled()) ChatManipulator.ChatHandler(event);
 		}
@@ -329,7 +273,7 @@ public class WynnExpansion {
 	
 	@SubscribeEvent
 	public void eventHandler(EntityJoinWorldEvent event){
-		if (OptimiseWar && ExpReference.inWar()) {
+		if (OptimiseWar && Reference.onWars()) {
 			if (WarOptimiser.OptimiseWar(event.getEntity()))
 				event.setCanceled(true);
 		}
@@ -344,7 +288,7 @@ public class WynnExpansion {
 	@SubscribeEvent
 	public void eventHandler(ClientChatEvent event){
 		String msg = event.getMessage();
-		if (InfoOverrideFind && ExpReference.inServer() && msg.startsWith("/find")){
+		if (InfoOverrideFind && Reference.onServer() && msg.startsWith("/find")){
 			event.setMessage(msg.replace("/find", "/info"));
 		}
 		if(msg.startsWith("/tell")) {
@@ -354,11 +298,11 @@ public class WynnExpansion {
 	
 	@SubscribeEvent
 	public void eventHandler(GuiScreenEvent.InitGuiEvent.Post event){
-		if (ExpReference.inGame()){
-			if ((event.getGui() instanceof GuiContainer) == false || event.getGui().mc == null || event.getGui().mc.player == null){
+		if (Reference.onWorld()){
+			if (!(event.getGui() instanceof GuiContainer) || event.getGui().mc == null || event.getGui().mc.player == null){
 				return;
 			}
-			SkillpointUI.SkillpointUpdate(event);
+			SkillpointUI.skillpointUpdate(event);
 			DailyChestReminder.DailyChestReseter(event);
 			StickyItems.BankCheck(event);
 		}
@@ -366,7 +310,7 @@ public class WynnExpansion {
 	
 	@SubscribeEvent
 	public void eventHandler(NameFormat event){
-		PlayerGlow.UpdateUsername(event);
+		PlayerGlow.updateUsername(event);
 	}
 	
 	@SubscribeEvent
@@ -392,7 +336,7 @@ public class WynnExpansion {
 		
 		GuildAttack.CurrentTerritory = new WynnTerritory();
 		GuildAttackTimer.Timer = -1;
-		SkillpointUI.Skillpoints = 0;
+		SkillpointUI.skillpoints = 0;
 		PotionDisplay.Effects.clear();
 	}
 	
@@ -409,4 +353,5 @@ public class WynnExpansion {
 			event.setNewfov(1.0F);
 		}
 	}
+
 }

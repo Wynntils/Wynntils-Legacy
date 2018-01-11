@@ -238,7 +238,7 @@ public abstract class GuiScreenMod extends GuiScreen
         int lineCount = 0;
         for (String s : tooltipArray)
         {
-			this.itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, new ItemStack(Items.BOWL), tooltipX - 14 + (ExpReference.GetMsgLength(s, 1.0f)), tooltipY - 6 + (lineCount * LINE_HEIGHT), s);
+			this.itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, new ItemStack(Items.BOWL), tooltipX - 14 + (ExpReference.getMsgLength(s, 1.0f)), tooltipY - 6 + (lineCount * LINE_HEIGHT), s);
             //mc.fontRenderer.drawStringWithShadow(s, tooltipX + 3, tooltipY + 3 + lineCount * LINE_HEIGHT, 0xFFFFFF);
             lineCount++;
         }

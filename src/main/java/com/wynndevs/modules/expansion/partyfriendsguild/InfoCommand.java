@@ -49,7 +49,7 @@ public class InfoCommand implements ICommand{
 			PlayerInfoMenu.GuildID = -1;
 			WynnExpansion.ChatQue.add("--OPENGUI--PlayerInfoMenu");
 		}else{
-			ExpReference.PostToChat(new TextComponentString(String.valueOf('\u00a7') + "eUsage: /info [player]"));
+			ExpReference.postToChat(new TextComponentString(String.valueOf('\u00a7') + "eUsage: /info [player]"));
 		}
 	}
 

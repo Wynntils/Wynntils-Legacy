@@ -47,9 +47,9 @@ public class ExperienceUI extends ModGui {
         int height = scaled.getScaledHeight();
         FontRenderer font = mc.fontRenderer;
 
-        // Bug fix for Exp showing sometimes when switching class
+        // Bug fix for exp showing sometimes when switching class
         if (mc.player.experienceLevel < 1) {
-            if (ExpHUDAnimation != 0 || !Experience.Exp.isEmpty()) {
+            if (ExpHUDAnimation != 0 || !Experience.exp.isEmpty()) {
                 ExpHUD = 0;
                 ExpHUDPer = 0;
                 ExpHUDCombo = 0;
@@ -57,19 +57,19 @@ public class ExperienceUI extends ModGui {
                 ExpHUDLength = 0;
                 KillTimeStamp = 0;
                 KillsPerMinute = "-";
-                Experience.Exp.clear();
+                Experience.exp.clear();
             }
         }
 
 
-        // Constant Exp Amount
+        // Constant exp Amount
         if (Experience.getCurrentWynncraftMaxXp() != -1) {
             if (StaticBarShadow) {
-                String exp = "§a" + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
+                String exp = "§a" + (UseExpInstead ? "exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
                 String percent = (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
                 drawCenteredString(font, exp + percent, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
             } else {
-                String exp = "§a" + (UseExpInstead ? "Exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
+                String exp = "§a" + (UseExpInstead ? "exp " : " XP ") + "§2[§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftXp())) + "§2/§a" + decimalFormat.format(Math.round(Experience.getCurrentWynncraftMaxXp())) + "§2] ";
                 String percent = (decimalFormat.format(ModCore.mc().player.experience * 100)) + "%";
                 drawCenteredStringPlain(font, exp + percent, width / 2, (height - 77), 1.0f, Integer.parseInt("55ff55", 16));
             }
@@ -80,15 +80,15 @@ public class ExperienceUI extends ModGui {
         // Add %XP to ExpHUDPer
         // Set ExpHUDAnimation = 0
 
-        // Accumulative Exp Amount
+        // Accumulative exp Amount
         if (EnableSidebar) {
             if (ExpHUDAnimation < ExpHUDLength) {
                 if (ExpHUDDelay.Passed() && ExpHUDHang.Passed()) {
                     ExpHUDAnimation++;
                 }
 
-                ExpHUDMessage = String.valueOf('\u00a7') + "a+" + (UseExpInstead ? "Exp " : "XP ") + String.valueOf('\u00a7') + "2 [" + String.valueOf('\u00a7') + "a+" + new DecimalFormat("#,###,###,##0").format(ExpHUD) + String.valueOf('\u00a7') + "2] " + new DecimalFormat("##,###,#00.00").format(ExpHUDPer) + "%";
-                ExpHUDLength = ExpReference.GetMsgLength(ExpHUDMessage, (ExpFlowSmall ? 1.0f : 1.5f)) + 2;
+                ExpHUDMessage = String.valueOf('\u00a7') + "a+" + (UseExpInstead ? "exp " : "XP ") + String.valueOf('\u00a7') + "2 [" + String.valueOf('\u00a7') + "a+" + new DecimalFormat("#,###,###,##0").format(ExpHUD) + String.valueOf('\u00a7') + "2] " + new DecimalFormat("##,###,#00.00").format(ExpHUDPer) + "%";
+                ExpHUDLength = ExpReference.getMsgLength(ExpHUDMessage, (ExpFlowSmall ? 1.0f : 1.5f)) + 2;
 
                 if (KillPerMinute) {
                     KillsPerMinute = new DecimalFormat("00.0").format(((float) ExpHUDCombo) / (System.currentTimeMillis() - KillTimeStamp < 60000L ? 1f : (((float) (System.currentTimeMillis() - KillTimeStamp)) / 60000f)));
@@ -98,13 +98,13 @@ public class ExperienceUI extends ModGui {
                     this.drawString(font, ExpHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     if (KillStreak) {
                         String KillStreakMessage = String.valueOf('\u00a7') + "c" + ExpHUDCombo + " Kill" + (ExpHUDCombo > 1 ? "s" : "") + (KillPerMinute ? String.valueOf('\u00a7') + "4 [" + String.valueOf('\u00a7') + "c" + KillsPerMinute + " Kpm" + String.valueOf('\u00a7') + "4]" : "");
-                        this.drawString(font, KillStreakMessage, (width - ExpReference.GetMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
+                        this.drawString(font, KillStreakMessage, (width - ExpReference.getMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     }
                 } else {
                     this.drawStringPlain(font, ExpHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     if (KillStreak) {
                         String KillStreakMessage = String.valueOf('\u00a7') + "c" + ExpHUDCombo + " Kill" + (ExpHUDCombo > 1 ? "s" : "") + (KillPerMinute ? String.valueOf('\u00a7') + "4 [" + String.valueOf('\u00a7') + "c" + KillsPerMinute + " Kpm" + String.valueOf('\u00a7') + "4]" : "");
-                        this.drawStringPlain(font, KillStreakMessage, (width - ExpReference.GetMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
+                        this.drawStringPlain(font, KillStreakMessage, (width - ExpReference.getMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     }
                 }
             } else if (ExpHUDCombo > 0) {
@@ -118,14 +118,14 @@ public class ExperienceUI extends ModGui {
             }
         }
 
-        // Scrolling Exp Amounts
-        if (!Experience.Exp.isEmpty()) {
+        // Scrolling exp Amounts
+        if (!Experience.exp.isEmpty()) {
             boolean ShowAnother = true;
-            for (int i = 0; i < Experience.Exp.size(); i++) {
-                String[] Exp = Experience.Exp.get(i);
+            for (int i = 0; i < Experience.exp.size(); i++) {
+                String[] Exp = Experience.exp.get(i);
                 if (Exp.length < 6) {
                     Exp = new String[]{Exp[0], Exp[1], Exp[2], Exp[3], "-1", "-"};
-                    Experience.Exp.set(i, Exp);
+                    Experience.exp.set(i, Exp);
 
                     try {
                         if (Exp[1].contains("[Lv. ")) {
@@ -139,7 +139,7 @@ public class ExperienceUI extends ModGui {
                     if (Integer.parseInt(Exp[4]) < 0) {
                         if (ShowAnother) {
                             Exp[4] = "0";
-                            Experience.Exp.set(i, Exp);
+                            Experience.exp.set(i, Exp);
                             ShowAnother = false;
                             ExpHUDHang.Reset();
                             ExpHUDAnimation = 0;
@@ -150,18 +150,18 @@ public class ExperienceUI extends ModGui {
                         String ExpMsg = (ExpFlowShowNames ? Exp[0] + " " : "") + (ExpFlowShowLevel ? Exp[1] + " " : "") + String.valueOf('\u00a7') + "2[" + String.valueOf('\u00a7') + "a+" + Exp[2] + String.valueOf('\u00a7') + "2]" + (ExpFlowPercentage ? " " + Exp[3] + "%" : "");
 
                         if (Exp[5].equals("-")) {
-                            Exp[5] = String.valueOf(ExpReference.GetMsgLength(ExpMsg, (ExpFlowSmall ? 0.75f : 1.0f)) + 2);
-                            Experience.Exp.set(i, Exp);
+                            Exp[5] = String.valueOf(ExpReference.getMsgLength(ExpMsg, (ExpFlowSmall ? 0.75f : 1.0f)) + 2);
+                            Experience.exp.set(i, Exp);
                         }
                         if (ExpFlowSlow) {
                             if (ExpFlowDelaySlow.Passed()) {
                                 Exp[4] = String.valueOf(Integer.parseInt(Exp[4]) + 1);
-                                Experience.Exp.set(i, Exp);
+                                Experience.exp.set(i, Exp);
                             }
                         } else {
                             if (ExpFlowDelay.Passed()) {
                                 Exp[4] = String.valueOf(Integer.parseInt(Exp[4]) + 1);
-                                Experience.Exp.set(i, Exp);
+                                Experience.exp.set(i, Exp);
                             }
                         }
 
@@ -169,7 +169,7 @@ public class ExperienceUI extends ModGui {
                             ShowAnother = false;
                         }
 
-                        //System.out.println("Exp :" + Exp[0] + " - " + Exp[1] + " - " + Exp[2] + " - " + Exp[3] + " - " + Exp[4]);
+                        //System.out.println("exp :" + exp[0] + " - " + exp[1] + " - " + exp[2] + " - " + exp[3] + " - " + exp[4]);
                         if (SideBarFeedShadow) {
                             this.drawString(font, ExpMsg, (width - Integer.parseInt(Exp[5])), (height / 2) + 15 + Integer.parseInt(Exp[4]), (ExpFlowSmall ? 0.75f : 1.0f), Integer.parseInt("FFA700", 16));
                         } else {
@@ -177,13 +177,13 @@ public class ExperienceUI extends ModGui {
                         }
 
                         if (Integer.parseInt(Exp[4]) > height / 2) {
-                            Experience.Exp.remove(i);
+                            Experience.exp.remove(i);
                             i--;
                         }
 
                     }
                 } else {
-                    Experience.Exp.remove(i);
+                    Experience.exp.remove(i);
                     i--;
                 }
             }

@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ExperienceAdvanced {
 	
-	public static List<String[]> ExperienceAdvanced = new ArrayList<String[]>();
+	public static List<String[]> experienceAdvanced = new ArrayList<String[]>();
 	
-	private static int EntityEntanglementID = 0;
+	private static int entityEntanglementID = 0;
 	private static List<Entity> entityRejects = new ArrayList<Entity>();
 	
 	//private static List<EEID> EntanglementsList = new ArrayList<EEID>();
@@ -25,19 +25,19 @@ public class ExperienceAdvanced {
 	// Items dont get names
 	//
 	
-	public static void GatherExp(Minecraft mc){
+	public static void gatherExp(Minecraft mc){
 		List<Entity> EntityList = mc.world.loadedEntityList;
 		for (Entity entity : EntityList){
 			if (EntityList == null)
 				break;
 			if (entity instanceof EntityArmorStand && !entity.getTags().contains("AdvExpUSED")) {
-				if (entity.getCustomNameTag().contentEquals(String.valueOf('\u00a7') + "7[" + mc.player.getName() + "]") || (entity.getCustomNameTag().contentEquals(String.valueOf('\u00a7') + "7[Shared]") && Experience.GainedExp)){
+				if (entity.getCustomNameTag().contentEquals(String.valueOf('\u00a7') + "7[" + mc.player.getName() + "]") || (entity.getCustomNameTag().contentEquals(String.valueOf('\u00a7') + "7[Shared]") && Experience.gainedExp)){
 					
 					Entity ExpEntity = null;
 					Entity NameEntity = null;
 					Entity MobEntity = null;
 					
-					// Find how much Exp
+					// Find how much exp
 					for (Entity ExpEntityTest : EntityList){
 						if (ExpEntityTest instanceof EntityArmorStand) {
 							if (!ExpEntityTest.getTags().contains("AdvExpUSED") && entity.posX == ExpEntityTest.posX && entity.posZ == ExpEntityTest.posZ && entity.posY +0.28125 == ExpEntityTest.posY && ExpEntityTest.getName().contains(String.valueOf('\u00a7') + "f XP")) {
@@ -102,7 +102,7 @@ public class ExperienceAdvanced {
 							ExperienceUI.ExpHUDLength = 1;
 							
 							String[] AdvExp = {MobName, MobLevel, MobExp, MobExpPer};
-							Experience.Exp.add(AdvExp);
+							Experience.exp.add(AdvExp);
 						}
 					}
 				}
@@ -227,8 +227,8 @@ public class ExperienceAdvanced {
 				ExperienceUI.ExpHUDLength = 1;
 				
 				String[] AdvExp = {MobName, MobLevel, MobExp, MobExpPer};
-				Experience.Exp.add(AdvExp);
-				if (Experience.Exp.size() == 0){String[] ExpValues = {"0", "0"}; Experience.Exp.add(ExpValues);}
+				Experience.exp.add(AdvExp);
+				if (Experience.exp.size() == 0){String[] ExpValues = {"0", "0"}; Experience.exp.add(ExpValues);}
 			}else if(MobExp != null){
 				ExperienceUI.ExpHUDHang.Reset();
 				ExperienceUI.ExpHUD += 0;
@@ -237,14 +237,14 @@ public class ExperienceAdvanced {
 				ExperienceUI.ExpHUDLength = 1;
 				
 				String[] AdvExp = {"", "", MobExp, MobExpPer};
-				Experience.Exp.add(AdvExp);
+				Experience.exp.add(AdvExp);
 			}
 		}
 		if (!entityRejects.isEmpty()) {entityRejects.clear();}
 	}
 	
 	
-	public static void EntangleMobs(Minecraft mc){
+	public static void entangleMobs(Minecraft mc){
 		List<Entity> EntityList = mc.world.loadedEntityList;
 		int Entanglments = 0;
 		for (Entity NamePlate : EntityList){
@@ -278,9 +278,9 @@ public class ExperienceAdvanced {
 					if (Mob instanceof EntityTNTPrimed) {NamePlate.addTag("EETO");}
 					
 					//Setup Entity Entanglement ID
-					NamePlate.addTag("EEID" + EntityEntanglementID + "-");
-					Mob.addTag("EEID" + EntityEntanglementID + "-");
-					EntityEntanglementID++;
+					NamePlate.addTag("EEID" + entityEntanglementID + "-");
+					Mob.addTag("EEID" + entityEntanglementID + "-");
+					entityEntanglementID++;
 					
 					Entanglments++;
 					if (Entanglments>4){break;}
@@ -288,99 +288,5 @@ public class ExperienceAdvanced {
 			}
 		}
 	}
-	/*
-	public static void EntangleMobs1(Minecraft mc){
-		List<Entity> EntityList = mc.world.loadedEntityList;
-		int Entanglments = 0;
-		for (Entity NamePlate : EntityList){
-			if (EntityList == null)
-				break;
-			
-			if (NamePlate instanceof EntityArmorStand && !IsEntangled(NamePlate) && mc.player.getDistanceToEntity(NamePlate) < 32) {
-				String Name = NamePlate.getName();
-				if (Name.contains(String.valueOf('\u00a7') + "6 [Lv. ")){
-					Entity Mob = null;
-					int EntityCount = 0;
-					AxisAlignedBB NamePlateZone = new AxisAlignedBB(NamePlate.posX-0.5, NamePlate.posY-5, NamePlate.posZ-0.5, NamePlate.posX+0.5, NamePlate.posY+2, NamePlate.posZ+0.5);
-					for (Entity MobTest : mc.world.getEntitiesWithinAABBExcludingEntity(NamePlate, NamePlateZone )) {
-						if (MobTest instanceof EntityArmorStand || MobTest instanceof EntityArrow || MobTest instanceof EntityItemFrame) {
-						}else if (!IsEntangled(MobTest) && !MobTest.getTags().toString().contains("ITEMCHECKED")){
-							Mob = MobTest;
-							EntityCount++;
-						}
-					}
-					if (EntityCount == 1 && Mob != null){
-						AddEntanglement(NamePlate, Mob, (Mob instanceof EntityLiving ? true : false));
-					}
-					Entanglments++;
-					if (Entanglments > 3){break;}
-				}
-			}
-		}
-	}
-	
-	private static boolean IsEntangled(Entity CheckEntity) {return IsEntangled(CheckEntity.getPersistentID());}
-	private static boolean IsEntangled(UUID CheckUUID) {
-		for (EEID Entanglement : EntanglementsList) {
-			if (Entanglement.Name.compareTo(CheckUUID) == 0 || Entanglement.Entity.compareTo(CheckUUID) == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private static boolean IsUsed(Entity CheckEntity) {return IsUsed(CheckEntity.getPersistentID());}
-	private static boolean IsUsed(UUID CheckUUID) {
-		for (EEID Entanglement : EntanglementsList) {
-			if (Entanglement.Name.compareTo(CheckUUID) == 0 || Entanglement.Entity.compareTo(CheckUUID) == 0) {
-				return (Entanglement.ID == 0 ? true : false);
-			}
-		}
-		return false;
-	}
-	
-	private static UUID GetPartner(Entity CheckEntity) {return GetPartner(CheckEntity.getPersistentID());}
-	private static UUID GetPartner(UUID CheckUUID) {
-		for (EEID Entanglement : EntanglementsList) {
-			if (Entanglement.Name.compareTo(CheckUUID) == 0) {
-				return Entanglement.Entity;
-			}else if (Entanglement.Entity.compareTo(CheckUUID) == 0) {
-				return Entanglement.Name;
-			}
-		}
-		return CheckUUID;
-	}
-	
-	private static short MaxCocurrentEntanglements = Short.MAX_VALUE;
-	
-	private static short EntanglmentID = 1;
-	private static void AddEntanglement(Entity Nameplate, Entity Entity, boolean EETO) {AddEntanglement(Nameplate.getPersistentID(), Entity.getPersistentID(), EETO);}
-	private static void AddEntanglement(UUID Nameplate, UUID Entity, boolean EETO) {
-		if (!EntanglementsList.isEmpty()) {
-			if (Math.abs(EntanglementsList.get(EntanglementsList.size()-1).ID) == EntanglmentID) {
-				EntanglementsList.remove(EntanglementsList.size()-1);
-			}
-			EntanglementsList.add(0, new EEID(Nameplate, Entity, (short) (EETO ? EntanglmentID * -1 : EntanglmentID)));
-		}else{
-			EntanglementsList.add(new EEID(Nameplate, Entity, (short) (EETO ? EntanglmentID * -1 : EntanglmentID)));
-		}
-		if (EntanglmentID == MaxCocurrentEntanglements) {
-			EntanglmentID = 1;
-		}else{
-			EntanglmentID++;
-		}
-	}
-	
-	static class EEID {
-		public UUID Name = new UUID(0L, 0L);
-		public UUID Entity = new UUID(0L, 0L);
-		public short ID = 0;
-		
-		public EEID(UUID Name, UUID Entity, short ID) {
-			this.Name = Name;
-			this.Entity = Entity;
-			this.ID = ID;
-		}
-	}
-	*/
+
 }

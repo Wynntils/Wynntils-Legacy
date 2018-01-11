@@ -43,7 +43,7 @@ public class TerritoryUI extends ModGui {
 			}
 			for (int i = 0; i < NewsPosition.size(); i++) {
 				// Get News length
-				int NewsLength = ExpReference.GetMsgLength(TerritoryListUpdates.get(i), 1.0f);
+				int NewsLength = ExpReference.getMsgLength(TerritoryListUpdates.get(i), 1.0f);
 
 				// Iterate position
 				if (Iterate && NewsPosition.get(i) > -1) {

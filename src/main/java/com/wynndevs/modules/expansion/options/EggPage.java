@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.options;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions.ExitButton;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 public class EggPage extends GuiScreenMod {
 	
-	private static final ResourceLocation TEXTURE_OPTIONS = new ResourceLocation(ExpReference.MOD_ID, "textures/gui/options.png");
+	private static final ResourceLocation TEXTURE_OPTIONS = new ResourceLocation(Reference.MOD_ID, "textures/gui/options.png");
 	
 	private static ExitButton btnExit = new ExitButton();
 	

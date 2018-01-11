@@ -17,7 +17,7 @@ public class PlayerCollection {
 	
 	public static void CollectPlayers(){
 		try {
-			ExpReference.ConsoleOut("Making Player database");
+			ExpReference.consoleOut("Making Player database");
 			List<String> PlayerListTmp = new ArrayList<String>();
 			BufferedReader PlayerListRawURL = new BufferedReader(new InputStreamReader(new URL(WebAPI.PlayerListAPIURL).openConnection().getInputStream()));
 			String PlayerListRaw = PlayerListRawURL.readLine();
@@ -46,7 +46,7 @@ public class PlayerCollection {
 				}
 			}
 			PlayerListTmp.clear();
-			ExpReference.ConsoleOut("Player database made: " + TotalPlayers + " players in " + Worlds.size() + " worlds");
+			ExpReference.consoleOut("Player database made: " + TotalPlayers + " players in " + Worlds.size() + " worlds");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

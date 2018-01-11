@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.webapi;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.experience.SpellCastingUI;
 import com.wynndevs.modules.expansion.misc.Delay;
@@ -43,14 +44,12 @@ public class WebAPI{
 		Running = true;
 		Done = false;
 		
-		new Thread(new Runnable() {
-			public void run() {
-				if (!ExpReference.inServer()) {
-					Running = false;
-				}
-				Controller();// code goes here.
-			}
-		}).start();
+		new Thread(() -> {
+            if (!Reference.onServer()) {
+                Running = false;
+            }
+            Controller();// code goes here.
+        }).start();
 		//this line will execute immediately, not waiting for your task to complete
 	}
 	
@@ -64,16 +63,16 @@ public class WebAPI{
 			ItemDB.GenerateItemDB();
 			WorldItemName.SetupItemTables();
 			Territory.SetupTerritoryList();
-			PlayerGlow.UpdateHelpers();
+			PlayerGlow.updateHelpers();
 			QuestBook.SetupQuestCorrections();
-			SpellCastingUI.SetupButtonRenaming();
+			SpellCastingUI.setupButtonRenaming();
 			////////	\\\\\\\\
 			
-			ExpReference.ConsoleOut("Web API collection thread started");
+			ExpReference.consoleOut("Web API collection thread started");
 			TerritoryDelay.Reset();
 			while (Running){
 				
-				if (ExpReference.inServer()){
+				if (Reference.onServer()){
 					//Automated Tasks
 					if (RateLimiter.size() < 225) {
 						if (TerritoryDelay.Passed()){
@@ -87,8 +86,8 @@ public class WebAPI{
 						if (TaskSchedule.get(0).equals("UpdateGuild")){
 							RateLimiter.add(System.currentTimeMillis() + 600000);
 							RateLimiter.add(System.currentTimeMillis() + 600000);
-							PlayerGlow.UpdateGuild();
-							ExpReference.ConsoleOut("Updated your Guild's infomation");
+							PlayerGlow.updateGuild();
+							ExpReference.consoleOut("Updated your Guild's infomation");
 						}else if(TaskSchedule.get(0).startsWith("CGN: ")){
 							RateLimiter.add(System.currentTimeMillis() + 600000);
 							Territory.GetCompactGuildName(TaskSchedule.get(0).substring(5));
@@ -105,8 +104,8 @@ public class WebAPI{
 					}
 					
 					//Extra Tasks no API required
-					if(PartyUpdateDelay.Passed() && ExpReference.inGame()){PlayerGlow.UpdateParty();}
-					if(HelpersUpdateDelay.Passed() && ExpReference.inGame()){PlayerGlow.UpdateHelpers();}
+					if(PartyUpdateDelay.Passed() && Reference.onWorld()){PlayerGlow.updateParty();}
+					if(HelpersUpdateDelay.Passed() && Reference.onWorld()){PlayerGlow.updateHelpers();}
 					
 					
 					//RateLimiter Cleaner
@@ -117,16 +116,16 @@ public class WebAPI{
 					Thread.sleep(500);
 				} catch (InterruptedException ignore) {}
 			}
-			ExpReference.ConsoleOut("Web API collection thread stopped");
+			ExpReference.consoleOut("Web API collection thread stopped");
 		}else{
-			ExpReference.ConsoleOut("Web API collection disabled");
+			ExpReference.consoleOut("Web API collection disabled");
 		}
 		Done = true;
 	}
 	
 	public static void GetURLSettings() {
 		try {
-			ExpReference.ConsoleOut("Gathering URL settings");
+			ExpReference.consoleOut("Gathering URL settings");
 			BufferedReader URLSettingFile = new BufferedReader(new InputStreamReader(new URL("https://pastebin.com/raw/NQmFK8rA").openConnection().getInputStream()));
 			
 			String URLSettingLine = URLSettingFile.readLine();
@@ -167,7 +166,7 @@ public class WebAPI{
 			}
 			URLSettingFile.close();
 			
-			ExpReference.ConsoleOut("URL Settings successfully retrieved");
+			ExpReference.consoleOut("URL Settings successfully retrieved");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

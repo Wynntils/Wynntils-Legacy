@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.misc.ModGui;
@@ -24,7 +25,7 @@ public class GuildAttackTimer extends ModGui{
 		int width = scaled.getScaledWidth();
 		FontRenderer font = mc.fontRenderer;
 		
-		if (!ExpReference.inServer()) Timer = -1;
+		if (!Reference.onServer()) Timer = -1;
 		
 		if (Timer > -1){
 			int Colour = (GuildAttack.CurrentTerritory.IsInside()? 0xff55FF55 : 0xff55FFFF);

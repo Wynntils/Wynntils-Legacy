@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.itemguide;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
@@ -13,8 +14,8 @@ public class ItemStatsInv {
 	
 	@SubscribeEvent
 	public void InputEventKeyInputEvent(GuiScreenEvent.KeyboardInputEvent.Pre event){
-		if (ExpReference.inGame()){
-			if ((event.getGui() instanceof GuiContainer) == false || event.getGui().mc == null || event.getGui().mc.player == null){
+		if (Reference.onWorld()){
+			if (!(event.getGui() instanceof GuiContainer) || event.getGui().mc == null || event.getGui().mc.player == null){
 				return;
 			}
 				if (Keyboard.getEventKey() == 17){
@@ -30,8 +31,8 @@ public class ItemStatsInv {
 	
 	@SubscribeEvent
 	public void onMouseInputEventPre(GuiScreenEvent.MouseInputEvent.Pre event){
-		if (ExpReference.inGame()){
-			if ((event.getGui() instanceof GuiContainer) == false || event.getGui().mc == null || event.getGui().mc.player == null){
+		if (Reference.onWorld()){
+			if (!(event.getGui() instanceof GuiContainer) || event.getGui().mc == null || event.getGui().mc.player == null){
 				return;
 			}
 			Slot InvSlot = ((GuiContainer) event.getGui()).getSlotUnderMouse();

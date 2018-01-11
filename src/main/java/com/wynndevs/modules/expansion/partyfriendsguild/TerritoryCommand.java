@@ -56,12 +56,12 @@ public class TerritoryCommand implements ICommand{
 				}
 			}
 			if (SelectedTerritory.Name.equals("")){
-				ExpReference.PostToChat(new TextComponentString(String.valueOf('\u00a7') + "cTerritory Not Found: " + ArgTmp));
+				ExpReference.postToChat(new TextComponentString(String.valueOf('\u00a7') + "cTerritory Not Found: " + ArgTmp));
 			}else{
 				WynnExpansion.ChatQue.add("/g " + SelectedTerritory.Name + ": " + SelectedTerritory.GetFormatedCoords());
 			}
 		}else{
-			ExpReference.PostToChat(new TextComponentString(String.valueOf('\u00a7') + "eUsage: /territory [territory]"));
+			ExpReference.postToChat(new TextComponentString(String.valueOf('\u00a7') + "eUsage: /territory [territory]"));
 		}
 	}
 

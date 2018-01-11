@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
@@ -86,11 +87,11 @@ public class PlayerGlow {
 			Scoreboard.addPlayerToTeam(mc.player.getName(), Player.getName());
 		}
 		
-		if (!WarHealth || !ExpReference.inWar()) {
+		if (!WarHealth || !Reference.onWars()) {
 			if (refresh.Passed() && mc.world != null && (NameDisguises || HighlightDisguises ? mc.world.loadedEntityList : mc.world.playerEntities) != null ) {
 				
 				if (ScheduleUpdateTeams) {
-					UpdateTeams(Scoreboard, Party, Friends, Guild, Helpers);
+					updateTeams(Scoreboard, Party, Friends, Guild, Helpers);
 					ScheduleUpdateTeams = false;
 				}
 				
@@ -278,7 +279,7 @@ public class PlayerGlow {
 		}
 	}
 	
-	public static void UpdateUsername(NameFormat event) {
+	public static void updateUsername(NameFormat event) {
 		String Name = event.getUsername();
 		if (NameParty && (PartyList.contains(Name) || (Name.length() > 14 && PartyList.contains(Name.substring(0,14))))) {
 			event.setDisplayname(String.valueOf('\u00a7') + 'e' + Name);
@@ -295,7 +296,7 @@ public class PlayerGlow {
 		}
 	}
 	
-	public static void UpdateTeams(Scoreboard Scoreboard, ScorePlayerTeam Party, ScorePlayerTeam Friends, ScorePlayerTeam Guild, ScorePlayerTeam Helpers) {
+	public static void updateTeams(Scoreboard Scoreboard, ScorePlayerTeam Party, ScorePlayerTeam Friends, ScorePlayerTeam Guild, ScorePlayerTeam Helpers) {
 		// Remove People if on wrong team
 		List<String> Players = new ArrayList<String>();
 		if (!Party.getMembershipCollection().isEmpty()) {
@@ -387,16 +388,7 @@ public class PlayerGlow {
 		}
 	}
 	
-	private static boolean TestFriendsList(String Name) {
-		for (String NameTest : FriendsList) {
-			if (Name.equalsIgnoreCase(NameTest)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static void UpdateParty() {
+	public static void updateParty() {
 		try {
 			Boolean[] PartyClearence = new Boolean[16];
 			for (int i = 0; i < PartyClearence.length; i++) {
@@ -430,11 +422,11 @@ public class PlayerGlow {
 	private static boolean UpdateFriends = false;
 	private static boolean RetrieveFriends = false;
 	
-	public static boolean ChatHandler(String msg, String rawmsg) {
+	public static boolean chatHandler(String msg, String rawmsg) {
 		// Joined Game
-		if (!ExpReference.inGame() && !RetrieveFriends) {
+		if (!Reference.onWorld() && !RetrieveFriends) {
 			RetrieveFriends = true;
-		} else if (ExpReference.inGame() && RetrieveFriends && !UpdateFriends) {
+		} else if (Reference.onWorld() && RetrieveFriends && !UpdateFriends) {
 			UpdateFriends = true;
 			WynnExpansion.ChatQue.add("/friend list");
 			WebAPI.TaskSchedule.add("UpdateGuild");
@@ -471,7 +463,7 @@ public class PlayerGlow {
 					MessageFriend.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Hover)); 
 					
 					Message.appendSibling(MessageFriend);
-					ExpReference.PostToChat(Message);
+					ExpReference.postToChat(Message);
 				}
 			}
 			WebAPI.TaskSchedule.add("Correct Friends Case");
@@ -496,7 +488,7 @@ public class PlayerGlow {
 
 	public static String Guild = "";
 
-	public static void UpdateGuild() {
+	public static void updateGuild() {
 		try {
 			if (Guild.startsWith("[-]")) {
 				Guild = Guild.substring(3);
@@ -533,9 +525,9 @@ public class PlayerGlow {
 		}
 	}
 	
-	public static void UpdateHelpers(){
+	public static void updateHelpers(){
 		try {
-			ExpReference.ConsoleOut("Retrieving Helpers");
+			ExpReference.consoleOut("Retrieving Helpers");
 			HelpersList.clear();
 			// Retrieve Item Lists from file
 			BufferedReader HelperList = new BufferedReader(new InputStreamReader(new URL(WebAPI.HelpersURL).openConnection().getInputStream()));
@@ -554,31 +546,28 @@ public class PlayerGlow {
 				HelperLine = HelperList.readLine();
 			}
 			HelperList.close();
-			ExpReference.ConsoleOut("Successfully retrieved " + HelpersList.size() + " Helpers");
+			ExpReference.consoleOut("Successfully retrieved " + HelpersList.size() + " Helpers");
 		} catch (Exception ignore) {}
 	}
-	
-	public static void UpdateFriendsCase(){
-		try {
-			ExpReference.ConsoleOut("Retrieving Helpers");
-			HelpersList.clear();
-			// Retrieve Item Lists from file
-			BufferedReader HelperList = new BufferedReader(new InputStreamReader(new URL(WebAPI.HelpersURL).openConnection().getInputStream()));
-			String HelperLine;
-			HelperLine = HelperList.readLine();
-			while (HelperLine != null) {
-				Date HelperNameDate = new SimpleDateFormat("yyyy/MM/dd' 'HH:mm:ss").parse(HelperLine.substring(HelperLine.indexOf(" - ") +3));
-				
-				String UUID = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + HelperLine.substring(0, HelperLine.indexOf(" - ")) + "?at=" + Math.round(HelperNameDate.getTime() / 1000)).openConnection().getInputStream())).readLine();
-				UUID = UUID.substring(UUID.indexOf("\"id\":\"") +6, UUID.indexOf("\",\"", UUID.indexOf("\"id\":\"") +6));
-				
-				String Username = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/user/profiles/" + UUID + "/names").openConnection().getInputStream())).readLine();
-				Username = Username.substring(Username.lastIndexOf("{\"name\":\"") +9, Username.indexOf("\"", Username.lastIndexOf("{\"name\":\"") +9));
-				
-				HelpersList.add(Username);
-				HelperLine = HelperList.readLine();
-			}
-			ExpReference.ConsoleOut("Successfully retrieved Helpers");
-		} catch (Exception ignore) {}
+
+	public static void cleanScoreboards() {
+		Scoreboard Scoreboard = ModCore.mc().player.getWorldScoreboard();
+		if (Scoreboard.getTeamNames().contains("Party")) Scoreboard.removeTeam(Scoreboard.getTeam("Party"));
+		if (Scoreboard.getTeamNames().contains("Friends")) Scoreboard.removeTeam(Scoreboard.getTeam("Friends"));
+		if (Scoreboard.getTeamNames().contains("Guild")) Scoreboard.removeTeam(Scoreboard.getTeam("Guild"));
+		if (Scoreboard.getTeamNames().contains("Helpers")) Scoreboard.removeTeam(Scoreboard.getTeam("Helpers"));
+		if (Scoreboard.getTeamNames().contains("Player")) Scoreboard.removeTeam(Scoreboard.getTeam("Player"));
+
+		if (Scoreboard.getTeamNames().contains("VeryLowHealth")) Scoreboard.removeTeam(Scoreboard.getTeam("VeryLowHealth"));
+		if (Scoreboard.getTeamNames().contains("LowHealth")) Scoreboard.removeTeam(Scoreboard.getTeam("LowHealth"));
+		if (Scoreboard.getTeamNames().contains("MidHealth")) Scoreboard.removeTeam(Scoreboard.getTeam("MidHealth"));
+		if (Scoreboard.getTeamNames().contains("HighHealth")) Scoreboard.removeTeam(Scoreboard.getTeam("HighHealth"));
+		if (Scoreboard.getTeamNames().contains("VeryHighHealth")) Scoreboard.removeTeam(Scoreboard.getTeam("VeryHighHealth"));
+
+		if (Scoreboard.getTeamNames().contains("Mythic")) Scoreboard.removeTeam(Scoreboard.getTeam("Mythic"));
+		if (Scoreboard.getTeamNames().contains("Legendary")) Scoreboard.removeTeam(Scoreboard.getTeam("Legendary"));
+		if (Scoreboard.getTeamNames().contains("Rare")) Scoreboard.removeTeam(Scoreboard.getTeam("Rare"));
+		if (Scoreboard.getTeamNames().contains("Unique")) Scoreboard.removeTeam(Scoreboard.getTeam("Unique"));
+		if (Scoreboard.getTeamNames().contains("Set")) Scoreboard.removeTeam(Scoreboard.getTeam("Set"));
 	}
 }

@@ -10,7 +10,7 @@ public class ExperienceAdvancedChat {
 	private static boolean Area = false;
 	private static String Name = "";
 	
-	public static void ChatHandler(String msg, String msgRaw) {
+	public static void chatHandler(String msg, String msgRaw) {
 		
 		if (msgRaw.contains(String.valueOf('\u00a7') + 'e') && Quest && Name.equals("")) {
 			for (int i=0;i<msg.length();i++){
@@ -24,7 +24,7 @@ public class ExperienceAdvancedChat {
 			String ExpPer = new DecimalFormat("#,###,#00.00").format((Float.parseFloat(Exp)/Experience.getCurrentWynncraftMaxXp())*100);
 			Exp = new DecimalFormat("#,###,###,##0").format(Integer.parseInt(Exp));
 			String[] Message = {String.valueOf('\u00a7') + "e" + Name, String.valueOf('\u00a7') + "6[Quest]", Exp, ExpPer};
-			Experience.Exp.add(Message);
+			Experience.exp.add(Message);
 			Name = "";
 			Quest = false;
 		}else if (msg.contains("[Quest Completed]")){
@@ -43,7 +43,7 @@ public class ExperienceAdvancedChat {
 			String ExpPer = new DecimalFormat("#,###,#00.00").format((Float.parseFloat(Exp)/Experience.getCurrentWynncraftMaxXp())*100);
 			Exp = new DecimalFormat("#,###,###,##0").format(Integer.parseInt(Exp));
 			String[] Message = {String.valueOf('\u00a7') + "b" + Name, String.valueOf('\u00a7') + "3[Discovery]", Exp, ExpPer};
-			Experience.Exp.add(Message);
+			Experience.exp.add(Message);
 			Name = "";
 			Discovery = false;
 		}else if (msg.contains("[Discovery Found]")){
@@ -71,7 +71,7 @@ public class ExperienceAdvancedChat {
 			String ExpPer = new DecimalFormat("#,###,#00.00").format((Float.parseFloat(Exp)/Experience.getCurrentWynncraftMaxXp())*100);
 			Exp = new DecimalFormat("#,###,###,##0").format(Integer.parseInt(Exp));
 			String[] Message = {Name, String.valueOf('\u00a7') + (Name.charAt(1) == 'e' ? "6[Area]" : "7[Area]"), Exp, ExpPer};
-			Experience.Exp.add(Message);
+			Experience.exp.add(Message);
 			Name = "";
 			Area = false;
 		}else if (msg.contains("[Area Discovered]")){
@@ -102,10 +102,10 @@ public class ExperienceAdvancedChat {
 			Exp = new DecimalFormat("#,###,###,##0").format(Integer.parseInt(Exp));
 			if (Name.startsWith("Corrupted")){
 				String[] Message = {String.valueOf('\u00a7') + "c" + Name, String.valueOf('\u00a7') + "4[Dungeon]", Exp, ExpPer};
-				Experience.Exp.add(Message);
+				Experience.exp.add(Message);
 			}else{
 				String[] Message = {String.valueOf('\u00a7') + "e" + Name, String.valueOf('\u00a7') + "6[Dungeon]", Exp, ExpPer};
-				Experience.Exp.add(Message);
+				Experience.exp.add(Message);
 			}
 			Name = "";
 		}

@@ -36,7 +36,7 @@ public class ChatManipulator {
 		}
 		
 		if (msg.endsWith("unused skill points! Click with your compass to use them!") || msg.endsWith("unused skill point! Click with your compass to use them!")){
-			SkillpointUI.Skillpoints = Integer.parseInt(msg.substring(msg.indexOf("You still have ") +15, msg.indexOf(" unused skill points!")));
+			SkillpointUI.skillpoints = Integer.parseInt(msg.substring(msg.indexOf("You still have ") +15, msg.indexOf(" unused skill points!")));
 			event.setCanceled(true);
 		}
 		

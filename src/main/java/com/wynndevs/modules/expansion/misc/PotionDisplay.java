@@ -54,9 +54,9 @@ public class PotionDisplay extends ModGui{
 			if (PotionHideTimer) TimeFormat = "";
 			
 			if (PotionShadow){
-				this.drawString(font, (PotionAllignRight ? TimeFormat + " " + Effects.get(i)[0] : Effects.get(i)[0] + " " + TimeFormat), (PotionAllignRight ? width - ExpReference.GetMsgLength(TimeFormat + " " + Effects.get(i)[0], Size) - 4 : 4), (PotionCenterVerticaly ? (height/2) + Math.round((i*15)-((Size/2)*15)-(Effects.size()*7.5f)) : (height/5) + Math.round((i*15)-((Size/2)*15))), Size, Integer.parseInt("55FF55",16));
+				this.drawString(font, (PotionAllignRight ? TimeFormat + " " + Effects.get(i)[0] : Effects.get(i)[0] + " " + TimeFormat), (PotionAllignRight ? width - ExpReference.getMsgLength(TimeFormat + " " + Effects.get(i)[0], Size) - 4 : 4), (PotionCenterVerticaly ? (height/2) + Math.round((i*15)-((Size/2)*15)-(Effects.size()*7.5f)) : (height/5) + Math.round((i*15)-((Size/2)*15))), Size, Integer.parseInt("55FF55",16));
 			}else{
-				this.drawStringPlain(font, (PotionAllignRight ? TimeFormat + " " + Effects.get(i)[0] : Effects.get(i)[0] + " " + TimeFormat), (PotionAllignRight ? width - ExpReference.GetMsgLength(TimeFormat + " " + Effects.get(i)[0], Size) - 4 : 4), (PotionCenterVerticaly ? (height/2) + Math.round((i*15)-((Size/2)*15)-(Effects.size()*7.5f)) : (height/5) + Math.round((i*15)-((Size/2)*15))), Size, Integer.parseInt("55FF55",16));
+				this.drawStringPlain(font, (PotionAllignRight ? TimeFormat + " " + Effects.get(i)[0] : Effects.get(i)[0] + " " + TimeFormat), (PotionAllignRight ? width - ExpReference.getMsgLength(TimeFormat + " " + Effects.get(i)[0], Size) - 4 : 4), (PotionCenterVerticaly ? (height/2) + Math.round((i*15)-((Size/2)*15)-(Effects.size()*7.5f)) : (height/5) + Math.round((i*15)-((Size/2)*15))), Size, Integer.parseInt("55FF55",16));
 			}
 			if ((UseGameTime ? Time < 0 : (Long.parseLong(Effects.get(i)[1]) - System.currentTimeMillis()) < 0)){
 				Effects.remove(i);

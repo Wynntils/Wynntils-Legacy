@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.sound;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import net.minecraft.util.ResourceLocation;
@@ -71,7 +72,7 @@ public class WynnSounds {
         public WynnSoundMusic(String name, Delay time) {
             this.path = name;
             this.time = time;
-            soundEvent = new SoundEvent(new ResourceLocation(ExpReference.MOD_ID, name));
+            soundEvent = new SoundEvent(new ResourceLocation(Reference.MOD_ID, name));
         }
     }
 }

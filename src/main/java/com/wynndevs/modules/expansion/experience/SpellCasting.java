@@ -13,16 +13,16 @@ import java.util.List;
 
 public class SpellCasting {
 	
-	private static List<String> SpellList = new ArrayList<String>();
-	private static int SpellTimer = 0;
-	private static int SpellDelay = 2;
-	private static int SpellKey = 0;
+	private static List<String> spellList = new ArrayList<String>();
+	private static int spellTimer = 0;
+	private static int spellDelay = 2;
+	private static int spellKey = 0;
 	private static KeyBinding LMB = FMLClientHandler.instance().getClient().gameSettings.keyBindAttack;
 	private static KeyBinding RMB = FMLClientHandler.instance().getClient().gameSettings.keyBindUseItem;
 	
 	private static boolean isHunter = false;
 	
-	public static byte GetCurrentClass(){
+	public static byte getCurrentClass(){
 		if (ModCore.mc().player.experienceLevel > 0) {
 			try {
 				ItemStack book = ModCore.mc().player.inventory.getStackInSlot(7);
@@ -61,23 +61,27 @@ public class SpellCasting {
 		return 0;
 	}
 	
-	public static void AddSpell(String Spell){
+	public static void addSpell(String Spell){
 		LMB = FMLClientHandler.instance().getClient().gameSettings.keyBindAttack;
 		RMB = FMLClientHandler.instance().getClient().gameSettings.keyBindUseItem;
-		SpellList.add(Spell);
+		spellList.add(Spell);
 	}
 	
-	public static void CastSpell() {
-		if (!SpellList.isEmpty()) {
+	public static void castSpell() {
+		if (!spellList.isEmpty()) {
 			if (Boolean.logicalXor(Minecraft.getMinecraft().currentScreen instanceof GuiChat,true)) {
-				if (SpellTimer++ == SpellDelay) {
-					SpellTimer = 0;
-					if (Boolean.logicalXor(SpellList.get(0).charAt(SpellKey) == 'R', isHunter)) {
+				if (spellTimer++ == spellDelay) {
+					spellTimer = 0;
+					if (Boolean.logicalXor(spellList.get(0).charAt(spellKey) == 'R', isHunter)) {
 						KeyBinding.onTick(RMB.getKeyCode());
-						if (SpellKey == 2) {SpellList.remove(0); SpellKey=0;}else{SpellKey++;}
+						if (spellKey == 2) {
+							spellList.remove(0); spellKey =0;}else{
+							spellKey++;}
 					}else{
 						KeyBinding.onTick(LMB.getKeyCode());
-						if (SpellKey == 2) {SpellList.remove(0); SpellKey=0;}else{SpellKey++;}
+						if (spellKey == 2) {
+							spellList.remove(0); spellKey =0;}else{
+							spellKey++;}
 					}
 				}
 			}

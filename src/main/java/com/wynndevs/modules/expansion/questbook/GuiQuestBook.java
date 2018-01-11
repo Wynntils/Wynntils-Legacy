@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.questbook;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions;
@@ -14,9 +15,9 @@ import java.io.IOException;
 import java.net.URI;
 
 public class GuiQuestBook extends GuiScreenMod {
-	private static final ResourceLocation TEXTURE_BOOK = new ResourceLocation(ExpReference.MOD_ID,"textures/gui/questbook.png");
-	private static final ResourceLocation TEXTURE_BOOK_DISABLED = new ResourceLocation(ExpReference.MOD_ID,"textures/gui/questbook_disabled.png");
-	private static final ResourceLocation TEXTURE_BOOK_DISABLED_2 = new ResourceLocation(ExpReference.MOD_ID,"textures/gui/questbook_disabled_2.png");
+	private static final ResourceLocation TEXTURE_BOOK = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook.png");
+	private static final ResourceLocation TEXTURE_BOOK_DISABLED = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook_disabled.png");
+	private static final ResourceLocation TEXTURE_BOOK_DISABLED_2 = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook_disabled_2.png");
 	
 	private static ChangePageButton btnNextPage = new ChangePageButton();
 	private static ChangePageButton btnPrevPage = new ChangePageButton();

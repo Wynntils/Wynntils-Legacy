@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.misc;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -15,10 +16,10 @@ public class TpsMonitor {
 	private static boolean InWar = false;
 	
 	public static void SetFooter() {
-		if (!InWar && ExpReference.inWar()) {
+		if (!InWar && Reference.onWars()) {
 			TpsTimes.clear();
 			InWar = true;
-		}else if (InWar && !ExpReference.inWar()){
+		}else if (InWar && !Reference.onWars()){
 			TpsTimes.clear();
 			InWar = false;
 		}

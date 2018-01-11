@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerInfoMenu extends GuiScreenMod {
-	private static final ResourceLocation TEXTURE_PLAYER = new ResourceLocation(ExpReference.MOD_ID, "textures/gui/menu.png");
+	private static final ResourceLocation TEXTURE_PLAYER = new ResourceLocation(Reference.MOD_ID, "textures/gui/menu.png");
 	
 	private static PlayerHomeMenu.KickButton KickPartyButton = new PlayerHomeMenu.KickButton();
 	private static PlayerHomeMenu.KickButton KickFriendButton = new PlayerHomeMenu.KickButton();

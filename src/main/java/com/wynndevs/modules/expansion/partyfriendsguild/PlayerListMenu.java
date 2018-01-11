@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.WynnExpansion;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerListMenu extends GuiScreenMod {
-	private static final ResourceLocation TEXTURE_FRIENDS = new ResourceLocation(ExpReference.MOD_ID, "textures/gui/menu.png");
+	private static final ResourceLocation TEXTURE_FRIENDS = new ResourceLocation(Reference.MOD_ID, "textures/gui/menu.png");
 	
 	private static List<GuiButton> PlayerButtonList = new ArrayList<GuiButton>();
 	

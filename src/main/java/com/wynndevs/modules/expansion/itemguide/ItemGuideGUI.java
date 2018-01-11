@@ -204,16 +204,16 @@ public class ItemGuideGUI extends GuiScreenMod {
 		for (int i=0;i<Rows;i++) {
 			for (int j=0;j<Colums;j++) {
 				if (((i*Colums)+j) + (Rows * Colums * (Page-1)) < ItemSE.ItemSE.size()) {
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).ItemName = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetColouredName();
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).Tooltip = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetTooltip(ItemGuideShowLore, true);
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).ItemIcon = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetStaticMaterial();
-					if (ItemGuideBoxRarity) ((ItemButton) ItemButtonList.get((i*Colums)+j)).ItemRarity = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetRarity();
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).x = xPos + SidebarWidth + 10 + (j*(ItemNameWidth +10));
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).y = yPos + 40 + (i*27);
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).Recalculate = true;
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).visible = true;
+					(ItemButtonList.get((i*Colums)+j)).ItemName = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetColouredName();
+					(ItemButtonList.get((i*Colums)+j)).Tooltip = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetTooltip(ItemGuideShowLore, true);
+					(ItemButtonList.get((i*Colums)+j)).ItemIcon = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetStaticMaterial();
+					if (ItemGuideBoxRarity) (ItemButtonList.get((i*Colums)+j)).ItemRarity = ItemDB.ItemDB.get(ItemSE.ItemSE.get(((i*Colums)+j) + (Rows * Colums * (Page-1)))).GetRarity();
+					(ItemButtonList.get((i*Colums)+j)).x = xPos + SidebarWidth + 10 + (j*(ItemNameWidth +10));
+					(ItemButtonList.get((i*Colums)+j)).y = yPos + 40 + (i*27);
+					(ItemButtonList.get((i*Colums)+j)).Recalculate = true;
+					(ItemButtonList.get((i*Colums)+j)).visible = true;
 				}else{
-					((ItemButton) ItemButtonList.get((i*Colums)+j)).visible = false;
+					(ItemButtonList.get((i*Colums)+j)).visible = false;
 				}
 			}
 		}
@@ -246,7 +246,7 @@ public class ItemGuideGUI extends GuiScreenMod {
 				SearchBoxActive = false;
 				SearchBar.Recalculate = true;
 			}else{
-				this.mc.displayGuiScreen((GuiScreen)null);
+				this.mc.displayGuiScreen(null);
 				
 				if (this.mc.currentScreen == null){
 					this.mc.setIngameFocus();
@@ -489,16 +489,12 @@ public class ItemGuideGUI extends GuiScreenMod {
 		}
 	}
 	
-	private static void DrawGrayLine(int y, int x, int X) {
-		drawRect(x, y, X, y+2, LineGray);
-	}
-	
 	private class ItemButton extends GuiButton {
 		
 		public ItemButton(int buttonId, int x, int y) {
 			super(buttonId, x, y, 1, 24, "");
 		}
-		
+
 		public ItemButton() {
 			super(-1, -1, -1, "");
 		}
@@ -516,10 +512,10 @@ public class ItemGuideGUI extends GuiScreenMod {
 				if (Recalculate) {
 					this.width = ItemNameWidth+4;
 					DisplayName = ItemName;
-					int Length = ExpReference.GetMsgLength(DisplayName, 1.0f);
+					int Length = ExpReference.getMsgLength(DisplayName, 1.0f);
 					while (Length > ItemNameWidth-26){
 						DisplayName = DisplayName.substring(0, DisplayName.length()-1);
-						Length = ExpReference.GetMsgLength(DisplayName, 1.0f);
+						Length = ExpReference.getMsgLength(DisplayName, 1.0f);
 					}
 					Recalculate = false;
 				}
@@ -555,19 +551,19 @@ public class ItemGuideGUI extends GuiScreenMod {
 				if (Recalculate) {
 					if (SearchBoxActive) {
 						SearchDisplay = SearchField;
-						int Length = ExpReference.GetMsgLength(SearchDisplay, 1.25f);
-						while (Length > this.width- ExpReference.GetMsgLength("_", 1.25f)-12){
+						int Length = ExpReference.getMsgLength(SearchDisplay, 1.25f);
+						while (Length > this.width- ExpReference.getMsgLength("_", 1.25f)-12){
 							SearchDisplay = SearchDisplay.substring(1, SearchDisplay.length());
-							Length = ExpReference.GetMsgLength(SearchDisplay, 1.25f);
+							Length = ExpReference.getMsgLength(SearchDisplay, 1.25f);
 						}
 						Blink = true;
 						Blinking.Reset();
 					}else{
 						SearchDisplay = SearchField;
-						int Length = ExpReference.GetMsgLength(SearchDisplay, 1.25f);
+						int Length = ExpReference.getMsgLength(SearchDisplay, 1.25f);
 						while (Length > this.width-12){
 							SearchDisplay = SearchDisplay.substring(0, SearchDisplay.length()-1);
-							Length = ExpReference.GetMsgLength(SearchDisplay, 1.25f);
+							Length = ExpReference.getMsgLength(SearchDisplay, 1.25f);
 						}
 					}
 					Recalculate = false;
@@ -701,7 +697,7 @@ public class ItemGuideGUI extends GuiScreenMod {
 		public ExitButton(int buttonId, int x, int y) {
 			super(buttonId, x, y, 22, 22, "");
 		}
-		
+
 		public ExitButton() {
 			super(-1, -1, -1, "");
 		}

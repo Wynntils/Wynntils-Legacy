@@ -24,8 +24,8 @@ public class LegacyExperienceUI extends ModGui {
 
         String[] added = LegacyExperience.getAddedAmount();
         if (!added[0].equals("0") && !added[0].startsWith("-")) {
-            this.drawCenteredString(font,String.valueOf('\u00a7') + "l+" + added[1] + "%",(width/2),10 - LegacyExperience.AddedHUDProgress,1.8f,Integer.parseInt("24ff21",16));
-            this.drawCenteredString(font,"+" + added[0],(width/2),26 - LegacyExperience.AddedHUDProgress,0.9f,Integer.parseInt("FFA700",16));
+            this.drawCenteredString(font,String.valueOf('\u00a7') + "l+" + added[1] + "%",(width/2),10 - LegacyExperience.addedHUDProgress,1.8f,Integer.parseInt("24ff21",16));
+            this.drawCenteredString(font,"+" + added[0],(width/2),26 - LegacyExperience.addedHUDProgress,0.9f,Integer.parseInt("FFA700",16));
         }
     }
 }

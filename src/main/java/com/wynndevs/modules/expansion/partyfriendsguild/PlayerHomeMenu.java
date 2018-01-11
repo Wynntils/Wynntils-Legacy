@@ -1,6 +1,7 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PlayerHomeMenu extends GuiScreenMod {
-	private static final ResourceLocation TEXTURE_MENU = new ResourceLocation(ExpReference.MOD_ID, "textures/gui/menu.png");
+	private static final ResourceLocation TEXTURE_MENU = new ResourceLocation(Reference.MOD_ID, "textures/gui/menu.png");
 	
 	
 	static List<String[]> PartyList = new CopyOnWriteArrayList<String[]>();
@@ -199,10 +200,10 @@ public class PlayerHomeMenu extends GuiScreenMod {
 				if (this.Self) {this.drawTexturedModalRect(this.x + this.width - IconOffset, this.y +3, 251, 248, 5, 8); IconOffset += 6;}
 				
 				if (NameParseLength){
-					int Length = ExpReference.GetMsgLength(text, 1.0f);
+					int Length = ExpReference.getMsgLength(text, 1.0f);
 					while (Length > (111 - IconOffset)){
 						text = text.substring(0, text.length()-1);
-						Length = ExpReference.GetMsgLength(text, 1.0f);
+						Length = ExpReference.getMsgLength(text, 1.0f);
 					}
 					NameParseLength = false;
 				}
@@ -652,7 +653,7 @@ public class PlayerHomeMenu extends GuiScreenMod {
 			}
 		} catch (Exception ignored){}
 		
-		if (ExpReference.inGame()){
+		if (Reference.onWorld()){
 			PartyList.clear();
 			try {
 				Collection<NetworkPlayerInfo> Tablist = Minecraft.getMinecraft().getConnection().getPlayerInfoMap();

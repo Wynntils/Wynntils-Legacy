@@ -31,7 +31,7 @@ public class ItemDB {
 	
 	public static void GenerateItemDB() {
 		try {
-			ExpReference.ConsoleOut("Generating Item database [1]");
+			ExpReference.consoleOut("Generating Item database [1]");
 			ItemDB.clear();
 			List<String> ItemDBTmp = new ArrayList<String>();
 			// String ItemDBRawURL = new BufferedReader(new InputStreamReader(new URL("https://pastebin.com/raw/kQ4tz12Y").openConnection().getInputStream())).readLine();
@@ -58,7 +58,7 @@ public class ItemDB {
 					boolean NewEntry = true;
 					for (WynnItem ItemTest : ItemDB) {
 						if (ItemTest.Name.equals(Item.Name)) {
-							ExpReference.ConsoleOut("Duplicate Item Detected: " + Item.Name);
+							ExpReference.consoleOut("Duplicate Item Detected: " + Item.Name);
 							NewEntry = false;
 							break;
 						}
@@ -68,7 +68,7 @@ public class ItemDB {
 				
 			}
 			ItemDBTmp.clear();
-			ExpReference.ConsoleOut("Item database [1] generated, contianing " + ItemDB.size() + " items");
+			ExpReference.consoleOut("Item database [1] generated, contianing " + ItemDB.size() + " items");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

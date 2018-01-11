@@ -1,7 +1,7 @@
 package com.wynndevs.modules.expansion.options;
 
 import com.wynndevs.ModCore;
-import com.wynndevs.modules.expansion.ExpReference;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.experience.ExperienceUI;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
 import com.wynndevs.modules.expansion.experience.SoulpointTime;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiSHCMWynnOptions extends GuiScreenMod {
-	private static final ResourceLocation TEXTURE_OPTIONS = new ResourceLocation(ExpReference.MOD_ID, "textures/gui/options.png");
+	private static final ResourceLocation TEXTURE_OPTIONS = new ResourceLocation(Reference.MOD_ID, "textures/gui/options.png");
 	private static Delay refreshDelay = new Delay(10f, true);
 	
 	private static OptionsButton btnOptions = new OptionsButton();
@@ -186,9 +186,9 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		btnEgg = new EggButton(4, (this.width / 2) -115, 15);
 		
 		pageButtons.add(tglDisplayName = new ToggleButton(100, (this.width / 2) - 110, 80, "Show Nameplates for items", 1));
-		pageButtons.add(tglUseLegacyExperience = new ToggleButton(101, (this.width / 2) - 110, 95, "Use the classic way of showing " + (ExperienceUI.UseExpInstead ? "Exp" : "XP"), 1));
-		pageButtons.add(tglEnableSidebar = new ToggleButton(102, (this.width / 2) - 110, 110, "Enable the " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " Sidebar Header", 1));
-		pageButtons.add(tglEnableScrollingSidebar = new ToggleButton(103, (this.width / 2) - 110, 125, "Enable the " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " Sidebar Feed", 1));
+		pageButtons.add(tglUseLegacyExperience = new ToggleButton(101, (this.width / 2) - 110, 95, "Use the classic way of showing " + (ExperienceUI.UseExpInstead ? "exp" : "XP"), 1));
+		pageButtons.add(tglEnableSidebar = new ToggleButton(102, (this.width / 2) - 110, 110, "Enable the " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " Sidebar Header", 1));
+		pageButtons.add(tglEnableScrollingSidebar = new ToggleButton(103, (this.width / 2) - 110, 125, "Enable the " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " Sidebar Feed", 1));
 		pageButtons.add(tglPotionShiftOff = new ToggleButton(104, (this.width / 2) - 110, 155, "Disable Inventory shifting under effects", 1));
 		pageButtons.add(tglDisableFOV = new ToggleButton(105, (this.width / 2) - 110, 170, "Disable FOV changes", 1));
 		
@@ -212,16 +212,16 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		pageButtons.add(tglBumpHelperGlow = new ToggleButton(325, (this.width / 2) - 110, 155, "Increase Helper highlight priority", 4));
 		pageButtons.add(tglHighlightDisguises = new ToggleButton(326, (this.width / 2) - 110, 170, "Allow Highliting of Disguised players", 4));
 		
-		pageButtons.add(tglExpAboveHealth = new ToggleButton(400, (this.width / 2) - 110, 80, "Show " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " above action bar", 5));
-		pageButtons.add(tglUseExpInstead = new ToggleButton(401, (this.width / 2) - 110, 95, "Replace \"XP\" with \"Exp\" ", 5));
-		pageButtons.add(tglExpFlowPercentage = new ToggleButton(402, (this.width / 2) - 110, 110, "Show " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + "% gain in feed", 5));
-		pageButtons.add(tglExpFlowShowNames = new ToggleButton(403, (this.width / 2) - 110, 125, "Show Mob name in " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " feed", 5));
-		pageButtons.add(tglExpFlowShowLevel = new ToggleButton(404, (this.width / 2) - 110, 140, "Show Mob level in " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " feed", 5));
-		pageButtons.add(tglExpFlowSlow = new ToggleButton(405, (this.width / 2) - 110, 155, "Slow " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " sidebar feed", 5));
-		pageButtons.add(tglExpFlowSmall = new ToggleButton(406, (this.width / 2) - 110, 170, "Use small " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " sidebar text", 5));
+		pageButtons.add(tglExpAboveHealth = new ToggleButton(400, (this.width / 2) - 110, 80, "Show " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " above action bar", 5));
+		pageButtons.add(tglUseExpInstead = new ToggleButton(401, (this.width / 2) - 110, 95, "Replace \"XP\" with \"exp\" ", 5));
+		pageButtons.add(tglExpFlowPercentage = new ToggleButton(402, (this.width / 2) - 110, 110, "Show " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + "% gain in feed", 5));
+		pageButtons.add(tglExpFlowShowNames = new ToggleButton(403, (this.width / 2) - 110, 125, "Show Mob name in " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " feed", 5));
+		pageButtons.add(tglExpFlowShowLevel = new ToggleButton(404, (this.width / 2) - 110, 140, "Show Mob level in " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " feed", 5));
+		pageButtons.add(tglExpFlowSlow = new ToggleButton(405, (this.width / 2) - 110, 155, "Slow " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " sidebar feed", 5));
+		pageButtons.add(tglExpFlowSmall = new ToggleButton(406, (this.width / 2) - 110, 170, "Use small " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " sidebar text", 5));
 		
 		pageButtons.add(tglShowSpellCastingHUD = new ToggleButton(450, (this.width / 2) - 110, 80, "Display icons showing spell key bindings", 6));
-		pageButtons.add(tglStaticBarShadow = new ToggleButton(451, (this.width / 2) - 110, 95, "Add a shadow to " + (ExperienceUI.UseExpInstead ? "Exp" : "XP") + " Bar", 6));
+		pageButtons.add(tglStaticBarShadow = new ToggleButton(451, (this.width / 2) - 110, 95, "Add a shadow to " + (ExperienceUI.UseExpInstead ? "exp" : "XP") + " Bar", 6));
 		pageButtons.add(tglSideBarHeaderShadow = new ToggleButton(452, (this.width / 2) - 110, 110, "Add a shadow to Sidebar Header", 6));
 		pageButtons.add(tglSideBarFeedShadow = new ToggleButton(453, (this.width / 2) - 110, 125, "Add a shadow to Sidebar Feed", 6));
 		
@@ -375,7 +375,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		tglExpFlowSlow.active = ExperienceUI.ExpFlowSlow;
 		tglExpFlowSmall.active = ExperienceUI.ExpFlowSmall;
 		
-		tglShowSpellCastingHUD.active = SpellCastingUI.ShowSpellCastingHUD;
+		tglShowSpellCastingHUD.active = SpellCastingUI.showSpellCastingHUD;
 		tglStaticBarShadow.active = ExperienceUI.StaticBarShadow;
 		tglSideBarHeaderShadow.active = ExperienceUI.SideBarHeaderShadow;
 		tglSideBarFeedShadow.active = ExperienceUI.SideBarFeedShadow;
@@ -411,8 +411,8 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		tglHighlightSet.active = WorldItemName.HighlightSet;
 		
 		tglDailyChestReminder.active = DailyChestReminder.DailyChestReminder;
-		tglShowSkillpoints.active = SkillpointUI.ShowSkillpoints;
-		tglSoulPointTime.active = SoulpointTime.SoulPointTime;
+		tglShowSkillpoints.active = SkillpointUI.showSkillpoints;
+		tglSoulPointTime.active = SoulpointTime.soulPointTime;
 		tglInfoOverrideFind.active = WynnExpansion.InfoOverrideFind;
 		tglHeaderVersion.active = WynnExpansion.HeaderVersion;
 		tglShowTPS.active = WynnExpansion.ShowTPS;
@@ -483,7 +483,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 				btn.visible = false;
 			}
 		}
-		if (ExpReference.inWar()){
+		if (Reference.onWars()){
 		btnOptions.visible = false;
 		}
 	}
@@ -557,7 +557,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 			case 405: Config.setModule("ExpFlowSlow", !ExperienceUI.ExpFlowSlow); RedrawButtons(); break;
 			case 406: Config.setModule("ExpFlowSmall", !ExperienceUI.ExpFlowSmall); RedrawButtons(); break;
 			
-			case 450: Config.setModule("ShowSpellCastingHUD", !SpellCastingUI.ShowSpellCastingHUD); RedrawButtons(); break;
+			case 450: Config.setModule("showSpellCastingHUD", !SpellCastingUI.showSpellCastingHUD); RedrawButtons(); break;
 			case 451: Config.setModule("StaticBarShadow", !ExperienceUI.StaticBarShadow); RedrawButtons(); break;
 			case 452: Config.setModule("SideBarHeaderShadow", !ExperienceUI.SideBarHeaderShadow); RedrawButtons(); break;
 			case 453: Config.setModule("SideBarFeedShadow", !ExperienceUI.SideBarFeedShadow); RedrawButtons(); break;
@@ -593,8 +593,8 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 			case 904: Config.setModule("HighlightSet", !WorldItemName.HighlightSet); RedrawButtons(); break;
 			
 			case 1000: Config.setModule("DailyChestReminder", !DailyChestReminder.DailyChestReminder); RedrawButtons(); break;
-			case 1001: Config.setModule("ShowSkillpoints", !SkillpointUI.ShowSkillpoints); RedrawButtons(); break;
-			case 1002: Config.setModule("SoulPointTime", !SoulpointTime.SoulPointTime); RedrawButtons(); break;
+			case 1001: Config.setModule("showSkillpoints", !SkillpointUI.showSkillpoints); RedrawButtons(); break;
+			case 1002: Config.setModule("soulPointTime", !SoulpointTime.soulPointTime); RedrawButtons(); break;
 			case 1022: Config.setModule("InfoOverrideFind", !WynnExpansion.InfoOverrideFind); RedrawButtons(); break;
 			case 1024: Config.setModule("HeaderVersion", !WynnExpansion.HeaderVersion); ModCore.mc().ingameGUI.getTabList().resetFooterHeader(); RedrawButtons(); break;
 			case 1025: Config.setModule("ShowTPS", !WynnExpansion.ShowTPS); ModCore.mc().ingameGUI.getTabList().resetFooterHeader(); RedrawButtons(); break;

@@ -2,6 +2,7 @@ package com.wynndevs.modules.expansion.chat.guild;
 
 
 import com.wynndevs.ConfigValues;
+import com.wynndevs.core.Reference;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.ExpReference;
 import net.minecraft.client.Minecraft;
@@ -59,7 +60,7 @@ public class GuiGuild extends Gui {
 
     @SubscribeEvent
     public void onClientChat(ClientChatReceivedEvent event) {
-        if (!ExpReference.inGame() || !ConfigValues.wynnExpansion.chat.guild.a_enabled) return;
+        if (!Reference.onWorld() || !ConfigValues.wynnExpansion.chat.guild.a_enabled) return;
         int type = event.getType();
         String formatted = event.getMessage().getFormattedText();
         String message = TextFormatting.getTextWithoutFormattingCodes(formatted).replace("&", "\u00A7");
@@ -92,7 +93,7 @@ public class GuiGuild extends Gui {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (!ExpReference.inGame() || !ConfigValues.wynnExpansion.chat.guild.a_enabled) return;
+        if (!Reference.onWorld() || !ConfigValues.wynnExpansion.chat.guild.a_enabled) return;
         if (KeyBindings.OPEN_GUILD_CHAT.isPressed()) {
             if (this.chat.chatClosed() && this.mc.currentScreen == null) {
                 this.chat.getChatBox().initGui();

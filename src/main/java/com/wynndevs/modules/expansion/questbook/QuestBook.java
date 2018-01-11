@@ -4,7 +4,6 @@ import com.wynndevs.ModCore;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -30,7 +29,7 @@ public class QuestBook {
 	
 	public static void SetupQuestCorrections(){
 		try {
-			ExpReference.ConsoleOut("Gathering Quest Name Corrections");
+			ExpReference.consoleOut("Gathering Quest Name Corrections");
 			QuestCorrections.clear();
 			// Retrieve Quest Fixes from file
 			BufferedReader DataFile = new BufferedReader(new InputStreamReader(new URL(WebAPI.QuestCorrectionsURL).openConnection().getInputStream()));
@@ -44,7 +43,7 @@ public class QuestBook {
 				DataLine = DataFile.readLine();
 			}
 			DataFile.close();
-			ExpReference.ConsoleOut("Quest Name Corrections at: " + (QuestCorrections.size()/2));
+			ExpReference.consoleOut("Quest Name Corrections at: " + (QuestCorrections.size()/2));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

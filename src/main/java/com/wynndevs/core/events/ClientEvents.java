@@ -6,6 +6,11 @@ import com.wynndevs.core.Reference;
 import com.wynndevs.core.Utils;
 import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
+import com.wynndevs.modules.expansion.experience.SpellCasting;
+import com.wynndevs.modules.expansion.itemguide.ItemGuideGUI;
+import com.wynndevs.modules.expansion.partyfriendsguild.PlayerHomeMenu;
+import com.wynndevs.modules.expansion.questbook.GuiQuestBook;
+import com.wynndevs.modules.expansion.sound.GuiWynnSound;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
@@ -35,13 +40,47 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (KeyBindings.MARKET_GUI.isKeyDown()) {
-            Minecraft.getMinecraft().displayGuiScreen(new MarketGUI());
+        if(Reference.onServer()) {
+            if (KeyBindings.MARKET_GUI.isKeyDown()) {
+                Minecraft.getMinecraft().displayGuiScreen(new MarketGUI());
+                return;
+            }
+            if(KeyBindings.OPEN_CONFIG_MENU.isKeyDown()) {
+                Minecraft.getMinecraft().displayGuiScreen(new ConfigGui(ModCore.mc()));
+                return;
+            }
+            if (KeyBindings.OPEN_QUEST_BOOK.isPressed()){
+                ModCore.mc().displayGuiScreen(new GuiQuestBook());
+                return;
+            }
+            if (KeyBindings.SPELL_1.isPressed()) {
+                SpellCasting.addSpell("RLR");
+                return;
+            }
+            if (KeyBindings.SPELL_2.isPressed()) {
+                SpellCasting.addSpell("RRR");
+                return;
+            }
+            if (KeyBindings.SPELL_3.isPressed()) {
+                SpellCasting.addSpell("RLL");
+                return;
+            }
+            if (KeyBindings.SPELL_4.isPressed()) {
+                SpellCasting.addSpell("RRL");
+                return;
+            }
+            if (KeyBindings.OPEN_PLAYER_MENU.isPressed()){
+                ModCore.mc().displayGuiScreen(new PlayerHomeMenu());
+                return;
+            }
+            if (KeyBindings.OPEN_ITEM_GUIDE.isPressed()){
+                ModCore.mc().displayGuiScreen(new ItemGuideGUI());
+                return;
+            }
+            if (KeyBindings.OPEN_WYNN_SOUND.isPressed()) {
+                if (Reference.onWorld()) { ModCore.mc().displayGuiScreen(new GuiWynnSound()); }
+            }
         }
-        if(KeyBindings.OPEN_CONFIG_MENU.isKeyDown()) {
-            Minecraft.getMinecraft().displayGuiScreen(new ConfigGui(ModCore.mc()));
-        }
-
     }
 
     @SubscribeEvent

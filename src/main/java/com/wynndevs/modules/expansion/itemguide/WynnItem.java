@@ -861,8 +861,8 @@ public class WynnItem {
 		if (this.Lore != null && ShowLore) {
 			int MaxWidth = 0;
 			for (String Line : Tooltip.split("/n")) {
-				if (ExpReference.GetMsgLength(Line, 1.0f) > MaxWidth) {
-					MaxWidth = ExpReference.GetMsgLength(Line, 1.0f);
+				if (ExpReference.getMsgLength(Line, 1.0f) > MaxWidth) {
+					MaxWidth = ExpReference.getMsgLength(Line, 1.0f);
 				}
 			}
 			if (MaxWidth < 150) {

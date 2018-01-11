@@ -57,12 +57,12 @@ public class Territory {
 	}
 	
 	public static void SetupTerritoryList() {
-		ExpReference.ConsoleOut("Retrieving Territory data");
+		ExpReference.consoleOut("Retrieving Territory data");
 		GetTerritoryList();
 		TerritoryList.clear();
 		TerritoryList.addAll(TerritoryListTmp);
 		TerritoryListTmp.clear();
-		ExpReference.ConsoleOut("Successfully retrieved data for " + TerritoryList.size() + " Territories");
+		ExpReference.consoleOut("Successfully retrieved data for " + TerritoryList.size() + " Territories");
 	}
 	
 	public static void Update() {
@@ -130,7 +130,7 @@ public class Territory {
 									TerritoryUI.TerritoryListUpdates.add((GroupNewsNames ? TerritoryNews.replace("[", "").replace("]", "") : TerritoryNews));
 									TerritoryList.set(i, Territory);
 								}else{
-									ExpReference.ConsoleOut("Inconsistant Capture time for " + Territory.Name + ", Ignoring");
+									ExpReference.consoleOut("Inconsistant Capture time for " + Territory.Name + ", Ignoring");
 								}
 							}
 							break;
@@ -176,7 +176,7 @@ public class Territory {
 		CGNprefix.clear();
 		try{
 			if (new File("config/Wynn Expansion/Guild List.txt").exists()){
-				ExpReference.ConsoleOut("Loading Guild Prefixes from file");
+				ExpReference.consoleOut("Loading Guild Prefixes from file");
 				boolean ReWrite = false;
 				BufferedReader GuildList = new BufferedReader(new FileReader("config/Wynn Expansion/Guild List.txt"));
 				String Guild = GuildList.readLine();
@@ -192,16 +192,16 @@ public class Territory {
 					Guild = GuildList.readLine();
 				}
 				GuildList.close();
-				ExpReference.ConsoleOut("Loaded " + CGNname.size() + " Guild Prefixes");
+				ExpReference.consoleOut("Loaded " + CGNname.size() + " Guild Prefixes");
 				
 				if (ReWrite) {
-					ExpReference.ConsoleOut("ReWriting Guild Prefix list");
+					ExpReference.consoleOut("ReWriting Guild Prefix list");
 					if (!new File("config/Wynn Expansion/Guild List.txt").delete())
 						new File("config/Wynn Expansion/Guild List.txt").deleteOnExit();
 					for (int i=0;i<CGNname.size();i++) {
 						AddGuildPrefix(CGNname.get(i), CGNprefix.get(i));
 					}
-					ExpReference.ConsoleOut("ReWrite of Guild Prefix list Complete");
+					ExpReference.consoleOut("ReWrite of Guild Prefix list Complete");
 				}
 			}
 		}catch(Exception ignore){}
@@ -231,7 +231,7 @@ public class Territory {
 	
 	public static void FindAllGuildPrefixes() {
 		try {
-			ExpReference.ConsoleOut("Searching for new guilds");
+			ExpReference.consoleOut("Searching for new guilds");
 			
 			BufferedReader GuildListRawURL = new BufferedReader(new InputStreamReader(new URL(WebAPI.GuildListAPIURL).openConnection().getInputStream()));
 			String GuildListRaw = GuildListRawURL.readLine();
@@ -275,7 +275,7 @@ public class Territory {
 					ReWriteGuildPrefix();
 				}
 				
-				ExpReference.ConsoleOut("Found " + GuildList.length + " Guilds, With " + NewGuilds + " New Guilds and " + OldGuilds + " Dead guilds");
+				ExpReference.consoleOut("Found " + GuildList.length + " Guilds, With " + NewGuilds + " New Guilds and " + OldGuilds + " Dead guilds");
 			}
 		} catch (Exception ignore) {}
 	}

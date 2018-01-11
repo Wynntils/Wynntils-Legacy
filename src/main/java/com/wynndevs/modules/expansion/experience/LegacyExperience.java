@@ -2,7 +2,7 @@ package com.wynndevs.modules.expansion.experience;
 
 
 import com.wynndevs.ModCore;
-import com.wynndevs.modules.expansion.ExpReference;
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import net.minecraft.util.ResourceLocation;
 
@@ -11,15 +11,15 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 
 public class LegacyExperience {
-    private static int[] WynncraftXPLevels = new int[100];
+    private static int[] wynncraftXPLevels = new int[100];
 
-    public static void PreInit() {
+    public static void preInit() {
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(ModCore.mc().getResourceManager().getResource(new ResourceLocation(ExpReference.MOD_ID, "misc/wynncraftxplevels")).getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(ModCore.mc().getResourceManager().getResource(new ResourceLocation(Reference.MOD_ID, "misc/wynncraftxplevels")).getInputStream()));
             String strLine;
             for(int j = 0; j < 100; j++){
                 strLine = br.readLine();
-                WynncraftXPLevels[j] = Integer.parseInt(strLine);
+                wynncraftXPLevels[j] = Integer.parseInt(strLine);
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -27,7 +27,7 @@ public class LegacyExperience {
     }
 
     public static int getXpNeededForWynncraftLevel(int level) {
-        return ((level > 0 && level < 101) ? (WynncraftXPLevels[level - 1]) : (-1));
+        return ((level > 0 && level < 101) ? (wynncraftXPLevels[level - 1]) : (-1));
     }
 
     public static float getCurrentWynncraftXp(){
@@ -43,7 +43,7 @@ public class LegacyExperience {
     }
 
     private static float oldXPb = -1;
-    private static boolean ExperienceChanged() {
+    private static boolean experienceChanged() {
         if (oldXPb != -1)
         {
             if (oldXPb == getCurrentWynncraftXp())
@@ -63,41 +63,41 @@ public class LegacyExperience {
         }
     }
 
-    private static int AddedAmount = 0;
-    private static float AddedPercent = 0;
-    private static Delay AddedDelay = new Delay(1.95f);
-    private static Delay AddedHUDDelay = new Delay(0.06f,true);
-    public static int AddedHUDProgress = 0;
+    private static int addedAmount = 0;
+    private static float addedPercent = 0;
+    private static Delay addedDelay = new Delay(1.95f);
+    private static Delay addedHUDDelay = new Delay(0.06f,true);
+    public static int addedHUDProgress = 0;
 
     private static int oldXPe = -1;
     private static float oldXPeP = -1;
     public static String[] getAddedAmount()
     {
-        if (ExperienceChanged()) {
-            AddedAmount += getCurrentWynncraftXp() - oldXPe;
-            AddedPercent += ModCore.mc().player.experience - oldXPeP;
+        if (experienceChanged()) {
+            addedAmount += getCurrentWynncraftXp() - oldXPe;
+            addedPercent += ModCore.mc().player.experience - oldXPeP;
 
-            AddedHUDProgress = 0;
+            addedHUDProgress = 0;
 
-            AddedDelay.Reset();
+            addedDelay.Reset();
         }
         oldXPe = Math.round(getCurrentWynncraftXp());
         oldXPeP = ModCore.mc().player.experience;
 
-        if (AddedDelay.Passed()) {
-            AddedAmount = 0;
-            AddedPercent = 0;
+        if (addedDelay.Passed()) {
+            addedAmount = 0;
+            addedPercent = 0;
         }
 
-        if (AddedHUDDelay.Passed()){
-            AddedHUDProgress++;
+        if (addedHUDDelay.Passed()){
+            addedHUDProgress++;
         }
 
 
         String[] OUTS = new String[2];
 
-        OUTS[0] = Integer.toString(AddedAmount);
-        OUTS[1] = new DecimalFormat("##.##").format(AddedPercent * 100);
+        OUTS[0] = Integer.toString(addedAmount);
+        OUTS[1] = new DecimalFormat("##.##").format(addedPercent * 100);
 
         return OUTS;
     }

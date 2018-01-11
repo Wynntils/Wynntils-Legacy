@@ -16,7 +16,7 @@ public class DailyChestReminder {
 	
 	public static void CheckDailyChest(){
 		if (ChestTimer.Passed() && Alarm < System.currentTimeMillis() && DailyChestReminder){
-			ExpReference.PostToChat(new TextComponentString(String.valueOf('\u00a7') + "aDaily Rewards are available!"));
+			ExpReference.postToChat(new TextComponentString(String.valueOf('\u00a7') + "aDaily Rewards are available!"));
 			Alarm = System.currentTimeMillis() + 1800000;
 			Reminded = true;
 		}

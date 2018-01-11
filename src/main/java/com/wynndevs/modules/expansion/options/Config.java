@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.options;
 
+import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.experience.ExperienceUI;
 import com.wynndevs.modules.expansion.experience.SkillpointUI;
@@ -38,11 +39,11 @@ public class Config {
 		try {
 			config.load();
 			
-			if (!config.getString("VERSION", "VERSION", "none", "").equals(ExpReference.VERSION)){
+			if (!config.getString("VERSION", "VERSION", "none", "").equals(Reference.VERSION)){
 				//if (config.getString("VERSION", "VERSION", "none", "").equals("none")) {FirstInstall = true;};
 				if (config.getString("VERSION", "VERSION", "none", "").equals("0.024")) {config.get("WarHornAttack", "Modules", true).set(true);};
 				
-				config.get("VERSION", "VERSION", "none", "").set(ExpReference.VERSION);
+				config.get("VERSION", "VERSION", "none", "").set(Reference.VERSION);
 				ShowUpdateMessages = true;
 				config.save();
 				config.load();
@@ -102,7 +103,7 @@ public class Config {
 			ExperienceUI.ExpFlowSlow = config.getBoolean("ExpFlowSlow", "Modules", false, "");
 			ExperienceUI.ExpFlowSmall = config.getBoolean("ExpFlowSmall", "Modules", true, "");
 			
-			SpellCastingUI.ShowSpellCastingHUD = config.getBoolean("ShowSpellCastingHUD", "Modules", true, "");
+			SpellCastingUI.showSpellCastingHUD = config.getBoolean("showSpellCastingHUD", "Modules", true, "");
 			ExperienceUI.StaticBarShadow = config.getBoolean("StaticBarShadow", "Modules", false, "");
 			ExperienceUI.SideBarHeaderShadow = config.getBoolean("SideBarHeaderShadow", "Modules", true, "");
 			ExperienceUI.SideBarFeedShadow = config.getBoolean("SideBarFeedShadow", "Modules", true, "");
@@ -138,8 +139,8 @@ public class Config {
 			WorldItemName.HighlightSet = config.getBoolean("HighlightSet", "Modules", false, "");
 			
 			DailyChestReminder.DailyChestReminder = config.getBoolean("DailyChestReminder", "Modules", true, "");
-			SkillpointUI.ShowSkillpoints = config.getBoolean("ShowSkillpoints", "Modules", true, "");
-			SoulpointTime.SoulPointTime = config.getBoolean("SoulPointTime", "Modules", true, "");
+			SkillpointUI.showSkillpoints = config.getBoolean("showSkillpoints", "Modules", true, "");
+			SoulpointTime.soulPointTime = config.getBoolean("soulPointTime", "Modules", true, "");
 			WynnExpansion.InfoOverrideFind = config.getBoolean("InfoOverrideFind", "Modules", false, "");
 			WynnExpansion.HeaderVersion = config.getBoolean("HeaderVersion", "Modules", false, "");
 			WynnExpansion.ShowTPS = config.getBoolean("ShowTPS", "Modules", false, "");
@@ -198,7 +199,7 @@ public class Config {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			ExpReference.ConsoleOut("Error loading config, returning to default variables.");
+			ExpReference.consoleOut("Error loading config, returning to default variables.");
 			
 			WorldItemName.DisplayName = true;
 			WynnExpansion.UseLegacyExperience = false;
@@ -235,7 +236,7 @@ public class Config {
 			ExperienceUI.ExpFlowSlow = false;
 			ExperienceUI.ExpFlowSmall = true;
 			
-			SpellCastingUI.ShowSpellCastingHUD = true;
+			SpellCastingUI.showSpellCastingHUD = true;
 			ExperienceUI.StaticBarShadow = false;
 			ExperienceUI.SideBarHeaderShadow = true;
 			ExperienceUI.SideBarFeedShadow = true;
@@ -271,8 +272,8 @@ public class Config {
 			WorldItemName.HighlightSet = false;
 			
 			DailyChestReminder.DailyChestReminder = true;
-			SkillpointUI.ShowSkillpoints = true;
-			SoulpointTime.SoulPointTime = true;
+			SkillpointUI.showSkillpoints = true;
+			SoulpointTime.soulPointTime = true;
 			WynnExpansion.InfoOverrideFind = true;
 			WynnExpansion.HeaderVersion = false;
 			WynnExpansion.ShowTPS = false;
@@ -379,16 +380,16 @@ public class Config {
 			TextComponentString ThankyouMessage = new TextComponentString("Thank you for installing Wynn Expansion!");
 			ThankyouMessage.getStyle().setColor(TextFormatting.GOLD);
 			ThankyouMessage.getStyle().setBold(true);
-			ExpReference.PostToChat(ThankyouMessage);
+			ExpReference.postToChat(ThankyouMessage);
 			
 			TextComponentString Space = new TextComponentString("");
-			ExpReference.PostToChat(Space);
+			ExpReference.postToChat(Space);
 			
 			ThankyouMessage = new TextComponentString("If you find any bugs or have suggestions feel free to post them on the Wynncraft Thread");
 			ThankyouMessage.getStyle().setColor(TextFormatting.GOLD);
-			ExpReference.PostToChat(ThankyouMessage);
+			ExpReference.postToChat(ThankyouMessage);
 			
-			ExpReference.PostToChat(Space);
+			ExpReference.postToChat(Space);
 			FirstInstall = false;
 		}*/
 		if (ShowUpdateMessages) {

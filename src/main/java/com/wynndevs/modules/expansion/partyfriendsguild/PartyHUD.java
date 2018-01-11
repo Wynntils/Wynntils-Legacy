@@ -53,17 +53,17 @@ public class PartyHUD extends ModGui {
 				
 				// Draw Username
 				if (UseProportionalDisplay) {
-					this.drawString(font, PartyList.get(i), (AllignRight ? Allign[1] -2 - ExpReference.GetMsgLength(PartyList.get(i), 1.0f) : Allign[0] +2), (i*15) +1 +Offset, (ColourName ? PartyValues.get(i)[1] : 0xffFFFFFF));//0xffEAE000);
+					this.drawString(font, PartyList.get(i), (AllignRight ? Allign[1] -2 - ExpReference.getMsgLength(PartyList.get(i), 1.0f) : Allign[0] +2), (i*15) +1 +Offset, (ColourName ? PartyValues.get(i)[1] : 0xffFFFFFF));//0xffEAE000);
 				}else{
 					this.drawCenteredString(font, PartyList.get(i), Allign[0] + (int) Math.floor((Allign[1] - Allign[0])/2), (i*15) +1 +Offset, (ColourName ? PartyValues.get(i)[1] : 0xffFFFFFF));//0xffEAE000);
 				}
 				
 				if (PartyValues.get(i)[0] == -1) {
-					int OffsetTag = (PartyValues.get(i)[3] > ExpReference.GetMsgLength(PartyList.get(i), 1.0f) +2 ? PartyValues.get(i)[3] : ExpReference.GetMsgLength(PartyList.get(i), 1.0f) +2);
-					this.drawString(font, "OOR", (AllignRight ? Allign[1] - 2 - OffsetTag - ExpReference.GetMsgLength("OOR", 1.0f) : Allign[0] + 2 + OffsetTag), (i*15) +1 +Offset, PartyValues.get(i)[1]);
+					int OffsetTag = (PartyValues.get(i)[3] > ExpReference.getMsgLength(PartyList.get(i), 1.0f) +2 ? PartyValues.get(i)[3] : ExpReference.getMsgLength(PartyList.get(i), 1.0f) +2);
+					this.drawString(font, "OOR", (AllignRight ? Allign[1] - 2 - OffsetTag - ExpReference.getMsgLength("OOR", 1.0f) : Allign[0] + 2 + OffsetTag), (i*15) +1 +Offset, PartyValues.get(i)[1]);
 				}else if (ShowPercentage) {
-					int OffsetTag = (PartyValues.get(i)[3] > ExpReference.GetMsgLength(PartyList.get(i), 1.0f) +2 ? PartyValues.get(i)[3] : ExpReference.GetMsgLength(PartyList.get(i), 1.0f) +2);
-					this.drawString(font, new DecimalFormat("00").format(PartyValues.get(i)[0]) + "%", (AllignRight ? Allign[1] - 2 - OffsetTag - ExpReference.GetMsgLength(new DecimalFormat("00").format(PartyValues.get(i)[0]) + "%", 1.0f) : Allign[0] + 2 + OffsetTag), (i*15) +1 +Offset, PartyValues.get(i)[1]);
+					int OffsetTag = (PartyValues.get(i)[3] > ExpReference.getMsgLength(PartyList.get(i), 1.0f) +2 ? PartyValues.get(i)[3] : ExpReference.getMsgLength(PartyList.get(i), 1.0f) +2);
+					this.drawString(font, new DecimalFormat("00").format(PartyValues.get(i)[0]) + "%", (AllignRight ? Allign[1] - 2 - OffsetTag - ExpReference.getMsgLength(new DecimalFormat("00").format(PartyValues.get(i)[0]) + "%", 1.0f) : Allign[0] + 2 + OffsetTag), (i*15) +1 +Offset, PartyValues.get(i)[1]);
 				}
 			}
 		}
