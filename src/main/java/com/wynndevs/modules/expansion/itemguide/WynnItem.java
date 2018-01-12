@@ -429,12 +429,12 @@ public class WynnItem {
 		for (char c : Colour.toCharArray()){
 			if (c >= '0' && c <= '9'){
 				Num.append(c);
-			}else if (Num.toString() != ""){
+			}else if (!Num.toString().equals("")){
 				RGB = (RGB << 8) + Integer.parseInt(Num.toString());
 				Num = new StringBuilder();
 			}
 		}
-		if (Num.toString() != ""){
+		if (!Num.toString().equals("")){
 			RGB = (RGB << 8) + Integer.parseInt(Num.toString());
 		}
 		this.ArmourColour = RGB;

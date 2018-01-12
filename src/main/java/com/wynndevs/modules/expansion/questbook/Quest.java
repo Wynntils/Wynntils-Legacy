@@ -2,6 +2,8 @@ package com.wynndevs.modules.expansion.questbook;
 
 import jline.internal.Nullable;
 
+import java.util.Arrays;
+
 public class Quest {
 	private String questName;
 	private int questLevel;
@@ -37,7 +39,7 @@ public class Quest {
 	
 	@Nullable
 	public int[] getQuestCoords() {
-		if (questCoords.equals(new int[] {0,0,0})){
+		if (Arrays.equals(questCoords, new int[]{0, 0, 0})){
 			return null;
 		}
 		return questCoords;

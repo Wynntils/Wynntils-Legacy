@@ -73,6 +73,8 @@ public class CInventoryGUI extends GuiInventory {
         for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
             ItemStack is = player.inventory.getStackInSlot(i);
 
+
+
             amount++;
             if (amount > 8) {
                 amount = 0;
