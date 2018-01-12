@@ -50,6 +50,9 @@ public class GuildAttack {
 				if (WarHornWarmup) {
 					ModCore.mc().getSoundHandler().playSound(new MovingSoundMusic(Horn));
 				}
+				if (!CurrentTerritory.Name.equals(TerritoryName)){
+					CurrentTerritory.Name = TerritoryName;
+				}
 			}
 		}
 		if (msg.startsWith("[WAR] The battle will begin in 0 seconds")){

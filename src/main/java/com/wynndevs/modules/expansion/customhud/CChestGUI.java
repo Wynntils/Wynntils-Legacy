@@ -79,7 +79,7 @@ public class CChestGUI extends GuiChest {
 
                 String lore = getStringLore(is);
 
-                if (lore.contains("points")) {
+                if (this.lowerInv.getName().contains("skill points remaining") && lore.contains("points")) {
                     lore = lore.replace("§", "");
                     String[] tokens = lore.split("[0-9]{1,3} points");
                     for (int j = 0; j <= tokens.length - 1; j++) {
