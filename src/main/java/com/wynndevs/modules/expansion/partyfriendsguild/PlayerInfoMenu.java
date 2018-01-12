@@ -2,7 +2,6 @@ package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.WynnExpansion;
@@ -452,8 +451,8 @@ public class PlayerInfoMenu extends GuiScreenMod {
 			int LastLocation = 0;
 			String[] OverviewTmp = new String[Overview.length];
 			for (int i=0;i<Overview.length;i++){
-				if (PlayerInfomationRaw.contains("\"" + Overview[i].toString() + "\":")) {
-					LastLocation = PlayerInfomationRaw.indexOf("\"" + Overview[i].toString() + "\":", LastLocation);
+				if (PlayerInfomationRaw.contains("\"" + Overview[i] + "\":")) {
+					LastLocation = PlayerInfomationRaw.indexOf("\"" + Overview[i] + "\":", LastLocation);
 					if (LastLocation > 0){
 						LastLocation += Overview[i].length() + 3;
 						OverviewTmp[i] = PlayerInfomationRaw.substring(LastLocation, (PlayerInfomationRaw.indexOf(",", LastLocation) < PlayerInfomationRaw.indexOf("}", LastLocation) ? PlayerInfomationRaw.indexOf(",", LastLocation) : PlayerInfomationRaw.indexOf("}", LastLocation))).replace("\"", "");
@@ -511,8 +510,8 @@ public class PlayerInfoMenu extends GuiScreenMod {
 					}
 					
 					for (int i=0;i<ClassPage.length;i++){
-						if (PlayerInfomationRaw.contains("\"" + ClassPage[i].toString() + "\":")) {
-							LastLocation = PlayerInfomationRaw.indexOf("\"" + ClassPage[i].toString() + "\":", LastLocation);
+						if (PlayerInfomationRaw.contains("\"" + ClassPage[i] + "\":")) {
+							LastLocation = PlayerInfomationRaw.indexOf("\"" + ClassPage[i] + "\":", LastLocation);
 							if (LastLocation > 0){
 								LastLocation += ClassPage[i].length() + 3;
 								ClassPageTmp[i+1] = PlayerInfomationRaw.substring(LastLocation, (PlayerInfomationRaw.indexOf(",", LastLocation) < PlayerInfomationRaw.indexOf("}", LastLocation) ? PlayerInfomationRaw.indexOf(",", LastLocation) : PlayerInfomationRaw.indexOf("}", LastLocation))).replace("\"", "");

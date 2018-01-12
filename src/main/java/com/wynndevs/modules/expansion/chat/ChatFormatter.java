@@ -58,7 +58,7 @@ public class ChatFormatter {
         ChatReformater.reformat(e);
         ChatTimeStamp.timeStamp(e);
 
-        String translated = "";
+        StringBuilder translated = new StringBuilder();
 
         msgRaw = e.getMessage().getFormattedText();
 
@@ -67,18 +67,18 @@ public class ChatFormatter {
         for(String x : msgRaw.split(" ")) {
             for(char c : x.toCharArray()) {
                 if(wynnic.containsKey(String.valueOf(c))) {
-                    translated+= wynnic.get(String.valueOf(c));
+                    translated.append(wynnic.get(String.valueOf(c)));
                     acceptSpace = true;
                 }
             }
 
             if(acceptSpace) {
-                translated+=" ";
+                translated.append(" ");
                 acceptSpace = false;
             }
         }
 
-        if(!translated.equals("")) {
+        if(!translated.toString().equals("")) {
             e.setCanceled(true);
             ModCore.mc().player.sendMessage(new TextComponentString(msgRaw).setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("§bWynnic Translation:§e " + translated)))));
         }

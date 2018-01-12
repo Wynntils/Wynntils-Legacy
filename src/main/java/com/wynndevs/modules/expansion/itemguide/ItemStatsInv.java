@@ -1,7 +1,6 @@
 package com.wynndevs.modules.expansion.itemguide;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -19,11 +18,7 @@ public class ItemStatsInv {
 				return;
 			}
 				if (Keyboard.getEventKey() == 17){
-						if (Active){
-							Active = false;
-						}else{
-							Active = true;
-						}
+					Active = !Active;
 				}
 		}
 	}

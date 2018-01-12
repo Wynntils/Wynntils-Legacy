@@ -120,16 +120,16 @@ public class WorldItemName {
 	
 	private static String DataSetupFormat(String Data){
 		if (Data.contains("\\u")){
-			String DataFormated = "";
+			StringBuilder DataFormated = new StringBuilder();
 			for (int i=0;i<Data.length();i++){
 				if (Data.length() >= i+6 && Data.substring(i, i+2).equals("\\u")){
-					DataFormated += String.valueOf((char) Integer.parseInt(Data.substring(i+2, (Data.length() > i+6? i+6 : Data.length())), 16));
+					DataFormated.append(String.valueOf((char) Integer.parseInt(Data.substring(i + 2, (Data.length() > i + 6 ? i + 6 : Data.length())), 16)));
 					i = i+5;
 				}else{
-					DataFormated = DataFormated + Data.charAt(i);
+					DataFormated.append(Data.charAt(i));
 				}
 			}
-			return DataFormated;
+			return DataFormated.toString();
 		}else{
 			return Data;
 		}
@@ -160,14 +160,14 @@ public class WorldItemName {
 				if (entity instanceof EntityItem) {
 					ItemStack itemstack = ((EntityItem) entity).getItem();
 					if (itemstack.hasDisplayName() && (!entity.getTags().contains("ITEMCHECKED") || (entity.getName().endsWith(String.valueOf('\u00B2')) && NameEmerald))) {
-						String name = "";
+						StringBuilder name = new StringBuilder();
 						boolean flag = false;
 						for (Character chr : itemstack.getDisplayName().toCharArray()) {
 							if (!flag) {
 								if (chr.equals('\u00a7')) {
 									flag = true;
 								} else {
-									name += chr;
+									name.append(chr);
 								}
 							} else {
 								flag = false;
@@ -179,74 +179,74 @@ public class WorldItemName {
 							entity.addTag("ITEMCHECKED1");
 						}
 						if (DisplayName) {
-							String nameTmp = name;
+							String nameTmp = name.toString();
 							String Lore = itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString();
-							if (name.contentEquals("Emerald")) {
+							if (name.toString().contentEquals("Emerald")) {
 								if (NameEmerald) {
 									if (ShortEmerald) {
-										name = String.valueOf('\u00a7') + "a" + itemstack.getCount() + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + itemstack.getCount() + String.valueOf('\u00B2'));
 									} else {
-										name = String.valueOf('\u00a7') + "a" + name + " " + itemstack.getCount() + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + name + " " + itemstack.getCount() + String.valueOf('\u00B2'));
 									}
-									entity.setCustomNameTag(name);
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
-							} else if (name.contentEquals("Block of Emerald")) {
+							} else if (name.toString().contentEquals("Block of Emerald")) {
 								if (NameEmerald) {
 									if (ShortEmerald) {
-										name = String.valueOf('\u00a7') + "a" + itemstack.getCount() * 64 + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + itemstack.getCount() * 64 + String.valueOf('\u00B2'));
 									} else {
-										name = String.valueOf('\u00a7') + "a" + name + " " + itemstack.getCount() * 64 + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + name + " " + itemstack.getCount() * 64 + String.valueOf('\u00B2'));
 									}
-									entity.setCustomNameTag(name);
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
-							} else if (name.contentEquals("Liquified Emerald")) {
+							} else if (name.toString().contentEquals("Liquified Emerald")) {
 								if (NameEmerald) {
 									if (ShortEmerald) {
-										name = String.valueOf('\u00a7') + "a" + itemstack.getCount() * 4096 + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + itemstack.getCount() * 4096 + String.valueOf('\u00B2'));
 									} else {
-										name = String.valueOf('\u00a7') + "a" + name + itemstack.getCount() * 4096 + String.valueOf('\u00B2');
+										name = new StringBuilder(String.valueOf('\u00a7') + "a" + name + itemstack.getCount() * 4096 + String.valueOf('\u00B2'));
 									}
-									entity.setCustomNameTag(name);
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
-							} else if (DataCheck(PotionCheck, name)) {
+							} else if (DataCheck(PotionCheck, name.toString())) {
 								if (NamePotions) {
 									if (ShortPotions){
-										name = DataFormat(PotionCheck, name, PotionFormatShort);
+										name = new StringBuilder(DataFormat(PotionCheck, name.toString(), PotionFormatShort));
 									}else{
-										name = DataFormat(PotionCheck, name, PotionFormat);
+										name = new StringBuilder(DataFormat(PotionCheck, name.toString(), PotionFormat));
 									}
-									if (name.contains(String.valueOf('\u2764')) || name.contains("Healing")){
+									if (name.toString().contains(String.valueOf('\u2764')) || name.toString().contains("Healing")){
 										if (Lore.contains("remaining")){
-											name += " [" + Lore.substring(19,20) + "/3]";
+											name.append(" [").append(Lore.substring(19, 20)).append("/3]");
 										}else{
-											name += " [3/3]";
+											name.append(" [3/3]");
 										}
-									}else if (name.contains(String.valueOf('\u273A')) || name.contains("Mana")){
+									}else if (name.toString().contains(String.valueOf('\u273A')) || name.toString().contains("Mana")){
 										if (Lore.contains("remaining")){
-											name += " [" + Lore.substring(19,20) + "/2]";
+											name.append(" [").append(Lore.substring(19, 20)).append("/2]");
 										}else{
-											name += " [2/2]";
+											name.append(" [2/2]");
 										}
 									}else{
 										if (Lore.contains("remaining")){
-											name += String.valueOf('\u00a7') + "a [" + Lore.substring(19,20) + "/2]";
+											name.append(String.valueOf('\u00a7')).append("a [").append(Lore.substring(19, 20)).append("/2]");
 										}else{
-											name += String.valueOf('\u00a7') + "a [2/2]";
+											name.append(String.valueOf('\u00a7')).append("a [2/2]");
 										}
 									}
-									entity.setCustomNameTag(name);
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
-							} else if (DataCheck(PowderCheck, name)) {
+							} else if (DataCheck(PowderCheck, name.toString())) {
 								if (NamePowders) {
-									String PowderTier = (name.contains(" ") ? name.substring(name.lastIndexOf(" ") +1) : "?");
+									String PowderTier = (name.toString().contains(" ") ? name.substring(name.lastIndexOf(" ") +1) : "?");
 									if (ShortPowders){
-										name = DataFormat(PowderCheck, name, PowderFormatShort);
+										name = new StringBuilder(DataFormat(PowderCheck, name.toString(), PowderFormatShort));
 									}else{
-										name = DataFormat(PowderCheck, name, PowderFormat);
+										name = new StringBuilder(DataFormat(PowderCheck, name.toString(), PowderFormat));
 									}
 									switch (PowderTier) {
 										case "1": PowderTier = "I"; break;
@@ -268,29 +268,29 @@ public class WorldItemName {
 											default: break;
 										}
 									}
-									name = name + PowderTier;
-									entity.setCustomNameTag(name);
+									name.append(PowderTier);
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
 							} else if (Lore.contains("misc. Item")){
 								if (NameMisc) {
-									name = String.valueOf('\u00a7') + "7" + name;
-									entity.setCustomNameTag(name);
+									name.insert(0, String.valueOf('\u00a7') + "7");
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
 							} else if (Lore.contains("Junk Item")){
 								if (NameJunk) {
-									name = String.valueOf('\u00a7') + "7" + name;
-									entity.setCustomNameTag(name);
+									name.insert(0, String.valueOf('\u00a7') + "7");
+									entity.setCustomNameTag(name.toString());
 									entity.setAlwaysRenderNameTag(true);
 								}
 							}else{
 								for (int j = 0; j < ItemDB.ItemDB.size(); j++) {
-									if (ItemDB.ItemDB.get(j).Name.contentEquals(name)) {
+									if (ItemDB.ItemDB.get(j).Name.contentEquals(name.toString())) {
 										switch (ItemDB.ItemDB.get(j).GetRarity()) {
                                             case 4:
                                                 if (NameMythic) {
-                                                    name = String.valueOf('\u00a7') + "5" + name;
+                                                    name.insert(0, String.valueOf('\u00a7') + "5");
                                                 }
                                                 if (HighlightMythic) {
                                                     Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Mythic.getName());
@@ -308,7 +308,7 @@ public class WorldItemName {
                                                 break;
                                             case 3:
                                                 if (NameLegendary) {
-                                                    name = String.valueOf('\u00a7') + "b" + name;
+                                                    name.insert(0, String.valueOf('\u00a7') + "b");
                                                 }
                                                 if (HighlightLegendary) {
                                                     Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Legendary.getName());
@@ -323,72 +323,76 @@ public class WorldItemName {
                                                 }
                                                 break;
 										case 2:
-											if (NameRare){name = String.valueOf('\u00a7') + "d" + name;}
+											if (NameRare){
+                                                name.insert(0, String.valueOf('\u00a7') + "d");}
 											if (HighlightRare) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Rare.getName()); entity.setGlowing(true);}
 											break;
 										case 1:
-											if (NameUnique){name = String.valueOf('\u00a7') + "e" + name;}
+											if (NameUnique){
+                                                name.insert(0, String.valueOf('\u00a7') + "e");}
 											if (HighlightUnique) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Unique.getName()); entity.setGlowing(true);}
 											break;
 										case 5:
-											if (NameSet){name = String.valueOf('\u00a7') + "a" + name;}
+											if (NameSet){
+                                                name.insert(0, String.valueOf('\u00a7') + "a");}
 											if (HighlightSet) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Set.getName()); entity.setGlowing(true);}
 											break;
 										default:
-											if (NameNormal){name = String.valueOf('\u00a7') + "f" + name;}
+											if (NameNormal){
+                                                name.insert(0, String.valueOf('\u00a7') + "f");}
 											break;
 										}
-										if (!name.equals(nameTmp)){
+										if (!name.toString().equals(nameTmp)){
 											int ItemLevel = ItemDB.ItemDB.get(j).GetLevel();
 											if (SmartDeobfuscate){
 												if (Lore.contains("identifications") || name.charAt(1) == 'f'){
 													if (ShortItems) {
-														name = name + String.valueOf('\u00a7') + "6 [" + ItemLevel + "]";
+														name.append(String.valueOf('\u00a7')).append("6 [").append(ItemLevel).append("]");
 													}else{
-														name = name + String.valueOf('\u00a7') + "6 [Lv. " + ItemLevel + "]";
+														name.append(String.valueOf('\u00a7')).append("6 [Lv. ").append(ItemLevel).append("]");
 													}
-													entity.setCustomNameTag(name);
+													entity.setCustomNameTag(name.toString());
 													entity.setAlwaysRenderNameTag(true);
 												}else{
 													if (ItemDB.ItemDB.get(j).GetType() == 11){
 														if (ShortItems) {
-															name = name.substring(0, 2) + "UnI'd Item" + String.valueOf('\u00a7') + "6 [" + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+															name = new StringBuilder(name.substring(0, 2) + "UnI'd Item" + String.valueOf('\u00a7') + "6 [" + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 														}else{
-															name = name.substring(0, 2) + "Unidentified Item" + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+															name = new StringBuilder(name.substring(0, 2) + "Unidentified Item" + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 														}
 													}else{
 														if (ShortItems) {
-															name = name.substring(0, 2) + "UnI'd " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [" + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+															name = new StringBuilder(name.substring(0, 2) + "UnI'd " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [" + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 														}else{
-															name = name.substring(0, 2) + "Unidentified " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+															name = new StringBuilder(name.substring(0, 2) + "Unidentified " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 														}
 													}
-													entity.setCustomNameTag(name);
+													entity.setCustomNameTag(name.toString());
 													entity.setAlwaysRenderNameTag(true);
 												}
 											}else{
 												if (name.charAt(1) == 'f'){
 													if (ShortItems) {
-														name = name + String.valueOf('\u00a7') + "6 [" + ItemLevel + "]";
+														name.append(String.valueOf('\u00a7')).append("6 [").append(ItemLevel).append("]");
 													}else{
-														name = name + String.valueOf('\u00a7') + "6 [Lv. " + ItemLevel + "]";
+														name.append(String.valueOf('\u00a7')).append("6 [Lv. ").append(ItemLevel).append("]");
 													}
-													entity.setCustomNameTag(name);
+													entity.setCustomNameTag(name.toString());
 													entity.setAlwaysRenderNameTag(true);
 												}else if (ItemDB.ItemDB.get(j).GetType() == 11){
 													if (ShortItems) {
-														name = name.substring(0, 2) + "UnI'd Item" + String.valueOf('\u00a7') + "6 [" + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+														name = new StringBuilder(name.substring(0, 2) + "UnI'd Item" + String.valueOf('\u00a7') + "6 [" + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 													}else{
-														name = name.substring(0, 2) + "Unidentified Item" + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+														name = new StringBuilder(name.substring(0, 2) + "Unidentified Item" + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 													}
 												}else{
 													if (ShortItems) {
-														name = name.substring(0, 2) + "UnI'd " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [" + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+														name = new StringBuilder(name.substring(0, 2) + "UnI'd " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [" + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 													}else{
-														name = name.substring(0, 2) + "Unidentified " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel-1) / 4) * 4) + "-" + ((((ItemLevel-1) / 4) * 4) + 4) + "]";
+														name = new StringBuilder(name.substring(0, 2) + "Unidentified " + ItemDB.ItemDB.get(j).GetTypeName() + String.valueOf('\u00a7') + "6 [Lv. " + (((ItemLevel - 1) / 4) * 4) + "-" + ((((ItemLevel - 1) / 4) * 4) + 4) + "]");
 													}
 												}
-												entity.setCustomNameTag(name);
+												entity.setCustomNameTag(name.toString());
 												entity.setAlwaysRenderNameTag(true);
 											}
 										}
@@ -398,10 +402,11 @@ public class WorldItemName {
 							}
 						} else {
 							for (int j = 0; j < ItemDB.ItemDB.size(); j++) {
-								if (ItemDB.ItemDB.get(j).Name.contentEquals(name)) {
+								if (ItemDB.ItemDB.get(j).Name.contentEquals(name.toString())) {
 									switch (ItemDB.ItemDB.get(j).GetRarity()) {
 									case 4:
-										if (NameMythic){name = String.valueOf('\u00a7') + "5" + name;}
+										if (NameMythic){
+                                            name.insert(0, String.valueOf('\u00a7') + "5");}
 										if (HighlightMythic) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Mythic.getName()); entity.setGlowing(true);}
 										if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
                                             if (AnnounceMythic && !entity.getTags().contains("ITEMTHROWNPLAYER") && MythicDisplayTime.Passed()) {
@@ -413,7 +418,8 @@ public class WorldItemName {
 										}
 										break;
 									case 3:
-										if (NameLegendary){name = String.valueOf('\u00a7') + "b" + name;}
+										if (NameLegendary){
+                                            name.insert(0, String.valueOf('\u00a7') + "b");}
 										if (HighlightLegendary) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Legendary.getName()); entity.setGlowing(true);}
 										if (!itemstack.serializeNBT().getCompoundTag("tag").getCompoundTag("display").getTagList("Lore", 8).toString().contains("identifications") && !itemstack.serializeNBT().getString("id").equals("minecraft:air") && !entity.getTags().contains("ITEMCHECKED")){
                                             if (AnnounceLegendary && !entity.getTags().contains("ITEMTHROWNPLAYER") && LegendaryDisplayTime.Passed()) {
@@ -424,19 +430,23 @@ public class WorldItemName {
                                         }
 										break;
 									case 2:
-										if (NameRare){name = String.valueOf('\u00a7') + "d" + name;}
+										if (NameRare){
+                                            name.insert(0, String.valueOf('\u00a7') + "d");}
 										if (HighlightRare) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Rare.getName()); entity.setGlowing(true);}
 										break;
 									case 1:
-										if (NameUnique){name = String.valueOf('\u00a7') + "e" + name;}
+										if (NameUnique){
+                                            name.insert(0, String.valueOf('\u00a7') + "e");}
 										if (HighlightUnique) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Unique.getName()); entity.setGlowing(true);}
 										break;
 									case 5:
-										if (NameSet){name = String.valueOf('\u00a7') + "a" + name;}
+										if (NameSet){
+                                            name.insert(0, String.valueOf('\u00a7') + "a");}
 										if (HighlightSet) {Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Set.getName()); entity.setGlowing(true);}
 										break;
 									default:
-										if (NameNormal){name = String.valueOf('\u00a7') + "f" + name;}
+										if (NameNormal){
+                                            name.insert(0, String.valueOf('\u00a7') + "f");}
 										break;
 									}
 									break;

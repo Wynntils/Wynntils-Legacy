@@ -131,126 +131,126 @@ public class QuestBook {
 	}
 	
 	public static Quest DecodePageIntoQuest(String questJson, boolean NewFormat) {
-		String questName = "";
-		String questLevel = "";
+		StringBuilder questName = new StringBuilder();
+		StringBuilder questLevel = new StringBuilder();
 		Quest.QuestLength questLength = Quest.QuestLength.SHORT;
 		Quest.QuestDifficulty questDifficulty = Quest.QuestDifficulty.EASY;
 		Quest.QuestStatus questStatus = Quest.QuestStatus.NOT_STARTED;
 		
-		String builder = "";
+		StringBuilder builder = new StringBuilder();
 		
 		if (!NewFormat) {
-			String reader = "";
+			StringBuilder reader = new StringBuilder();
 			boolean build = false;
 			for (Character chr : questJson.toCharArray()) {
 				if (build) {
-					if (chr.equals('"') && !builder.endsWith("\\\\\\")) {
+					if (chr.equals('"') && !builder.toString().endsWith("\\\\\\")) {
 						build = false;
-						builder = builder.substring(0, builder.length() - 1);
+						builder = new StringBuilder(builder.substring(0, builder.length() - 1));
 					} else {
-						if (builder.endsWith("\\\\\\")){
-							builder = builder.substring(0, builder.length() - 3);
+						if (builder.toString().endsWith("\\\\\\")){
+							builder = new StringBuilder(builder.substring(0, builder.length() - 3));
 						}
-						builder += chr;
+						builder.append(chr);
 					}
 					
 				} else {
-					reader += chr;
-					if (reader.endsWith("\\\"text\\\":\\\"")) {
+					reader.append(chr);
+					if (reader.toString().endsWith("\\\"text\\\":\\\"")) {
 						build = true;
-						reader = "";
+						reader = new StringBuilder();
 					}
 				}
 			}
 		}else{
 			if (questJson.contains(String.valueOf('\u00a7'))) {
-				String reader = "";
+				StringBuilder reader = new StringBuilder();
 				for (String read : questJson.split(String.valueOf('\u00a7'))) {
 					if(read.length() > 1) {
-						if (reader.equals("")) {
-							reader = read;
+						if (reader.toString().equals("")) {
+							reader = new StringBuilder(read);
 						}else{
-							reader = reader + read.substring(1);
+							reader.append(read.substring(1));
 						}
 					}
 				}
-				builder = (questJson.startsWith(String.valueOf('\u00a7')) ? reader.substring(1) : reader).replace("\\\\n", "").replace("\\\\\\\"", "\"");
-				builder = builder.replace("\"{\\\"extra\\\":[\\\"", "").replace("\\\"],\\\"text\\\":\\\"\\\"}\"", "");
+				builder = new StringBuilder((questJson.startsWith(String.valueOf('\u00a7')) ? reader.substring(1) : reader.toString()).replace("\\\\n", "").replace("\\\\\\\"", "\""));
+				builder = new StringBuilder(builder.toString().replace("\"{\\\"extra\\\":[\\\"", "").replace("\\\"],\\\"text\\\":\\\"\\\"}\"", ""));
 			}
 		}
 		
-		builder = builder.replace("\\\\u", "\\u");
-		builder = ParseCharValues(builder);
+		builder = new StringBuilder(builder.toString().replace("\\\\u", "\\u"));
+		builder = new StringBuilder(ParseCharValues(builder.toString()));
 		
-		for (Character chr : builder.toCharArray()) {
-			questName += chr;
-			if (questName.endsWith("Lv. min: ")) {
-				questName = questName.replace("  Lv. min: ", "");
+		for (Character chr : builder.toString().toCharArray()) {
+			questName.append(chr);
+			if (questName.toString().endsWith("Lv. min: ")) {
+				questName = new StringBuilder(questName.toString().replace("  Lv. min: ", ""));
 				break;
 			}
 		}
-		builder = builder.replace(questName + "  Lv. min: ", "");
-		if (QuestCorrections.subList(0, (QuestCorrections.size()/2)).contains(questName)){
+		builder = new StringBuilder(builder.toString().replace(questName + "  Lv. min: ", ""));
+		if (QuestCorrections.subList(0, (QuestCorrections.size()/2)).contains(questName.toString())){
 			for (int i=0;i<(QuestCorrections.size()/2);i++){
-				if (QuestCorrections.get(i).equals(questName)){
-					questName = QuestCorrections.get(i + (QuestCorrections.size()/2));
+				if (QuestCorrections.get(i).equals(questName.toString())){
+					questName = new StringBuilder(QuestCorrections.get(i + (QuestCorrections.size() / 2)));
 					break;
 				}
 			}
 		}
 		
-		for (Character chr : builder.toCharArray()) {
+		for (Character chr : builder.toString().toCharArray()) {
 			if (!"0123456789".contains(chr.toString())) {
-				builder = builder.replaceFirst(questLevel, "");
+				builder = new StringBuilder(builder.toString().replaceFirst(questLevel.toString(), ""));
 				break;
 			} else {
-				questLevel += chr;
+				questLevel.append(chr);
 			}
 		}
 		
 		for (byte i = 0; i < 3; i++){
 			while (builder.charAt(0) == ' '){
-				builder = builder.substring(1);
+				builder = new StringBuilder(builder.substring(1));
 			}
 			switch (builder.charAt(0)){
 				case 'L':
-					if (builder.startsWith("Length: ")) {
-						if (builder.startsWith("Length: Short")){
-							builder = builder.replace("Length: Short", "");
+					if (builder.toString().startsWith("Length: ")) {
+						if (builder.toString().startsWith("Length: Short")){
+							builder = new StringBuilder(builder.toString().replace("Length: Short", ""));
 							questLength = Quest.QuestLength.SHORT;
-						} else if (builder.startsWith("Length: Medium")) {
-							builder = builder.replace("Length: Medium", "");
+						} else if (builder.toString().startsWith("Length: Medium")) {
+							builder = new StringBuilder(builder.toString().replace("Length: Medium", ""));
 							questLength = Quest.QuestLength.MEDIUM;
-						} else if (builder.startsWith("Length: Long")) {
-							builder = builder.replace("Length: Long", "");
+						} else if (builder.toString().startsWith("Length: Long")) {
+							builder = new StringBuilder(builder.toString().replace("Length: Long", ""));
 							questLength = Quest.QuestLength.LONG;
 						}
 					} break;
 				
 				case 'D':
-					if (builder.startsWith("Difficulty: ")) {
-						if (builder.startsWith("Difficulty: Easy")){
-							builder = builder.replace("Difficulty: Easy", "");
+					if (builder.toString().startsWith("Difficulty: ")) {
+						if (builder.toString().startsWith("Difficulty: Easy")){
+							builder = new StringBuilder(builder.toString().replace("Difficulty: Easy", ""));
 							questDifficulty = Quest.QuestDifficulty.EASY;
-						} else if (builder.startsWith("Difficulty: Medium")) {
-							builder = builder.replace("Difficulty: Medium", "");
+						} else if (builder.toString().startsWith("Difficulty: Medium")) {
+							builder = new StringBuilder(builder.toString().replace("Difficulty: Medium", ""));
 							questDifficulty = Quest.QuestDifficulty.MEDIUM;
-						} else if (builder.startsWith("Difficulty: Hard")) {
-							builder = builder.replace("Difficulty: Hard", "");
+						} else if (builder.toString().startsWith("Difficulty: Hard")) {
+							builder = new StringBuilder(builder.toString().replace("Difficulty: Hard", ""));
 							questDifficulty = Quest.QuestDifficulty.HARD;
 						}
 					} break;
 				
 				case 'S':
-					if (builder.startsWith("Status: ")) {
-						if (builder.startsWith("Status: Not Started")){
-							builder = builder.replace("Status: Not Started", "");
+					if (builder.toString().startsWith("Status: ")) {
+						if (builder.toString().startsWith("Status: Not Started")){
+							builder = new StringBuilder(builder.toString().replace("Status: Not Started", ""));
 							questStatus = Quest.QuestStatus.NOT_STARTED;
-						} else if (builder.startsWith("Status: Started")) {
-							builder = builder.replace("Status: Started", "");
+						} else if (builder.toString().startsWith("Status: Started")) {
+							builder = new StringBuilder(builder.toString().replace("Status: Started", ""));
 							questStatus = Quest.QuestStatus.STARTED;
-						} else if (builder.startsWith("Status: Finished")) {
-							builder = builder.replace("Status: Finished", "");
+						} else if (builder.toString().startsWith("Status: Finished")) {
+							builder = new StringBuilder(builder.toString().replace("Status: Finished", ""));
 							questStatus = Quest.QuestStatus.FINISHED;
 						}
 					} break;
@@ -260,7 +260,7 @@ public class QuestBook {
 		}
 		
 		Pattern pattern = Pattern.compile("\\[-?[0-9]+,[0-9]{1,3},-?[0-9]+]");
-		Matcher Matcher = pattern.matcher(builder);
+		Matcher Matcher = pattern.matcher(builder.toString());
 		int[] questCoords = new int[] {0,0,0};
 		if (Matcher.find()){
 			String[] Coords = builder.substring(Matcher.start(), Matcher.end()).split(",");
@@ -268,21 +268,21 @@ public class QuestBook {
 		}
 		
 		//System.out.println("Quest Data: " + questName + " - Lv. " + questLevel + " - " + questLength + " - " + questDifficulty + " - " + questStatus + " - " + builder + " - [" + questCoords[0] + "," + questCoords[1] + "," + questCoords[2] + "]");
-		return new Quest(questName, Integer.parseInt(questLevel), questLength, questDifficulty, questStatus, builder, questCoords);
+		return new Quest(questName.toString(), Integer.parseInt(questLevel.toString()), questLength, questDifficulty, questStatus, builder.toString(), questCoords);
 	}
 	
 	private static String ParseCharValues(String Data){
 		if (Data.contains("\\u")){
-			String DataFormated = "";
+			StringBuilder DataFormated = new StringBuilder();
 			for (int i=0;i<Data.length();i++){
 				if (Data.length() >= i+6 && Data.substring(i, i+2).equals("\\u")){
-					DataFormated += String.valueOf((char) Integer.parseInt(Data.substring(i+2, (Data.length() > i+6? i+6 : Data.length())), 16));
+					DataFormated.append(String.valueOf((char) Integer.parseInt(Data.substring(i + 2, (Data.length() > i + 6 ? i + 6 : Data.length())), 16)));
 					i = i+5;
 				}else{
-					DataFormated = DataFormated + Data.charAt(i);
+					DataFormated.append(Data.charAt(i));
 				}
 			}
-			return DataFormated;
+			return DataFormated.toString();
 		}else{
 			return Data;
 		}

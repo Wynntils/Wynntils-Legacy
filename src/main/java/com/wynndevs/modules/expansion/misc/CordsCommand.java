@@ -33,13 +33,13 @@ public class CordsCommand implements ICommand {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		String builder = "";
+		StringBuilder builder = new StringBuilder();
 		for (String str: args) {
-			builder += str;
+			builder.append(str);
 		}
-		if (!builder.isEmpty()) {
-			builder = builder.toUpperCase().replace("X", "[x:").replace("Y", ",y:").replace("Z", ",z:").replace(" ", "") + "]";
-			ModCore.mc().player.sendChatMessage(builder);
+		if (builder.length() > 0) {
+			builder = new StringBuilder(builder.toString().toUpperCase().replace("X", "[x:").replace("Y", ",y:").replace("Z", ",z:").replace(" ", "") + "]");
+			ModCore.mc().player.sendChatMessage(builder.toString());
 		}
 	}
 

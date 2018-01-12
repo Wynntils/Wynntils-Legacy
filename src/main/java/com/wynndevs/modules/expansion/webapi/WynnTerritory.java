@@ -26,18 +26,10 @@ public class WynnTerritory {
 	}
 	
 	public boolean HasCoords() {
-		if (this.Coords[0][0] == 0 && this.Coords[0][1] == 0 && this.Coords[1][0] == 0 && this.Coords[1][1] == 0) {
-			return false;
-		}else{
-			return true;
-		}
+        return this.Coords[0][0] != 0 || this.Coords[0][1] != 0 || this.Coords[1][0] != 0 || this.Coords[1][1] != 0;
 	}
 	
 	public boolean IsInside(){
-		if (ModCore.mc().player.posX >= this.Coords[0][0] && ModCore.mc().player.posX < this.Coords[1][0] +1 && ModCore.mc().player.posZ >= this.Coords[0][1] && ModCore.mc().player.posZ < this.Coords[1][1] +1){
-			return true;
-		}else{
-			return false;
-		}
+        return ModCore.mc().player.posX >= this.Coords[0][0] && ModCore.mc().player.posX < this.Coords[1][0] + 1 && ModCore.mc().player.posZ >= this.Coords[0][1] && ModCore.mc().player.posZ < this.Coords[1][1] + 1;
 	}
 }

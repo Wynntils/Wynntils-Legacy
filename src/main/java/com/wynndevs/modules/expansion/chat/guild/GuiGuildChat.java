@@ -127,7 +127,7 @@ public class GuiGuildChat extends Gui {
                         int k3 = j3 > 0 ? 170 : 96;
                         int l3 = this.isScrolled ? 13382451 : 3355562;
                         int left = _width() - 2;
-                        drawRect(left + 0, -j3, left + 2, -j3 - k1, l3 + (k3 << 24));
+                        drawRect(left, -j3, left + 2, -j3 - k1, l3 + (k3 << 24));
                         drawRect(left + 2, -j3, left + 1, -j3 - k1, 13421772 + (k3 << 24));
                     }
                 }

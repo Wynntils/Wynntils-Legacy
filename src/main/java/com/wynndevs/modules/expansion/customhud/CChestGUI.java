@@ -269,7 +269,6 @@ public class CChestGUI extends GuiChest {
             }
             if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
                 liquid += it.getCount();
-                continue;
             }
         }
 
@@ -305,13 +304,13 @@ public class CChestGUI extends GuiChest {
     }
 
     public String getStringLore(ItemStack is){
-        String toReturn = "";
+        StringBuilder toReturn = new StringBuilder();
 
         for (String x : MarketUtils.getLore(is)) {
-            toReturn += x;
+            toReturn.append(x);
         }
 
-        return toReturn;
+        return toReturn.toString();
     }
 
     public void drawString(FontRenderer fontRendererIn, String text, int x, int y, float size, int color){
@@ -336,9 +335,9 @@ public class CChestGUI extends GuiChest {
 
         List <String> lore = MarketUtils.getLore(stack);
 
-        for (int i = 0; i < lore.size(); i++) {
-            if (lore.get(i).contains("Lv. Range")) {
-                level = RichUtils.stripColor(lore.get(i)).replace("- Lv. Range: ", "");
+        for (String aLore : lore) {
+            if (aLore.contains("Lv. Range")) {
+                level = RichUtils.stripColor(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }

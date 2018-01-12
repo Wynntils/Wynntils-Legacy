@@ -226,7 +226,7 @@ public class WynnItem {
 		
 		Rarity = Rarity.toLowerCase();
 		if (Rarity.equals("normal") || Rarity.equals("0")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 0);
+			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity);
 		}else if (Rarity.equals("unique") || Rarity.equals("1")) {
 			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 12);
 		}else if (Rarity.equals("rare") || Rarity.equals("2")) {
@@ -323,8 +323,7 @@ public class WynnItem {
 		if (ClassTmp >= 4) {if (Class[2]) {return true;} ClassTmp = ClassTmp - 4;}
 		if (ClassTmp >= 2) {if (Class[1]) {return true;} ClassTmp = ClassTmp - 2;}
 		if (ClassTmp >= 1) {if (Class[0]) {return true;}}
-		if (this.Class == 0) {return true;}
-		return false;
+		return this.Class == 0;
 	}
 	
 	public String GetClassName() {
@@ -426,33 +425,25 @@ public class WynnItem {
 	
 	public void SetArmourColour(String Colour){
 		int RGB = 0;
-		String Num = "";
+		StringBuilder Num = new StringBuilder();
 		for (char c : Colour.toCharArray()){
 			if (c >= '0' && c <= '9'){
-				Num += c;
-			}else if (Num != ""){
-				RGB = (RGB << 8) + Integer.parseInt(Num);
-				Num = "";
+				Num.append(c);
+			}else if (Num.toString() != ""){
+				RGB = (RGB << 8) + Integer.parseInt(Num.toString());
+				Num = new StringBuilder();
 			}
 		}
-		if (Num != ""){
-			RGB = (RGB << 8) + Integer.parseInt(Num);
+		if (Num.toString() != ""){
+			RGB = (RGB << 8) + Integer.parseInt(Num.toString());
 		}
 		this.ArmourColour = RGB;
 	}
 	
 	public void SetRestrictions(String Restrictions) {
 		Restrictions = Restrictions.toLowerCase();
-		if (Restrictions.contains("untradable")) {
-			this.Untradable = true;
-		}else{
-			this.Untradable = false;
-		}
-		if (Restrictions.contains("quest item")) {
-			this.QuestItem = true;
-		}else{
-			this.QuestItem = false;
-		}
+		this.Untradable = Restrictions.contains("untradable");
+		this.QuestItem = Restrictions.contains("quest item");
 	}
 	
 	public String GetRestrictions(){
@@ -772,95 +763,95 @@ public class WynnItem {
 	
 	
 	public String GetTooltip(boolean ShowLore, boolean ShowSales) {
-		String Tooltip = this.GetColouredName() + " &7" + this.GetTypeName() + "/n";
-		if (this.AttackSpeed > 0) Tooltip = Tooltip + "&7" + this.GetAttackSpeedName() + " Attack Speed" + "/n";
+		StringBuilder Tooltip = new StringBuilder(this.GetColouredName() + " &7" + this.GetTypeName() + "/n");
+		if (this.AttackSpeed > 0) Tooltip.append("&7").append(this.GetAttackSpeedName()).append(" Attack Speed").append("/n");
 		
-		Tooltip = Tooltip + "/n";
+		Tooltip.append("/n");
 		
-		if (this.GetDamage()[1] > 0) Tooltip = Tooltip + "&6" + String.valueOf('\u2723') + " Neutral Damage: " + this.GetDamage()[0] + "-" + this.GetDamage()[1] + "/n";
-		if (this.GetFireDamage()[1] > 0) Tooltip = Tooltip + "&c" + String.valueOf('\u2739') + " Fire &7Damage: " + this.GetFireDamage()[0] + "-" + this.GetFireDamage()[1] + "/n";
-		if (this.GetWaterDamage()[1] > 0) Tooltip = Tooltip + "&b" + String.valueOf('\u2749') + " Water &7Damage: " + this.GetWaterDamage()[0] + "-" + this.GetWaterDamage()[1] + "/n";
-		if (this.GetAirDamage()[1] > 0) Tooltip = Tooltip + "&f" + String.valueOf('\u274B') + " Air &7Damage: " + this.GetAirDamage()[0] + "-" + this.GetAirDamage()[1] + "/n";
-		if (this.GetThunderDamage()[1] > 0) Tooltip = Tooltip + "&e" + String.valueOf('\u2726') + " Thunder &7Damage: " + this.GetThunderDamage()[0] + "-" + this.GetThunderDamage()[1] + "/n";
-		if (this.GetEarthDamage()[1] > 0) Tooltip = Tooltip + "&2" + String.valueOf('\u2724') + " Earth &7Damage: " + this.GetEarthDamage()[0] + "-" + this.GetEarthDamage()[1] + "/n";
+		if (this.GetDamage()[1] > 0) Tooltip.append("&6").append(String.valueOf('\u2723')).append(" Neutral Damage: ").append(this.GetDamage()[0]).append("-").append(this.GetDamage()[1]).append("/n");
+		if (this.GetFireDamage()[1] > 0) Tooltip.append("&c").append(String.valueOf('\u2739')).append(" Fire &7Damage: ").append(this.GetFireDamage()[0]).append("-").append(this.GetFireDamage()[1]).append("/n");
+		if (this.GetWaterDamage()[1] > 0) Tooltip.append("&b").append(String.valueOf('\u2749')).append(" Water &7Damage: ").append(this.GetWaterDamage()[0]).append("-").append(this.GetWaterDamage()[1]).append("/n");
+		if (this.GetAirDamage()[1] > 0) Tooltip.append("&f").append(String.valueOf('\u274B')).append(" Air &7Damage: ").append(this.GetAirDamage()[0]).append("-").append(this.GetAirDamage()[1]).append("/n");
+		if (this.GetThunderDamage()[1] > 0) Tooltip.append("&e").append(String.valueOf('\u2726')).append(" Thunder &7Damage: ").append(this.GetThunderDamage()[0]).append("-").append(this.GetThunderDamage()[1]).append("/n");
+		if (this.GetEarthDamage()[1] > 0) Tooltip.append("&2").append(String.valueOf('\u2724')).append(" Earth &7Damage: ").append(this.GetEarthDamage()[0]).append("-").append(this.GetEarthDamage()[1]).append("/n");
 		
-		if (this.Health != 0) Tooltip = Tooltip + "&4" + String.valueOf('\u2764') + " Health: " + this.Health + "/n";
-		if (this.FireDefence != 0) Tooltip = Tooltip + "&c" + String.valueOf('\u2739') + " Fire &7Defence: " + this.FireDefence + "/n";
-		if (this.WaterDefence != 0) Tooltip = Tooltip + "&b" + String.valueOf('\u2749') + " Water &7Defence: " + this.WaterDefence + "/n";
-		if (this.AirDefence != 0) Tooltip = Tooltip + "&f" + String.valueOf('\u274B') + " Air &7Defence: " + this.AirDefence + "/n";
-		if (this.ThunderDefence != 0) Tooltip = Tooltip + "&e" + String.valueOf('\u2726') + " Thunder &7Defence: " + this.ThunderDefence + "/n";
-		if (this.EarthDefence != 0) Tooltip = Tooltip + "&2" + String.valueOf('\u2724') + " Earth &7Defence: " + this.EarthDefence + "/n";
+		if (this.Health != 0) Tooltip.append("&4").append(String.valueOf('\u2764')).append(" Health: ").append(this.Health).append("/n");
+		if (this.FireDefence != 0) Tooltip.append("&c").append(String.valueOf('\u2739')).append(" Fire &7Defence: ").append(this.FireDefence).append("/n");
+		if (this.WaterDefence != 0) Tooltip.append("&b").append(String.valueOf('\u2749')).append(" Water &7Defence: ").append(this.WaterDefence).append("/n");
+		if (this.AirDefence != 0) Tooltip.append("&f").append(String.valueOf('\u274B')).append(" Air &7Defence: ").append(this.AirDefence).append("/n");
+		if (this.ThunderDefence != 0) Tooltip.append("&e").append(String.valueOf('\u2726')).append(" Thunder &7Defence: ").append(this.ThunderDefence).append("/n");
+		if (this.EarthDefence != 0) Tooltip.append("&2").append(String.valueOf('\u2724')).append(" Earth &7Defence: ").append(this.EarthDefence).append("/n");
 		
-		if (!Tooltip.endsWith("/n/n")) Tooltip = Tooltip + "/n";
+		if (!Tooltip.toString().endsWith("/n/n")) Tooltip.append("/n");
 		
-		if (this.Class != 0)Tooltip = Tooltip + "&7- Class Req: " + this.GetClassName() + "/n";
-		if (this.Quest != null) Tooltip = Tooltip + "&7- Quest Req: " + this.GetQuest() + "/n";
-		Tooltip = Tooltip + "  &7- Lv. Min: " + this.GetLevel() + "/n";
-		if (this.GetStrengthRequirement() > 0) Tooltip = Tooltip + "&7- Strength Min: " + this.GetStrengthRequirement() + "/n";
-		if (this.GetDexterityRequirement() > 0) Tooltip = Tooltip + "&7- Dexterity Min: " + this.GetDexterityRequirement() + "/n";
-		if (this.GetIntelligenceRequirement() > 0) Tooltip = Tooltip + "&7- Intelligence Min: " + this.GetIntelligenceRequirement() + "/n";
-		if (this.GetDefenceRequirement() > 0) Tooltip = Tooltip + "&7- Defence Min: " + this.GetDefenceRequirement() + "/n";
-		if (this.GetAgilityRequirement() > 0) Tooltip = Tooltip + "&7- Agility Min: " + this.GetAgilityRequirement() + "/n";
+		if (this.Class != 0) Tooltip.append("&7- Class Req: ").append(this.GetClassName()).append("/n");
+		if (this.Quest != null) Tooltip.append("&7- Quest Req: ").append(this.GetQuest()).append("/n");
+		Tooltip.append("  &7- Lv. Min: ").append(this.GetLevel()).append("/n");
+		if (this.GetStrengthRequirement() > 0) Tooltip.append("&7- Strength Min: ").append(this.GetStrengthRequirement()).append("/n");
+		if (this.GetDexterityRequirement() > 0) Tooltip.append("&7- Dexterity Min: ").append(this.GetDexterityRequirement()).append("/n");
+		if (this.GetIntelligenceRequirement() > 0) Tooltip.append("&7- Intelligence Min: ").append(this.GetIntelligenceRequirement()).append("/n");
+		if (this.GetDefenceRequirement() > 0) Tooltip.append("&7- Defence Min: ").append(this.GetDefenceRequirement()).append("/n");
+		if (this.GetAgilityRequirement() > 0) Tooltip.append("&7- Agility Min: ").append(this.GetAgilityRequirement()).append("/n");
 		
-		if (!Tooltip.endsWith("/n/n")) Tooltip = Tooltip + "/n";
+		if (!Tooltip.toString().endsWith("/n/n")) Tooltip.append("/n");
 		
 		//if (this.GetRawBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawBonus(), this.GetBonus(), "", "");
 		
-		if (this.GetRawAttackSpeedBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawAttackSpeedBonus(), this.GetAttackSpeedBonus(), "AttackSpeed", "");
+		if (this.GetRawAttackSpeedBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAttackSpeedBonus(), this.GetAttackSpeedBonus(), "AttackSpeed", ""));
 		
-		if (this.GetRawDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawDamageBonus(), this.GetDamageBonus(), "Melee Damage", "%");
-		if (this.GetRawDamageRawBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawDamageRawBonus(), this.GetDamageRawBonus(), "Melee Damage", "");
+		if (this.GetRawDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawDamageBonus(), this.GetDamageBonus(), "Melee Damage", "%"));
+		if (this.GetRawDamageRawBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawDamageRawBonus(), this.GetDamageRawBonus(), "Melee Damage", ""));
 		
-		if (this.GetRawSpellDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawSpellDamageBonus(), this.GetSpellDamageBonus(), "Spell Damage", "%");
-		if (this.GetRawSpellDamageRawBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawSpellDamageRawBonus(), this.GetSpellDamageRawBonus(), "Spell Damage", "");
+		if (this.GetRawSpellDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawSpellDamageBonus(), this.GetSpellDamageBonus(), "Spell Damage", "%"));
+		if (this.GetRawSpellDamageRawBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawSpellDamageRawBonus(), this.GetSpellDamageRawBonus(), "Spell Damage", ""));
 		
-		if (this.GetRawHealthBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawHealthBonus(), this.GetHealthBonus(), "Health", "");
-		if (this.GetRawHealthRegenBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawHealthRegenBonus(), this.GetHealthRegenBonus(), "Health Regen", "%");
-		if (this.GetRawHealthRegenRawBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawHealthRegenRawBonus(), this.GetHealthRegenRawBonus(), "Health Regen", "");
+		if (this.GetRawHealthBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawHealthBonus(), this.GetHealthBonus(), "Health", ""));
+		if (this.GetRawHealthRegenBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawHealthRegenBonus(), this.GetHealthRegenBonus(), "Health Regen", "%"));
+		if (this.GetRawHealthRegenRawBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawHealthRegenRawBonus(), this.GetHealthRegenRawBonus(), "Health Regen", ""));
 		
-		if (this.GetRawLifeStealBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawLifeStealBonus(), this.GetLifeStealBonus(), "Life Steal", "/4s");
-		if (this.GetRawManaRegenBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawManaRegenBonus(), this.GetManaRegenBonus(), "Mana Regen", "/4s");
-		if (this.GetRawManaStealBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawManaStealBonus(), this.GetManaStealBonus(), "Mana Steal", "/4s");
+		if (this.GetRawLifeStealBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawLifeStealBonus(), this.GetLifeStealBonus(), "Life Steal", "/4s"));
+		if (this.GetRawManaRegenBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawManaRegenBonus(), this.GetManaRegenBonus(), "Mana Regen", "/4s"));
+		if (this.GetRawManaStealBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawManaStealBonus(), this.GetManaStealBonus(), "Mana Steal", "/4s"));
 		
-		if (this.GetRawFireDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawFireDamageBonus(), this.GetFireDamageBonus(), "Fire Damage", "%");
-		if (this.GetRawWaterDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawWaterDamageBonus(), this.GetWaterDamageBonus(), "Water Damage", "%");
-		if (this.GetRawAirDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawAirDamageBonus(), this.GetAirDamageBonus(), "Air Damage", "%");
-		if (this.GetRawThunderDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawThunderDamageBonus(), this.GetThunderDamageBonus(), "Thunder Damage", "%");
-		if (this.GetRawEarthDamageBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawEarthDamageBonus(), this.GetEarthDamageBonus(), "Earth Damage", "%");
+		if (this.GetRawFireDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawFireDamageBonus(), this.GetFireDamageBonus(), "Fire Damage", "%"));
+		if (this.GetRawWaterDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawWaterDamageBonus(), this.GetWaterDamageBonus(), "Water Damage", "%"));
+		if (this.GetRawAirDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAirDamageBonus(), this.GetAirDamageBonus(), "Air Damage", "%"));
+		if (this.GetRawThunderDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThunderDamageBonus(), this.GetThunderDamageBonus(), "Thunder Damage", "%"));
+		if (this.GetRawEarthDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawEarthDamageBonus(), this.GetEarthDamageBonus(), "Earth Damage", "%"));
 		
-		if (this.GetRawFireDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawFireDefenceBonus(), this.GetFireDefenceBonus(), "Fire Defence", "");
-		if (this.GetRawWaterDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawWaterDefenceBonus(), this.GetWaterDefenceBonus(), "Water Defence", "");
-		if (this.GetRawAirDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawAirDefenceBonus(), this.GetAirDefenceBonus(), "Air Defence", "");
-		if (this.GetRawThunderDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawThunderDefenceBonus(), this.GetThunderDefenceBonus(), "Thunder Defence", "");
-		if (this.GetRawEarthDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawEarthDefenceBonus(), this.GetEarthDefenceBonus(), "Earth Defence", "");
+		if (this.GetRawFireDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawFireDefenceBonus(), this.GetFireDefenceBonus(), "Fire Defence", ""));
+		if (this.GetRawWaterDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawWaterDefenceBonus(), this.GetWaterDefenceBonus(), "Water Defence", ""));
+		if (this.GetRawAirDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAirDefenceBonus(), this.GetAirDefenceBonus(), "Air Defence", ""));
+		if (this.GetRawThunderDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThunderDefenceBonus(), this.GetThunderDefenceBonus(), "Thunder Defence", ""));
+		if (this.GetRawEarthDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawEarthDefenceBonus(), this.GetEarthDefenceBonus(), "Earth Defence", ""));
 		
-		if (this.GetRawStrengthBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawStrengthBonus(), this.GetStrengthBonus(), "Strength", "");
-		if (this.GetRawDexterityBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawDexterityBonus(), this.GetDexterityBonus(), "Dexterity", "");
-		if (this.GetRawIntelligenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawIntelligenceBonus(), this.GetIntelligenceBonus(), "Intelligence", "");
-		if (this.GetRawDefenceBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawDefenceBonus(), this.GetDefenceBonus(), "Defence", "");
-		if (this.GetRawAgilityBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawAgilityBonus(), this.GetAgilityBonus(), "Agility", "");
+		if (this.GetRawStrengthBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawStrengthBonus(), this.GetStrengthBonus(), "Strength", ""));
+		if (this.GetRawDexterityBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawDexterityBonus(), this.GetDexterityBonus(), "Dexterity", ""));
+		if (this.GetRawIntelligenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawIntelligenceBonus(), this.GetIntelligenceBonus(), "Intelligence", ""));
+		if (this.GetRawDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawDefenceBonus(), this.GetDefenceBonus(), "Defence", ""));
+		if (this.GetRawAgilityBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAgilityBonus(), this.GetAgilityBonus(), "Agility", ""));
 		
-		if (this.GetRawSpeedBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawSpeedBonus(), this.GetSpeedBonus(), "Walk Speed", "%");
-		if (this.GetRawExplodingBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawExplodingBonus(), this.GetExplodingBonus(), "Exploding", "%");
-		if (this.GetRawPoisonBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawPoisonBonus(), this.GetPoisonBonus(), "Poison", "/3s");
-		if (this.GetRawThornsBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawThornsBonus(), this.GetThornsBonus(), "Thorns", "%");
-		if (this.GetRawReflectionBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawReflectionBonus(), this.GetReflectionBonus(), "Reflection", "%");
-		if (this.GetRawSoulPointBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawSoulPointBonus(), this.GetSoulPointBonus(), "Soul Point Regen", "%");
-		if (this.GetRawStealingBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawStealingBonus(), this.GetStealingBonus(), "Stealing", "%");
-		if (this.GetRawLootBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawLootBonus(), this.GetLootBonus(), "Loot Bonus", "%");
-		if (this.GetRawExpBonus() != 0) Tooltip = GetTooltipID(Tooltip, this.GetRawExpBonus(), this.GetExpBonus(), "XP Bonus", "%");
+		if (this.GetRawSpeedBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawSpeedBonus(), this.GetSpeedBonus(), "Walk Speed", "%"));
+		if (this.GetRawExplodingBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawExplodingBonus(), this.GetExplodingBonus(), "Exploding", "%"));
+		if (this.GetRawPoisonBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawPoisonBonus(), this.GetPoisonBonus(), "Poison", "/3s"));
+		if (this.GetRawThornsBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThornsBonus(), this.GetThornsBonus(), "Thorns", "%"));
+		if (this.GetRawReflectionBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawReflectionBonus(), this.GetReflectionBonus(), "Reflection", "%"));
+		if (this.GetRawSoulPointBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawSoulPointBonus(), this.GetSoulPointBonus(), "Soul Point Regen", "%"));
+		if (this.GetRawStealingBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawStealingBonus(), this.GetStealingBonus(), "Stealing", "%"));
+		if (this.GetRawLootBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawLootBonus(), this.GetLootBonus(), "Loot Bonus", "%"));
+		if (this.GetRawExpBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawExpBonus(), this.GetExpBonus(), "XP Bonus", "%"));
 		
-		if (!Tooltip.endsWith("/n/n")) Tooltip = Tooltip + "/n";
+		if (!Tooltip.toString().endsWith("/n/n")) Tooltip.append("/n");
 		
-		if (this.Slots > 0) Tooltip = Tooltip + "&7[" + this.Slots + "] Powder Slot" + (this.Slots == 1 ? "/n" : "s/n");
-		Tooltip = Tooltip + this.GetRarityName() + " Item";
-		if (this.Untradable) Tooltip = Tooltip + "/n&cUntradable Item";
-		if (this.QuestItem) Tooltip = Tooltip + "/n&cQuest Item";
+		if (this.Slots > 0) Tooltip.append("&7[").append(this.Slots).append("] Powder Slot").append(this.Slots == 1 ? "/n" : "s/n");
+		Tooltip.append(this.GetRarityName()).append(" Item");
+		if (this.Untradable) Tooltip.append("/n&cUntradable Item");
+		if (this.QuestItem) Tooltip.append("/n&cQuest Item");
 		
 		
 		if (this.Lore != null && ShowLore) {
 			int MaxWidth = 0;
-			for (String Line : Tooltip.split("/n")) {
+			for (String Line : Tooltip.toString().split("/n")) {
 				if (ExpReference.getMsgLength(Line, 1.0f) > MaxWidth) {
 					MaxWidth = ExpReference.getMsgLength(Line, 1.0f);
 				}
@@ -869,11 +860,11 @@ public class WynnItem {
 				MaxWidth = 150;
 			}
 			for (String string: ModCore.mc().fontRenderer.listFormattedStringToWidth(this.Lore, MaxWidth)) {
-				Tooltip = Tooltip + "/n&8" + string;
+				Tooltip.append("/n&8").append(string);
 			}
 		}
 		
-		return Tooltip;
+		return Tooltip.toString();
 	}
 	
 	private String GetTooltipID(String Tooltip, int RawStat, int[] Stats, String StatName, String StatSufix) {

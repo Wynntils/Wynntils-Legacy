@@ -750,23 +750,23 @@ public class PlayerHomeMenu extends GuiScreenMod {
 			// Party
 			for (int i=0;i<PartyList.size();i++){
 				if (PartyList.get(i)[1].length() == 14){
-					for (int j=0;j<World.size();j++){
-						if (World.get(j).length() >= 14){
-							if (World.get(j).substring(0, 14).equals(PartyList.get(i)[1])){
-								String[] Tmp = {World.get(0), World.get(j), PartyList.get(i)[2]};
-								if (World.get(0).equals(CurrentWorld)){
-									PartyList.add(PartySameWorld, Tmp);
-									PartySameWorld++;
-									PartyOnline++;
-									i++;
-								}else{
-									PartyList.add(PartyOnline, Tmp);
-									PartyOnline++;
-									i++;
-								}
-							}
-						}
-					}
+                    for (String aWorld : World) {
+                        if (aWorld.length() >= 14) {
+                            if (aWorld.substring(0, 14).equals(PartyList.get(i)[1])) {
+                                String[] Tmp = {World.get(0), aWorld, PartyList.get(i)[2]};
+                                if (World.get(0).equals(CurrentWorld)) {
+                                    PartyList.add(PartySameWorld, Tmp);
+                                    PartySameWorld++;
+                                    PartyOnline++;
+                                    i++;
+                                } else {
+                                    PartyList.add(PartyOnline, Tmp);
+                                    PartyOnline++;
+                                    i++;
+                                }
+                            }
+                        }
+                    }
 				}else{
 					if (World.contains(PartyList.get(i)[1])){
 						String[] Tmp = {World.get(0), PartyList.get(i)[1], PartyList.get(i)[2]};

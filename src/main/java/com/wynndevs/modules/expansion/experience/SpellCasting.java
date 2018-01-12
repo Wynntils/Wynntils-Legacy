@@ -34,7 +34,7 @@ public class SpellCasting {
 							for (int j = 1; j < Lore.tagCount(); j++) {
 								String ClassTest = Lore.get(j).toString();
 								if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a'){
-									if (ClassTest.contains("Archer")){isHunter=true;}else{isHunter=false;}
+                                    isHunter = ClassTest.contains("Archer");
 									switch (ClassTest.substring(18,ClassTest.lastIndexOf('/'))) {
 										case "Archer": return 1;
 										case "Warrior": return 2;

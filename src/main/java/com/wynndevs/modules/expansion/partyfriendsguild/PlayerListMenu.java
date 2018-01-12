@@ -2,7 +2,6 @@ package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraft.client.Minecraft;
@@ -141,19 +140,19 @@ public class PlayerListMenu extends GuiScreenMod {
 		PlayerButtonList.add(new PlayerHomeMenu.PlayerButton(114, (this.width / 2) - 2, 170, ""));
 		
 		
-		this.addButton(KickButton = new PlayerHomeMenu.KickButton(99, (this.width / 2) +0, 80));
-		this.addButton(MsgButton = new PlayerHomeMenu.MsgButton(98, (this.width / 2) +0, 80));
-		this.addButton(PartyButton = new PlayerHomeMenu.PartyButton(97, (this.width / 2) +0, 80));
-		this.addButton(JoinButton = new PlayerHomeMenu.JoinButton(96, (this.width / 2) +0, 80));
-		this.addButton(FavouriteButton = new PlayerHomeMenu.FavouriteButton(95, (this.width / 2) +0, 80));
-		this.addButton(FriendButton = new PlayerHomeMenu.FriendButton(94, (this.width / 2) +0, 80));
-		this.addButton(PlayerInfoButton = new PlayerHomeMenu.PlayerInfoButton(93, (this.width / 2) +0, 80));
+		this.addButton(KickButton = new PlayerHomeMenu.KickButton(99, (this.width / 2), 80));
+		this.addButton(MsgButton = new PlayerHomeMenu.MsgButton(98, (this.width / 2), 80));
+		this.addButton(PartyButton = new PlayerHomeMenu.PartyButton(97, (this.width / 2), 80));
+		this.addButton(JoinButton = new PlayerHomeMenu.JoinButton(96, (this.width / 2), 80));
+		this.addButton(FavouriteButton = new PlayerHomeMenu.FavouriteButton(95, (this.width / 2), 80));
+		this.addButton(FriendButton = new PlayerHomeMenu.FriendButton(94, (this.width / 2), 80));
+		this.addButton(PlayerInfoButton = new PlayerHomeMenu.PlayerInfoButton(93, (this.width / 2), 80));
 		
-		this.addButton(RankRecruitButton = new PlayerHomeMenu.RankRecruitButton(80, (this.width / 2) +0, 80));
-		this.addButton(RankRecruiterButton = new PlayerHomeMenu.RankRecruiterButton(81, (this.width / 2) +0, 80));
-		this.addButton(RankCaptainButton = new PlayerHomeMenu.RankCaptainButton(82, (this.width / 2) +0, 80));
-		this.addButton(RankChiefButton = new PlayerHomeMenu.RankChiefButton(83, (this.width / 2) +0, 80));
-		this.addButton(RankLeadingChiefButton = new PlayerHomeMenu.RankChiefButton(84, (this.width / 2) +0, 80));
+		this.addButton(RankRecruitButton = new PlayerHomeMenu.RankRecruitButton(80, (this.width / 2), 80));
+		this.addButton(RankRecruiterButton = new PlayerHomeMenu.RankRecruiterButton(81, (this.width / 2), 80));
+		this.addButton(RankCaptainButton = new PlayerHomeMenu.RankCaptainButton(82, (this.width / 2), 80));
+		this.addButton(RankChiefButton = new PlayerHomeMenu.RankChiefButton(83, (this.width / 2), 80));
+		this.addButton(RankLeadingChiefButton = new PlayerHomeMenu.RankChiefButton(84, (this.width / 2), 80));
 		
 		this.addButton(ConfirmButton = new PlayerHomeMenu.ConfirmButton(50, (this.width / 2) + 50, 160));
 		this.addButton(CancelButton = new PlayerHomeMenu.CancelButton(49, (this.width / 2) - 69, 160));
@@ -401,10 +400,10 @@ public class PlayerListMenu extends GuiScreenMod {
 							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Guild = false;
 						}else{
 							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Self = false;
-							if (ListType != 1 && PlayerGlow.PartyList.contains(PlayerList.get(((Page-1)*14) +i)[1])) {((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Party = true;}else{((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Party = false;}
-							if (ListType == 2 && PlayerList.get(((Page-1)*14) +i)[2].equals("true")) {((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Favourite = true;}else{((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Favourite = false;}
-							if (ListType != 2 && PlayerGlow.FriendsList.contains(PlayerList.get(((Page-1)*14) +i)[1])) {((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Friend = true;}else{((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Friend = false;}
-							if (ListType != 3 && PlayerGlow.GuildList.contains(PlayerList.get(((Page-1)*14) +i)[1])) {((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Guild = true;}else{((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Guild = false;}
+							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Party = ListType != 1 && PlayerGlow.PartyList.contains(PlayerList.get(((Page - 1) * 14) + i)[1]);
+							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Favourite = ListType == 2 && PlayerList.get(((Page - 1) * 14) + i)[2].equals("true");
+							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Friend = ListType != 2 && PlayerGlow.FriendsList.contains(PlayerList.get(((Page - 1) * 14) + i)[1]);
+							((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).Guild = ListType != 3 && PlayerGlow.GuildList.contains(PlayerList.get(((Page - 1) * 14) + i)[1]);
 						}
 						((PlayerHomeMenu.PlayerButton) PlayerButtonList.get(i)).NameParseLength = true;
 					}

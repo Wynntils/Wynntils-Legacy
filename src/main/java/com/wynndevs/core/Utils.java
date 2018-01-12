@@ -10,29 +10,29 @@ public class Utils {
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
 
     public static String arrayWithCommas(ArrayList<String> values) {
-        String total = "";
+        StringBuilder total = new StringBuilder();
 
         for (String value : values) {
-            if(total.equals("")) {
-                total = value;
+            if(total.toString().equals("")) {
+                total = new StringBuilder(value);
                 continue;
             }
-            total = total + ", " + value;
+            total.append(", ").append(value);
         }
 
-        return total.endsWith(", ") ? total.substring(0, total.length() - 2) + "." : total + ".";
+        return total.toString().endsWith(", ") ? total.substring(0, total.length() - 2) + "." : total + ".";
     }
 
     public static String firstCharToUpper(String[] array) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
-        result += array[0].toLowerCase();
+        result.append(array[0].toLowerCase());
 
         for(int i = 1; i < array.length; i++) {
-            result += StringUtils.capitalize(array[i]);
+            result.append(StringUtils.capitalize(array[i]));
         }
 
-        return result;
+        return result.toString();
     }
 
     public static String getFieldName(String key) {

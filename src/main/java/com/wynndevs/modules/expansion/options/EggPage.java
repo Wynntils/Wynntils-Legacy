@@ -1,7 +1,6 @@
 package com.wynndevs.modules.expansion.options;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions.ExitButton;
 import net.minecraft.client.gui.GuiButton;

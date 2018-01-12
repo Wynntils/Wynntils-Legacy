@@ -4,7 +4,6 @@ package com.wynndevs.modules.expansion.chat.guild;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.input.KeyBindings;
-import com.wynndevs.modules.expansion.ExpReference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -81,7 +80,6 @@ public class GuiGuild extends Gui {
                             message = message.substring(message.indexOf(']') + 2);
                             guildMessage(name, message);
                             event.setCanceled(true);
-                            return;
                         }
                     }
                 }

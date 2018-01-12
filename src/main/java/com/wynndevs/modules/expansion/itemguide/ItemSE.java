@@ -493,12 +493,12 @@ public class ItemSE {
 	
 	private static boolean CompareItemStat(int[] Stat1, int[] Stat2) {
 		if (Stat1.length == 1) {
-			if (Stat1[0] > Stat2[0]) return (SortOrder >= 3 ? false : true);
+			if (Stat1[0] > Stat2[0]) return (SortOrder < 3);
 		}
 		switch (SortOrder%3) {
-			case 0: if (Stat1[0] > Stat2[0]) return (SortOrder >= 3 ? false : true);
-			case 1: if ((Stat1[0] + Stat1[1])/2 > (Stat2[0] + Stat2[1])/2) return (SortOrder >= 3 ? false : true);
-			case 2: if (Stat1[1] > Stat2[1]) return (SortOrder >= 3 ? false : true);
+			case 0: if (Stat1[0] > Stat2[0]) return (SortOrder < 3);
+			case 1: if ((Stat1[0] + Stat1[1])/2 > (Stat2[0] + Stat2[1])/2) return (SortOrder < 3);
+			case 2: if (Stat1[1] > Stat2[1]) return (SortOrder < 3);
 			default: return false;
 		}
 	}
@@ -582,9 +582,8 @@ public class ItemSE {
 		if (Item.GetSoulPointBonus()[1] < SoulPointBonus) return false;
 		if (Item.GetStealingBonus()[1] < StealingBonus) return false;
 		if (Item.GetLootBonus()[1] < LootBonus) return false;
-		if (Item.GetExpBonus()[1] < ExpBonus) return false;
-		return true;
-	}
+        return Item.GetExpBonus()[1] >= ExpBonus;
+    }
 	
 	private static boolean PartialMatchRequirements(WynnItem Item) {
 		if (!(Item.GetLevel() >= Level[0] && Item.GetLevel() <= Level[1])) return false;
@@ -654,9 +653,8 @@ public class ItemSE {
 		if (Item.GetSoulPointBonus()[0] < SoulPointBonus) return false;
 		if (Item.GetStealingBonus()[0] < StealingBonus) return false;
 		if (Item.GetLootBonus()[0] < LootBonus) return false;
-		if (Item.GetExpBonus()[0] < ExpBonus) return false;
-		return true;
-	}
+        return Item.GetExpBonus()[0] >= ExpBonus;
+    }
 	
 	public static void Search(String Search) {
 		

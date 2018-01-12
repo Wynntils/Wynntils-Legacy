@@ -103,7 +103,6 @@ public class HudOverlay extends WRPGui {
                 //why i need this time? just to get the actionbar timeout
                 lastActionBarTime = System.currentTimeMillis();
             }
-            return;
         }
     }
 
@@ -325,7 +324,6 @@ public class HudOverlay extends WRPGui {
 
             drawCenteredString(mc.fontRenderer, health, (x - 5 - (86 / 2)), y - 50, 1); // DO NOT EDIT
             drawCenteredString(mc.fontRenderer, mana, (x + 5 + (86 / 2)), y - 50, 1); // DO NOT EDIT
-            return;
         }
     }
 

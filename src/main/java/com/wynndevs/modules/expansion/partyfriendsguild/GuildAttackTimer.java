@@ -1,7 +1,6 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.misc.ModGui;
 import net.minecraft.client.Minecraft;

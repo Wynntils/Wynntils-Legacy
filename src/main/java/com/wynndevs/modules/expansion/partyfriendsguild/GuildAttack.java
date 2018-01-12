@@ -58,10 +58,10 @@ public class GuildAttack {
 		if (msg.startsWith("[WAR] The battle will begin in 0 seconds")){
 			CurrentTerritory = new WynnTerritory();
 			GuildAttackTimer.Timer = -1;
-			if (RemoveExcessWar){return true;}
+            return RemoveExcessWar;
 		}else if (WarHornAttack && msg.startsWith("[WAR] The battle will begin in 5 seconds")){
 				ModCore.mc().getSoundHandler().playSound(new MovingSoundMusic(Drum));
-				if (RemoveExcessWar){return true;}
+            return RemoveExcessWar;
 		}else if ((msg.startsWith("[WAR] The battle will begin in") || msg.startsWith("[WAR] A war is about to start!") || msg.startsWith("[WAR] You must be in the region")) && AttackTimer){
 			if (msg.startsWith("[WAR] The battle will begin in")){
 				if (msg.contains("minute")){
@@ -72,7 +72,7 @@ public class GuildAttack {
 					GuildAttackTimer.TimerDelay.Reset();
 				}
 			}
-			if (RemoveExcessWar){return true;}
+            return RemoveExcessWar;
 		}
 		
 		return false;

@@ -44,13 +44,13 @@ public class TerritoryCommand implements ICommand{
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length >= 1){
-			String ArgTmp = args[0];
+			StringBuilder ArgTmp = new StringBuilder(args[0]);
 			WynnTerritory SelectedTerritory = new WynnTerritory();
 			for (int i=1;i<args.length;i++){
-				ArgTmp = ArgTmp + " " + args[i];
+				ArgTmp.append(" ").append(args[i]);
 			}
 			for (WynnTerritory TerritoryTest : Territory.TerritoryList) {
-				if (ArgTmp.replace(" ", "_").equalsIgnoreCase(TerritoryTest.Name.replace(" ", "_"))) {
+				if (ArgTmp.toString().replace(" ", "_").equalsIgnoreCase(TerritoryTest.Name.replace(" ", "_"))) {
 					SelectedTerritory = TerritoryTest;
 					break;
 				}
@@ -74,13 +74,13 @@ public class TerritoryCommand implements ICommand{
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
 		List<String> Output = new ArrayList<String>();
-		String TerritorySearch = args[0];
+		StringBuilder TerritorySearch = new StringBuilder(args[0]);
 		for (int i=1;i<args.length;i++){
-			TerritorySearch = TerritorySearch + " " + args[i];
+			TerritorySearch.append(" ").append(args[i]);
 		}
 		for (WynnTerritory Territory : Territory.TerritoryList){
-			if (Territory.Name.replace(" ", "_").toUpperCase().startsWith(TerritorySearch.replace(" ", "_").toUpperCase())) {
-				if (TerritorySearch.contains(" ")) {
+			if (Territory.Name.replace(" ", "_").toUpperCase().startsWith(TerritorySearch.toString().replace(" ", "_").toUpperCase())) {
+				if (TerritorySearch.toString().contains(" ")) {
 					String Tmp = Territory.Name.toUpperCase();
 					Tmp = Tmp.replace(TerritorySearch.substring(0, TerritorySearch.lastIndexOf(" ") +1).toUpperCase(), "");
 					Output.add(Territory.Name.substring(Territory.Name.length() - Tmp.length()).replace(" ", "_"));

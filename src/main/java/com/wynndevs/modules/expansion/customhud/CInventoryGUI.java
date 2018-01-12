@@ -55,127 +55,125 @@ public class CInventoryGUI extends GuiInventory {
 
 
         GL11.glPushMatrix();
-        if (true) {
-            GL11.glTranslatef(0, 10, 0F);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glTranslatef(0, 10, 0F);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-            int amount = -1;
-            int extra = 0;
-            int floor = 0;
-            int armorfloor = 0;
-            boolean armorcheck = false;
+        int amount = -1;
+        int extra = 0;
+        int floor = 0;
+        int armorfloor = 0;
+        boolean armorcheck = false;
 
-            boolean accessories = ConfigValues.inventoryConfig.playerInv.highlightAccessories;
-            boolean hotbar = ConfigValues.inventoryConfig.playerInv.highlightHotbar;
-            boolean armor = ConfigValues.inventoryConfig.playerInv.highlightArmor;
-            boolean main = ConfigValues.inventoryConfig.playerInv.highlightMain;
-
-
-            for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
-                ItemStack is = player.inventory.getStackInSlot(i);
-
-                amount++;
-                if (amount > 8) {
-                    amount = 0;
-                    floor++;
-                }
+        boolean accessories = ConfigValues.inventoryConfig.playerInv.highlightAccessories;
+        boolean hotbar = ConfigValues.inventoryConfig.playerInv.highlightHotbar;
+        boolean armor = ConfigValues.inventoryConfig.playerInv.highlightArmor;
+        boolean main = ConfigValues.inventoryConfig.playerInv.highlightMain;
 
 
-                if (!accessories && floor == 1 && amount < 4) {
+        for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
+            ItemStack is = player.inventory.getStackInSlot(i);
+
+            amount++;
+            if (amount > 8) {
+                amount = 0;
+                floor++;
+            }
+
+
+            if (!accessories && floor == 1 && amount < 4) {
+                continue;
+            }
+            if (!hotbar && floor == 0) {
+                continue;
+            }
+            if (!main) {
+                if (floor == 1 && amount > 3) {
                     continue;
-                }
-                if (!hotbar && floor == 0) {
+                } else if (floor != 1 && floor < 4 && floor != 0) {
                     continue;
-                }
-                if (!main) {
-                    if (floor == 1 && amount > 3) {
-                        continue;
-                    } else if (floor != 1 && floor < 4 && floor != 0) {
-                        continue;
-                    }
-                }
-
-
-                double r, g, b;
-                float alpha;
-
-                String lore = getStringLore(is);
-
-                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
-                    continue;
-                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.playerInv.highlightLegendary) {
-                    r = 0;
-                    g = 1;
-                    b = 1;
-                    alpha = .4f;
-                } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.playerInv.highlightMythic) {
-                    r = 0.3;
-                    g = 0;
-                    b = 0.3;
-                    alpha = .6f;
-                } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.playerInv.highlightRare) {
-                    r = 1;
-                    g = 0;
-                    b = 1;
-                    alpha = .4f;
-                } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.playerInv.highlightUnique) {
-                    r = 1;
-                    g = 1;
-                    b = 0;
-                    alpha = .4f;
-                } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.playerInv.highlightSet) {
-                    r = 0;
-                    g = 1;
-                    b = 0;
-                    alpha = .4f;
-                } else if (floor >= 4) {
-                    r = 0;
-                    g = 0;
-                    b = 0;
-                    alpha = 0f;
-                } else {
-                    continue;
-                }
-                int offset = floor == 0 ? 124 : 48;
-
-                if (floor >= 4 && amount < 4 && armor) {
-                    armorcheck = true;
-                    offset = 62;
-                    floor++;
-                    armorfloor++;
-                } else if (floor >= 4 && amount == 4) {
-                    armorcheck = true;
-                    extra = 69;
-                    offset = 116;
-                    floor++;
-                } else if (floor >= 4 && amount > 4) {
-                    continue;
-                }
-                if (!armorcheck) {
-                    GL11.glBegin(GL11.GL_QUADS);
-                    {
-                        GL11.glColor4d(r, g, b, alpha);
-                        GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
-                        GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
-                        GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
-                        GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
-                    }
-                    GL11.glEnd();
-                } else {
-                    GL11.glBegin(GL11.GL_QUADS);
-                    {
-                        GL11.glColor4d(r, g, b, alpha);
-                        GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
-                        GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
-                        GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
-                        GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
-                    }
-                    GL11.glEnd();
                 }
             }
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+            double r, g, b;
+            float alpha;
+
+            String lore = getStringLore(is);
+
+            if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+                continue;
+            } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.playerInv.highlightLegendary) {
+                r = 0;
+                g = 1;
+                b = 1;
+                alpha = .4f;
+            } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.playerInv.highlightMythic) {
+                r = 0.3;
+                g = 0;
+                b = 0.3;
+                alpha = .6f;
+            } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.playerInv.highlightRare) {
+                r = 1;
+                g = 0;
+                b = 1;
+                alpha = .4f;
+            } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.playerInv.highlightUnique) {
+                r = 1;
+                g = 1;
+                b = 0;
+                alpha = .4f;
+            } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.playerInv.highlightSet) {
+                r = 0;
+                g = 1;
+                b = 0;
+                alpha = .4f;
+            } else if (floor >= 4) {
+                r = 0;
+                g = 0;
+                b = 0;
+                alpha = 0f;
+            } else {
+                continue;
+            }
+            int offset = floor == 0 ? 124 : 48;
+
+            if (floor >= 4 && amount < 4 && armor) {
+                armorcheck = true;
+                offset = 62;
+                floor++;
+                armorfloor++;
+            } else if (floor >= 4 && amount == 4) {
+                armorcheck = true;
+                extra = 69;
+                offset = 116;
+                floor++;
+            } else if (floor >= 4 && amount > 4) {
+                continue;
+            }
+            if (!armorcheck) {
+                GL11.glBegin(GL11.GL_QUADS);
+                {
+                    GL11.glColor4d(r, g, b, alpha);
+                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
+                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
+                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
+                }
+                GL11.glEnd();
+            } else {
+                GL11.glBegin(GL11.GL_QUADS);
+                {
+                    GL11.glColor4d(r, g, b, alpha);
+                    GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
+                    GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
+                    GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
+                    GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
+                }
+                GL11.glEnd();
+            }
         }
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
 
 
@@ -203,7 +201,6 @@ public class CInventoryGUI extends GuiInventory {
             }
             if(it.getItem() == Items.EXPERIENCE_BOTTLE) {
                 liquid+= it.getCount();
-                continue;
             }
         }
 
@@ -253,9 +250,9 @@ public class CInventoryGUI extends GuiInventory {
 
         List<String> lore = MarketUtils.getLore(stack);
 
-        for(int i = 0; i< lore.size(); i++) {
-            if(lore.get(i).contains("Lv. Range")) {
-                level = RichUtils.stripColor(lore.get(i)).replace("- Lv. Range: ", "");
+        for (String aLore : lore) {
+            if (aLore.contains("Lv. Range")) {
+                level = RichUtils.stripColor(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }
@@ -422,13 +419,13 @@ public class CInventoryGUI extends GuiInventory {
     }
 
     public String getStringLore(ItemStack is){
-        String toReturn = "";
+        StringBuilder toReturn = new StringBuilder();
 
         for (String x : MarketUtils.getLore(is)) {
-            toReturn += x;
+            toReturn.append(x);
         }
 
-        return toReturn;
+        return toReturn.toString();
     }
 
 }

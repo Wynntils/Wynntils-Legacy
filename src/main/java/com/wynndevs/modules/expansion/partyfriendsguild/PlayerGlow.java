@@ -100,14 +100,14 @@ public class PlayerGlow {
 						break;
 					if (!(entity instanceof EntityArmorStand) && ((!entity.getName().equals(null) && entity.getName().matches("[0-9a-zA-Z_]+") && entity instanceof EntityPlayer && !((EntityPlayer)entity).isUser()) || (entity.getName().endsWith("[Disguised]") && !entity.getName().substring(0, entity.getName().length() -14).equals(mc.player.getName()))) && !entity.getTags().contains("WynnExpGlowSkip")) {
 						boolean Disguise = entity.getName().contains("[Disguised]");
-						String Name = "";
+						StringBuilder Name = new StringBuilder();
 						boolean flag = false;
 						for (Character chr : entity.getName().replace(" [Disguised]", "").toCharArray()) {
 							if (!flag) {
 								if (chr.equals('\u00a7')) {
 									flag = true;
 								}else{
-									Name += chr;
+									Name.append(chr);
 								}
 							} else {
 								flag = false;
@@ -117,9 +117,9 @@ public class PlayerGlow {
 						
 						//Name = Name.toLowerCase();
 						
-						if (!Name.equals(mc.player.getName())) {
+						if (!Name.toString().equals(mc.player.getName())) {
 							if (!Disguise || NameDisguises) {
-								if (NameParty && (PartyList.contains(Name) || (Name.length() > 14 && PartyList.contains(Name.substring(0,14))))) {
+								if (NameParty && (PartyList.contains(Name.toString()) || (Name.length() > 14 && PartyList.contains(Name.substring(0,14))))) {
 									if (!entity.getName().startsWith(String.valueOf('\u00a7') + 'e')) {
 										if (entity instanceof EntityPlayer) {
 											((EntityPlayer) entity).refreshDisplayName();
@@ -127,7 +127,7 @@ public class PlayerGlow {
 											entity.setCustomNameTag(String.valueOf('\u00a7') + 'e' + (entity.getName().startsWith(String.valueOf('\u00a7')) ? entity.getName().substring(2) : entity.getName()));
 										}
 									}
-								}else if (BumpHelperName && NameHelpers && HelpersList.contains(Name)) {
+								}else if (BumpHelperName && NameHelpers && HelpersList.contains(Name.toString())) {
 									if (!entity.getName().startsWith(String.valueOf('\u00a7') + '5')) {
 										if (entity instanceof EntityPlayer) {
 											((EntityPlayer) entity).refreshDisplayName();
@@ -135,7 +135,7 @@ public class PlayerGlow {
 											entity.setCustomNameTag(String.valueOf('\u00a7') + '5' + (entity.getName().startsWith(String.valueOf('\u00a7')) ? entity.getName().substring(2) : entity.getName()));
 										}
 									}
-								}else if (NameFriends && FriendsList.contains(Name)) {
+								}else if (NameFriends && FriendsList.contains(Name.toString())) {
 									if (!entity.getName().startsWith(String.valueOf('\u00a7') + 'a')) {
 										if (entity instanceof EntityPlayer) {
 											((EntityPlayer) entity).refreshDisplayName();
@@ -143,7 +143,7 @@ public class PlayerGlow {
 											entity.setCustomNameTag(String.valueOf('\u00a7') + 'a' + (entity.getName().startsWith(String.valueOf('\u00a7')) ? entity.getName().substring(2) : entity.getName()));
 										}
 									}
-								}else if (NameGuild && GuildList.contains(Name)) {
+								}else if (NameGuild && GuildList.contains(Name.toString())) {
 									if (!entity.getName().startsWith(String.valueOf('\u00a7') + 'b')) {
 										if (entity instanceof EntityPlayer) {
 											((EntityPlayer) entity).refreshDisplayName();
@@ -151,7 +151,7 @@ public class PlayerGlow {
 											entity.setCustomNameTag(String.valueOf('\u00a7') + 'b' + (entity.getName().startsWith(String.valueOf('\u00a7')) ? entity.getName().substring(2) : entity.getName()));
 										}
 									}
-								}else if (!BumpHelperName && NameHelpers && HelpersList.contains(Name)) {
+								}else if (!BumpHelperName && NameHelpers && HelpersList.contains(Name.toString())) {
 									if (!entity.getName().startsWith(String.valueOf('\u00a7') + '5')) {
 										if (entity instanceof EntityPlayer) {
 											((EntityPlayer) entity).refreshDisplayName();
@@ -177,9 +177,9 @@ public class PlayerGlow {
 							}
 							
 							if (entity.getName().contains("[Disguised]")) {
-								if (HighlightDisguises && Scoreboard.getPlayersTeam(Name) != null) {
-									if (entity.getTeam() == null || !entity.getTeam().equals(Scoreboard.getPlayersTeam(Name))) {
-										Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Scoreboard.getPlayersTeam(Name).getName());
+								if (HighlightDisguises && Scoreboard.getPlayersTeam(Name.toString()) != null) {
+									if (entity.getTeam() == null || !entity.getTeam().equals(Scoreboard.getPlayersTeam(Name.toString()))) {
+										Scoreboard.addPlayerToTeam(entity.getCachedUniqueIdString(), Scoreboard.getPlayersTeam(Name.toString()).getName());
 										//System.out.println(entity.getCachedUniqueIdString() + " Is Joining " + Name + " On Team " + Scoreboard.getPlayersTeam(Name).getName());
 									}
 								}else if (entity.getTeam() != null) {

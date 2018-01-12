@@ -23,7 +23,7 @@ public class Reflection {
                 int nid = -1;
                 Object nowner = null;
                 try {
-                    nclazz = (Class <?>) nested[i * 3 + 0];
+                    nclazz = (Class <?>) nested[i * 3];
                     nid = (int) nested[i * 3 + 1];
                     nowner = nested[i * 3 + 2];
                 } catch (ClassCastException e) {

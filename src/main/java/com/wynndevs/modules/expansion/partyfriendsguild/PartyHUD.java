@@ -99,15 +99,15 @@ public class PartyHUD extends ModGui {
 							
 							float HealthPercentage = (float) ((Math.ceil(Player.getHealth()) / Math.ceil(Player.getMaxHealth())) * 100);
 							if (HealthPercentage > 100) HealthPercentage = 100;
-							int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-255)+255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage)/50)*255)) << 8) + (0);
-							int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-127)+127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage)/50)*127)) << 8) + (0);
-							PartyValues.add(new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((float) ((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale) * (HealthPercentage / 100f))});
+							int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -255) + 255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage) / 50) * 255)) << 8);
+							int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -127) + 127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage) / 50) * 127)) << 8);
+							PartyValues.add(new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale * (HealthPercentage / 100f))});
 						}else{
 							float HealthPercentage = (float) ((Math.ceil(Player.getHealth()) / Math.ceil(Player.getMaxHealth())) * 100);
 							if (HealthPercentage > 100) HealthPercentage = 100;
-							int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-255)+255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage)/50)*255)) << 8) + (0);
-							int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-127)+127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage)/50)*127)) << 8) + (0);
-							PartyValues.set(PartyIndex, new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((float) ((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale) * (HealthPercentage / 100f))});
+							int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -255) + 255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage) / 50) * 255)) << 8);
+							int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -127) + 127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage) / 50) * 127)) << 8);
+							PartyValues.set(PartyIndex, new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale * (HealthPercentage / 100f))});
 						}
 					}
 				}
@@ -122,8 +122,8 @@ public class PartyHUD extends ModGui {
 					if (PartyIndex == -1) {
 						PartyList.add(PartyPlayer);
 						
-						int Colour1 = (255 << 24) + (0 << 16) + (0 << 8) + (0);
-						int Colour2 = (255 << 24) + (0 << 16) + (0 << 8) + (0);
+						int Colour1 = (255 << 24) + (0 << 8) + (0);
+						int Colour2 = (255 << 24) + (0 << 8) + (0);
 						PartyValues.add(new int[] {-1, Colour1, Colour2, (int) Math.floor(50 * HealthScale), 0});
 					}else{
 						int[] OldPartyPlayer = PartyValues.get(PartyIndex);
@@ -145,9 +145,9 @@ public class PartyHUD extends ModGui {
 					
 					float HealthPercentage = (float) ((Math.ceil(Player.getHealth()) / Math.ceil(Player.getMaxHealth())) * 100);
 					if (HealthPercentage > 100) HealthPercentage = 100;
-					int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-255)+255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage)/50)*255)) << 8) + (0);
-					int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage-50)/50)*-127)+127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage)/50)*127)) << 8) + (0);
-					PartyValues.add(new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((float) ((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale) * (HealthPercentage / 100f))});
+					int Colour1 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -255) + 255) : 255) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 255 : (((HealthPercentage) / 50) * 255)) << 8);
+					int Colour2 = (255 << 24) + ((int) Math.floor(HealthPercentage > 50 ? ((((HealthPercentage - 50) / 50) * -127) + 127) : 127) << 16) + ((int) Math.floor(HealthPercentage >= 50 ? 127 : (((HealthPercentage) / 50) * 127)) << 8);
+					PartyValues.add(new int[] {(int) Math.floor(HealthPercentage), Colour1, Colour2, (int) Math.floor((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale), Math.round((UseProportionalDisplay ? Player.getMaxHealth() : 50) * HealthScale * (HealthPercentage / 100f))});
 				}
 			}
 		}

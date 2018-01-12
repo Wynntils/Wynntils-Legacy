@@ -26,7 +26,6 @@ public class ConfigParser {
 
             if(f.get(instance).getClass() == boolean.class || f.get(instance).getClass() == Boolean.class) {
                 category.addValue(a.title(), f.getBoolean(instance), f, instance);
-                continue;
             }
         }
 

@@ -1,7 +1,6 @@
 package com.wynndevs.modules.expansion.sound;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.Delay;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;

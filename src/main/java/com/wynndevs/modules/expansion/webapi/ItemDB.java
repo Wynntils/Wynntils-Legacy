@@ -45,28 +45,28 @@ public class ItemDB {
 			}
 			
 			Collections.sort(ItemDBTmp, String.CASE_INSENSITIVE_ORDER);
-			
-			for (int i = 0; i < ItemDBTmp.size(); i++) {
-				WynnItem Item = new WynnItem();
-				
-				for (int j = 0; j < ItemAttributeList.length; j++) {
-					if (ItemDBTmp.get(i).contains("\"" + ItemAttributeList[j].toString() + "\":")) {
-						Item = ParseItemData(Item, j, ItemDBTmp.get(i).substring(ItemDBTmp.get(i).indexOf("\"" + ItemAttributeList[j].toString() + "\":") + ItemAttributeList[j].length() + 3, ItemDBTmp.get(i).indexOf(",\"", ItemDBTmp.get(i).indexOf("\"" + ItemAttributeList[j].toString() + "\":") + ItemAttributeList[j].length() + 3)).replace("\"", ""));
-					}
-				}
-				if (!Item.Name.contentEquals("YAMLException") && !Item.Name.equals("null")) {
-					boolean NewEntry = true;
-					for (WynnItem ItemTest : ItemDB) {
-						if (ItemTest.Name.equals(Item.Name)) {
-							ExpReference.consoleOut("Duplicate Item Detected: " + Item.Name);
-							NewEntry = false;
-							break;
-						}
-					}
-					if (NewEntry) ItemDB.add(Item);
-				}
-				
-			}
+
+            for (String aItemDBTmp : ItemDBTmp) {
+                WynnItem Item = new WynnItem();
+
+                for (int j = 0; j < ItemAttributeList.length; j++) {
+                    if (aItemDBTmp.contains("\"" + ItemAttributeList[j].toString() + "\":")) {
+                        Item = ParseItemData(Item, j, aItemDBTmp.substring(aItemDBTmp.indexOf("\"" + ItemAttributeList[j].toString() + "\":") + ItemAttributeList[j].length() + 3, aItemDBTmp.indexOf(",\"", aItemDBTmp.indexOf("\"" + ItemAttributeList[j] + "\":") + ItemAttributeList[j].length() + 3)).replace("\"", ""));
+                    }
+                }
+                if (!Item.Name.contentEquals("YAMLException") && !Item.Name.equals("null")) {
+                    boolean NewEntry = true;
+                    for (WynnItem ItemTest : ItemDB) {
+                        if (ItemTest.Name.equals(Item.Name)) {
+                            ExpReference.consoleOut("Duplicate Item Detected: " + Item.Name);
+                            NewEntry = false;
+                            break;
+                        }
+                    }
+                    if (NewEntry) ItemDB.add(Item);
+                }
+
+            }
 			ItemDBTmp.clear();
 			ExpReference.consoleOut("Item database [1] generated, contianing " + ItemDB.size() + " items");
 		} catch (Exception e) {

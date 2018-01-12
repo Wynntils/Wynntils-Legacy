@@ -4,7 +4,6 @@ import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.modules.richpresence.events.ChatEvents;
 import com.wynndevs.modules.richpresence.guis.overlay.LocationGUI;
-import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.modules.richpresence.events.ServerEvents;
 import com.wynndevs.modules.richpresence.profiles.DataProfile;
@@ -12,7 +11,6 @@ import com.wynndevs.modules.richpresence.profiles.RichProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Created by HeyZeer0 on 04/12/2017.

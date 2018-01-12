@@ -2,7 +2,6 @@ package com.wynndevs.modules.expansion.questbook;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.ExpReference;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.options.GuiSHCMWynnOptions;
 import net.minecraft.client.Minecraft;
@@ -187,32 +186,32 @@ public class GuiQuestBook extends GuiScreenMod {
 				}
 				break;
 			case 5:
-				String reader = "";
-				String builder = "";
+				StringBuilder reader = new StringBuilder();
+				StringBuilder builder = new StringBuilder();
 				int stage = -1;
 				for (char chr : showedQuest.getQuestDescription().toCharArray()) {
 					if (stage == -1) {
-						reader += chr;
+						reader.append(chr);
 					} else {
-						builder += chr;
+						builder.append(chr);
 					}
 
-					if (reader.endsWith("[") && stage == -1) {
-						builder += "[x:";
+					if (reader.toString().endsWith("[") && stage == -1) {
+						builder.append("[x:");
 						stage = 0;
 					}
-					if (builder.endsWith(",") && stage != -1) {
+					if (builder.toString().endsWith(",") && stage != -1) {
 						if (stage == 0) {
-							builder += "y:";
+							builder.append("y:");
 						}
 						if (stage == 1) {
-							builder += "z:";
+							builder.append("z:");
 						}
 						stage++;
 					}
-					if (builder.endsWith("]") && stage == 2) {
-						mc.player.sendChatMessage(builder);
-						builder = "";
+					if (builder.toString().endsWith("]") && stage == 2) {
+						mc.player.sendChatMessage(builder.toString());
+						builder = new StringBuilder();
 						stage = -1;
 					}
 				}

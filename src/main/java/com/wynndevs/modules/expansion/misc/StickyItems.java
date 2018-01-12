@@ -143,11 +143,7 @@ public class StickyItems {
 	
 	public static void BankCheck(GuiScreenEvent.InitGuiEvent.Post event) {
 		String Name = ((GuiContainer) event.getGui()).inventorySlots.getSlot(0).inventory.getName();
-		if (Name.endsWith(ModCore.mc().player.getName() + "'s" + String.valueOf('\u00a7') + "0 Bank")) {
-			InBank = true;
-		}else{
-			InBank = false;
-		}
+        InBank = Name.endsWith(ModCore.mc().player.getName() + "'s" + String.valueOf('\u00a7') + "0 Bank");
 	}
 	
 	private static String GetRawName(String DisplayName) {
@@ -162,7 +158,7 @@ public class StickyItems {
 	}
 	
 	private static boolean CheckLock(int Slot) {
-		return (Reference.onWorld() ? StickySlots[ExpReference.Class][Slot] : true);
+		return (!Reference.onWorld() || StickySlots[ExpReference.Class][Slot]);
 	}
 	
 	private static void SetLock(int Slot, boolean Lock) {

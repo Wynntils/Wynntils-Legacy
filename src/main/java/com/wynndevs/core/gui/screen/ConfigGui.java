@@ -68,7 +68,6 @@ public class ConfigGui extends CoreGuiScreen {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
                 slots++;
-                continue;
             }
         }
 
@@ -100,7 +99,6 @@ public class ConfigGui extends CoreGuiScreen {
                 }
 
                 slots++;
-                continue;
             }
         }
     }
@@ -179,7 +177,6 @@ public class ConfigGui extends CoreGuiScreen {
                 drawStringPlain(text, (width - fontRenderer.getStringWidth(text)) / 2, 78 + (slots * 17), 1);
 
                 slots++;
-                continue;
             }
         }
 
@@ -214,7 +211,6 @@ public class ConfigGui extends CoreGuiScreen {
                 drawStringPlain(key, x - 100, 75 + (slots * 20), 1);
 
                 slots++;
-                continue;
             }
         }
 

@@ -8,18 +8,13 @@ import com.wynndevs.modules.richpresence.guis.overlay.LocationGUI;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.webapi.WebManager;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -57,7 +52,6 @@ public class ChatEvents {
                 LocationGUI.location = "Waiting";
                 e.setCanceled(true);
             }
-            return;
         }
     }
 

@@ -1,7 +1,6 @@
 package com.wynndevs.core.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 
 public class CoreGuiScreen extends GuiScreen {

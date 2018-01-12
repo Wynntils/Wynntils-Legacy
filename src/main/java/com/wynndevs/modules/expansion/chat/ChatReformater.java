@@ -18,9 +18,9 @@ public class ChatReformater {
 		ITextComponent ParsedChat = (event.getType() == 1 ? new TextComponentString("") : null);
 		for (ITextComponent ChatPart : event.getMessage().getSiblings()) {
 			if (ParsedChat == null) {
-				ParsedChat = parse(ChatPart, Boolean.valueOf(event.getType() == 1));
+				ParsedChat = parse(ChatPart, event.getType() == 1);
 			}else{
-				ParsedChat.appendSibling(parse(ChatPart, Boolean.valueOf(event.getType() == 1)));
+				ParsedChat.appendSibling(parse(ChatPart, event.getType() == 1));
 			}
 		}
 		
@@ -30,11 +30,11 @@ public class ChatReformater {
 				if (event.getMessage().getFormattedText().contains(ParsedChat.getFormattedText())) {
 					int IndexPoint = event.getMessage().getFormattedText().indexOf(ParsedChat.getFormattedText());
 					if (IndexPoint > 0) {
-						ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().substring(0, IndexPoint)), Boolean.valueOf(event.getType() == 1));
+						ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().substring(0, IndexPoint)), event.getType() == 1);
 						ParsedChat.appendSibling(ParsedChatTmp);
 					}
 				}else{
-					ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().replace(ParsedChat.getFormattedText(), "")), Boolean.valueOf(event.getType() == 1));
+					ParsedChat = parse(new TextComponentString(event.getMessage().getFormattedText().replace(ParsedChat.getFormattedText(), "")), event.getType() == 1);
 					ParsedChat.appendSibling(ParsedChatTmp);
 				}
 			}
@@ -186,6 +186,6 @@ public class ChatReformater {
 	static final Pattern URL_PATTERN = Pattern.compile(
 			//         schema                          ipv4            OR        namespace                 port     path         ends
 			//   |-----------------|        |-------------------------|  |-------------------------|    |---------| |--|   |---------------|
-			"((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_]{1,}\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
+			"((?:[a-z0-9]{2,}:\\/\\/)?(?:(?:[0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[-\\w_]+\\.[a-z]{2,}?))(?::[0-9]{1,5})?.*?(?=[!\"\u00A7 \n]|$))",
 			Pattern.CASE_INSENSITIVE);
 }

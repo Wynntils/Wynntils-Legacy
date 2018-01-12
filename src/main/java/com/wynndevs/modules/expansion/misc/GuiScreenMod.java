@@ -100,15 +100,13 @@ public abstract class GuiScreenMod extends GuiScreen
         int mousedOverButtonId = -1;
 
         //find out which button is being mouseovered
-        for(int i = 0; i < buttonList.size(); i++)
-        {
-            GuiButton button = (GuiButton)buttonList.get(i);
+        for (GuiButton aButtonList : buttonList) {
+            GuiButton button = (GuiButton) aButtonList;
 
-            if(IsButtonMouseovered(mouseX, mouseY, button))
-            {
+            if (IsButtonMouseovered(mouseX, mouseY, button)) {
                 mousedOverButtonId = button.id;
 
-                if(ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
+                if (ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
                     RenderTooltipButtonMouseoverEffect(button);
 
                 break;
@@ -157,8 +155,7 @@ public abstract class GuiScreenMod extends GuiScreen
             //for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
             //so use reflection to grab it
             int buttonHeight = GetFieldByReflection(GuiButton.class, button, "height","field_146121_g");
-            if(mouseY <= button.y + buttonHeight)
-                return true;
+            return mouseY <= button.y + buttonHeight;
         }
         return false;
     }
@@ -168,16 +165,14 @@ public abstract class GuiScreenMod extends GuiScreen
      */
     protected void RenderTooltipButtonEffect()
     {
-        for(int i = 0; i < buttonList.size(); i++)
-        {
-            GuiButton button = (GuiButton)buttonList.get(i);
+        for (GuiButton aButtonList : buttonList) {
+            GuiButton button = (GuiButton) aButtonList;
 
-            if(GetButtonTooltip(button.id) != null)
-            {
+            if (GetButtonTooltip(button.id) != null) {
                 boolean flag = mc.fontRenderer.getUnicodeFlag();
                 mc.fontRenderer.setUnicodeFlag(true);
-                if(button.visible)
-                    mc.fontRenderer.drawStringWithShadow("?", button.x+button.getButtonWidth()-5, button.y, 0x99FFFFFF);
+                if (button.visible)
+                    mc.fontRenderer.drawStringWithShadow("?", button.x + button.getButtonWidth() - 5, button.y, 0x99FFFFFF);
                 mc.fontRenderer.setUnicodeFlag(flag);
             }
         }
@@ -262,17 +257,13 @@ public abstract class GuiScreenMod extends GuiScreen
             String tooltip = "";
             String[] tooltipWords = section.split(" ");
 
-            for(int i = 0; i < tooltipWords.length; i++)
-            {
-                int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(tooltip + tooltipWords[i]);
-                if(lineWidthWithNextWord > tooltipMaxWidth)
-                {
+            for (String tooltipWord : tooltipWords) {
+                int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(tooltip + tooltipWord);
+                if (lineWidthWithNextWord > tooltipMaxWidth) {
                     tooltipArrayList.add(tooltip.trim());
-                    tooltip = tooltipWords[i] + " ";
-                }
-                else
-                {
-                    tooltip += tooltipWords[i] + " ";
+                    tooltip = tooltipWord + " ";
+                } else {
+                    tooltip += tooltipWord + " ";
                 }
             }
 

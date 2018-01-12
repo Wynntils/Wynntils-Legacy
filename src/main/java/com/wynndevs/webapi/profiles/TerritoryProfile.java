@@ -79,9 +79,7 @@ public class TerritoryProfile {
 
     public boolean insideArea(int playerX, int playerZ) {
         if (startX <= playerX && endX >= playerX) {
-            if (startZ <= playerZ && endZ >= playerZ) {
-                return true;
-            }
+            return startZ <= playerZ && endZ >= playerZ;
         }
         return false;
     }
