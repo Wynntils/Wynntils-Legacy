@@ -194,19 +194,20 @@ public class CInventoryGUI extends GuiInventory {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
         if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            String value = "$" + decimalFormat.format(money);
+            String value = "²" + decimalFormat.format(money);
             mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 72, 4210752);
         }else{
+            String value;
+            if(money == 0) {
+                value = "²0";
+            } else {
+                int leAmount = (int) Math.floor(money / 4096);
+                money -= leAmount * 4096;
 
-            int leAmount = (int)Math.floor(money / 4096);
-            money-= leAmount * 4096;
+                int blockAmount = (int) Math.floor(money / 64);
+                money -= blockAmount * 64;
 
-            int blockAmount = (int)Math.floor(money / 64);
-            money-= blockAmount * 64;
-
-            String value = "$" + (leAmount > 0 ? leAmount + "LE " : "") + (blockAmount > 0 ? blockAmount + "EB " : "") + (money > 0 ? money + "E" : "");
-            if(value.equalsIgnoreCase("$")) {
-                value = "$0";
+                value = (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount  : "") + (money > 0 ? " ²" + money : "");
             }
 
             if(value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
