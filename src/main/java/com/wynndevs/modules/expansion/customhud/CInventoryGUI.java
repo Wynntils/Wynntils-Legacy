@@ -319,7 +319,7 @@ public class CInventoryGUI extends GuiInventory {
                 continue;
             }
 
-            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ");
+            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");
 
             if(pField == null) {
                 actualLore.set(i, lore);
