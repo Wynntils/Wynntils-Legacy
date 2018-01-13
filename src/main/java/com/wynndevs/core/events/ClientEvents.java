@@ -15,6 +15,7 @@ import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
 import com.wynndevs.modules.market.market.MarketUser;
+import com.wynndevs.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -83,9 +85,18 @@ public class ClientEvents {
         }
     }
 
+    boolean test = false;
+
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
+
+            if(!test) {
+                test = true;
+                DownloaderManager.queueDownload("Test", "http://expansion.heyzeer0.cf/secute/maps/wynnmap4.png", new File(Reference.MOD_STORAGE_ROOT, "test.png"), (Boolean b) -> test = false);
+                DownloaderManager.queueDownload("Map", "http://expansion.heyzeer0.cf/secute/maps/wynnmap4.png", new File(Reference.MOD_STORAGE_ROOT, "test.png"), (Boolean b) -> test = false);
+            }
+
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
@@ -127,6 +138,10 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onWorldJoin(EntityJoinWorldEvent e) {
+        if(!Reference.onServer()) {
+            return;
+        }
+
         if(ModCore.invalidModules.size() > 0 && !errorSended && e.getEntity() == ModCore.mc().player) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynntils modules had an error at start"));

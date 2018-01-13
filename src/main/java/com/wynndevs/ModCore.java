@@ -11,6 +11,7 @@ import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
 import com.wynndevs.modules.wynnicmap.WynnicMap;
 import com.wynndevs.webapi.WebManager;
+import com.wynndevs.webapi.downloader.DownloadOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +36,7 @@ public class ModCore {
         logger = e.getModLog();
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new UpdateOverlay(mc()));
+        MinecraftForge.EVENT_BUS.register(new DownloadOverlay(mc()));
 
 
         if(WynnRichPresence.initModule(e) == ModuleResult.ERROR) {

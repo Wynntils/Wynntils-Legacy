@@ -253,6 +253,9 @@ public class WynnExpansion {
 	
 	@SubscribeEvent
 	public void eventHandler(ClientChatReceivedEvent event){
+		if(!Reference.onServer()) {
+			return;
+		}
 		
 		if (event.getType() == 1) {
 			String msg = event.getMessage().getUnformattedText();
