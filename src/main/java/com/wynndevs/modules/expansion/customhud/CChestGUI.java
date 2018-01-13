@@ -248,12 +248,12 @@ public class CChestGUI extends GuiChest {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            String value = "²" + CInventoryGUI.decimalFormat.format(money);
+            String value = "^ ²" + CInventoryGUI.decimalFormat.format(money);
             mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
         } else {
             String value;
             if(money == 0) {
-                value = "²0";
+                value = "^ ²0";
             } else {
                 int leAmount = (int) Math.floor(money / 4096);
                 money -= leAmount * 4096;
@@ -261,7 +261,7 @@ public class CChestGUI extends GuiChest {
                 int blockAmount = (int) Math.floor(money / 64);
                 money -= blockAmount * 64;
 
-                value = (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount  : "") + (money > 0 ? " ²" + money : "");
+                value = "^ " + (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount  : "") + (money > 0 ? " ²" + money : "");
             }
             if (value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
                 value = value.substring(0, value.length() - 1);
