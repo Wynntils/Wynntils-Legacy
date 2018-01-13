@@ -150,7 +150,6 @@ public class HudOverlay extends WRPGui {
     }
 
     float ticks = 0.0f;
-    float[] rgb = new float[]{255f / 255f, 85f / 255f, 85f / 255f, 1f};
     private float prevVignetteBrightness = 1.0f;
 
     @SubscribeEvent(priority = EventPriority.NORMAL)

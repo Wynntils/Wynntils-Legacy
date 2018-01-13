@@ -129,7 +129,7 @@ public class ClientEvents {
     public void onWorldJoin(EntityJoinWorldEvent e) {
         if(ModCore.invalidModules.size() > 0 && !errorSended && e.getEntity() == ModCore.mc().player) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
-            ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynn Expansion modules had an error at start"));
+            ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynntils modules had an error at start"));
             ModCore.mc().player.sendMessage(new TextComponentString("§c" + Utils.arrayWithCommas(ModCore.invalidModules)));
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             errorSended = true;
@@ -163,9 +163,7 @@ public class ClientEvents {
             onWorldJoin.forEach(Runnable::run);
         }
 
-        if(world == null) {
-            lastWorld = "";
-        }else{ lastWorld = world; }
+        lastWorld = world == null ? "" : world;
 
     }
 

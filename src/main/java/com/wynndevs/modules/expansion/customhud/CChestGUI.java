@@ -90,56 +90,26 @@ public class CChestGUI extends GuiChest {
                     is.setCount(count == 0 ? 1 : count);
                 }
                 if (lore.contains("§6Epic")) { //TODO add to settings
-                    r = 1;
-                    g = 0.666;
-                    b = 0;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 1; g = 0.666; b = 0; alpha = .4f;
                 } else if (lore.contains("§cGodly")) {//TODO add to settings
-                    r = 1;
-                    g = 0;
-                    b = 0;
-                    alpha = .6f;
-                    is.setCount(1);
+                    r = 1; g = 0;b = 0; alpha = .6f;
                 } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
-                    r = 0;
-                    g = 1;
-                    b = 1;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 0; g = 1; b = 1; alpha = .4f;
                 } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.chestInv.highlightMythic) {
-                    r = 0.3;
-                    g = 0;
-                    b = 0.3;
-                    alpha = .6f;
-                    is.setCount(1);
+                    r = 0.3; g = 0; b = 0.3; alpha = .6f;
                 } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.chestInv.highlightRare) {
-                    r = 1;
-                    g = 0;
-                    b = 1;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 1; g = 0; b = 1; alpha = .4f;
                 } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.chestInv.highlightUnique) {
-                    r = 1;
-                    g = 1;
-                    b = 0;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 1; g = 1; b = 0; alpha = .4f;
                 } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.chestInv.highlightSet) {
-                    r = 0;
-                    g = 1;
-                    b = 0;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 0; g = 1; b = 0; alpha = .4f;
                 } else if (lore.contains("§fCommon")) {//TODO add to settings
-                    r = 1;
-                    g = 1;
-                    b = 1;
-                    alpha = .4f;
-                    is.setCount(1);
+                    r = 1; g = 1; b = 1; alpha = .4f;
                 } else {
                     continue;
                 }
+
+
 
                 GL11.glBegin(GL11.GL_QUADS);
                 {

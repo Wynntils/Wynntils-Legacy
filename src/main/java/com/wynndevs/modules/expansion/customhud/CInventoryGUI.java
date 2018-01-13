@@ -105,35 +105,17 @@ public class CInventoryGUI extends GuiInventory {
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
             } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.playerInv.highlightLegendary) {
-                r = 0;
-                g = 1;
-                b = 1;
-                alpha = .4f;
+                r = 0; g = 1; b = 1; alpha = .4f;
             } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.playerInv.highlightMythic) {
-                r = 0.3;
-                g = 0;
-                b = 0.3;
-                alpha = .6f;
+                r = 0.3; g = 0; b = 0.3; alpha = .6f;
             } else if (lore.contains("§dRare") && ConfigValues.inventoryConfig.playerInv.highlightRare) {
-                r = 1;
-                g = 0;
-                b = 1;
-                alpha = .4f;
+                r = 1; g = 0; b = 1; alpha = .4f;
             } else if (lore.contains("§eUnique") && ConfigValues.inventoryConfig.playerInv.highlightUnique) {
-                r = 1;
-                g = 1;
-                b = 0;
-                alpha = .4f;
+                r = 1; g = 1; b = 0; alpha = .4f;
             } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.playerInv.highlightSet) {
-                r = 0;
-                g = 1;
-                b = 0;
-                alpha = .4f;
+                r = 0; g = 1; b = 0; alpha = .4f;
             } else if (floor >= 4) {
-                r = 0;
-                g = 0;
-                b = 0;
-                alpha = 0f;
+                r = 0; g = 0; b = 0; alpha = 0f;
             } else {
                 continue;
             }

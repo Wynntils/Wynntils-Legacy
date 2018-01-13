@@ -17,7 +17,7 @@ def versionObj = new Version(major: 1, minor: 0, revision: 0)
 
 version = versionObj.toString()
 group = "com.wynndevs"
-archivesBaseName = "WynnExpansion"
+archivesBaseName = "Wynntils"
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
