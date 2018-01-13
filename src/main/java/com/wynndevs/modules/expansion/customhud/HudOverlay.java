@@ -1,5 +1,6 @@
 package com.wynndevs.modules.expansion.customhud;
 
+import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
@@ -23,15 +24,15 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class HudOverlay extends WRPGui {
 
     private static final ResourceLocation bars = new ResourceLocation(Reference.MOD_ID + ":textures/gui/overlay-bars.png");
-
+    private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
     int lastHealth = 0;
     int lastMana = 0;
-
     boolean onHealAnimation = false;
     boolean onManaAnimation = false;
-
     String lastActionBar = "";
     long lastActionBarTime = System.currentTimeMillis();
+    float ticks = 0.0f;
+    private float prevVignetteBrightness = 1.0f;
 
     public HudOverlay(Minecraft mc){
         super(mc);
@@ -79,11 +80,9 @@ public class HudOverlay extends WRPGui {
         }
     }
 
-    private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
-
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onRender(RenderGameOverlayEvent.Pre e){
-        if (!e.isCancelable()) {
+        if (!e.isCancelable() && !ConfigValues.wynnExpansion.hud.main.a_enabled) {
             return;
         }
 
@@ -105,7 +104,6 @@ public class HudOverlay extends WRPGui {
             }
         }
     }
-
 
     public boolean renderItemName(ScaledResolution scaledRes){
         mc.gameSettings.heldItemTooltips = false;
@@ -149,12 +147,11 @@ public class HudOverlay extends WRPGui {
         return false;
     }
 
-    float ticks = 0.0f;
-    private float prevVignetteBrightness = 1.0f;
-
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onPreRender(RenderGameOverlayEvent.Post e){
         //to render only when the survival UI is ready
+
+        if (!ConfigValues.wynnExpansion.hud.main.a_enabled) return;
 
         if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
 
@@ -287,11 +284,10 @@ public class HudOverlay extends WRPGui {
 
             boolean preference = false;
 
-            float modifier = 0.123f;
-            double scale = (mc.player.getHealth() / mc.player.getMaxHealth());
-            if (scale <= 0.9f)
-                renderVignette(mc.player.getBrightness(e.getPartialTicks()), (float) (modifier / scale));
-
+            if (ConfigValues.wynnExpansion.hud.main.c_health) {
+                float scale = 1 - (mc.player.getHealth() / mc.player.getMaxHealth());
+                renderVignette(mc.player.getBrightness(e.getPartialTicks()), scale);
+            }
 
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
@@ -305,17 +301,19 @@ public class HudOverlay extends WRPGui {
             } else if (RichUtils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
-            } else {
+            } else if (ConfigValues.wynnExpansion.hud.main.b_coords) {
                 l = "§7" + (int) mc.player.posX;
                 middle = "§a§l" + getPlayerDirection(mc.player.rotationYaw);
                 r = "§7" + (int) mc.player.posZ;
+            } else {
+                middle = "";
             }
 
             String mana = " §b" + mc.player.getFoodStats().getFoodLevel() + " ✺ 20";
 
             int padding = 3;
 
-            if(preference || !renderItemName(resolution)) {
+            if (preference || !renderItemName(resolution)) {
                 drawString(mc.fontRenderer, l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, 1);
                 drawCenteredString(mc.fontRenderer, middle, x, y - 65, 1);
                 drawString(mc.fontRenderer, r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, 1);
@@ -328,7 +326,7 @@ public class HudOverlay extends WRPGui {
 
     public void renderVignette(float lightLevel, float scale){
 
-        float[] rgb = new float[]{255f / 255f, 85f / 255f, 85f / 255f, 1f};
+        float[] rgb = new float[]{255f / 255f, 0f / 255f, 0f / 255f};
 
         if (rgb == null)
             return;
