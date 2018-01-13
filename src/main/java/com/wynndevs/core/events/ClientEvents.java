@@ -85,18 +85,9 @@ public class ClientEvents {
         }
     }
 
-    boolean test = false;
-
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
-
-            if(!test) {
-                test = true;
-                DownloaderManager.queueDownload("Test", "http://expansion.heyzeer0.cf/secute/maps/wynnmap4.png", new File(Reference.MOD_STORAGE_ROOT, "test.png"), (Boolean b) -> test = false);
-                DownloaderManager.queueDownload("Map", "http://expansion.heyzeer0.cf/secute/maps/wynnmap4.png", new File(Reference.MOD_STORAGE_ROOT, "test.png"), (Boolean b) -> test = false);
-            }
-
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
