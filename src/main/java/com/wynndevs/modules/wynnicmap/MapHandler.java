@@ -1,5 +1,7 @@
 package com.wynndevs.modules.wynnicmap;
 
+import javafx.util.Pair;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -9,17 +11,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MapHandler {
-    private static int mapId;                                                                                                               /* Texture id of the map in OpenGL */
-    private static boolean mapLoaded         = false; public static boolean isMapLoaded() {return mapLoaded;}                               /* Indication of map texture being loaded */
-    private static final File fileMapTexture = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maptexture.png");  /* Map texture file */
-    private static final File fileMapInfo    = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map.mapinfo");     /* Map information */
-    private static int mapVersion            = -1; public static int getMapVersion() {return mapVersion;}                                   /* Version of the loaded map */
-    private static List<MapInformation> maps = new ArrayList<MapInformation>(); public static List<MapInformation> getMaps() {return maps;} /* All map parts */
+    private static int mapId;                                                                                                                    /* Texture id of the map in OpenGL */
+    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                               /* Indication of map texture being loaded */
+    private static final File fileMapTexture      = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maptexture.png");  /* Map texture file */
+    private static final File fileMapInfo         = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map.mapinfo");     /* Map information */
+    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                                   /* Version of the loaded map */
+    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                       /* All map parts */
 
     /**
      * Loads the map into memory
@@ -39,9 +39,11 @@ public class MapHandler {
             mapVersion = Integer.parseInt(scanner.nextLine());
 
             while(scanner.hasNext())
-                maps.add(new MapInformation(scanner));
+                maps.put(scanner.nextLine(),new MapInformation(scanner));
+
         }
         mapLoaded = true;
+
     }
 
     /**
@@ -137,7 +139,7 @@ public class MapHandler {
                  Integer.parseInt(scanner.nextLine()),
                  Integer.parseInt(scanner.nextLine()),
                  Integer.parseInt(scanner.nextLine()));
-        }
 
+        }
     }
 }

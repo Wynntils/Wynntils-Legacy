@@ -9,6 +9,7 @@ import com.wynndevs.modules.expansion.WynnExpansion;
 import com.wynndevs.modules.map.WynnMap;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
+import com.wynndevs.modules.wynnicmap.WynnicMap;
 import com.wynndevs.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -47,6 +48,9 @@ public class ModCore {
         }
         if(WynnMarket.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Market");
+        }
+        if(WynnicMap.initModule(e) == ModuleResult.ERROR) {
+            invalidModules.add("WynnicMap");
         }
 
     }
