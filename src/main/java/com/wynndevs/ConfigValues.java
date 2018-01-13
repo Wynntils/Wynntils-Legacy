@@ -130,6 +130,37 @@ public class ConfigValues {
 		@Config.LangKey("config.expansion.chats")
 		public Chats chat = new Chats();
 
+		@GuiConfig(title = "HUD", isInstance = true)
+		@Config.LangKey("config.expansion.hud")
+		public HUD hud = new HUD();
+
+		public static class HUD {
+
+			@GuiConfig(title = "HUD", isInstance = true)
+			@Config.LangKey("config.expansion.hud")
+			public MainHUD main = new MainHUD();
+
+			public static class MainHUD {
+
+				@GuiConfig(title = "Enable HUD")
+				@Config.LangKey("config.expansion.hud.enabled")
+				@Config.Comment("Enable the hud?")
+				public boolean a_enabled = true;
+
+				@GuiConfig(title = "Enable Coords")
+				@Config.LangKey("config.expansion.hud.coords")
+				@Config.Comment("Enable coords on the action bar?")
+				public boolean b_coords = true;
+
+				@GuiConfig(title = "Low health glow")
+				@Config.LangKey("config.expansion.hud.coords")
+				@Config.Comment("Glow on low health?")
+				public boolean c_health = true;
+
+			}
+
+		}
+
 		public static class Chats {
 			@GuiConfig(title = "Main Chat", isInstance = true)
 			@Config.LangKey("config.expansion.chats.main")
@@ -142,6 +173,8 @@ public class ConfigValues {
 			@GuiConfig(title = "Guild Chat", isInstance = true)
 			@Config.LangKey("config.expansion.chats.guild")
 			public GuildChat guild = new GuildChat();
+
+
 
 			public static class GuildChat {
 
