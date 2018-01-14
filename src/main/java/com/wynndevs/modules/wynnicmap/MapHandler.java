@@ -72,17 +72,8 @@ public class MapHandler {
         return mapLoaded;
     }
 
-
-    /*
-     * @TODO HERE
-     * method - get map cords from texture cords and texture cords from map cords
-     * method - draw map at screen cords with params (zoom,centerX,centerY)
-     */
-
-
-
     /**
-     * Converts a BufferedImage type(from ImageIO.read()) into ByteBuffer
+     * Converts a BufferedImage type(from ImageIO.read(File)) into ByteBuffer
      * which can be loaded into OpenGL
      *
      * @param image BufferImage to be converted
