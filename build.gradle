@@ -42,14 +42,8 @@ configurations {
     compile.extendsFrom(embed)
 }
 
-configurations.all {
-    // Check for snapshots more frequently than Gradle's default of 1 day. 0 = every build.
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 dependencies {
     embed 'com.jagrosh:DiscordIPC:+'
-    compile 'info.journeymap:journeymap-api:1.11.2-2.0-SNAPSHOT'
 }
 
 processResources {

@@ -2,6 +2,7 @@ package com.wynndevs.modules.expansion.chat;
 
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;
@@ -26,7 +27,7 @@ public class ChatFormatter {
 
     @SubscribeEvent
     public void formatChat(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != 1) {
+        if(e.isCanceled() || e.getType() != 1 || !Reference.onServer()) {
             return;
         }
 

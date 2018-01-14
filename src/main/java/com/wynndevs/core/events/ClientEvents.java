@@ -3,7 +3,7 @@ package com.wynndevs.core.events;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.core.Utils;
+import com.wynndevs.core.Utils.Utils;
 import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.experience.SpellCasting;
@@ -127,6 +127,10 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onWorldJoin(EntityJoinWorldEvent e) {
+        if(!Reference.onServer()) {
+            return;
+        }
+
         if(ModCore.invalidModules.size() > 0 && !errorSended && e.getEntity() == ModCore.mc().player) {
             ModCore.mc().player.sendMessage(new TextComponentString(""));
             ModCore.mc().player.sendMessage(new TextComponentString("§4The following Wynntils modules had an error at start"));

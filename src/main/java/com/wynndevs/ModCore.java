@@ -6,11 +6,11 @@ import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.core.gui.UpdateOverlay;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.WynnExpansion;
-import com.wynndevs.modules.map.WynnMap;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
 import com.wynndevs.modules.wynnicmap.WynnicMap;
 import com.wynndevs.webapi.WebManager;
+import com.wynndevs.webapi.downloader.DownloadOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +35,8 @@ public class ModCore {
         logger = e.getModLog();
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new UpdateOverlay(mc()));
+        MinecraftForge.EVENT_BUS.register(new DownloadOverlay(mc()));
+        MinecraftForge.EVENT_BUS.register(new WynnicMap());
 
 
         if(WynnRichPresence.initModule(e) == ModuleResult.ERROR) {
@@ -43,13 +45,10 @@ public class ModCore {
         if(WynnExpansion.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Expansion");
         }
-        if(WynnMap.initModule(e) == ModuleResult.ERROR) {
-            invalidModules.add("Map");
-        }
         if(WynnMarket.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Market");
         }
-        if(WynnicMap.initModule(e) == ModuleResult.ERROR) {
+        if(WynnicMap.loadModule() == ModuleResult.ERROR) {
             invalidModules.add("WynnicMap");
         }
 

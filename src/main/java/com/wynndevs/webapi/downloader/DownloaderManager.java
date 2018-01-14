@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import java.util.logging.LogManager;
 
 public class DownloaderManager {
 
@@ -14,30 +15,37 @@ public class DownloaderManager {
     public static boolean inDownload = false;
     public static int progression = 0;
 
+    private static boolean next = false;
+
     /**
      * Simple queue an download
      *
+     * @param title Title to show at the GUI
      * @param url Download URL
      * @param f Where the file will be saved
      * @param onFinish Runnable when finish, boolean indicates success
      */
-    public static void queueDownload(String url, File f, Consumer<Boolean> onFinish) {
-        futureDownloads.add(new DownloadProfile(url, f, onFinish));
+    public static void queueDownload(String title, String url, File f, Consumer<Boolean> onFinish) {
+        futureDownloads.add(new DownloadProfile(title, url, f, onFinish));
 
         startDownloading();
     }
 
+    public static DownloadProfile getCurrentDownload() {
+        return futureDownloads.size() <= 0 ? null : futureDownloads.get(0);
+    }
+
     private static void startDownloading() {
-        if(inDownload || futureDownloads.size() <= 0) {
+        if(futureDownloads.size() <= 0 || (inDownload && !next)) {
             return;
         }
 
         DownloadProfile pf = futureDownloads.get(0);
-        futureDownloads.remove(0);
 
         new Thread(() -> {
             try{
                 inDownload = true;
+                next = false;
                 progression = 0;
 
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();
@@ -68,7 +76,14 @@ public class DownloaderManager {
                 fos.close();
                 fis.close();
 
+                futureDownloads.remove(0);
                 pf.onFinish.accept(true);
+                if(futureDownloads.size() <= 0) {
+                    inDownload = false;
+                }else{
+                    next = true;
+                }
+                progression = 0;
 
                 startDownloading();
             }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); inDownload = false; progression = 0; }

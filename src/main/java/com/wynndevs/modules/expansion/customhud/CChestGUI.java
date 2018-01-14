@@ -1,7 +1,7 @@
 package com.wynndevs.modules.expansion.customhud;
 
 import com.wynndevs.ConfigValues;
-import com.wynndevs.core.Utils;
+import com.wynndevs.core.Utils.Utils;
 import com.wynndevs.modules.market.utils.MarketUtils;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.webapi.WebManager;
@@ -401,7 +401,7 @@ public class CChestGUI extends GuiChest {
                 continue;
             }
 
-            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ");
+            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");;
 
             if (pField == null) {
                 actualLore.set(i, lore);

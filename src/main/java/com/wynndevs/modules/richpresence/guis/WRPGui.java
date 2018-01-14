@@ -1,6 +1,7 @@
 package com.wynndevs.modules.richpresence.guis;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
 import org.lwjgl.opengl.GL11;
 
@@ -42,6 +43,10 @@ public class WRPGui extends GuiIngame {
      */
     public void drawString(String text, int x, int y, int color) {
         this.drawString(mc.fontRenderer, text, x, y, color);
+    }
+
+    public void drawStringWithoutShadow(String text, int x, int y, int color) {
+        mc.fontRenderer.drawString(text, x, y, color);
     }
 
 }
