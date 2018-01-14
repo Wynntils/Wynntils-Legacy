@@ -37,6 +37,8 @@ public class CChestGUI extends GuiChest {
 
         this.lowerInv = lowerInv;
         this.upperInv = upperInv;
+
+
     }
 
     @Override
@@ -89,11 +91,7 @@ public class CChestGUI extends GuiChest {
                     int count = Integer.parseInt(numbers[0]);
                     is.setCount(count == 0 ? 1 : count);
                 }
-                if (lore.contains("§6Epic")) { //TODO add to settings
-                    r = 1; g = 0.666; b = 0; alpha = .4f;
-                } else if (lore.contains("§cGodly")) {//TODO add to settings
-                    r = 1; g = 0;b = 0; alpha = .6f;
-                } else if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
+                 if (lore.contains("§bLegendary") && ConfigValues.inventoryConfig.chestInv.highlightLegendary) {
                     r = 0; g = 1; b = 1; alpha = .4f;
                 } else if (lore.contains("§5Mythic") && ConfigValues.inventoryConfig.chestInv.highlightMythic) {
                     r = 0.3; g = 0; b = 0.3; alpha = .6f;
@@ -103,7 +101,13 @@ public class CChestGUI extends GuiChest {
                     r = 1; g = 1; b = 0; alpha = .4f;
                 } else if (lore.contains("§aSet") && ConfigValues.inventoryConfig.chestInv.highlightSet) {
                     r = 0; g = 1; b = 0; alpha = .4f;
-                } else if (lore.contains("§fCommon")) {//TODO add to settings
+                } else if (lore.contains("§6Epic") && lore.contains("Reward")) { //TODO add to settings
+                    r = 1; g = 0.666; b = 0; alpha = .4f;
+                } else if (lore.contains("§cGodly") && lore.contains("Reward")) {//TODO add to settings
+                    r = 1; g = 0; b = 0; alpha = .6f;
+                } else if (lore.contains("§dRare") && lore.contains("Reward")) {//TODO add to settings
+                    r = 1; g = 0; b = 1; alpha = .4f;
+                } else if (lore.contains("§fCommon") && lore.contains("Reward")) {//TODO add to settings
                     r = 1; g = 1; b = 1; alpha = .4f;
                 } else {
                     continue;
@@ -128,6 +132,7 @@ public class CChestGUI extends GuiChest {
             boolean main = ConfigValues.inventoryConfig.chestInv.highlightMain;
             for (int i = 0; i <= upperInv.getSizeInventory(); i++) {
                 ItemStack is = upperInv.getStackInSlot(i);
+//                System.out.println(upperInv.getDisplayName().getUnformattedText());
 
                 amount++;
                 if (amount > 8) {
@@ -153,7 +158,7 @@ public class CChestGUI extends GuiChest {
                 }
 
                 if (invfloor >= 4) {
-                    offset = 50;
+                    //Render armor rarity background in chest GUI
                     continue;
                 }
                 if (invfloor == 0) {
@@ -247,27 +252,29 @@ public class CChestGUI extends GuiChest {
         GlStateManager.disableLighting();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
 
-        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            String value = "^ ²" + CInventoryGUI.decimalFormat.format(money);
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
-        } else {
-            String value;
-            if(money == 0) {
-                value = "^ ²0";
+        if(!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points")) {
+            if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                String value = "^ ²" + CInventoryGUI.decimalFormat.format(money);
+                mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
             } else {
-                int leAmount = (int) Math.floor(money / 4096);
-                money -= leAmount * 4096;
+                String value;
+                if (money == 0) {
+                    value = "^ ²0";
+                } else {
+                    int leAmount = (int) Math.floor(money / 4096);
+                    money -= leAmount * 4096;
 
-                int blockAmount = (int) Math.floor(money / 64);
-                money -= blockAmount * 64;
+                    int blockAmount = (int) Math.floor(money / 64);
+                    money -= blockAmount * 64;
 
-                value = "^ " + (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount  : "") + (money > 0 ? " ²" + money : "");
+                    value = "^ " + (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount : "") + (money > 0 ? " ²" + money : "");
+                }
+                if (value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
+                    value = value.substring(0, value.length() - 1);
+                }
+
+                mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
             }
-            if (value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
-                value = value.substring(0, value.length() - 1);
-            }
-
-            mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
         }
 
         GlStateManager.enableLighting();
@@ -404,7 +411,7 @@ public class CChestGUI extends GuiChest {
             boolean raw = !lore.contains("%");
 
             try {
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", ""));
+                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
 
                 String fieldName;
                 if (raw) {
@@ -457,7 +464,7 @@ public class CChestGUI extends GuiChest {
                     color += "a";
                 } else if (percent >= 30) {
                     color += "e";
-                } else if (percent < 30) {
+                } else {
                     color += "c";
                 }
 
