@@ -1,4 +1,4 @@
-package com.wynndevs.core;
+package com.wynndevs.core.Utils;
 
 import org.apache.commons.lang3.StringUtils;
 

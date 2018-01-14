@@ -1,12 +1,17 @@
 package com.wynndevs.modules.wynnicmap;
 
-import javafx.util.Pair;
+import com.wynndevs.core.Utils.Pair;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.*;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +19,12 @@ import java.nio.ByteBuffer;
 import java.util.*;
 
 public class MapHandler {
-    private static int mapId;                                                                                                                    /* Texture id of the map in OpenGL */
-    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                               /* Indication of map texture being loaded */
-    private static final File fileMapTexture      = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maptexture.png");  /* Map texture file */
-    private static final File fileMapInfo         = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map.mapinfo");     /* Map information */
-    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                                   /* Version of the loaded map */
-    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                       /* All map parts */
+    private static int mapId;                                                                                                         /* Texture id of the map in OpenGL */
+    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                    /* Indication of map texture being loaded */
+    private static final File fileMapTexture      = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maptexture.png"); /* Map texture file */
+    private static final File fileMapInfo         = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map.mapinfo");    /* Map information */
+    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                        /* Version of the loaded map */
+    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                                 /* All map parts */
 
     /**
      * Loads the map into memory
@@ -70,6 +75,63 @@ public class MapHandler {
         if(mapLoaded)
             GlStateManager.bindTexture(mapId);
         return mapLoaded;
+    }
+
+    /**
+     * GetUV will get you a the map uv start point and size of the spesified location and size
+     *
+     * @param centerX   center point of map in real coordinates
+     * @param centerY   center point of map in real coordinates
+     * @param drawSizeX on screen drawing dimensions of the map
+     * @param drawSizeY on screen drawing dimensions of the map
+     * @param zoom zoom in pixels on the map(accepts minus values)
+     * @return Pair of Points, a is uv start position and b is uv width and height
+     */
+    @Nullable
+    public static Pair<Point,Point> GetUV(int centerX, int centerY, int drawSizeX, int drawSizeY, int zoom) {
+        for (String key:maps.keySet()) {
+            MapInformation cur = maps.get(key);
+            if(cur.IsOnMap(centerX,centerY))
+            {
+                Point startPos = new Point(cur.GetUV(centerX - (drawSizeX/2),centerY - (drawSizeY/2)));
+                Point size = new Point(cur.GetUV(centerX + (drawSizeX/2),centerY + (drawSizeY/2)));
+                startPos.x += zoom; startPos.y += zoom;
+                size.x -= 2*zoom; size.y -= 2*zoom;
+                return new Pair<Point,Point>(startPos,size);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Clamps the UV and Draw points to deal with the outside of the map
+     *
+     * @param draw     on-screen drawing start point
+     * @param drawSize on-screen drawing width and height
+     * @param uv       uv texture start point
+     * @param uvSize   uv texture width and height
+     * @return indications if clamping has happened
+     */
+    public static boolean ClampUVAndDrawPoints(Point draw, Point drawSize, Point uv, Point uvSize) {
+        boolean clamped = false;
+        for (String key : maps.keySet()) {
+            MapInformation cur = maps.get(key);
+            if(cur.IsUVOnMap(uv.x+uvSize.x/2,uv.y+uvSize.y/2)) {
+                if(!cur.IsUVOnMap(uv.x,uv.y)) {
+                    clamped = true;
+                    draw.translate(cur.getUvStartX()-uv.x,cur.getUvStartY()-uv.y);
+                    uv.x = cur.getUvStartX();
+                    uv.y = cur.getUvStartY();
+                }
+                if(!cur.IsUVOnMap(uv.x+uvSize.x,uv.y+uvSize.y)) {
+                    clamped = true;
+                    drawSize.translate(uv.x+uvSize.x-cur.getUvEndX(),uv.y+uvSize.y-cur.getUvEndY());
+                    uvSize.x = cur.getUvEndX() - cur.getUvStartX();
+                    uvSize.y = cur.getUvEndY() - cur.getUvStartY();
+                }
+            }
+        }
+        return clamped;
     }
 
     /**
@@ -130,7 +192,41 @@ public class MapHandler {
                  Integer.parseInt(scanner.nextLine()),
                  Integer.parseInt(scanner.nextLine()),
                  Integer.parseInt(scanner.nextLine()));
-
         }
+
+        /**
+         * Gets the texture uv point on the map part for a real position
+         *
+         * @param x real world x coordinate
+         * @param y real world y coordinate
+         * @return point of uv on the map texture
+         */
+        public Point GetUV(int x, int y) {
+            return new Point((x-startX)+uvStartX,(y-startY)+uvStartY);
+        }
+
+        /**
+         * Checks if the real world coordinate is on the map part
+         *
+         * @param x real world x coordinate
+         * @param y real world y coordinate
+         * @return Indication if the point is in this map part
+         */
+        public boolean IsOnMap(int x, int y) {
+            Point uv = GetUV(x,y);
+            return IsOnMap(uv.x,uv.y);
+        }
+
+        /**
+         * Checks if the uv coordinate is on the map part
+         *
+         * @param x uv x coordinate
+         * @param y uv y coordinate
+         * @return indication if the point is in this map part
+         */
+        public boolean IsUVOnMap(int x, int y) {
+            return x >= uvStartX && x <= uvEndX && y >= uvStartY && y <= uvEndY;
+        }
+        //change widthheight to start end in map.mapinfo
     }
 }
