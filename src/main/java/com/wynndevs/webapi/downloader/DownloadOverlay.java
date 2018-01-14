@@ -1,6 +1,5 @@
 package com.wynndevs.webapi.downloader;
 
-import com.wynndevs.core.Reference;
 import com.wynndevs.modules.richpresence.guis.WRPGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -9,7 +8,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
-import java.util.logging.LogManager;
 
 public class DownloadOverlay extends WRPGui {
 

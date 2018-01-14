@@ -6,7 +6,6 @@ import com.wynndevs.core.events.ClientEvents;
 import com.wynndevs.core.gui.UpdateOverlay;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.WynnExpansion;
-import com.wynndevs.modules.map.WynnMap;
 import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.richpresence.WynnRichPresence;
 import com.wynndevs.modules.wynnicmap.WynnicMap;
@@ -45,9 +44,6 @@ public class ModCore {
         }
         if(WynnExpansion.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Expansion");
-        }
-        if(WynnMap.initModule(e) == ModuleResult.ERROR) {
-            invalidModules.add("Map");
         }
         if(WynnMarket.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Market");
