@@ -18,13 +18,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class MapHandler {
-    private static int mapId;                                                                                                         /* Texture id of the map in OpenGL */
-    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                    /* Indication of map texture being loaded */
+    private static int mapId;                                                                                                                   /* Texture id of the map in OpenGL */
+    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                              /* Indication of map texture being loaded */
     private static final File fileMapTexture      = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maptexture.png"); /* Map texture file */
     private static final File fileMapInfo         = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map.mapinfo");    /* Map information */
-    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                        /* Version of the loaded map */
-    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                                 /* All map parts */
+    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                                  /* Version of the loaded map */
+    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                                           /* All map parts */
+    public static Point mapTextureSize = new Point(0,0);                                                                                  /* Size of map texture */
 
     /**
      * Loads the map into memory
@@ -37,8 +40,10 @@ public class MapHandler {
             mapId = GlStateManager.generateTexture();
             BufferedImage image = ImageIO.read(fileMapTexture);
             GlStateManager.bindTexture(mapId);
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GetByteBuffer(image));
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+
+            GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GetByteBuffer(image));
+            GlStateManager.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            mapTextureSize = new Point(image.getWidth(),image.getHeight());
         }{
             Scanner scanner = new Scanner(fileMapInfo);
             mapVersion = Integer.parseInt(scanner.nextLine());
@@ -94,10 +99,11 @@ public class MapHandler {
             if(cur.IsOnMap(centerX,centerY))
             {
                 Point startPos = new Point(cur.GetUV(centerX - (drawSizeX/2),centerY - (drawSizeY/2)));
-                Point size = new Point(cur.GetUV(centerX + (drawSizeX/2),centerY + (drawSizeY/2)));
+                Point size = new Point(drawSizeX,drawSizeY);
                 startPos.x += zoom; startPos.y += zoom;
                 size.x -= 2*zoom; size.y -= 2*zoom;
                 return new Pair<Point,Point>(startPos,size);
+
             }
         }
         return null;
@@ -214,7 +220,7 @@ public class MapHandler {
          */
         public boolean IsOnMap(int x, int y) {
             Point uv = GetUV(x,y);
-            return IsOnMap(uv.x,uv.y);
+            return IsUVOnMap(uv.x,uv.y);
         }
 
         /**

@@ -37,6 +37,7 @@ public class ModCore {
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new UpdateOverlay(mc()));
         MinecraftForge.EVENT_BUS.register(new DownloadOverlay(mc()));
+        MinecraftForge.EVENT_BUS.register(new WynnicMap());
 
 
         if(WynnRichPresence.initModule(e) == ModuleResult.ERROR) {
