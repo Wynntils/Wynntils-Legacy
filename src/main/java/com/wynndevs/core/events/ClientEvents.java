@@ -15,6 +15,8 @@ import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
 import com.wynndevs.modules.market.market.MarketUser;
+import com.wynndevs.webapi.downloader.DownloaderManager;
+import com.wynndevs.webapi.downloader.enums.DownloadAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;
@@ -83,9 +85,18 @@ public class ClientEvents {
         }
     }
 
+    public static boolean test = false;
+
     @SubscribeEvent
     public void onKeyPressEvent(InputEvent.KeyInputEvent e) {
         if(KeyBindings.TOGGLE_GAMMABRIGHT.isPressed()) {
+
+            if(!test) {
+                test = true;
+
+                DownloaderManager.queueDownload("Test", "http://dl.heyzeer0.cf/IntellijRichPresence.zip", Reference.MOD_STORAGE_ROOT, DownloadAction.UNZIP, (b) -> test = false);
+            }
+
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;

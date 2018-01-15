@@ -1,6 +1,7 @@
 package com.wynndevs.webapi.downloader;
 
 import com.wynndevs.modules.richpresence.guis.WRPGui;
+import com.wynndevs.webapi.downloader.enums.DownloadPhase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -13,6 +14,7 @@ public class DownloadOverlay extends WRPGui {
 
     int size = 40;
     int lastPercent = 0;
+    DownloadPhase lastPhase;
     String lastTitle = "";
 
     public DownloadOverlay(Minecraft mc) {
@@ -27,12 +29,13 @@ public class DownloadOverlay extends WRPGui {
 
         //just to appears when a download is currently running
         //and when size != 0 cuz whe need to do the "size off" animation
-        if(DownloaderManager.inDownload || size != 40) {
+        if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size != 40) {
             DownloadProfile df = DownloaderManager.getCurrentDownload();
 
             if(df != null) {
                 lastPercent = DownloaderManager.progression;
                 lastTitle = df.getTitle();
+                lastPhase = DownloaderManager.currentPhase;
             }
 
             ScaledResolution res = new ScaledResolution(mc);
@@ -45,12 +48,12 @@ public class DownloadOverlay extends WRPGui {
             drawRect(x - 110, y + 15 - size, x - (110 - lastPercent), 35 - size, new Color(0, 255, 0).getRGB());
             String percent = lastPercent + "%";
             drawStringWithoutShadow(percent, x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size, 0);
-            String title = "Downloading " + lastTitle;
+            String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
             drawStringWithoutShadow(title, x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size, -1);
 
-            if(size > 0 && DownloaderManager.inDownload) {
+            if(size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
                 size--;
-            }else if(size < 40 && !DownloaderManager.inDownload) {
+            }else if(size < 40 && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
                 size++;
             }
         }
