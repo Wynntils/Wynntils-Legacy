@@ -102,11 +102,23 @@ public class MapHandler {
                 Point size = new Point(drawSizeX,drawSizeY);
                 startPos.x += zoom; startPos.y += zoom;
                 size.x -= 2*zoom; size.y -= 2*zoom;
-                return new Pair<Point,Point>(startPos,size);
+                return new Pair<>(startPos,size);
 
             }
         }
         return null;
+    }
+
+    /**
+     * GetUVTexCoord will get the openGL uv equivalents of uvPointAndSize that can be drawn on a texture
+     *
+     * @param uvPointAndSize Pair of a Point and a size(x,y,width,height) of the uv in texture pixels
+     * @return Pair of 2 Float Pairs representing 2 uv points(0.0f,0.0f -> 1.0f,1.0f) on the texture
+     */
+    public static Pair<Pair<Float,Float>,Pair<Float,Float>> GetUVTexCoords(Pair<Point,Point> uvPointAndSize) {
+        Pair<Float,Float> uvPoint = new Pair<>((float)uvPointAndSize.a.x/(float)mapTextureSize.x,(float)uvPointAndSize.a.y/(float)mapTextureSize.y);
+        Pair<Float,Float> uvEnd = new Pair<>((float)uvPointAndSize.b.x/(float)mapTextureSize.x + uvPoint.a,(float)uvPointAndSize.b.y/(float)mapTextureSize.y + uvPoint.b);
+        return new Pair<>(uvPoint,uvEnd);
     }
 
     /**
@@ -233,6 +245,5 @@ public class MapHandler {
         public boolean IsUVOnMap(int x, int y) {
             return x >= uvStartX && x <= uvEndX && y >= uvStartY && y <= uvEndY;
         }
-        //change widthheight to start end in map.mapinfo
     }
 }

@@ -295,7 +295,7 @@ public class WynnExpansion {
 		if (InfoOverrideFind && Reference.onServer() && msg.startsWith("/find")){
 			event.setMessage(msg.replace("/find", "/info"));
 		}
-		if(msg.startsWith("/tell")) {
+		if(Reference.onServer() && msg.startsWith("/tell")) {
 			event.setMessage(msg.replace("/tell", "/msg"));
 		}
 	}

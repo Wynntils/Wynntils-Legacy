@@ -16,7 +16,9 @@ public class WynnicMap {
     public static final File WYNNICMAP_STORAGE_ROOT = new File(Reference.MOD_STORAGE_ROOT.getAbsolutePath() + "/wynnicmap"); /* Root folder for all WynnicMap related things */
     private static boolean moduleWorking = false; public static boolean getModuleWorking() {return moduleWorking;}                     /* Indicates if the module is working */
 
-    public static ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+    public static GuiMap minimap = new GuiMap(sr().getScaledWidth()-200,sr().getScaledHeight()-10,190,190,0,0,0);
+
+    public static ScaledResolution sr(){return new ScaledResolution(Minecraft.getMinecraft());}
 
     /**
      * Tries to load the WynnicMap module into the game or reloads if loaded
@@ -42,8 +44,11 @@ public class WynnicMap {
         moduleWorking = false;
     }
 
-    static GuiMap minimap = new GuiMap(sr.getScaledWidth()-200,sr.getScaledHeight()-10,190,190,0,0,0);
-
+    /**
+     * Overlay Event for minimap, Dont call this method please
+     *
+     * @param e
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderminimap(RenderGameOverlayEvent.Post e) {
         if(!moduleWorking || !Reference.onWorld()) return;
@@ -52,8 +57,7 @@ public class WynnicMap {
         }
 
         try{
-            sr = new ScaledResolution(Minecraft.getMinecraft());
-            new GuiMap(sr.getScaledWidth()-110,10,100,100,Minecraft.getMinecraft().player.getPosition().getX(),Minecraft.getMinecraft().player.getPosition().getZ(),0).drawMap();
+            new GuiMap(sr().getScaledWidth()-110,10,100,100,Minecraft.getMinecraft().player.getPosition().getX(),Minecraft.getMinecraft().player.getPosition().getZ(),0).drawMap();
         }catch(Exception ignored) {
             ignored.getStackTrace();
         }

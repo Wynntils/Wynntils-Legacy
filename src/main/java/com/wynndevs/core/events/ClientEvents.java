@@ -15,6 +15,8 @@ import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
 import com.wynndevs.modules.market.market.MarketUser;
+import com.wynndevs.webapi.downloader.DownloaderManager;
+import com.wynndevs.webapi.downloader.enums.DownloadAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;

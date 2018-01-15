@@ -293,6 +293,10 @@ public class WynnItem {
 		return (this.Level + 100);
 	}
 	
+	public int[] GetLevelRange(){
+		return new int[] {(((this.GetLevel()-1) / 4) * 4), ((((this.GetLevel()-1) / 4) * 4) + 4)};
+	}
+	
 	public void SetClass(String Class) {
 		Class = Class.toLowerCase();
 		this.Class = 0;
@@ -819,11 +823,11 @@ public class WynnItem {
 		if (this.GetRawThunderDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThunderDamageBonus(), this.GetThunderDamageBonus(), "Thunder Damage", "%"));
 		if (this.GetRawEarthDamageBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawEarthDamageBonus(), this.GetEarthDamageBonus(), "Earth Damage", "%"));
 		
-		if (this.GetRawFireDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawFireDefenceBonus(), this.GetFireDefenceBonus(), "Fire Defence", ""));
-		if (this.GetRawWaterDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawWaterDefenceBonus(), this.GetWaterDefenceBonus(), "Water Defence", ""));
-		if (this.GetRawAirDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAirDefenceBonus(), this.GetAirDefenceBonus(), "Air Defence", ""));
-		if (this.GetRawThunderDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThunderDefenceBonus(), this.GetThunderDefenceBonus(), "Thunder Defence", ""));
-		if (this.GetRawEarthDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawEarthDefenceBonus(), this.GetEarthDefenceBonus(), "Earth Defence", ""));
+		if (this.GetRawFireDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawFireDefenceBonus(), this.GetFireDefenceBonus(), "Fire Defence", "%"));
+		if (this.GetRawWaterDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawWaterDefenceBonus(), this.GetWaterDefenceBonus(), "Water Defence", "%"));
+		if (this.GetRawAirDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawAirDefenceBonus(), this.GetAirDefenceBonus(), "Air Defence", "%"));
+		if (this.GetRawThunderDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawThunderDefenceBonus(), this.GetThunderDefenceBonus(), "Thunder Defence", "%"));
+		if (this.GetRawEarthDefenceBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawEarthDefenceBonus(), this.GetEarthDefenceBonus(), "Earth Defence", "%"));
 		
 		if (this.GetRawStrengthBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawStrengthBonus(), this.GetStrengthBonus(), "Strength", ""));
 		if (this.GetRawDexterityBonus() != 0) Tooltip = new StringBuilder(GetTooltipID(Tooltip.toString(), this.GetRawDexterityBonus(), this.GetDexterityBonus(), "Dexterity", ""));
