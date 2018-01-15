@@ -52,8 +52,6 @@ public class GuiParty extends Gui {
         this.chat.getChat().drawChat();
         GlStateManager.popMatrix();
 
-        this.mc.mcProfiler.endSection();
-
     }
 
 
