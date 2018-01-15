@@ -151,6 +151,7 @@ public class HudOverlay extends WRPGui {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onPreRender(RenderGameOverlayEvent.Post e){
+        if(true)return;
         //to render only when the survival UI is read
 
         if (ConfigValues.wynnExpansion.hud.main.c_health) {

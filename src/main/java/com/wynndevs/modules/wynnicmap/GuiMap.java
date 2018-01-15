@@ -35,19 +35,19 @@ public class GuiMap extends Gui {
     }
 
     /**
-     * Draws the map on the screen, Call from the drawScreen(override) in your GUI
+     * Draws the map on the screen, Call from the drawScreen(override) in your GUI or from RenderGameOverlayEvent
      *
      * @return indication of what happened in the drawing process
      */
     public DrawMapResult drawMap() {
         if(!MapHandler.isMapLoaded()) return DrawMapResult.MAP_NOT_LOADED;
         try {
-            drawRect(x,y,x+width,y+height,new Color(5,5,5).getRGB());
+            drawRect(x,y,x+width,y+height,new Color(15,5,15).getRGB());
             MapHandler.BindMapTexture();
             Pair<Point,Point> uv = MapHandler.GetUV(mapX,mapY,width,height,zoom);
             Point draw = new Point(x,y);
             Point drawSize = new Point(width,height);
-            //MapHandler.ClampUVAndDrawPoints(draw,drawSize,uv.a,uv.b);
+            MapHandler.ClampUVAndDrawPoints(draw,drawSize,uv.a,uv.b);
             pushMatrix();
             pushAttrib();
             {
@@ -69,7 +69,6 @@ public class GuiMap extends Gui {
 
                 disableTexture2D();
                 disableBlend();
-                disableAlpha();
             }
             popMatrix();
             popAttrib();
