@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.border.WorldBorder;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -82,10 +83,11 @@ public class HudOverlay extends WRPGui {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onRender(RenderGameOverlayEvent.Pre e){
-        if (!e.isCancelable() && !ConfigValues.wynnExpansion.hud.main.a_enabled) {
+        if (!e.isCancelable()) {
             return;
         }
 
+        if(!ConfigValues.wynnExpansion.hud.main.a_enabled) return;
 
         //blocking
         if (e.getType() == RenderGameOverlayEvent.ElementType.HEALTH || e.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT || e.getType() == RenderGameOverlayEvent.ElementType.FOOD || e.getType() == RenderGameOverlayEvent.ElementType.ARMOR || e.getType() == RenderGameOverlayEvent.ElementType.AIR) {
@@ -149,11 +151,15 @@ public class HudOverlay extends WRPGui {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onPreRender(RenderGameOverlayEvent.Post e){
-        //to render only when the survival UI is ready
+        //to render only when the survival UI is read
 
-        if (!ConfigValues.wynnExpansion.hud.main.a_enabled) return;
+        if (ConfigValues.wynnExpansion.hud.main.c_health) {
+            float scale = 1 - (mc.player.getHealth() / mc.player.getMaxHealth());
+//            if(scale > 0.3f)
+                renderVignette(1.0f, scale);
+        }
 
-        if (e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
+        if ((e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && ConfigValues.wynnExpansion.hud.main.a_enabled) {
 
             ScaledResolution resolution = new ScaledResolution(mc);
 
@@ -283,11 +289,6 @@ public class HudOverlay extends WRPGui {
             String r = "";
 
             boolean preference = false;
-
-            if (ConfigValues.wynnExpansion.hud.main.c_health) {
-                float scale = 1 - (mc.player.getHealth() / mc.player.getMaxHealth());
-                renderVignette(mc.player.getBrightness(e.getPartialTicks()), scale);
-            }
 
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates

@@ -329,7 +329,7 @@ public class CInventoryGUI extends GuiInventory {
             boolean raw = !lore.contains("%");
 
             try{
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", ""));
+                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
 
                 String fieldName;
                 if(raw) {
@@ -382,7 +382,7 @@ public class CInventoryGUI extends GuiInventory {
                     color += "a";
                 }else if(percent >= 30) {
                     color += "e";
-                }else if(percent < 30) {
+                }else {
                     color += "c";
                 }
 

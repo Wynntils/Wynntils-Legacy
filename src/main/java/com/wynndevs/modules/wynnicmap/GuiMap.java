@@ -5,7 +5,7 @@ import com.wynndevs.core.Utils.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.opengl.GL11;
+
 
 import java.awt.*;
 
@@ -35,56 +35,50 @@ public class GuiMap extends Gui {
     }
 
     /**
-     * Draws the map on the screen, Call from the drawScreen(override) in your GUI
+     * Draws the map on the screen, Call from the drawScreen(override) in your GUI or from RenderGameOverlayEvent
      *
      * @return indication of what happened in the drawing process
      */
     public DrawMapResult drawMap() {
         if(!MapHandler.isMapLoaded()) return DrawMapResult.MAP_NOT_LOADED;
         try {
-            drawRect(x,y,x+width,y+height,new Color(5,5,5).getRGB());
+            drawRect(x,y,x+width,y+height,new Color(15,5,15).getRGB());
             MapHandler.BindMapTexture();
             Pair<Point,Point> uv = MapHandler.GetUV(mapX,mapY,width,height,zoom);
             Point draw = new Point(x,y);
             Point drawSize = new Point(width,height);
-            //MapHandler.ClampUVAndDrawPoints(draw,drawSize,uv.a,uv.b);
-            pushMatrix();
-            pushAttrib();
+            MapHandler.ClampUVAndDrawPoints(draw,drawSize,uv.a,uv.b);
+            GlStateManager.pushMatrix();
+            GlStateManager.pushAttrib();
             {
-                enableAlpha();
-                enableBlend();
-                enableTexture2D();
-                color(1.0F, 1.0F, 1.0F, 1F);
+                GlStateManager.enableAlpha();
+                GlStateManager.enableBlend();
+                GlStateManager.enableTexture2D();
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-                Pair<Float,Float> xy1 = getTexCoord(uv.a);
-                uv.b.translate(uv.a.x,uv.a.y);
-                Pair<Float,Float> xy2 = getTexCoord(uv.b);
+                Pair<Pair<Float,Float>,Pair<Float,Float>> texCoords = MapHandler.GetUVTexCoords(uv);
                 GlStateManager.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                GlStateManager.glBegin(GL11.GL_QUADS);
-                GlStateManager.glTexCoord2f(xy1.a, xy1.b); GlStateManager.glVertex3f(draw.x,               draw.y, 0);
-                GlStateManager.glTexCoord2f(xy1.a, xy2.b); GlStateManager.glVertex3f(draw.x,               draw.y+drawSize.y, 0);
-                GlStateManager.glTexCoord2f(xy2.a, xy2.b); GlStateManager.glVertex3f(draw.x+drawSize.x, draw.y+drawSize.y, 0);
-                GlStateManager.glTexCoord2f(xy2.a, xy1.b); GlStateManager.glVertex3f(draw.x+drawSize.x, draw.y, 0);
+                GlStateManager.glBegin(GL_QUADS);
+                {
+                    GlStateManager.glTexCoord2f(texCoords.a.a, texCoords.a.b);GlStateManager.glVertex3f(draw.x, draw.y, 0);
+                    GlStateManager.glTexCoord2f(texCoords.a.a, texCoords.b.b);GlStateManager.glVertex3f(draw.x, draw.y + drawSize.y, 0);
+                    GlStateManager.glTexCoord2f(texCoords.b.a, texCoords.b.b);GlStateManager.glVertex3f(draw.x + drawSize.x, draw.y + drawSize.y, 0);
+                    GlStateManager.glTexCoord2f(texCoords.b.a, texCoords.a.b);GlStateManager.glVertex3f(draw.x + drawSize.x, draw.y, 0);
+                }
                 GlStateManager.glEnd();
 
-                disableTexture2D();
-                disableBlend();
-                disableAlpha();
+                GlStateManager.disableTexture2D();
+                GlStateManager.disableBlend();
             }
-            popMatrix();
-            popAttrib();
+            GlStateManager.popMatrix();
+            GlStateManager.popAttrib();
         } catch (Exception e) {
             return DrawMapResult.DRAW_ERROR;
         }
         return DrawMapResult.SUCCESS;
     }
 
-    private static Pair<Float,Float> getTexCoord(int textureX, int textureY) {
-        return new Pair<>((float)textureX/(float)MapHandler.mapTextureSize.x,(float)textureY/(float)MapHandler.mapTextureSize.y);
-    }
-    private static Pair<Float,Float> getTexCoord(Point textureXY) {
-        return getTexCoord(textureXY.x,textureXY.y);
-    }
+
 
     public enum DrawMapResult {
         SUCCESS,MAP_NOT_LOADED,DRAW_ERROR
