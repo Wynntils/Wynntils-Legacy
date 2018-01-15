@@ -44,6 +44,10 @@ public class DownloaderManager {
         if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
             return;
         }
+        if(!Reference.onServer()) {
+            startDownloading();
+            return;
+        }
 
         DownloadProfile pf = futureDownloads.get(0);
 
