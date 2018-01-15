@@ -20,18 +20,18 @@ public class GuiMap extends Gui {
                y,      /* Y in screen to draw the map at */
                width,  /* Width for the map to be drawn upon */
                height, /* Width for the map to be drawn upon */
-               mapX,   /* X in the map to start drawing from */
-               mapY,   /* Y in the map to start drawing from */
                zoom;   /* Zoom on the map */
+    public float centerX, /* center of the map real world X */
+                 centerY; /* center of the map real world Y */
 
-    public GuiMap(int x, int y, int width, int height, int mapX, int mapY, int zoom) {
+    public GuiMap(int x, int y, int width, int height, int zoom, float centerX, float centerY) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.mapX = mapX;
-        this.mapY = mapY;
         this.zoom = zoom;
+        this.centerX = centerX;
+        this.centerY = centerY;
     }
 
     /**
@@ -42,12 +42,12 @@ public class GuiMap extends Gui {
     public DrawMapResult drawMap() {
         if(!MapHandler.isMapLoaded()) return DrawMapResult.MAP_NOT_LOADED;
         try {
-            drawRect(x,y,x+width,y+height,new Color(15,5,15).getRGB());
             MapHandler.BindMapTexture();
-            Pair<Point,Point> uv = MapHandler.GetUV(mapX,mapY,width,height,zoom);
+            Pair<Pair<Float,Float>,Point> uv = MapHandler.GetUV(centerX,centerY,width,height,zoom);
             Point draw = new Point(x,y);
             Point drawSize = new Point(width,height);
             MapHandler.ClampUVAndDrawPoints(draw,drawSize,uv.a,uv.b);
+            drawRect(x,y,x+width,y+height,new Color(15,5,15).getRGB());
             GlStateManager.pushMatrix();
             GlStateManager.pushAttrib();
             {
@@ -69,9 +69,11 @@ public class GuiMap extends Gui {
 
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableBlend();
+                drawRect(x+width/2,y+height/2,x+width/2+1,y+height/2+1,new Color(255,0,0).getRGB());
             }
             GlStateManager.popMatrix();
             GlStateManager.popAttrib();
+
         } catch (Exception e) {
             return DrawMapResult.DRAW_ERROR;
         }

@@ -20,15 +20,13 @@ public class KeyBindings {
     public static KeyBinding OPEN_GUILD_CHAT;
     public static KeyBinding OPEN_PARTY_CHAT;
 	public static KeyBinding TOGGLE_GAMMABRIGHT;
+	public static KeyBinding WYNNICMAP_ZOOM_IN;
+	public static KeyBinding WYNNICMAP_ZOOM_OUT;
 
     public static void init() {
-        MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion");
-		OPEN_CONFIG_MENU = new KeyBinding("Open Config", Keyboard.KEY_N, "Wynncraft Expansion");
-		TOGGLE_GAMMABRIGHT = new KeyBinding("Toggle Gammabright", Keyboard.KEY_G, "Wynncraft Expansion");
-
-        ClientRegistry.registerKeyBinding(MARKET_GUI);
-		ClientRegistry.registerKeyBinding(OPEN_CONFIG_MENU);
-		ClientRegistry.registerKeyBinding(TOGGLE_GAMMABRIGHT);
+        ClientRegistry.registerKeyBinding(MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion"));
+		ClientRegistry.registerKeyBinding(OPEN_CONFIG_MENU = new KeyBinding("Open Config", Keyboard.KEY_N, "Wynncraft Expansion"));
+		ClientRegistry.registerKeyBinding(TOGGLE_GAMMABRIGHT = new KeyBinding("Toggle Gammabright", Keyboard.KEY_G, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_QUEST_BOOK = new KeyBinding("Open Quest Book", Keyboard.KEY_R, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_WYNN_SOUND = new KeyBinding("Open Wynn Sound GUI", Keyboard.KEY_O, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(SPELL_1 = new KeyBinding("Cast Spell 1", Keyboard.KEY_Z, "Wynncraft Expansion"));
@@ -39,7 +37,8 @@ public class KeyBindings {
 		ClientRegistry.registerKeyBinding(OPEN_PLAYER_MENU = new KeyBinding("Open Player Menu", Keyboard.KEY_H, "Wynncraft Expansion"));
 		ClientRegistry.registerKeyBinding(OPEN_ITEM_GUIDE = new KeyBinding("Open Item Guide", Keyboard.KEY_P, "Wynncraft Expansion"));
         ClientRegistry.registerKeyBinding(OPEN_GUILD_CHAT = new KeyBinding("Open Guild Chat", Keyboard.KEY_U, "Wynncraft Expansion"));
-        ClientRegistry.registerKeyBinding(OPEN_PARTY_CHAT = new KeyBinding("Open Party Chat", Keyboard.KEY_Y, "Wynncraft Expansion"));
+        ClientRegistry.registerKeyBinding(WYNNICMAP_ZOOM_IN = new KeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynnic Map"));
+		ClientRegistry.registerKeyBinding(WYNNICMAP_ZOOM_OUT = new KeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynnic Map"));
     }
 
 }

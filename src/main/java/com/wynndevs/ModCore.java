@@ -48,9 +48,7 @@ public class ModCore {
         if(WynnMarket.initModule(e) == ModuleResult.ERROR) {
             invalidModules.add("Market");
         }
-        if(WynnicMap.loadModule() == ModuleResult.ERROR) {
-            invalidModules.add("WynnicMap");
-        }
+        WynnicMap.loadModule();
 
     }
 	
