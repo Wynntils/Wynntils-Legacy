@@ -16,13 +16,16 @@ import static org.lwjgl.opengl.GL11.*;
  * GuiMap like a GuiButton can be added to a Gui/GuiScreen to be used/drawn
  */
 public class GuiMap extends Gui {
-    public int x,      /* X in screen to draw the map at */
-               y,      /* Y in screen to draw the map at */
-               width,  /* Width for the map to be drawn upon */
-               height, /* Width for the map to be drawn upon */
-               zoom;   /* Zoom on the map */
-    public float centerX, /* center of the map real world X */
-                 centerY; /* center of the map real world Y */
+    public int x,                  /* X in screen to draw the map at */
+               y,                  /* Y in screen to draw the map at */
+               width,              /* Width for the map to be drawn upon */
+               height,             /* Width for the map to be drawn upon */
+               zoom,               /* Zoom on the map */
+               rotation;           /* Rotation of the map, 0 being NORTH */
+    public float centerX,          /* center of the map real world X */
+                 centerY;          /* center of the map real world Y */
+    public boolean visible = true; /* should the map be visible */
+
 
     public GuiMap(int x, int y, int width, int height, int zoom, float centerX, float centerY) {
         this.x = x;
@@ -40,6 +43,7 @@ public class GuiMap extends Gui {
      * @return indication of what happened in the drawing process
      */
     public DrawMapResult drawMap() {
+        if(!visible) return DrawMapResult.NOT_VISIBLE;
         if(!MapHandler.isMapLoaded()) return DrawMapResult.MAP_NOT_LOADED;
         try {
             MapHandler.BindMapTexture();
@@ -83,6 +87,6 @@ public class GuiMap extends Gui {
 
 
     public enum DrawMapResult {
-        SUCCESS,MAP_NOT_LOADED,DRAW_ERROR
+        SUCCESS,MAP_NOT_LOADED,DRAW_ERROR,NOT_VISIBLE
     }
 }

@@ -22,6 +22,7 @@ public class KeyBindings {
 	public static KeyBinding TOGGLE_GAMMABRIGHT;
 	public static KeyBinding WYNNICMAP_ZOOM_IN;
 	public static KeyBinding WYNNICMAP_ZOOM_OUT;
+	public static KeyBinding WYNNICMAP_MENU;
 
     public static void init() {
         ClientRegistry.registerKeyBinding(MARKET_GUI = new KeyBinding("Open Market", Keyboard.KEY_M, "Wynncraft Expansion"));
@@ -39,6 +40,7 @@ public class KeyBindings {
         ClientRegistry.registerKeyBinding(OPEN_GUILD_CHAT = new KeyBinding("Open Guild Chat", Keyboard.KEY_U, "Wynncraft Expansion"));
         ClientRegistry.registerKeyBinding(WYNNICMAP_ZOOM_IN = new KeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynnic Map"));
 		ClientRegistry.registerKeyBinding(WYNNICMAP_ZOOM_OUT = new KeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynnic Map"));
+		ClientRegistry.registerKeyBinding(WYNNICMAP_MENU = new KeyBinding("Menu", Keyboard.KEY_B, "Wynnic Map"));
     }
 
 }

@@ -91,6 +91,9 @@ public class WynnicMap {
         else if(KeyBindings.WYNNICMAP_ZOOM_OUT.isKeyDown()) {
             minimap.zoom--;
         }
+        else if(KeyBindings.WYNNICMAP_MENU.isPressed()) { //currently will toggle instead of opening menu
+            minimap.visible = !minimap.visible;
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
