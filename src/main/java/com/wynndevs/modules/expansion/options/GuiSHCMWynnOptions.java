@@ -31,13 +31,8 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 	private static Delay refreshDelay = new Delay(10f, true);
 	
 	private static OptionsButton btnOptions = new OptionsButton();
-	private static ExitButton btnExit = new ExitButton();
-	
-	private static ChangePageButton btnNextPage = new ChangePageButton();
-	private static ChangePageButton btnPrevPage = new ChangePageButton();
-	
-	private static ModPageButton btnModPage = new ModPageButton();
-	private static EggButton btnEgg = new EggButton();
+
+    private static EggButton btnEgg = new EggButton();
 	
 	
 	private static ToggleButton tglDisplayName = new ToggleButton();
@@ -166,10 +161,8 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 	
 	private static int page = 1;
 	private static int maxPages = 1;
-	
-	private static boolean EnableEgg = true;
-	
-	private List<GuiButton> pageButtons = new ArrayList<GuiButton>();
+
+    private List <GuiButton> pageButtons = new ArrayList <GuiButton>();
 	
 	public GuiSHCMWynnOptions() {
 		page = 1;
@@ -178,12 +171,12 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 	@Override
 	public void initGui() {
 		btnOptions = new OptionsButton(0, (this.width / 2) + 84, 15);
-		btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
-		
-		btnNextPage = new ChangePageButton(1, (this.width / 2) + 25, 50, true);
-		btnPrevPage = new ChangePageButton(2, (this.width / 2) - 52, 50, false);
-		
-		btnModPage = new ModPageButton(3, (this.width / 2) + 55, 50);
+        ExitButton btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
+
+        ChangePageButton btnNextPage = new ChangePageButton(1, (this.width / 2) + 25, 50, true);
+        ChangePageButton btnPrevPage = new ChangePageButton(2, (this.width / 2) - 52, 50, false);
+
+        ModPageButton btnModPage = new ModPageButton(3, (this.width / 2) + 55, 50);
 		btnEgg = new EggButton(4, (this.width / 2) -115, 15);
 		
 		pageButtons.add(tglDisplayName = new ToggleButton(100, (this.width / 2) - 110, 80, "Show Nameplates for items", 1));
@@ -465,7 +458,7 @@ public class GuiSHCMWynnOptions extends GuiScreenMod {
 		tglAttackColourTimer.active = GuildAttackTimer.AttackColourTimer;
 
 		this.drawCenteredStringPlain(mc.fontRenderer, page + "/" + maxPages, this.width / 2, 53, Integer.parseInt("858585", 16));
-		btnEgg.visible = EnableEgg;
+        btnEgg.visible = true;
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

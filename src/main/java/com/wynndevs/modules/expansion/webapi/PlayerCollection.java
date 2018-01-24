@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PlayerCollection {
@@ -27,8 +26,8 @@ public class PlayerCollection {
 				PlayerListTmp.add(PlayerListRaw.substring(PlayerListRaw.lastIndexOf(",\"", PlayerListRaw.indexOf("[", LastLocation)) +1, PlayerListRaw.indexOf(']', PlayerListRaw.indexOf("\":[", LastLocation)) +1).replace("]", ","));
 				LastLocation = PlayerListRaw.indexOf("]", LastLocation);
 			}
-			
-			Collections.sort(PlayerListTmp, String.CASE_INSENSITIVE_ORDER);
+
+            PlayerListTmp.sort(String.CASE_INSENSITIVE_ORDER);
 			
 			int TotalPlayers = 0;
 			

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,14 +14,11 @@ import java.util.Date;
 public class EggPage extends GuiScreenMod {
 	
 	private static final ResourceLocation TEXTURE_OPTIONS = new ResourceLocation(Reference.MOD_ID, "textures/gui/options.png");
-	
-	private static ExitButton btnExit = new ExitButton();
-	
-	private static String Time = "";
+
+    private static String Time = "";
 	private static boolean EggDay = false;
-	private static int SECONDS_IN_A_DAY = 24 * 60 * 60;
-	
-	private static void RefreshTimer() {
+
+    private static void RefreshTimer(){
 		Calendar today = Calendar.getInstance();
 		Calendar thatDay = Calendar.getInstance();
 		if (today.get(Calendar.MONTH) == GetEggDay(today.get(Calendar.YEAR))[0] && today.get(Calendar.DAY_OF_MONTH) == GetEggDay(today.get(Calendar.YEAR))[1]){
@@ -44,8 +40,9 @@ public class EggPage extends GuiScreenMod {
 		
 		long diff =  thatDay.getTimeInMillis() - today.getTimeInMillis(); 
 		long diffSec = diff / 1000;
-		
-		long days = diffSec / SECONDS_IN_A_DAY;
+
+        int SECONDS_IN_A_DAY = 24 * 60 * 60;
+        long days = diffSec / SECONDS_IN_A_DAY;
 		long secondsDay = diffSec % SECONDS_IN_A_DAY;
 		long seconds = secondsDay % 60;
 		long minutes = (secondsDay / 60) % 60;
@@ -79,7 +76,7 @@ public class EggPage extends GuiScreenMod {
 	
 	@Override
 	public void initGui() {
-		btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
+        ExitButton btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
 		this.addButton(btnExit);
 	}
 	
@@ -87,8 +84,8 @@ public class EggPage extends GuiScreenMod {
 	public void updateScreen() {
 		RefreshTimer();
 	}
-	
-	protected void actionPerformed(GuiButton button) throws IOException {
+
+    protected void actionPerformed(GuiButton button){
 		if (button.enabled) {
 			switch (button.id) {
 			case -1:

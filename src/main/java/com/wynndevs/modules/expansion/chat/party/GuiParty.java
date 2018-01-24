@@ -20,7 +20,6 @@ public class GuiParty extends Gui {
 
     private Minecraft mc;
     private PartyChat chat = null;
-    private int width, height;
 
 
     public GuiParty(Minecraft mc) {
@@ -43,12 +42,12 @@ public class GuiParty extends Gui {
             return;
 
         ScaledResolution scaled = new ScaledResolution(mc);
-        width = scaled.getScaledWidth();
-        height = scaled.getScaledHeight();
+        int width = scaled.getScaledWidth();
+        int height = scaled.getScaledHeight();
 
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, this.height - 48, 0.0);
+        GlStateManager.translate(0, height - 48, 0.0);
         this.chat.getChat().drawChat();
         GlStateManager.popMatrix();
 

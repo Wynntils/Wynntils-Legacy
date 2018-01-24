@@ -15,8 +15,7 @@ public class SpellCasting {
 	
 	private static List<String> spellList = new ArrayList<String>();
 	private static int spellTimer = 0;
-	private static int spellDelay = 2;
-	private static int spellKey = 0;
+    private static int spellKey = 0;
 	private static KeyBinding LMB = FMLClientHandler.instance().getClient().gameSettings.keyBindAttack;
 	private static KeyBinding RMB = FMLClientHandler.instance().getClient().gameSettings.keyBindUseItem;
 	
@@ -70,7 +69,8 @@ public class SpellCasting {
 	public static void castSpell() {
 		if (!spellList.isEmpty()) {
 			if (Boolean.logicalXor(Minecraft.getMinecraft().currentScreen instanceof GuiChat,true)) {
-				if (spellTimer++ == spellDelay) {
+                int spellDelay = 2;
+                if (spellTimer++ == spellDelay) {
 					spellTimer = 0;
 					if (Boolean.logicalXor(spellList.get(0).charAt(spellKey) == 'R', isHunter)) {
 						KeyBinding.onTick(RMB.getKeyCode());

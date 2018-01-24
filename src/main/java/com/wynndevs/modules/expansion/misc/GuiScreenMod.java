@@ -87,6 +87,60 @@ public abstract class GuiScreenMod extends GuiScreen
     protected abstract String GetButtonTooltip(int buttonId);
 
     /**
+     * Gets a protected/private field from a class using reflection.
+     *
+     * @param <T>           The return type of the field you are getting
+     * @param <E>           The class the field is in
+     * @param classToAccess The ".class" of the class the field is in
+     * @param instance      The instance of the class
+     * @param fieldNames    comma seperated names the field may have (i.e. obfuscated, non obfuscated).
+     *                      Obfustated field names can be found in fml/conf/fields.csv
+     * @return
+     */
+    public static <T, E> T GetFieldByReflection(Class <? super E> classToAccess, E instance, String... fieldNames){
+        Field field = null;
+        for (String fieldName : fieldNames) {
+            try {
+                field = classToAccess.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException ignored) {
+            }
+
+            if (field != null) break;
+        }
+
+        if (field != null) {
+            field.setAccessible(true);
+            T fieldT = null;
+            try {
+                fieldT = (T) field.get(instance);
+            } catch (IllegalArgumentException | IllegalAccessException ignored) {
+            }
+
+            return fieldT;
+        }
+
+        return null;
+    }
+
+    /**
+     * Determines if a GuiButton is being mouseovered.
+     *
+     * @param mouseX
+     * @param mouseY
+     * @param button
+     * @return true if this button is mouseovered
+     */
+    protected boolean IsButtonMouseovered(int mouseX, int mouseY, GuiButton button){
+        if (mouseX >= button.x && mouseX <= button.x + button.getButtonWidth() && mouseY >= button.y && button.visible) {
+            //for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
+            //so use reflection to grab it
+            int buttonHeight = GetFieldByReflection(GuiButton.class, button, "height", "field_146121_g");
+            return mouseY <= button.y + buttonHeight;
+        }
+        return false;
+    }
+
+    /**
      * Renders any special effects applied to tooltip buttons, and renders any tooltips for GuiButtons
      * that are being mouseovered.
      * @param mouseX
@@ -101,13 +155,12 @@ public abstract class GuiScreenMod extends GuiScreen
 
         //find out which button is being mouseovered
         for (GuiButton aButtonList : buttonList) {
-            GuiButton button = (GuiButton) aButtonList;
 
-            if (IsButtonMouseovered(mouseX, mouseY, button)) {
-                mousedOverButtonId = button.id;
+            if (IsButtonMouseovered(mouseX, mouseY, aButtonList)) {
+                mousedOverButtonId = aButtonList.id;
 
                 if (ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
-                    RenderTooltipButtonMouseoverEffect(button);
+                    RenderTooltipButtonMouseoverEffect(aButtonList);
 
                 break;
             }
@@ -135,45 +188,6 @@ public abstract class GuiScreenMod extends GuiScreen
             if(tooltip != null)
             {
                 RenderTooltip(mouseX, mouseY, tooltip);
-            }
-        }
-    }
-
-    /**
-     * Determines if a GuiButton is being mouseovered.
-     * @param mouseX
-     * @param mouseY
-     * @param button
-     * @return true if this button is mouseovered
-     */
-    protected boolean IsButtonMouseovered(int mouseX, int mouseY, GuiButton button)
-    {
-        if(mouseX >= button.x && mouseX <= button.x + button.getButtonWidth() &&
-                mouseY >= button.y &&
-                button.visible)
-        {
-            //for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
-            //so use reflection to grab it
-            int buttonHeight = GetFieldByReflection(GuiButton.class, button, "height","field_146121_g");
-            return mouseY <= button.y + buttonHeight;
-        }
-        return false;
-    }
-
-    /**
-     * Render anything special onto all buttons that have tooltips assigned to them.
-     */
-    protected void RenderTooltipButtonEffect()
-    {
-        for (GuiButton aButtonList : buttonList) {
-            GuiButton button = (GuiButton) aButtonList;
-
-            if (GetButtonTooltip(button.id) != null) {
-                boolean flag = mc.fontRenderer.getUnicodeFlag();
-                mc.fontRenderer.setUnicodeFlag(true);
-                if (button.visible)
-                    mc.fontRenderer.drawStringWithShadow("?", button.x + button.getButtonWidth() - 5, button.y, 0x99FFFFFF);
-                mc.fontRenderer.setUnicodeFlag(flag);
             }
         }
     }
@@ -237,43 +251,24 @@ public abstract class GuiScreenMod extends GuiScreen
             //mc.fontRenderer.drawStringWithShadow(s, tooltipX + 3, tooltipY + 3 + lineCount * LINE_HEIGHT, 0xFFFFFF);
             lineCount++;
         }
-		this.itemRender.zLevel = 0.0F;
-        
+        this.itemRender.zLevel = 0.0F;
+
     }
 
     /**
-     * Converts a String representation of a tooltip into a String[], and also decodes any font codes used.
-     * @param s Ex: "Hello,_nI am your _ltooltip_r and you love me."
-     * @return An array of Strings such that each String width does not exceed tooltipMaxWidth
+     * Render anything special onto all buttons that have tooltips assigned to them.
      */
-    protected String[] ParseTooltipArrayFromString(String s)
-    {
-        s = StringCode(s);
-        String[] tooltipSections = s.split(tooltipNewlineDelimeter);
-        ArrayList<String> tooltipArrayList = new ArrayList<String>();
+    protected void RenderTooltipButtonEffect(){
+        for (GuiButton aButtonList : buttonList) {
 
-        for(String section : tooltipSections)
-        {
-            String tooltip = "";
-            String[] tooltipWords = section.split(" ");
-
-            for (String tooltipWord : tooltipWords) {
-                int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(tooltip + tooltipWord);
-                if (lineWidthWithNextWord > tooltipMaxWidth) {
-                    tooltipArrayList.add(tooltip.trim());
-                    tooltip = tooltipWord + " ";
-                } else {
-                    tooltip += tooltipWord + " ";
-                }
+            if (GetButtonTooltip(aButtonList.id) != null) {
+                boolean flag = mc.fontRenderer.getUnicodeFlag();
+                mc.fontRenderer.setUnicodeFlag(true);
+                if (aButtonList.visible)
+                    mc.fontRenderer.drawStringWithShadow("?", aButtonList.x + aButtonList.getButtonWidth() - 5, aButtonList.y, 0x99FFFFFF);
+                mc.fontRenderer.setUnicodeFlag(flag);
             }
-
-            tooltipArrayList.add(tooltip.trim());
         }
-
-        String[] tooltipArray = new String[tooltipArrayList.size()];
-        tooltipArrayList.toArray(tooltipArray);
-
-        return tooltipArray;
     }
 
     /**
@@ -340,45 +335,36 @@ public abstract class GuiScreenMod extends GuiScreen
     }
 
     /**
-     * Gets a protected/private field from a class using reflection.
-     * @param <T> The return type of the field you are getting
-     * @param <E> The class the field is in
-     * @param classToAccess The ".class" of the class the field is in
-     * @param instance The instance of the class
-     * @param fieldNames comma seperated names the field may have (i.e. obfuscated, non obfuscated).
-     * Obfustated field names can be found in fml/conf/fields.csv
-     * @return
+     * Converts a String representation of a tooltip into a String[], and also decodes any font codes used.
+     * @param s Ex: "Hello,_nI am your _ltooltip_r and you love me."
+     * @return An array of Strings such that each String width does not exceed tooltipMaxWidth
      */
-    public static <T, E> T GetFieldByReflection(Class<? super E> classToAccess, E instance, String... fieldNames)
-    {
-        Field field = null;
-        for(String fieldName : fieldNames)
-        {
-            try
-            {
-                field = classToAccess.getDeclaredField(fieldName);
-            }
-            catch(NoSuchFieldException e){}
+    protected String[] ParseTooltipArrayFromString(String s){
+        s = StringCode(s);
+        String[] tooltipSections = s.split(tooltipNewlineDelimeter);
+        ArrayList <String> tooltipArrayList = new ArrayList<String>();
 
-            if(field != null)
-                break;
+        for (String section : tooltipSections) {
+            StringBuilder tooltip = new StringBuilder();
+            String[] tooltipWords = section.split(" ");
+
+            for (String tooltipWord : tooltipWords) {
+                int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(tooltip + tooltipWord);
+                if (lineWidthWithNextWord > tooltipMaxWidth) {
+                    tooltipArrayList.add(tooltip.toString().trim());
+                    tooltip = new StringBuilder(tooltipWord + " ");
+                } else {
+                    tooltip.append(tooltipWord).append(" ");
+                }
+            }
+
+            tooltipArrayList.add(tooltip.toString().trim());
         }
 
-        if(field != null)
-        {
-            field.setAccessible(true);
-            T fieldT = null;
-            try
-            {
-                fieldT = (T) field.get(instance);
-            }
-            catch (IllegalArgumentException e){}
-            catch (IllegalAccessException e){}
+        String[] tooltipArray = new String[tooltipArrayList.size()];
+        tooltipArrayList.toArray(tooltipArray);
 
-            return fieldT;
-        }
-
-        return null;
+        return tooltipArray;
     }
 
     // Shadow

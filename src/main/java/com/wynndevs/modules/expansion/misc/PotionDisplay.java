@@ -28,8 +28,8 @@ public class PotionDisplay extends ModGui{
 		FontRenderer font = mc.fontRenderer;
 		
 		for (int i=0;i<Effects.size();i++){
-			String TimeFormat = "";
-			Long Time = 0L;
+            String TimeFormat;
+            Long Time;
 			if (UseGameTime){
 				Time = ((Long.parseLong(Effects.get(i)[1]) - ModCore.mc().world.getWorldTime()) / 20);
 			}else{

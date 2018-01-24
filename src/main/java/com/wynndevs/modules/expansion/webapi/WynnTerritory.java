@@ -13,8 +13,7 @@ public class WynnTerritory {
 	public Date CaptureData = null;
 	
 	public void FixCoords(){
-		int[][] CoordsFix = {{Math.min(Coords[0][0], Coords[1][0]), Math.min(Coords[0][1], Coords[1][1])}, {Math.max(Coords[0][0], Coords[1][0]), Math.max(Coords[0][1], Coords[1][1])}};
-		this.Coords = CoordsFix;
+        this.Coords = new int[][]{{Math.min(Coords[0][0], Coords[1][0]), Math.min(Coords[0][1], Coords[1][1])}, {Math.max(Coords[0][0], Coords[1][0]), Math.max(Coords[0][1], Coords[1][1])}};
 	}
 	
 	public String GetFormatedCoords() {

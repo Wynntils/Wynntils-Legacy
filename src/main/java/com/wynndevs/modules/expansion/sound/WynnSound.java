@@ -29,13 +29,11 @@ public class WynnSound {
         ModCore.mc().getSoundHandler().playSound(new MovingSoundMusic(wsm.soundEvent));
     }
 
-    public static boolean Toggle() {
+    public static void Toggle(){
         if (WynnSound.playing == -1) {
             WynnSound.Start();
-            return true;
         } else {
             WynnSound.playing = -1;
-            return false;
         }
     }
 }

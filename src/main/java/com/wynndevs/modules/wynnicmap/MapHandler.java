@@ -2,24 +2,24 @@ package com.wynndevs.modules.wynnicmap;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Utils.Pair;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.*;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class MapHandler {
     private static int mapId;                                                                                                                       /* Texture id of the map in OpenGL */
@@ -82,10 +82,9 @@ public class MapHandler {
      *
      * @return boolean indicating succession
      */
-    public static boolean BindMapTexture() {
+    public static void BindMapTexture(){
         if(mapLoaded)
             GlStateManager.bindTexture(mapId);
-        return mapLoaded;
     }
 
     /**
@@ -122,7 +121,7 @@ public class MapHandler {
      * @return Pair of 2 Float Pairs representing 2 uv points(0.0f,0.0f -> 1.0f,1.0f) on the texture
      */
     public static Pair<Pair<Float,Float>,Pair<Float,Float>> GetUVTexCoords(Pair<Pair<Float,Float>,Point> uvPointAndSize) {
-        Pair<Float,Float> uvPoint = new Pair<>((float)uvPointAndSize.a.a/(float)mapTextureSize.x,(float)uvPointAndSize.a.b/(float)mapTextureSize.y);
+        Pair <Float, Float> uvPoint = new Pair <>(uvPointAndSize.a.a / (float) mapTextureSize.x, uvPointAndSize.a.b / (float) mapTextureSize.y);
         Pair<Float,Float> uvEnd = new Pair<>((float)uvPointAndSize.b.x/(float)mapTextureSize.x + uvPoint.a,(float)uvPointAndSize.b.y/(float)mapTextureSize.y + uvPoint.b);
         return new Pair<>(uvPoint,uvEnd);
     }
@@ -138,26 +137,22 @@ public class MapHandler {
      * @param uvSize   uv texture width and height
      * @return indications if clamping has happened
      */
-    public static boolean ClampUVAndDrawPoints(Point draw, Point drawSize, Pair<Float,Float> uv, Point uvSize) {
-        boolean clamped = false;
+    public static void ClampUVAndDrawPoints(Point draw, Point drawSize, Pair <Float, Float> uv, Point uvSize){
         for (String key : maps.keySet()) {
             MapInformation cur = maps.get(key);
             if(cur.IsUVOnMap(MathHelper.floor(uv.a+uvSize.x/2),MathHelper.floor(uv.a+uvSize.y/2))) {
                 if(!cur.IsUVOnMap(MathHelper.floor(uv.a),MathHelper.floor(uv.b))) {
-                    clamped = true;
                     draw.translate(cur.getUvStartX()-MathHelper.floor(uv.b),cur.getUvStartY()-MathHelper.floor(uv.b));
                     uv.a = (float)cur.getUvStartX();
                     uv.a = (float)cur.getUvStartY();
                 }
                 if(!cur.IsUVOnMap(MathHelper.floor(uv.a)+uvSize.x,MathHelper.floor(uv.b)+uvSize.y)) {
-                    clamped = true;
                     drawSize.translate(MathHelper.floor(uv.a)+uvSize.x-cur.getUvEndX(),MathHelper.floor(uv.b)+uvSize.y-cur.getUvEndY());
                     uvSize.x = cur.getUvEndX() - cur.getUvStartX();
                     uvSize.y = cur.getUvEndY() - cur.getUvStartY();
                 }
             }
         }
-        return clamped;
     }
 
     /**

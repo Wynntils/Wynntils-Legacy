@@ -84,7 +84,7 @@ public class ExperienceAdvanced {
 						String MobExp = ExpEntity.getName().substring(ExpEntity.getName().indexOf(String.valueOf('\u00a7') + "f+") +5, ExpEntity.getName().indexOf(" XP") -2);
 						String MobExpPer = new DecimalFormat("#,###,#00.00").format((Float.parseFloat(MobExp)/Experience.getCurrentWynncraftMaxXp())*100);
 						MobExp = new DecimalFormat("#,###,###,##0").format(Integer.parseInt(MobExp));
-						String MobName = null;
+                        String MobName;
 						String MobLevel = null;
 						MobName = NameEntity.getName();
 						

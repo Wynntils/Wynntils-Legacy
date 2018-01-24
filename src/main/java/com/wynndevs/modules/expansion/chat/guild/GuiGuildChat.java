@@ -26,7 +26,6 @@ public class GuiGuildChat extends Gui {
     private static final Joiner NEWLINE_STRING_JOINER = Joiner.on("\\n");
     private static final Logger LOGGER = LogManager.getLogger();
     private final Minecraft mc;
-    private final GuildChat chat;
     private final List <String> sentMessages = Lists.newArrayList();
     private final List <ChatLine> chatLines = Lists.newArrayList();
     private final List <ChatLine> drawnChatLines = Lists.newArrayList();
@@ -35,7 +34,6 @@ public class GuiGuildChat extends Gui {
 
     public GuiGuildChat(Minecraft mcIn, GuildChat chat) {
         this.mc = mcIn;
-        this.chat = chat;
     }
 
     public static int calculateChatboxWidth(float scale) {

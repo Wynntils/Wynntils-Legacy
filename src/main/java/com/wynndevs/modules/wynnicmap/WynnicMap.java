@@ -1,16 +1,13 @@
 package com.wynndevs.modules.wynnicmap;
 
 import com.wynndevs.core.Reference;
-import com.wynndevs.core.enums.ModuleResult;
 import com.wynndevs.core.input.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.io.File;

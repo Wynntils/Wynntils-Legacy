@@ -10,29 +10,19 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URI;
 
 public class GuiQuestBook extends GuiScreenMod {
 	private static final ResourceLocation TEXTURE_BOOK = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook.png");
 	private static final ResourceLocation TEXTURE_BOOK_DISABLED = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook_disabled.png");
 	private static final ResourceLocation TEXTURE_BOOK_DISABLED_2 = new ResourceLocation(Reference.MOD_ID,"textures/gui/questbook_disabled_2.png");
-	
-	private static ChangePageButton btnNextPage = new ChangePageButton();
-	private static ChangePageButton btnPrevPage = new ChangePageButton();
-	
-	private static ChangePageButton btnNextTenPage = new ChangePageButton();
-	private static ChangePageButton btnPrevTenPage = new ChangePageButton();
-	
-	private static MiscButton btnWiki = new MiscButton();
+
+    private static MiscButton btnWiki = new MiscButton();
 	private static MiscButton btnXyz = new MiscButton();
 	
 	private static MiscToggleTrackingButton btnTglTracking = new MiscToggleTrackingButton();
-	
-	private static OptionsButton btnOptions = new OptionsButton();
-	private static ExitButton btnExit = new ExitButton();
-	
-	private Quest showedQuest;
+
+    private Quest showedQuest;
 	private int showedQuestIndex;
 	
 	public GuiQuestBook() {
@@ -43,11 +33,11 @@ public class GuiQuestBook extends GuiScreenMod {
 	
 	@Override
 	public void initGui() {
-		btnNextPage = new ChangePageButton(0, (this.width / 2) + 25, 50, true, false);
-		btnPrevPage = new ChangePageButton(1, (this.width / 2) - 52, 50, false, false);
-		
-		btnNextTenPage = new ChangePageButton(2, (this.width / 2) + 55, 50, true, true);
-		btnPrevTenPage = new ChangePageButton(3, (this.width / 2) - 82, 50, false, true);
+        ChangePageButton btnNextPage = new ChangePageButton(0, (this.width / 2) + 25, 50, true, false);
+        ChangePageButton btnPrevPage = new ChangePageButton(1, (this.width / 2) - 52, 50, false, false);
+
+        ChangePageButton btnNextTenPage = new ChangePageButton(2, (this.width / 2) + 55, 50, true, true);
+        ChangePageButton btnPrevTenPage = new ChangePageButton(3, (this.width / 2) - 82, 50, false, true);
 		
 		//btnWiki = new MiscButton(4, (this.width / 2) - 112, 50, 0, 222);
 		//btnXyz = new MiscButton(5, (this.width / 2) + 85, 50, 28, 222);
@@ -56,9 +46,9 @@ public class GuiQuestBook extends GuiScreenMod {
 		btnXyz = new MiscButton(5, (this.width / 2) + 55, 50, 28, 222);
 		
 		btnTglTracking = new MiscToggleTrackingButton(6, (this.width / 2) - 115, 145);
-		
-		btnOptions = new OptionsButton(7, (this.width / 2) + 84, 15);
-		btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
+
+        OptionsButton btnOptions = new OptionsButton(7, (this.width / 2) + 84, 15);
+        ExitButton btnExit = new ExitButton(-1, (this.width / 2) + 100, 15);
 		
 		//this.addButton(btnNextPage);
 		//this.addButton(btnPrevPage);
@@ -141,7 +131,7 @@ public class GuiQuestBook extends GuiScreenMod {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
-	protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button){
 		if (button.enabled) {
 			switch (button.id) {
 			case -1:

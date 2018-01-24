@@ -10,7 +10,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.URI;
 
 
@@ -64,7 +63,7 @@ public class GuiWynnSound extends GuiScreenMod {
         super.drawScreen(mouseX,mouseY,partialTicks);
     }
 
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button){
         if (button.enabled)
         switch (button.id) {
             case 0:
@@ -92,7 +91,7 @@ public class GuiWynnSound extends GuiScreenMod {
 
     static class GuiButtonVolumeSlider extends GuiButton
     {
-        public float volume = 1.0F;
+        public float volume;
         public boolean pressed;
 
         public GuiButtonVolumeSlider(int buttonId, int x, int y, SoundCategory categoryIn)

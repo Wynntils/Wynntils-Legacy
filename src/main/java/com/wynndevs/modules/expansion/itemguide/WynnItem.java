@@ -183,62 +183,99 @@ public class WynnItem {
 		this.CategoryTypeRarity = 0;
 		
 		Type = Type.toLowerCase();
-		if (Type.equals("bow") || Type.equals("0")) {
-			this.CategoryTypeRarity = 0;
-			this.Class = 1;
-			this.Material = "261";
-		}else if (Type.equals("spear") || Type.equals("1")) {
-			this.CategoryTypeRarity = 1;
-			this.Class = 2;
-			this.Material = "256";
-		}else if (Type.equals("wand") || Type.equals("2")) {
-			this.CategoryTypeRarity = 2;
-			this.Class = 4;
-			this.Material = "280";
-		}else if (Type.equals("dagger") || Type.equals("3")) {
-			this.CategoryTypeRarity = 3;
-			this.Class = 8;
-			this.Material = "359";
-		}else if (Type.equals("helmet") || Type.equals("4")) {
-			this.CategoryTypeRarity = 4;
-			this.Material = "298";
-		}else if (Type.equals("chestplate") || Type.equals("5")) {
-			this.CategoryTypeRarity = 5;
-			this.Material = "299";
-		}else if (Type.equals("leggings") || Type.equals("6")) {
-			this.CategoryTypeRarity = 6;
-			this.Material = "300";
-		}else if (Type.equals("boots") || Type.equals("7")) {
-			this.CategoryTypeRarity = 7;
-			this.Material = "301";
-		}else if (Type.equals("ring") || Type.equals("8")) {
-			this.CategoryTypeRarity = 8;
-			this.Material = "95";
-		}else if (Type.equals("bracelet") || Type.equals("9")) {
-			this.CategoryTypeRarity = 9;
-			this.Material = "188";
-		}else if (Type.equals("necklace") || Type.equals("10")) {
-			this.CategoryTypeRarity = 10;
-			this.Material = "102";
-		}else{
-			this.CategoryTypeRarity = 11;
+        switch (Type) {
+            case "bow":
+            case "0":
+                this.CategoryTypeRarity = 0;
+                this.Class = 1;
+                this.Material = "261";
+                break;
+            case "spear":
+            case "1":
+                this.CategoryTypeRarity = 1;
+                this.Class = 2;
+                this.Material = "256";
+                break;
+            case "wand":
+            case "2":
+                this.CategoryTypeRarity = 2;
+                this.Class = 4;
+                this.Material = "280";
+                break;
+            case "dagger":
+            case "3":
+                this.CategoryTypeRarity = 3;
+                this.Class = 8;
+                this.Material = "359";
+                break;
+            case "helmet":
+            case "4":
+                this.CategoryTypeRarity = 4;
+                this.Material = "298";
+                break;
+            case "chestplate":
+            case "5":
+                this.CategoryTypeRarity = 5;
+                this.Material = "299";
+                break;
+            case "leggings":
+            case "6":
+                this.CategoryTypeRarity = 6;
+                this.Material = "300";
+                break;
+            case "boots":
+            case "7":
+                this.CategoryTypeRarity = 7;
+                this.Material = "301";
+                break;
+            case "ring":
+            case "8":
+                this.CategoryTypeRarity = 8;
+                this.Material = "95";
+                break;
+            case "bracelet":
+            case "9":
+                this.CategoryTypeRarity = 9;
+                this.Material = "188";
+                break;
+            case "necklace":
+            case "10":
+                this.CategoryTypeRarity = 10;
+                this.Material = "102";
+                break;
+            default:
+                this.CategoryTypeRarity = 11;
+                break;
 		}
 		
 		Rarity = Rarity.toLowerCase();
-		if (Rarity.equals("normal") || Rarity.equals("0")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity);
-		}else if (Rarity.equals("unique") || Rarity.equals("1")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 12);
-		}else if (Rarity.equals("rare") || Rarity.equals("2")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 24);
-		}else if (Rarity.equals("legendary") || Rarity.equals("3")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 36);
-		}else if (Rarity.equals("mythic") || Rarity.equals("4")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 48);
-		}else if (Rarity.equals("set") || Rarity.equals("5")) {
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 60);
-		}else{
-			this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 72);
+        switch (Rarity) {
+            case "normal":
+            case "0":
+                break;
+            case "unique":
+            case "1":
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 12);
+                break;
+            case "rare":
+            case "2":
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 24);
+                break;
+            case "legendary":
+            case "3":
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 36);
+                break;
+            case "mythic":
+            case "4":
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 48);
+                break;
+            case "set":
+            case "5":
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 60);
+                break;
+            default:
+                this.CategoryTypeRarity = (byte) (this.CategoryTypeRarity + 72);
+                break;
 		}
 	}
 	
@@ -272,7 +309,7 @@ public class WynnItem {
 	}
 	
 	public String GetRarityName() {
-		String Rarity = "";
+        String Rarity;
 		switch (this.GetRarity()) {
 		case 0: Rarity = String.valueOf('\u00a7') + "fNormal"; break;
 		case 1: Rarity = String.valueOf('\u00a7') + "eUnique"; break;
@@ -382,48 +419,105 @@ public class WynnItem {
 	}
 	
 	public void SetArmourMaterial(String Armour) {
-		if (Armour.toLowerCase().equals("diamond")) {
-			switch (this.GetType()) {
-				case 4: this.Material = "minecraft:diamond_helmet"; break;
-				case 5: this.Material = "minecraft:diamond_chestplate"; break;
-				case 6: this.Material = "minecraft:diamond_leggings"; break;
-				case 7: this.Material = "minecraft:diamond_boots"; break;
-				default: this.Material = "minecraft:diamond"; break;
-			}
-		}else if (Armour.toLowerCase().equals("iron")) {
-			switch (this.GetType()) {
-				case 4: this.Material = "minecraft:iron_helmet"; break;
-				case 5: this.Material = "minecraft:iron_chestplate"; break;
-				case 6: this.Material = "minecraft:iron_leggings"; break;
-				case 7: this.Material = "minecraft:iron_boots"; break;
-				default: this.Material = "minecraft:iron_ingot"; break;
-			}
-		}else if (Armour.toLowerCase().equals("golden")) {
-			switch (this.GetType()) {
-				case 4: this.Material = "minecraft:golden_helmet"; break;
-				case 5: this.Material = "minecraft:golden_chestplate"; break;
-				case 6: this.Material = "minecraft:golden_leggings"; break;
-				case 7: this.Material = "minecraft:golden_boots"; break;
-				default: this.Material = "minecraft:gold_ingot"; break;
-			}
-		}else if (Armour.toLowerCase().equals("chain")) {
-			switch (this.GetType()) {
-				case 4: this.Material = "minecraft:chainmail_helmet"; break;
-				case 5: this.Material = "minecraft:chainmail_chestplate"; break;
-				case 6: this.Material = "minecraft:chainmail_leggings"; break;
-				case 7: this.Material = "minecraft:chainmail_boots"; break;
-				default: this.Material = "minecraft:minecart"; break;
-			}
-		}else if (Armour.toLowerCase().equals("leather")) {
-			switch (this.GetType()) {
-				case 4: this.Material = "minecraft:leather_helmet"; break;
-				case 5: this.Material = "minecraft:leather_chestplate"; break;
-				case 6: this.Material = "minecraft:leather_leggings"; break;
-				case 7: this.Material = "minecraft:leather_boots"; break;
-				default: this.Material = "minecraft:leather"; break;
-			}
-		}else{
-			this.Material = "minecraft:sponge";
+        switch (Armour.toLowerCase()) {
+            case "diamond":
+                switch (this.GetType()) {
+                    case 4:
+                        this.Material = "minecraft:diamond_helmet";
+                        break;
+                    case 5:
+                        this.Material = "minecraft:diamond_chestplate";
+                        break;
+                    case 6:
+                        this.Material = "minecraft:diamond_leggings";
+                        break;
+                    case 7:
+                        this.Material = "minecraft:diamond_boots";
+                        break;
+                    default:
+                        this.Material = "minecraft:diamond";
+                        break;
+                }
+                break;
+            case "iron":
+                switch (this.GetType()) {
+                    case 4:
+                        this.Material = "minecraft:iron_helmet";
+                        break;
+                    case 5:
+                        this.Material = "minecraft:iron_chestplate";
+                        break;
+                    case 6:
+                        this.Material = "minecraft:iron_leggings";
+                        break;
+                    case 7:
+                        this.Material = "minecraft:iron_boots";
+                        break;
+                    default:
+                        this.Material = "minecraft:iron_ingot";
+                        break;
+                }
+                break;
+            case "golden":
+                switch (this.GetType()) {
+                    case 4:
+                        this.Material = "minecraft:golden_helmet";
+                        break;
+                    case 5:
+                        this.Material = "minecraft:golden_chestplate";
+                        break;
+                    case 6:
+                        this.Material = "minecraft:golden_leggings";
+                        break;
+                    case 7:
+                        this.Material = "minecraft:golden_boots";
+                        break;
+                    default:
+                        this.Material = "minecraft:gold_ingot";
+                        break;
+                }
+                break;
+            case "chain":
+                switch (this.GetType()) {
+                    case 4:
+                        this.Material = "minecraft:chainmail_helmet";
+                        break;
+                    case 5:
+                        this.Material = "minecraft:chainmail_chestplate";
+                        break;
+                    case 6:
+                        this.Material = "minecraft:chainmail_leggings";
+                        break;
+                    case 7:
+                        this.Material = "minecraft:chainmail_boots";
+                        break;
+                    default:
+                        this.Material = "minecraft:minecart";
+                        break;
+                }
+                break;
+            case "leather":
+                switch (this.GetType()) {
+                    case 4:
+                        this.Material = "minecraft:leather_helmet";
+                        break;
+                    case 5:
+                        this.Material = "minecraft:leather_chestplate";
+                        break;
+                    case 6:
+                        this.Material = "minecraft:leather_leggings";
+                        break;
+                    case 7:
+                        this.Material = "minecraft:leather_boots";
+                        break;
+                    default:
+                        this.Material = "minecraft:leather";
+                        break;
+                }
+                break;
+            default:
+                this.Material = "minecraft:sponge";
+                break;
 		}
 	}
 	
@@ -486,22 +580,31 @@ public class WynnItem {
 	
 	public void SetAttackSpeed(String AtkSpd) {
 		AtkSpd = AtkSpd.toLowerCase();
-		if (AtkSpd.equals("super_fast")) {
-			this.AttackSpeed = 1;
-		}else if (AtkSpd.equals("very_fast")) {
-			this.AttackSpeed = 2;
-		}else if (AtkSpd.equals("fast")) {
-			this.AttackSpeed = 3;
-		}else if (AtkSpd.equals("normal")) {
-			this.AttackSpeed = 4;
-		}else if (AtkSpd.equals("slow")) {
-			this.AttackSpeed = 5;
-		}else if (AtkSpd.equals("very_slow")) {
-			this.AttackSpeed = 6;
-		}else if (AtkSpd.equals("super_slow")) {
-			this.AttackSpeed = 7;
-		}else{
-			this.AttackSpeed = 8;
+        switch (AtkSpd) {
+            case "super_fast":
+                this.AttackSpeed = 1;
+                break;
+            case "very_fast":
+                this.AttackSpeed = 2;
+                break;
+            case "fast":
+                this.AttackSpeed = 3;
+                break;
+            case "normal":
+                this.AttackSpeed = 4;
+                break;
+            case "slow":
+                this.AttackSpeed = 5;
+                break;
+            case "very_slow":
+                this.AttackSpeed = 6;
+                break;
+            case "super_slow":
+                this.AttackSpeed = 7;
+                break;
+            default:
+                this.AttackSpeed = 8;
+                break;
 		}
 	}
 	
@@ -524,8 +627,7 @@ public class WynnItem {
 		this.Damage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetDamage() {
-		int[] Damage = {(this.Damage[0] - Short.MIN_VALUE), (this.Damage[1] - Short.MIN_VALUE)};
-		return Damage;
+        return new int[]{(this.Damage[0] - Short.MIN_VALUE), (this.Damage[1] - Short.MIN_VALUE)};
 	}
 	
 	public void SetEarthDamage(String Dmg) {
@@ -533,8 +635,7 @@ public class WynnItem {
 		this.EarthDamage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetEarthDamage() {
-		int[] EarthDamage = {(this.EarthDamage[0] - Short.MIN_VALUE), (this.EarthDamage[1] - Short.MIN_VALUE)};
-		return EarthDamage;
+        return new int[]{(this.EarthDamage[0] - Short.MIN_VALUE), (this.EarthDamage[1] - Short.MIN_VALUE)};
 	}
 	
 	public void SetThunderDamage(String Dmg) {
@@ -542,8 +643,7 @@ public class WynnItem {
 		this.ThunderDamage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetThunderDamage() {
-		int[] ThunderDamage = {(this.ThunderDamage[0] - Short.MIN_VALUE), (this.ThunderDamage[1] - Short.MIN_VALUE)};
-		return ThunderDamage;
+        return new int[]{(this.ThunderDamage[0] - Short.MIN_VALUE), (this.ThunderDamage[1] - Short.MIN_VALUE)};
 	}
 	
 	public void SetWaterDamage(String Dmg) {
@@ -551,8 +651,7 @@ public class WynnItem {
 		this.WaterDamage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetWaterDamage() {
-		int[] Damage = {(this.WaterDamage[0] - Short.MIN_VALUE), (this.WaterDamage[1] - Short.MIN_VALUE)};
-		return Damage;
+        return new int[]{(this.WaterDamage[0] - Short.MIN_VALUE), (this.WaterDamage[1] - Short.MIN_VALUE)};
 	}
 	
 	public void SetFireDamage(String Dmg) {
@@ -560,8 +659,7 @@ public class WynnItem {
 		this.FireDamage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetFireDamage() {
-		int[] Damage = {(this.FireDamage[0] - Short.MIN_VALUE), (this.FireDamage[1] - Short.MIN_VALUE)};
-		return Damage;
+        return new int[]{(this.FireDamage[0] - Short.MIN_VALUE), (this.FireDamage[1] - Short.MIN_VALUE)};
 	}
 	
 	public void SetAirDamage(String Dmg) {
@@ -569,8 +667,7 @@ public class WynnItem {
 		this.AirDamage[1] = (short) (Short.parseShort(Dmg.substring(Dmg.indexOf("-", 1) +1)) + Short.MIN_VALUE);
 	}
 	public int[] GetAirDamage() {
-		int[] Damage = {(this.AirDamage[0] - Short.MIN_VALUE), (this.AirDamage[1] - Short.MIN_VALUE)};
-		return Damage;
+        return new int[]{(this.AirDamage[0] - Short.MIN_VALUE), (this.AirDamage[1] - Short.MIN_VALUE)};
 	}
 	
 	
@@ -592,15 +689,12 @@ public class WynnItem {
 	
 	private int[] CalculateIdRange(int ID) {
 		if (this.Identified) {
-			int[] Output = {ID, ID}; 
-			return Output;
+            return new int[]{ID, ID};
 		}else{
 			if (ID > 0) {
-				int[] Output = {Math.max(Math.round(ID * 0.3f), 1), Math.max(Math.round(ID * 1.3f), 1)};
-				return Output;
+                return new int[]{Math.max(Math.round(ID * 0.3f), 1), Math.max(Math.round(ID * 1.3f), 1)};
 			}else{
-				int[] Output = {Math.min(Math.round(ID * 0.7f), -1), Math.min(Math.round(ID * 1.3f), -1)};
-				return Output;
+                return new int[]{Math.min(Math.round(ID * 0.7f), -1), Math.min(Math.round(ID * 1.3f), -1)};
 			}
 		}
 	}

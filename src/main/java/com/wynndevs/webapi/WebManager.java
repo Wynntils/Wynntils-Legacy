@@ -2,7 +2,6 @@ package com.wynndevs.webapi;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.webapi.downloader.DownloaderManager;
 import com.wynndevs.webapi.profiles.MapMarkerProfile;
 import com.wynndevs.webapi.profiles.TerritoryProfile;
 import com.wynndevs.webapi.profiles.UpdateProfile;

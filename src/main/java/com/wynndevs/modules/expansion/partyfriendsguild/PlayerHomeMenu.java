@@ -13,7 +13,10 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -64,41 +67,24 @@ public class PlayerHomeMenu extends GuiScreenMod {
 			WebAPI.TaskSchedule.add("RefreshPlayerLists");
 		}
 	}
-	
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.visible) {
-			switch (button.id) {
-			case -1:
-				mc.displayGuiScreen(null);
-				break;
-			case 0:
-				PlayerInfoMenu.LastPageHome = true;
-				PlayerInfoMenu.PlayerLoaded = false;
-				PlayerInfoMenu.CurrentPlayer = ModCore.mc().player.getName();
-				mc.displayGuiScreen(new PlayerInfoMenu());
-				break;
-			case 1:
-				PlayerListMenu.Page = 1;
-				PlayerListMenu.ListType = 1;
-				mc.displayGuiScreen(new PlayerListMenu());
-				break;
-			case 2:
-				PlayerListMenu.Page = 1;
-				PlayerListMenu.ListType = 2;
-				mc.displayGuiScreen(new PlayerListMenu());
-				break;
-			case 3:
-				PlayerListMenu.Page = 1;
-				PlayerListMenu.ListType = 3;
-				mc.displayGuiScreen(new PlayerListMenu());
-				break;
-			case 4:
-				PlayerListMenu.Page = 1;
-				PlayerListMenu.ListType = 4;
-				mc.displayGuiScreen(new PlayerListMenu());
-				break;
+
+	private static void ReadFriendsList(){
+		FriendsList.clear();
+		try {
+			if (new File("config/Wynn Expansion/Friends.cfg").exists()) {
+				try (BufferedReader FileFriends = new BufferedReader(new FileReader("config/Wynn Expansion/Friends.cfg"))) {
+					String Friend = FileFriends.readLine();
+
+					while (Friend != null) {
+						String[] Tmp = {"0", Friend.substring(0, Friend.indexOf(" - ")), Friend.substring(Friend.indexOf(" - ") + 3)};
+						if (Tmp[1].matches("[0-9a-zA-Z_]+")) {
+							FriendsList.add(Tmp);
+						}
+						Friend = FileFriends.readLine();
+					}
+				}
 			}
-			
+		} catch (Exception ignore) {
 		}
 	}
 	
@@ -886,27 +872,42 @@ public class PlayerHomeMenu extends GuiScreenMod {
 			writer.close();
 		} catch (Exception ignore) {}*/
 	}
-	
-	private static void ReadFriendsList(){
-		FriendsList.clear();
-		try{
-			if (new File("config/Wynn Expansion/Friends.cfg").exists()){
-				BufferedReader FileFriends = new BufferedReader(new FileReader("config/Wynn Expansion/Friends.cfg"));
-				try {
-					String Friend = FileFriends.readLine();
-					
-					while (Friend != null) {
-						String[] Tmp = {"0", Friend.substring(0, Friend.indexOf(" - ")), Friend.substring(Friend.indexOf(" - ") +3)};
-						if (Tmp[1].matches("[0-9a-zA-Z_]+")) {
-							FriendsList.add(Tmp);
-						}
-						Friend = FileFriends.readLine();
-					}
-				} finally {
-					FileFriends.close();
-				}
+
+	protected void actionPerformed(GuiButton button){
+		if (button.visible) {
+			switch (button.id) {
+				case -1:
+					mc.displayGuiScreen(null);
+					break;
+				case 0:
+					PlayerInfoMenu.LastPageHome = true;
+					PlayerInfoMenu.PlayerLoaded = false;
+					PlayerInfoMenu.CurrentPlayer = ModCore.mc().player.getName();
+					mc.displayGuiScreen(new PlayerInfoMenu());
+					break;
+				case 1:
+					PlayerListMenu.Page = 1;
+					PlayerListMenu.ListType = 1;
+					mc.displayGuiScreen(new PlayerListMenu());
+					break;
+				case 2:
+					PlayerListMenu.Page = 1;
+					PlayerListMenu.ListType = 2;
+					mc.displayGuiScreen(new PlayerListMenu());
+					break;
+				case 3:
+					PlayerListMenu.Page = 1;
+					PlayerListMenu.ListType = 3;
+					mc.displayGuiScreen(new PlayerListMenu());
+					break;
+				case 4:
+					PlayerListMenu.Page = 1;
+					PlayerListMenu.ListType = 4;
+					mc.displayGuiScreen(new PlayerListMenu());
+					break;
 			}
-		}catch(Exception ignore){}
+
+		}
 	}
 	
 	static void SaveFriendsList(){

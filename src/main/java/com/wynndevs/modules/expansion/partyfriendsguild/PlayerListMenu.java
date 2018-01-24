@@ -2,15 +2,14 @@ package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.WynnExpansion;
+import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -421,7 +420,13 @@ public class PlayerListMenu extends GuiScreenMod {
 			if (VisibleRankRecruiterButton) {RankRecruiterButton.visible = true; RankRecruiterButton.x = PlayerButtonList.get(Selected-1).x + AllignLeft;  AllignLeft += RankRecruiterButton.width; RankRecruiterButton.y = PlayerButtonList.get(Selected-1).y;}else{RankRecruiterButton.visible = false;}
 			if (VisibleRankCaptainButton) {RankCaptainButton.visible = true; RankCaptainButton.x = PlayerButtonList.get(Selected-1).x + AllignLeft;  AllignLeft += RankCaptainButton.width; RankCaptainButton.y = PlayerButtonList.get(Selected-1).y;}else{RankCaptainButton.visible = false;}
 			if (VisibleRankChiefButton) {RankChiefButton.visible = true; RankChiefButton.x = PlayerButtonList.get(Selected-1).x + AllignLeft;  AllignLeft += RankChiefButton.width; RankChiefButton.y = PlayerButtonList.get(Selected-1).y;}else{RankChiefButton.visible = false;}
-			if (VisibleRankLeadingChiefButton) {RankLeadingChiefButton.visible = true; RankLeadingChiefButton.x = PlayerButtonList.get(Selected-1).x + AllignLeft;  AllignLeft += RankLeadingChiefButton.width; RankLeadingChiefButton.y = PlayerButtonList.get(Selected-1).y;}else{RankLeadingChiefButton.visible = false;}
+            if (VisibleRankLeadingChiefButton) {
+                RankLeadingChiefButton.visible = true;
+                RankLeadingChiefButton.x = PlayerButtonList.get(Selected - 1).x + AllignLeft;
+                RankLeadingChiefButton.y = PlayerButtonList.get(Selected - 1).y;
+            } else {
+                RankLeadingChiefButton.visible = false;
+            }
 			
 			
 			int AllignRight = PlayerButtonList.get(0).width;
@@ -430,7 +435,7 @@ public class PlayerListMenu extends GuiScreenMod {
 		}
 	}
 
-	protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button){
 		if (button.visible && button.enabled) {
 			switch (button.id) {
 			case -1:

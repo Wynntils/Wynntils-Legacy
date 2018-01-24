@@ -11,7 +11,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import java.io.IOException;
 
 public class ConfigGui extends CoreGuiScreen {
 
@@ -24,7 +23,7 @@ public class ConfigGui extends CoreGuiScreen {
         super(mc);
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton){
         int slots = (page - 1) * 5;
         int startPage = page * 5;
 
@@ -78,14 +77,15 @@ public class ConfigGui extends CoreGuiScreen {
             if(slots <= category.getValues().size()) {
                 ConfigCategory.AdvancedField value = category.getValues().get(key);
 
-                if(!value.getValue()) {
+                if (value.getValue()) {
                     if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (90 + (slots * 20))) {
                         try{
                             value.getField().setBoolean(value.getInstance(), true);
                             category.getValues().put(key, new ConfigCategory.AdvancedField(true, value.getField(), value.getInstance()));
                             ClientEvents.syncConfig();
                             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        }catch (Exception ex) { }
+                        } catch (Exception ignored) {
+                        }
                     }
                 }else{
                     if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (90 + (slots * 20))) {
@@ -94,7 +94,8 @@ public class ConfigGui extends CoreGuiScreen {
                             category.getValues().put(key, new ConfigCategory.AdvancedField(false, value.getField(), value.getInstance()));
                             ClientEvents.syncConfig();
                             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, -1.0F));
-                        }catch (Exception ex) { }
+                        } catch (Exception ignored) {
+                        }
                     }
                 }
 
@@ -194,7 +195,7 @@ public class ConfigGui extends CoreGuiScreen {
 
                 mc.getTextureManager().bindTexture(TEXTURE_OPTIONS);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                if(!value.getValue()) {
+                if (value.getValue()) {
                     if(mouseX > x - 118 && mouseX < x - 108 && mouseY > (72 + (slots * 20)) && mouseY < (88 + (slots * 20))) {
                         drawTexturedModalRect(x - 117, 72 + (slots * 20), 240, 208, 8, 14);
                     }else {

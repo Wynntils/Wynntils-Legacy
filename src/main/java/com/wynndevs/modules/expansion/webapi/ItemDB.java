@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,15 +42,15 @@ public class ItemDB {
 				ItemDBTmp.add(ItemDBRaw.substring(ItemDBRaw.indexOf('{', LastLocation), ItemDBRaw.indexOf('}', ItemDBRaw.indexOf('{', LastLocation))) + ",\"");
 				LastLocation = ItemDBRaw.indexOf("}", LastLocation);
 			}
-			
-			Collections.sort(ItemDBTmp, String.CASE_INSENSITIVE_ORDER);
+
+            ItemDBTmp.sort(String.CASE_INSENSITIVE_ORDER);
 
             for (String aItemDBTmp : ItemDBTmp) {
                 WynnItem Item = new WynnItem();
 
                 for (int j = 0; j < ItemAttributeList.length; j++) {
-                    if (aItemDBTmp.contains("\"" + ItemAttributeList[j].toString() + "\":")) {
-                        Item = ParseItemData(Item, j, aItemDBTmp.substring(aItemDBTmp.indexOf("\"" + ItemAttributeList[j].toString() + "\":") + ItemAttributeList[j].length() + 3, aItemDBTmp.indexOf(",\"", aItemDBTmp.indexOf("\"" + ItemAttributeList[j] + "\":") + ItemAttributeList[j].length() + 3)).replace("\"", ""));
+                    if (aItemDBTmp.contains("\"" + ItemAttributeList[j] + "\":")) {
+                        Item = ParseItemData(Item, j, aItemDBTmp.substring(aItemDBTmp.indexOf("\"" + ItemAttributeList[j] + "\":") + ItemAttributeList[j].length() + 3, aItemDBTmp.indexOf(",\"", aItemDBTmp.indexOf("\"" + ItemAttributeList[j] + "\":") + ItemAttributeList[j].length() + 3)).replace("\"", ""));
                     }
                 }
                 if (!Item.Name.contentEquals("YAMLException") && !Item.Name.equals("null")) {

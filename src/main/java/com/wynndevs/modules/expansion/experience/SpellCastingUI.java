@@ -154,8 +154,8 @@ public class SpellCastingUI extends ModGui{
 					if ((i*10)+30 < Lvl){
 						SpellLvl++;
 					}
-					
-					int Position = 0;
+
+                    int Position;
 					if (i < 2) {
 						Position = (width/2) - 155 + (i*32);
 					}else{

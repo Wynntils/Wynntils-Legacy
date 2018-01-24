@@ -401,7 +401,7 @@ public class CChestGUI extends GuiChest {
                 continue;
             }
 
-            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");;
+            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");
 
             if (pField == null) {
                 actualLore.set(i, lore);

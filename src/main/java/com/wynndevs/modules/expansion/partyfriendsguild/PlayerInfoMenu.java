@@ -2,9 +2,9 @@ package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
+import com.wynndevs.modules.expansion.WynnExpansion;
 import com.wynndevs.modules.expansion.misc.GuiScreenMod;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
-import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -332,7 +331,12 @@ public class PlayerInfoMenu extends GuiScreenMod {
 				if (VisibleRankCaptainButton) {RankCaptainButton.visible = true; RankCaptainButton.x = (this.width/2) + GuildAllign; GuildAllign += RankCaptainButton.width;}else{RankCaptainButton.visible = false;}
 				if (VisibleRankChiefButton) {RankChiefButton.visible = true; RankChiefButton.x = (this.width/2) + GuildAllign; GuildAllign += RankChiefButton.width;}else{RankChiefButton.visible = false;}
 				if (VisibleGuildInviteButton) {GuildInviteButton.visible = true; GuildInviteButton.x = (this.width/2) + GuildAllign; GuildAllign += GuildInviteButton.width;}else{GuildInviteButton.visible = false;}
-				if (VisibleKickGuildButton) {KickGuildButton.visible = true; KickGuildButton.x = (this.width/2) + GuildAllign; GuildAllign += KickGuildButton.width;}else{KickGuildButton.visible = false;}
+                if (VisibleKickGuildButton) {
+                    KickGuildButton.visible = true;
+                    KickGuildButton.x = (this.width / 2) + GuildAllign;
+                } else {
+                    KickGuildButton.visible = false;
+                }
 			}else{
 				KickPartyButton.visible = false;
 				KickFriendButton.visible = false;
@@ -354,8 +358,8 @@ public class PlayerInfoMenu extends GuiScreenMod {
 			}
 		}
 	}
-	
-	protected void actionPerformed(GuiButton button) throws IOException {
+
+    protected void actionPerformed(GuiButton button){
 		if (button.visible) {
 			switch (button.id) {
 			case -1:

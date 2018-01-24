@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class ConfigCategory {
 
     String name;
-    HashMap<String, AdvancedField> values = new HashMap<>();
+    HashMap <String, AdvancedField> values;
     ArrayList<ConfigCategory> subCategories = new ArrayList<>();
     ConfigCategory inheritance;
 
@@ -54,7 +54,7 @@ public class ConfigCategory {
         }
 
         public boolean getValue() {
-            return value;
+            return !value;
         }
 
         public Field getField() {

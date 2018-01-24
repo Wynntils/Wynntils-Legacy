@@ -9,7 +9,8 @@ public class DataProfile {
     String location = "Waiting";
     int locId = -1;
 
-    public void DataProfile() { }
+    public DataProfile(){
+    }
 
     public String getLocation() {
         return location;

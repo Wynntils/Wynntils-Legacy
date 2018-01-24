@@ -77,39 +77,47 @@ public class WorldItemName {
 			String DataLine;
 			DataLine = DataFile.readLine();
 			while (DataLine != null) {
-				if (DataLine.equals("--Potion Check--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PotionCheck.add(DataLine);
-					}
-				}else if (DataLine.equals("--Potion Format--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PotionFormat.add(DataLine);
-					}
-				}else if (DataLine.equals("--Potion Format Short--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PotionFormatShort.add(DataLine);
-					}
-				}else if (DataLine.equals("--Powder Check--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PowderCheck.add(DataLine);
-					}
-				}else if (DataLine.equals("--Powder Format--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PowderFormat.add(DataLine);
-					}
-				}else if (DataLine.equals("--Powder Format Short--")){
-					while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
-						DataLine = DataSetupFormat(DataLine);
-						PowderFormatShort.add(DataLine);
-					}
-				}else{
-					DataLine = DataFile.readLine();
-				}
+                switch (DataLine) {
+                    case "--Potion Check--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PotionCheck.add(DataLine);
+                        }
+                        break;
+                    case "--Potion Format--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PotionFormat.add(DataLine);
+                        }
+                        break;
+                    case "--Potion Format Short--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PotionFormatShort.add(DataLine);
+                        }
+                        break;
+                    case "--Powder Check--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PowderCheck.add(DataLine);
+                        }
+                        break;
+                    case "--Powder Format--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PowderFormat.add(DataLine);
+                        }
+                        break;
+                    case "--Powder Format Short--":
+                        while ((DataLine = DataFile.readLine()) != null && !DataLine.startsWith("--")) {
+                            DataLine = DataSetupFormat(DataLine);
+                            PowderFormatShort.add(DataLine);
+                        }
+                        break;
+                    default:
+                        DataLine = DataFile.readLine();
+                        break;
+                }
 			}
 			DataFile.close();
 			ExpReference.consoleOut("Item database [2] successfully retrieved");

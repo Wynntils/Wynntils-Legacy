@@ -2,14 +2,11 @@ package com.wynndevs.modules.wynnicmap;
 
 
 import com.wynndevs.core.Utils.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
-
 import java.awt.*;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -42,9 +39,9 @@ public class GuiMap extends Gui {
      *
      * @return indication of what happened in the drawing process
      */
-    public DrawMapResult drawMap() {
-        if(!visible) return DrawMapResult.NOT_VISIBLE;
-        if(!MapHandler.isMapLoaded()) return DrawMapResult.MAP_NOT_LOADED;
+    public void drawMap(){
+        if (!visible) return;
+        if (!MapHandler.isMapLoaded()) return;
         try {
             MapHandler.BindMapTexture();
             Pair<Pair<Float,Float>,Point> uv = MapHandler.GetUV(centerX,centerY,width,height,zoom);
@@ -79,9 +76,7 @@ public class GuiMap extends Gui {
             GlStateManager.popAttrib();
 
         } catch (Exception e) {
-            return DrawMapResult.DRAW_ERROR;
         }
-        return DrawMapResult.SUCCESS;
     }
 
 

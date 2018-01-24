@@ -1,9 +1,8 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.modules.expansion.ExpReference;
-import com.wynndevs.modules.expansion.webapi.WebAPI;
 import com.wynndevs.modules.expansion.WynnExpansion;
-import net.minecraft.command.CommandException;
+import com.wynndevs.modules.expansion.webapi.WebAPI;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -38,7 +37,7 @@ public class InfoCommand implements ICommand{
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args){
 		if (args.length == 1){
 			PlayerInfoMenu.LastPageHome = true;
 			PlayerInfoMenu.PlayerLoaded = false;
@@ -60,8 +59,7 @@ public class InfoCommand implements ICommand{
 
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
-		List<String> Output = new ArrayList<String>();
-		return Output;
+        return new ArrayList <String>();
 	}
 
 	@Override

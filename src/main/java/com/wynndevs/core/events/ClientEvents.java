@@ -15,8 +15,6 @@ import com.wynndevs.modules.market.WynnMarket;
 import com.wynndevs.modules.market.enums.ResetAccount;
 import com.wynndevs.modules.market.guis.screen.MarketGUI;
 import com.wynndevs.modules.market.market.MarketUser;
-import com.wynndevs.webapi.downloader.DownloaderManager;
-import com.wynndevs.webapi.downloader.enums.DownloadAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.text.TextComponentString;
@@ -32,6 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ClientEvents {
@@ -141,7 +140,7 @@ public class ClientEvents {
             errorSended = true;
         }
 
-        Collection<NetworkPlayerInfo> tab = ModCore.mc().getConnection().getPlayerInfoMap();
+        Collection <NetworkPlayerInfo> tab = Objects.requireNonNull(ModCore.mc().getConnection()).getPlayerInfoMap();
         String world = null;
         for(NetworkPlayerInfo pl : tab) {
             String name = ModCore.mc().ingameGUI.getTabList().getPlayerName(pl);

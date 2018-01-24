@@ -195,8 +195,8 @@ public class Config {
 			GuildAttackTimer.AttackShadowTimer = config.getBoolean("AttackShadowTimer", "Modules", false, "");
 			GuildAttackTimer.AttackColourTimer = config.getBoolean("AttackColourTimer", "Modules", false, "");
 			//////////// |\\\\\\\\\\\\\
-			
-			if (config.getBoolean("AttackTimer", "Modules", true, "") == true && config.getBoolean("RemoveExcessWar", "Modules", false, "") == true){
+
+            if (config.getBoolean("AttackTimer", "Modules", true, "") && config.getBoolean("RemoveExcessWar", "Modules", false, "")) {
 				config.get("RemoveExcessWar", "Modules", false).set(false);
 				GuildAttack.RemoveExcessWar = config.getBoolean("RemoveExcessWar", "Modules", false, "");
 			}
@@ -351,7 +351,7 @@ public class Config {
 			for (int Slot=0;Slot<42;Slot++){
 				if (Slot >= 6 && Slot <= 8){
 					StickyItems.StickySlots[i][Slot] = true;
-				}else if (config.getBoolean("LockSlot" + Class + Slot, "StickyItems", false, "") == true){
+                } else if (config.getBoolean("LockSlot" + Class + Slot, "StickyItems", false, "")) {
 					StickyItems.StickySlots[i][Slot] = true;
 				}
 			}

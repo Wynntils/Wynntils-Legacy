@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class GuildProfile {
 
-    ArrayList<GuildMember> members = new ArrayList<>();
+    ArrayList <GuildMember> members;
 
     String name;
     String prefix;

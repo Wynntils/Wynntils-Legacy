@@ -99,16 +99,22 @@ public class GuiPartyChatbox extends GuiScreen implements ITabCompleter {
         if (keyCode == 1) {
             this.mc.displayGuiScreen(null);
         } else if (keyCode != 28 && keyCode != 156) {
-            if (keyCode == 200) {
-                this.getSentHistory(-1);
-            } else if (keyCode == 208) {
-                this.getSentHistory(1);
-            } else if (keyCode == 201) {
-                this.mc.ingameGUI.getChatGUI().scroll(this.mc.ingameGUI.getChatGUI().getLineCount() - 1);
-            } else if (keyCode == 209) {
-                this.mc.ingameGUI.getChatGUI().scroll(-this.mc.ingameGUI.getChatGUI().getLineCount() + 1);
-            } else {
-                this.inputField.textboxKeyTyped(typedChar, keyCode);
+            switch (keyCode) {
+                case 200:
+                    this.getSentHistory(-1);
+                    break;
+                case 208:
+                    this.getSentHistory(1);
+                    break;
+                case 201:
+                    this.mc.ingameGUI.getChatGUI().scroll(this.mc.ingameGUI.getChatGUI().getLineCount() - 1);
+                    break;
+                case 209:
+                    this.mc.ingameGUI.getChatGUI().scroll(-this.mc.ingameGUI.getChatGUI().getLineCount() + 1);
+                    break;
+                default:
+                    this.inputField.textboxKeyTyped(typedChar, keyCode);
+                    break;
             }
         } else {
             String s = this.inputField.getText().trim();

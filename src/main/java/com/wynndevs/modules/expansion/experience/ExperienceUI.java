@@ -34,7 +34,6 @@ public class ExperienceUI extends ModGui {
     static int ExpHUDAnimation = 0;
     static int ExpHUDLength = 0;
     static Delay ExpHUDHang = new Delay(30.0f, false);
-    private static String ExpHUDMessage = "";
     private static long KillTimeStamp = 0L;
     private static String KillsPerMinute = "-";
     private static Delay ExpHUDDelay = new Delay(0.025f, true);
@@ -87,21 +86,21 @@ public class ExperienceUI extends ModGui {
                     ExpHUDAnimation++;
                 }
 
-                ExpHUDMessage = String.valueOf('\u00a7') + "a+" + (UseExpInstead ? "exp " : "XP ") + String.valueOf('\u00a7') + "2 [" + String.valueOf('\u00a7') + "a+" + new DecimalFormat("#,###,###,##0").format(ExpHUD) + String.valueOf('\u00a7') + "2] " + new DecimalFormat("##,###,#00.00").format(ExpHUDPer) + "%";
-                ExpHUDLength = ExpReference.getMsgLength(ExpHUDMessage, (ExpFlowSmall ? 1.0f : 1.5f)) + 2;
+                String expHUDMessage = String.valueOf('\u00a7') + "a+" + (UseExpInstead ? "exp " : "XP ") + String.valueOf('\u00a7') + "2 [" + String.valueOf('\u00a7') + "a+" + new DecimalFormat("#,###,###,##0").format(ExpHUD) + String.valueOf('\u00a7') + "2] " + new DecimalFormat("##,###,#00.00").format(ExpHUDPer) + "%";
+                ExpHUDLength = ExpReference.getMsgLength(expHUDMessage, (ExpFlowSmall ? 1.0f : 1.5f)) + 2;
 
                 if (KillPerMinute) {
                     KillsPerMinute = new DecimalFormat("00.0").format(((float) ExpHUDCombo) / (System.currentTimeMillis() - KillTimeStamp < 60000L ? 1f : (((float) (System.currentTimeMillis() - KillTimeStamp)) / 60000f)));
                 }
 
                 if (SideBarHeaderShadow) {
-                    this.drawString(font, ExpHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
+                    this.drawString(font, expHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     if (KillStreak) {
                         String KillStreakMessage = String.valueOf('\u00a7') + "c" + ExpHUDCombo + " Kill" + (ExpHUDCombo > 1 ? "s" : "") + (KillPerMinute ? String.valueOf('\u00a7') + "4 [" + String.valueOf('\u00a7') + "c" + KillsPerMinute + " Kpm" + String.valueOf('\u00a7') + "4]" : "");
                         this.drawString(font, KillStreakMessage, (width - ExpReference.getMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     }
                 } else {
-                    this.drawStringPlain(font, ExpHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
+                    this.drawStringPlain(font, expHUDMessage, (width - ExpHUDLength + ExpHUDAnimation), (KillStreak ? (height / 2) - 15 : (height / 2)), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));
                     if (KillStreak) {
                         String KillStreakMessage = String.valueOf('\u00a7') + "c" + ExpHUDCombo + " Kill" + (ExpHUDCombo > 1 ? "s" : "") + (KillPerMinute ? String.valueOf('\u00a7') + "4 [" + String.valueOf('\u00a7') + "c" + KillsPerMinute + " Kpm" + String.valueOf('\u00a7') + "4]" : "");
                         this.drawStringPlain(font, KillStreakMessage, (width - ExpReference.getMsgLength(KillStreakMessage, (ExpFlowSmall ? 1.0f : 1.5f)) - 2 + ExpHUDAnimation), (height / 2), (ExpFlowSmall ? 1.0f : 1.5f), Integer.parseInt("FFA700", 16));

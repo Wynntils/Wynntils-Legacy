@@ -1,7 +1,6 @@
 package com.wynndevs.modules.richpresence.guis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
 import org.lwjgl.opengl.GL11;
 

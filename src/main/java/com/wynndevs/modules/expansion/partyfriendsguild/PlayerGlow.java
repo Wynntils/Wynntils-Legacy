@@ -3,9 +3,9 @@ package com.wynndevs.modules.expansion.partyfriendsguild;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.modules.expansion.ExpReference;
+import com.wynndevs.modules.expansion.WynnExpansion;
 import com.wynndevs.modules.expansion.misc.Delay;
 import com.wynndevs.modules.expansion.webapi.WebAPI;
-import com.wynndevs.modules.expansion.WynnExpansion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -98,7 +98,7 @@ public class PlayerGlow {
 				for (Entity entity : (NameDisguises || HighlightDisguises ? mc.world.loadedEntityList : mc.world.playerEntities)) {
 					if ((NameDisguises || HighlightDisguises ? mc.world.loadedEntityList : mc.world.playerEntities) == null)
 						break;
-					if (!(entity instanceof EntityArmorStand) && ((!entity.getName().equals(null) && entity.getName().matches("[0-9a-zA-Z_]+") && entity instanceof EntityPlayer && !((EntityPlayer)entity).isUser()) || (entity.getName().endsWith("[Disguised]") && !entity.getName().substring(0, entity.getName().length() -14).equals(mc.player.getName()))) && !entity.getTags().contains("WynnExpGlowSkip")) {
+                    if (!(entity instanceof EntityArmorStand) && ((entity.getName() != null && entity.getName().matches("[0-9a-zA-Z_]+") && entity instanceof EntityPlayer && !((EntityPlayer) entity).isUser()) || (entity.getName().endsWith("[Disguised]") && !entity.getName().substring(0, entity.getName().length() - 14).equals(mc.player.getName()))) && !entity.getTags().contains("WynnExpGlowSkip")) {
 						boolean Disguise = entity.getName().contains("[Disguised]");
 						StringBuilder Name = new StringBuilder();
 						boolean flag = false;
@@ -223,7 +223,7 @@ public class PlayerGlow {
 				for (EntityPlayer entity : mc.world.playerEntities) {
 					if (mc.world.playerEntities == null)
 						break;
-					if (entity instanceof EntityOtherPlayerMP && !entity.getName().equals(null) && entity.getName().matches("[0-9a-zA-Z_]+") && !entity.isUser()) {
+                    if (entity instanceof EntityOtherPlayerMP && entity.getName() != null && entity.getName().matches("[0-9a-zA-Z_]+") && !entity.isUser()) {
 						if (!entity.getName().equals(mc.player.getName())) {
 							switch ((int) Math.ceil((Math.ceil(entity.getHealth()) / Math.ceil(entity.getMaxHealth())) * 5)) {
 							case 1:

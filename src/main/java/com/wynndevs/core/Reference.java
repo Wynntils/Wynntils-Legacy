@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.Objects;
 
 public class Reference {
 
@@ -14,9 +15,15 @@ public class Reference {
     public static final File MOD_STORAGE_ROOT = new File("wynntils");
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
     public static String userWorld = null;
-    public static boolean onServer() { return !ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && ModCore.mc().getCurrentServerData().serverIP.contains("wynncraft"); }
+
+    public static boolean onServer(){
+        return !ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft");
+    }
     public static boolean onWorld() { return onServer() && userWorld != null; }
-    public static boolean onNether() {return onWorld() && userWorld.contains("N"); }
+
+    public static boolean onNether(){
+        return !onWorld() || !userWorld.contains("N");
+    }
     public static boolean onWars() {return onWorld() && userWorld.contains("WAR"); }
 
 }

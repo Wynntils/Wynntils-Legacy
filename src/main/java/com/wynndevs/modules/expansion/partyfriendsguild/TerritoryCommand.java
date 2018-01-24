@@ -1,10 +1,9 @@
 package com.wynndevs.modules.expansion.partyfriendsguild;
 
 import com.wynndevs.modules.expansion.ExpReference;
+import com.wynndevs.modules.expansion.WynnExpansion;
 import com.wynndevs.modules.expansion.webapi.Territory;
 import com.wynndevs.modules.expansion.webapi.WynnTerritory;
-import com.wynndevs.modules.expansion.WynnExpansion;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -42,7 +41,7 @@ public class TerritoryCommand implements ICommand{
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args){
 		if (args.length >= 1){
 			StringBuilder ArgTmp = new StringBuilder(args[0]);
 			WynnTerritory SelectedTerritory = new WynnTerritory();

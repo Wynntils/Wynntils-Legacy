@@ -66,9 +66,6 @@ public class WynnExpansion {
 	
 	private static Delay TickRateLimiter = new Delay(0.04f, true);
 
-	private static GuiGuild guild;
-	private static GuiParty party;
-
 	public static ModuleResult initModule(FMLPreInitializationEvent event) {
 		ClientCommandHandler.instance.registerCommand(new CordsCommand());
 		ClientCommandHandler.instance.registerCommand(new InfoCommand());
@@ -81,8 +78,10 @@ public class WynnExpansion {
 		
 		MinecraftForge.EVENT_BUS.register(new WynnExpansion());
 		MinecraftForge.EVENT_BUS.register(new StickyItems());
+        GuiGuild guild;
 		MinecraftForge.EVENT_BUS.register(guild = new GuiGuild(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new GuildChat(ModCore.mc(), guild));
+        GuiParty party;
 		MinecraftForge.EVENT_BUS.register(party = new GuiParty(ModCore.mc()));
 		MinecraftForge.EVENT_BUS.register(new PartyChat(ModCore.mc(), party));
 		MinecraftForge.EVENT_BUS.register(new HudOverlay(ModCore.mc()));
@@ -153,7 +152,7 @@ public class WynnExpansion {
 		}
 		if (Reference.onWorld()) {
 			if (gui != null && gui instanceof GuiScreenBook) {
-				if (!Reference.onWars() && !Reference.onNether()){
+                if (!Reference.onWars() && Reference.onNether()) {
 					QuestBook.ReloadBook();
 					event.setGui(new GuiQuestBook());
 				}else{
@@ -181,7 +180,7 @@ public class WynnExpansion {
 					PartyHUD.CapturePlayerEntities(ModCore.mc());
 					if (WarTimer.TimeStamp != 0L) WarTimer.TimeStamp = 0L;
 				}
-				if (!Reference.onNether()) PlayerGlow.PlayerGlows(ModCore.mc());
+                if (Reference.onNether()) PlayerGlow.PlayerGlows(ModCore.mc());
 				if (event.phase == TickEvent.Phase.START) {
 					if (!UseLegacyExperience) {
 						Experience.getAddedAmounts();

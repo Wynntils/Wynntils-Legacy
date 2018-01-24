@@ -15,7 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,99 +45,68 @@ public class ItemGuideGUI extends GuiScreenMod {
 	private static int BorderPrimary = 0xffD88B20; //AF7500 //D69E37 //CC8A28
 	private static int BorderSecondary = 0xff966915; //724C00
 	private static int BoxBackground = 0x66D8BC86; //E5BA69
-	private static int LineGray = 0xffA08349;
-	
-	private static List<ItemButton> ItemButtonList = new ArrayList<ItemButton>();
+
+	private static List <ItemButton> ItemButtonList = new ArrayList <ItemButton>();
 	private static SearchBox SearchBar = new SearchBox();
 	private static List<ItemFilterButton> ItemFilterButtonList = new ArrayList<ItemFilterButton>();
 	private static List<ClassFilterButton> ClassFilterButtonList = new ArrayList<ClassFilterButton>();
-	
-	@Override
-	public void initGui() {
-		
-		//Width = (this.width/5) * 3;
-		//Height = (this.height/5) * 3;
-		
-		if (ItemGuidePurple) {
-			Background = 0x665000A0; //0x66450087; //0x99b591e1; //0x997800df;
-			BorderPrimary = 0xff7637BF; //0xff6200C4; //0xff450087; //0xffb753fd; //0xff8900ff;
-			BorderSecondary = 0xff3B0077; //0xff6f37ab; //0xff5b00a9;
-			BoxBackground = 0x669968d0; //0x999231e5;
-			LineGray = 0xff8900ff;
-		}else{
-			Background = 0x99B09665; //BFA269 //CCA55D
-			BorderPrimary = 0xffD88B20; //AF7500 //D69E37 //CC8A28
-			BorderSecondary = 0xff966915; //724C00
-			BoxBackground = 0x99D8BC86; //E5BA69
-			LineGray = 0xffA08349;
+
+	private static void DrawItemBox(int x, int y, int Width, int Colour, boolean Selected){
+		int X1 = x + 24;
+		int Y = y + 24;
+		int X2 = x + Width;
+
+		int[] Colours = new int[]{BorderPrimary, BorderSecondary};
+		switch (Colour) {
+			case -1:
+				Colours[0] = BorderPrimary;
+				Colours[1] = BorderSecondary;
+				break;
+			case 0:
+				Colours[0] = 0xffBFBFBF;
+				Colours[1] = 0xff2F2F2F;
+				break;
+			case 1:
+				Colours[0] = 0xffBDBD51;
+				Colours[1] = 0xff2F2F14;
+				break;
+			case 2:
+				Colours[0] = 0xffB447B4;
+				Colours[1] = 0xff2C112C;
+				break;
+			case 3:
+				Colours[0] = 0xff4DB9B9;
+				Colours[1] = 0xff132E2E;
+				break;
+			case 4:
+				Colours[0] = 0xff740874;
+				Colours[1] = 0xff1C021C;
+				break;
+			case 5:
+				Colours[0] = 0xff4BB84B;
+				Colours[1] = 0xff132D13;
+				break;
 		}
-		
-		SearchBoxActive = SearchBoxActiveDefault;
-		
-		ItemNameWidth = 130; // 100
-		SidebarWidth = 104;
-		ItemComparing = false;
-		
-		Colums = 4; // 4
-		Rows = 8; // 7
-		
-		Colums = (int) Math.floor((this.width - (SidebarWidth + 15 + (ItemComparing ? 85 : 0))) / (ItemNameWidth+10));
-		if (Colums > 4) Colums = 4;
-		Width = SidebarWidth + 15 + (Colums * (ItemNameWidth+10)) + (ItemComparing ? 85 : 0);
-		
-		Rows = (int) Math.floor((this.height - 66) / (27));
-		if (Rows > 8) Rows = 8;
-		Height = 66 + (Rows * 27);
-		
-		
-		
-		xPos = (this.width/2) - (Width/2);
-		yPos = (this.height/2) - (Height/2);
-		
-		
-		//System.out.println("Width: " + Width + " Height:" + Height);
-		//ModCore.mc().gameSettings.guiScale;
-		
-		ItemButtonList.clear();
-		for (int i=0;i<Rows;i++) {
-			for (int j=0;j<Colums;j++) {
-				ItemButtonList.add(new ItemButton(((i*Colums)+j), 0, 0));
-			}
-		}
-		
-		ItemFilterButtonList.clear();
-		for (int i=0;i<11;i++) {
-			ItemFilterButtonList.add(new ItemFilterButton(1250 + i, 0, 0, i));
-		}
-		
-		ClassFilterButtonList.clear();
-		for (int i=0;i<4;i++) {
-			ClassFilterButtonList.add(new ClassFilterButton(1300 + i, 0, 0, i));
-		}
-		
-		this.addButton(SearchBar = new SearchBox(1000, xPos + SidebarWidth + 8, yPos +8, xPos +(Width/5)*4, yPos +32));
-		this.addButton(new PageButton(1001, (this.width/2) + 30, yPos + Height - 26, true));
-		this.addButton(new PageButton(1002, (this.width/2) - 70, yPos + Height - 26, false));
-		this.addButton(new ExitButton(1003, xPos + Width - 28, yPos + 6));
-		
-		for (ItemButton ItemButton : ItemButtonList) {
-			this.addButton(ItemButton);
-		}
-		
-		for (ItemFilterButton ItemFilterButton : ItemFilterButtonList) {
-			this.addButton(ItemFilterButton);
-		}
-		
-		for (ClassFilterButton Button : ClassFilterButtonList) {
-			this.addButton(Button);
-		}
-		
-		if (ItemSE.ItemSE.isEmpty()) ItemSE.CreateDB();
-		MaxPage = (int) Math.ceil((float) (ItemSE.ItemSE.size()) / (float) (Rows * Colums));
-		if (MaxPage == 0) MaxPage = 1;
-		Page = 1;
-		
-		RedrawButtons();
+		drawRect(X1 - 2, y + 2, X1, y + 3, Colours[1]);
+		drawRect(X1 - 2, Y - 5, X1, Y, Colours[1]);
+		drawRect(x + 2, Y - 2, X1, Y, Colours[1]);
+
+		drawRect(x, y, X1 - 2, y + 2, Colours[0]);
+		drawRect(x, y + 2, x + 2, Y - 2, Colours[0]);
+		drawRect(x, Y - 4, X1 - 2, Y - 2, Colours[0]);
+		drawRect(X1 - 4, y + 2, X1 - 2, Y - 2, Colours[0]);
+
+		drawRect(x + 2, y + 2, X1 - 4, Y - 4, (Selected ? BoxBackground : Background));
+
+
+		drawRect(X2 - 2, y + 5, X2, Y - 5, Colours[1]);
+		drawRect(X1, Y - 5, X2, Y - 3, Colours[1]);
+
+		drawRect(X1 - 2, y + 3, X2 - 2, y + 5, Colours[0]);
+		drawRect(X1 - 2, Y - 7, X2 - 2, Y - 5, Colours[0]);
+		drawRect(X2 - 4, y + 5, X2 - 2, Y - 5, Colours[0]);
+
+		drawRect(X1 - 2, y + 5, X2 - 4, Y - 7, (Selected ? BoxBackground : Background));
 	}
 	
 	@Override
@@ -237,8 +205,94 @@ public class ItemGuideGUI extends GuiScreenMod {
 		if (MaxPage == 0) MaxPage = 1;
 		if (Page > MaxPage) Page = 1;
 	}
-	
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+
+	@Override
+	public void initGui(){
+
+		//Width = (this.width/5) * 3;
+		//Height = (this.height/5) * 3;
+
+		int lineGray = 0xffA08349;
+		if (ItemGuidePurple) {
+			Background = 0x665000A0; //0x66450087; //0x99b591e1; //0x997800df;
+			BorderPrimary = 0xff7637BF; //0xff6200C4; //0xff450087; //0xffb753fd; //0xff8900ff;
+			BorderSecondary = 0xff3B0077; //0xff6f37ab; //0xff5b00a9;
+			BoxBackground = 0x669968d0; //0x999231e5;
+		} else {
+			Background = 0x99B09665; //BFA269 //CCA55D
+			BorderPrimary = 0xffD88B20; //AF7500 //D69E37 //CC8A28
+			BorderSecondary = 0xff966915; //724C00
+			BoxBackground = 0x99D8BC86; //E5BA69
+		}
+
+		SearchBoxActive = SearchBoxActiveDefault;
+
+		ItemNameWidth = 130; // 100
+		SidebarWidth = 104;
+		ItemComparing = false;
+
+		Colums = 4; // 4
+		Rows = 8; // 7
+
+		Colums = (int) Math.floor((this.width - (SidebarWidth + 15 + (ItemComparing ? 85 : 0))) / (ItemNameWidth + 10));
+		if (Colums > 4) Colums = 4;
+		Width = SidebarWidth + 15 + (Colums * (ItemNameWidth + 10)) + (ItemComparing ? 85 : 0);
+
+		Rows = (int) Math.floor((this.height - 66) / (27));
+		if (Rows > 8) Rows = 8;
+		Height = 66 + (Rows * 27);
+
+
+		xPos = (this.width / 2) - (Width / 2);
+		yPos = (this.height / 2) - (Height / 2);
+
+
+		//System.out.println("Width: " + Width + " Height:" + Height);
+		//ModCore.mc().gameSettings.guiScale;
+
+		ItemButtonList.clear();
+		for (int i = 0; i < Rows; i++) {
+			for (int j = 0; j < Colums; j++) {
+				ItemButtonList.add(new ItemButton(((i * Colums) + j), 0, 0));
+			}
+		}
+
+		ItemFilterButtonList.clear();
+		for (int i = 0; i < 11; i++) {
+			ItemFilterButtonList.add(new ItemFilterButton(1250 + i, 0, 0, i));
+		}
+
+		ClassFilterButtonList.clear();
+		for (int i = 0; i < 4; i++) {
+			ClassFilterButtonList.add(new ClassFilterButton(1300 + i, 0, 0, i));
+		}
+
+		this.addButton(SearchBar = new SearchBox(1000, xPos + SidebarWidth + 8, yPos + 8, xPos + (Width / 5) * 4, yPos + 32));
+		this.addButton(new PageButton(1001, (this.width / 2) + 30, yPos + Height - 26, true));
+		this.addButton(new PageButton(1002, (this.width / 2) - 70, yPos + Height - 26, false));
+		this.addButton(new ExitButton(1003, xPos + Width - 28, yPos + 6));
+
+		for (ItemButton ItemButton : ItemButtonList) {
+			this.addButton(ItemButton);
+		}
+
+		for (ItemFilterButton ItemFilterButton : ItemFilterButtonList) {
+			this.addButton(ItemFilterButton);
+		}
+
+		for (ClassFilterButton Button : ClassFilterButtonList) {
+			this.addButton(Button);
+		}
+
+		if (ItemSE.ItemSE.isEmpty()) ItemSE.CreateDB();
+		MaxPage = (int) Math.ceil((float) (ItemSE.ItemSE.size()) / (float) (Rows * Colums));
+		if (MaxPage == 0) MaxPage = 1;
+		Page = 1;
+
+		RedrawButtons();
+	}
+
+	protected void keyTyped(char typedChar, int keyCode){
 		// Esc > Close
 		if (keyCode == 1){
 			if (SearchBoxActive) {
@@ -246,7 +300,7 @@ public class ItemGuideGUI extends GuiScreenMod {
 				SearchBar.Recalculate = true;
 			}else{
 				this.mc.displayGuiScreen(null);
-				
+
 				if (this.mc.currentScreen == null){
 					this.mc.setIngameFocus();
 				}
@@ -268,33 +322,6 @@ public class ItemGuideGUI extends GuiScreenMod {
 					//System.out.println("KeyCode " + keyCode);
 				}
 			}
-		}
-	}
-	
-	protected void actionPerformed(GuiButton button) throws IOException {
-		if (button.id == 1000) {SearchBoxActive = !SearchBoxActive; SearchBar.Recalculate = true;} else {SearchBoxActive = false; SearchBar.Recalculate = true;}
-		switch (button.id) {
-		case 1001: Page++; if (Page > MaxPage) Page = 1; RedrawButtons(); break;
-		case 1002: Page--; if (Page < 1) Page = MaxPage; RedrawButtons(); break;
-		case 1003: this.mc.displayGuiScreen(null); break;
-		
-		case 1250: ItemSE.ItemTypeFilter[0] = !ItemSE.ItemTypeFilter[0]; StartSearch(SearchBar.SearchField); break;
-		case 1251: ItemSE.ItemTypeFilter[1] = !ItemSE.ItemTypeFilter[1]; StartSearch(SearchBar.SearchField); break;
-		case 1252: ItemSE.ItemTypeFilter[2] = !ItemSE.ItemTypeFilter[2]; StartSearch(SearchBar.SearchField); break;
-		case 1253: ItemSE.ItemTypeFilter[3] = !ItemSE.ItemTypeFilter[3]; StartSearch(SearchBar.SearchField); break;
-		case 1254: ItemSE.ItemTypeFilter[4] = !ItemSE.ItemTypeFilter[4]; StartSearch(SearchBar.SearchField); break;
-		case 1255: ItemSE.ItemTypeFilter[5] = !ItemSE.ItemTypeFilter[5]; StartSearch(SearchBar.SearchField); break;
-		case 1256: ItemSE.ItemTypeFilter[6] = !ItemSE.ItemTypeFilter[6]; StartSearch(SearchBar.SearchField); break;
-		case 1257: ItemSE.ItemTypeFilter[7] = !ItemSE.ItemTypeFilter[7]; StartSearch(SearchBar.SearchField); break;
-		case 1258: ItemSE.ItemTypeFilter[8] = !ItemSE.ItemTypeFilter[8]; StartSearch(SearchBar.SearchField); break;
-		case 1259: ItemSE.ItemTypeFilter[9] = !ItemSE.ItemTypeFilter[9]; StartSearch(SearchBar.SearchField); break;
-		case 1260: ItemSE.ItemTypeFilter[10] = !ItemSE.ItemTypeFilter[10]; StartSearch(SearchBar.SearchField); break;
-		case 1261: ItemSE.ItemTypeFilter[11] = !ItemSE.ItemTypeFilter[11]; StartSearch(SearchBar.SearchField); break;
-		
-		case 1300: ItemSE.ItemClassFilter[0] = !ItemSE.ItemClassFilter[0]; StartSearch(SearchBar.SearchField); break;
-		case 1301: ItemSE.ItemClassFilter[1] = !ItemSE.ItemClassFilter[1]; StartSearch(SearchBar.SearchField); break;
-		case 1302: ItemSE.ItemClassFilter[2] = !ItemSE.ItemClassFilter[2]; StartSearch(SearchBar.SearchField); break;
-		case 1303: ItemSE.ItemClassFilter[3] = !ItemSE.ItemClassFilter[3]; StartSearch(SearchBar.SearchField); break;
 		}
 	}
 	
@@ -359,42 +386,96 @@ public class ItemGuideGUI extends GuiScreenMod {
 			DrawHorzLine(y+((Height-40)/2)+38, x + ((ItemNameWidth+10)*Colums) + 87, X-4, -1);
 		}
 	}
-	
-	private static void DrawItemBox(int x, int y, int Width, int Height, int Colour, boolean Selected) {
-		int X1 = x + Height;
-		int Y = y + Height;
-		int X2 = x + Width;
-		
-		int[] Colours = new int[]{BorderPrimary, BorderSecondary};
-		switch (Colour) {
-			case -1: Colours[0] = BorderPrimary; Colours[1] = BorderSecondary; break;
-			case 0: Colours[0] = 0xffBFBFBF; Colours[1] = 0xff2F2F2F; break;
-			case 1: Colours[0] = 0xffBDBD51; Colours[1] = 0xff2F2F14; break;
-			case 2: Colours[0] = 0xffB447B4; Colours[1] = 0xff2C112C; break;
-			case 3: Colours[0] = 0xff4DB9B9; Colours[1] = 0xff132E2E; break;
-			case 4: Colours[0] = 0xff740874; Colours[1] = 0xff1C021C; break;
-			case 5: Colours[0] = 0xff4BB84B; Colours[1] = 0xff132D13; break;
+
+	protected void actionPerformed(GuiButton button){
+		if (button.id == 1000) {
+			SearchBoxActive = !SearchBoxActive;
+			SearchBar.Recalculate = true;
+		} else {
+			SearchBoxActive = false;
+			SearchBar.Recalculate = true;
 		}
-		drawRect(X1-2, y+2, X1, y+3, Colours[1]);
-		drawRect(X1-2, Y-5, X1, Y, Colours[1]);
-		drawRect(x+2, Y-2, X1, Y, Colours[1]);
-		
-		drawRect(x, y, X1-2, y+2, Colours[0]);
-		drawRect(x, y+2, x+2, Y-2, Colours[0]);
-		drawRect(x, Y-4, X1-2, Y-2, Colours[0]);
-		drawRect(X1-4, y+2, X1-2, Y-2, Colours[0]);
-		
-		drawRect(x+2, y+2, X1-4, Y-4, (Selected ? BoxBackground : Background));
-		
-		
-		drawRect(X2-2, y+5, X2, Y-5, Colours[1]);
-		drawRect(X1, Y-5, X2, Y-3, Colours[1]);
-		
-		drawRect(X1-2, y+3, X2-2, y+5, Colours[0]);
-		drawRect(X1-2, Y-7, X2-2, Y-5, Colours[0]);
-		drawRect(X2-4, y+5, X2-2, Y-5, Colours[0]);
-		
-		drawRect(X1-2, y+5, X2-4, Y-7, (Selected ? BoxBackground : Background));
+		switch (button.id) {
+			case 1001:
+				Page++;
+				if (Page > MaxPage) Page = 1;
+				RedrawButtons();
+				break;
+			case 1002:
+				Page--;
+				if (Page < 1) Page = MaxPage;
+				RedrawButtons();
+				break;
+			case 1003:
+				this.mc.displayGuiScreen(null);
+				break;
+
+			case 1250:
+				ItemSE.ItemTypeFilter[0] = !ItemSE.ItemTypeFilter[0];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1251:
+				ItemSE.ItemTypeFilter[1] = !ItemSE.ItemTypeFilter[1];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1252:
+				ItemSE.ItemTypeFilter[2] = !ItemSE.ItemTypeFilter[2];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1253:
+				ItemSE.ItemTypeFilter[3] = !ItemSE.ItemTypeFilter[3];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1254:
+				ItemSE.ItemTypeFilter[4] = !ItemSE.ItemTypeFilter[4];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1255:
+				ItemSE.ItemTypeFilter[5] = !ItemSE.ItemTypeFilter[5];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1256:
+				ItemSE.ItemTypeFilter[6] = !ItemSE.ItemTypeFilter[6];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1257:
+				ItemSE.ItemTypeFilter[7] = !ItemSE.ItemTypeFilter[7];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1258:
+				ItemSE.ItemTypeFilter[8] = !ItemSE.ItemTypeFilter[8];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1259:
+				ItemSE.ItemTypeFilter[9] = !ItemSE.ItemTypeFilter[9];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1260:
+				ItemSE.ItemTypeFilter[10] = !ItemSE.ItemTypeFilter[10];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1261:
+				ItemSE.ItemTypeFilter[11] = !ItemSE.ItemTypeFilter[11];
+				StartSearch(SearchBar.SearchField);
+				break;
+
+			case 1300:
+				ItemSE.ItemClassFilter[0] = !ItemSE.ItemClassFilter[0];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1301:
+				ItemSE.ItemClassFilter[1] = !ItemSE.ItemClassFilter[1];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1302:
+				ItemSE.ItemClassFilter[2] = !ItemSE.ItemClassFilter[2];
+				StartSearch(SearchBar.SearchField);
+				break;
+			case 1303:
+				ItemSE.ItemClassFilter[3] = !ItemSE.ItemClassFilter[3];
+				StartSearch(SearchBar.SearchField);
+				break;
+		}
 	}
 	
 	private static void DrawBox(int x, int y, int Width, int Height, int Colour, boolean Selected) {
@@ -520,7 +601,7 @@ public class ItemGuideGUI extends GuiScreenMod {
 				}
 				
 				boolean hover = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-				DrawItemBox(this.x, this.y, ItemNameWidth, 24, this.ItemRarity, hover);
+				DrawItemBox(this.x, this.y, ItemNameWidth, this.ItemRarity, hover);
 				drawString(ModCore.mc().fontRenderer, DisplayName, this.x+25, this.y+8, 0x99ffffff);
 			}
 		}

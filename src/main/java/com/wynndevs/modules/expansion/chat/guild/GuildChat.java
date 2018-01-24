@@ -40,10 +40,9 @@ public class GuildChat {
         return !chatOpen();
     }
 
-    public boolean openChat() {
-        if (this.mc.currentScreen == this.chatbox) return false;
+    public void openChat(){
+        if (this.mc.currentScreen == this.chatbox) return;
         this.mc.displayGuiScreen(this.chatbox);
-        return true;
     }
 
     public boolean closeChat() {
