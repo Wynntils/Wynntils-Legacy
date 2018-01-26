@@ -24,15 +24,12 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class HudOverlay extends WRPGui {
 
     private static final ResourceLocation bars = new ResourceLocation(Reference.MOD_ID + ":textures/gui/overlay-bars.png");
-    private static final ResourceLocation VIGNETTE_TEX_PATH = new ResourceLocation("textures/misc/vignette.png");
     int lastHealth = 0;
     int lastMana = 0;
     boolean onHealAnimation = false;
     boolean onManaAnimation = false;
     String lastActionBar = "";
     long lastActionBarTime = System.currentTimeMillis();
-    float ticks = 0.0f;
-    private float prevVignetteBrightness = 1.0f;
 
     public HudOverlay(Minecraft mc){
         super(mc);
@@ -97,6 +94,9 @@ public class HudOverlay extends WRPGui {
         //removing action bar text
         if (e.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             String actionBar = getCurrentActionBar();
+
+            //just to be safe
+            assert actionBar != null;
             if (!actionBar.equalsIgnoreCase("")) {
                 lastActionBar = actionBar;
 
@@ -151,12 +151,6 @@ public class HudOverlay extends WRPGui {
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onPreRender(RenderGameOverlayEvent.Post e){
         //to render only when the survival UI is read
-
-        if (ConfigValues.wynnExpansion.hud.main.c_health) {
-            float scale = 1 - (mc.player.getHealth() / mc.player.getMaxHealth());
-//            if(scale > 0.3f)
-                renderVignette(1.0f, scale);
-        }
 
         if ((e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && ConfigValues.wynnExpansion.hud.main.a_enabled) {
 
@@ -324,51 +318,4 @@ public class HudOverlay extends WRPGui {
         }
     }
 
-    public void renderVignette(float lightLevel, float scale){
-
-        float[] rgb = new float[]{255f / 255f, 0f / 255f, 0f / 255f};
-
-        if (rgb == null)
-            return;
-
-        ScaledResolution scaledRes = new ScaledResolution(mc);
-
-        lightLevel = 1.0F - lightLevel;
-        lightLevel = MathHelper.clamp(lightLevel, 0.0F, 1.0F);
-
-        float f = (float) 4;
-        double d0 = Math.min(1000.0f / 10.0f * 10.0f * 1000.0D, Math.abs(1.0f - 30.0f));
-        double d1 = Math.max(200.0f + Math.sin(ticks) * 180f, d0);
-
-        if ((double) f < d1) {
-            f = 1.0F - (float) ((double) f / d1);
-        } else {
-            f = 0.0F;
-        }
-
-        this.prevVignetteBrightness = (float) ((double) this.prevVignetteBrightness + (double) (lightLevel - this.prevVignetteBrightness) * 0.01D);
-        GlStateManager.disableDepth();
-        GlStateManager.depthMask(false);
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
-
-        if (f > 0.0F) {
-            GlStateManager.color(rgb[0] * scale, rgb[1] * scale, rgb[2] * scale, 1.0f);
-        } else {
-            GlStateManager.color(this.prevVignetteBrightness, this.prevVignetteBrightness, this.prevVignetteBrightness, 1.0F);
-        }
-
-        this.mc.getTextureManager().bindTexture(VIGNETTE_TEX_PATH);
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos(0.0D, (double) scaledRes.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
-        vertexbuffer.pos((double) scaledRes.getScaledWidth(), (double) scaledRes.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
-        vertexbuffer.pos((double) scaledRes.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
-        vertexbuffer.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.depthMask(true);
-        GlStateManager.enableDepth();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-    }
 }
