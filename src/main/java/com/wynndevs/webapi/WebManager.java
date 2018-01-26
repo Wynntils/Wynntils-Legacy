@@ -202,7 +202,11 @@ public class WebManager {
                     if(key.equals("material") && (item.get("material").getClass() == int.class || item.get("material").getClass() == Integer.class)) {
                         pf.getClass().getField(key).set(pf, String.valueOf(item.get(key)));
                     }else{
-                        pf.getClass().getField(key).set(pf, item.get(key));
+                        if(key.equals("droptype")) {
+                            pf.getClass().getField("dropType").set(pf, item.get(key));
+                        }else{
+                            pf.getClass().getField(key).set(pf, item.get(key));
+                        }
                     }
                 }
             }
