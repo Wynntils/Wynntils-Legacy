@@ -53,10 +53,12 @@ public class CInventoryGUI extends GuiInventory {
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 10, 0F);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
+        if(getSlotUnderMouse() != null && getSlotUnderMouse().slotNumber == 45) {
+            GL11.glEnable(GL11.GL_BLEND);
+        }
 
         int amount = -1;
         int extra = 0;
@@ -72,8 +74,6 @@ public class CInventoryGUI extends GuiInventory {
 
         for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
             ItemStack is = player.inventory.getStackInSlot(i);
-
-
 
             amount++;
             if (amount > 8) {
@@ -157,6 +157,9 @@ public class CInventoryGUI extends GuiInventory {
             }
         }
 
+        if(getSlotUnderMouse() != null && getSlotUnderMouse().slotNumber == 45) {
+            GL11.glDisable(GL11.GL_BLEND);
+        }
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
 

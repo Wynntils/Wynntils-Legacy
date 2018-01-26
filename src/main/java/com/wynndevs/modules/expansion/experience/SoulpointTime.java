@@ -19,6 +19,10 @@ public class SoulpointTime {
 		//int h = (int)(current / 1000L);
 		//int m = (int)((current % 1000L) * 3 / 50); // 1000 ticks divided by 60 minutes = 16 and 2/3
 		//System.out.println("Time: " + days + "d " + h + ":" + m + "   TIMES " + time + " - " + current);
+
+		if(ModCore.mc().world == null) {
+			return;
+		}
 		
 		if (soulPointTime){
 			long TimeLeft = (24000L - (ModCore.mc().world.getWorldTime() % 24000L)) / 20;
