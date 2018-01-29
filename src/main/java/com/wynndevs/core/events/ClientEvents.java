@@ -25,6 +25,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -170,6 +171,22 @@ public class ClientEvents {
 
         lastWorld = world == null ? "" : world;
 
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
+        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
+            Reference.onServer = true;
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+        if(Reference.onServer()) {
+            Reference.onServer = false;
+        }
     }
 
     public static void syncConfig() {
