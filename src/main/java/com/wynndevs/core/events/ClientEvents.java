@@ -123,8 +123,8 @@ public class ClientEvents {
     public static ArrayList<Runnable> onWorldJoin = new ArrayList<>();
     public static ArrayList<Runnable> onWorldLeft = new ArrayList<>();
 
-    public static String lastWorld = "";
-    boolean acceptsLeft = false;
+    private static String lastWorld = "";
+    private boolean acceptsLeft = false;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -150,14 +150,6 @@ public class ClientEvents {
                 break;
             }
         }
-
-        //ok, if the world is null probably means that you aren't on a server
-        //but we have one problem, when you join a server the left is called a lot of times
-        //so we need to handler if acceptsLeft == true to know if the player was on a server
-        //and when the player really joins the server i can change acceptsLeft to true and
-        //call onwWorldJoin handlers
-        //btw we to know the last world cuz EntityJoinWorld is called form every entity
-        //which appears near u, I can't use null values otherwise will throw an NPE and i don't want it
 
         Reference.userWorld = world;
 
