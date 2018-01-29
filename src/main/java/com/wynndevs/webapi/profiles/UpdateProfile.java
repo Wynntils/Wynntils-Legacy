@@ -1,6 +1,7 @@
 package com.wynndevs.webapi.profiles;
 
 import com.wynndevs.core.Reference;
+import com.wynndevs.webapi.WebReader;
 import org.apache.commons.io.IOUtils;
 
 import java.net.URL;
@@ -8,23 +9,27 @@ import java.net.URLConnection;
 
 public class UpdateProfile {
 
-    boolean hasUpdate = false;
-    String latestUpdate = Reference.VERSION;
+    boolean modHasUpdate = false;
+    String modLatestUpdate = Reference.VERSION;
+
+    //SHsuperCM take a look here, you can use versions.get("Map") to get the map from the website.
+    boolean mapHasUpdate = false;
+
+    private WebReader versions;
 
     public UpdateProfile() {
         new Thread(() -> {
             try{
-                URLConnection st = new URL("http://expansion.heyzeer0.cf/VERSION").openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                String msg = IOUtils.toString(st.getInputStream());
+
+                versions = new WebReader("http://api.wynntils.cf/versions");
 
                 try{
-                    Integer latest = Integer.valueOf(msg.replace(".", "").replace("\n", ""));
-                    Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
+                    Integer latest = Integer.valueOf(versions.get("Mod").replace(".", "").replace("\n", ""));
+                    Integer actual = Integer.valueOf(modLatestUpdate.replace(".", ""));
 
                     if(latest > actual) {
-                        hasUpdate = true;
-                        latestUpdate = msg.replace("\n", "");
+                        modHasUpdate = true;
+                        modLatestUpdate = versions.get("Mod");
                     }
 
                 }catch (Exception ignored) { ignored.printStackTrace(); }
@@ -33,12 +38,12 @@ public class UpdateProfile {
         }).start();
     }
 
-    public boolean hasUpdate() {
-        return hasUpdate;
+    public boolean modHasUpdate() {
+        return modHasUpdate;
     }
 
-    public String getLatestUpdate() {
-        return latestUpdate;
+    public String getModLatestUpdate() {
+        return modLatestUpdate;
     }
 
 }

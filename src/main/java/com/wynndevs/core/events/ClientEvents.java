@@ -172,8 +172,6 @@ public class ClientEvents {
 
     }
 
-
-
     public static void syncConfig() {
         ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
     }

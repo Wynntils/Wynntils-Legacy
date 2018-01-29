@@ -24,14 +24,14 @@ public class UpdateOverlay extends WRPGui {
             return;
         }
 
-        if(!WebManager.getUpdate().hasUpdate()) {
+        if(!WebManager.getUpdate().modHasUpdate()) {
             return;
         }
 
         drawRect(0, 0 - size, 203, 43 - size, -2500134);
         drawRect(0, 0 - size, 200, 40 - size, -10066329);
         drawString("§a§lWynntils", 5, 3 - size, -1);
-        drawString("Update §av" + WebManager.getUpdate().getLatestUpdate() + "§f is available!", 8, 17 - size, -1);
+        drawString("Update §av" + WebManager.getUpdate().getModLatestUpdate() + "§f is available!", 8, 17 - size, -1);
         drawString("§7Currently using: v" + Reference.VERSION, 8, 27 - size, -1);
         if(size > 0 && !loaded) {
             size-=1;

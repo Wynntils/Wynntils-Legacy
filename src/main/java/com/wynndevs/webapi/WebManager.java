@@ -20,6 +20,8 @@ import java.util.HashMap;
 
 public class WebManager {
 
+    private static WebReader apiUrls;
+
     private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
     private static UpdateProfile updateProfile;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
@@ -28,6 +30,10 @@ public class WebManager {
 
     public static void init() {
         updateProfile = new UpdateProfile();
+
+        try{
+            apiUrls = new WebReader("http://api.wynntils.cf/webapi");
+        }catch (Exception ex) { return; }
 
         long ms = System.currentTimeMillis();
         updateTerritories();
@@ -73,7 +79,7 @@ public class WebManager {
     public static void updateTerritories() {
         new Thread(() -> {
             try{
-                URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=territoryList").openConnection();
+                URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
                 JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONObject("territories");
@@ -103,7 +109,7 @@ public class WebManager {
     public static ArrayList<String> getGuilds() throws Exception {
         ArrayList<String> guilds = new ArrayList<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildList").openConnection();
+        URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray array = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("guilds");
@@ -124,7 +130,7 @@ public class WebManager {
      * @throws Exception
      */
     public static GuildProfile getGuildProfile(String guild) throws Exception {
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=guildStats&command=" + guild).openConnection();
+        URLConnection st = new URL(apiUrls.get("GuildInfo") + guild).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject obj = new JSONObject(IOUtils.toString(st.getInputStream()));
@@ -155,7 +161,7 @@ public class WebManager {
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
         HashMap<String, ArrayList<String>> servers = new HashMap<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=onlinePlayers").openConnection();
+        URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
@@ -187,7 +193,7 @@ public class WebManager {
     public static void updateItemList() throws Exception {
         HashMap<String, ItemProfile> citems = new HashMap<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=itemDB&category=all").openConnection();
+        URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("items");
@@ -225,7 +231,7 @@ public class WebManager {
     public static void updateMapMarkers() throws Exception {
         ArrayList<MapMarkerProfile> markers = new ArrayList<>();
 
-        URLConnection st = new URL("https://api.wynncraft.com/public_api.php?action=mapLocations").openConnection();
+        URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("locations");
@@ -247,7 +253,7 @@ public class WebManager {
     public static void updateItemGuesses() throws Exception {
         HashMap<String, ItemGuessProfile> guessers = new HashMap<>();
 
-        URLConnection st = new URL("http://wynndata.tk/api/unid/data.json").openConnection();
+        URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
