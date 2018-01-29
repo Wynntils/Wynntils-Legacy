@@ -1,263 +1,172 @@
 package com.wynndevs.modules.wynnicmap;
 
 import com.wynndevs.ModCore;
+import com.wynndevs.core.Reference;
 import com.wynndevs.core.Utils.Pair;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+
+import org.lwjgl.util.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+
+import java.util.*;
+import java.util.List;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class MapHandler {
-    private static int mapId;                                                                                                                       /* Texture id of the map in OpenGL */
-    private static boolean mapLoaded              = false; public static boolean isMapLoaded() {return mapLoaded;}                                  /* Indication of map texture being loaded */
-    private static final File fileMapTexture      = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map/maptexture.png"); /* Map texture file */
-    private static final File fileMapInfo         = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/map/map.mapinfo");    /* Map information */
-    private static int mapVersion                 = -1; public static int getMapVersion() {return mapVersion;}                                      /* Version of the loaded map */
-    public static Map<String,MapInformation> maps = new HashMap<String, MapInformation>();                                                                               /* All map parts */
-    public static Point mapTextureSize = new Point(0,0);                                                                                      /* Size of map texture */
+    private static int mapId = -1; /* Texture id of the map in OpenGL */
+    private static Map map = null; public static Map getMap() {return map;} /* Current map */
+    private static int mapVersion = -1; public static int getMapVersion() {return mapVersion;} /* Version of the loaded map */
+    public static final int mapFormat = 1; /* Format used by the mod to load the map */
+    private static List<Map> maps = new ArrayList<>(); /* Maps list */
+    private static final File fileMapInfo = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/map.mapinfo"); /* Map information */
 
-    /**
-     * Loads the map into memory
-     *
-     * @throws IOException when either of the map files has failed to load
-     */
     public static void LoadMap() throws IOException {
-        Unload();
-        {
-            mapId = GlStateManager.generateTexture();
-            BufferedImage image = ImageIO.read(fileMapTexture);
-            GlStateManager.bindTexture(mapId);
+        UnloadMap();
+        Scanner scanner = new Scanner(fileMapInfo);
+        mapVersion = Integer.parseInt(scanner.nextLine());
 
-            GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, GetByteBuffer(image));
-            GlStateManager.glTexParameteri(GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            mapTextureSize = new Point(image.getWidth(),image.getHeight());
-        }{
-            Scanner scanner = new Scanner(fileMapInfo);
-            mapVersion = Integer.parseInt(scanner.nextLine());
-
-            while(scanner.hasNext()) {
-                String id = scanner.nextLine();
-                maps.put(id, new MapInformation(scanner));
-                ModCore.logger.info("[wynnicmap] Loaded \"" + id + "\" successfully");
-            }
-            scanner.close();
+        while(scanner.hasNext()) {
+            maps.add(new Map(scanner));
+            WynnicMap.logger.info("Loaded \"" + maps.get(maps.size()-1).ID + "\" successfully");
         }
-        mapLoaded = true;
-
+        scanner.close();
     }
 
-    /**
-     * Unloads the map and information from memory
-     */
-    public static void UnloadMap() {
-        if(!mapLoaded) return;
-
-        Unload();
-
-        mapLoaded = false;
-    }
-    private static void Unload() {
-        try {
-            GlStateManager.deleteTexture(mapId);
-        }catch(Exception e){}
+    public static void UnloadMap(){
         maps.clear();
+        GlStateManager.deleteTexture(mapId);
+        mapId = -1;
+        map = null;
     }
 
-    /**
-     * Binds the map texture to be drawn
-     *
-     * @return boolean indicating succession
-     */
-    public static void BindMapTexture(){
-        if(mapLoaded)
+    public static void ChangeMap(double x, double y) {
+        try {
+            for (Map map : maps)
+                if (map.isInside(x, y)) {
+                    WynnicMap.logger.info("Trying to load map \"" + map.ID + "\"");
+                    map.loadTexture();
+                    WynnicMap.logger.info("Changed active map to \"" + map.ID + "\" successfully!");
+                    return;
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //WynnicMap.logger.info("ERROR, NO MAP HAS MANAGED TO LOAD FOR (" + x + "," + y + ")");
+        mapId = -1;
+        map = null;
+    }
+
+    public static boolean BindMap() {
+        if(mapId != -1)
             GlStateManager.bindTexture(mapId);
-    }
-
-    /**
-     * GetUV will get you a the map uv start point and size of the spesified location and size
-     *
-     * @param centerX   center point of map in real coordinates
-     * @param centerY   center point of map in real coordinates
-     * @param drawSizeX on screen drawing dimensions of the map
-     * @param drawSizeY on screen drawing dimensions of the map
-     * @param zoom zoom in pixels on the map(accepts minus values)
-     * @return Pair of Points, a is uv start position and b is uv width and height
-     */
-    @Nullable
-    public static Pair<Pair<Float,Float>,Point> GetUV(float centerX, float centerY, int drawSizeX, int drawSizeY, int zoom) {
-        for (String key:maps.keySet()) {
-            MapInformation cur = maps.get(key);
-            if(cur.IsOnMap(MathHelper.floor(centerX),MathHelper.floor(centerY)))
-            {
-                Pair<Float,Float> startPos = cur.GetUV(centerX - ((float)drawSizeX/2),centerY - ((float)drawSizeY/2));
-                Point size = new Point(drawSizeX,drawSizeY);
-                startPos.a += zoom; startPos.b += zoom;
-                size.x -= 2*zoom; size.y -= 2*zoom;
-                return new Pair<Pair<Float,Float>,Point>(startPos,size);
-
-            }
-        }
-        return null;
-    }
-
-    /**
-     * GetUVTexCoord will get the openGL uv equivalents of uvPointAndSize that can be drawn on a texture
-     *
-     * @param uvPointAndSize Pair of a Point and a size(x,y,width,height) of the uv in texture pixels
-     * @return Pair of 2 Float Pairs representing 2 uv points(0.0f,0.0f -> 1.0f,1.0f) on the texture
-     */
-    public static Pair<Pair<Float,Float>,Pair<Float,Float>> GetUVTexCoords(Pair<Pair<Float,Float>,Point> uvPointAndSize) {
-        Pair <Float, Float> uvPoint = new Pair <>(uvPointAndSize.a.a / (float) mapTextureSize.x, uvPointAndSize.a.b / (float) mapTextureSize.y);
-        Pair<Float,Float> uvEnd = new Pair<>((float)uvPointAndSize.b.x/(float)mapTextureSize.x + uvPoint.a,(float)uvPointAndSize.b.y/(float)mapTextureSize.y + uvPoint.b);
-        return new Pair<>(uvPoint,uvEnd);
-    }
-
-    /**
-     * Clamps the UV and Draw points to deal with the outside of the map
-     *
-     * @TODO optimize
-     *
-     * @param draw     on-screen drawing start point
-     * @param drawSize on-screen drawing width and height
-     * @param uv       uv texture start point
-     * @param uvSize   uv texture width and height
-     * @return indications if clamping has happened
-     */
-    public static void ClampUVAndDrawPoints(Point draw, Point drawSize, Pair <Float, Float> uv, Point uvSize){
-        for (String key : maps.keySet()) {
-            MapInformation cur = maps.get(key);
-            if(cur.IsUVOnMap(MathHelper.floor(uv.a+uvSize.x/2),MathHelper.floor(uv.a+uvSize.y/2))) {
-                if(!cur.IsUVOnMap(MathHelper.floor(uv.a),MathHelper.floor(uv.b))) {
-                    draw.translate(cur.getUvStartX()-MathHelper.floor(uv.b),cur.getUvStartY()-MathHelper.floor(uv.b));
-                    uv.a = (float)cur.getUvStartX();
-                    uv.a = (float)cur.getUvStartY();
-                }
-                if(!cur.IsUVOnMap(MathHelper.floor(uv.a)+uvSize.x,MathHelper.floor(uv.b)+uvSize.y)) {
-                    drawSize.translate(MathHelper.floor(uv.a)+uvSize.x-cur.getUvEndX(),MathHelper.floor(uv.b)+uvSize.y-cur.getUvEndY());
-                    uvSize.x = cur.getUvEndX() - cur.getUvStartX();
-                    uvSize.y = cur.getUvEndY() - cur.getUvStartY();
-                }
-            }
-        }
-    }
-
-    /**
-     * Converts a BufferedImage type(from ImageIO.read(File)) into ByteBuffer
-     * which can be loaded into OpenGL
-     *
-     * @param image BufferImage to be converted
-     * @return ByteBuffer equivalent of image
-     */
-    private static ByteBuffer GetByteBuffer(BufferedImage image) {
-        int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
-        for(int y = 0; y < image.getHeight(); y++)
-            for(int x = 0; x < image.getWidth(); x++)
-            {
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF));
-                buffer.put((byte) ((pixel >> 8) &  0xFF));
-                buffer.put((byte)  (pixel &        0xFF));
-                buffer.put((byte) ((pixel >> 24) & 0xFF));
-            }
-        buffer.flip();
-        return buffer;
+        return mapId != -1;
     }
 
     /**
      * Holds information about a part of the world
      */
-    public static class MapInformation {
+    public static class Map {
+        private String ID;    /* Map ID */
         private int startX,   /* Start of map part in world */
                     startY,   /* Start of map part in world */
-                    uvStartX, /* Start of map part in the texture */
-                    uvStartY, /* Start of map part in the texture */
-                    uvEndX,   /* End of map part in the texture */
-                    uvEndY;   /* End of map part in the texture */
+                    endX,     /* End of map part in world */
+                    endY,     /* End of map part in world */
+                    width,    /* Width of the map part */
+                    height;   /* Height of the map part */
 
+        public String getID() {return ID;}
         public int getStartX() {return startX;}
         public int getStartY() {return startY;}
-        public int getUvStartX() {return uvStartX;}
-        public int getUvStartY() {return uvStartY;}
-        public int getUvEndX() {return uvEndX;}
-        public int getUvEndY() {return uvEndY;}
+        public int getEndX() {return endX;}
+        public int getEndY() {return endY;}
+        public int getWidth() {return width;}
+        public int getHeight() {return height;}
 
-        public MapInformation(int startX, int startY, int uvStartX, int uvStartY, int uvEndX, int uvEndY) {
-            this.startX = startX;
-            this.startY = startY;
-            this.uvStartX = uvStartX;
-            this.uvStartY = uvStartY;
-            this.uvEndX = uvEndX;
-            this.uvEndY = uvEndY;
+        public Map(Scanner scanner) throws IOException{
+            ID = scanner.nextLine();
+            startX = Integer.parseInt(scanner.nextLine());
+            startY = Integer.parseInt(scanner.nextLine());
+            BufferedImage image = ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + ID + ".png"));
+            width = image.getWidth();
+            height = image.getHeight();
+            endX = startX + width;
+            endY = startY + height;
         }
 
-        public MapInformation(Scanner scanner) {
-            this(Integer.parseInt(scanner.nextLine()),
-                 Integer.parseInt(scanner.nextLine()),
-                 Integer.parseInt(scanner.nextLine()),
-                 Integer.parseInt(scanner.nextLine()),
-                 Integer.parseInt(scanner.nextLine()),
-                 Integer.parseInt(scanner.nextLine()));
+        public void loadTexture() throws Exception {
+            TextureUtil.deleteTexture(mapId);
+
+            mapId = TextureUtil.uploadTextureImageAllocate(
+                        TextureUtil.glGenTextures(),
+                        ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + ID + ".png")),
+                    false,
+                    false);
+
+            map = this;
         }
 
-        /**
-         * Gets the texture uv point on the map part for a real position
-         *
-         * @param x real world x coordinate
-         * @param y real world y coordinate
-         * @return point of uv on the map texture
-         */
-        public Point GetUV(int x, int y) {
-            return new Point((x-startX)+uvStartX,(y-startY)+uvStartY);
+        public boolean isInside(int x, int y) {
+            return (startX < x && x < endX) && (startY < y && y < endY);
         }
 
-        /**
-         * Gets the texture uv point on the map part for a real position
-         *
-         * @param x real world x coordinate
-         * @param y real world y coordinate
-         * @return point of uv on the map texture
-         */
+        public boolean isInside(double x, double y) {
+            return (startX < x && x < endX) && (startY < y && y < endY);
+        }
+
         public Pair<Float,Float> GetUV(float x, float y) {
-            return new Pair<>((x-(float)startX)+(float)uvStartX,(y-(float)startY)+(float)uvStartY);
+            return new Pair<>(x-this.startX,y-this.startY);
+        }
+        public Pair<Double,Double> GetUV(double x, double y) {
+            return new Pair<>(x-this.startX,y-this.startY);
         }
 
-        /**
-         * Checks if the real world coordinate is on the map part
-         *
-         * @param x real world x coordinate
-         * @param y real world y coordinate
-         * @return Indication if the point is in this map part
-         */
-        public boolean IsOnMap(int x, int y) {
-            Point uv = GetUV(x,y);
-            return IsUVOnMap(uv.x,uv.y);
-        }
+        public Vec2f[] GenerateTextureCut(double centerX, double centerY, int drawWidth, int drawHeight, int rotation, float zoom, boolean circular) {
+            Vec2f[] vecs = new Vec2f[circular ? 361 : 4];
+            if(circular) {
+                float radX = drawWidth/2+zoom, radY = drawHeight/2+zoom;
+                float rot = (float)rotation*0.0174532925f;
+                Pair<Double,Double> textureCenter = GetUV(centerX,centerY);
+                vecs[0] = new Vec2f((float)(double)textureCenter.a/(float)width,(float)(double)textureCenter.b/(float)width);
+                for(int a = 1; a < vecs.length; a++)
+                    vecs[a] = new Vec2f(
+                            ((float)(double)textureCenter.a + radX*MathHelper.cos(a*0.0174532925f+rot))/(float)width,
+                            ((float)(double)textureCenter.b + radY*MathHelper.sin(a*0.0174532925f+rot))/(float)height);
+            } else {
+                double sX = centerX-startX-drawWidth/2,
+                       sY = centerY-startY-drawHeight/2,
+                       eX = sX+drawWidth,
+                       eY = sY+drawHeight;
+                sX += zoom;   sY += zoom;
+                eX -= zoom; eY -= zoom;
+                vecs[0] = new Vec2f((float)sX/(float)width,(float)sY/(float)height); //0,0
+                vecs[1] = new Vec2f((float)sX/(float)width,(float)eY/(float)height); //0,1
+                vecs[2] = new Vec2f((float)eX/(float)width,(float)eY/(float)height); //1,1
+                vecs[3] = new Vec2f((float)eX/(float)width,(float)sY/(float)height); //1,0
+            }
 
-        /**
-         * Checks if the uv coordinate is on the map part
-         *
-         * @param x uv x coordinate
-         * @param y uv y coordinate
-         * @return indication if the point is in this map part
-         */
-        public boolean IsUVOnMap(int x, int y) {
-            return x >= uvStartX && x <= uvEndX && y >= uvStartY && y <= uvEndY;
+            return vecs;
         }
     }
 }

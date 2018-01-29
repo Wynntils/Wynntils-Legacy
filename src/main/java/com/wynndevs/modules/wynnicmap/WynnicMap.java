@@ -1,47 +1,51 @@
 package com.wynndevs.modules.wynnicmap;
 
+import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
 import com.wynndevs.core.input.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 
 public class WynnicMap {
+    public static ScaledResolution sr(){return new ScaledResolution(Minecraft.getMinecraft());}
     public static final File WYNNICMAP_STORAGE_ROOT = new File(Reference.MOD_STORAGE_ROOT.getAbsolutePath() + "/wynnicmap"); /* Root folder for all WynnicMap related things */
     private static boolean moduleWorking = false; public static boolean getModuleWorking() {return moduleWorking;}                     /* Indicates if the module is working */
+    public static Logger logger = LogManager.getLogger(Reference.MOD_ID + "-wynnicmap");
 
     public static int updatingState = -1;
+    public static GuiMap minimap = new GuiMap(sr().getScaledWidth()-110,10,100,100,0,0,0,false,true);
 
-    public static GuiMap minimap = new GuiMap(sr().getScaledWidth()-110,10,100,100,0,0,0);
-
-    public static ScaledResolution sr(){return new ScaledResolution(Minecraft.getMinecraft());}
-
-
+    public static final boolean DONT_UPDATE = false; // THIS IS SUPPOSED TO BE FALSE BEFORE EACH COMMIT! IF ITS TRUE, PLEASE TELL ME ABOUT IT!!! -SHCM
 
     /**
      * Tries to load the WynnicMap module into the game or reloads if loaded
      * @return Succession of loading
      */
     public static void loadModule() {
-        if(moduleWorking) unloadModule();
+        if (moduleWorking) unloadModule();
         try {
             MapHandler.LoadMap();
-        } catch (IOException error) {
-            updatingState = 0;
-            return;
+        } catch (Exception error) {
+        } finally {
+            moduleWorking = true;
         }
-        finally {
-            if(MapHandler.getMapVersion() < MapUpdater.LatestVersion())
+        if (!DONT_UPDATE) {
+            MapUpdater.RefreshLatestInfo();
+            if (MapHandler.getMapVersion() < MapUpdater.latest_version && MapHandler.mapFormat >= MapUpdater.latest_format) {
                 updatingState = 0;
+            }
         }
-        moduleWorking = true;
+
     }
 
     /**
@@ -55,28 +59,28 @@ public class WynnicMap {
     /**
      * Overlay Event for minimap, Dont call this method please
      *
-     * @param event
+     * @param event eventArgs
      */
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void renderminimap(RenderGameOverlayEvent.Post event) {
-        if(!moduleWorking || !Reference.onServer()) return;
-        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) {
-            return;
-        }
+    public void renderMinimap(RenderGameOverlayEvent.Post event) {
+        if(event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
+        if(!moduleWorking || !Reference.onServer() || event.isCanceled()) return;
 
         try{
             minimap.x = sr().getScaledWidth()-110;
-            minimap.centerX = (float)Minecraft.getMinecraft().player.posX;
-            minimap.centerY = (float)Minecraft.getMinecraft().player.posZ;
+            minimap.RecreateDrawingCut();
+
+            minimap.centerX = Minecraft.getMinecraft().player.posX;
+            minimap.centerY = Minecraft.getMinecraft().player.posZ;
 
             minimap.drawMap();
         }catch(Exception ignored) {
-            //ignored.getStackTrace();
+            ignored.printStackTrace();
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void keyPress(TickEvent.ClientTickEvent event) {
+    public void tick(TickEvent.ClientTickEvent event) {
         if(updatingState == 2) {
             loadModule();
             updatingState = -1;
@@ -88,15 +92,32 @@ public class WynnicMap {
         else if(KeyBindings.WYNNICMAP_ZOOM_OUT.isKeyDown()) {
             minimap.zoom--;
         }
-        else if(KeyBindings.WYNNICMAP_MENU.isPressed()) { //currently will toggle instead of opening menu
-            minimap.visible = !minimap.visible;
+        else if(KeyBindings.WYNNICMAP_MENU.isPressed()) {
+            if(!minimap.visible) {
+                minimap.visible = true;
+                minimap.circular = false;
+            }
+            else if(minimap.circular) {
+                minimap.visible = false;
+            }
+            else {
+                minimap.circular = true;
+            }
         }
+
+
+        if(ModCore.mc().world != null && ModCore.mc().player != null && Reference.onServer())
+            if((MapHandler.getMap() == null) || !MapHandler.getMap().isInside(ModCore.mc().player.posX,ModCore.mc().player.posZ))
+                MapHandler.ChangeMap(ModCore.mc().player.posX,ModCore.mc().player.posZ);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void joinUpdate(EntityJoinWorldEvent e) {
-        if (updatingState != 0  || !Reference.onServer() || e.getEntity() != Minecraft.getMinecraft().player || Reference.onWorld()) {return;}
-        updatingState = 1;
-        MapUpdater.TryUpdate();
+    public void changeWorld(EntityJoinWorldEvent e) {
+        if(!Reference.onServer() || e.getEntity() != Minecraft.getMinecraft().player) return;
+
+        if (updatingState == 0) {
+            updatingState = 1;
+            MapUpdater.TryUpdate();
+        }
     }
 }
