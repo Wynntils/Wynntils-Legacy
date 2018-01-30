@@ -22,10 +22,10 @@ public class WynnicMap {
     private static boolean moduleWorking = false; public static boolean getModuleWorking() {return moduleWorking;}                     /* Indicates if the module is working */
     public static Logger logger = LogManager.getLogger(Reference.MOD_ID + "-wynnicmap");
 
-    public static int updatingState = -1;
     public static GuiMap minimap = new GuiMap(sr().getScaledWidth()-110,10,100,100,0,0,0,false,true);
 
     public static final boolean DONT_UPDATE = false; // THIS IS SUPPOSED TO BE FALSE BEFORE EACH COMMIT! IF ITS TRUE, PLEASE TELL ME ABOUT IT!!! -SHCM
+    private static boolean checkedForUpdates = false;
 
     /**
      * Tries to load the WynnicMap module into the game or reloads if loaded
@@ -39,13 +39,6 @@ public class WynnicMap {
         } finally {
             moduleWorking = true;
         }
-        if (!DONT_UPDATE) {
-            MapUpdater.RefreshLatestInfo();
-            if (MapHandler.getMapVersion() < MapUpdater.latest_version && MapHandler.mapFormat >= MapUpdater.latest_format) {
-                updatingState = 0;
-            }
-        }
-
     }
 
     /**
@@ -81,9 +74,9 @@ public class WynnicMap {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void tick(TickEvent.ClientTickEvent event) {
-        if(updatingState == 2) {
+        if(MapUpdater.updatingState == 2) {
             loadModule();
-            updatingState = -1;
+            MapUpdater.updatingState = 0;
             return;
         }
         if(KeyBindings.WYNNICMAP_ZOOM_IN.isKeyDown()) {
@@ -114,10 +107,9 @@ public class WynnicMap {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void changeWorld(EntityJoinWorldEvent e) {
         if(!Reference.onServer() || e.getEntity() != Minecraft.getMinecraft().player) return;
-
-        if (updatingState == 0) {
-            updatingState = 1;
+        if (!DONT_UPDATE && !checkedForUpdates) {
             MapUpdater.TryUpdate();
+            checkedForUpdates = true;
         }
     }
 }

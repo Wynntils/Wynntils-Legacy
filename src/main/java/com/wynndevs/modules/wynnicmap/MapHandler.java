@@ -40,7 +40,7 @@ public class MapHandler {
     private static int mapVersion = -1; public static int getMapVersion() {return mapVersion;} /* Version of the loaded map */
     public static final int mapFormat = 1; /* Format used by the mod to load the map */
     private static List<Map> maps = new ArrayList<>(); /* Maps list */
-    private static final File fileMapInfo = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/map.mapinfo"); /* Map information */
+    private static final File fileMapInfo = new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + mapFormat + "/map.mapinfo"); /* Map information */
 
     public static void LoadMap() throws IOException {
         UnloadMap();
@@ -56,7 +56,8 @@ public class MapHandler {
 
     public static void UnloadMap(){
         maps.clear();
-        GlStateManager.deleteTexture(mapId);
+        if(mapId != -1)
+            GlStateManager.deleteTexture(mapId);
         mapId = -1;
         map = null;
     }
@@ -108,7 +109,7 @@ public class MapHandler {
             ID = scanner.nextLine();
             startX = Integer.parseInt(scanner.nextLine());
             startY = Integer.parseInt(scanner.nextLine());
-            BufferedImage image = ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + ID + ".png"));
+            BufferedImage image = ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + mapFormat + "/" + ID + ".png"));
             width = image.getWidth();
             height = image.getHeight();
             endX = startX + width;
@@ -120,7 +121,7 @@ public class MapHandler {
 
             mapId = TextureUtil.uploadTextureImageAllocate(
                         TextureUtil.glGenTextures(),
-                        ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + ID + ".png")),
+                        ImageIO.read(new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + mapFormat + "/" + ID + ".png")),
                     false,
                     false);
 
