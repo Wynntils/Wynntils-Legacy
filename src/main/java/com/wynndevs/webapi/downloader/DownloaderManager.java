@@ -9,13 +9,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class DownloaderManager {
 
-    private static ArrayList<DownloadProfile> futureDownloads = new ArrayList<>();
+    private static Queue<DownloadProfile> futureDownloads = new LinkedList<>();
     public static int progression = 0;
     public static DownloadPhase currentPhase = DownloadPhase.WAITING;
 
@@ -37,7 +39,7 @@ public class DownloaderManager {
     }
 
     public static DownloadProfile getCurrentDownload() {
-        return futureDownloads.size() <= 0 ? null : futureDownloads.get(0);
+        return futureDownloads.size() <= 0 ? null : futureDownloads.element();
     }
 
     private static void startDownloading() {
@@ -49,7 +51,7 @@ public class DownloaderManager {
             return;
         }
 
-        DownloadProfile pf = futureDownloads.get(0);
+        DownloadProfile pf = futureDownloads.poll();
 
         new Thread(() -> {
             try{
@@ -62,7 +64,7 @@ public class DownloaderManager {
                 st.connect();
 
                 if(st.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
+                    pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0;
                     return;
                 }
                 
@@ -136,7 +138,6 @@ public class DownloaderManager {
                     if(zip.exists()) { zip.delete(); }
                 }
 
-                futureDownloads.remove(0);
                 pf.onFinish.accept(true);
                 if(futureDownloads.size() <= 0) {
                     currentPhase = DownloadPhase.WAITING;
@@ -146,7 +147,7 @@ public class DownloaderManager {
                 progression = 0;
 
                 startDownloading();
-            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0); }
+            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; }
         }).start();
     }
 

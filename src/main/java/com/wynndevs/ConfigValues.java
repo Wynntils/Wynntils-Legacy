@@ -117,11 +117,6 @@ public class ConfigValues {
 
 	public static class Expansion {
 
-		//to EHTYCSCYTHE
-		//place your configs here, and if you want to create sub-interfaces feel free
-		//@GuiConfig(title = "the string that will show at the config") -- to boolean values
-		//@GuiConfig(title = "the string that wills how at the config", interface = true) -- to instance values like the wynnRichPresence method
-
 		@GuiConfig(title = "Items", isInstance = true)
 		@Config.LangKey("config.expansion.items")
 		public Items items = new Items();

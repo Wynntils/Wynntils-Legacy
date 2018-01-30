@@ -9,11 +9,8 @@ import java.net.URLConnection;
 
 public class UpdateProfile {
 
-    boolean modHasUpdate = false;
-    String modLatestUpdate = Reference.VERSION;
-
-    //SHsuperCM take a look here, you can use versions.get("Map") to get the map from the website.
-    boolean mapHasUpdate = false;
+    boolean hasUpdate = false;
+    String latestUpdate = Reference.VERSION;
 
     private WebReader versions;
 
@@ -25,11 +22,11 @@ public class UpdateProfile {
 
                 try{
                     Integer latest = Integer.valueOf(versions.get("Mod").replace(".", "").replace("\n", ""));
-                    Integer actual = Integer.valueOf(modLatestUpdate.replace(".", ""));
+                    Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
 
                     if(latest > actual) {
-                        modHasUpdate = true;
-                        modLatestUpdate = versions.get("Mod");
+                        hasUpdate = true;
+                        latestUpdate = versions.get("Mod");
                     }
 
                 }catch (Exception ignored) { ignored.printStackTrace(); }
@@ -39,11 +36,11 @@ public class UpdateProfile {
     }
 
     public boolean modHasUpdate() {
-        return modHasUpdate;
+        return hasUpdate;
     }
 
     public String getModLatestUpdate() {
-        return modLatestUpdate;
+        return latestUpdate;
     }
 
 }
