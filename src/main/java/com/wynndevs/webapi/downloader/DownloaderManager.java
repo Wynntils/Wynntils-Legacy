@@ -20,6 +20,7 @@ public class DownloaderManager {
     private static Queue<DownloadProfile> futureDownloads = new LinkedList<>();
     public static int progression = 0;
     public static DownloadPhase currentPhase = DownloadPhase.WAITING;
+    private static DownloadProfile currentDownload;
 
     private static boolean next = false;
 
@@ -39,7 +40,7 @@ public class DownloaderManager {
     }
 
     public static DownloadProfile getCurrentDownload() {
-        return futureDownloads.size() <= 0 ? null : futureDownloads.element();
+        return currentPhase != DownloadPhase.WAITING ? currentDownload : null;
     }
 
     private static void startDownloading() {
@@ -52,6 +53,7 @@ public class DownloaderManager {
         }
 
         DownloadProfile pf = futureDownloads.poll();
+        currentDownload = pf;
 
         new Thread(() -> {
             try{
