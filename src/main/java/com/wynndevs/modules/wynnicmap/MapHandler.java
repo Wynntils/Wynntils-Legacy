@@ -144,13 +144,12 @@ public class MapHandler {
         }
 
         public Vec2f[] GenerateTextureCut(double centerX, double centerY, int drawWidth, int drawHeight, int rotation, float zoom, boolean circular) {
-            Vec2f[] vecs = new Vec2f[circular ? 361 : 4];
+            Vec2f[] vecs = new Vec2f[circular ? 360 : 4];
             if(circular) {
                 float radX = drawWidth/2+zoom, radY = drawHeight/2+zoom;
                 float rot = (float)rotation*0.0174532925f;
                 Pair<Double,Double> textureCenter = GetUV(centerX,centerY);
-                vecs[0] = new Vec2f((float)(double)textureCenter.a/(float)width,(float)(double)textureCenter.b/(float)width);
-                for(int a = 1; a < vecs.length; a++)
+                for(int a = 359; a >= 0; a--)
                     vecs[a] = new Vec2f(
                             ((float)(double)textureCenter.a + radX*MathHelper.cos(a*0.0174532925f+rot))/(float)width,
                             ((float)(double)textureCenter.b + radY*MathHelper.sin(a*0.0174532925f+rot))/(float)height);

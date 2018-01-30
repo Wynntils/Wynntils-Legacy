@@ -46,12 +46,12 @@ public class GuiMap extends Gui {
     }
 
     public void RecreateDrawingCut() {
-        DrawingCut = new Point[circular ? 361 : 4];
+        DrawingCut = new Point[circular ? 360 : 4];
         if(circular) {
             int radX = width/2, radY = height/2;
             float rot = (float)rotation*0.0174532925f;
             DrawingCut[0] = new Point(x+radX,y+radY);
-            for(int a = 1; a < DrawingCut.length; a++)
+            for(int a = 359; a >= 0; a--)
                 DrawingCut[a] = new Point(
                         x + radX + MathHelper.fastFloor(radX*MathHelper.cos(a * 0.0174532925f+rot)),
                         y + radY + MathHelper.fastFloor(radY*MathHelper.sin(a * 0.0174532925f+rot)));
@@ -81,7 +81,7 @@ public class GuiMap extends Gui {
             {
                 GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                GlStateManager.glBegin(circular ? GL_LINE_LOOP : GL_QUADS);
+                GlStateManager.glBegin(circular ? GL_POLYGON : GL_QUADS);
                 {
                     GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Vec2f[] texCoords = MapHandler.getMap().GenerateTextureCut(centerX, centerY, width, height, rotation, zoom, circular);
