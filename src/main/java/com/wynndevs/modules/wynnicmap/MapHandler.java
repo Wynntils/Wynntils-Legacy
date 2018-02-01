@@ -1,38 +1,20 @@
 package com.wynndevs.modules.wynnicmap;
 
-import com.wynndevs.ModCore;
-import com.wynndevs.core.Reference;
-import com.wynndevs.core.Utils.Pair;
+import com.wynndevs.core.utils.Pair;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
-import org.lwjgl.util.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import java.util.*;
 import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
-
-
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class MapHandler {
     private static int mapId = -1; /* Texture id of the map in OpenGL */
@@ -141,32 +123,6 @@ public class MapHandler {
         }
         public Pair<Double,Double> GetUV(double x, double y) {
             return new Pair<>(x-this.startX,y-this.startY);
-        }
-
-        public Vec2f[] GenerateTextureCut(double centerX, double centerY, int drawWidth, int drawHeight, int rotation, float zoom, boolean circular) {
-            Vec2f[] vecs = new Vec2f[circular ? 360 : 4];
-            if(circular) {
-                float radX = drawWidth/2+zoom, radY = drawHeight/2+zoom;
-                float rot = (float)rotation*0.0174532925f;
-                Pair<Double,Double> textureCenter = GetUV(centerX,centerY);
-                for(int a = 359; a >= 0; a--)
-                    vecs[a] = new Vec2f(
-                            ((float)(double)textureCenter.a + radX*MathHelper.cos(a*0.0174532925f+rot))/(float)width,
-                            ((float)(double)textureCenter.b + radY*MathHelper.sin(a*0.0174532925f+rot))/(float)height);
-            } else {
-                double sX = centerX-startX-drawWidth/2,
-                       sY = centerY-startY-drawHeight/2,
-                       eX = sX+drawWidth,
-                       eY = sY+drawHeight;
-                sX += zoom;   sY += zoom;
-                eX -= zoom; eY -= zoom;
-                vecs[0] = new Vec2f((float)sX/(float)width,(float)sY/(float)height); //0,0
-                vecs[1] = new Vec2f((float)sX/(float)width,(float)eY/(float)height); //0,1
-                vecs[2] = new Vec2f((float)eX/(float)width,(float)eY/(float)height); //1,1
-                vecs[3] = new Vec2f((float)eX/(float)width,(float)sY/(float)height); //1,0
-            }
-
-            return vecs;
         }
     }
 }

@@ -3,7 +3,7 @@ package com.wynndevs.core.events;
 import com.wynndevs.ConfigValues;
 import com.wynndevs.ModCore;
 import com.wynndevs.core.Reference;
-import com.wynndevs.core.Utils.Utils;
+import com.wynndevs.core.utils.Utils;
 import com.wynndevs.core.gui.screen.ConfigGui;
 import com.wynndevs.core.input.KeyBindings;
 import com.wynndevs.modules.expansion.experience.SpellCasting;

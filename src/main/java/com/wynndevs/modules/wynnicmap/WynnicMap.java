@@ -6,6 +6,7 @@ import com.wynndevs.core.input.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -61,10 +62,11 @@ public class WynnicMap {
 
         try{
             minimap.x = sr().getScaledWidth()-110;
-            minimap.RecreateDrawingCut();
 
             minimap.centerX = Minecraft.getMinecraft().player.posX;
             minimap.centerY = Minecraft.getMinecraft().player.posZ;
+            minimap.rotation = MathHelper.fastFloor(Minecraft.getMinecraft().player.rotationYaw);
+            //minimap.rotation = 0;
 
             minimap.drawMap();
         }catch(Exception ignored) {

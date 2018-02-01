@@ -1,7 +1,7 @@
 package com.wynndevs.modules.expansion.customhud;
 
 import com.wynndevs.ConfigValues;
-import com.wynndevs.core.Utils.Utils;
+import com.wynndevs.core.utils.Utils;
 import com.wynndevs.modules.market.utils.MarketUtils;
 import com.wynndevs.modules.richpresence.utils.RichUtils;
 import com.wynndevs.webapi.WebManager;

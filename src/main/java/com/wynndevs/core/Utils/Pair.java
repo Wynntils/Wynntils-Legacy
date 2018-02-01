@@ -1,4 +1,4 @@
-package com.wynndevs.core.Utils;
+package com.wynndevs.core.utils;
 
 /**
  * The Pair Type Holds 1 field of type T and 1 field of type J
