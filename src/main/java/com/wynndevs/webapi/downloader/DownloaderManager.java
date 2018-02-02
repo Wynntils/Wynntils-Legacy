@@ -9,18 +9,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class DownloaderManager {
 
-    private static Queue<DownloadProfile> futureDownloads = new LinkedList<>();
+    private static ArrayList<DownloadProfile> futureDownloads = new ArrayList<>();
     public static int progression = 0;
     public static DownloadPhase currentPhase = DownloadPhase.WAITING;
-    private static DownloadProfile currentDownload;
 
     private static boolean next = false;
 
@@ -40,33 +37,33 @@ public class DownloaderManager {
     }
 
     public static DownloadProfile getCurrentDownload() {
-        return currentPhase != DownloadPhase.WAITING ? currentDownload : null;
+        return futureDownloads.size() <= 0 ? null : futureDownloads.get(0);
     }
 
     private static void startDownloading() {
-        if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
-            return;
-        }
         if(!Reference.onServer()) {
             startDownloading();
             return;
         }
+        if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
+            return;
+        }
 
-        DownloadProfile pf = futureDownloads.poll();
-        currentDownload = pf;
+        currentPhase = DownloadPhase.DOWNLOADING;
+        DownloadProfile pf = futureDownloads.get(0);
+        next = false;
+        progression = 0;
+
+        Reference.LOGGER.warn("starting to download " + pf.title + " | " + progression);
 
         new Thread(() -> {
             try{
-                currentPhase = DownloadPhase.DOWNLOADING;
-                next = false;
-                progression = 0;
-
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.connect();
 
                 if(st.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0;
+                    pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
                     return;
                 }
                 
@@ -141,6 +138,7 @@ public class DownloaderManager {
                 }
 
                 pf.onFinish.accept(true);
+                futureDownloads.remove(0);
                 if(futureDownloads.size() <= 0) {
                     currentPhase = DownloadPhase.WAITING;
                 }else{
@@ -149,7 +147,7 @@ public class DownloaderManager {
                 progression = 0;
 
                 startDownloading();
-            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; }
+            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0); }
         }).start();
     }
 

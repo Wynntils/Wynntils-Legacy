@@ -45,12 +45,19 @@ public class MapUpdater {
                     con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)");
                     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                     String[] l = in.readLine().split("<br>");
-                    for(int i = 0; i < l.length-1; i++)
-                        DownloaderManager.queueDownload("Wynnicmap File",l[i],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat),DownloadAction.SAVE,(b)->{});
-                    DownloaderManager.queueDownload("Wynnicmap File(last)",l[l.length-1],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat),DownloadAction.SAVE,(b)->{
-                        if(b)
-                            updatingState = 2;
-                    });
+
+                    for(int i = 0; i < l.length; i++) {
+                        String[] purl = l[i].split("/");
+                        if(i >= l.length - 1) {
+                            DownloaderManager.queueDownload(purl[purl.length - 1] + "(last)",l[l.length-1],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat),DownloadAction.SAVE,(b)->{
+                                if(b)
+                                    updatingState = 2;
+                            });
+                        }else{
+                            DownloaderManager.queueDownload(purl[purl.length - 1],l[i],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat),DownloadAction.SAVE,(b)->{});
+                        }
+                    }
+
                     in.close();
                     updatingState = 1;
                 } catch (Exception e) {

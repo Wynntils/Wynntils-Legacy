@@ -17,6 +17,9 @@ public class DownloadOverlay extends WRPGui {
     DownloadPhase lastPhase;
     String lastTitle = "";
 
+    int extraY = 0;
+    boolean hasMultipleValues = false;
+
     public DownloadOverlay(Minecraft mc) {
         super(mc);
     }
@@ -43,13 +46,19 @@ public class DownloadOverlay extends WRPGui {
             int x = res.getScaledWidth() - 10;
             int y = 10;
 
-            drawRect(x, y - size, x - 120, 43 - size, new Color(58, 65, 88).getRGB());
+            drawRect(x, y - size, x - 120, (43 + extraY) - size, new Color(58, 65, 88).getRGB());
             drawRect(x - 110, y + 15 - size, x - 10, 35 - size, new Color(229, 229, 229).getRGB());
             drawRect(x - 110, y + 15 - size, x - (110 - lastPercent), 35 - size, new Color(0, 255, 0).getRGB());
             String percent = lastPercent + "%";
             drawStringWithoutShadow(percent, x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size, 0);
             String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
             drawStringWithoutShadow(title, x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size, -1);
+
+            if(hasMultipleValues && extraY < 20) {
+                extraY++;
+            }else if(!hasMultipleValues && extraY < 0){
+                extraY--;
+            }
 
             if(size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
                 size--;

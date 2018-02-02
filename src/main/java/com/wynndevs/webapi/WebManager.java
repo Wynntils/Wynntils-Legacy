@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class WebManager {
 
-    private static WebReader apiUrls;
+    public static WebReader apiUrls;
 
     private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
     private static UpdateProfile updateProfile;
@@ -208,7 +208,7 @@ public class WebManager {
                     if(key.equals("material") && (item.get("material").getClass() == int.class || item.get("material").getClass() == Integer.class)) {
                         pf.getClass().getField(key).set(pf, String.valueOf(item.get(key)));
                     }else{
-                        if(key.equals("droptype")) {
+                        if(key.equals("droptype") || key.equals("sropType")) {
                             pf.getClass().getField("dropType").set(pf, item.get(key));
                         }else{
                             pf.getClass().getField(key).set(pf, item.get(key));

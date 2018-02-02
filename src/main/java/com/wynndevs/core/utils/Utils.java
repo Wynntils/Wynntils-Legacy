@@ -1,7 +1,10 @@
 package com.wynndevs.core.utils;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -78,6 +81,20 @@ public class Utils {
         }
 
         return getItemFieldName.getOrDefault(key, null);
+    }
+
+    /**
+     * Updates the Yggdrasil Authentication Token
+     * Used at Wynntils Account Handler
+     *
+     * @param newToken The new provided token
+     */
+    public static void updateAuthToken(String newToken) {
+        try{
+            Field f = Session.class.getDeclaredFields()[2];
+            f.setAccessible(true);
+            f.set(Minecraft.getMinecraft().getSession(), newToken);
+        }catch (Exception ex) { ex.printStackTrace(); }
     }
 
 }
