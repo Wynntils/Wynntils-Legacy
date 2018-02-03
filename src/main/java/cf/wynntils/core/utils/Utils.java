@@ -1,6 +1,5 @@
 package cf.wynntils.core.utils;
 
-import com.wynndevs.ConfigValues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
@@ -52,7 +51,7 @@ public class Utils {
      */
     public static String getPlayerInfo() {
         Minecraft mc = Minecraft.getMinecraft();
-        return ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() : null;
+        return /*ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ?*/ mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() /*: null*/;
     }
 
     /**
