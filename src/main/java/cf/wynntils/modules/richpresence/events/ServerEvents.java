@@ -15,6 +15,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -32,22 +33,13 @@ public class ServerEvents implements Listener {
     @EventHandler
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         if(!RichPresenceModule.getModule().getRichPresence().isReady()) {
+            Reference.LOGGER.warn("not ready");
             return;
         }
 
-        if(e.isLocal()) {
-            return;
+        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
         }
-
-        ServerData server = Minecraft.getMinecraft().getCurrentServerData();
-        if(server == null || server.serverIP == null) {
-            return;
-        }
-        if(!Reference.onServer()) {
-            return;
-        }
-
-        RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
     }
 
     @EventHandler

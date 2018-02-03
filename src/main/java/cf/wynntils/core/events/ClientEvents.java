@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public class ClientEvents {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
@@ -34,7 +34,7 @@ public class ClientEvents {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         if(Reference.onServer()) {

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  * Copyright © HeyZeer0 - 2016
  */
 
-@Mod(name = Reference.NAME, modid = Reference.MOD_ID, version = Reference.VERSION)
+@Mod(name = Reference.NAME, modid = Reference.MOD_ID, version = Reference.VERSION, acceptedMinecraftVersions = "[1.11,1.12.2]", clientSideOnly = true)
 public class ModCore {
 
     @Mod.EventHandler

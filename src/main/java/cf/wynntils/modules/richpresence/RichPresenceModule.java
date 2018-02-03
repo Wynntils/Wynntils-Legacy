@@ -7,6 +7,7 @@ import cf.wynntils.modules.richpresence.events.ServerEvents;
 import cf.wynntils.modules.richpresence.overlays.LocationOverlay;
 import cf.wynntils.modules.richpresence.profiles.DataProfile;
 import cf.wynntils.modules.richpresence.profiles.RichProfile;
+import com.jagrosh.discordipc.entities.DiscordBuild;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -22,6 +23,10 @@ public class RichPresenceModule extends Module {
     private DataProfile modData = new DataProfile();
 
     public void onEnable() {
+        try {
+            richPresence = new RichProfile(387266678607577088L, DiscordBuild.ANY);
+        }catch (Exception ex) { }
+
         module = this;
 
         registerHudOverlay(new LocationOverlay(getMinecraft(), 0, 0));

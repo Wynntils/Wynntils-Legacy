@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 public class RichProfile {
 
     IPCClient client;
-    boolean ready;
+    boolean ready = false;
 
     public RichProfile(long id, DiscordBuild build) throws Exception {
         client = new IPCClient(id);

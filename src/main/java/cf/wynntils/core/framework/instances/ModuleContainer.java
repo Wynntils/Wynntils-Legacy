@@ -22,7 +22,7 @@ public class ModuleContainer {
     ModuleInfo info;
     Module module;
 
-    HashMap<EventPriority, List<ListenerContainer>> registeredEvents = new HashMap<>();
+    HashMap<EventPriority, ArrayList<ListenerContainer>> registeredEvents = new HashMap<>();
     ArrayList<HudOverlay> hudOverlays = new ArrayList<>();
     ArrayList<KeyHolder> keyHolders = new ArrayList<>();
 
@@ -92,7 +92,9 @@ public class ModuleContainer {
             if(registeredEvents.containsKey(eh.priority())) {
                 registeredEvents.get(eh.priority()).add(new ListenerContainer(sClass, m));
             }else{
-                registeredEvents.put(eh.priority(), Arrays.asList(new ListenerContainer(sClass, m)));
+                ArrayList<ListenerContainer> list = new ArrayList<>();
+                list.add(new ListenerContainer(sClass, m));
+                registeredEvents.put(eh.priority(), list);
             }
         }
     }
