@@ -1,8 +1,7 @@
 package com.wynndevs.modules.wynnicmap;
 
+import cf.wynntils.Reference;
 import com.wynndevs.ModCore;
-import com.wynndevs.core.Reference;
-import com.wynndevs.core.input.KeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
@@ -81,7 +80,7 @@ public class WynnicMap {
             MapUpdater.updatingState = 0;
             return;
         }
-        if(KeyBindings.WYNNICMAP_ZOOM_IN.isKeyDown()) {
+        /*if(KeyBindings.WYNNICMAP_ZOOM_IN.isKeyDown()) {
             minimap.zoom++;
         }
         else if(KeyBindings.WYNNICMAP_ZOOM_OUT.isKeyDown()) {
@@ -98,7 +97,7 @@ public class WynnicMap {
             else {
                 minimap.circular = true;
             }
-        }
+        }*/
 
 
         if(ModCore.mc().world != null && ModCore.mc().player != null && Reference.onServer())

@@ -1,10 +1,8 @@
 package com.wynndevs.modules.wynnicmap;
 
-import com.wynndevs.core.utils.Pair;
+import com.wynndevs.modules.wynnicmap.utils.Pair;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -1,7 +1,7 @@
 package com.wynndevs.modules.wynnicmap;
 
 
-import com.wynndevs.core.Reference;
+import cf.wynntils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;

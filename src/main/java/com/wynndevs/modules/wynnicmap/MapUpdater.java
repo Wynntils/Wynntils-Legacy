@@ -1,7 +1,7 @@
 package com.wynndevs.modules.wynnicmap;
 
-import com.wynndevs.webapi.downloader.DownloaderManager;
-import com.wynndevs.webapi.downloader.enums.DownloadAction;
+import cf.wynntils.webapi.downloader.DownloaderManager;
+import cf.wynntils.webapi.downloader.enums.DownloadAction;
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
@@ -9,10 +9,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MapUpdater {
     public static int latest_version = -1;
     public static int updatingState = 0;
@@ -54,7 +50,7 @@ public class MapUpdater {
                                     updatingState = 2;
                             });
                         }else{
-                            DownloaderManager.queueDownload(purl[purl.length - 1],l[i],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat),DownloadAction.SAVE,(b)->{});
+                            DownloaderManager.queueDownload(purl[purl.length - 1],l[i],new File(WynnicMap.WYNNICMAP_STORAGE_ROOT.getAbsolutePath() + "/maps/" + MapHandler.mapFormat), DownloadAction.SAVE,(b)->{});
                         }
                     }
 
