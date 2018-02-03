@@ -75,7 +75,7 @@ public class ClientEvents {
         lastWorld = world == null ? "" : world;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     @SideOnly(Side.CLIENT)
     public void handleFrameworkEvents(Event e) {
         FrameworkManager.triggerEvent(e);

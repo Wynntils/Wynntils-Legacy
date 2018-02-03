@@ -69,19 +69,23 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        availableModules.values().forEach(c -> c.triggerEvent(e));
+        if(Reference.onServer())
+            availableModules.values().forEach(c -> c.triggerEvent(e));
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        availableModules.values().forEach(c -> c.triggerPreHud(e));
+        if(Reference.onServer())
+            availableModules.values().forEach(c -> c.triggerPreHud(e));
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        availableModules.values().forEach(c -> c.triggerPostHud(e));
+        if(Reference.onServer())
+            availableModules.values().forEach(c -> c.triggerPostHud(e));
     }
 
     public static void triggerKeyPress() {
-        availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
+        if(Reference.onServer())
+            availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
 
 }
