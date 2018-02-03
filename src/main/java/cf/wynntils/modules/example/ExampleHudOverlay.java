@@ -1,12 +1,8 @@
 package cf.wynntils.modules.example;
 
-import cf.wynntils.ModCore;
-import cf.wynntils.Reference;
-import cf.wynntils.core.framework.enums.EventPriority;
 import cf.wynntils.core.framework.instances.HudOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import sun.security.tools.keytool.Main;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
