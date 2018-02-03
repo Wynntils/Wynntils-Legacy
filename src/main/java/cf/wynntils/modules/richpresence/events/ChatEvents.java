@@ -1,5 +1,5 @@
 package cf.wynntils.modules.richpresence.events;
-;
+
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.utils.Utils;

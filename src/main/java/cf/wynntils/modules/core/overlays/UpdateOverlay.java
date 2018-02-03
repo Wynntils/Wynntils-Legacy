@@ -1,25 +1,29 @@
-package com.wynndevs.core.gui;
+package cf.wynntils.modules.core.overlays;
 
-import com.wynndevs.core.Reference;
-import com.wynndevs.modules.richpresence.guis.WRPGui;
-import com.wynndevs.webapi.WebManager;
+import cf.wynntils.Reference;
+import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class UpdateOverlay extends WRPGui {
+/**
+ * Created by HeyZeer0 on 03/02/2018.
+ * Copyright © HeyZeer0 - 2016
+ */
+public class UpdateOverlay extends HudOverlay {
 
     int size = 50;
     long timeout = System.currentTimeMillis();
     boolean loaded = false;
 
-    public UpdateOverlay(Minecraft mc) {
-        super(mc);
+    public UpdateOverlay(Minecraft mc, int x, int y) {
+        super(mc, x, y);
+
+        setConfigValue("manageable", false);
     }
 
-    @SubscribeEvent(priority= EventPriority.NORMAL)
-    public void onRenderExperienceBar(RenderGameOverlayEvent.Post e) {
+    @Override
+    public void postRender(RenderGameOverlayEvent.Post e) {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }

@@ -1,17 +1,22 @@
-package cf.wynntils.webapi.downloader;
+package cf.wynntils.modules.core.overlays;
 
+import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.webapi.downloader.DownloadProfile;
+import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
 
-public class DownloadOverlay {
+/**
+ * Created by HeyZeer0 on 03/02/2018.
+ * Copyright © HeyZeer0 - 2016
+ */
+public class DownloadOverlay extends HudOverlay {
 
-    /*int size = 40;
+    int size = 40;
     int lastPercent = 0;
     DownloadPhase lastPhase;
     String lastTitle = "";
@@ -19,12 +24,14 @@ public class DownloadOverlay {
     int extraY = 0;
     boolean hasMultipleValues = false;
 
-    public DownloadOverlay(Minecraft mc) {
-        super(mc);
+    public DownloadOverlay(Minecraft mc, int x, int y) {
+        super(mc, x, y);
+
+        setConfigValue("manageable", false);
     }
 
-    @SubscribeEvent(priority= EventPriority.HIGHEST)
-    public void onRenderExperienceBar(RenderGameOverlayEvent.Post e) {
+    @Override
+    public void postRender(RenderGameOverlayEvent.Post e) {
         if (e.isCanceled() || e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
@@ -34,7 +41,7 @@ public class DownloadOverlay {
         if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size != 40) {
             DownloadProfile df = DownloaderManager.getCurrentDownload();
 
-            if(df != null) {
+            if (df != null) {
                 lastPercent = DownloaderManager.progression;
                 lastTitle = df.getTitle();
                 lastPhase = DownloaderManager.currentPhase;
@@ -53,18 +60,18 @@ public class DownloadOverlay {
             String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
             drawStringWithoutShadow(title, x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size, -1);
 
-            if(hasMultipleValues && extraY < 20) {
+            if (hasMultipleValues && extraY < 20) {
                 extraY++;
-            }else if(!hasMultipleValues && extraY < 0){
+            } else if (!hasMultipleValues && extraY < 0) {
                 extraY--;
             }
 
-            if(size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
+            if (size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
                 size--;
-            }else if(size < 40 && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
+            } else if (size < 40 && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
                 size++;
             }
         }
-    }*/
+    }
 
 }

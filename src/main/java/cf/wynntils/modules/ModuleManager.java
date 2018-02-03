@@ -2,6 +2,7 @@ package cf.wynntils.modules;
 
 
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 
 /**
@@ -12,6 +13,7 @@ public class ModuleManager {
 
     public static void initModules() {
         FrameworkManager.registerModule(new RichPresenceModule());
+        FrameworkManager.registerModule(new CoreModule());
     }
 
 }

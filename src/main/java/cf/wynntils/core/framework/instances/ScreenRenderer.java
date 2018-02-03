@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class ScreenRenderer extends GuiIngame {
 
-    Minecraft mc;
+    public Minecraft mc;
 
     public ScreenRenderer(Minecraft mc) {
         super(mc);
@@ -19,14 +19,18 @@ public class ScreenRenderer extends GuiIngame {
     }
 
     public void drawString(String text, int x, int y, int color) {
-        mc.fontRenderer.drawString(text, x, y, color);
+        mc.fontRenderer.drawStringWithShadow(text, x, y, color);
     }
 
     public void drawString(String text, int x, int y, float size, int color) {
         GL11.glScalef(size,size,size);
         float mSize = (float)Math.pow(size,-1);
-        this.drawString(mc.fontRenderer, text, Math.round(x / size),Math.round(y / size), color);
+        drawString(text, Math.round(x / size),Math.round(y / size), color);
         GL11.glScalef(mSize,mSize,mSize);
+    }
+
+    public void drawStringWithoutShadow(String text, int x, int y, int color) {
+        mc.fontRenderer.drawString(text, x, y, color);
     }
 
 }
