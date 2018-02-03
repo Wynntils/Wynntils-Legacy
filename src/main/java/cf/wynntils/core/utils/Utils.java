@@ -1,4 +1,4 @@
-package com.wynndevs.modules.richpresence.utils;
+package cf.wynntils.core.utils;
 
 import com.wynndevs.ConfigValues;
 import net.minecraft.client.Minecraft;
@@ -8,10 +8,10 @@ import net.minecraft.nbt.NBTTagList;
 import java.util.regex.Pattern;
 
 /**
- * Created by HeyZeer0 on 04/12/2017.
+ * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
  */
-public class RichUtils {
+public class Utils {
 
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('\u00A7') + "[0-9A-FK-OR]");
 
@@ -87,5 +87,6 @@ public class RichUtils {
         }
         return "";
     }
+
 
 }

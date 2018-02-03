@@ -1,4 +1,4 @@
-package com.wynndevs.modules.richpresence.profiles;
+package cf.wynntils.modules.richpresence.profiles;
 
 import com.jagrosh.discordipc.IPCClient;
 import com.jagrosh.discordipc.entities.DiscordBuild;

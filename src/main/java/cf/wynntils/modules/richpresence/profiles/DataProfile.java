@@ -1,4 +1,4 @@
-package com.wynndevs.modules.richpresence.profiles;
+package cf.wynntils.modules.richpresence.profiles;
 
 /**
  * Created by HeyZeer0 on 14/12/2017.

@@ -1,0 +1,104 @@
+package cf.wynntils.modules.richpresence.events;
+
+import cf.wynntils.ModCore;
+import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.richpresence.RichPresenceModule;
+import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.profiles.TerritoryProfile;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Created by HeyZeer0 on 03/02/2018.
+ * Copyright © HeyZeer0 - 2016
+ */
+public class ServerEvents implements Listener {
+
+    public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    public static ScheduledFuture updateTimer;
+
+    @EventHandler
+    public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
+        if(!RichPresenceModule.getModule().getRichPresence().isReady()) {
+            return;
+        }
+
+        if(e.isLocal()) {
+            return;
+        }
+
+        ServerData server = Minecraft.getMinecraft().getCurrentServerData();
+        if(server == null || server.serverIP == null) {
+            return;
+        }
+        if(!Reference.onServer()) {
+            return;
+        }
+
+        RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
+    }
+
+    @EventHandler
+    public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
+        if(Reference.onServer()) {
+            RichPresenceModule.getModule().getRichPresence().stopRichPresence();
+
+            if(updateTimer != null && !updateTimer.isCancelled()) {
+                updateTimer.cancel(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onWorldJoin(WynnWorldJoinEvent e) {
+        startUpdateRegionName();
+    }
+
+    @EventHandler
+    public void onWorldLeft(WynnWorldLeftEvent e) {
+        if (updateTimer != null) {
+            updateTimer.cancel(true);
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
+        }
+    }
+
+    /**
+     * Starts to check player location for RichPresence current player territory info
+     */
+    public static void startUpdateRegionName() {
+        updateTimer = executor.scheduleAtFixedRate(() -> {
+            EntityPlayerSP pl = ModCore.mc().player;
+
+            if(RichPresenceModule.getModule().getData().getLocId() != -1) {
+                if(WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
+                    return;
+                }
+            }
+
+            for(int i = 0; i < WebManager.getTerritories().size(); i++) {
+                TerritoryProfile pf = WebManager.getTerritories().get(i);
+                if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                    RichPresenceModule.getModule().getData().setLocation(pf.getName());
+                    RichPresenceModule.getModule().getData().setLocId(i);
+
+                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.userWorld.replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
+                    break;
+                }
+            }
+
+        }, 0, 3, TimeUnit.SECONDS);
+    }
+
+}

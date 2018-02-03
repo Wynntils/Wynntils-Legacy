@@ -2,9 +2,12 @@ package cf.wynntils.core.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
 import cf.wynntils.core.framework.FrameworkManager;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -63,10 +66,10 @@ public class ClientEvents {
 
         if(world == null && acceptsLeft) {
             acceptsLeft = false;
-            //onWorldLeft.forEach(Runnable::run);
+            MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
         }else if(world != null && !acceptsLeft && !lastWorld.equalsIgnoreCase(world)) {
             acceptsLeft = true;
-            //onWorldJoin.forEach(Runnable::run);
+            MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
         }
 
         lastWorld = world == null ? "" : world;
