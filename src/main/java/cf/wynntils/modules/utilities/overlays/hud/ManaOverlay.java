@@ -19,8 +19,12 @@ public class ManaOverlay extends HudOverlay {
     int lastMana = 0;
     boolean onManaAnimation = false;
 
-    public ManaOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public ManaOverlay(String name, int x, int y) {
+        super(name, x, y);
+
+        addDefaultConfigValue("flipped", true);
+
+        loadConfig();
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Reference {
     }
     public static boolean onWorld() { return onServer() && userWorld != null; }
     public static boolean onNether(){
-        return !onWorld() || !userWorld.contains("N");
+        return onWorld() && !userWorld.contains("N");
     }
     public static boolean onWars() {return onWorld() && userWorld.contains("WAR"); }
 

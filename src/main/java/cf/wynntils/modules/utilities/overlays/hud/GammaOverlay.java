@@ -11,8 +11,10 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
  */
 public class GammaOverlay extends HudOverlay {
 
-    public GammaOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public GammaOverlay(String name, int x, int y) {
+        super(name, x, y);
+
+        loadConfig();
     }
 
     @Override

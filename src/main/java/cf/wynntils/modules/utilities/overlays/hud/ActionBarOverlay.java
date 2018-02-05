@@ -21,8 +21,10 @@ public class ActionBarOverlay extends HudOverlay {
     String lastActionBar = "";
     long lastActionBarTime = System.currentTimeMillis();
 
-    public ActionBarOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public ActionBarOverlay(String name, int x, int y) {
+        super(name, x, y);
+
+        loadConfig();
     }
 
     @Override

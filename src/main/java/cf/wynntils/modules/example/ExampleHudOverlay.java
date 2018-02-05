@@ -13,14 +13,14 @@ public class ExampleHudOverlay extends HudOverlay {
     /**
      * Default constructor
      *
-     * @param mc Minecraft
+     * @param name Overlay Name
      * @param x Default X
      * @param y Default Y
      */
-    public ExampleHudOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public ExampleHudOverlay(String name, int x, int y) {
+        super(name, x, y);
 
-        setConfigValue("Example", true); //true is the default value
+        addDefaultConfigValue("Example", true); //true is the default value
     }
 
     /**

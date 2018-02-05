@@ -16,10 +16,8 @@ public class UpdateOverlay extends HudOverlay {
     long timeout = System.currentTimeMillis();
     boolean loaded = false;
 
-    public UpdateOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
-
-        setConfigValue("manageable", false);
+    public UpdateOverlay(String name, int x, int y) {
+        super(name, x, y);
     }
 
     @Override

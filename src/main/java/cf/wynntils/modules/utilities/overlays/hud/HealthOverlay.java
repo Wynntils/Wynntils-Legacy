@@ -19,8 +19,10 @@ public class HealthOverlay extends HudOverlay {
     int lastHealth = 0;
     boolean onHealAnimation = false;
 
-    public HealthOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public HealthOverlay(String name, int x, int y) {
+        super(name, x, y);
+
+        loadConfig();
     }
 
     @Override

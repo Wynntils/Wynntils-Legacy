@@ -26,10 +26,10 @@ public class UtilitiesModule extends Module {
 
         registerEvents(new OverlayEvents());
 
-        registerHudOverlay(new ActionBarOverlay(getMinecraft(), 0, 0));
-        registerHudOverlay(new HealthOverlay(getMinecraft(), 0, 0));
-        registerHudOverlay(new ManaOverlay(getMinecraft(), 0, 0));
-        registerHudOverlay(new GammaOverlay(getMinecraft(), 70, 5));
+        registerHudOverlay(new ActionBarOverlay("ActionBar", 0, 0));
+        registerHudOverlay(new HealthOverlay("HealthBar", 0, 0));
+        registerHudOverlay(new ManaOverlay("ManaBar", 0, 0));
+        registerHudOverlay(new GammaOverlay("GammaBright", 70, 5));
     }
 
     public static UtilitiesModule getModule() {

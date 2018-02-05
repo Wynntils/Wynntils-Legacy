@@ -12,7 +12,6 @@ public interface HudOverlayBase {
 
     void preRender(RenderGameOverlayEvent.Pre e);
     void postRender(RenderGameOverlayEvent.Post e);
-    HashMap<String, Object> getCurrentConfigs();
     boolean isActive();
 
 }

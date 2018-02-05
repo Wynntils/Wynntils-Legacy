@@ -24,10 +24,8 @@ public class DownloadOverlay extends HudOverlay {
     int extraY = 0;
     boolean hasMultipleValues = false;
 
-    public DownloadOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
-
-        setConfigValue("manageable", false);
+    public DownloadOverlay(String name, int x, int y) {
+        super(name, x, y);
     }
 
     @Override

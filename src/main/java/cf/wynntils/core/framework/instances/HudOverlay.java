@@ -1,9 +1,12 @@
 package cf.wynntils.core.framework.instances;
 
+import cf.wynntils.Reference;
+import cf.wynntils.core.framework.configs.ConfigParser;
 import cf.wynntils.core.framework.interfaces.HudOverlayBase;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -14,12 +17,15 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
 
     public int x, y;
 
-    private HashMap<String, Object> availableConfigs = new HashMap<>();
+    private ConfigParser config;
+    private HashMap<String, Object> defaultValues = new HashMap<>();
 
-    public HudOverlay(Minecraft mc, int x, int y) {
-        super(mc);
+    public HudOverlay(String name, int x, int y) {
+        super(Minecraft.getMinecraft());
+        config = new ConfigParser(new File(Reference.MOD_STORAGE_ROOT, "overlays"), name + "Overlay", defaultValues);
 
-        this.x = x; this.y = y;
+        addDefaultConfigValue("x", x);
+        addDefaultConfigValue("y", y);
     }
 
     @Override
@@ -37,17 +43,22 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
         return true;
     }
 
-    @Override
-    public HashMap<String, Object> getCurrentConfigs() {
-        return availableConfigs;
+    public void loadConfig() {
+        config.loadConfig();
+
+        this.x = Integer.valueOf(config.getValue("x").toString()); this.y = Integer.valueOf(config.getValue("y").toString());
     }
 
     public void setConfigValue(String name, Object value) {
-        availableConfigs.put(name, value);
+        config.setValue(name, value);
+    }
+
+    public void addDefaultConfigValue(String name, Object value) {
+        defaultValues.put(name, value);
     }
 
     public Object getConfigValue(String name) {
-        return availableConfigs.getOrDefault(name, null);
+        return config.getValue(name);
     }
 
 }

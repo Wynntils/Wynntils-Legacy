@@ -20,8 +20,10 @@ public class LocationOverlay extends HudOverlay {
     boolean showing = false;
     boolean animation = false;
 
-    public LocationOverlay(Minecraft mc, int x, int y) {
-        super(mc, x, y);
+    public LocationOverlay(String name, int x, int y) {
+        super(name, x, y);
+
+        loadConfig();
     }
 
     @Override

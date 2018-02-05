@@ -14,8 +14,8 @@ import cf.wynntils.modules.core.overlays.UpdateOverlay;
 public class CoreModule extends Module {
 
     public void onEnable() {
-        registerHudOverlay(new UpdateOverlay(getMinecraft(), 0, 0));
-        registerHudOverlay(new DownloadOverlay(getMinecraft(), 0, 0));
+        registerHudOverlay(new UpdateOverlay("Update", 0, 0));
+        registerHudOverlay(new DownloadOverlay("Download", 0, 0));
     }
 
 }

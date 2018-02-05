@@ -29,7 +29,7 @@ public class RichPresenceModule extends Module {
 
         module = this;
 
-        registerHudOverlay(new LocationOverlay(getMinecraft(), 0, 0));
+        registerHudOverlay(new LocationOverlay("Entering", 0, 0));
         registerEvents(new ChatEvents());
         registerEvents(new ServerEvents());
     }

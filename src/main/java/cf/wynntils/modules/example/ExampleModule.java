@@ -29,7 +29,7 @@ public class ExampleModule extends Module {
         getLogger().warn("MODULE STARTED");
 
         registerEvents(new ExampleListener());
-        registerHudOverlay(new ExampleHudOverlay(getMinecraft(), 10, 10));
+        registerHudOverlay(new ExampleHudOverlay("Example", 10, 10));
         registerKeyBinding("Test", Keyboard.KEY_G, "Wynntils", true, () -> {
             getLogger().warn("KEY PRESSED");
         });
