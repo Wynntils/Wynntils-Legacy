@@ -36,7 +36,7 @@ public class ExampleHudOverlay extends HudOverlay {
 
         setConfigValue("Example", true);
 
-        if(Boolean.valueOf(getConfigValue("Example").toString())) {
+        if(getConfigBoolean("Example")) {
             drawString("This is an example", x, y, -1);
         }else{
             drawString("This is a test", x, y, -1);

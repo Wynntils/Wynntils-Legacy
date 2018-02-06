@@ -1,6 +1,6 @@
 package cf.wynntils.core.framework.configs;
 
-import org.json.JSONObject;
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.HashMap;
@@ -11,7 +11,9 @@ import java.util.HashMap;
  */
 public class ConfigParser {
 
-    JSONObject config = new JSONObject();
+    private static Gson gson = new Gson();
+
+    ConfigContainer config = new ConfigContainer(new HashMap<>());
     File location;
     String name;
 
@@ -24,21 +26,21 @@ public class ConfigParser {
     }
 
     public void setValue(String name, Object obj) {
-        config.put(name, obj);
+        config.actualConfig.put(name, obj);
         saveConfig();
     }
 
     public void loadConfig() {
         try{
             readJsonData();
+            setDefaultValues();
         }catch (Exception ex) {
             ex.printStackTrace();
-            setDefaultValues();
         }
     }
 
     public Object getValue(String name) {
-        return config.get(name);
+        return config.actualConfig.get(name);
     }
 
     public void addDefaultValue(String name, Object obj) {
@@ -46,8 +48,19 @@ public class ConfigParser {
     }
 
     private void setDefaultValues() {
-        defaultValues.keySet().forEach(k -> config.put(k, defaultValues.get(k)));
-        saveConfig();
+        boolean save = false;
+        if(defaultValues.size() >= config.actualConfig.size()) {
+            save = true;
+
+            defaultValues.keySet().forEach(k -> {
+                if(!config.actualConfig.containsKey(k)) {
+                    config.actualConfig.put(k, defaultValues.get(k));
+                }
+            });
+        }
+
+        if(save)
+            saveConfig();
     }
 
     private void saveConfig() {
@@ -65,7 +78,7 @@ public class ConfigParser {
             }
 
             pw = new PrintWriter(key);
-            pw.write(config.toString());
+            pw.write(gson.toJson(config));
 
         }catch (Exception ex) {
             ex.printStackTrace();
@@ -103,7 +116,7 @@ public class ConfigParser {
         fr.close();
         reader.close();
 
-        config = new JSONObject(builder.toString());
+        config = gson.fromJson(builder.toString(), ConfigContainer.class);
     }
 
 }

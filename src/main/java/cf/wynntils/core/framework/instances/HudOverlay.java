@@ -46,7 +46,7 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
     public void loadConfig() {
         config.loadConfig();
 
-        this.x = Integer.valueOf(config.getValue("x").toString()); this.y = Integer.valueOf(config.getValue("y").toString());
+        this.x = (int)config.getValue("x"); this.y = (int)config.getValue("y");
     }
 
     public void setConfigValue(String name, Object value) {
@@ -60,5 +60,9 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
     public Object getConfigValue(String name) {
         return config.getValue(name);
     }
+    public boolean getConfigBoolean(String name) { return (boolean)config.getValue(name) ;}
+    public String getConfigString(String name) { return (String)config.getValue(name) ;}
+    public int getConfigInt(String name) { return (int)config.getValue(name) ;}
+    public <T> T getConfigInstance(String name) { return (T)config.getValue(name) ;}
 
 }

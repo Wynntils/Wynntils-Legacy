@@ -45,6 +45,7 @@ configurations {
 dependencies {
     embed 'com.jagrosh:DiscordIPC:+'
     embed fileTree(dir: 'lib', include: ['*.jar'])
+
 }
 
 processResources {

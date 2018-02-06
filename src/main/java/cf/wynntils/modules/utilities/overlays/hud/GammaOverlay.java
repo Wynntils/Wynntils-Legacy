@@ -1,7 +1,6 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
