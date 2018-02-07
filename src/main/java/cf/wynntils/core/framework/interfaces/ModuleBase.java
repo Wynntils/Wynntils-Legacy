@@ -7,6 +7,7 @@ package cf.wynntils.core.framework.interfaces;
 public interface ModuleBase {
 
     void onEnable();
+    void postInit();
     void onDisable();
     boolean isActive();
 

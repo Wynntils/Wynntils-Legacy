@@ -1,0 +1,52 @@
+package cf.wynntils.modules.capes.managers;
+
+import cf.wynntils.Reference;
+import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.WebReader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ImageBufferDownload;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.util.ArrayList;
+
+/**
+ * Created by HeyZeer0 on 07/02/2018.
+ * Copyright © HeyZeer0 - 2016
+ */
+public class CapeManager {
+
+    public static ArrayList<String> users = new ArrayList<>();
+    private static WebReader reader;
+
+    public static void updateCapes() {
+        String url = WebManager.apiUrls.get("Capes");
+        try{
+            reader = new WebReader(url + "/config");
+
+            users = reader.getList("AllowedUsers");
+        }catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    public static void downloadCape(String uuid) {
+        if(users.size() <= 0) {
+            return;
+        }
+        if ((uuid != null) && (!uuid.isEmpty()) && users.contains(uuid.replace("-", ""))) {
+            String url = WebManager.apiUrls.get("Capes") + "/" + uuid.replace("-", "");
+            ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
+
+            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+            ImageDownloader textureCape = new ImageDownloader(null, url);
+
+            textureManager.loadTexture(rl, textureCape);
+        }
+    }
+
+}

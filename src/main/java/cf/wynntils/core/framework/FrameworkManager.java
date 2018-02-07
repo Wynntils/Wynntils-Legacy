@@ -64,6 +64,10 @@ public class FrameworkManager {
         availableModules.values().forEach(c -> c.getModule().onEnable());
     }
 
+    public static void postInitModules() {
+        availableModules.values().forEach(c -> c.getModule().postInit());
+    }
+
     public static void disableModules() {
         availableModules.values().forEach(c -> c.getModule().onDisable());
     }

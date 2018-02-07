@@ -1,5 +1,7 @@
 package cf.wynntils.webapi;
 
+import cf.wynntils.Reference;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -104,7 +106,7 @@ public class WebReader {
                         values.add(x);
                     }
 
-                    lists.put(split[0], values);
+                    lists.put(split[0].replace("[", "").replace("]", ""), values);
                 }
 
             }
@@ -119,7 +121,7 @@ public class WebReader {
     }
 
     public ArrayList<String> getList(String key) {
-        return lists.getOrDefault(key, null);
+        return lists.getOrDefault(key, new ArrayList<>());
     }
 
 }

@@ -20,6 +20,11 @@ public class Module implements ModuleBase {
     }
 
     @Override
+    public void postInit() {
+
+    }
+
+    @Override
     public void onDisable() {
 
     }

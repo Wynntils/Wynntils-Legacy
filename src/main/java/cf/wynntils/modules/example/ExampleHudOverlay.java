@@ -21,6 +21,8 @@ public class ExampleHudOverlay extends HudOverlay {
         super(name, x, y);
 
         addDefaultConfigValue("Example", true); //true is the default value
+
+        loadConfig(); //this is necessary to load the config
     }
 
     /**

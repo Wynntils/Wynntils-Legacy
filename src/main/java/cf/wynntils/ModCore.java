@@ -6,6 +6,7 @@ import cf.wynntils.modules.ModuleManager;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -23,6 +24,11 @@ public class ModCore {
         ModuleManager.initModules();
 
         FrameworkManager.startModules();
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent e) {
+        FrameworkManager.postInitModules();
     }
 
     public static Minecraft mc() {
