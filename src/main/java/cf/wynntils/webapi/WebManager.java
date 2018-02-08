@@ -91,7 +91,7 @@ public class WebManager {
                     }
                 }
 
-                territories.add(new TerritoryProfile("Rodoroc", 1009, -5231, 1263, -5057, null, null, null));
+                territories.add(new TerritoryProfile("Rodoroc", 965, -5238, 1265, -5067, null, null, null));
 
             }catch (Exception ex) {
                 Reference.LOGGER.warn("Error captured while trying to connect to Wynncraft Territory API", ex);}

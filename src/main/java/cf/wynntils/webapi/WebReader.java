@@ -107,6 +107,10 @@ public class WebReader {
                     }
 
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
+                }else{
+                    ArrayList<String> values = new ArrayList<>();
+                    values.add(split[1]);
+                    lists.put(split[0].replace("[", "").replace("]", ""), values);
                 }
 
             }
