@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -65,7 +66,7 @@ public class ChestOverlay extends GuiChest {
             GL11.glTranslatef(0, 10, 0F);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             if(getSlotUnderMouse() != null) {
-                if(getSlotUnderMouse().slotNumber == 45 || getSlotUnderMouse().slotNumber == 8)
+                if(getSlotUnderMouse().slotNumber == 89)
                     GL11.glEnable(GL11.GL_BLEND);
             }
 
@@ -226,7 +227,7 @@ public class ChestOverlay extends GuiChest {
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             if(getSlotUnderMouse() != null) {
-                if(getSlotUnderMouse().slotNumber == 45 || getSlotUnderMouse().slotNumber == 8)
+                if(getSlotUnderMouse().slotNumber == 89)
                     GL11.glDisable(GL11.GL_BLEND);
             }
         }

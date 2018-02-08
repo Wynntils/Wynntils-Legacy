@@ -24,8 +24,8 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
         super(Minecraft.getMinecraft());
         config = new ConfigParser(new File(Reference.MOD_STORAGE_ROOT, "overlays"), name + "Overlay", defaultValues);
 
-        addDefaultConfigValue("x", x);
-        addDefaultConfigValue("y", y);
+        addDefaultConfigValue("x", (int)x);
+        addDefaultConfigValue("y", (int)y);
     }
 
     @Override
