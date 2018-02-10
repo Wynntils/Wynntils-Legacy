@@ -117,6 +117,8 @@ public class ConfigParser {
         reader.close();
 
         config = gson.fromJson(builder.toString(), ConfigContainer.class);
+        if(config.actualConfig == null)
+            config.actualConfig = new HashMap<String, Object>();
     }
 
 }

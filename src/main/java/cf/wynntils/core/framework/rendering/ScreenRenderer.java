@@ -106,7 +106,11 @@ public class ScreenRenderer {
 
     public void drawString(String text, CustomColor color, int x, int y) { drawString(text,color,x,y,true); }
     public void drawString(String text, CustomColor color, int x, int y, boolean shadow) {
-        fontRenderer.drawString(text,color,(int)((x)/scale+drawingOrigin.x),(int)((y)/scale+drawingOrigin.y),shadow);
+        fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x,(int)((y)/scale+drawingOrigin.y),shadow);
+    }
+    public void drawCenteredString(String text, CustomColor color, int x, int y) {drawString(text, color, x, y,true);}
+    public void drawCenteredString(String text, CustomColor color, int x, int y, boolean shadow) {
+        fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x-getStringWidth(text)/2,(int)((y)/scale+drawingOrigin.y),shadow);
     }
 
     public int getStringWidth(String text) {
@@ -166,7 +170,7 @@ public class ScreenRenderer {
         drawRect(texture,x,y,x+width,y+height,tx,ty,tx+width,ty+height);
     }
 /*
-    public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height)//TODO rewrite this
+    public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height)
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;

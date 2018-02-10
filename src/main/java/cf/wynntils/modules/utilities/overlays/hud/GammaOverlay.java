@@ -1,6 +1,7 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.rendering.Colors.CommonColors;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -22,10 +23,9 @@ public class GammaOverlay extends HudOverlay {
             return;
         }
 
-        ScaledResolution resolution = new ScaledResolution(mc);
-
         if (mc.gameSettings.gammaSetting >= 1000) {
-            drawString("§6GammaBright", resolution.getScaledWidth() - x, y, -1);
+            //drawString("§6GammaBright", resolution.getScaledWidth() - x, y, -1);
+            drawString("GammaBright", CommonColors.ORANGE, screen.getScaledWidth()-x,y);
         }
     }
 }

@@ -2,6 +2,7 @@ package cf.wynntils;
 
 import cf.wynntils.core.CoreManager;
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.core.framework.rendering.Textures.Textures;
 import cf.wynntils.modules.ModuleManager;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -29,6 +30,7 @@ public class ModCore {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         FrameworkManager.postInitModules();
+        Textures.loadTextures();
     }
 
     public static Minecraft mc() {

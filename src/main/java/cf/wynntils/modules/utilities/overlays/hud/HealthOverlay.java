@@ -2,6 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.rendering.Textures.Textures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,8 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
  * Copyright © HeyZeer0 - 2016
  */
 public class HealthOverlay extends HudOverlay {
-
-    private static final ResourceLocation bars = new ResourceLocation(Reference.MOD_ID + ":textures/gui/overlay-bars.png");
+    private static final ResourceLocation bars = new ResourceLocation(Reference.MOD_ID + ":textures/gui/overlay_bars.png");
 
     int lastHealth = 0;
     boolean onHealAnimation = false;
@@ -39,9 +39,8 @@ public class HealthOverlay extends HudOverlay {
             return;
         }
 
-        ScaledResolution resolution = new ScaledResolution(mc);
-        int x = resolution.getScaledWidth() / 2;
-        int y = resolution.getScaledHeight();
+        int x = screen.getScaledWidth() / 2;
+        int y = screen.getScaledHeight();
 
         int healthBarWidth = (int) (82.0 * ((mc.player.getHealth()) / mc.player.getMaxHealth()));
 
@@ -72,27 +71,30 @@ public class HealthOverlay extends HudOverlay {
         {
             GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
-            mc.getTextureManager().bindTexture(bars);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-            drawTexturedModalRect(x - 91, y - 38, 0, 20, 82, 8);
+            //drawTexturedModalRect(x - 91, y - 38, 0, 20, 82, 8);
+            drawRect(Textures.overlay_bars, x - 91, y - 38, 0, 20, 82, 8);
             if (lastHealth != 82) {
                 if (lastHealth > 2) {
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-                    drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 1, 8);
+                    drawRect(Textures.overlay_bars, x - 91, y - 38, 0, 0, lastHealth + 1, 8);
+                    //drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 1, 8);
                 }
                 if (lastHealth > 1) {
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 0.5F);
-                    drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 2, 8);
+                    drawRect(Textures.overlay_bars, x - 91, y - 38, 0, 0, lastHealth + 2, 8);
+                    //drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 2, 8);
                 }
                 if (lastHealth > 0) {
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 0.25F);
-                    drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 3, 8);
+                    drawRect(Textures.overlay_bars, x - 91, y - 38, 0, 0, lastHealth + 3, 8);
+                    //drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth + 3, 8);
                 }
             } else {
-                drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth, 8);
+                drawRect(Textures.overlay_bars, x - 91, y - 38, 0, 0, lastHealth, 8);
+                //drawTexturedModalRect(x - 91, y - 38, 0, 0, lastHealth, 8);
             }
-
         }
 
         GlStateManager.disableBlend();

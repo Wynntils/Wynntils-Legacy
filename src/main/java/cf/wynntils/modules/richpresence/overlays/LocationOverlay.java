@@ -1,6 +1,7 @@
 package cf.wynntils.modules.richpresence.overlays;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.rendering.Colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -38,11 +39,19 @@ public class LocationOverlay extends HudOverlay {
 
         showing = true;
 
+/*
         drawRect(x, y - size, 143, 43 - size, -2500134);
         drawRect(x, y - size, 140, 40 - size, -10066329);
 
         drawString("§a§lYou are now entering", x + 5, y + 5 - size, -1);
         drawString("§e" + last_loc, x + 7, y + 20 - size, 1.5f, 13782543);
+*/
+        drawRect(CommonColors.LIGHT_GRAY, x, y - size, 143, 43 - size);
+        drawRect(CommonColors.GRAY, x, y - size, 140, 40 - size);
+
+        drawString("You are now entering:", CommonColors.WHITE, x + 5, y + 5);
+        scale(1.5f);
+        drawString(last_loc, CommonColors.YELLOW,x + 7, y + 20 - size);
 
         if(size > 0 && !animation) {
             size-=1;

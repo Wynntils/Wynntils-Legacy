@@ -1,7 +1,8 @@
 package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
-import net.minecraft.client.Minecraft;
+import cf.wynntils.core.framework.rendering.Colors.CommonColors;
+import cf.wynntils.core.framework.rendering.Colors.CustomColor;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**
@@ -22,8 +23,10 @@ public class ExampleHudOverlay extends HudOverlay {
 
         addDefaultConfigValue("Example", true); //true is the default value
 
-        loadConfig(); //this is necessary to load the config
+        loadConfig();
     }
+
+    static int t = 0;
 
     /**
      * Post render event
@@ -35,14 +38,26 @@ public class ExampleHudOverlay extends HudOverlay {
         if(e.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) {
             return;
         }
+/*        t++;
 
-        setConfigValue("Example", true);
 
+        String st = "rotation: " + (t%360 >100 ? "" : "0") + (t%360 >10 ? "" : "0") + t%360;
+        int stWidth = getStringWidth(st);
+        scale(1.1f);
+        transformationOrigin(stWidth/2,5);
+        rotate(t%360);
+        drawRect(new CustomColor(0.1f,0.1f,0.1f),-2,-2,2+stWidth,2+fontRenderer.FONT_HEIGHT);
+        drawString(st, CommonColors.WHITE,0,0);
+        resetRotation();
+        resetScale();
+        drawRect(CommonColors.PURPLE,-1,-1,1,1);
+        drawRect(CommonColors.MAGENTA,transformationOrigin().x-1,transformationOrigin().y-1,transformationOrigin().x+1,transformationOrigin().y+1);
+        /*
         if(getConfigBoolean("Example")) {
             drawString("This is an example", x, y, -1);
         }else{
             drawString("This is a test", x, y, -1);
-        }
+        }*/
     }
 
     /**

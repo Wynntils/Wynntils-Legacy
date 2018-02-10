@@ -3,6 +3,7 @@ package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -29,7 +30,7 @@ public class ExampleModule extends Module {
         getLogger().warn("MODULE STARTED");
 
         registerEvents(new ExampleListener());
-        registerHudOverlay(new ExampleHudOverlay("Example", 10, 10));
+        registerHudOverlay(new ExampleHudOverlay("Example", 100, 50));
         registerKeyBinding("Test", Keyboard.KEY_G, "Wynntils", true, () -> {
             getLogger().warn("KEY PRESSED");
         });

@@ -2,6 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.rendering.Colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -98,11 +99,9 @@ public class ActionBarOverlay extends HudOverlay {
 
         int padding = 3;
 
-        ScaledResolution resolution = new ScaledResolution(mc);
-
-        int x = resolution.getScaledWidth() / 2;
-        int y = resolution.getScaledHeight();
-
+        int x = screen.getScaledWidth() / 2;
+        int y = screen.getScaledHeight();
+/*TODO remake all of these
         if (preference || !renderItemName(resolution)) {
             drawString(mc.fontRenderer, l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, 1);
             drawCenteredString(mc.fontRenderer, middle, x, y - 65, 1);
@@ -110,7 +109,14 @@ public class ActionBarOverlay extends HudOverlay {
         }
 
         drawCenteredString(mc.fontRenderer, health, (x - 5 - (86 / 2)), y - 50, 1); // DO NOT EDIT
-        drawCenteredString(mc.fontRenderer, mana, (x + 5 + (86 / 2)), y - 50, 1); // DO NOT EDIT
+        drawCenteredString(mc.fontRenderer, mana, (x + 5 + (86 / 2)), y - 50, 1); // DO NOT EDIT*/
+/*
+        if (preference || !renderItemName(screen)) {
+
+            drawString(l, CommonColors.WHITE, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding),y-65);
+            drawCenteredString(middle, CommonColors.WHITE, x, y - 65);
+            drawString(r, CommonColors.WHITE, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65);
+        }*/
     }
 
     public boolean renderItemName(ScaledResolution scaledRes){
