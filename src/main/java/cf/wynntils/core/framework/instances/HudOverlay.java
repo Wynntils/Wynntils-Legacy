@@ -3,7 +3,9 @@ package cf.wynntils.core.framework.instances;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.configs.ConfigParser;
 import cf.wynntils.core.framework.interfaces.HudOverlayBase;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.io.File;
@@ -46,7 +48,7 @@ public class HudOverlay extends ScreenRenderer implements HudOverlayBase {
     public void loadConfig() {
         config.loadConfig();
 
-        this.x = (int)config.getValue("x"); this.y = (int)config.getValue("y");
+        this.x = MathHelper.floor((double)config.getValue("x")); this.y = MathHelper.floor((double)config.getValue("y"));
     }
 
     public void setConfigValue(String name, Object value) {

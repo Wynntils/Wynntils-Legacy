@@ -4,6 +4,7 @@ import cf.wynntils.core.framework.enums.EventPriority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -67,8 +68,11 @@ public class ModuleContainer {
             return;
         }
         hudOverlays.forEach(c -> {
-            if(c.isActive())
+            if(c.isActive()) {
+                ScreenRenderer.beginGL(c.x,c.y);
                 c.preRender(e);
+                ScreenRenderer.endGL();
+            }
         });
     }
 
@@ -77,8 +81,11 @@ public class ModuleContainer {
             return;
         }
         hudOverlays.forEach(c -> {
-            if(c.isActive())
+            if(c.isActive()) {
+                ScreenRenderer.beginGL(c.x,c.y);
                 c.postRender(e);
+                ScreenRenderer.endGL();
+            }
         });
     }
 

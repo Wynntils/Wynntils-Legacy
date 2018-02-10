@@ -5,6 +5,7 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -96,6 +97,7 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent e) {
+        ScreenRenderer.refresh();
         FrameworkManager.triggerKeyPress();
     }
 
