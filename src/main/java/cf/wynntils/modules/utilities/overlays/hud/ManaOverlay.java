@@ -2,9 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Textures.Textures;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
+import cf.wynntils.core.framework.rendering.textures.Textures;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;

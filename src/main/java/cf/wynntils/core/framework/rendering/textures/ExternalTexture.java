@@ -1,4 +1,4 @@
-package cf.wynntils.core.framework.rendering.Textures;
+package cf.wynntils.core.framework.rendering.textures;
 
 import cf.wynntils.core.utils.GenericActionResult;
 

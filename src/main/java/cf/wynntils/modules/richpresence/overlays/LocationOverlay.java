@@ -1,9 +1,8 @@
 package cf.wynntils.modules.richpresence.overlays;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**

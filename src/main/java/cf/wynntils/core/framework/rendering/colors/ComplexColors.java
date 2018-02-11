@@ -1,4 +1,4 @@
-package cf.wynntils.core.framework.rendering.Colors;
+package cf.wynntils.core.framework.rendering.colors;
 
 import org.apache.commons.lang3.NotImplementedException;
 

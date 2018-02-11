@@ -1,8 +1,6 @@
 package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
-import cf.wynntils.core.framework.rendering.Colors.CustomColor;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**

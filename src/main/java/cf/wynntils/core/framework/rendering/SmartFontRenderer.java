@@ -1,7 +1,7 @@
 package cf.wynntils.core.framework.rendering;
 
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
-import cf.wynntils.core.framework.rendering.Colors.CustomColor;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,12 +27,12 @@ public class SmartFontRenderer extends FontRenderer {
         if(shadow) {
             posX = x + 1;
             posY = y + 1;
-            CommonColors.BLACK.ApplyColor();
+            CommonColors.BLACK.applyColor();
             length = drawChars(text);
         }
         posX = x;
         posY = y;
-        color.ApplyColor();
+        color.applyColor();
         length = Math.max(drawChars(text),length);
         return length;
     }

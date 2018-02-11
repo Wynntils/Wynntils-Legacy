@@ -1,16 +1,12 @@
 package cf.wynntils.modules.core.overlays;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
-import cf.wynntils.core.framework.rendering.Colors.CustomColor;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-
-import java.awt.*;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.

@@ -2,7 +2,7 @@ package cf.wynntils;
 
 import cf.wynntils.core.CoreManager;
 import cf.wynntils.core.framework.FrameworkManager;
-import cf.wynntils.core.framework.rendering.Textures.Textures;
+import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.modules.ModuleManager;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;

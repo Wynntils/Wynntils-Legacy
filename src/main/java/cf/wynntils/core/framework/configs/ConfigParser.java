@@ -1,6 +1,7 @@
 package cf.wynntils.core.framework.configs;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.HashMap;
  */
 public class ConfigParser {
 
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     ConfigContainer config = new ConfigContainer(new HashMap<>());
     File location;
@@ -30,6 +31,10 @@ public class ConfigParser {
         saveConfig();
     }
 
+    public Object getValue(String name) {
+        return config.actualConfig.get(name);
+    }
+
     public void loadConfig() {
         try{
             readJsonData();
@@ -39,24 +44,15 @@ public class ConfigParser {
         }
     }
 
-    public Object getValue(String name) {
-        return config.actualConfig.get(name);
-    }
-
-    public void addDefaultValue(String name, Object obj) {
-        defaultValues.put(name, obj);
-    }
-
     private void setDefaultValues() {
         boolean save = false;
-        if(defaultValues.size() >= config.actualConfig.size()) {
-            save = true;
 
-            defaultValues.keySet().forEach(k -> {
-                if(!config.actualConfig.containsKey(k)) {
-                    config.actualConfig.put(k, defaultValues.get(k));
-                }
-            });
+        for(String k : defaultValues.keySet()) {
+            if(!config.actualConfig.containsKey(k)) {
+                config.actualConfig.put(k, defaultValues.get(k));
+
+                save = true;
+            }
         }
 
         if(save)
@@ -90,13 +86,13 @@ public class ConfigParser {
     }
 
     private void readJsonData() throws Exception {
-        if(!location.exists() || !location.isDirectory()) {
+        if (!location.exists() || !location.isDirectory()) {
             location.mkdirs();
         }
 
         File key = new File(location, name + ".json");
 
-        if(!key.exists()) {
+        if (!key.exists()) {
             key.createNewFile();
             setDefaultValues();
             return;
@@ -108,7 +104,7 @@ public class ConfigParser {
         StringBuilder builder = new StringBuilder();
         String line = reader.readLine();
 
-        while(line != null) {
+        while (line != null) {
             builder.append(line);
             line = reader.readLine();
         }
@@ -117,8 +113,6 @@ public class ConfigParser {
         reader.close();
 
         config = gson.fromJson(builder.toString(), ConfigContainer.class);
-        if(config.actualConfig == null)
-            config.actualConfig = new HashMap<String, Object>();
     }
 
 }

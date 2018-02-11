@@ -1,8 +1,7 @@
-package cf.wynntils.core.framework.rendering.Textures;
+package cf.wynntils.core.framework.rendering.textures;
 
 import cf.wynntils.core.utils.GenericActionResult;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;

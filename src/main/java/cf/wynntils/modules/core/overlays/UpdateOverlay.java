@@ -2,9 +2,8 @@ package cf.wynntils.modules.core.overlays;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**

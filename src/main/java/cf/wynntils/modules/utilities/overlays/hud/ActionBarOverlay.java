@@ -2,7 +2,6 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.HudOverlay;
-import cf.wynntils.core.framework.rendering.Colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;

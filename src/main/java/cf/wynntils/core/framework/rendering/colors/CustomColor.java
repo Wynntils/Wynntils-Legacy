@@ -1,12 +1,8 @@
-package cf.wynntils.core.framework.rendering.Colors;
+package cf.wynntils.core.framework.rendering.colors;
 
 
 
-import com.wynndevs.ModCore;
 import net.minecraft.client.renderer.GlStateManager;
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.util.function.Function;
 
 
 /** CustomColor
@@ -21,12 +17,14 @@ public class CustomColor {
             a; // The ALPHA value of the color(0.0f -> 1.0f)
 
     public CustomColor(float r, float g, float b) { this(r,g,b,1.0f); }
+
     public CustomColor(float r, float g, float b, float a) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
+
     public CustomColor(String hex) throws Exception {
         if(hex.length() != 8 && hex.length() != 6) throw new Exception("String length is neither 8 or 6, Cannot proceed.");
         r = ((float)Integer.parseInt(hex.substring(0,2),16)/255f);
@@ -39,10 +37,10 @@ public class CustomColor {
         }
     }
 
-    /** void ApplyColor()
+    /** void applyColor()
      * will set the color to OpenGL's active color
      */
-    public void ApplyColor() {
+    public void applyColor() {
         GlStateManager.color(r,g,b,a);
     }
 

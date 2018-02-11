@@ -1,7 +1,7 @@
 package cf.wynntils.core.framework.rendering;
 
-import cf.wynntils.core.framework.rendering.Colors.CustomColor;
-import cf.wynntils.core.framework.rendering.Textures.Texture;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
+import cf.wynntils.core.framework.rendering.textures.Texture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -78,6 +78,7 @@ public class ScreenRenderer {
         GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
         rotation += degrees;
     }
+
     public static void resetRotation() {
         if(rotation != 0.0f) {
             GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
@@ -86,12 +87,14 @@ public class ScreenRenderer {
             rotation = 0;
         }
     }
+
     public static void scale(float multiplier) {
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
         GlStateManager.scale(multiplier,multiplier,multiplier);
         GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
         scale *= multiplier;
     }
+
     public static void resetScale() {
         if(scale != 1.0f) {
             float m = 1.0f/scale;
@@ -103,12 +106,14 @@ public class ScreenRenderer {
         }
     }
 
-
     public void drawString(String text, CustomColor color, int x, int y) { drawString(text,color,x,y,true); }
+
     public void drawString(String text, CustomColor color, int x, int y, boolean shadow) {
         fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x,(int)((y)/scale+drawingOrigin.y),shadow);
     }
+
     public void drawCenteredString(String text, CustomColor color, int x, int y) {drawString(text, color, x, y,true);}
+
     public void drawCenteredString(String text, CustomColor color, int x, int y, boolean shadow) {
         fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x-getStringWidth(text)/2,(int)((y)/scale+drawingOrigin.y),shadow);
     }
@@ -125,7 +130,7 @@ public class ScreenRenderer {
     public void drawRect(CustomColor color, int x1, int y1, int x2, int y2) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
-        color.ApplyColor();
+        color.applyColor();
         int xMin = Math.min(x1, x2) + drawingOrigin.x,
                 xMax = Math.max(x1, x2) + drawingOrigin.x,
                 yMin = Math.min(y1, y2) + drawingOrigin.y,
@@ -138,6 +143,7 @@ public class ScreenRenderer {
         GlStateManager.glEnd();
         GlStateManager.enableTexture2D();
     }
+
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, float tx1, float ty1, float tx2, float ty2) {
         if(!texture.loaded) return;
         GlStateManager.enableAlpha();
@@ -163,9 +169,11 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
     }
+
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2) {
         drawRect(texture,x1,y1,x2,y2,(float)tx1/texture.width,(float)ty1/texture.height,(float)tx2/texture.width,(float)ty2/texture.width);
     }
+
     public void drawRect(Texture texture, int x, int y, int tx, int ty, int width, int height) {
         drawRect(texture,x,y,x+width,y+height,tx,ty,tx+width,ty+height);
     }

@@ -100,6 +100,7 @@ public class ChestOverlay extends GuiChest {
                     int count = Integer.parseInt(numbers[0]);
                     is.setCount(count == 0 ? 1 : count);
                 }
+
                 if (lore.contains("§bLegendary") && /*ConfigValues.inventoryConfig.chestInv.highlightLegendary*/ true) {
                     r = 0; g = 1; b = 1; alpha = .4f;
                 } else if (lore.contains("§5Mythic") && /*ConfigValues.inventoryConfig.chestInv.highlightMythic*/ true) {
@@ -141,7 +142,6 @@ public class ChestOverlay extends GuiChest {
             boolean main = /*ConfigValues.inventoryConfig.chestInv.highlightMain*/ true;
             for (int i = 0; i <= upperInv.getSizeInventory(); i++) {
                 ItemStack is = upperInv.getStackInSlot(i);
-//                System.out.println(upperInv.getDisplayName().getUnformattedText());
 
                 amount++;
                 if (amount > 8) {
@@ -167,7 +167,6 @@ public class ChestOverlay extends GuiChest {
                 }
 
                 if (invfloor >= 4) {
-                    //Render armor rarity background in chest GUI
                     continue;
                 }
                 if (invfloor == 0) {
@@ -301,13 +300,6 @@ public class ChestOverlay extends GuiChest {
         }
 
         return toReturn.toString();
-    }
-
-    public void drawString(FontRenderer fontRendererIn, String text, int x, int y, float size, int color){
-        GL11.glScalef(size, size, size);
-        float mSize = (float) Math.pow(size, -1);
-        this.drawString(fontRendererIn, text, Math.round(x / size), Math.round(y / size), color);
-        GL11.glScalef(mSize, mSize, mSize);
     }
 
     public void drawHoverGuess(ItemStack stack){
