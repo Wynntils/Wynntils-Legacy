@@ -29,7 +29,7 @@ public class UtilitiesModule extends Module {
         registerHudOverlay(new ActionBarOverlay("ActionBar", 0, 0));
         registerHudOverlay(new HealthOverlay("HealthBar", 0, 0));
         registerHudOverlay(new ManaOverlay("ManaBar", 0, 0));
-        registerHudOverlay(new GammaOverlay("GammaBright", 70, 5));
+        registerHudOverlay(new GammaOverlay("GammaBright", 140, 5));
     }
 
     public static UtilitiesModule getModule() {
