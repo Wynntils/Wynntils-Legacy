@@ -19,7 +19,7 @@ public class PlayerInfo {
     String name;
     UUID uuid;
 
-    ClassType currentClass;
+    ClassType currentClass = ClassType.NONE;
 
     //Actionbar Things
     String lastActionBar;
