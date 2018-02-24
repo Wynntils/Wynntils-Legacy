@@ -23,7 +23,6 @@ public class PlayerInfo {
 
     //Actionbar Things
     String lastActionBar;
-    String[] lastHealth = null;
 
     public PlayerInfo(Minecraft mc) {
         this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
@@ -33,7 +32,6 @@ public class PlayerInfo {
 
     public void updateActionBar(String lastActionBar) {
         this.lastActionBar = lastActionBar;
-        this.lastHealth = Utils.stripColor(lastActionBar).split("/");
     }
 
     public void updatePlayerClass(ClassType currentClass) {
@@ -53,11 +51,11 @@ public class PlayerInfo {
     }
 
     public int getMaxHealth() {
-        return lastHealth != null && currentClass != ClassType.NONE ? Integer.valueOf(lastHealth[1].split(" ")[0]) : -1;
+        return  currentClass != ClassType.NONE ? (int)mc.player.getMaxHealth() : -1;
     }
 
     public int getCurrentHealth() {
-        return lastHealth != null && currentClass != ClassType.NONE ? Integer.valueOf(lastHealth[0].split(" ")[1]) : -1;
+        return currentClass != ClassType.NONE ? (int)mc.player.getHealth() : -1;
     }
 
     public int getCurrentMana() {
