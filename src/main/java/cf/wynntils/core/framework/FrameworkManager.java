@@ -80,8 +80,13 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer())
-            availableModules.values().forEach(c -> c.triggerEvent(e));
+        if(Reference.onServer()) {
+            availableModules.values().forEach(c -> c.triggerEventHighest(e));
+            availableModules.values().forEach(c -> c.triggerEventHigh(e));
+            availableModules.values().forEach(c -> c.triggerEventNormal(e));
+            availableModules.values().forEach(c -> c.triggerEventLow(e));
+            availableModules.values().forEach(c -> c.triggerEventLowest(e));
+        }
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {

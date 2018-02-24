@@ -75,21 +75,45 @@ public class ModuleContainer {
         }
     }
 
-    public void triggerEvent(Event e) {
+    public void triggerEventHighest(Event e) {
         if(!module.isActive()) {
             return;
         }
         if(registeredEvents.containsKey(Priority.HIGHEST)) {
             callEvent(e, Priority.HIGHEST);
         }
+    }
+
+    public void triggerEventHigh(Event e) {
+        if(!module.isActive()) {
+            return;
+        }
         if(registeredEvents.containsKey(Priority.HIGH)) {
             callEvent(e, Priority.HIGH);
+        }
+    }
+
+    public void triggerEventNormal(Event e) {
+        if(!module.isActive()) {
+            return;
         }
         if(registeredEvents.containsKey(Priority.NORMAL)) {
             callEvent(e, Priority.NORMAL);
         }
+    }
+
+    public void triggerEventLow(Event e) {
+        if(!module.isActive()) {
+            return;
+        }
         if(registeredEvents.containsKey(Priority.LOW)) {
             callEvent(e, Priority.LOW);
+        }
+    }
+
+    public void triggerEventLowest(Event e) {
+        if(!module.isActive()) {
+            return;
         }
         if(registeredEvents.containsKey(Priority.LOWEST)) {
             callEvent(e, Priority.LOWEST);
