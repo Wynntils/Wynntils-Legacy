@@ -18,8 +18,8 @@ public class ExampleModule extends Module {
      * When modules gets enabled
      *
      * Here you can call Module#registerEvents to register events (¿okay?)
-     * Here you can call Module#registerHudOverlay to register a HudOverlay
-     *  -> HudOverlay will request getMinecraft and the default x, y
+     * Here you can call Module#registerOverlay to register a overlays
+     *  -> overlays will request getMinecraft and the default x, y
      * Here you can call Module#registerKeyBinding to register a key
      */
     public void onEnable() {

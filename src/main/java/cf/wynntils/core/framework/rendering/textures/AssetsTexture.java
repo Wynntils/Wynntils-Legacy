@@ -1,6 +1,6 @@
 package cf.wynntils.core.framework.rendering.textures;
 
-import cf.wynntils.core.utils.GenericActionResult;
+import cf.wynntils.core.framework.enums.ActionResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
@@ -16,8 +16,8 @@ public class AssetsTexture extends Texture {
     }
 
     @Override
-    public GenericActionResult load() {
-        if(loaded) return GenericActionResult.ISSUE;
+    public ActionResult load() {
+        if(loaded) return ActionResult.ISSUE;
 
         try {
             Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
@@ -28,23 +28,22 @@ public class AssetsTexture extends Texture {
         } catch(Exception e) {
             width = -1; height = -1;
             loaded = false;
-            return GenericActionResult.ERROR;
         }
-        return loaded ? GenericActionResult.SUCCESS : GenericActionResult.ERROR;
+        return loaded ? ActionResult.SUCCESS : ActionResult.ERROR;
     }
 
     @Override
-    public GenericActionResult unload() {
-        if(!loaded) return GenericActionResult.ISSUE;
+    public ActionResult unload() {
+        if(!loaded) return ActionResult.ISSUE;
         Minecraft.getMinecraft().getTextureManager().deleteTexture(resourceLocation);
         loaded = false;
-        return GenericActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     @Override
-    public GenericActionResult bind() {
-        if(!loaded) return GenericActionResult.ERROR;
+    public ActionResult bind() {
+        if(!loaded) return ActionResult.ERROR;
         Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-        return GenericActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 }

@@ -24,7 +24,7 @@ public class GammaOverlay extends HudOverlay {
         }
 
         if (mc.gameSettings.gammaSetting >= 1000) {
-            drawString("GammaBright", CommonColors.ORANGE, screen.getScaledWidth()-140, y);
+            drawString("GammaBright", screen.getScaledWidth()-140, y, CommonColors.ORANGE);
         }
     }
 }

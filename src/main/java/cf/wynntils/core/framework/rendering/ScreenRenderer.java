@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
+import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 
@@ -15,9 +16,9 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
  * Extend this class whenever you want to render things on the screen
  * without context as to what they are.
  * The things rendered by this class would not be configurable without
- * them extending HudOverlay!
+ * them extending overlays!
  */
-public class ScreenRenderer {
+public abstract class ScreenRenderer {
     protected static SmartFontRenderer fontRenderer = null;
     protected static Minecraft mc;
     protected static ScaledResolution screen;
@@ -27,16 +28,24 @@ public class ScreenRenderer {
     private static boolean mask = false;
     private static Point drawingOrigin = new Point(0,0);
     private static Point transformationOrigin = new Point(0,0);
-    public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}public static Point transformationOrigin() {return transformationOrigin;}
+    protected static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
 
     public static boolean isRendering() { return rendering; }
     public static float getScale() { return scale; }
     public static float getRotation() { return rotation; }
-    public static boolean isMaskink() { return mask; }
+    public static boolean isMasking() { return mask; }
 
-    public ScreenRenderer(Minecraft minecraft) {
-        this.mc = minecraft;
+    public ScreenRenderer() {
+        this.mc = Minecraft.getMinecraft();
     }
+
+    /** void refresh
+     * Triggered by a slower loop(client tick), refresh
+     * updates the screen resolution to match the window
+     * size and sets the font renderer in until its ok.
+     * Do not call this method from anywhere in the mod
+     * except cf.wynntils.core.events.ClientEvents@onTick!
+     */
     public static void refresh() {
         screen = new ScaledResolution(mc);
         if(fontRenderer == null)
@@ -49,18 +58,35 @@ public class ScreenRenderer {
             }
     }
 
-    @Deprecated //@NotReally, @JustHereForTheStrikeThroughTextIfAccidentallyUsingIt
-    public static void beginGL(int x, int y) { //DO NOT CALL THIS METHOD, EVER
+    /** void beginGL
+     * Sets everything needed to start rendering,
+     * sets the drawing origin to {x} and {y} and
+     * allows the ability to render on the screen
+     * (on the 2D plane).
+     * Do not call this method unless you truly
+     * understand what you're doing, This method
+     * is being called before each overlay render
+     * is called.
+     *
+     * @param x drawing origin's X
+     * @param y drawing origin's Y
+     */
+    public static void beginGL(int x, int y) {
         if(rendering) return;
         rendering = true;
-        //GlStateManager.loadIdentity();
         GlStateManager.pushMatrix();
-        drawingOrigin.x = x;
-        drawingOrigin.y = y;
+        drawingOrigin = new Point(x,y);
         transformationOrigin = new Point(0,0);
+        resetScale();
+        resetRotation();
     }
-    @Deprecated //@NotReally, @JustHereForTheStrikeThroughTextIfAccidentallyUsingIt
-    public static void endGL() { //DO NOT CALL THIS METHOD, EVER
+
+    /** void endGL
+     * Resets everything related to the ScreenRenderer
+     * and stops the ability to render on screen(the
+     * 2D plane).
+     */
+    public static void endGL() {
         if(!rendering) return;
         rendering = false;
         resetScale();
@@ -72,6 +98,13 @@ public class ScreenRenderer {
         GlStateManager.popMatrix();
     }
 
+    /** void rotate
+     * Appends rotation(in degrees) to the rotation
+     * field and rotates the following renders around
+     * (drawingOrigin+transformationOrigin).
+     *
+     * @param degrees amount of degrees to rotate
+     */
     public static void rotate(float degrees) {
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
         GlStateManager.rotate(degrees,0,0,1);
@@ -79,6 +112,10 @@ public class ScreenRenderer {
         rotation += degrees;
     }
 
+    /** void resetRotation
+     * Resets the rotation field and makes the
+     * following renders render as usual(pre-scaling).
+     */
     public static void resetRotation() {
         if(rotation != 0.0f) {
             GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
@@ -88,6 +125,13 @@ public class ScreenRenderer {
         }
     }
 
+    /** void scale
+     * Multiplies the scale field(in multiplier amount) by
+     * {multiplier} and makes the following renders scale
+     * by {multiplier} around (drawingOrigin+transformationOrigin).
+     *
+     * @param multiplier amount to multiply the current scale by
+     */
     public static void scale(float multiplier) {
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
         GlStateManager.scale(multiplier,multiplier,multiplier);
@@ -95,38 +139,73 @@ public class ScreenRenderer {
         scale *= multiplier;
     }
 
+    /** void resetScale
+     * Resets the scale field and makes the
+     * following renders render as usual(pre-scaling).
+     */
     public static void resetScale() {
         if(scale != 1.0f) {
             float m = 1.0f/scale;
             GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
             GlStateManager.scale(m,m,m);
-            //GlStateManager.scale(1,1,1);
             GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
             scale = 1.0f;
         }
     }
 
-    public void drawString(String text, CustomColor color, int x, int y) { drawString(text,color,x,y,true); }
+    /** float drawString
+     * Draws a string using the current fontRenderer
+     *
+     * @param text the text to render
+     * @param x x(from drawingOrigin) to render at
+     * @param y y(from drawingOrigin) to render at
+     * @param color the starting color to render(without codes, its basically the actual text's color)
+     * @param alignment the alignment around {x} and {y} to render the text about
+     * @param shadow should the text have a shadow behind it
+     * @return the length of the rendered text in pixels(not taking scale into account)
+     */
+    public float drawString(String text, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, boolean shadow) {
+        return fontRenderer.drawString(text,drawingOrigin.x + scale == 1f ? x : x/scale,drawingOrigin.y + scale == 1f ? y : y/scale ,color,alignment,shadow);
 
-    public void drawString(String text, CustomColor color, int x, int y, boolean shadow) {
-        fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x,(int)((y)/scale+drawingOrigin.y),shadow);
     }
 
-    public void drawCenteredString(String text, CustomColor color, int x, int y) {drawString(text, color, x, y,true);}
-
-    public void drawCenteredString(String text, CustomColor color, int x, int y, boolean shadow) {
-        fontRenderer.drawString(text,color,(int)((x)/scale)+drawingOrigin.x-getStringWidth(text)/2,(int)((y)/scale+drawingOrigin.y),shadow);
+    /**
+     * Shorter overload for {{drawString}}
+     */
+    public float drawString(String text, float x, float y, CustomColor color) {
+        return drawString(text, x, y, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT,true);
     }
 
-    public int getStringWidth(String text) {
-        if(text.isEmpty()) return 0;
-        int l = fontRenderer.getCharWidth(text.charAt(0));
+    /** float getStringWidth
+     * Gets the length of the string in pixels without
+     * drawing it (not taking scale into account).
+     *
+     * @param text the text to measure
+     * @return the length of the text in pixels(not taking scale into account)
+     */
+    public float getStringWidth(String text) {//todo make this shit faster
+        if(text.isEmpty()) return -SmartFontRenderer.CHAR_SPACING;
+        if(text.startsWith("ยง")) {
+            if(text.charAt(1) == '[') {
+                return getStringWidth(Arrays.toString(Arrays.copyOfRange(text.split("]"),1,text.length())));
+            }
+            else {
+                return getStringWidth(text.substring(2));
+            }
+        }
 
-        if(text.length() > 1)
-            return MathHelper.ceil((l + SmartFontRenderer.CHAR_SPACING) + getStringWidth(text.substring(1)));
-        return l;
+        return fontRenderer.getCharWidth(text.charAt(0)) + SmartFontRenderer.CHAR_SPACING + getStringWidth(text.substring(1));
     }
 
+    /** void drawRect
+     * Draws a rectangle with a filled color.
+     *
+     * @param color color of the rectangle
+     * @param x1 bottom-left x
+     * @param y1 bottom-left y
+     * @param x2 top-right x
+     * @param y2 top-right y
+     */
     public void drawRect(CustomColor color, int x1, int y1, int x2, int y2) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
@@ -144,6 +223,20 @@ public class ScreenRenderer {
         GlStateManager.enableTexture2D();
     }
 
+    /** void drawRect
+     * Draws a rectangle with a texture filling with texture
+     * being defined by uv 0.0 -> 1.0 values.
+     *
+     * @param texture the texture to draw
+     * @param x1 bottom-left x(on screen)
+     * @param y1 bottom-left y(on screen)
+     * @param x2 top-right x(on screen)
+     * @param y2 top-right y(on screen)
+     * @param tx1 bottom-left x of uv on texture(0.0 -> 1.0)
+     * @param ty1 bottom-left y of uv on texture(0.0 -> 1.0)
+     * @param tx2 top-right x of uv on texture(0.0 -> 1.0)
+     * @param ty2 top-right y of uv on texture(0.0 -> 1.0)
+     */
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, float tx1, float ty1, float tx2, float ty2) {
         if(!texture.loaded) return;
         GlStateManager.enableAlpha();
@@ -151,13 +244,13 @@ public class ScreenRenderer {
         texture.bind();
 
         int xMin = Math.min(x1, x2) + drawingOrigin.x,
-            xMax = Math.max(x1, x2) + drawingOrigin.x,
-            yMin = Math.min(y1, y2) + drawingOrigin.y,
-            yMax = Math.max(y1, y2) + drawingOrigin.y;
+                xMax = Math.max(x1, x2) + drawingOrigin.x,
+                yMin = Math.min(y1, y2) + drawingOrigin.y,
+                yMax = Math.max(y1, y2) + drawingOrigin.y;
         float txMin = Math.min(tx1,tx2),
-              txMax = Math.max(tx1,tx2),
-              tyMin = Math.min(ty1,ty2),
-              tyMax = Math.max(ty1,ty2);
+                txMax = Math.max(tx1,tx2),
+                tyMin = Math.min(ty1,ty2),
+                tyMax = Math.max(ty1,ty2);
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glTexCoord2f(txMin,tyMin);
         GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -170,25 +263,32 @@ public class ScreenRenderer {
         GlStateManager.glEnd();
     }
 
+    /** void drawRect
+     * Draws a rectangle with a texture filling with texture
+     * being defined by uv in pixels.
+     *
+     * @param texture the texture to draw
+     * @param x1 bottom-left x(on screen)
+     * @param y1 bottom-left y(on screen)
+     * @param x2 top-right x(on screen)
+     * @param y2 top-right y(on screen)
+     * @param tx1 bottom-left x of uv on texture(0 -> texture width)
+     * @param ty1 bottom-left y of uv on texture(0 -> texture height)
+     * @param tx2 top-right x of uv on texture(0 -> texture width)
+     * @param ty2 top-right y of uv on texture(0 -> texture height)
+     */
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2) {
         drawRect(texture,x1,y1,x2,y2,(float)tx1/texture.width,(float)ty1/texture.height,(float)tx2/texture.width,(float)ty2/texture.width);
     }
 
+    /** void drawRect
+     * Overload to {{drawRect}} that matches the rectangle's size
+     * to its texture mapping's size(pixels).
+     *
+     * @param width width of both the texture part and the rectangle
+     * @param height height of both the texture part and the rectangle
+     */
     public void drawRect(Texture texture, int x, int y, int tx, int ty, int width, int height) {
         drawRect(texture,x,y,x+width,y+height,tx,ty,tx+width,ty+height);
     }
-/*
-    public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height)
-    {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((double)(x + 0), (double)(y + height), 0).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + height), 0).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + 0), 0).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
-        vertexbuffer.pos((double)(x + 0), (double)(y + 0), 0).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
-        tessellator.draw();
-    }*/
 }

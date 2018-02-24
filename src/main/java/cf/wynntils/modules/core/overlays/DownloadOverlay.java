@@ -1,6 +1,7 @@
 package cf.wynntils.modules.core.overlays;
 
 import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
@@ -61,9 +62,9 @@ public class DownloadOverlay extends HudOverlay {
             drawRect(CommonColors.LIGHT_GREEN,x - 110, y + 15 - size, x - (110 - lastPercent), 35 - size);
 
             String percent = lastPercent + "%";
-            drawString(percent,CommonColors.BLACK,x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size, false);
+            drawString(percent,x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, false);
             String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
-            drawString(title,CommonColors.WHITE,x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size,false);
+            drawString(title,x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT,false);
 
             if (hasMultipleValues && extraY < 20) {
                 extraY++;

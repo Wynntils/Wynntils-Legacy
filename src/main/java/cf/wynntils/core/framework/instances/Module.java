@@ -1,7 +1,9 @@
 package cf.wynntils.core.framework.instances;
 
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.core.framework.overlays.Overlay;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 
@@ -33,8 +35,8 @@ public class Module {
         FrameworkManager.registerEvents(this, selectedListener);
     }
 
-    public void registerHudOverlay(HudOverlay hudOverlay) {
-        FrameworkManager.registerHudOverlay(this, hudOverlay);
+    public void registerOverlay(Overlay overlay, Priority priority) {
+        FrameworkManager.registerOverlay(overlay, priority);
     }
 
     public void registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {

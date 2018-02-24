@@ -48,9 +48,9 @@ public class LocationOverlay extends HudOverlay {
         drawRect(CommonColors.LIGHT_GRAY, x, y - size, 143, 43 - size);
         drawRect(CommonColors.GRAY, x, y - size, 140, 40 - size);
 
-        drawString("You are now entering:", CommonColors.WHITE, x + 5, y + 5);
+        drawString("You are now entering:", x + 5, y + 5, CommonColors.WHITE);
         scale(1.5f);
-        drawString(last_loc, CommonColors.YELLOW,x + 7, y + 20 - size);
+        drawString(last_loc,x + 7, y + 20 - size, CommonColors.YELLOW);
 
         if(size > 0 && !animation) {
             size-=1;

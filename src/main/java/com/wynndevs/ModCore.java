@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 
 public class ModCore {
-
-    public static ArrayList<String> invalidModules = new ArrayList<>();
     public static Logger logger;
 	
     public static Minecraft mc() {

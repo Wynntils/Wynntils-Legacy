@@ -1,21 +1,21 @@
 package cf.wynntils.core.framework.rendering.textures;
 
-import cf.wynntils.core.utils.GenericActionResult;
+import cf.wynntils.core.framework.enums.ActionResult;
 
 public class ExternalTexture extends Texture {
 
     @Override
-    public GenericActionResult load() {
+    public ActionResult load() {
         return null;
     }
 
     @Override
-    public GenericActionResult unload() {
+    public ActionResult unload() {
         return null;
     }
 
     @Override
-    public GenericActionResult bind() {
+    public ActionResult bind() {
         return null;
     }
     //TODO this whole system

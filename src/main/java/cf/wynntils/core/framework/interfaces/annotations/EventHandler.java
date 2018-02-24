@@ -1,6 +1,6 @@
 package cf.wynntils.core.framework.interfaces.annotations;
 
-import cf.wynntils.core.framework.enums.EventPriority;
+import cf.wynntils.core.framework.enums.Priority;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,6 +13,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
 
-    EventPriority priority() default EventPriority.NORMAL;
+    Priority priority() default Priority.NORMAL;
 
 }

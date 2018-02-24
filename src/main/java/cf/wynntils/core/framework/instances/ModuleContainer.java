@@ -1,18 +1,18 @@
 package cf.wynntils.core.framework.instances;
 
-import cf.wynntils.core.framework.enums.EventPriority;
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynndevs.ModCore;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -23,8 +23,7 @@ public class ModuleContainer {
     ModuleInfo info;
     Module module;
 
-    HashMap<EventPriority, ArrayList<ListenerContainer>> registeredEvents = new HashMap<>();
-    ArrayList<HudOverlay> hudOverlays = new ArrayList<>();
+    HashMap<Priority, ArrayList<ListenerContainer>> registeredEvents = new HashMap<>();
     ArrayList<KeyHolder> keyHolders = new ArrayList<>();
 
     public ModuleContainer(ModuleInfo info, Module module) {
@@ -59,36 +58,6 @@ public class ModuleContainer {
         });
     }
 
-    public void registerHudOverlay(HudOverlay ho) {
-        hudOverlays.add(ho);
-    }
-
-    public void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        if(!getModule().isActive()) {
-            return;
-        }
-        hudOverlays.forEach(c -> {
-            if(c.isActive()) {
-                ScreenRenderer.beginGL(c.x,c.y);
-                c.preRender(e);
-                ScreenRenderer.endGL();
-            }
-        });
-    }
-
-    public void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        if(!getModule().isActive()) {
-            return;
-        }
-        hudOverlays.forEach(c -> {
-            if(c.isActive()) {
-                ScreenRenderer.beginGL(c.x,c.y);
-                c.postRender(e);
-                ScreenRenderer.endGL();
-            }
-        });
-    }
-
     public void registerEvents(Listener sClass) {
         for(Method m : sClass.getClass().getMethods()) {
             EventHandler eh = m.getAnnotation(EventHandler.class);
@@ -110,24 +79,24 @@ public class ModuleContainer {
         if(!module.isActive()) {
             return;
         }
-        if(registeredEvents.containsKey(EventPriority.HIGHEST)) {
-            callEvent(e, EventPriority.HIGHEST);
+        if(registeredEvents.containsKey(Priority.HIGHEST)) {
+            callEvent(e, Priority.HIGHEST);
         }
-        if(registeredEvents.containsKey(EventPriority.HIGH)) {
-            callEvent(e, EventPriority.HIGH);
+        if(registeredEvents.containsKey(Priority.HIGH)) {
+            callEvent(e, Priority.HIGH);
         }
-        if(registeredEvents.containsKey(EventPriority.NORMAL)) {
-            callEvent(e, EventPriority.NORMAL);
+        if(registeredEvents.containsKey(Priority.NORMAL)) {
+            callEvent(e, Priority.NORMAL);
         }
-        if(registeredEvents.containsKey(EventPriority.LOW)) {
-            callEvent(e, EventPriority.LOW);
+        if(registeredEvents.containsKey(Priority.LOW)) {
+            callEvent(e, Priority.LOW);
         }
-        if(registeredEvents.containsKey(EventPriority.LOWEST)) {
-            callEvent(e, EventPriority.LOWEST);
+        if(registeredEvents.containsKey(Priority.LOWEST)) {
+            callEvent(e, Priority.LOWEST);
         }
     }
 
-    private void callEvent(Event e, EventPriority priority) {
+    private void callEvent(Event e, Priority priority) {
         for(ListenerContainer container : registeredEvents.get(priority)) {
             Method m = container.m;
             if(m.getParameterCount() <= 0 || m.getParameterCount() > 1) {
