@@ -1,5 +1,6 @@
 package cf.wynntils.core.utils;
 
+import cf.wynntils.core.framework.instances.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,40 +58,7 @@ public class Utils {
      */
     public static String getPlayerInfo() {
         Minecraft mc = Minecraft.getMinecraft();
-        return /*ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ?*/ mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + getPlayerCurrentClass() /*: null*/;
-    }
-
-    /**
-     * Just a simple way to get the current player class
-     * @return Player Current Class
-     */
-    public static String getPlayerCurrentClass(){
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc.player.experienceLevel > 0) {
-            try {
-                ItemStack book = mc.player.inventory.getStackInSlot(7);
-                if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
-                    for (int i=0;i<36;i++) {
-                        try {
-                            ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
-                            NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-                            for (int j = 1; j < Lore.tagCount(); j++) {
-                                String ClassTest = Lore.get(j).toString();
-                                if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a'){
-                                    return ClassTest.substring(18,ClassTest.lastIndexOf('/'));
-                                }
-                            }
-                        }
-                        catch (Exception ignored){
-                        }
-                    }
-                }
-            }
-            catch (Exception ignored) {
-                return "";
-            }
-        }
-        return "";
+        return /*ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ?*/ mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() /*: null*/;
     }
 
     /**

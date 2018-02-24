@@ -22,7 +22,7 @@ public class CapesModule extends Module {
         registerEvents(new EntityEvents());
     }
 
-    public void postInit() {
+    public void postEnable() {
         Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
         for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
             render.addLayer(new LayerCape(render));

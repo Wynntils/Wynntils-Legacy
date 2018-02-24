@@ -24,6 +24,7 @@ public class FrameworkManager {
 
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
     public static HashMap<Priority, ArrayList<Overlay>> registeredOverlays = new HashMap<>();
+
     static {
         registeredOverlays.put(Priority.LOWEST,new ArrayList<>());
         registeredOverlays.put(Priority.LOW,new ArrayList<>());
@@ -70,8 +71,8 @@ public class FrameworkManager {
         availableModules.values().forEach(c -> c.getModule().onEnable());
     }
 
-    public static void postInitModules() {
-        availableModules.values().forEach(c -> c.getModule().postInit());
+    public static void postEnableModules() {
+        availableModules.values().forEach(c -> c.getModule().postEnable());
     }
 
     public static void disableModules() {
@@ -84,25 +85,31 @@ public class FrameworkManager {
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        if (Reference.onServer())
-            for (ArrayList<Overlay> overlays : registeredOverlays.values())
-                for (Overlay overlay : overlays)
+        if (Reference.onServer()) {
+            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+                for (Overlay overlay : overlays) {
                     if (overlay.module.getModule().isActive() && overlay.visible && overlay.active) {
                         ScreenRenderer.beginGL(overlay.oX(), overlay.oY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
+                }
+            }
+        }
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        if (Reference.onServer())
-            for (ArrayList<Overlay> overlays : registeredOverlays.values())
-                for (Overlay overlay : overlays)
+        if (Reference.onServer()) {
+            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+                for (Overlay overlay : overlays) {
                     if (overlay.module.getModule().isActive() && overlay.visible && overlay.active) {
                         ScreenRenderer.beginGL(overlay.oX(), overlay.oY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
+                }
+            }
+        }
     }
 
     public static void triggerKeyPress() {

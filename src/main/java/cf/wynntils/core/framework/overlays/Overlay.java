@@ -1,6 +1,7 @@
 package cf.wynntils.core.framework.overlays;
 
 import cf.wynntils.core.framework.instances.ModuleContainer;
+import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynndevs.modules.wynnicmap.utils.Pair;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -22,4 +23,9 @@ public abstract class Overlay extends ScreenRenderer {
 
     public void render(RenderGameOverlayEvent.Pre event){}
     public void render(RenderGameOverlayEvent.Post event){}
+
+    public PlayerInfo getPlayerInfo() {
+        return PlayerInfo.getPlayerInfo();
+    }
+
 }

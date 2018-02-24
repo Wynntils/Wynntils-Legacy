@@ -29,7 +29,7 @@ public class ModCore {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        FrameworkManager.postInitModules();
+        FrameworkManager.postEnableModules();
         Textures.loadTextures();
     }
 

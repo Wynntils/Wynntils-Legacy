@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
  */
-public class Module {
+public abstract class Module {
 
     private Logger logger;
 
@@ -19,7 +19,7 @@ public class Module {
 
     }
 
-    public void postInit() {
+    public void postEnable() {
 
     }
 
@@ -29,6 +29,10 @@ public class Module {
 
     public boolean isActive() {
         return true;
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        return PlayerInfo.getPlayerInfo();
     }
 
     public void registerEvents(Listener selectedListener) {
