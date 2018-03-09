@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 public class OverlayEvents implements Listener {
 
     @EventHandler
-    public void onGuiDrawed(GuiOpenEvent e) {
+    public void onGuiOpened(GuiOpenEvent e) {
         if(e.getGui() instanceof GuiInventory) {
             if(e.getGui() instanceof InventoryOverlay) {
                 return;
