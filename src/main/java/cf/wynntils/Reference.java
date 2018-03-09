@@ -17,16 +17,23 @@ public class Reference {
     public static final File MOD_STORAGE_ROOT = new File("wynntils");
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 
-    public static String userWorld = null;
-    public static boolean onServer = false;
+    private static String userWorld = null;
 
-    public static boolean onServer(){
-        return onServer;
+    public static void setUserWorld(String uw) {
+        userWorld = uw;
+
+        onWorld = onServer && userWorld != null;
+        onNether = onWorld && !userWorld.contains("N");//Find a better thing to use than checking for "N" maybe, haven't seen what the actual text for nether is  --SHCM
+        onWars = onWorld && userWorld.contains("WAR");
     }
-    public static boolean onWorld() { return onServer() && userWorld != null; }
-    public static boolean onNether(){
-        return onWorld() && !userWorld.contains("N");
+
+    public static String getUserWorld() {
+        return userWorld;
     }
-    public static boolean onWars() {return onWorld() && userWorld.contains("WAR"); }
+
+    public static boolean onServer = false;
+    public static boolean onWorld = false;
+    public static boolean onNether = false;
+    public static boolean onWars = false;
 
 }

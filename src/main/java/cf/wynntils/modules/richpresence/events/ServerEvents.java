@@ -44,7 +44,7 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if(Reference.onServer()) {
+        if(Reference.onServer) {
             RichPresenceModule.getModule().getRichPresence().stopRichPresence();
 
             if(updateTimer != null && !updateTimer.isCancelled()) {
@@ -85,7 +85,7 @@ public class ServerEvents implements Listener {
                     RichPresenceModule.getModule().getData().setLocation(pf.getName());
                     RichPresenceModule.getModule().getData().setLocId(i);
 
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.userWorld.replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
+                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
                     break;
                 }
             }

@@ -19,7 +19,7 @@ public class ModuleManager {
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
         FrameworkManager.registerModule(new CapesModule());
-        //FrameworkManager.registerModule(new ExampleModule());//DEBUG
+        //FrameworkManager.registerModule(new ExampleModule());
     }
 
 }

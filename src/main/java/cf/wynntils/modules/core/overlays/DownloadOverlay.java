@@ -1,19 +1,20 @@
 package cf.wynntils.modules.core.overlays;
 
-import cf.wynntils.core.framework.instances.HudOverlay;
+
+import cf.wynntils.core.framework.enums.Priority;
+import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
  */
-public class DownloadOverlay extends HudOverlay {
+public class DownloadOverlay extends Overlay {
     int size = 40;
     int lastPercent = 0;
     DownloadPhase lastPhase;
@@ -22,12 +23,12 @@ public class DownloadOverlay extends HudOverlay {
     int extraY = 0;
     boolean hasMultipleValues = false;
 
-    public DownloadOverlay(String name, int x, int y) {
-        super(name, x, y);
+    public DownloadOverlay() {
+        super("Downloading Overlay",20,20,true,1.0f,0.0f,-10,10);
     }
 
     @Override
-    public void postRender(RenderGameOverlayEvent.Post e) {
+    public void render(RenderGameOverlayEvent.Post e) {  //TODO, CHECK THIS IS WORKING WITH THE NEW SYSTEM
         if (e.isCanceled() || e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
@@ -43,28 +44,14 @@ public class DownloadOverlay extends HudOverlay {
                 lastPhase = DownloaderManager.currentPhase;
             }
 
-            ScaledResolution res = new ScaledResolution(mc);
-
-            int x = res.getScaledWidth() - 10;
-            int y = 10;
-
-            /*drawRect(x, y - size, x - 120, (43 + extraY) - size, new Color(58, 65, 88).getRGB());
-            drawRect(x - 110, y + 15 - size, x - 10, 35 - size, new Color(229, 229, 229).getRGB());
-            drawRect(x - 110, y + 15 - size, x - (110 - lastPercent), 35 - size, new Color(0, 255, 0).getRGB());
-            String percent = lastPercent + "%";
-            drawStringWithoutShadow(percent, x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size, 0);
-            String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
-            drawStringWithoutShadow(title, x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size, -1);
-*/
-
-            drawRect(CommonColors.GRAY, x, y - size, x - 120, (43 + extraY) - size);
-            drawRect(CommonColors.LIGHT_GRAY,x - 110, y + 15 - size, x - 10, 35 - size);
-            drawRect(CommonColors.LIGHT_GREEN,x - 110, y + 15 - size, x - (110 - lastPercent), 35 - size);
+            drawRect(CommonColors.GRAY, 0, -size, -120, (43 + extraY) - size);
+            drawRect(CommonColors.LIGHT_GRAY,-110, 15 - size, 0 - 10, 35 - size);
+            drawRect(CommonColors.LIGHT_GREEN,-110, 15 - size, -(110 - lastPercent), 35 - size);
 
             String percent = lastPercent + "%";
-            drawString(percent,x - 110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), y + 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, false);
+            drawString(percent,-110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, false);
             String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
-            drawString(title,x - 120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), y + 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT,false);
+            drawString(title,-120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT,false);
 
             if (hasMultipleValues && extraY < 20) {
                 extraY++;

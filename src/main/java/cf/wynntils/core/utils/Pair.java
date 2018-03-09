@@ -1,4 +1,4 @@
-package com.wynndevs.modules.wynnicmap.utils;
+package cf.wynntils.core.utils;
 
 /**
  * The Pair Type Holds 1 field of type T and 1 field of type J
@@ -20,3 +20,4 @@ public class Pair<T,J> {
         return a.toString() + ", " + b.toString();
     }
 }
+

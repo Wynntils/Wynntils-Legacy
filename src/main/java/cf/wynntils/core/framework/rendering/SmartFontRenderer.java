@@ -1,8 +1,7 @@
 package cf.wynntils.core.framework.rendering;
 
-import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynndevs.modules.wynnicmap.utils.Pair;
+import cf.wynntils.core.utils.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -44,7 +43,6 @@ public class SmartFontRenderer extends FontRenderer {
                 return drawString(text,x - getStringWidth(text)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
             case RIGHT_LEFT:
                 return drawString(text,x - getStringWidth(text),y,customColor,TextAlignment.LEFT_RIGHT,shadow);
-            case LEFT_RIGHT:
             default:
                 posX = x;
                 posY = y;

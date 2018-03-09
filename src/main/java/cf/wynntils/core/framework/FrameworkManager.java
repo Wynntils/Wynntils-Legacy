@@ -11,6 +11,7 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer()) {
+        if(Reference.onServer) {
             availableModules.values().forEach(c -> c.triggerEventHighest(e));
             availableModules.values().forEach(c -> c.triggerEventHigh(e));
             availableModules.values().forEach(c -> c.triggerEventNormal(e));
@@ -90,11 +91,17 @@ public class FrameworkManager {
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        if (Reference.onServer()) {
+        if (Reference.onServer) {
+            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR ||
+               e.getType() == RenderGameOverlayEvent.ElementType.ARMOR)
+            {
+                e.setCanceled(true);
+                return;
+            }
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
-                    if (overlay.module.getModule().isActive() && overlay.visible && overlay.active) {
-                        ScreenRenderer.beginGL(overlay.oX(), overlay.oY());
+                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                        ScreenRenderer.beginGL(overlay.position.drawingX, overlay.position.drawingY);
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
@@ -104,11 +111,11 @@ public class FrameworkManager {
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        if (Reference.onServer()) {
+        if (Reference.onServer) {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
-                    if (overlay.module.getModule().isActive() && overlay.visible && overlay.active) {
-                        ScreenRenderer.beginGL(overlay.oX(), overlay.oY());
+                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                        ScreenRenderer.beginGL(overlay.position.drawingX, overlay.position.drawingY);
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
@@ -117,8 +124,21 @@ public class FrameworkManager {
         }
     }
 
+    public static void triggerHudTick(TickEvent.ClientTickEvent e) {
+        if (Reference.onServer) {
+            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+                for (Overlay overlay : overlays) {
+                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                        overlay.position.Refresh();
+                        overlay.tick(e);
+                    }
+                }
+            }
+        }
+    }
+
     public static void triggerKeyPress() {
-        if(Reference.onServer())
+        if(Reference.onServer)
             availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
 

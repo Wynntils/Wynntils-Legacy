@@ -9,14 +9,17 @@ import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,7 +48,7 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if(Reference.onServer()) {
+        if(Reference.onServer) {
             Reference.onServer = false;
         }
     }
@@ -53,8 +56,14 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void updateActionBar(ClientChatReceivedEvent event) {
-        if(event.getType() == 2)
-            PlayerInfo.getPlayerInfo().updateActionBar(event.getMessage().getUnformattedText());
+        if(event.getType() == 2) {
+            String text = event.getMessage().getUnformattedText();
+            PlayerInfo.getPlayerInfo().updateActionBar(text);
+            if(text.contains("|"))
+                event.setMessage(new TextComponentString(Utils.getCutString(text,"    ","    §b",false)));
+            else
+                event.setMessage(new TextComponentString(""));
+        }
     }
 
 
@@ -65,9 +74,8 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onWorldJoin(EntityJoinWorldEvent e) {
-        if(!Reference.onServer()) {
-            return;
-        }
+        if(!Reference.onServer) return;
+
 
         Collection<NetworkPlayerInfo> tab = Objects.requireNonNull(ModCore.mc().getConnection()).getPlayerInfoMap();
         String world = null;
@@ -79,7 +87,7 @@ public class ClientEvents {
             }
         }
 
-        Reference.userWorld = world;
+        Reference.setUserWorld(world);
 
         if(world == null && acceptsLeft) {
             acceptsLeft = false;
@@ -149,6 +157,8 @@ public class ClientEvents {
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent e) {
         ScreenRenderer.refresh();
+        if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+        FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
     }
 

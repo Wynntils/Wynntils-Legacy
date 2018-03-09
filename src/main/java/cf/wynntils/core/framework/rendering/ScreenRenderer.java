@@ -21,7 +21,7 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 public abstract class ScreenRenderer {
     protected static SmartFontRenderer fontRenderer = null;
     protected static Minecraft mc;
-    protected static ScaledResolution screen;
+    protected static ScaledResolution screen = null;
     private static boolean rendering = false;
     private static float scale = 1.0f;
     private static float rotation = 0;
@@ -35,10 +35,6 @@ public abstract class ScreenRenderer {
     public static float getRotation() { return rotation; }
     public static boolean isMasking() { return mask; }
 
-    public ScreenRenderer() {
-        this.mc = Minecraft.getMinecraft();
-    }
-
     /** void refresh
      * Triggered by a slower loop(client tick), refresh
      * updates the screen resolution to match the window
@@ -47,6 +43,7 @@ public abstract class ScreenRenderer {
      * except cf.wynntils.core.events.ClientEvents@onTick!
      */
     public static void refresh() {
+        mc = Minecraft.getMinecraft();
         screen = new ScaledResolution(mc);
         if(fontRenderer == null)
             try {
@@ -79,6 +76,9 @@ public abstract class ScreenRenderer {
         transformationOrigin = new Point(0,0);
         resetScale();
         resetRotation();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.color(1,1,1);
     }
 
     /** void endGL
@@ -96,6 +96,7 @@ public abstract class ScreenRenderer {
         drawingOrigin = new Point(0,0);
         transformationOrigin = new Point(0,0);
         GlStateManager.popMatrix();
+        GlStateManager.color(1,1,1);
     }
 
     /** void rotate
@@ -165,8 +166,8 @@ public abstract class ScreenRenderer {
      * @return the length of the rendered text in pixels(not taking scale into account)
      */
     public float drawString(String text, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, boolean shadow) {
-        return fontRenderer.drawString(text,drawingOrigin.x + scale == 1f ? x : x/scale,drawingOrigin.y + scale == 1f ? y : y/scale ,color,alignment,shadow);
-
+        int i = 0;
+        return fontRenderer.drawString(text,drawingOrigin.x + (scale == 1f ? x : x/scale),drawingOrigin.y + (scale == 1f ? y : y/scale) ,color,alignment,shadow);
     }
 
     /**
@@ -247,7 +248,7 @@ public abstract class ScreenRenderer {
                 xMax = Math.max(x1, x2) + drawingOrigin.x,
                 yMin = Math.min(y1, y2) + drawingOrigin.y,
                 yMax = Math.max(y1, y2) + drawingOrigin.y;
-        float txMin = Math.min(tx1,tx2),
+        float txMin =   Math.min(tx1,tx2),
                 txMax = Math.max(tx1,tx2),
                 tyMin = Math.min(ty1,ty2),
                 tyMax = Math.max(ty1,ty2);
@@ -278,7 +279,7 @@ public abstract class ScreenRenderer {
      * @param ty2 top-right y of uv on texture(0 -> texture height)
      */
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2) {
-        drawRect(texture,x1,y1,x2,y2,(float)tx1/texture.width,(float)ty1/texture.height,(float)tx2/texture.width,(float)ty2/texture.width);
+        drawRect(texture,x1,y1,x2,y2,(float)tx1/texture.width,(float)ty1/texture.height,(float)tx2/texture.width,(float)ty2/texture.height);
     }
 
     /** void drawRect
@@ -290,5 +291,37 @@ public abstract class ScreenRenderer {
      */
     public void drawRect(Texture texture, int x, int y, int tx, int ty, int width, int height) {
         drawRect(texture,x,y,x+width,y+height,tx,ty,tx+width,ty+height);
+    }
+
+    /** void drawRectF
+     * Overload to {{drawRect}} that renders using floats, in this
+     * one, note that the uv are in pixels and both the uv and the
+     * position on screen are floats.
+     *
+     */
+    public void drawRectF(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
+        if(!texture.loaded) return;
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        texture.bind();
+
+        float xMin  = Math.min(x1, x2) + drawingOrigin.x,
+              xMax  = Math.max(x1, x2) + drawingOrigin.x,
+              yMin  = Math.min(y1, y2) + drawingOrigin.y,
+              yMax  = Math.max(y1, y2) + drawingOrigin.y,
+              txMin = Math.min(tx1,tx2)/texture.width,
+              txMax = Math.max(tx1,tx2)/texture.width,
+              tyMin = Math.min(ty1,ty2)/texture.height,
+              tyMax = Math.max(ty1,ty2)/texture.height;
+        GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glTexCoord2f(txMin,tyMin);
+        GlStateManager.glVertex3f(xMin, yMin, 0);
+        GlStateManager.glTexCoord2f(txMin,tyMax);
+        GlStateManager.glVertex3f(xMin, yMax, 0);
+        GlStateManager.glTexCoord2f(txMax,tyMax);
+        GlStateManager.glVertex3f(xMax, yMax, 0);
+        GlStateManager.glTexCoord2f(txMax,tyMin);
+        GlStateManager.glVertex3f(xMax, yMin, 0);
+        GlStateManager.glEnd();
     }
 }

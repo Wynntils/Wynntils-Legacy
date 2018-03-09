@@ -1,6 +1,6 @@
 package cf.wynntils.modules.richpresence.overlays;
 
-import cf.wynntils.core.framework.instances.HudOverlay;
+import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -9,7 +9,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
  */
-public class LocationOverlay extends HudOverlay {
+public class LocationOverlay extends Overlay {
 
     public static String location = "Waiting";
     public static String last_loc = "Waiting";
@@ -20,14 +20,12 @@ public class LocationOverlay extends HudOverlay {
     boolean showing = false;
     boolean animation = false;
 
-    public LocationOverlay(String name, int x, int y) {
-        super(name, x, y);
-
-        loadConfig();
+    public LocationOverlay() {
+        super("Update Overlay", 20, 20, false, 1.0f, 0.0f, 0, 0);
     }
 
     @Override
-    public void postRender(RenderGameOverlayEvent.Post e) {
+    public void render(RenderGameOverlayEvent.Post e) {
         if(last_loc.equals(location) && !showing) {
             return;
         }
@@ -38,19 +36,12 @@ public class LocationOverlay extends HudOverlay {
 
         showing = true;
 
-/*
-        drawRect(x, y - size, 143, 43 - size, -2500134);
-        drawRect(x, y - size, 140, 40 - size, -10066329);
+        drawRect(CommonColors.LIGHT_GRAY, 0, 0 - size, 143, 43 - size);
+        drawRect(CommonColors.GRAY, 0, 0 - size, 140, 40 - size);
 
-        drawString("§a§lYou are now entering", x + 5, y + 5 - size, -1);
-        drawString("§e" + last_loc, x + 7, y + 20 - size, 1.5f, 13782543);
-*/
-        drawRect(CommonColors.LIGHT_GRAY, x, y - size, 143, 43 - size);
-        drawRect(CommonColors.GRAY, x, y - size, 140, 40 - size);
-
-        drawString("You are now entering:", x + 5, y + 5, CommonColors.WHITE);
+        drawString("You are now entering:",  5, 5, CommonColors.WHITE);
         scale(1.5f);
-        drawString(last_loc,x + 7, y + 20 - size, CommonColors.YELLOW);
+        drawString(last_loc, 7,  20 - size, CommonColors.YELLOW);
 
         if(size > 0 && !animation) {
             size-=1;
@@ -70,11 +61,5 @@ public class LocationOverlay extends HudOverlay {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isActive() {
-        //add configuration handler
-        return true;
     }
 }

@@ -41,7 +41,7 @@ public class DownloaderManager {
     }
 
     private static void startDownloading() {
-        if(!Reference.onServer()) {
+        if(!Reference.onServer) {
             startDownloading();
             return;
         }

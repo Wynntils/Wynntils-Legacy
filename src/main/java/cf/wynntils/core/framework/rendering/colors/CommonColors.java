@@ -1,6 +1,6 @@
 package cf.wynntils.core.framework.rendering.colors;
 
-import com.wynndevs.ModCore;
+import cf.wynntils.Reference;
 
 public class CommonColors {
     public static CustomColor BLACK;
@@ -38,7 +38,7 @@ public class CommonColors {
             ORANGE = new CustomColor("ff9000");
             WHITE = new CustomColor("ffffff");
         } catch (Exception e) {
-            ModCore.logger.error("There has been a problem writing CustomColors.CommonColors to memory");
+            Reference.LOGGER.error("There has been a problem writing CustomColors.CommonColors to memory");
         }
     }
 }

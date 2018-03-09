@@ -1,10 +1,10 @@
 package cf.wynntils.modules.utilities;
 
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
-import cf.wynntils.modules.utilities.overlays.hud.ActionBarOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.GammaOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.HealthOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.ManaOverlay;
@@ -26,10 +26,9 @@ public class UtilitiesModule extends Module {
 
         registerEvents(new OverlayEvents());
 
-        registerHudOverlay(new ActionBarOverlay("ActionBar", 0, 0));
-        registerHudOverlay(new HealthOverlay("HealthBar", 0, 0));
-        registerHudOverlay(new ManaOverlay("ManaBar", 0, 0));
-        registerHudOverlay(new GammaOverlay("GammaBright", 140, 5));
+        registerOverlay(new HealthOverlay(), Priority.NORMAL);
+        registerOverlay(new ManaOverlay(), Priority.NORMAL);
+        registerOverlay(new GammaOverlay(), Priority.LOWEST);
     }
 
     public static UtilitiesModule getModule() {

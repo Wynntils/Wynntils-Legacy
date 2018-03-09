@@ -1,14 +1,4 @@
 --SHCM
-Optimization shit:
-	• Guis' drawRect, dont use these, we need a Gui/GuiScreen Extension with
-	  a direct Color parameter.. Currently new Color().getRGB() goes &
-	  takes power to proccess and later is being decoded back to "Color"
-	  inside drawRect.. also doesnt accept alpha..
-	
-	• OnNether, OnWars, OnWorld, OnServer dont need checking each run,
-	  World join and disconnect can change a boolean for on server if it IS the server
-	  World join also works when switching worlds, therefore, use it to determine if
-	  in wars/game/nether and set a boolean..
-	  
-	• 
-	  
+https://api.github.com/repos/[owner]/[project]/contents/[path]
+https://github.com/delthas/JavaMP3
+enumObject.getClass().getEnumConstants()

@@ -194,4 +194,28 @@ public class Utils {
         return getItemFieldName.getOrDefault(key, null);
     }
 
+    //ported from a really really fucking old C# code because im lazy, dont judge -SHCM
+    public static String getCutString(String inputIN, String startIN, String endIN, boolean keepStartAndEndIN)
+    {
+        StringBuilder returning = new StringBuilder();
+        StringBuilder read = new StringBuilder();
+        boolean collecting = false;
+
+        for(char chr : inputIN.toCharArray())
+        if (collecting)
+        {
+            returning.append(chr);
+            if (returning.toString().endsWith(endIN))
+            {
+                return (keepStartAndEndIN ? (startIN + returning) : returning.toString().replace(endIN, ""));
+            }
+        }
+        else
+        {
+            read.append(chr);
+            if (read.toString().endsWith(startIN))
+                collecting = true;
+        }
+        return "";
+    }
 }

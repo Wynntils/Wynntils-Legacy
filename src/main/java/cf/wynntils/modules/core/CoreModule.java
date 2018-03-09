@@ -1,5 +1,6 @@
 package cf.wynntils.modules.core;
 
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.core.overlays.DownloadOverlay;
@@ -14,8 +15,8 @@ import cf.wynntils.modules.core.overlays.UpdateOverlay;
 public class CoreModule extends Module {
 
     public void onEnable() {
-        registerHudOverlay(new UpdateOverlay("Update", 0, 0));
-        registerHudOverlay(new DownloadOverlay("Download", 0, 0));
+        registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
+        registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
     }
 
 }

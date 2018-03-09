@@ -4,10 +4,6 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
-import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynndevs.ModCore;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.lang.reflect.Method;

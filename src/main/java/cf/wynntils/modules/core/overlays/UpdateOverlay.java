@@ -16,12 +16,12 @@ public class UpdateOverlay extends Overlay {
     long timeout = System.currentTimeMillis();
     boolean loaded = false;
 
-    public UpdateOverlay(String name, int x, int y) {
-        super(name, x, y);
+    public UpdateOverlay() {
+        super("Update Overlay", 20, 20, false, 1.0f, 0.0f, 0, 0);
     }
 
     @Override
-    public void postRender(RenderGameOverlayEvent.Post e) {
+    public void render(RenderGameOverlayEvent.Post e) {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
