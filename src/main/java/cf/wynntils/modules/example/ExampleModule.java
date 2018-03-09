@@ -1,45 +1,46 @@
 package cf.wynntils.modules.example;
 
 
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import org.lwjgl.input.Keyboard;
 
-/**
- * Created by HeyZeer0 on 03/02/2018.
- * Copyright © HeyZeer0 - 2016
+/** EXAMPLE CLASS
+ * ExampleModule shows some of the things that are needed to make
+ * a Module Class.
+ * Modules are the parts that make up the whole Wynntils mod,
+ * They should be able to be turned off and on dynamically,
+ * register their event listeners, overlays and keybindings,
+ * and (TODO) house the module's user prefrences
  */
-
 @ModuleInfo(name = "ExampleModule")
 public class ExampleModule extends Module {
 
     /**
-     * When modules gets enabled
+     * When the module gets enabled, This method will be called
      *
-     * Here you can call Module#registerEvents to register events (¿okay?)
-     * Here you can call Module#registerOverlay to register a overlays
-     *  -> overlays will request getMinecraft and the default x, y
-     * Here you can call Module#registerKeyBinding to register a key
+     * From here, call Module#registerEvents to register events
+     * From here, call Module#registerOverlay to register a overlays
+     * From here, call Module#registerKeyBinding to register a key
      */
     public void onEnable() {
-        getLogger().warn("MODULE STARTED");
-        getLogger().warn("MODULE STARTED");
-        getLogger().warn("MODULE STARTED");
-        getLogger().warn("MODULE STARTED");
-        getLogger().warn("MODULE STARTED");
+        getLogger().warn("MODULE STARTED");///You can use Module#getLogger to spit things to the console
 
-        registerEvents(new ExampleListener());
-        registerHudOverlay(new ExampleHudOverlay("Example", 100, 50));
+        registerEvents(new ExampleListener());//Registering ExampleListener as an event handler
+
+        registerOverlay(new ExampleOverlay(), Priority.LOW);//Registering ExampleOverlay on the LOW priority Overlays collection
+
         registerKeyBinding("Test", Keyboard.KEY_G, "Wynntils", true, () -> {
-            getLogger().warn("KEY PRESSED");
+            getLogger().warn("KEY PRESSED");//Registering the 'G' key to a test example key and make it spit "KEY PRESSED" to console
         });
     }
 
     /**
-     * When module gets disabled
+     * When the module gets disabled, This method will be called
      *
-     * WIP there is no call for this method
+     * TODO, WIP there is no call for this method
      */
     public void onDisable() {
 

@@ -5,9 +5,12 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-/**
- * Created by HeyZeer0 on 03/02/2018.
- * Copyright © HeyZeer0 - 2016
+/** EXAMPLE CLASS
+ * ExampleListener shows some of the things that are needed to make
+ * an event listener class.
+ * An event listener class is a class that will automatically run
+ * tagged methods upon their Event association in the params getting
+ * thrown.
  */
 public class ExampleListener implements Listener {
 
