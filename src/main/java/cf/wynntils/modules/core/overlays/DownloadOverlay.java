@@ -49,9 +49,9 @@ public class DownloadOverlay extends Overlay {
             drawRect(CommonColors.LIGHT_GREEN,-110, 15 - size, -(110 - lastPercent), 35 - size);
 
             String percent = lastPercent + "%";
-            drawString(percent,-110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, false);
+            drawString(percent,-110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
-            drawString(title,-120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT,false);
+            drawString(title,-120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (hasMultipleValues && extraY < 20) {
                 extraY++;

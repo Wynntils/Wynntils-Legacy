@@ -25,6 +25,7 @@ public class Reference {
         onWorld = onServer && userWorld != null;
         onNether = onWorld && !userWorld.contains("N");//Find a better thing to use than checking for "N" maybe, haven't seen what the actual text for nether is  --SHCM
         onWars = onWorld && userWorld.contains("WAR");
+        onLobby = onServer && !onWorld;
     }
 
     public static String getUserWorld() {
@@ -35,5 +36,5 @@ public class Reference {
     public static boolean onWorld = false;
     public static boolean onNether = false;
     public static boolean onWars = false;
-
+    public static boolean onLobby = false;
 }

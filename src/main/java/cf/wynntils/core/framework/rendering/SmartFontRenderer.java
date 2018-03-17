@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 public class SmartFontRenderer extends FontRenderer {
     public static final int LINE_SPACING = 3;
     public static final int CHAR_SPACING = 0;
-
+    //TODO document
     public SmartFontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
         super(gameSettingsIn, location, textureManagerIn, unicode);
     }
@@ -21,66 +21,69 @@ public class SmartFontRenderer extends FontRenderer {
         super(Minecraft.getMinecraft().gameSettings,new ResourceLocation("textures/font/ascii.png"),Minecraft.getMinecraft().getTextureManager(),false);
     }
 
-    /*public int drawString(String text, CustomColor color, int x, int y, boolean shadow) {
-        GlStateManager.enableTexture2D();
-        int length = 0;
-        if(shadow) {
-            posX = x + 1;
-            posY = y + 1;
-            CommonColors.BLACK.applyColor();
-            length = drawChars(text);
-        }
-        posX = x;
-        posY = y;
-        color.applyColor();
-        length = Math.max(drawChars(text),length);
-        return length;
-    }*/
-
-    public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, boolean shadow) {
+    public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
         switch (alignment) {
             case MIDDLE:
                 return drawString(text,x - getStringWidth(text)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
             case RIGHT_LEFT:
                 return drawString(text,x - getStringWidth(text),y,customColor,TextAlignment.LEFT_RIGHT,shadow);
             default:
-                posX = x;
-                posY = y;
                 GlStateManager.enableTexture2D();
-                return drawChars(text,customColor,shadow);
+                GlStateManager.enableAlpha();
+                GlStateManager.enableBlend();
+                switch (shadow) {
+                    case OUTLINE:
+                        CustomColor shadowColor = new CustomColor(0,0,0,customColor.a);
+                        posX = x-1;
+                        posY = y;
+                        drawChars(text,shadowColor,true);
+                        posX = x+1;
+                        posY = y;
+                        drawChars(text,shadowColor,true);
+                        posX = x;
+                        posY = y-1;
+                        drawChars(text,shadowColor,true);
+                        posX = x;
+                        posY = y+1;
+                        drawChars(text,shadowColor,true);
+
+                        posX = x;
+                        posY = y;
+
+                        return drawChars(text,customColor,false);
+
+                    case NORMAL:
+                        posX = x-1;
+                        posY = y-1;
+
+                        drawChars(text, new CustomColor(0,0,0,customColor.a),true);
+
+                        posX = x;
+                        posY = y;
+
+                        return drawChars(text,customColor,false);
+
+                    case NONE: default:
+                        posX = x;
+                        posY = y;
+
+                        return drawChars(text,customColor,false);
+                }
         }
+
     }
 
-    /*private int drawChars(String text) {
-        if(text.isEmpty()) return 0;
-        int l = (int)renderChar(text.charAt(0));
-
-        if(text.length() > 1) {
-            posX += l + CHAR_SPACING;
-            return l + CHAR_SPACING + drawChars(text.substring(1));
-        }
-        return l;
-    }*/
-
-    private float drawChars(String text, CustomColor color, boolean shadow) {
+    private float drawChars(String text, CustomColor color, boolean forceColor) {
         if(text.isEmpty()) return -CHAR_SPACING;
         if(text.startsWith("§")) {
             Pair<String,CustomColor> sc = decodeColor(text.substring(1));
-            return drawChars(sc.a,sc.b,shadow);
-        }
-        if(shadow) {
-            ChatCommonColorCodes.color_0.color.applyColor();
-            posX += 1f;
-            posY += 1f;
-            renderChar(text.charAt(0));
-            posX -= 1f;
-            posY -= 1f;
+            return drawChars(sc.a,forceColor ? color : sc.b,forceColor);
         }
         color.applyColor();
         float charLength = renderChar(text.charAt(0));
         posX += charLength + CHAR_SPACING;
 
-        return charLength + CHAR_SPACING + drawChars(text.substring(1),color,shadow);
+        return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
     }
     private Pair<String,CustomColor> decodeColor(String text) {
         if(text.startsWith("[")) {
@@ -116,6 +119,9 @@ public class SmartFontRenderer extends FontRenderer {
 
     public enum TextAlignment {
         LEFT_RIGHT,MIDDLE,RIGHT_LEFT
+    }
+    public enum TextShadow {
+        NONE,NORMAL,OUTLINE
     }
 
     private enum ChatCommonColorCodes {

@@ -15,24 +15,20 @@ public class PlayerInfo {
     public static PlayerInfo instance;
 
 
-    Minecraft mc;
-    String name;
-    UUID uuid;
-    int health;
-    int maxHealth;
-    int sprint;
+    private Minecraft mc;
+    private String name;
+    private UUID uuid;
+    private ClassType currentClass = ClassType.NONE;
+    private int health = -1;
+    private int maxHealth = -1;
+    private int level = -1;
+    private float experiencePercentage = -1;
+    //TODO math for Wynn exp values
 
-
-    ClassType currentClass = ClassType.NONE;
-
-    //Actionbar Things
-    String lastActionBar;
+    private String lastActionBar;
 
     public PlayerInfo(Minecraft mc) {
         this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
-        this.health = -1;
-        this.maxHealth = -1;
-        this.sprint = -1;
 
         instance = this;
     }
@@ -42,33 +38,25 @@ public class PlayerInfo {
         if(currentClass == ClassType.NONE) {
             this.health = -1;
             this.maxHealth = -1;
-            this.sprint = -1;
-        }
-        else if(lastActionBar.contains("❤")) {
-            StringBuilder read = new StringBuilder();
-            for (char c : lastActionBar.substring(4).toCharArray()) {
-                if(c == '/') {
-                    this.health = Integer.parseInt(read.toString());
-                    read = new StringBuilder();
-                } else if(c == '§') {
-                    this.maxHealth = Integer.parseInt(read.toString());
-                    break;
-                } else {
-                    read.append(c);
-                }
-            }/*  TODO, redo something to track sprint
-            if(lastActionBar.contains("[§8")) this.sprint = 0;
-            else if(lastActionBar.contains("[§a")){
-                this.sprint = -1;
-                for(char c : lastActionBar.toCharArray()) {
-                    if((sprint == -1 && c == 'a') || (sprint != -1 && c != '§')) {
-                        sprint++;
-                    }
-                    else if(sprint != -1) {
+            this.level = -1;
+            this.experiencePercentage = -1;
+        } else {
+            if (lastActionBar.contains("❤")) {
+                StringBuilder read = new StringBuilder();
+                for (char c : lastActionBar.substring(4).toCharArray()) {
+                    if (c == '/') {
+                        this.health = Integer.parseInt(read.toString());
+                        read = new StringBuilder();
+                    } else if (c == '§') {
+                        this.maxHealth = Integer.parseInt(read.toString());
                         break;
+                    } else {
+                        read.append(c);
                     }
                 }
-            }*/
+            }
+            this.level = mc.player.experienceLevel;
+            this.experiencePercentage = mc.player.experience;
         }
     }
 
@@ -89,26 +77,20 @@ public class PlayerInfo {
     }
 
     public int getCurrentHealth() {
-        return health;
+        return currentClass == ClassType.NONE ? -1 : health;
     }
+
+    public int getCurrentMana() { return currentClass == ClassType.NONE ? -1 : mc.player.getFoodStats().getFoodLevel(); }
 
     public int getMaxHealth() {
-        return maxHealth;
+        return currentClass == ClassType.NONE ? -1 : maxHealth;
     }
 
-    public int getCurrentSprint() {
-        return sprint;
-    }
+    public float getExperiencePercentage() { return experiencePercentage; }
 
-    public int getMaxSprint() {
-        return 12;
-    }
+    public int getLevel() { return level; }
 
     public int getMaxMana() {return 20;}
-
-    public int getCurrentMana() {
-        return currentClass == ClassType.NONE ? -1 : mc.player.getFoodStats().getFoodLevel();
-    }
 
     public static PlayerInfo getPlayerInfo() {
         if(instance == null)

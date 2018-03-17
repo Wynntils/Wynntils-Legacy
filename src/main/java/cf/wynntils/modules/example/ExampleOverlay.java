@@ -1,6 +1,7 @@
 package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.overlays.Overlay;
+import cf.wynntils.core.framework.overlays.OverlayOption;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -16,24 +17,50 @@ public class ExampleOverlay extends Overlay {
                 20, //The width of the overlay(to be dragged in the options)
                 20, //The height of the overlay(to be dragged in the options)
                 true, //Should the overlay start visible
-                0.5f, //Anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
-                0.5f, //Anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
-                0, //Offset from the anchor in pixels
-                0); //Offset from the anchor in pixels
+                0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
+                0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
+                0, //Origin offset from the anchor in pixels
+                0); //Origin offset from the anchor in pixels
     }
+
+    @OverlayOption.Limitations.FloatLimit(min = 0.0f, max = 69.420f) //Optional, Will set a limit on the float
+    @OverlayOption(displayName = "Configurable Float Title", description = "This float determines what the speed of you understanding what this float is")//Will make this an configurable option
+    public float thisIsAUserConfigurableFloat = 43.235f; //This means that the default will be 43.235
+
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        //TODO finish the documentation of Overlays
+        /*
+        In here, You can do all rendering for the 'PRE' phase or cancel any vanilla elements.
+        Do not forget that you have to check for only 1 element type to render on or it will spam this around
+        ~20 times each frame.
+
+        Look in ScreenRenderer for documentation of rendering methods, This class inherits all methods from
+        ScreenRenderer.
+        Do not call #beginGL and #endGL from ScreenRenderer, It is already being handled by the Framework.
+         */
+
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
-        super.render(event);
+        /*
+        In here, You can do all rendering for the 'POST' phase, Anything you render here will happen after all renders.
+        Do not forget that you have to check for only 1 element type to render on or it will spam this around
+        ~20 times each frame, If that element was set to be canceled, it will not invoke this method.
+
+        Look in ScreenRenderer for documentation of rendering methods, This class inherits all methods from
+        ScreenRenderer.
+        Do not call #beginGL and #endGL from ScreenRenderer, It is already being handled by the Framework.
+         */
+
     }
 
     @Override
     public void tick(TickEvent.ClientTickEvent event) {
-        super.tick(event);
+        /*
+        Here, You can do calculations for values or other things that the overlay needs, This method is being called 20
+        times per second.
+         */
     }
 }

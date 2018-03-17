@@ -1,22 +1,59 @@
 package cf.wynntils.core.framework.rendering.textures;
 
 import cf.wynntils.core.framework.enums.ActionResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Files;
 
 public class ExternalTexture extends Texture {
+    public int glID;
+    public File file;
+
+    public ExternalTexture(File file, boolean load) {
+        this.file = file;
+        if(load) load();
+    }
 
     @Override
     public ActionResult load() {
-        return null;
+        if (loaded) return ActionResult.ISSUE;
+        if (!Files.exists(file.toPath())) return ActionResult.ERROR;
+
+        try {
+            BufferedImage img = ImageIO.read(file);
+            this.glID = TextureUtil.glGenTextures();
+            width = img.getWidth();
+            height = img.getHeight();
+            TextureUtil.uploadTextureImageAllocate(glID,img,false,false);
+            loaded = true;
+            return ActionResult.SUCCESS;
+        } catch (Exception e) {
+            width = -1;
+            height = -1;
+            glID = -1;
+            loaded = false;
+            return ActionResult.ERROR;
+        }
     }
 
     @Override
     public ActionResult unload() {
-        return null;
+        if(!loaded) return ActionResult.ISSUE;
+        TextureUtil.deleteTexture(glID);
+        loaded = false;
+        return ActionResult.SUCCESS;
     }
 
     @Override
     public ActionResult bind() {
-        return null;
+        if(!loaded) return ActionResult.ERROR;
+        GlStateManager.bindTexture(glID);
+        return ActionResult.SUCCESS;
     }
     //TODO this whole system
 }

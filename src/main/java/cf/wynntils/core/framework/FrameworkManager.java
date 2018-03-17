@@ -128,7 +128,7 @@ public class FrameworkManager {
         if (Reference.onServer) {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
-                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
                         overlay.position.Refresh();
                         overlay.tick(e);
                     }

@@ -4,9 +4,21 @@ import cf.wynntils.Reference;
 import net.minecraft.util.ResourceLocation;
 
 public class Textures {
-    //public static AssetsTexture exampleTexture = new AssetsTexture(new ResourceLocation("resource location with a texture part at [0,0 => 25,50]"),0,0,25,50);
+    //public static AssetsTexture exampleTexture = new AssetsTexture(new ResourceLocation("resource location"));
     public static void loadTextures() {
-        bars = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars.png"));
+        Bars.health = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_health.png"));
+        Bars.mana = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_mana.png"));
+        Bars.exp = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_exp.png"));
+
+        Masks.full = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/full.png"));
+        Masks.circle = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/circle.png"));
     }
-    public static AssetsTexture bars;
+    public static class Masks {
+        public static AssetsTexture full,circle;
+    }
+    public static class Bars {
+        public static AssetsTexture health;
+        public static AssetsTexture mana;
+        public static AssetsTexture exp;
+    }
 }

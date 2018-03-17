@@ -3,6 +3,7 @@ package cf.wynntils.core.framework.rendering.colors;
 
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 
 
 /** CustomColor
@@ -44,7 +45,36 @@ public class CustomColor {
         GlStateManager.color(r,g,b,a);
     }
 
+    public static CustomColor fromHSV(float h, float s, float v, float a) {
+        if(v == 0f) {
+            return new CustomColor(0.0f,0.0f,0.0f,a);
+        } else if(s == 0f) {
+            return new CustomColor(v,v,v,a);
+        } else {
+            h = h % 1f;
 
-    @Deprecated
-    public int getRGB() {return new java.awt.Color(r,g,b,a).getRGB();}
+            float vh = h * 6;
+            if (vh == 6)
+                vh = 0;
+            int vi = MathHelper.fastFloor((double) vh);
+            float v1 = v * (1 - s);
+            float v2 = v * (1 - s * (vh - vi));
+            float v3 = v * (1 - s * (1 - (vh - vi)));
+
+            switch(vi) {
+                case 0:
+                    return new CustomColor(v,v3,v1,a);
+                case 1:
+                    return new CustomColor(v2,v,v1,a);
+                case 2:
+                    return new CustomColor(v1,v,v3,a);
+                case 3:
+                    return new CustomColor(v1,v2,v,a);
+                case 4:
+                    return new CustomColor(v3,v1,v,a);
+                default:
+                    return new CustomColor(v,v1,v2,a);
+            }
+        }
+    }
 }

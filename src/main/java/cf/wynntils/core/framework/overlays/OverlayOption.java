@@ -13,8 +13,25 @@ public @interface OverlayOption {
     String description();
     boolean shouldShowOption() default true;
 
-    @interface FloatLimit {
-        float min();
-        float max();
+    class Limitations {
+        public @interface IntLimit {
+            int min();
+            int max();
+            int precision() default 1;
+        }
+        public @interface FloatLimit {
+            float min();
+            float max();
+            float precision() default 0.1f;
+        }
+        public @interface DoubleLimit {
+            double min();
+            double max();
+            double precision() default 0.1d;
+        }
+        public @interface StringLimit {
+            int minLength() default 0;
+            int maxLength();
+        }
     }
 }

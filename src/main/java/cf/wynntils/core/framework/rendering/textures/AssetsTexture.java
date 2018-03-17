@@ -10,9 +10,10 @@ import java.awt.image.BufferedImage;
 public class AssetsTexture extends Texture {
     public ResourceLocation resourceLocation;
 
-    public AssetsTexture(ResourceLocation resourceLocation) {
+    public AssetsTexture(ResourceLocation resourceLocation) { this(resourceLocation,true); }
+    public AssetsTexture(ResourceLocation resourceLocation, boolean load) {
         this.resourceLocation = resourceLocation;
-        load();
+        if(load) load();
     }
 
     @Override
@@ -25,11 +26,12 @@ public class AssetsTexture extends Texture {
             width = img.getWidth();
             height = img.getHeight();
             loaded = true;
+            return ActionResult.SUCCESS;
         } catch(Exception e) {
             width = -1; height = -1;
             loaded = false;
+            return ActionResult.ERROR;
         }
-        return loaded ? ActionResult.SUCCESS : ActionResult.ERROR;
     }
 
     @Override
