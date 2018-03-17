@@ -15,11 +15,12 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -66,6 +67,26 @@ public class ClientEvents {
         }
     }
 
+    boolean inClassSelection = false;
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SideOnly(Side.CLIENT)
+    public void onChat(ClientChatEvent e) {
+        if(Reference.onWorld && e.getMessage().startsWith("/class")) {
+            inClassSelection = true;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SideOnly(Side.CLIENT)
+    public void receiveTp(GuiScreenEvent.DrawScreenEvent.Post e) {
+        if(inClassSelection) {
+            PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+            MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
+            inClassSelection = false;
+            acceptClass = true;
+        }
+    }
 
     private static String lastWorld = "";
     private boolean acceptsLeft = false;
@@ -92,8 +113,8 @@ public class ClientEvents {
         if(world == null && acceptsLeft) {
             acceptsLeft = false;
             MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
-            MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
             PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+            MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
         }else if(world != null && !acceptsLeft && !lastWorld.equalsIgnoreCase(world)) {
             acceptsLeft = true;
             acceptClass = true;
@@ -102,8 +123,8 @@ public class ClientEvents {
 
         lastWorld = world == null ? "" : world;
 
+        Minecraft mc = Minecraft.getMinecraft();
         if(acceptClass) {
-            Minecraft mc = Minecraft.getMinecraft();
             if (mc.player.experienceLevel > 0) {
                 try {
                     ItemStack book = mc.player.inventory.getStackInSlot(7);
@@ -117,8 +138,8 @@ public class ClientEvents {
                                     if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a'){
                                         ClassType newClass = ClassType.valueOf(ClassTest.substring(18,ClassTest.lastIndexOf('/')).toUpperCase());
 
-                                        MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
                                         PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
+                                        MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
 
                                         acceptClass = false;
                                     }

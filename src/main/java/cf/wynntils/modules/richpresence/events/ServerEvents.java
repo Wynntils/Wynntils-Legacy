@@ -2,8 +2,11 @@ package cf.wynntils.modules.richpresence.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.framework.enums.ClassType;
+import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.utils.Utils;
@@ -66,6 +69,17 @@ public class ServerEvents implements Listener {
         }
     }
 
+    public static boolean classUpdate = false;
+
+    @EventHandler
+    public void onClassChange(WynnClassChangeEvent e) {
+        if(e.getCurrentClass() != ClassType.NONE) {
+            classUpdate = true;
+        }else if(Reference.onWorld) {
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", Utils.getPlayerInfo(), null);
+        }
+    }
+
     /**
      * Starts to check player location for RichPresence current player territory info
      */
@@ -74,7 +88,7 @@ public class ServerEvents implements Listener {
             EntityPlayerSP pl = ModCore.mc().player;
 
             if(RichPresenceModule.getModule().getData().getLocId() != -1) {
-                if(WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ)) {
+                if(WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ) && !classUpdate) {
                     return;
                 }
             }
@@ -85,7 +99,13 @@ public class ServerEvents implements Listener {
                     RichPresenceModule.getModule().getData().setLocation(pf.getName());
                     RichPresenceModule.getModule().getData().setLocId(i);
 
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
+                    classUpdate = false;
+
+                    if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), Utils.getPlayerInfo(), null);
+                    }else {
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
+                    }
                     break;
                 }
             }
