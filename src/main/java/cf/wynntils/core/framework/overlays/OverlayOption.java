@@ -34,4 +34,9 @@ public @interface OverlayOption {
             int maxLength();
         }
     }
+
+    @interface StringParameters {
+        String[] parameters();
+    }
+
 }

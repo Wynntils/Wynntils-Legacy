@@ -35,7 +35,7 @@ public class ManaBarOverlay extends Overlay {
                     break;
                 case simplistic:
                     drawProgressBar(Textures.Bars.mana,81, 0, 0, 8, 18, 33, -mana/(float)getPlayerInfo().getMaxMana());
-                    drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), 40, -8, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                    drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), 40, -9, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
             }
         }

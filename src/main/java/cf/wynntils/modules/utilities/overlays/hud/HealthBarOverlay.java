@@ -31,11 +31,11 @@ public class HealthBarOverlay extends Overlay {
             switch (texture) {
                 case wynn:
                     drawProgressBar(Textures.Bars.health,-81, 0, 0, 9, 0, 17, health/(float)getPlayerInfo().getMaxHealth());
-                    drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -8, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                    drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -9, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
                 case simplistic:
                     drawProgressBar(Textures.Bars.health,-81, 0, 0, 8, 18, 33, health/(float)getPlayerInfo().getMaxHealth());
-                    drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -8, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                    drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -9, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
             }
         }

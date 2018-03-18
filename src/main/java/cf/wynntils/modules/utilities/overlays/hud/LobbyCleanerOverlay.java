@@ -7,6 +7,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class LobbyCleanerOverlay extends Overlay {
+
     public LobbyCleanerOverlay() {
         super("Lobby Cleaning Overlay", 0, 0, true, 0, 0, 0, 0);
     }
@@ -30,9 +31,9 @@ public class LobbyCleanerOverlay extends Overlay {
         if(noAir && event.getType() == RenderGameOverlayEvent.ElementType.AIR) event.setCanceled(true);
     }
 
-
     @Override
     public void tick(TickEvent.ClientTickEvent event) {
         this.visible = Reference.onLobby;
     }
+
 }

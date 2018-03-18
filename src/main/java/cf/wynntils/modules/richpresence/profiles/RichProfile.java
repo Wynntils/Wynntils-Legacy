@@ -46,6 +46,24 @@ public class RichProfile {
     }
 
     /**
+     * update user RichPresence
+     *
+     * @param state
+     *        RichPresence state string
+     * @param details
+     *        RichPresence details string
+     * @param largText
+     *        RichPresence large Text
+     * @param largeImg
+     *        RichPresence large image key
+     * @param date
+     *        RichPresence Date
+     */
+    public void updateRichPresence(String state, String details, String largeImg, String largText, OffsetDateTime date) {
+        client.sendRichPresence(new RichPresence(state, details, date, null, largeImg, largText, "wynn", null, null, 0, 0, null, null, null, false));
+    }
+
+    /**
      * Return if the RichClient is ready to go
      * @return if the RichClient is ready
      */
