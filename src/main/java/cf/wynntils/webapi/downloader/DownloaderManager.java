@@ -20,6 +20,7 @@ public class DownloaderManager {
     public static DownloadPhase currentPhase = DownloadPhase.WAITING;
 
     private static boolean next = false;
+    public static boolean restartOnQueueFinish = false;
 
     /**
      * Simple queue an download
@@ -34,6 +35,10 @@ public class DownloaderManager {
         futureDownloads.add(new DownloadProfile(title, url, f, action, onFinish));
 
         startDownloading();
+    }
+
+    public static void restartGameOnNextQueue() {
+        restartOnQueueFinish = true;
     }
 
     public static DownloadProfile getCurrentDownload() {

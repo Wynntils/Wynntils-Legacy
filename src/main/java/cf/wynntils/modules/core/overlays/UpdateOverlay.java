@@ -8,6 +8,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
+import cf.wynntils.webapi.downloader.enums.DownloadPhase;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
@@ -32,9 +33,14 @@ public class UpdateOverlay extends Overlay {
     boolean disappear = false;
     boolean acceptYesOrNo = false;
     boolean download = false;
+    boolean onAnim = false;
+
+    public static int size = 63;
+    public static long timeout = 0;
+
 
     @Override
-    public void render(RenderGameOverlayEvent.Post e) { //TODO ANIMATIONS
+    public void render(RenderGameOverlayEvent.Post e) {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
@@ -48,20 +54,36 @@ public class UpdateOverlay extends Overlay {
             return;
         }
 
-        acceptYesOrNo = true;
+        if(timeout == 0) {
+            timeout = System.currentTimeMillis();
+        }
 
-        drawRect(background, -172,0, 0, 62);
-        drawRect(box, -170,0, 0, 60);
+        drawRect(background, -172,0 - size, 0, 62 - size);
+        drawRect(box, -170,0 - size, 0, 60 - size);
 
-        drawString("Wynntils §av" + Reference.VERSION, -165, 5, CommonColors.ORANGE);
-        drawString("A new update is available §ev" + WebManager.getUpdate().getLatestUpdate(), -165, 15, CommonColors.WHITE);
-        drawString("Download automagically? §a(y/n)", -165, 25, CommonColors.LIGHT_GRAY);
+        drawString("Wynntils §av" + Reference.VERSION + " - §f" + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
+        drawString("A new update is available §ev" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
+        drawString("Download automagically? §a(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
-        drawRect(yes, -155,40, -95, 55);
-        drawRect(no, -75 ,40, -15, 55);
+        drawRect(yes, -155,40 - size, -95, 55 - size);
+        drawRect(no, -75 ,40 - size, -15, 55 - size);
 
-        drawString("Yes (y)", -125, 44, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        drawString("No (n)", -43, 44, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString("Yes (y)", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString("No (n)", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+
+        if (size > 0 && System.currentTimeMillis() - timeout < 35000) {
+            size--;
+            if(size <= 0) {
+                acceptYesOrNo = true;
+            }
+        }else if(size < 63 && System.currentTimeMillis() - timeout >= 35000) {
+            size++;
+            if(size >= 63) {
+                disappear = true;
+                acceptYesOrNo = false;
+                download = false;
+            }
+        }
     }
 
     @Override
@@ -72,6 +94,8 @@ public class UpdateOverlay extends Overlay {
             try{
                 //String jar = WebManager.getLatestJarFileUrl();
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
+                DownloadOverlay.size = 0;
+                DownloaderManager.restartGameOnNextQueue();
                 DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), "http://dl.heyzeer0.cf/WynnRP/entering.gif", f, DownloadAction.SAVE, (x) -> {
                     if(x) {
 
@@ -89,7 +113,7 @@ public class UpdateOverlay extends Overlay {
                 acceptYesOrNo = false;
                 download = true;
             }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
-                disappear = true;
+                timeout = 35000;
                 acceptYesOrNo = false;
                 download = false;
             }

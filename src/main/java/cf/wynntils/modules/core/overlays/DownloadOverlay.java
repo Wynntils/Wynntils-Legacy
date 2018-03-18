@@ -10,6 +10,8 @@ import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.Sys;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -22,11 +24,16 @@ public class DownloadOverlay extends Overlay {
     private CustomColor progress = new CustomColor("80fd80");
     private CustomColor back = new CustomColor("ececec");
 
+    private CustomColor brackgroundRed = new CustomColor("6e3737");
+    private CustomColor boxRed = new CustomColor("fd8080");
+
     int lastPercent = 0;
     DownloadPhase lastPhase;
     String lastTitle = "";
 
-    boolean hasMultipleValues = false;
+    long timeToRestart = 0;
+
+    public static int size = 53;
 
     public DownloadOverlay() {
         super("Downloading Overlay",20,20,true,1.0f,0.0f,0,0);
@@ -38,7 +45,23 @@ public class DownloadOverlay extends Overlay {
             return;
         }
 
-        if(DownloaderManager.currentPhase != DownloadPhase.WAITING) {
+        if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
+            if(DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
+                if(timeToRestart == 0) {
+                    timeToRestart = System.currentTimeMillis() + 35000;
+                }
+                if(timeToRestart - System.currentTimeMillis() <= 0) {
+                    mc.shutdown();
+                    return;
+                }
+
+                drawRect(brackgroundRed, -172,0 - size, 0, 52 - size);
+                drawRect(boxRed, -170,0 - size, 0, 50 - size);
+                drawString("Your game will be closed in", -84, 15 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                drawString(((timeToRestart - System.currentTimeMillis()) / 1000) + " seconds", -84, 25 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                return;
+            }
+
             DownloadProfile df = DownloaderManager.getCurrentDownload();
 
             if (df != null) {
@@ -47,15 +70,22 @@ public class DownloadOverlay extends Overlay {
                 lastPhase = DownloaderManager.currentPhase;
             }
 
-            drawRect(background, -172,0, 0, 52);
-            drawRect(box, -170,0, 0, 50);
-            drawString(lastTitle, -85, 5, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            drawRect(background, -172,0 - size, 0, 52 - size);
+            drawRect(box, -170,0 - size, 0, 50 - size);
+            drawString(lastTitle, -85, 5 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
-            drawRect(back, -160, 20, -10, 36);
+            drawRect(back, -160, 20 - size, -10, 36 - size);
 
-            drawRect(progress, -160, 20, ((lastPercent * (-10 + 160)) + 100 * -160) / 100, 36);
-            drawString(lastPercent + "%", -84, 25, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            drawRect(progress, -160, 20 - size, ((lastPercent * (-10 + 160)) + 100 * -160) / 100, 36 - size);
+            drawString(lastPercent + "%", -84, 25 - size, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        }
+
+        if (size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
+            size--;
+        } else if (size < 53 && DownloaderManager.currentPhase == DownloadPhase.WAITING && !DownloaderManager.restartOnQueueFinish) {
+            size++;
         }
     }
+
 
 }
