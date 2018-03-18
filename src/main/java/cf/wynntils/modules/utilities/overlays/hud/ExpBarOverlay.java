@@ -21,6 +21,9 @@ public class ExpBarOverlay extends Overlay{
     @OverlayOption(displayName = "Texture", description = "What texture to use")
     public ExpTextures texture = ExpTextures.wynn;
 
+    @OverlayOption(displayName = "Texture", description = "XP Level Location")
+    public LevelLocation level = LevelLocation.middle;
+
     private float exp = 0.0f;
 
     @Override
@@ -31,13 +34,17 @@ public class ExpBarOverlay extends Overlay{
             switch (texture) {
                 case wynn:
                     drawProgressBar(Textures.Bars.exp,-91, 0, 91, 5, 0, 9, getPlayerInfo().getExperiencePercentage());
-                    scale(1.1f);
-                    drawString(getPlayerInfo().getLevel() + "", 0, -7, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
                 case simplistic:
                     drawProgressBar(Textures.Bars.exp,-91, 0, 91, 5, 10, 19, getPlayerInfo().getExperiencePercentage());
-                    drawString(getPlayerInfo().getLevel() + "", 0, -6, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
+            }
+
+            switch (level) {
+                case middle:
+                    drawString(getPlayerInfo().getLevel() + "", 0, -2, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                case over:
+                    drawString(getPlayerInfo().getLevel() + "", 0, -6, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
             }
 
         }
@@ -59,5 +66,10 @@ public class ExpBarOverlay extends Overlay{
         ;//following the format, to add more textures, register them here with a name and add to the bars.png texture 16 more pixels in height, NOTE THAT SPECIAL ONES MUST BE IN THE END!
         final int uvOriginY;
         ExpTextures() {this.uvOriginY = this.ordinal()*16;}
+    }
+
+    public enum LevelLocation {
+        over,
+        middle
     }
 }
