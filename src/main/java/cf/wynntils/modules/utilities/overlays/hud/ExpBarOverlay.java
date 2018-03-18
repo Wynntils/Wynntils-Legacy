@@ -43,8 +43,10 @@ public class ExpBarOverlay extends Overlay{
             switch (level) {
                 case middle:
                     drawString(getPlayerInfo().getLevel() + "", 0, -2, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                    break;
                 case over:
                     drawString(getPlayerInfo().getLevel() + "", 0, -6, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                    break;
             }
 
         }
