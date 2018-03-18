@@ -480,7 +480,7 @@ public class ScreenRenderer {
             progress *= -1;
             xMin += (1.0f - progress) * (xMax - xMin);
         } else {
-            xMax -= (1.0f - progress) * (xMax - xMin);
+            xMax = x2 * progress;
         }
 
         drawRectF(color,xMin,(float)y1,xMax,(float)y2);

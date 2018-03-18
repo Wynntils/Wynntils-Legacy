@@ -5,7 +5,6 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
-import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
@@ -30,12 +29,12 @@ public class UpdateOverlay extends Overlay {
         super("Update Overlay", 20, 20, true, 1f, 0f, 0, 0);
     }
 
-    boolean dissapear = false;
+    boolean disappear = false;
     boolean acceptYesOrNo = false;
     boolean download = false;
 
     @Override
-    public void render(RenderGameOverlayEvent.Post e) {
+    public void render(RenderGameOverlayEvent.Post e) { //TODO ANIMATIONS
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
@@ -44,14 +43,15 @@ public class UpdateOverlay extends Overlay {
             return;
         }
 
-        if(dissapear) {
+        //disappear = false;
+        if(disappear) {
             return;
         }
 
         acceptYesOrNo = true;
 
-        drawRect(background, -172,0, 32, 62);
-        drawRect(box, -170,0, 30, 60);
+        drawRect(background, -172,0, 0, 62);
+        drawRect(box, -170,0, 0, 60);
 
         drawString("Wynntils §av" + Reference.VERSION, -165, 5, CommonColors.ORANGE);
         drawString("A new update is available §ev" + WebManager.getUpdate().getLatestUpdate(), -165, 15, CommonColors.WHITE);
@@ -66,13 +66,13 @@ public class UpdateOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event){
-        if(download && dissapear) {
+        if(download && disappear) {
             download = false;
 
             try{
-                String jar = WebManager.getLatestJarFileUrl();
+                //String jar = WebManager.getLatestJarFileUrl();
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
-                DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), jar, f, DownloadAction.SAVE, (x) -> {
+                DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), "http://dl.heyzeer0.cf/WynnRP/entering.gif", f, DownloadAction.SAVE, (x) -> {
                     if(x) {
 
                     }
@@ -84,12 +84,12 @@ public class UpdateOverlay extends Overlay {
         }
         if(acceptYesOrNo) {
             if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-                //TODO start popout animation, when finish set dissapear to TRUE to start the download
-                dissapear = true;
+                //TODO start popout animation, when finish set disappear to TRUE to start the download
+                disappear = true;
                 acceptYesOrNo = false;
                 download = true;
             }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
-                dissapear = true;
+                disappear = true;
                 acceptYesOrNo = false;
                 download = false;
             }

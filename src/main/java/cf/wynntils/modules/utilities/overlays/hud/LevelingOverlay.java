@@ -20,7 +20,7 @@ public class LevelingOverlay extends Overlay {
 
     @OverlayOption.StringParameters(parameters = {"actual", "max", "percent"})
     @OverlayOption(displayName = "Current Text", description = "What will be showed at the Leveling Text")
-    public String levelingText = "§a(%actual%/%max%) %percent%%";
+    public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
     @OverlayOption(displayName = "Text Shadow", description = "The Levelling Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;

@@ -1,10 +1,11 @@
 package cf.wynntils.modules.core.overlays;
 
 
-import cf.wynntils.core.framework.enums.Priority;
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
@@ -15,27 +16,29 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
  * Copyright © HeyZeer0 - 2016
  */
 public class DownloadOverlay extends Overlay {
-    int size = 40;
+
+    private CustomColor background = new CustomColor("333341");
+    private CustomColor box = new CustomColor("434355");
+    private CustomColor progress = new CustomColor("80fd80");
+    private CustomColor back = new CustomColor("ececec");
+
     int lastPercent = 0;
     DownloadPhase lastPhase;
     String lastTitle = "";
 
-    int extraY = 0;
     boolean hasMultipleValues = false;
 
     public DownloadOverlay() {
-        super("Downloading Overlay",20,20,true,1.0f,0.0f,-10,10);
+        super("Downloading Overlay",20,20,true,1.0f,0.0f,0,0);
     }
 
     @Override
-    public void render(RenderGameOverlayEvent.Post e) {  //TODO, CHECK THIS IS WORKING WITH THE NEW SYSTEM
+    public void render(RenderGameOverlayEvent.Post e) {  //TODO ANIMATIONS
         if (e.isCanceled() || e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
 
-        //just to appears when a download is currently running
-        //and when size != 0 cuz whe need to do the "size off" animation
-        if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size != 40) {
+        if(DownloaderManager.currentPhase != DownloadPhase.WAITING) {
             DownloadProfile df = DownloaderManager.getCurrentDownload();
 
             if (df != null) {
@@ -44,26 +47,14 @@ public class DownloadOverlay extends Overlay {
                 lastPhase = DownloaderManager.currentPhase;
             }
 
-            drawRect(CommonColors.GRAY, 0, -size, -120, (43 + extraY) - size);
-            drawRect(CommonColors.LIGHT_GRAY,-110, 15 - size, 0 - 10, 35 - size);
-            drawRect(CommonColors.LIGHT_GREEN,-110, 15 - size, -(110 - lastPercent), 35 - size);
+            drawRect(background, -172,0, 0, 52);
+            drawRect(box, -170,0, 0, 50);
+            drawString(lastTitle, -85, 5, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
-            String percent = lastPercent + "%";
-            drawString(percent,-110 + ((101 - mc.fontRenderer.getStringWidth(percent)) / 2), 16 - size,CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            String title = (lastPhase == DownloadPhase.DOWNLOADING ? "Downloading" : "Unzipping") + " " + lastTitle;
-            drawString(title,-120 + ((121 - mc.fontRenderer.getStringWidth(title)) / 2), 4 - size,CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            drawRect(back, -160, 20, -10, 36);
 
-            if (hasMultipleValues && extraY < 20) {
-                extraY++;
-            } else if (!hasMultipleValues && extraY < 0) {
-                extraY--;
-            }
-
-            if (size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {
-                size--;
-            } else if (size < 40 && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
-                size++;
-            }
+            drawRect(progress, -160, 20, ((lastPercent * (-10 + 160)) + 100 * -160) / 100, 36);
+            drawString(lastPercent + "%", -84, 25, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
     }
 
