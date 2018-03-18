@@ -26,6 +26,7 @@ public class WebReader {
     public WebReader(String url) throws Exception {
         this.url = url;
 
+        Reference.LOGGER.info("Reading " + url);
         parseWebsite();
     }
 

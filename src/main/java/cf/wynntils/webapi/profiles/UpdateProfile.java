@@ -17,12 +17,12 @@ public class UpdateProfile {
                 versions = new WebReader("http://api.wynntils.cf/versions");
 
                 try{
-                    Integer latest = Integer.valueOf(versions.get("Mod").replace(".", "").replace("\n", ""));
+                    Integer latest = Integer.valueOf(versions.get(Reference.MINECRAFT_VERSIONS).replace(".", "").replace("\n", ""));
                     Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
 
                     if(latest > actual) {
                         hasUpdate = true;
-                        latestUpdate = versions.get("Mod");
+                        latestUpdate = versions.get(Reference.MINECRAFT_VERSIONS);
                     }
 
                 }catch (Exception ignored) { ignored.printStackTrace(); }
@@ -31,11 +31,11 @@ public class UpdateProfile {
         }).start();
     }
 
-    public boolean modHasUpdate() {
+    public boolean hasUpdate() {
         return hasUpdate;
     }
 
-    public String getModLatestUpdate() {
+    public String getLatestUpdate() {
         return latestUpdate;
     }
 

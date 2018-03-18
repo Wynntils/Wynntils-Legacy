@@ -54,8 +54,6 @@ public class DownloaderManager {
         next = false;
         progression = 0;
 
-        Reference.LOGGER.warn("starting to download " + pf.title + " | " + progression);
-
         new Thread(() -> {
             try{
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();

@@ -26,8 +26,12 @@ public class CustomColor {
         this.a = a;
     }
 
-    public CustomColor(String hex) throws Exception {
-        if(hex.length() != 8 && hex.length() != 6) throw new Exception("String length is neither 8 or 6, Cannot proceed.");
+    public CustomColor(String hex) {
+        if(hex.length() != 8 && hex.length() != 6) {
+            //TODO decide what to make here
+            r = 1; g = 1; b = 1;
+            return;
+        }
         r = ((float)Integer.parseInt(hex.substring(0,2),16)/255f);
         g = ((float)Integer.parseInt(hex.substring(2,4),16)/255f);
         b = ((float)Integer.parseInt(hex.substring(4,6),16)/255f);
