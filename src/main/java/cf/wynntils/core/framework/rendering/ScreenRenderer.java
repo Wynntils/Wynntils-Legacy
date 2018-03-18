@@ -377,6 +377,28 @@ public class ScreenRenderer {
         GlStateManager.glEnd();
     }
 
+    /** void drawRectF
+     * Overload to {{drawRect}} that renders using floats.
+     *
+     */
+    public void drawRectF(CustomColor color, float x1, float y1, float x2, float y2) {
+        if(!rendering) return;
+        GlStateManager.enableAlpha();
+        GlStateManager.disableTexture2D();
+        color.applyColor();
+
+        float xMin  = Math.min(x1, x2) + drawingOrigin.x,
+              xMax  = Math.max(x1, x2) + drawingOrigin.x,
+              yMin  = Math.min(y1, y2) + drawingOrigin.y,
+              yMax  = Math.max(y1, y2) + drawingOrigin.y;
+        GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glVertex3f(xMin, yMin, 0);
+        GlStateManager.glVertex3f(xMin, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMin, 0);
+        GlStateManager.glEnd();
+    }
+
 
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, boolean background) {
         if (!rendering || !texture.loaded || (!background && progress == 0.0f)) return;
@@ -415,7 +437,7 @@ public class ScreenRenderer {
 
             if(progress < 0.0f) {
                 progress *= -1;
-                xMin += (1.0f - progress) * (xMax - xMin); //TODO, fix this shit
+                xMin += (1.0f - progress) * (xMax - xMin);
                 txMin += (1.0f - progress);
             } else {
                 xMax -= (1.0f - progress) * (xMax - xMin);
@@ -435,14 +457,37 @@ public class ScreenRenderer {
         }
     }
 
-
+    /** todo document
+    */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress) {
         int half = (ty1 + ty2) / 2;
         drawProgressBar(texture, x1, y1, x2, y2, ty1, ty2-half+1, progress,true);
         drawProgressBar(texture, x1, y1, x2, y2, ty1+half+1, ty2, progress,false);
     }
 
+    /** todo document
+     *
+     * HeyZeer0, this draws left to right when progress is between 0 to 1 and right to left when between -1 to 0, like the texture one(ergo, just shove a minus on the parameter if you want it reversed..)
+     *
+     */
+    public void drawProgressBar(CustomColor backColor ,CustomColor color, int x1, int y1, int x2, int y2, float progress) {
+        drawRect(backColor,x1,y1,x2,y2);
 
+        float xMin  = Math.min(x1, x2),
+                xMax  = Math.max(x1, x2) + drawingOrigin.x;
+
+        if(progress < 0.0f) {
+            progress *= -1;
+            xMin += (1.0f - progress) * (xMax - xMin);
+        } else {
+            xMax -= (1.0f - progress) * (xMax - xMin);
+        }
+
+        drawRectF(color,xMin,(float)y1,xMax,(float)y2);
+    }
+
+    /** todo document
+     */
     public void drawItemStack(ItemStack stack, int x, int y) {
         if(!rendering) return;
         RenderHelper.enableGUIStandardItemLighting();
