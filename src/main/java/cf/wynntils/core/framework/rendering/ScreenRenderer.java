@@ -145,7 +145,7 @@ public class ScreenRenderer {
     public static void scale(float multiplier) {
         if(!rendering) return;
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
-        GlStateManager.scale(multiplier,multiplier,0);
+        GlStateManager.scale(multiplier,multiplier,multiplier);
         GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
         scale *= multiplier;
     }
@@ -221,7 +221,7 @@ public class ScreenRenderer {
      */
     public float drawString(String text, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
         if(!rendering) return -1f;
-        return fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y ,color,alignment,shadow);
+        return fontRenderer.drawString(text,drawingOrigin.x + (scale == 1f ? x : x/scale),drawingOrigin.y + (scale == 1f ? y : y/scale) ,color,alignment,shadow);
     }
 
     /**
@@ -377,15 +377,10 @@ public class ScreenRenderer {
         GlStateManager.glEnd();
     }
 
-    /**
-     * Draws a rectangle with a filled color using floats.
+    /** void drawRectF
+     * Overload to {{drawRect}} that renders using floats.
      *
-     * @param color color of the rectangle
-     * @param x1 bottom-left x
-     * @param y1 bottom-left y
-     * @param x2 top-right x
-     * @param y2 top-right y
-     * */
+     */
     public void drawRectF(CustomColor color, float x1, float y1, float x2, float y2) {
         if(!rendering) return;
         GlStateManager.enableAlpha();
@@ -404,19 +399,7 @@ public class ScreenRenderer {
         GlStateManager.glEnd();
     }
 
-    /** drawProgressBar
-     * Draws a textured progress bar, if you dont know how to use it, use the method after.
-     *
-     * @param texture the texture to use
-     * @param x1 left x on screen
-     * @param y1 top y on screen
-     * @param x2 right x on screen
-     * @param y2 bottom right on screen
-     * @param ty1 texture top y for the part
-     * @param ty2 texture bottom y for the part
-     * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
-     * @param background is it drawing the background or not(whole ty part is background)
-     */
+
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, boolean background) {
         if (!rendering || !texture.loaded || (!background && progress == 0.0f)) return;
         GlStateManager.enableAlpha();
@@ -474,34 +457,18 @@ public class ScreenRenderer {
         }
     }
 
-    /** drawProgressBar
-     * Draws a progress bar(ty1 and ty2 now specify both textures with background being on top of the bar)
-     *
-     * @param texture the texture to use
-     * @param x1 left x on screen
-     * @param y1 top y on screen
-     * @param x2 right x on screen
-     * @param y2 bottom right on screen
-     * @param ty1 texture top y for the part(top of background)
-     * @param ty2 texture bottom y for the part(bottom of bar)
-     * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
-     */
+    /** todo document
+    */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress) {
         int half = (ty1 + ty2) / 2;
         drawProgressBar(texture, x1, y1, x2, y2, ty1, ty2-half+1, progress,true);
         drawProgressBar(texture, x1, y1, x2, y2, ty1+half+1, ty2, progress,false);
     }
 
-    /** drawProgressBar
-     * Draws a non textured progress bar
+    /** todo document
      *
-     * @param backColor color for the background
-     * @param color color for the bar
-     * @param x1 left x on screen
-     * @param y1 top y on screen
-     * @param x2 right x on screen
-     * @param y2 bottom right on screen
-     * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
+     * HeyZeer0, this draws left to right when progress is between 0 to 1 and right to left when between -1 to 0, like the texture one(ergo, just shove a minus on the parameter if you want it reversed..)
+     *
      */
     public void drawProgressBar(CustomColor backColor ,CustomColor color, int x1, int y1, int x2, int y2, float progress) {
         drawRect(backColor,x1,y1,x2,y2);
@@ -513,27 +480,22 @@ public class ScreenRenderer {
             progress *= -1;
             xMin += (1.0f - progress) * (xMax - xMin);
         } else {
-            xMax = x2 * progress;
+            xMax -= (1.0f - progress) * (xMax - xMin);
         }
 
         drawRectF(color,xMin,(float)y1,xMax,(float)y2);
     }
 
-    /** drawItemStack
-     * Draws an item
-     *
-     * @param is the itemstack to render
-     * @param x x on screen
-     * @param y y on screen
+    /** todo document
      */
-    public void drawItemStack(ItemStack is, int x, int y) {
+    public void drawItemStack(ItemStack stack, int x, int y) {
         if(!rendering) return;
         RenderHelper.enableGUIStandardItemLighting();
         itemRenderer.zLevel = 200.0F;
-        net.minecraft.client.gui.FontRenderer font = is.getItem().getFontRenderer(is);
+        net.minecraft.client.gui.FontRenderer font = stack.getItem().getFontRenderer(stack);
         if (font == null) font = fontRenderer;
-        itemRenderer.renderItemAndEffectIntoGUI(is, x+drawingOrigin.x, y+drawingOrigin.y);
-        itemRenderer.renderItemOverlayIntoGUI(font, is, x+drawingOrigin.x, y+drawingOrigin.y, "");
+        itemRenderer.renderItemAndEffectIntoGUI(stack, x+drawingOrigin.x, y+drawingOrigin.y);
+        itemRenderer.renderItemOverlayIntoGUI(font, stack, x+drawingOrigin.x, y+drawingOrigin.y, "");
         itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
     }
