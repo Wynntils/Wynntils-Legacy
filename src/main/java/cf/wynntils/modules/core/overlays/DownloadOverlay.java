@@ -40,7 +40,7 @@ public class DownloadOverlay extends Overlay {
     }
 
     @Override
-    public void render(RenderGameOverlayEvent.Post e) {  //TODO ANIMATIONS
+    public void render(RenderGameOverlayEvent.Post e) {
         if (e.isCanceled() || e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }

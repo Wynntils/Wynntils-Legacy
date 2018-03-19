@@ -100,7 +100,7 @@ public class SmartFontRenderer extends FontRenderer {
             for (ChatCommonColorCodes cccc : ChatCommonColorCodes.values())
                 if(cccc.name().charAt(6) == Character.toLowerCase(text.charAt(0)))
                     return new Pair<>(text.substring(1),cccc.color);
-        return new Pair<>(text,ChatCommonColorCodes.color_f.color);
+        return new Pair<>(text, ChatCommonColorCodes.color_f.color);
     }
 
     private float renderChar(char ch)
@@ -147,4 +147,5 @@ public class SmartFontRenderer extends FontRenderer {
             this.color = CustomColor.fromString(hex,1);
         }
     }
+
 }
