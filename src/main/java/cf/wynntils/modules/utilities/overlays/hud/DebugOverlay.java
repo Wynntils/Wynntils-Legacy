@@ -2,7 +2,9 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
+import cf.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -21,11 +23,17 @@ public class DebugOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if(event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
-        //scale(1.5f);
-        //drawItemStack(new ItemStack(Blocks.EMERALD_BLOCK),0,0);
-        //createMask(Textures.Masks.full,-10,-10,10,10);
-        //drawString("colored text lololol",0,0, CustomColor.fromHSV(hue,1,1,0.75f), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        //hue += 0.02f;
+        /*rotate(hue*30);
+        scale(1.35f);
+        drawString("this txt iz gucci",0,-6,CustomColor.fromHSV(hue+0.3f,1,1,1), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+        createMask(Textures.Masks.circle,-35,-50,35,50);
+        scale(1.1f);
+        drawRect(new CustomColor(1,0,0,0.75f),-50,-50,50,50);
+        scale(1.7f);
+        resetRotation();
+        drawString("text text text lololololol",0,0,CustomColor.fromHSV(hue,1,1,0.5f), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        clearMask();
+        drawRect(MinecraftChatColors.ORANGE,-40,-15,10,-20);*/
     }
 
     @Override
@@ -35,6 +43,6 @@ public class DebugOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event) {
-
+        //hue += 0.02f;
     }
 }

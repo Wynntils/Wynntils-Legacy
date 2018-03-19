@@ -75,7 +75,7 @@ public class ScreenRenderer {
      * Do not call this method unless you truly
      * understand what you're doing, This method
      * is being called before each overlay render
-     * is called.
+     * is called automagically.
      *
      * @param x drawing origin's X
      * @param y drawing origin's Y
@@ -90,9 +90,11 @@ public class ScreenRenderer {
         resetRotation();
         GlStateManager.enableAlpha();
         GlStateManager.color(1,1,1);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
-    /** void endGL
+    /** endGL
      * Resets everything related to the ScreenRenderer
      * and stops the ability to render on screen(the
      * 2D plane).
@@ -101,7 +103,15 @@ public class ScreenRenderer {
         if(!rendering) return;
         resetScale();
         resetRotation();
-        if(mask) clearMask();
+        if(mask) {
+            GL11.glDisable(GL_DEPTH_TEST);
+            GlStateManager.depthMask(true);
+            GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
+            GlStateManager.enableDepth();
+            GlStateManager.depthFunc(GL_LEQUAL);
+            GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+            mask = false;
+        }
         drawingOrigin = new Point(0,0);
         transformationOrigin = new Point(0,0);
         GlStateManager.popMatrix();
@@ -109,7 +119,7 @@ public class ScreenRenderer {
         rendering = false;
     }
 
-    /** void rotate
+    /** rotate
      * Appends rotation(in degrees) to the rotation
      * field and rotates the following renders around
      * (drawingOrigin+transformationOrigin).
@@ -124,7 +134,7 @@ public class ScreenRenderer {
         rotation += degrees;
     }
 
-    /** void resetRotation
+    /** resetRotation
      * Resets the rotation field and makes the
      * following renders render as usual(pre-scaling).
      */
@@ -138,7 +148,7 @@ public class ScreenRenderer {
         }
     }
 
-    /** void scale
+    /** scale
      * Multiplies the scale field(in multiplier amount) by
      * {multiplier} and makes the following renders scale
      * by {multiplier} around (drawingOrigin+transformationOrigin).
@@ -148,12 +158,12 @@ public class ScreenRenderer {
     public static void scale(float multiplier) {
         if(!rendering) return;
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
-        GlStateManager.scale(multiplier,multiplier,0);
+        GlStateManager.scale(multiplier,multiplier,multiplier);
         GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
         scale *= multiplier;
     }
 
-    /** void resetScale
+    /** resetScale
      * Resets the scale field and makes the
      * following renders render as usual(pre-scaling).
      */
@@ -168,76 +178,62 @@ public class ScreenRenderer {
         }
     }
 
+    /** createMask
+     * Creates a mask that will remove anything drawn after
+     * this and before the next {clearMask()}(or {endGL()})
+     * and is not inside the mask.
+     * A mask, is a clear and white texture where anything
+     * while will allow drawing.
+     *
+     * @param texture mask texture(please use Textures.Masks)
+     * @param x1 bottom-left x(on screen)
+     * @param y1 bottom-left y(on screen)
+     * @param x2 top-right x(on screen)
+     * @param y2 top-right y(on screen)
+     */
     public static void createMask(Texture texture, int x1, int y1, int x2, int y2) {
-        if(!rendering || mask) return;
+        if (!rendering || mask) return;
+        if (!texture.loaded) return;
+        float prevScale = scale;
+        resetScale();
 
-        try {
-            //sclearMask();
-            //GlStateManager.enableDepth();
-            //GL14.glBlendFuncSeparate(GL_ZERO,GL_ONE,GL_SRC_COLOR,GL_ZERO);
-            //GlStateManager.disableAlpha();
+        GL11.glEnable(GL_DEPTH_TEST);
+        GlStateManager.colorMask(false, false, false, true);
+        texture.bind();
+        GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glTexCoord2f(0, 0);
+        GlStateManager.glVertex3f(x1 + drawingOrigin.x, y1 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glTexCoord2f(0, 1);
+        GlStateManager.glVertex3f(x1 + drawingOrigin.x, y2 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glTexCoord2f(1, 1);
+        GlStateManager.glVertex3f(x2 + drawingOrigin.x, y2 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glTexCoord2f(1, 0);
+        GlStateManager.glVertex3f(x2 + drawingOrigin.x, y1 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glEnd();
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(false);
+        GlStateManager.depthFunc(GL_GREATER);
 
-            /*GlStateManager.color(1,1,1,1);
-            texture.bind();
-            GlStateManager.glBegin(GL_QUADS);
-            GlStateManager.glTexCoord2f(0,0);
-            GlStateManager.glVertex3f(x1+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(0,1);
-            GlStateManager.glVertex3f(x1+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(1,1);
-            GlStateManager.glVertex3f(x2+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(1,0);
-            GlStateManager.glVertex3f(x2+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
-            GlStateManager.glEnd();*/
-            GlStateManager.enableBlend();
-            //GlStateManager.enableAlpha();
+        mask = true;
 
-
-
-            glEnable(GL_BLEND);
-            GlStateManager.glBlendEquation(GL14.GL_FUNC_ADD);
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            //GlStateManager.colorMask(false,false,false,true);
-            GlStateManager.glBegin(GL_QUADS);
-            GlStateManager.glTexCoord2f(0,0);
-            GlStateManager.glVertex3f(x1+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(0,1);
-            GlStateManager.glVertex3f(x1+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(1,1);
-            GlStateManager.glVertex3f(x2+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
-            GlStateManager.glTexCoord2f(1,0);
-            GlStateManager.glVertex3f(x2+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
-            GlStateManager.glEnd();
-            glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-            GlStateManager.glBlendEquation(GL_MIN);
-            //GlStateManager.colorMask(true,true,true,true);
-
-            mask = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            clearMask();
-        }
+        scale(prevScale);
     }
 
+    /** clearMask
+     * Clears the active rendering mask from the screen.
+     *
+     */
     public static void clearMask() {
-        if(!mask || !rendering) return;
-        try {
-            //GlStateManager.colorMask(false,false,false,true);
-            //GlStateManager.enableAlpha();
-            //GlStateManager.color(0,0,0,0);
-            //GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
-            GlStateManager.glBlendEquation(GL14.GL_FUNC_ADD);
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        if (!mask || !rendering) return;
 
-            //GlStateManager.colorMask(true,true,true,true);
-            //GL11.glDisable(GL_ALPHA_TEST);
-            //GlStateManager.enableDepth();
-            mask = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        GL11.glDisable(GL_DEPTH_TEST);
+        GlStateManager.depthMask(true);
+        GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
+        GlStateManager.enableDepth();
+        GlStateManager.depthFunc(GL_LEQUAL);
+        GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+        mask = false;
     }
-
 
     /** float drawString
      * Draws a string using the current fontRenderer
