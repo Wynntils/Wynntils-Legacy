@@ -144,11 +144,7 @@ public class SmartFontRenderer extends FontRenderer {
 
         public CustomColor color;
         ChatCommonColorCodes(String hex) {
-            try {
-                this.color = new CustomColor(hex);
-            } catch (Exception e) {
-                //How the actual fuck did you get here on a final thing that was checked twice!?
-            }
+            this.color = CustomColor.fromString(hex,1);
         }
     }
 }

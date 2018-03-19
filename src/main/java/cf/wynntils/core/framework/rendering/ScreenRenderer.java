@@ -2,6 +2,7 @@ package cf.wynntils.core.framework.rendering;
 
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Texture;
+import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.utils.ReflectionFields;
 
 import net.minecraft.client.Minecraft;
@@ -10,11 +11,15 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import java.awt.*;
 import java.util.Arrays;
 
-import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.GL_MIN;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 /** ScreenRenderer      -SHCM
  * Extend this class whenever you want to render things on the screen
@@ -96,9 +101,7 @@ public class ScreenRenderer {
         if(!rendering) return;
         resetScale();
         resetRotation();
-        GlStateManager.disableBlend();
         if(mask) clearMask();
-        GlStateManager.translate(-drawingOrigin.x,-drawingOrigin.y,0);
         drawingOrigin = new Point(0,0);
         transformationOrigin = new Point(0,0);
         GlStateManager.popMatrix();
@@ -167,9 +170,14 @@ public class ScreenRenderer {
 
     public static void createMask(Texture texture, int x1, int y1, int x2, int y2) {
         if(!rendering || mask) return;
+
         try {
-            clearMask();
-            GlStateManager.colorMask(false, false, false, false);
+            //sclearMask();
+            //GlStateManager.enableDepth();
+            //GL14.glBlendFuncSeparate(GL_ZERO,GL_ONE,GL_SRC_COLOR,GL_ZERO);
+            //GlStateManager.disableAlpha();
+
+            /*GlStateManager.color(1,1,1,1);
             texture.bind();
             GlStateManager.glBegin(GL_QUADS);
             GlStateManager.glTexCoord2f(0,0);
@@ -180,10 +188,30 @@ public class ScreenRenderer {
             GlStateManager.glVertex3f(x2+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
             GlStateManager.glTexCoord2f(1,0);
             GlStateManager.glVertex3f(x2+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
+            GlStateManager.glEnd();*/
+            GlStateManager.enableBlend();
+            //GlStateManager.enableAlpha();
+
+
+
+            glEnable(GL_BLEND);
+            GlStateManager.glBlendEquation(GL14.GL_FUNC_ADD);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            //GlStateManager.colorMask(false,false,false,true);
+            GlStateManager.glBegin(GL_QUADS);
+            GlStateManager.glTexCoord2f(0,0);
+            GlStateManager.glVertex3f(x1+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
+            GlStateManager.glTexCoord2f(0,1);
+            GlStateManager.glVertex3f(x1+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
+            GlStateManager.glTexCoord2f(1,1);
+            GlStateManager.glVertex3f(x2+drawingOrigin.x,y2+drawingOrigin.y, 1000.0F);
+            GlStateManager.glTexCoord2f(1,0);
+            GlStateManager.glVertex3f(x2+drawingOrigin.x,y1+drawingOrigin.y, 1000.0F);
             GlStateManager.glEnd();
-            GlStateManager.colorMask(true, true, true, true);
-            GlStateManager.depthMask(false);
-            GlStateManager.depthFunc(516);
+            glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+            GlStateManager.glBlendEquation(GL_MIN);
+            //GlStateManager.colorMask(true,true,true,true);
+
             mask = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,13 +222,16 @@ public class ScreenRenderer {
     public static void clearMask() {
         if(!mask || !rendering) return;
         try {
-            GlStateManager.depthMask(true);
-            GlStateManager.clear(256);
-            GlStateManager.enableDepth();
-            GlStateManager.depthFunc(515);
-            GlStateManager.enableAlpha();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
+            //GlStateManager.colorMask(false,false,false,true);
+            //GlStateManager.enableAlpha();
+            //GlStateManager.color(0,0,0,0);
+            //GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
+            GlStateManager.glBlendEquation(GL14.GL_FUNC_ADD);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+            //GlStateManager.colorMask(true,true,true,true);
+            //GL11.glDisable(GL_ALPHA_TEST);
+            //GlStateManager.enableDepth();
             mask = false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -402,6 +433,7 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
+        GlStateManager.enableTexture2D();
     }
 
     /** drawProgressBar
@@ -507,13 +539,12 @@ public class ScreenRenderer {
         drawRect(backColor,x1,y1,x2,y2);
 
         float xMin  = Math.min(x1, x2),
-                xMax  = Math.max(x1, x2) + drawingOrigin.x;
+              xMax  = Math.max(x1, x2);
 
         if(progress < 0.0f) {
-            progress *= -1;
-            xMin += (1.0f - progress) * (xMax - xMin);
+            xMin += (1.0f + progress) * (xMax - xMin);
         } else {
-            xMax = x2 * progress;
+            xMax -= (1.0f - progress) * (xMax - xMin);
         }
 
         drawRectF(color,xMin,(float)y1,xMax,(float)y2);

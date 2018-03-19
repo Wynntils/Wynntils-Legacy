@@ -97,7 +97,7 @@ public class FrameworkManager {
             {
                 e.setCanceled(true);
                 return;
-            }
+            }//move it to somewhere else if you want, it seems pretty core to wynncraft tho..
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {

@@ -19,13 +19,13 @@ import org.lwjgl.Sys;
  */
 public class DownloadOverlay extends Overlay {
 
-    private CustomColor background = new CustomColor("333341");
-    private CustomColor box = new CustomColor("434355");
-    private CustomColor progress = new CustomColor("80fd80");
-    private CustomColor back = new CustomColor("ececec");
+    private CustomColor background = CustomColor.fromString("333341",1);
+    private CustomColor box = CustomColor.fromString("434355",1);
+    private CustomColor progress = CustomColor.fromString("80fd80",1);
+    private CustomColor back = CustomColor.fromString("ececec",1);
 
-    private CustomColor brackgroundRed = new CustomColor("6e3737");
-    private CustomColor boxRed = new CustomColor("fd8080");
+    private CustomColor brackgroundRed = CustomColor.fromString("6e3737",1);
+    private CustomColor boxRed = CustomColor.fromString("fd8080",1);
 
     int lastPercent = 0;
     DownloadPhase lastPhase;

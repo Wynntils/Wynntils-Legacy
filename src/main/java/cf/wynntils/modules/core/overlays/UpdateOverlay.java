@@ -21,10 +21,10 @@ import java.io.File;
  */
 public class UpdateOverlay extends Overlay {
 
-    private CustomColor background = new CustomColor("333341");
-    private CustomColor box = new CustomColor("434355");
-    private CustomColor yes = new CustomColor("80fd80");
-    private CustomColor no = new CustomColor("fd8080");
+    private CustomColor background = CustomColor.fromString("333341",1);
+    private CustomColor box = CustomColor.fromString("434355",1);
+    private CustomColor yes = CustomColor.fromString("80fd80",1);
+    private CustomColor no = CustomColor.fromString("fd8080",1);
 
     public UpdateOverlay() {
         super("Update Overlay", 20, 20, true, 1f, 0f, 0, 0);

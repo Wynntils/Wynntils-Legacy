@@ -10,11 +10,12 @@ public class Textures {
         Bars.mana = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_mana.png"));
         Bars.exp = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_exp.png"));
 
+        Masks.empty = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/empty.png"));
         Masks.full = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/full.png"));
         Masks.circle = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/circle.png"));
     }
     public static class Masks {
-        public static AssetsTexture full,circle;
+        public static AssetsTexture empty,full,circle;
     }
     public static class Bars {
         public static AssetsTexture health;

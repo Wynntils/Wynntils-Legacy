@@ -4,6 +4,9 @@ package cf.wynntils.core.framework.rendering.colors;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.security.MessageDigest;
 
 
 /** CustomColor
@@ -26,27 +29,23 @@ public class CustomColor {
         this.a = a;
     }
 
-    public CustomColor(String hex) {
-        if(hex.length() != 8 && hex.length() != 6) {
-            //TODO decide what to make here
-            r = 1; g = 1; b = 1;
-            return;
-        }
-        r = ((float)Integer.parseInt(hex.substring(0,2),16)/255f);
-        g = ((float)Integer.parseInt(hex.substring(2,4),16)/255f);
-        b = ((float)Integer.parseInt(hex.substring(4,6),16)/255f);
-        if(hex.length() == 6) {
-            a = 1f;
-        } else {
-            a = ((float)Integer.parseInt(hex.substring(6,8),16)/255f);
-        }
-    }
-
-    /** void applyColor()
-     * will set the color to OpenGL's active color
+    /** applyColor
+     * Will set the color to OpenGL's active color
      */
     public void applyColor() {
         GlStateManager.color(r,g,b,a);
+    }
+
+    public static CustomColor fromString(String string, float a) {
+        if(string.length() == 6) {
+            try {
+                float r = ((float) Integer.parseInt(string.substring(0, 2), 16) / 255f);
+                float g = ((float) Integer.parseInt(string.substring(2, 4), 16) / 255f);
+                float b = ((float) Integer.parseInt(string.substring(4, 6), 16) / 255f);
+                return new CustomColor(r,g,b,a);
+            } catch(NumberFormatException ignored) { }
+        }
+        return fromString(DigestUtils.sha1Hex(string).substring(0,6),a);
     }
 
     public static CustomColor fromHSV(float h, float s, float v, float a) {

@@ -3,42 +3,20 @@ package cf.wynntils.core.framework.rendering.colors;
 import cf.wynntils.Reference;
 
 public class CommonColors {
-    public static CustomColor BLACK;
-    public static CustomColor RED;
-    public static CustomColor GREEN;
-    public static CustomColor BLUE;
-    public static CustomColor YELLOW;
-    public static CustomColor BROWN;
-    public static CustomColor PURPLE;
-    public static CustomColor CYAN;
-    public static CustomColor LIGHT_GRAY;
-    public static CustomColor GRAY;
-    public static CustomColor PINK;
-    public static CustomColor LIGHT_GREEN;
-    public static CustomColor LIGHT_BLUE;
-    public static CustomColor MAGENTA;
-    public static CustomColor ORANGE;
-    public static CustomColor WHITE;
-    static {
-        try {
-            BLACK = new CustomColor("000000");
-            RED = new CustomColor("ff0000");
-            GREEN = new CustomColor("00ff00");
-            BLUE = new CustomColor("0000ff");
-            YELLOW = new CustomColor("ffff00");
-            BROWN = new CustomColor("563100");
-            PURPLE = new CustomColor("b200ff");
-            CYAN = new CustomColor("438e82");
-            LIGHT_GRAY = new CustomColor("adadad");
-            GRAY = new CustomColor("636363");
-            PINK = new CustomColor("ffb7b7");
-            LIGHT_GREEN = new CustomColor("49ff59");
-            LIGHT_BLUE = new CustomColor("00e9ff");
-            MAGENTA = new CustomColor("ff0083");
-            ORANGE = new CustomColor("ff9000");
-            WHITE = new CustomColor("ffffff");
-        } catch (Exception e) {
-            Reference.LOGGER.error("There has been a problem writing CustomColors.CommonColors to memory");
-        }
-    }
+    public static CustomColor BLACK = CustomColor.fromString("000000",1);
+    public static CustomColor RED = CustomColor.fromString("ff0000",1);
+    public static CustomColor GREEN = CustomColor.fromString("00ff00",1);
+    public static CustomColor BLUE = CustomColor.fromString("0000ff",1);
+    public static CustomColor YELLOW = CustomColor.fromString("ffff00",1);
+    public static CustomColor BROWN = CustomColor.fromString("563100",1);
+    public static CustomColor PURPLE = CustomColor.fromString("b200ff",1);
+    public static CustomColor CYAN = CustomColor.fromString("438e82",1);
+    public static CustomColor LIGHT_GRAY = CustomColor.fromString("adadad",1);
+    public static CustomColor GRAY = CustomColor.fromString("636363",1);
+    public static CustomColor PINK = CustomColor.fromString("ffb7b7",1);
+    public static CustomColor LIGHT_GREEN = CustomColor.fromString("49ff59",1);
+    public static CustomColor LIGHT_BLUE = CustomColor.fromString("00e9ff",1);
+    public static CustomColor MAGENTA = CustomColor.fromString("ff0083",1);
+    public static CustomColor ORANGE = CustomColor.fromString("ff9000",1);
+    public static CustomColor WHITE = CustomColor.fromString("ffffff",1);
 }
