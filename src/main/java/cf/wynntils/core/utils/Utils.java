@@ -226,12 +226,12 @@ public class Utils {
     }
 
     /**
-     Copy the a file from a location to another
+     Copy a file from a location to another
 
      @param sourceFile The source file
      @param destFile Where it will be
      */
-    private static void copyFile(File sourceFile, File destFile) throws IOException {
+    public static void copyFile(File sourceFile, File destFile) throws IOException {
         if(!destFile.exists()) {
             destFile.createNewFile();
         }

@@ -5,6 +5,7 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
@@ -33,7 +34,6 @@ public class UpdateOverlay extends Overlay {
     boolean disappear = false;
     boolean acceptYesOrNo = false;
     boolean download = false;
-    boolean onAnim = false;
 
     public static int size = 63;
     public static long timeout = 0;
@@ -94,11 +94,20 @@ public class UpdateOverlay extends Overlay {
             try{
                 //String jar = WebManager.getLatestJarFileUrl();
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
+
+                String url = "http://dl.heyzeer0.cf/WynnRP/entering.gif";
+                String[] sUrl = url.split("/");
+                String jar_name = sUrl[sUrl.length - 1];
+
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
-                DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), "http://dl.heyzeer0.cf/WynnRP/entering.gif", f, DownloadAction.SAVE, (x) -> {
+                DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
                     if(x) {
-
+                        try{
+                            copyUpdate(jar_name);
+                        }catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 });
 
@@ -118,6 +127,20 @@ public class UpdateOverlay extends Overlay {
                 download = false;
             }
         }
+    }
+
+    public void copyUpdate(String jarName) throws Exception {
+        File oldJar = null;
+        for(File mods : new File("./mods").listFiles()) {
+            if(mods.getName().contains("Wynntils")) {
+                oldJar = mods;
+                break;
+            }
+        }
+
+        File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
+        Utils.copyFile(newJar, oldJar);
+        newJar.delete();
     }
 
 }
