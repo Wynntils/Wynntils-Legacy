@@ -511,8 +511,8 @@ public class ScreenRenderer {
      */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress) {
         int half = (ty1 + ty2) / 2;
-        drawProgressBar(texture, x1, y1, x2, y2, ty1, ty2-half+1, progress,true);
-        drawProgressBar(texture, x1, y1, x2, y2, ty1+half+1, ty2, progress,false);
+        drawProgressBar(texture, x1, y1, x2, y2, ty1, ty2 - (ty2 - half) + 1, progress, true);
+        drawProgressBar(texture, x1, y1, x2, y2, ty1 - (ty1 - half) + 1, ty2, progress, false);
     }
 
     /** drawProgressBar
