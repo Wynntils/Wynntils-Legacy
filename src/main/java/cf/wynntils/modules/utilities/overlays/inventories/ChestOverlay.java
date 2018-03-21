@@ -1,15 +1,12 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
-import cf.wynntils.Reference;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -24,7 +21,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -236,9 +232,8 @@ public class ChestOverlay extends GuiChest {
             return;
         }*/
 
-        int blocks = 0;
-        int liquid = 0;
-        int emeralds = 0;
+        int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
+        int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
 
         for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
             ItemStack it = lowerInv.getStackInSlot(i);
@@ -247,48 +242,99 @@ public class ChestOverlay extends GuiChest {
             }
 
             if (it.getItem() == Items.EMERALD) {
-                emeralds += it.getCount();
+                LWRemeralds += it.getCount();
                 continue;
             }
             if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                blocks += it.getCount();
+                LWRblocks += it.getCount();
                 continue;
             }
             if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                liquid += it.getCount();
+                LWRliquid += it.getCount();
+            }
+        }
+        for (int i = 0; i < upperInv.getSizeInventory(); i++) {
+            ItemStack it = upperInv.getStackInSlot(i);
+            if (it == null || it.isEmpty()) {
+                continue;
+            }
+
+            if (it.getItem() == Items.EMERALD) {
+                UPRemeralds += it.getCount();
+                continue;
+            }
+            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                UPRblocks += it.getCount();
+                continue;
+            }
+            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                UPRliquid += it.getCount();
             }
         }
 
-        int money = (liquid * 4096) + (blocks * 64) + emeralds;
+        int LWRmoney = (LWRliquid * 4096) + (LWRblocks * 64) + LWRemeralds;
+        int UPRmoney = (UPRliquid * 4096) + (UPRblocks * 64) + UPRemeralds;
 
         GlStateManager.disableLighting();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+        ScreenRenderer screen = new ScreenRenderer();
+        if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
+            lowerInv.setInventorySlotContents(2, new ItemStack(Blocks.BARRIER));
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                ScreenRenderer.beginGL(0, 0);
+                {
+                    ScreenRenderer.scale(0.9f);
+                    ItemStack LWRis = new ItemStack(Items.EMERALD);
+                    LWRis.setCount(LWRmoney);
+                    screen.drawItemStack(LWRis, 170, 0);
 
-        if(!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points")) {
-            if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                String value = "^ ²" + InventoryOverlay.decimalFormat.format(money);
-                mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
+                    ItemStack UPRis = new ItemStack(Items.EMERALD);
+                    UPRis.setCount(UPRmoney);
+                    screen.drawItemStack(UPRis, 170, 135);
+                }
+                ScreenRenderer.endGL();
             } else {
-                String value;
-                if (money == 0) {
-                    value = "^ ²0";
-                } else {
-                    int leAmount = (int) Math.floor(money / 4096);
-                    money -= leAmount * 4096;
+                if (LWRmoney != 0) {
+                    LWRleAmount = (int) Math.floor(LWRmoney / 4096);
+                    LWRmoney -= LWRleAmount * 4096;
 
-                    int blockAmount = (int) Math.floor(money / 64);
-                    money -= blockAmount * 64;
-
-                    value = "^ " + (leAmount > 0 ? "¼²" + leAmount : "") + (blockAmount > 0 ? " ²½" + blockAmount : "") + (money > 0 ? " ²" + money : "");
+                    LWRblockAmount = (int) Math.floor(LWRmoney / 64);
+                    LWRmoney -= LWRblockAmount * 64;
                 }
-                if (value.substring(value.length() - 1).equalsIgnoreCase(" ")) {
-                    value = value.substring(0, value.length() - 1);
+                if (UPRmoney != 0) {
+                    UPRleAmount = (int) Math.floor(UPRmoney / 4096);
+                    UPRmoney -= UPRleAmount * 4096;
+
+                    UPRblockAmount = (int) Math.floor(UPRmoney / 64);
+                    UPRmoney -= UPRblockAmount * 64;
                 }
 
-                mc.fontRenderer.drawString(value, 90 + (80 - mc.fontRenderer.getStringWidth(value)), 20 + lowerInv.getSizeInventory() * 2, 4210752);
+                ScreenRenderer.beginGL(0, 0);
+                {
+                    ScreenRenderer.scale(0.9f);
+                    ItemStack LWRliquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
+                    LWRliquids.setCount(LWRleAmount);
+                    ItemStack LWRblock = new ItemStack(Blocks.EMERALD_BLOCK);
+                    LWRblock.setCount(LWRblockAmount);
+                    ItemStack LWRemerald = new ItemStack(Items.EMERALD);
+                    LWRemerald.setCount(LWRmoney);
+                    screen.drawItemStack(LWRliquids, 130, 0, true);
+                    screen.drawItemStack(LWRblock, 150, 0, true);
+                    screen.drawItemStack(LWRemerald, 170, 0, true);
+
+                    ItemStack UPRliquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
+                    UPRliquids.setCount(UPRleAmount);
+                    ItemStack UPRblock = new ItemStack(Blocks.EMERALD_BLOCK);
+                    UPRblock.setCount(UPRblockAmount);
+                    ItemStack UPRemerald = new ItemStack(Items.EMERALD);
+                    UPRemerald.setCount(UPRmoney);
+                    screen.drawItemStack(UPRliquids, 130, 135, true);
+                    screen.drawItemStack(UPRblock, 150, 135, true);
+                    screen.drawItemStack(UPRemerald, 170, 135, true);
+                }
+                ScreenRenderer.endGL();
             }
         }
-
         GlStateManager.enableLighting();
     }
 

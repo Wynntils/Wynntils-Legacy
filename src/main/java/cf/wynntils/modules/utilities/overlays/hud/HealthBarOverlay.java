@@ -30,11 +30,11 @@ public class HealthBarOverlay extends Overlay {
 
             switch (texture) {
                 case wynn:
-                    drawProgressBar(Textures.Bars.health,-81, 0, 0, 9, 0, 17, health/(float)getPlayerInfo().getMaxHealth());
+                    drawProgressBar(Textures.Bars.health, -81, 0, 0, 9, 0, 17, health >= (float) getPlayerInfo().getMaxHealth() ? 1f : health / (float) getPlayerInfo().getMaxHealth());
                     drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -9, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
                 case simplistic:
-                    drawProgressBar(Textures.Bars.health,-81, 0, 0, 8, 18, 33, health/(float)getPlayerInfo().getMaxHealth());
+                    drawProgressBar(Textures.Bars.health, -81, 0, 0, 8, 18, 33, health >= (float) getPlayerInfo().getMaxHealth() ? 1f : health / (float) getPlayerInfo().getMaxHealth());
                     drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), -40, -9, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                     break;
             }
@@ -44,10 +44,11 @@ public class HealthBarOverlay extends Overlay {
     @Override
     public void tick(TickEvent.ClientTickEvent event) {
         if (!(visible = (getPlayerInfo().getCurrentHealth() != -1 && !Reference.onLobby))) return;
-        if (this.animated > 0.0f && this.animated < 10.0f)
+        if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
             health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
-        else
+        } else {
             this.health = getPlayerInfo().getCurrentHealth();
+        }
     }
 
 
