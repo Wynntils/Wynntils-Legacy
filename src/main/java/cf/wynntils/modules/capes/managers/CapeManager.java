@@ -30,7 +30,7 @@ public class CapeManager {
             return;
         }
         if ((uuid != null) && (!uuid.isEmpty()) && users.contains(uuid.replace("-", ""))) {
-            String url = WebManager.apiUrls.get("Capes") + "/" + uuid.replace("-", "");
+            String url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
             ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
 
             TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
