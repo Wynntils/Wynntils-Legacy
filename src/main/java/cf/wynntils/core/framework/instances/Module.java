@@ -35,8 +35,12 @@ public abstract class Module {
         return PlayerInfo.getPlayerInfo();
     }
 
-    public void registerEvents(Listener selectedListener) {
-        FrameworkManager.registerEvents(this, selectedListener);
+    public void registerEvents(Listener listenerClass) {
+        FrameworkManager.registerEvents(this, listenerClass);
+    }
+
+    public void registerSettings(SettingsHolder settingsClass) {
+        FrameworkManager.registerSettings(this, settingsClass);
     }
 
     public void registerOverlay(Overlay overlay, Priority priority) {

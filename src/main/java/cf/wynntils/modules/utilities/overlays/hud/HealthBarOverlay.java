@@ -2,7 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.overlays.OverlayOption;
+import cf.wynntils.core.framework.interfaces.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
@@ -16,20 +16,20 @@ public class HealthBarOverlay extends Overlay {
         super("Health Bar Overlay", 20, 20, true, 0.5f, 1.0f, -10, -38);
     }
 
-    @OverlayOption.Limitations.FloatLimit(min = 0f, max = 10f)
-    @OverlayOption(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
     public float animated = 2f;
 
-    @OverlayOption(displayName = "Texture", description = "What texture to use")
+    @Setting(displayName = "Texture", description = "What texture to use")
     public HealthTextures texture = HealthTextures.wynn;
 
-    @OverlayOption(displayName = "Flip", description = "Should the filling of the bar be flipped")
+    @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = false;
 
-    @OverlayOption(displayName = "Text Position", description = "The position offset of the text")
+    @Setting(displayName = "Text Position", description = "The position offset of the text")
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-9);
 
-    @OverlayOption(displayName = "Text Name", description = "The color of the text")
+    @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CommonColors.RED;
 
     private transient float health = 0.0f;

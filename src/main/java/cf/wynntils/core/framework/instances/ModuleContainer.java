@@ -6,6 +6,7 @@ import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public class ModuleContainer {
 
     HashMap<Priority, ArrayList<ListenerContainer>> registeredEvents = new HashMap<>();
     ArrayList<KeyHolder> keyHolders = new ArrayList<>();
+    ArrayList<SettingsHolder> settingsHolders = new ArrayList<>();
 
     public ModuleContainer(ModuleInfo info, Module module) {
         this.info = info; this.module = module;
@@ -69,6 +71,11 @@ public class ModuleContainer {
                 registeredEvents.put(eh.priority(), list);
             }
         }
+    }
+
+    public void registerSettings(SettingsHolder settingsClass) {
+        if(!settingsHolders.contains(settingsClass))
+            settingsHolders.add(settingsClass);
     }
 
     public void triggerEventHighest(Event e) {

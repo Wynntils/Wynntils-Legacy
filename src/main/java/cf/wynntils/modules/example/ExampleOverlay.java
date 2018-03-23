@@ -1,7 +1,7 @@
 package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.overlays.OverlayOption;
+import cf.wynntils.core.framework.interfaces.annotations.Setting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -23,8 +23,8 @@ public class ExampleOverlay extends Overlay {
                 0); //Origin offset from the anchor in pixels
     }
 
-    @OverlayOption.Limitations.FloatLimit(min = 0.0f, max = 69.420f) //Optional, Will set a limit on the float
-    @OverlayOption(displayName = "Configurable Float Title", description = "This float determines what the speed of you understanding what this float is")//Will make this an configurable option
+    @Setting.Limitations.FloatLimit(min = 0.0f, max = 69.420f) //Optional, Will set a limit on the float
+    @Setting(displayName = "Configurable Float Title", description = "This float determines what the speed of you understanding what this float is")//Will make this an configurable option
     public float thisIsAUserConfigurableFloat = 43.235f; //This means that the default will be 43.235
 
 

@@ -2,7 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.overlays.OverlayOption;
+import cf.wynntils.core.framework.interfaces.annotations.Setting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -12,13 +12,13 @@ public class LobbyCleanerOverlay extends Overlay {
         super("Lobby Cleaning Overlay", 0, 0, true, 0, 0, 0, 0);
     }
 
-    @OverlayOption(displayName = "No Health Bar", description = "Should the Health Bar be visible in the lobby")
+    @Setting(displayName = "No Health Bar", description = "Should the Health Bar be visible in the lobby")
     public boolean noHealth = true;
-    @OverlayOption(displayName = "No Food Bar", description = "Should the Food Bar be visible in the lobby")
+    @Setting(displayName = "No Food Bar", description = "Should the Food Bar be visible in the lobby")
     public boolean noFood = true;
-    @OverlayOption(displayName = "No Exp Bar", description = "Should the Exp Bar be visible in the lobby")
+    @Setting(displayName = "No Exp Bar", description = "Should the Exp Bar be visible in the lobby")
     public boolean noExp = true;
-    @OverlayOption(displayName = "No Air Amount Bar", description = "Should the Air Bubbles Bar be visible in the lobby")
+    @Setting(displayName = "No Air Amount Bar", description = "Should the Air Bubbles Bar be visible in the lobby")
     public boolean noAir = true;
 
     //TODO HOTBAR IF POSSIBLE

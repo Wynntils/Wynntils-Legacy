@@ -1,4 +1,4 @@
-package cf.wynntils.core.framework.overlays;
+package cf.wynntils.core.framework.interfaces.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface OverlayOption {
+public @interface Setting {
 
     String displayName();
     String description();

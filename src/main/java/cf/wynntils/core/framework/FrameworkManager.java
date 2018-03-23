@@ -5,6 +5,7 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.instances.ModuleContainer;
+import cf.wynntils.core.framework.instances.SettingsHolder;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.core.framework.overlays.Overlay;
@@ -56,6 +57,15 @@ public class FrameworkManager {
         availableModules.get(info.name()).registerEvents(listener);
     }
 
+    public static void registerSettings(Module module, SettingsHolder settingsClass) {
+        ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
+        if(info == null) {
+            return;
+        }
+
+        availableModules.get(info.name()).registerSettings(settingsClass);
+    }
+
 
     public static void registerOverlay(Overlay overlay, Priority priority) {
         registeredOverlays.get(priority).add(overlay);
@@ -94,12 +104,12 @@ public class FrameworkManager {
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
         if (Reference.onServer) {
-            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR ||
+            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR ||//move it to somewhere else if you want, it seems pretty core to wynncraft tho..
                e.getType() == RenderGameOverlayEvent.ElementType.ARMOR)
             {
                 e.setCanceled(true);
                 return;
-            }//move it to somewhere else if you want, it seems pretty core to wynncraft tho..
+            }
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
@@ -144,5 +154,4 @@ public class FrameworkManager {
         if(Reference.onServer)
             availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
-
 }

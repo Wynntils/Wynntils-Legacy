@@ -2,14 +2,11 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.overlays.OverlayOption;
+import cf.wynntils.core.framework.interfaces.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
-import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.utils.Pair;
-import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -19,20 +16,20 @@ public class ExpBarOverlay extends Overlay{
     }
 
 
-    @OverlayOption.Limitations.FloatLimit(min = 0f, max = 10f)
-    @OverlayOption(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
     public float animated = 2f;
 
-    @OverlayOption(displayName = "Texture", description = "What texture to use")
+    @Setting(displayName = "Texture", description = "What texture to use")
     public ExpTextures texture = ExpTextures.wynn;
 
-    @OverlayOption(displayName = "Flip", description = "Should the filling of the bar be flipped")
+    @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = false;
 
-    @OverlayOption(displayName = "Level Number Position", description = "The position offset of the level number")
+    @Setting(displayName = "Level Number Position", description = "The position offset of the level number")
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
 
-    @OverlayOption(displayName = "Text Name", description = "The color of the text")
+    @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CustomColor.fromString("aaff00",1f);
 
     private transient float exp = 0.0f;

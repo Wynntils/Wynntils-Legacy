@@ -3,7 +3,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.overlays.OverlayOption;
+import cf.wynntils.core.framework.interfaces.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -18,11 +18,11 @@ public class LevelingOverlay extends Overlay {
         super("Leveling Helper Overlay", 20, 20, true, 0.5f, 1.0f, 10, -38);
     }
 
-    @OverlayOption.Features.StringParameters(parameters = {"actual", "max", "percent"})
-    @OverlayOption(displayName = "Current Text", description = "What will be showed at the Leveling Text")
+    @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})
+    @Setting(displayName = "Current Text", description = "What will be showed at the Leveling Text")
     public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
-    @OverlayOption(displayName = "Text Shadow", description = "The Levelling Text shadow type")
+    @Setting(displayName = "Text Shadow", description = "The Levelling Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     @Override
