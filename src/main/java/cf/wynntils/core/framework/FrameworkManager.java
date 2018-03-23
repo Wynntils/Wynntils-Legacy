@@ -23,6 +23,8 @@ import java.util.HashMap;
  */
 public class FrameworkManager {
 
+    private static long tick = 0;
+
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
     public static HashMap<Priority, ArrayList<Overlay>> registeredOverlays = new HashMap<>();
 
@@ -126,11 +128,12 @@ public class FrameworkManager {
 
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
         if (Reference.onServer) {
+            tick++;
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
                         overlay.position.Refresh();
-                        overlay.tick(e);
+                        overlay.tick(e, tick);
                     }
                 }
             }

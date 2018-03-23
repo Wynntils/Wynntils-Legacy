@@ -36,12 +36,7 @@ public class PlayerInfo {
 
     public void updateActionBar(String lastActionBar) {
         this.lastActionBar = lastActionBar;
-        if(currentClass == ClassType.NONE) {
-            this.health = -1;
-            this.maxHealth = -1;
-            this.level = -1;
-            this.experiencePercentage = -1;
-        } else {
+        if (currentClass != ClassType.NONE) {
             if (lastActionBar.contains("❤")) {
                 StringBuilder read = new StringBuilder();
                 for (char c : lastActionBar.substring(4).toCharArray()) {
@@ -87,23 +82,17 @@ public class PlayerInfo {
         return currentClass == ClassType.NONE ? -1 : maxHealth;
     }
 
-    public float getExperiencePercentage() { return experiencePercentage; }
+    public float getExperiencePercentage() { return currentClass == ClassType.NONE ? -1 : experiencePercentage; }
 
-    public int getXpNeededToLevelUp() {
-        return xpNeeded[mc.player.experienceLevel - 1];
-    }
+    public int getXpNeededToLevelUp() { return currentClass == ClassType.NONE ? -1 : xpNeeded[mc.player.experienceLevel - 1]; }
 
-    public String getCurrentXPAsPercentage() {
-        return perFormat.format(mc.player.experience * 100);
-    }
+    public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE ? "" : perFormat.format(mc.player.experience * 100); }
 
-    public int getCurrentXP() {
-        return (int)((getXpNeededToLevelUp()) * mc.player.experience);
-    }
+    public int getCurrentXP() { return currentClass == ClassType.NONE ? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
 
-    public int getLevel() { return level; }
+    public int getLevel() { return currentClass == ClassType.NONE ? -1 : level; }
 
-    public int getMaxMana() {return 20;}
+    public int getMaxMana() {return currentClass == ClassType.NONE ? -1 : 20;}
 
     public static PlayerInfo getPlayerInfo() {
         if(instance == null)

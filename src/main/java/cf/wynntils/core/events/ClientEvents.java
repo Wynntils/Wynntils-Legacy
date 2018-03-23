@@ -57,7 +57,7 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void updateActionBar(ClientChatReceivedEvent event) {
-        if(event.getType() == 2) {
+        if(Reference.onServer && event.getType() == 2) {
             String text = event.getMessage().getUnformattedText();
             PlayerInfo.getPlayerInfo().updateActionBar(text);
             if(text.contains("|"))

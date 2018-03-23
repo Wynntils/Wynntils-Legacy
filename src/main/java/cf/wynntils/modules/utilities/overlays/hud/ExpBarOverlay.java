@@ -5,7 +5,11 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.overlays.OverlayOption;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
+import cf.wynntils.core.utils.Pair;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -14,6 +18,7 @@ public class ExpBarOverlay extends Overlay{
         super("Experience Bar Overlay", 20, 20, true, 0.5f, 1.0f, 0, -29);
     }
 
+
     @OverlayOption.Limitations.FloatLimit(min = 0f, max = 10f)
     @OverlayOption(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
     public float animated = 2f;
@@ -21,10 +26,34 @@ public class ExpBarOverlay extends Overlay{
     @OverlayOption(displayName = "Texture", description = "What texture to use")
     public ExpTextures texture = ExpTextures.wynn;
 
-    @OverlayOption(displayName = "Texture", description = "XP Level Location")
-    public LevelLocation level = LevelLocation.middle;
+    @OverlayOption(displayName = "Flip", description = "Should the filling of the bar be flipped")
+    public boolean flip = false;
 
-    private float exp = 0.0f;
+    @OverlayOption(displayName = "Level Number Position", description = "The position offset of the level number")
+    public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
+
+    @OverlayOption(displayName = "Text Name", description = "The color of the text")
+    public CustomColor textColor = CustomColor.fromString("aaff00",1f);
+
+    private transient float exp = 0.0f;
+
+    @Override
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {
+        if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby))) return;
+        if (this.animated > 0.0f && this.animated < 10.0f)
+            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+        else
+            this.exp = getPlayerInfo().getExperiencePercentage();
+        /*
+        //debug, activate this to make it switch between the textures every few seconds
+        if(ticks % 100 == 0) {
+            if(texture.ordinal()+1 >= ExpTextures.values().length) {
+                texture = ExpTextures.values()[0];
+            } else {
+                texture = ExpTextures.values()[texture.ordinal()+1];
+            }
+        }*/
+    }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -32,46 +61,29 @@ public class ExpBarOverlay extends Overlay{
             event.setCanceled(true);
 
             switch (texture) {
-                case wynn:
-                    drawProgressBar(Textures.Bars.exp,-91, 0, 91, 5, 0, 9, getPlayerInfo().getExperiencePercentage());
+                case wynn: drawDefaultBar(0,5,0,9);
                     break;
-                case simplistic:
-                    drawProgressBar(Textures.Bars.exp,-91, 0, 91, 5, 10, 19, getPlayerInfo().getExperiencePercentage());
+                case a: drawDefaultBar(0,5,10,19);
                     break;
-            }
-
-            switch (level) {
-                case middle:
-                    drawString(getPlayerInfo().getLevel() + "", 0, -2, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                case b: drawDefaultBar(0,5,20,29);
                     break;
-                case over:
-                    drawString(getPlayerInfo().getLevel() + "", 0, -6, CommonColors.LIGHT_GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                case c: drawDefaultBar(0,5,30,39);
                     break;
             }
-
         }
     }
 
-    @Override
-    public void tick(TickEvent.ClientTickEvent event) {
-        if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby))) return;
-        if (this.animated > 0.0f && this.animated < 10.0f)
-            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
-        else
-            this.exp = getPlayerInfo().getExperiencePercentage();
+    private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
+        drawProgressBar(Textures.Bars.exp,-91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
+        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
 
     public enum ExpTextures {
         wynn,
-        simplistic
-        ;//following the format, to add more textures, register them here with a name and add to the bars.png texture 16 more pixels in height, NOTE THAT SPECIAL ONES MUST BE IN THE END!
-        final int uvOriginY;
-        ExpTextures() {this.uvOriginY = this.ordinal()*16;}
-    }
-
-    public enum LevelLocation {
-        over,
-        middle
+        a,
+        b,
+        c
+        //following the format, to add more textures, register them here with a name and add to the bars.png texture 16 more pixels in height, NOTE THAT SPECIAL ONES MUST BE IN THE END!
     }
 }

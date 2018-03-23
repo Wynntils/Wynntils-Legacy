@@ -18,7 +18,7 @@ public class LevelingOverlay extends Overlay {
         super("Leveling Helper Overlay", 20, 20, true, 0.5f, 1.0f, 10, -38);
     }
 
-    @OverlayOption.StringParameters(parameters = {"actual", "max", "percent"})
+    @OverlayOption.Features.StringParameters(parameters = {"actual", "max", "percent"})
     @OverlayOption(displayName = "Current Text", description = "What will be showed at the Leveling Text")
     public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 

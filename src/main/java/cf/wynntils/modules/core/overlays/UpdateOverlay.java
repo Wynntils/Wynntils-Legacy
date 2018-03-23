@@ -9,7 +9,6 @@ import cf.wynntils.core.utils.Utils;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
-import cf.wynntils.webapi.downloader.enums.DownloadPhase;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
@@ -87,7 +86,7 @@ public class UpdateOverlay extends Overlay {
     }
 
     @Override
-    public void tick(TickEvent.ClientTickEvent event){
+    public void tick(TickEvent.ClientTickEvent event, long ticks){
         if(download && disappear) {
             download = false;
 

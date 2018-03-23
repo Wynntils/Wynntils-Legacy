@@ -441,11 +441,12 @@ public class ScreenRenderer {
      * @param background is it drawing the background or not(whole ty part is background)
      */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, boolean background) {
-        if (!rendering || !texture.loaded || (!background && progress == 0.0f)) return;
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
-        texture.bind();
+        if (!rendering || !texture.loaded) return;
+
         if(background) {
+            GlStateManager.enableAlpha();
+            GlStateManager.enableTexture2D();
+            texture.bind();
             float xMin = Math.min(x1, x2) + drawingOrigin.x,
                   xMax = Math.max(x1, x2) + drawingOrigin.x,
                   yMin = Math.min(y1, y2) + drawingOrigin.y,
@@ -465,7 +466,10 @@ public class ScreenRenderer {
             GlStateManager.glTexCoord2f(txMax, tyMin);
             GlStateManager.glVertex3f(xMax, yMin, 0);
             GlStateManager.glEnd();
-        } else {
+        } else if (progress != 0.0f){
+            GlStateManager.enableAlpha();
+            GlStateManager.enableTexture2D();
+            texture.bind();
             float xMin =  Math.min(x1, x2) + drawingOrigin.x,
                   xMax =  Math.max(x1, x2) + drawingOrigin.x,
                   yMin =  Math.min(y1, y2) + drawingOrigin.y,
@@ -475,15 +479,15 @@ public class ScreenRenderer {
                   tyMin = (float) Math.min(ty1, ty2) / texture.height,
                   tyMax = (float) Math.max(ty1, ty2) / texture.height;
 
-            if(progress < 0.0f) {
-                progress *= -1;
-                xMin += (1.0f - progress) * (xMax - xMin);
-                txMin += (1.0f - progress);
-            } else {
-                xMax -= (1.0f - progress) * (xMax - xMin);
-                txMax -= (1.0f - progress);
+            if(progress < 1.0f && progress > -1.0f) {
+                if (progress < 0.0f) {
+                    xMin += (1.0f + progress) * (xMax - xMin);
+                    txMin += (1.0f + progress);
+                } else {
+                    xMax -= (1.0f - progress) * (xMax - xMin);
+                    txMax -= (1.0f - progress);
+                }
             }
-
             GlStateManager.glBegin(GL_QUADS);
             GlStateManager.glTexCoord2f(txMin, tyMin);
             GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -511,8 +515,8 @@ public class ScreenRenderer {
      */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress) {
         int half = (ty1 + ty2) / 2;
-        drawProgressBar(texture, x1, y1, x2, y2, ty1, ty2 - (ty2 - half) + 1, progress, true);
-        drawProgressBar(texture, x1, y1, x2, y2, ty1 - (ty1 - half) + 1, ty2, progress, false);
+        drawProgressBar(texture, x1, y1, x2, y2, ty1, half + 1, progress, true);
+        drawProgressBar(texture, x1, y1, x2, y2, half + 1, ty2, progress, false);
     }
 
     /** drawProgressBar

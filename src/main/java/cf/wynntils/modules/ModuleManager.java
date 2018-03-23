@@ -7,6 +7,7 @@ import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.example.ExampleModule;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.modules.wynnsounds.WynnSoundsModule;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -15,9 +16,10 @@ import cf.wynntils.modules.utilities.UtilitiesModule;
 public class ModuleManager {
 
     public static void initModules() {
-        FrameworkManager.registerModule(new RichPresenceModule());
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
+        FrameworkManager.registerModule(new WynnSoundsModule());
+        FrameworkManager.registerModule(new RichPresenceModule());
         FrameworkManager.registerModule(new CapesModule());
         //FrameworkManager.registerModule(new ExampleModule());
     }

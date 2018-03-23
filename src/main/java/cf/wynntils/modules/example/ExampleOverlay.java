@@ -57,7 +57,7 @@ public class ExampleOverlay extends Overlay {
     }
 
     @Override
-    public void tick(TickEvent.ClientTickEvent event) {
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {
         /*
         Here, You can do calculations for values or other things that the overlay needs, This method is being called 20
         times per second.

@@ -11,7 +11,6 @@ public @interface OverlayOption {
 
     String displayName();
     String description();
-    boolean shouldShowOption() default true;
 
     class Limitations {
         public @interface IntLimit {
@@ -33,10 +32,14 @@ public @interface OverlayOption {
             int minLength() default 0;
             int maxLength();
         }
+        public @interface EnumLimit {
+            boolean allowNull() default false;
+        }
     }
 
-    @interface StringParameters {
-        String[] parameters();
+    class Features {
+        public @interface StringParameters {
+            String[] parameters();
+        }
     }
-
 }

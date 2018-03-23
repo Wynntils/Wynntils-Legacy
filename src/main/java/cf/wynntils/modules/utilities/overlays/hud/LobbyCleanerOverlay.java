@@ -32,7 +32,7 @@ public class LobbyCleanerOverlay extends Overlay {
     }
 
     @Override
-    public void tick(TickEvent.ClientTickEvent event) {
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {
         this.visible = Reference.onLobby;
     }
 

@@ -28,7 +28,7 @@ public abstract class Overlay extends ScreenRenderer {
 
     public void render(RenderGameOverlayEvent.Pre event){}
     public void render(RenderGameOverlayEvent.Post event){}
-    public void tick(TickEvent.ClientTickEvent event){}
+    public void tick(TickEvent.ClientTickEvent event, long ticks){}
 
     public PlayerInfo getPlayerInfo() {
         return PlayerInfo.getPlayerInfo();

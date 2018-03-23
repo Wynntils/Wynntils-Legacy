@@ -43,7 +43,7 @@ public class CustomColor {
                 float g = ((float) Integer.parseInt(string.substring(2, 4), 16) / 255f);
                 float b = ((float) Integer.parseInt(string.substring(4, 6), 16) / 255f);
                 return new CustomColor(r,g,b,a);
-            } catch(NumberFormatException ignored) { }
+            } catch(Exception ignored) { }
         }
         return fromString(DigestUtils.sha1Hex(string).substring(0,6),a);
     }
