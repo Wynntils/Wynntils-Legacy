@@ -5,6 +5,9 @@ import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.utils.ObjectHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.jasonclawson.jackson.dataformat.hocon.HoconFactory;
 
 import java.io.*;
 
@@ -13,6 +16,8 @@ import java.io.*;
  * Copyright © HeyZeer0 - 2016
  */
 public class SettingsManager {
+
+    public static ObjectMapper mapper = new ObjectMapper();
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
@@ -23,12 +28,13 @@ public class SettingsManager {
         File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
         f.mkdirs();
 
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + info.name() + ".bcfg");
+        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + info.name() + ".json");
         if(!f.exists()) {
             f.createNewFile();
         }
 
-        ObjectHelper.objToFile(f, obj);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.writeValue(f, obj);
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
@@ -40,14 +46,14 @@ public class SettingsManager {
         File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
         f.mkdirs();
 
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + info.name() + ".bcfg");
+        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + info.name() + ".json");
         if(!f.exists()) {
             f.createNewFile();
             saveSettings(m, obj);
             return obj;
         }
 
-        return (SettingsHolder) ObjectHelper.fileToObj(f);
+        return mapper.readValue(f, obj.getClass());
     }
 
 }

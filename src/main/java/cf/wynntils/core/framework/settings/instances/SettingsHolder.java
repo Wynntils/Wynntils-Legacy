@@ -3,9 +3,7 @@ package cf.wynntils.core.framework.settings.instances;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.instances.Module;
 
-import java.io.Serializable;
-
-public abstract class SettingsHolder implements Serializable {
+public abstract class SettingsHolder {
 
     public abstract void onSettingChanged(String name);
 

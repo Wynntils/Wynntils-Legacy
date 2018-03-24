@@ -71,13 +71,28 @@ public class SettingsContainer {
     }
 
     public void updateValues(SettingsHolder newH) throws Exception {
+        boolean save = false;
+
+        ArrayList<String> fieldsName = new ArrayList<>();
+        for(Field f2 : fields) {
+            fieldsName.add(f2.getName());
+        }
+
         for(Field f : newH.getClass().getDeclaredFields()) {
             if(f.getAnnotation(Setting.class) == null) {
                 continue;
             }
 
+            if(!fieldsName.contains(f.getName())) {
+                save = true;
+                continue;
+            }
+
             setValue(f, f.get(newH), false);
         }
+
+        if(save)
+            saveSettings();
     }
 
 }

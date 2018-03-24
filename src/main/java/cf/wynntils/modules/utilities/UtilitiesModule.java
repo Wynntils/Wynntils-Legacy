@@ -1,9 +1,9 @@
 package cf.wynntils.modules.utilities;
 
-import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
@@ -41,9 +41,7 @@ public class UtilitiesModule extends Module {
         registerSettings(mainConfig);
 
         registerKeyBinding("test", Keyboard.KEY_K, "test", true, () -> {
-            mainConfig.isActive = !mainConfig.isActive;
-
-            mainConfig.saveSettings(this);
+            getMainConfig().saveSettings(this);
         });
     }
 
