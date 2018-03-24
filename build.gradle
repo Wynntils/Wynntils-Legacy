@@ -28,6 +28,7 @@ minecraft {
     runDir = "run"
 
     mappings = "stable_31"
+    makeObfSourceJar = false
 }
 
 repositories {
