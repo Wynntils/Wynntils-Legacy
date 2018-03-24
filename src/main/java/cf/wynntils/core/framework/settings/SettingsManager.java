@@ -4,10 +4,8 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import cf.wynntils.core.utils.ObjectHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.jasonclawson.jackson.dataformat.hocon.HoconFactory;
 
 import java.io.*;
 
