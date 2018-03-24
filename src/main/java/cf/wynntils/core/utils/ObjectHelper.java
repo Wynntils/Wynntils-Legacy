@@ -123,7 +123,7 @@ public final class ObjectHelper {
     public static void objToFile(File saveFile, Object object, boolean compression) throws IOException {
         byteToFile(saveFile, objToByte(object, compression));
     }
-    public static void objToFile(File saveFile, Object object) throws IOException { objToFile(saveFile,object,true); }
+    public static void objToFile(File saveFile, Object object) throws IOException { objToFile(saveFile,object,false); }
 
     /** Object fileToObj
      * Reads a file into an abstract Object(which can be casted)
@@ -138,5 +138,5 @@ public final class ObjectHelper {
     public static Object fileToObj(File file, boolean compression) throws IOException, DataFormatException, ClassNotFoundException {
         return byteToObj(fileToByte(file),compression);
     }
-    public static Object fileToObj(File file) throws ClassNotFoundException, IOException, DataFormatException { return fileToObj(file,true); }
+    public static Object fileToObj(File file) throws ClassNotFoundException, IOException, DataFormatException { return fileToObj(file,false); }
 }

@@ -1,4 +1,4 @@
-package cf.wynntils.core.framework.interfaces.annotations;
+package cf.wynntils.core.framework.settings.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,11 +1,13 @@
 package cf.wynntils.modules.utilities;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -16,6 +18,7 @@ import cf.wynntils.modules.utilities.overlays.hud.*;
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
+    private static UtilitiesConfig mainConfig;
 
     public void onEnable() {
         module = this;
@@ -33,10 +36,23 @@ public class UtilitiesModule extends Module {
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
 
         registerOverlay(new DebugOverlay(),Priority.NORMAL);
+
+        mainConfig = new UtilitiesConfig();
+        registerSettings(mainConfig);
+
+        registerKeyBinding("test", Keyboard.KEY_K, "test", true, () -> {
+            mainConfig.isActive = !mainConfig.isActive;
+
+            mainConfig.saveSettings(this);
+        });
     }
 
     public static UtilitiesModule getModule() {
         return module;
+    }
+
+    public static UtilitiesConfig getMainConfig() {
+        return mainConfig;
     }
 
 }

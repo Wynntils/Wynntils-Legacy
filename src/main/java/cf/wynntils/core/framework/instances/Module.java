@@ -4,6 +4,7 @@ import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.overlays.Overlay;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
 

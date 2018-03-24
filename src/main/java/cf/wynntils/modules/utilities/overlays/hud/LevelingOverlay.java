@@ -3,9 +3,11 @@ package cf.wynntils.modules.utilities.overlays.hud;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.interfaces.annotations.Setting;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.modules.utilities.UtilitiesModule;
+import com.sun.jna.platform.win32.DsGetDC;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 /**
@@ -29,6 +31,11 @@ public class LevelingOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE && Reference.onWorld && getPlayerInfo().getCurrentClass() != ClassType.NONE) {
             String text = levelingText.replace("%actual%", "" + getPlayerInfo().getCurrentXP()).replace("%max%", "" + getPlayerInfo().getXpNeededToLevelUp()).replace("%percent%", getPlayerInfo().getCurrentXPAsPercentage());
+
+            if(UtilitiesModule.getMainConfig().isActive) {
+                text = "test";
+            }
+
             drawString(text, 0, -20, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
         }
     }

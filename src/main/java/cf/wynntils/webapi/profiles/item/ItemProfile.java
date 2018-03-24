@@ -73,6 +73,8 @@ public class ItemProfile {
     public String accessoryType;
     public String classRequirement;
     public boolean identified;
+    public String displayName;
+    public String skin;
 
     public boolean isIdentified() {
         return identified;
@@ -352,5 +354,13 @@ public class ItemProfile {
 
     public String getAccessoryType() {
         return accessoryType;
+    }
+
+    public String getDisplayName() {
+        return  displayName;
+    }
+
+    public String getSkin() {
+        return skin;
     }
 }

@@ -2,7 +2,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.interfaces.annotations.Setting;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;

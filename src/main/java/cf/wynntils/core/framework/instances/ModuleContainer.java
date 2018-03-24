@@ -4,9 +4,11 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.settings.SettingsContainer;
+import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +24,7 @@ public class ModuleContainer {
 
     HashMap<Priority, ArrayList<ListenerContainer>> registeredEvents = new HashMap<>();
     ArrayList<KeyHolder> keyHolders = new ArrayList<>();
-    ArrayList<SettingsHolder> settingsHolders = new ArrayList<>();
+    HashMap<String, SettingsContainer> registeredSettings = new HashMap<>();
 
     public ModuleContainer(ModuleInfo info, Module module) {
         this.info = info; this.module = module;
@@ -73,9 +75,17 @@ public class ModuleContainer {
         }
     }
 
-    public void registerSettings(SettingsHolder settingsClass) {
-        if(!settingsHolders.contains(settingsClass))
-            settingsHolders.add(settingsClass);
+    public void registerSettings(SettingsHolder holder) {
+        SettingsInfo info = holder.getClass().getAnnotation(SettingsInfo.class);
+        if(info == null) {
+            return;
+        }
+
+        registeredSettings.put(info.name(), new SettingsContainer(this, holder));
+    }
+
+    public HashMap<String, SettingsContainer> getRegisteredSettings() {
+        return registeredSettings;
     }
 
     public void triggerEventHighest(Event e) {

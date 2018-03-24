@@ -1,7 +1,7 @@
 package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.interfaces.annotations.Setting;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 

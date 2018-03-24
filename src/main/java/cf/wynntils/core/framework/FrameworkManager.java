@@ -5,7 +5,9 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.instances.ModuleContainer;
-import cf.wynntils.core.framework.instances.SettingsHolder;
+import cf.wynntils.core.framework.settings.SettingsContainer;
+import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.core.framework.overlays.Overlay;
@@ -154,4 +156,19 @@ public class FrameworkManager {
         if(Reference.onServer)
             availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
+
+    public static SettingsContainer getSettings(Module module, SettingsHolder holder) {
+        ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
+        if(info == null) {
+            return null;
+        }
+
+        SettingsInfo info2 = holder.getClass().getAnnotation(SettingsInfo.class);
+        if(info2 == null) {
+            return null;
+        }
+
+        return availableModules.get(info.name()).getRegisteredSettings().get(info2.name());
+    }
+
 }
