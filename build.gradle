@@ -45,7 +45,7 @@ configurations {
 dependencies {
     embed 'com.jagrosh:DiscordIPC:+'
     embed fileTree(dir: 'lib', include: ['*.jar'])
-    embed 'org.honton.chas.hocon:jackson-dataformat-hocon:+'
+    embed 'com.fasterxml.jackson.core:jackson-core:+'
 }
 
 processResources {
