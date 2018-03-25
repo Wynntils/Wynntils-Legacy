@@ -1,7 +1,6 @@
 package cf.wynntils.core.framework.instances;
 
 import cf.wynntils.core.framework.enums.ClassType;
-import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 
 import java.text.DecimalFormat;

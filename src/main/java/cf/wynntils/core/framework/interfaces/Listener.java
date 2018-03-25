@@ -5,4 +5,5 @@ package cf.wynntils.core.framework.interfaces;
  * Copyright © HeyZeer0 - 2016
  */
 public interface Listener {
+
 }

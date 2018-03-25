@@ -17,10 +17,12 @@ public class Textures {
         Bars.mana = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_mana.png"));
         Bars.exp = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_exp.png"));
     }
+
     public static class Masks {
         public static AssetsTexture full;
         public static AssetsTexture circle;
     }
+
     public static class Bars {
         public static AssetsTexture health;
         public static AssetsTexture mana;

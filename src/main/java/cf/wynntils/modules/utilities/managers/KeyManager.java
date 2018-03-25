@@ -13,8 +13,6 @@ public class KeyManager {
     private static float lastGamma = 1f;
 
     public static void registerKeys() {
-
-        //Gammabright
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Utilities", true, () -> {
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;

@@ -1,7 +1,5 @@
 package cf.wynntils.modules.core.overlays;
 
-
-import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
@@ -10,8 +8,6 @@ import cf.wynntils.webapi.downloader.DownloadProfile;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadPhase;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.Sys;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.

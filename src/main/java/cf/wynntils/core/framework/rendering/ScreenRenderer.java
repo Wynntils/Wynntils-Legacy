@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
  * them extending overlays!
  */
 public class ScreenRenderer {
+
     protected static SmartFontRenderer fontRenderer = null;
     protected static Minecraft mc;
     protected static ScaledResolution screen = null;

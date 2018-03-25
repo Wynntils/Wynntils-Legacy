@@ -23,6 +23,8 @@ public class RichPresenceModule extends Module {
     private RichProfile richPresence;
     private DataProfile modData = new DataProfile();
 
+    private static RichPresenceConfig mainConfig;
+
     public void onEnable() {
         try {
             richPresence = new RichProfile(387266678607577088L, DiscordBuild.ANY);
@@ -33,6 +35,9 @@ public class RichPresenceModule extends Module {
         registerOverlay(new LocationOverlay(), Priority.NORMAL);
         registerEvents(new ChatEvents());
         registerEvents(new ServerEvents());
+
+        mainConfig = new RichPresenceConfig();
+        registerSettings(mainConfig);
     }
 
     public static RichPresenceModule getModule() {
@@ -53,6 +58,14 @@ public class RichPresenceModule extends Module {
      */
     public DataProfile getData() {
         return modData;
+    }
+
+    /**
+     * Gets the main conifg
+     * @return The main config
+     */
+    public static RichPresenceConfig getMainConfig() {
+        return mainConfig;
     }
 
 }

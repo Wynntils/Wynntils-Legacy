@@ -15,7 +15,7 @@ import java.io.*;
  */
 public class SettingsManager {
 
-    public static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);

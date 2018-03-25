@@ -1,9 +1,8 @@
 package cf.wynntils.core.framework.settings;
 
-import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.ModuleContainer;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.framework.settings.annotations.Setting;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

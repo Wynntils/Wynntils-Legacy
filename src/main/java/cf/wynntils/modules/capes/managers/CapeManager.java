@@ -1,4 +1,5 @@
 package cf.wynntils.modules.capes.managers;
+
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;

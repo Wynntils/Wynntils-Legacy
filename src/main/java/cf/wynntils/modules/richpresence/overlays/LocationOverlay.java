@@ -62,4 +62,5 @@ public class LocationOverlay extends Overlay {
             }
         }
     }
+
 }

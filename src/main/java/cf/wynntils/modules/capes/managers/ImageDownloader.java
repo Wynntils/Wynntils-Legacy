@@ -1,18 +1,13 @@
 package cf.wynntils.modules.capes.managers;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IImageBuffer;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,6 +22,7 @@ public class ImageDownloader extends SimpleTexture {
 
     @Nullable
     public BufferedImage bufferedImage;
+
     @Nullable
     private Thread imageThread;
 

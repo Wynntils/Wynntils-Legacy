@@ -1,7 +1,5 @@
 package cf.wynntils.core.framework.rendering.colors;
 
-import cf.wynntils.Reference;
-
 public class CommonColors {
 
     public static final CustomColor BLACK = CustomColor.fromString("000000",1);

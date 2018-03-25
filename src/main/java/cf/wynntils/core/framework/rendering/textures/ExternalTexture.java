@@ -1,7 +1,6 @@
 package cf.wynntils.core.framework.rendering.textures;
 
 import cf.wynntils.core.framework.enums.ActionResult;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 
@@ -11,6 +10,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 public class ExternalTexture extends Texture {
+
     public int glID;
     public File file;
 
@@ -55,5 +55,6 @@ public class ExternalTexture extends Texture {
         GlStateManager.bindTexture(glID);
         return ActionResult.SUCCESS;
     }
+
     //TODO this whole system
 }

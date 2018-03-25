@@ -8,9 +8,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 public class AssetsTexture extends Texture {
+
     public ResourceLocation resourceLocation;
 
     public AssetsTexture(ResourceLocation resourceLocation) { this(resourceLocation,true); }
+
     public AssetsTexture(ResourceLocation resourceLocation, boolean load) {
         this.resourceLocation = resourceLocation;
         if(load) load();

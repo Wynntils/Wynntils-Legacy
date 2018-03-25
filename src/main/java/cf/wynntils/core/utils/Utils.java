@@ -1,7 +1,5 @@
 package cf.wynntils.core.utils;
 
-import cf.wynntils.core.framework.instances.PlayerInfo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,15 +53,6 @@ public class Utils {
             toReturn = toReturn + "...";
         }
         return toReturn;
-    }
-
-    /**
-     * Just a simple method to short other ones
-     * @return RichPresence largeImageText
-     */
-    public static String getPlayerInfo() {
-        Minecraft mc = Minecraft.getMinecraft();
-        return /*ConfigValues.wynnRichPresence.discordConfig.showNicknameAndClass ?*/ mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() /*: null*/;
     }
 
     /**

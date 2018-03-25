@@ -2,6 +2,7 @@ package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
@@ -29,8 +30,8 @@ import java.util.List;
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
  */
-public class InventoryOverlay extends GuiInventory
-{
+public class InventoryOverlay extends GuiInventory {
+
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     EntityPlayer player;
@@ -69,10 +70,10 @@ public class InventoryOverlay extends GuiInventory
         int armorfloor = 0;
         boolean armorcheck = false;
 
-        boolean accessories = /*ConfigValues.inventoryConfig.playerInv.highlightAccessories*/ false;
-        boolean hotbar = /*ConfigValues.inventoryConfig.playerInv.highlightHotbar*/ false;
-        boolean armor = /*ConfigValues.inventoryConfig.playerInv.highlightArmor*/ false;
-        boolean main = /*ConfigValues.inventoryConfig.playerInv.highlightMain*/ false;
+        boolean accessories = UtilitiesModule.getMainConfig().accesoryHighlightInventory;
+        boolean hotbar = UtilitiesModule.getMainConfig().hotbarHighlightInventory;
+        boolean armor = UtilitiesModule.getMainConfig().armorHighlightInventory;
+        boolean main = UtilitiesModule.getMainConfig().mainHighlightInventory;
 
 
         for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
@@ -107,15 +108,15 @@ public class InventoryOverlay extends GuiInventory
 
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
-            } else if (lore.contains("§bLegendary") && /*ConfigValues.inventoryConfig.playerInv.highlightLegendary*/ true) {
+            } else if (lore.contains("§bLegendary") && UtilitiesModule.getMainConfig().legendaryHighlightInventory) {
                 r = 0; g = 1; b = 1; alpha = .4f;
-            } else if (lore.contains("§5Mythic") && /*ConfigValues.inventoryConfig.playerInv.highlightMythic*/ true) {
+            } else if (lore.contains("§5Mythic") && UtilitiesModule.getMainConfig().mythicHighlightInventory) {
                 r = 0.3; g = 0; b = 0.3; alpha = .6f;
-            } else if (lore.contains("§dRare") && /*ConfigValues.inventoryConfig.playerInv.highlightRare*/ true) {
+            } else if (lore.contains("§dRare") && UtilitiesModule.getMainConfig().rareHighlightInventory) {
                 r = 1; g = 0; b = 1; alpha = .4f;
-            } else if (lore.contains("§eUnique") && /*ConfigValues.inventoryConfig.playerInv.highlightUnique*/ true) {
+            } else if (lore.contains("§eUnique") && UtilitiesModule.getMainConfig().uniqueHighlightInventory) {
                 r = 1; g = 1; b = 0; alpha = .4f;
-            } else if (lore.contains("§aSet") && /*ConfigValues.inventoryConfig.playerInv.highlightSet*/ true) {
+            } else if (lore.contains("§aSet") && UtilitiesModule.getMainConfig().setHighlightInventory) {
                 r = 0; g = 1; b = 0; alpha = .4f;
             } else if (floor >= 4) {
                 r = 0; g = 0; b = 0; alpha = 0f;
@@ -169,9 +170,9 @@ public class InventoryOverlay extends GuiInventory
         GL11.glPopMatrix();
 
 
-        /*if (!ConfigValues.inventoryConfig.playerInv.allowEmeraldCount) {
+        if (!UtilitiesModule.getMainConfig().allowEmeraldCountInventory) {
             return;
-        }*/
+        }
 
         int blocks = 0, liquid = 0, emeralds = 0;
 

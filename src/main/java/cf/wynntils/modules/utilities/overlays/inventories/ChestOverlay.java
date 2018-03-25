@@ -2,6 +2,7 @@ package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
@@ -38,8 +39,6 @@ public class ChestOverlay extends GuiChest {
 
         this.lowerInv = lowerInv;
         this.upperInv = upperInv;
-
-
     }
 
     @Override
@@ -97,29 +96,27 @@ public class ChestOverlay extends GuiChest {
                     is.setCount(count == 0 ? 1 : count);
                 }
 
-                if (lore.contains("§bLegendary") && /*ConfigValues.inventoryConfig.chestInv.highlightLegendary*/ true) {
+                if (lore.contains("§bLegendary") && UtilitiesModule.getMainConfig().legendaryHighlightChest) {
                     r = 0; g = 1; b = 1; alpha = .4f;
-                } else if (lore.contains("§5Mythic") && /*ConfigValues.inventoryConfig.chestInv.highlightMythic*/ true) {
+                } else if (lore.contains("§5Mythic") && UtilitiesModule.getMainConfig().mythicHighlightChest) {
                     r = 0.3; g = 0; b = 0.3; alpha = .6f;
-                } else if (lore.contains("§dRare") && /*ConfigValues.inventoryConfig.chestInv.highlightRare*/ true) {
+                } else if (lore.contains("§dRare") && UtilitiesModule.getMainConfig().rareHighlightChest) {
                     r = 1; g = 0; b = 1; alpha = .4f;
-                } else if (lore.contains("§eUnique") && /*ConfigValues.inventoryConfig.chestInv.highlightUnique*/ true) {
+                } else if (lore.contains("§eUnique") && UtilitiesModule.getMainConfig().uniqueHighlightChest) {
                     r = 1; g = 1; b = 0; alpha = .4f;
-                } else if (lore.contains("§aSet") && /*ConfigValues.inventoryConfig.chestInv.highlightSet*/ true) {
+                } else if (lore.contains("§aSet") && UtilitiesModule.getMainConfig().setHighlightChest) {
                     r = 0; g = 1; b = 0; alpha = .4f;
-                } else if (lore.contains("§6Epic") && lore.contains("Reward")) { //TODO add to settings
+                } else if (lore.contains("§6Epic") && lore.contains("Reward") && UtilitiesModule.getMainConfig().epicEffectsHighlightChest) {
                     r = 1; g = 0.666; b = 0; alpha = .4f;
-                } else if (lore.contains("§cGodly") && lore.contains("Reward")) {//TODO add to settings
+                } else if (lore.contains("§cGodly") && lore.contains("Reward") && UtilitiesModule.getMainConfig().godlyEffectsHighlightChest) {
                     r = 1; g = 0; b = 0; alpha = .6f;
-                } else if (lore.contains("§dRare") && lore.contains("Reward")) {//TODO add to settings
+                } else if (lore.contains("§dRare") && lore.contains("Reward") && UtilitiesModule.getMainConfig().rareEffectsHighlightChest) {
                     r = 1; g = 0; b = 1; alpha = .4f;
-                } else if (lore.contains("§fCommon") && lore.contains("Reward")) {//TODO add to settings
+                } else if (lore.contains("§fCommon") && lore.contains("Reward") && UtilitiesModule.getMainConfig().commonEffectsHighlightChest) {
                     r = 1; g = 1; b = 1; alpha = .4f;
                 } else {
                     continue;
                 }
-
-
 
                 GL11.glBegin(GL11.GL_QUADS);
                 {
@@ -131,11 +128,12 @@ public class ChestOverlay extends GuiChest {
                 }
                 GL11.glEnd();
             }
+
             amount = -1;
             int invfloor = 0;
-            boolean accessories = /*ConfigValues.inventoryConfig.chestInv.highlightAccessories*/ true;
-            boolean hotbar = /*ConfigValues.inventoryConfig.chestInv.highlightHotbar*/ true;
-            boolean main = /*ConfigValues.inventoryConfig.chestInv.highlightMain*/ true;
+            boolean accessories = UtilitiesModule.getMainConfig().accesoryHighlightChest;
+            boolean hotbar = UtilitiesModule.getMainConfig().hotbarHighlightChest;
+            boolean main = UtilitiesModule.getMainConfig().mainHighlightChest;
             for (int i = 0; i <= upperInv.getSizeInventory(); i++) {
                 ItemStack is = upperInv.getStackInSlot(i);
 
@@ -180,27 +178,27 @@ public class ChestOverlay extends GuiChest {
 
                 if (lore.contains("Reward")) {
                     continue;
-                } else if (lore.contains("§bLegendary") && /*ConfigValues.inventoryConfig.chestInv.highlightLegendary*/ true) {
+                } else if (lore.contains("§bLegendary") && UtilitiesModule.getMainConfig().legendaryHighlightChest) {
                     r = 0;
                     g = 1;
                     b = 1;
                     alpha = .4f;
-                } else if (lore.contains("§5Mythic") && /*ConfigValues.inventoryConfig.chestInv.highlightMythic*/ true) {
+                } else if (lore.contains("§5Mythic") && UtilitiesModule.getMainConfig().mythicHighlightChest) {
                     r = 0.3;
                     g = 0;
                     b = 0.3;
                     alpha = .6f;
-                } else if (lore.contains("§dRare") && /*ConfigValues.inventoryConfig.chestInv.highlightRare*/ true) {
+                } else if (lore.contains("§dRare") && UtilitiesModule.getMainConfig().rareHighlightChest) {
                     r = 1;
                     g = 0;
                     b = 1;
                     alpha = .4f;
-                } else if (lore.contains("§eUnique") && /*ConfigValues.inventoryConfig.chestInv.highlightUnique*/ true) {
+                } else if (lore.contains("§eUnique") && UtilitiesModule.getMainConfig().uniqueHighlightChest) {
                     r = 1;
                     g = 1;
                     b = 0;
                     alpha = .4f;
-                } else if (lore.contains("§aSet") && /*ConfigValues.inventoryConfig.chestInv.highlightSet*/ true) {
+                } else if (lore.contains("§aSet") && UtilitiesModule.getMainConfig().setHighlightChest) {
                     r = 0;
                     g = 1;
                     b = 0;
@@ -228,9 +226,9 @@ public class ChestOverlay extends GuiChest {
         }
         GL11.glPopMatrix();
 
-        /*if (!ConfigValues.inventoryConfig.chestInv.allowEmeraldCount) {
+        if (!UtilitiesModule.getMainConfig().allowEmeraldCountChest) {
             return;
-        }*/
+        }
 
         int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
         int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
@@ -535,7 +533,6 @@ public class ChestOverlay extends GuiChest {
         display.setTag("Lore", tag);
         nbt.setTag("display", display);
         stack.setTagCompound(nbt);
-
     }
 
 }

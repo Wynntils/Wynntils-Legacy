@@ -1,6 +1,5 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
-
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;

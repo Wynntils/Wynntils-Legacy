@@ -10,8 +10,10 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 
 public class SmartFontRenderer extends FontRenderer {
+
     public static final int LINE_SPACING = 3;
     public static final int CHAR_SPACING = 0;
+
     //TODO document
     public SmartFontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
         super(gameSettingsIn, location, textureManagerIn, unicode);
@@ -85,6 +87,7 @@ public class SmartFontRenderer extends FontRenderer {
 
         return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
     }
+
     private Pair<String,CustomColor> decodeColor(String text) {
         if(text.startsWith("[")) {
             String[] s1 = text.substring(1).split("]");
@@ -120,6 +123,7 @@ public class SmartFontRenderer extends FontRenderer {
     public enum TextAlignment {
         LEFT_RIGHT,MIDDLE,RIGHT_LEFT
     }
+
     public enum TextShadow {
         NONE,NORMAL,OUTLINE
     }

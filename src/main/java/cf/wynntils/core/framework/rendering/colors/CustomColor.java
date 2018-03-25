@@ -1,12 +1,8 @@
 package cf.wynntils.core.framework.rendering.colors;
 
-
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.codec.digest.DigestUtils;
-
-import java.security.MessageDigest;
 
 
 /** CustomColor

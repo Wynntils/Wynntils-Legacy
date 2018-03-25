@@ -6,13 +6,16 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import java.lang.reflect.Field;
 
 public enum ReflectionFields {
-    ItemRenderer_itemRenderer(ItemRenderer.class,"itemRenderer", "field_178112_h")
-    ;
+
+    ItemRenderer_itemRenderer(ItemRenderer.class,"itemRenderer", "field_178112_h");
+
     Field field;
+
     ReflectionFields(Class<?> holdingClass, String deobfName, String srgName) {
         this.field = ReflectionHelper.findField(holdingClass,deobfName,srgName);
         this.field.setAccessible(true);
     }
+
     public Object getValue(Object parent) {
         try{
             return field.get(parent);

@@ -1,10 +1,8 @@
 package cf.wynntils.modules.example;
 
-
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
-import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import org.lwjgl.input.Keyboard;
 
 /** EXAMPLE CLASS

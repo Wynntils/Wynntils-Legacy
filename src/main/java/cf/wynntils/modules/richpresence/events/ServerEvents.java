@@ -9,13 +9,11 @@ import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
-import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.ServerData;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Objects;
@@ -76,7 +74,7 @@ public class ServerEvents implements Listener {
         if(e.getCurrentClass() != ClassType.NONE) {
             classUpdate = true;
         }else if(Reference.onWorld) {
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", Utils.getPlayerInfo(), null);
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), null);
         }
     }
 
@@ -102,15 +100,24 @@ public class ServerEvents implements Listener {
                     classUpdate = false;
 
                     if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), Utils.getPlayerInfo(), null);
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), null);
                     }else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), Utils.getPlayerInfo(), null);
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), null);
                     }
                     break;
                 }
             }
 
         }, 0, 3, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Just a simple method to short other ones
+     * @return RichPresence largeImageText
+     */
+    public static String getPlayerInfo() {
+        Minecraft mc = Minecraft.getMinecraft();
+        return RichPresenceModule.getMainConfig().showUserInformation ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() : null;
     }
 
 }
