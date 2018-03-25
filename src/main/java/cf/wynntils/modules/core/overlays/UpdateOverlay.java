@@ -91,10 +91,9 @@ public class UpdateOverlay extends Overlay {
             download = false;
 
             try{
-                //String jar = WebManager.getLatestJarFileUrl();
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
 
-                String url = "http://dl.heyzeer0.cf/WynnRP/entering.gif";
+                String url = WebManager.getLatestJarFileUrl();
                 String[] sUrl = url.split("/");
                 String jar_name = sUrl[sUrl.length - 1];
 
