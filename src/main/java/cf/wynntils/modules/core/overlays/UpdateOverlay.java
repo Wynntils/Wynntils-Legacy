@@ -130,7 +130,7 @@ public class UpdateOverlay extends Overlay {
     public void copyUpdate(String jarName) throws Exception {
         File oldJar = null;
         for(File mods : new File("./mods").listFiles()) {
-            if(mods.getName().contains("Wynntils")) {
+            if(mods.getName().toLowerCase().contains("wynntils")) {
                 oldJar = mods;
                 break;
             }
