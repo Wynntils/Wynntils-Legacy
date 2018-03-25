@@ -12,5 +12,6 @@ import java.lang.annotation.RetentionPolicy;
 public @interface SettingsInfo {
 
     String name();
+    boolean ignore() default false;
 
 }

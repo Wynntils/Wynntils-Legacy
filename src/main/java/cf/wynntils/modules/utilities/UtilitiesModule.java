@@ -3,6 +3,8 @@ package cf.wynntils.modules.utilities;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.utilities.configs.UtilitiesDataConfig;
 import cf.wynntils.modules.utilities.events.CommonEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
@@ -18,7 +20,9 @@ import org.lwjgl.input.Keyboard;
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
+
     private static UtilitiesConfig mainConfig;
+    private static UtilitiesDataConfig dataConfig;
 
     public void onEnable() {
         module = this;
@@ -40,6 +44,8 @@ public class UtilitiesModule extends Module {
 
         mainConfig = new UtilitiesConfig();
         registerSettings(mainConfig);
+        dataConfig = new UtilitiesDataConfig();
+        registerSettings(dataConfig);
 
         registerKeyBinding("test", Keyboard.KEY_K, "test", true, () -> {
             getMainConfig().saveSettings(this);
@@ -52,6 +58,10 @@ public class UtilitiesModule extends Module {
 
     public static UtilitiesConfig getMainConfig() {
         return mainConfig;
+    }
+
+    public static UtilitiesDataConfig getData() {
+        return dataConfig;
     }
 
 }

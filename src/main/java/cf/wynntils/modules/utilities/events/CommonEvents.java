@@ -1,11 +1,14 @@
 package cf.wynntils.modules.utilities.events;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import cf.wynntils.modules.utilities.managers.DailyReminderManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
@@ -27,7 +30,15 @@ public class CommonEvents implements Listener {
     @EventHandler
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(Reference.onWorld) {
-            TPSManager.updateTps();
+            TPSManager.updateTPS();
+            DailyReminderManager.checkDailyReminder(ModCore.mc().player);
+        }
+    }
+
+    @EventHandler
+    public void chatHandler(ClientChatReceivedEvent e) {
+        if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
+            DailyReminderManager.openedDaily();
         }
     }
 

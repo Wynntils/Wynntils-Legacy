@@ -1,4 +1,4 @@
-package cf.wynntils.modules.utilities;
+package cf.wynntils.modules.utilities.configs;
 
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
@@ -85,6 +85,9 @@ public class UtilitiesConfig extends SettingsHolder {
 
     @Setting(displayName = "Show World TPS on TAB", description = "Do you want to see the world TPS on tab?")
     public boolean showTPSCount = true;
+
+    @Setting(displayName = "Daily Chest Reminder", description = "Do you want to receive daily chest reminders?")
+    public boolean dailyReminder = true;
 
     @Override
     public void onSettingChanged(String name) {
