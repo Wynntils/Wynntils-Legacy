@@ -9,6 +9,7 @@ import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
@@ -40,6 +41,11 @@ public class CommonEvents implements Listener {
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+    }
+
+    @EventHandler
+    public void inventoryOpened(GuiScreenEvent.InitGuiEvent.Post e) {
+        DailyReminderManager.openedDailyInventory(e);
     }
 
 }

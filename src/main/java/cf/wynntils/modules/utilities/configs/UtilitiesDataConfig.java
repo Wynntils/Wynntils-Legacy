@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class UtilitiesDataConfig extends SettingsHolder {
 
     @Setting(displayName = "useless", description = "useless")
-    public long dailyReminder = System.currentTimeMillis() + 86400000;
+    public long dailyReminder = 0L;
 
     @Override
     public void onSettingChanged(String name) {
