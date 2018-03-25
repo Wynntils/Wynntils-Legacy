@@ -28,7 +28,7 @@ public class HealthBarOverlay extends Overlay {
     public boolean flip = false;
 
     @Setting(displayName = "Text Position", description = "The position offset of the text")
-    public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-9);
+    public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-10);
 
     @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CommonColors.RED;
@@ -43,16 +43,6 @@ public class HealthBarOverlay extends Overlay {
         } else {
             this.health = getPlayerInfo().getCurrentHealth();
         }
-
-        /*
-        //debug, activate this to make it switch between the textures every few seconds
-        if(ticks % 100 == 0) {
-            if(texture.ordinal()+1 >= HealthTextures.values().length) {
-                texture = HealthTextures.values()[0];
-            } else {
-                texture = HealthTextures.values()[texture.ordinal()+1];
-            }
-        }*/
     }
 
     @Override
@@ -61,15 +51,15 @@ public class HealthBarOverlay extends Overlay {
             event.setCanceled(true);
 
             switch (texture) {
-                case wynn: drawDefaultBar(0,9,0,17);
+                case wynn: drawDefaultBar(-1,8,0,17);
                     break;
-                case a: drawDefaultBar(0,8,18,33);
+                case a: drawDefaultBar(-1,7,18,33);
                     break;
-                case b: drawDefaultBar(0,9,34,51);
+                case b: drawDefaultBar(-1,8,34,51);
                     break;
-                case c: drawDefaultBar(0,8,52,67);
+                case c: drawDefaultBar(-1,7,52,67);
                     break;
-                case d: drawDefaultBar(0,8,68,83);
+                case d: drawDefaultBar(-1,7,68,83);
                     break;
             }
         }

@@ -41,15 +41,6 @@ public class ExpBarOverlay extends Overlay{
             exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
         else
             this.exp = getPlayerInfo().getExperiencePercentage();
-        /*
-        //debug, activate this to make it switch between the textures every few seconds
-        if(ticks % 100 == 0) {
-            if(texture.ordinal()+1 >= ExpTextures.values().length) {
-                texture = ExpTextures.values()[0];
-            } else {
-                texture = ExpTextures.values()[texture.ordinal()+1];
-            }
-        }*/
     }
 
     @Override

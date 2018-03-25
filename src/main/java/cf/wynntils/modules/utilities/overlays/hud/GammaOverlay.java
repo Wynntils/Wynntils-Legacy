@@ -8,7 +8,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class GammaOverlay extends Overlay {
 
     public GammaOverlay() {
-        super("Gamma Overlay",20,20,true,1.0f,0.0f,-140,0);
+        super("Gamma Overlay",20,20,true,1.0f,0.0f,-40,-5);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class GammaOverlay extends Overlay {
         }
 
         if (mc.gameSettings.gammaSetting >= 1000) {
-            drawString("GammaBright", 40, -9, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
     }
 }

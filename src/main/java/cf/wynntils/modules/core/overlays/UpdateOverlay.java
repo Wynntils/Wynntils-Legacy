@@ -48,7 +48,6 @@ public class UpdateOverlay extends Overlay {
             return;
         }
 
-        //disappear = false;
         if(disappear) {
             return;
         }
@@ -115,7 +114,6 @@ public class UpdateOverlay extends Overlay {
         }
         if(acceptYesOrNo) {
             if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-                //TODO start popout animation, when finish set disappear to TRUE to start the download
                 disappear = true;
                 acceptYesOrNo = false;
                 download = true;

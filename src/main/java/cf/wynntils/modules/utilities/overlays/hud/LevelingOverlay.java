@@ -29,7 +29,7 @@ public class LevelingOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE && Reference.onWorld && getPlayerInfo().getCurrentClass() != ClassType.NONE) {
             String text = levelingText.replace("%actual%", "" + getPlayerInfo().getCurrentXP()).replace("%max%", "" + getPlayerInfo().getXpNeededToLevelUp()).replace("%percent%", getPlayerInfo().getCurrentXPAsPercentage());
-            drawString(text, 0, -20, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
+            drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
         }
     }
 

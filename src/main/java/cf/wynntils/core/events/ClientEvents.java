@@ -177,6 +177,7 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent e) {
+
         ScreenRenderer.refresh();
         if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);

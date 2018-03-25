@@ -83,6 +83,9 @@ public class UtilitiesConfig extends SettingsHolder {
     @Setting(displayName = "Allow emerald count on the Player Inventory", description = "Do you want to allow emerald count on the Player Inventory?")
     public boolean allowEmeraldCountInventory = true;
 
+    @Setting(displayName = "Show World TPS on TAB", description = "Do you want to see the world TPS on tab?")
+    public boolean showTPSCount = true;
+
     @Override
     public void onSettingChanged(String name) {
 
