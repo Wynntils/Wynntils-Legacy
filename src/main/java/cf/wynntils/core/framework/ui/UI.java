@@ -4,9 +4,7 @@ import cf.wynntils.core.framework.enums.MouseButton;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.ui.elements.UIEClickZone;
-import javafx.scene.transform.Scale;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.io.IOException;
