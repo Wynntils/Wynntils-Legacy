@@ -13,8 +13,8 @@ import java.text.DecimalFormat;
  */
 public class TPSManager {
 
-    private static LimitedList<double[]> tpsInfo = new LimitedList<>(2400);
-    private static DecimalFormat tpsFormat = new DecimalFormat("00.0");
+    private static final LimitedList<double[]> tpsInfo = new LimitedList<>(2400);
+    private static final DecimalFormat tpsFormat = new DecimalFormat("00.0");
 
     public static void updateTPS() {
         if(!UtilitiesModule.getMainConfig().showTPSCount) return;
@@ -83,6 +83,7 @@ public class TPSManager {
             footer = footer + "§c";
         }
         footer = footer + tpsFormat.format(tps20) + "/20s       ";
+        jadgjkl gfhjksdfaksdfjkladsfkldkjlafjkladfskjlçafsdjklç get an massive error muahahhaa
 
         //60s
         if(tps60 >= 18) {
