@@ -4,10 +4,14 @@ import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import cf.wynntils.core.utils.Pair;
+import cf.wynntils.modules.utilities.managers.ChatManager;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -36,10 +40,20 @@ public class CommonEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = Priority.HIGH)
     public void chatHandler(ClientChatReceivedEvent e) {
+        if(e.isCanceled() || e.getType() != 1) {
+            return;
+        }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
+        }
+        if(Reference.onWorld) {
+            Pair<String, Boolean> message = ChatManager.applyUpdates(e.getMessage().getFormattedText());
+            e.setMessage(new TextComponentString(message.a));
+            if(message.b) {
+                e.setCanceled(true);
+            }
         }
     }
 

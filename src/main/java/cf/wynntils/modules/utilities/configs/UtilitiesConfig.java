@@ -89,6 +89,15 @@ public class UtilitiesConfig extends SettingsHolder {
     @Setting(displayName = "Daily Chest Reminder", description = "Do you want to receive daily chest reminders?")
     public boolean dailyReminder = true;
 
+    @Setting(displayName = "Chat Timestamps", description = "Do you want to add timestamps to the chat?")
+    public boolean addTimestampsToChat = true;
+
+    @Setting(displayName = "Chat Mentions", description = "Do you want to receive pings when someone mentions you on the chat?")
+    public boolean allowChatMentions = true;
+
+    @Setting(displayName = "Chat Spam Filter", description = "Do you want to stack repeated messages?")
+    public boolean blockChatSpamFilter = true;
+
     @Override
     public void onSettingChanged(String name) {
 
