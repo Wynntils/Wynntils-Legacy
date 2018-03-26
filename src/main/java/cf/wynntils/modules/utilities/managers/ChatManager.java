@@ -11,6 +11,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +28,8 @@ public class ChatManager {
     private static final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static String lastMessage = "";
     private  static int lastAmount = 2;
+
+    private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
     public static Pair<String, Boolean> applyUpdates(String message) {
         String after = message;
@@ -47,6 +51,10 @@ public class ChatManager {
 
         if(UtilitiesModule.getMainConfig().addTimestampsToChat) {
             after = "§8[§7" + dateFormat.format(new Date()) + "§8] " + after;
+        }
+
+        if(message.contains(" requires your ") && message.contains(" skill to be at least ")){
+            ModCore.mc().player.playSound(popOffSound, 1f, 1f);
         }
 
         if (UtilitiesModule.getMainConfig().blockChatSpamFilter && message.equals(lastMessage)) {
