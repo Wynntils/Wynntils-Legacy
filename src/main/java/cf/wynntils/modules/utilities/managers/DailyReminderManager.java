@@ -43,7 +43,7 @@ public class DailyReminderManager {
     public static void openedDailyInventory(GuiScreenEvent.InitGuiEvent.Post e) {
         if(!UtilitiesModule.getMainConfig().dailyReminder || Reference.onWorld) return;
 
-        if(((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
+        if(e.getGui() instanceof GuiContainer && ((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
             if(!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
                 UtilitiesDataConfig config = UtilitiesModule.getData();
 

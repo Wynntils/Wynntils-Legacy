@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(name = Reference.NAME, modid = Reference.MOD_ID, version = Reference.VERSION, acceptedMinecraftVersions = "[" + Reference.MINECRAFT_VERSIONS + "]", clientSideOnly = true)
 public class ModCore {
 
+    public static final boolean DEBUG = true;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         CoreManager.setupCore();

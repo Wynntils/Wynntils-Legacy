@@ -24,16 +24,16 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class ScreenRenderer {
 
-    protected static SmartFontRenderer fontRenderer = null;
-    protected static Minecraft mc;
-    protected static ScaledResolution screen = null;
+    public static SmartFontRenderer fontRenderer = null;
+    public static Minecraft mc;
+    public static ScaledResolution screen = null;
     private static boolean rendering = false;
     private static float scale = 1.0f;
     private static float rotation = 0;
     private static boolean mask = false;
     private static Point drawingOrigin = new Point(0,0);
     private static Point transformationOrigin = new Point(0,0);
-    protected static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
+    public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
     private static RenderItem itemRenderer = null;
 
     public static boolean isRendering() { return rendering; }
@@ -583,8 +583,10 @@ public class ScreenRenderer {
         itemRenderer.zLevel = 200.0F;
         net.minecraft.client.gui.FontRenderer font = is.getItem().getFontRenderer(is);
         if (font == null) font = fontRenderer;
-        if (effects) itemRenderer.renderItemAndEffectIntoGUI(is, x + drawingOrigin.x, y + drawingOrigin.y);
-        else itemRenderer.renderItemIntoGUI(is, x + drawingOrigin.x, y + drawingOrigin.y);
+        if (effects)
+            itemRenderer.renderItemAndEffectIntoGUI(is, x + drawingOrigin.x, y + drawingOrigin.y);
+        else
+            itemRenderer.renderItemIntoGUI(is, x + drawingOrigin.x, y + drawingOrigin.y);
         itemRenderer.renderItemOverlayIntoGUI(font, is, x + drawingOrigin.x, y + drawingOrigin.y, text.isEmpty() ? count ? Integer.toString(is.getCount()) : null : text);
         itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();

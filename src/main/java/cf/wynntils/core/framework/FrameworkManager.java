@@ -115,7 +115,7 @@ public class FrameworkManager {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        ScreenRenderer.beginGL(overlay.position.drawingX, overlay.position.drawingY);
+                        ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
@@ -129,7 +129,7 @@ public class FrameworkManager {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        ScreenRenderer.beginGL(overlay.position.drawingX, overlay.position.drawingY);
+                        ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
                     }
@@ -144,7 +144,7 @@ public class FrameworkManager {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
-                        overlay.position.Refresh();
+                        overlay.position.Refresh(ScreenRenderer.screen);
                         overlay.tick(e, tick);
                     }
                 }

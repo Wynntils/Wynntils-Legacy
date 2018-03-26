@@ -3,6 +3,7 @@ package cf.wynntils.core.framework.overlays;
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.utils.Position;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -14,6 +15,7 @@ public abstract class Overlay extends ScreenRenderer {
     public String displayName;
     public Point staticSize;
     public boolean active = true, visible;
+    public Position position = new Position();
 
     public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY) {
         this.displayName = displayName;
@@ -23,7 +25,7 @@ public abstract class Overlay extends ScreenRenderer {
         this.position.anchorY = anchorY;
         this.position.offsetX = offsetX;
         this.position.offsetY = offsetY;
-        this.position.Refresh();
+        this.position.Refresh(screen);
     }
 
     public void render(RenderGameOverlayEvent.Pre event){}
@@ -32,19 +34,5 @@ public abstract class Overlay extends ScreenRenderer {
 
     public PlayerInfo getPlayerInfo() {
         return PlayerInfo.getPlayerInfo();
-    }
-
-
-    public Position position = new Position();
-    public static class Position {
-        public int drawingX = -1, drawingY = -1;
-        public int offsetX = 0, offsetY = 0;
-        public float anchorX = 0.0f, anchorY = 0.0f;
-
-        public void Refresh() {
-            if(screen == null) return;
-            drawingX = offsetX + MathHelper.fastFloor(anchorX*screen.getScaledWidth());
-            drawingY = offsetY + MathHelper.fastFloor(anchorY*screen.getScaledHeight());
-        }
     }
 }
