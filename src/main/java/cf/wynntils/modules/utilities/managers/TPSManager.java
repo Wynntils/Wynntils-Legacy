@@ -83,7 +83,6 @@ public class TPSManager {
             footer = footer + "§c";
         }
         footer = footer + tpsFormat.format(tps20) + "/20s       ";
-        jadgjkl gfhjksdfaksdfjkladsfkldkjlafjkladfskjlçafsdjklç get an massive error muahahhaa
 
         //60s
         if(tps60 >= 18) {
