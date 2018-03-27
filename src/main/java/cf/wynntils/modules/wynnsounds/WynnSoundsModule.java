@@ -3,8 +3,6 @@ package cf.wynntils.modules.wynnsounds;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 
-import org.apache.logging.log4j.LogManager;
-
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "Wynn Sounds")
