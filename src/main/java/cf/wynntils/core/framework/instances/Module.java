@@ -16,9 +16,7 @@ public abstract class Module {
 
     private Logger logger;
 
-    public void onEnable() {
-
-    }
+    public abstract void onEnable();
 
     public void postEnable() {
 
