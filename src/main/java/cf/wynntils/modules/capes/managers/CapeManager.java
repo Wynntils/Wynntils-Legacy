@@ -18,6 +18,7 @@ public class CapeManager {
     private static WebReader reader;
 
     public static void updateCapes() {
+        if(WebManager.apiUrls == null) return;
         String url = WebManager.apiUrls.get("Capes");
         try{
             reader = new WebReader(url + "/config");

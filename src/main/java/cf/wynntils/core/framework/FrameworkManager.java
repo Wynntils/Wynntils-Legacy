@@ -1,6 +1,7 @@
 package cf.wynntils.core.framework;
 
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.instances.Module;
@@ -95,7 +96,7 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer) {
+        if(Reference.onServer || e instanceof WynncraftServerEvent) {
             availableModules.values().forEach(c -> c.triggerEventHighest(e));
             availableModules.values().forEach(c -> c.triggerEventHigh(e));
             availableModules.values().forEach(c -> c.triggerEventNormal(e));

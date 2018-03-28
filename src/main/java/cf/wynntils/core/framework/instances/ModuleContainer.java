@@ -1,5 +1,6 @@
 package cf.wynntils.core.framework.instances;
 
+import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
@@ -144,8 +145,6 @@ public class ModuleContainer {
                 try{
                     m.invoke(container.instance, e);
                 }catch (Exception ex) { ex.printStackTrace(); }
-            }else{
-
             }
         }
     }

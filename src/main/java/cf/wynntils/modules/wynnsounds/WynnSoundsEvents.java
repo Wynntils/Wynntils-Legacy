@@ -1,6 +1,7 @@
 package cf.wynntils.modules.wynnsounds;
 
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
@@ -15,8 +16,18 @@ public class WynnSoundsEvents implements Listener {
     public void tickMusic(TickEvent.ClientTickEvent event) {
         if(!Reference.onServer) return;
         if(!(Minecraft.getMinecraft().getMusicTicker() instanceof DeadMusicTicker))
-            ReflectionFields.Minecraft_mcMusicTicker.setValue(Minecraft.getMinecraft(),new DeadMusicTicker(Minecraft.getMinecraft()));
-        WynnMusicPlayer.updateVolume();
+            ReflectionFields.Minecraft_mcMusicTicker.setValue(Minecraft.getMinecraft(),new DeadMusicTicker(Minecraft.getMinecraft()));//TODO repair after leaving server
+    }
+
+    @EventHandler(priority = Priority.NORMAL)
+    public void wynnJoin(WynncraftServerEvent.Login event) {
+        WynnMusicPlayer.startEngine();
+    }
+
+    @EventHandler(priority = Priority.NORMAL)
+    public void wynnLeave(WynncraftServerEvent.Leave event) {
+        WynnMusicPlayer.stopEngine();
+
     }
 
     private static class DeadMusicTicker extends MusicTicker {

@@ -939,11 +939,12 @@ public class BasicPlayer implements BasicController, Runnable
     {
         if (hasGainControl())
         {
-            double minGainDB = getMinimumGain();
+            /*double minGainDB = getMinimumGain();
             double ampGainDB = ((10.0f / 20.0f) * getMaximumGain()) - getMinimumGain();
             double cste = Math.log(10.0) / 20;
-            double valueDB = minGainDB + (1 / cste) * Math.log(1 + (Math.exp(cste * ampGainDB) - 1) * fGain);
-            m_gainControl.setValue((float) valueDB);
+            double valueDB = minGainDB + (1 / cste) * Math.log(1 + (Math.exp(cste * ampGainDB) - 1) * fGain);*/
+            //double valueDB = getMinimumGain() + (-fGain+2*Math.sqrt(fGain)) * (getMaximumGain() - getMinimumGain());
+            m_gainControl.setValue((float) (getMinimumGain() + (-fGain+2*Math.sqrt(fGain)) * (getMaximumGain() - getMinimumGain())));
             notifyEvent(BasicPlayerEvent.GAIN, getEncodedStreamPosition(), fGain, null);
         }
         else throw new BasicPlayerException(BasicPlayerException.GAINCONTROLNOTSUPPORTED);
