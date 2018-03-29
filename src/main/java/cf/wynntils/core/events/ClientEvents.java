@@ -2,9 +2,7 @@ package cf.wynntils.core.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.WynnClassChangeEvent;
-import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
-import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.events.custom.*;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
@@ -21,6 +19,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -43,6 +42,7 @@ public class ClientEvents {
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
             Reference.onServer = true;
+            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
         }
     }
 
@@ -51,6 +51,7 @@ public class ClientEvents {
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         if(Reference.onServer) {
             Reference.onServer = false;
+            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
     }
 
@@ -177,7 +178,6 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent.ClientTickEvent e) {
-
         ScreenRenderer.refresh();
         if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);
