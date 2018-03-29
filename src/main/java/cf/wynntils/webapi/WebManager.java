@@ -1,6 +1,7 @@
 package cf.wynntils.webapi;
 
 import cf.wynntils.Reference;
+import cf.wynntils.webapi.account.WynntilsAccount;
 import cf.wynntils.webapi.profiles.MapMarkerProfile;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import cf.wynntils.webapi.profiles.UpdateProfile;
@@ -27,12 +28,14 @@ public class WebManager {
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
+    private static WynntilsAccount account = null;
+
     public static void setupWebApi() {
         updateProfile = new UpdateProfile();
 
         try{
             apiUrls = new WebReader("http://api.wynntils.cf/webapi");
-        }catch (Exception ex) { return; }
+        }catch (Exception ex) { ex.printStackTrace(); return; }
 
         long ms = System.currentTimeMillis();
         updateTerritories();
@@ -52,6 +55,14 @@ public class WebManager {
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
 
         }catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    public static void setupUserAccount() {
+        account = new WynntilsAccount();
+    }
+
+    public static WynntilsAccount getAccount() {
+        return account;
     }
 
     public static ArrayList<TerritoryProfile> getTerritories() {

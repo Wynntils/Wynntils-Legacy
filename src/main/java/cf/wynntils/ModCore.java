@@ -27,6 +27,7 @@ public class ModCore {
         ModuleManager.initModules();
 
         FrameworkManager.startModules();
+        WebManager.setupUserAccount();
     }
 
     @Mod.EventHandler
