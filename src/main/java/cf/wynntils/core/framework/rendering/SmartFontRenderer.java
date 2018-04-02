@@ -13,6 +13,7 @@ public class SmartFontRenderer extends FontRenderer {
 
     public static final int LINE_SPACING = 3;
     public static final int CHAR_SPACING = 0;
+    public static final int CHAR_HEIGHT = 9;
 
     //TODO document
     public SmartFontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
@@ -55,8 +56,8 @@ public class SmartFontRenderer extends FontRenderer {
                         return drawChars(text,customColor,false);
 
                     case NORMAL:
-                        posX = x-1;
-                        posY = y-1;
+                        posX = x+1;
+                        posY = y+1;
 
                         drawChars(text, new CustomColor(0,0,0,customColor.a),true);
 

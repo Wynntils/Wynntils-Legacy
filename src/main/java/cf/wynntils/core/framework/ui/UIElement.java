@@ -3,7 +3,7 @@ package cf.wynntils.core.framework.ui;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Position;
 
-public abstract class UIElement extends ScreenRenderer{
+public abstract class UIElement extends ScreenRenderer {
     private int id;
     private static int topID = Integer.MIN_VALUE;
     public Position position = new Position();
@@ -17,6 +17,7 @@ public abstract class UIElement extends ScreenRenderer{
     }
 
     public abstract void render(int mouseX, int mouseY);
+    public abstract void tick(long ticks);
 
     public int getId() {
         return id;

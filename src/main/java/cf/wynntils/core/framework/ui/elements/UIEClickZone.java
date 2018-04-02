@@ -1,22 +1,25 @@
 package cf.wynntils.core.framework.ui.elements;
 
-import cf.wynntils.ModCore;
 import cf.wynntils.core.framework.enums.MouseButton;
-import cf.wynntils.core.framework.rendering.colors.CustomColor;
+import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.core.framework.ui.UIElement;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.SoundEvent;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class UIEClickZone extends UIElement {
-    protected Consumer<MouseButton> onClick;
+    protected BiConsumer<UI,MouseButton> onClick;
     public int width, height;
+    public SoundEvent clickSound;
 
     public boolean active;
 
     protected boolean hovering = false;
     public boolean isHovering() { return hovering; }
 
-    public UIEClickZone(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, Consumer<MouseButton> onClick) {
+    public UIEClickZone(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, BiConsumer<UI,MouseButton> onClick) {
         super(anchorX, anchorY, offsetX, offsetY);
         this.onClick = onClick;
         this.width = width;
@@ -26,15 +29,29 @@ public class UIEClickZone extends UIElement {
 
     @Override
     public void render(int mouseX, int mouseY) {
-        hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-
-        if(ModCore.DEBUG)
-            drawRect(new CustomColor(1f,0f,0f,0.2f),position.getDrawingX(),position.getDrawingY(),position.getDrawingX()+width,position.getDrawingY()+height);
+        hovering = mouseX >= position.getDrawingX() && mouseX < position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY < position.getDrawingY()+height;
     }
 
-    public void click(int mouseX, int mouseY, MouseButton button) {
+    @Override
+    public void tick(long ticks) {
+
+    }
+
+    public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-        if(active && hovering)
-            onClick.accept(button);
+        if(active && hovering) {
+            if(clickSound != null)
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
+            if(onClick != null)
+                onClick.accept(ui,button);
+        }
+    }
+
+    public void release(int mouseX, int mouseY, MouseButton button, UI ui) {
+        hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
+    }
+
+    public void clickMove(int mouseX, int mouseY, MouseButton button, long timeSinceLastClick, UI ui) {
+        hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
     }
 }

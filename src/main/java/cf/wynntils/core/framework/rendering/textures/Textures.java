@@ -18,6 +18,9 @@ public class Textures {
         Bars.exp = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_exp.png"));
 
         UIs.book = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/book.png"));
+        UIs.button_a = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/button_a.png"));
+        UIs.button_b = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/button_b.png"));
+
     }
 
     public static class Masks {
@@ -33,5 +36,8 @@ public class Textures {
 
     public static class UIs {
         public static AssetsTexture book;
+
+        public static AssetsTexture button_a;
+        public static AssetsTexture button_b;
     }
 }

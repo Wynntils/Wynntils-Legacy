@@ -244,7 +244,9 @@ public class ScreenRenderer {
      */
     public float drawString(String text, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
         if(!rendering) return -1f;
-        return fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y ,color,alignment,shadow);
+        float f = fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y ,color,alignment,shadow);
+        GlStateManager.color(1.0f,1.0f,1.0f,1.0f);
+        return f;
     }
 
     /**
@@ -301,6 +303,7 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
         GlStateManager.enableTexture2D();
+        GlStateManager.color(1f,1f,1f,1f);
     }
 
     /** void drawRect
@@ -318,7 +321,7 @@ public class ScreenRenderer {
      * @param ty2 top-right y of uv on texture(0.0 -> 1.0)
      */
     public void drawRect(Texture texture, int x1, int y1, int x2, int y2, float tx1, float ty1, float tx2, float ty2) {
-        if(!rendering || !texture.loaded) return;
+        if(!rendering || texture == null || !texture.loaded) return;
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         texture.bind();

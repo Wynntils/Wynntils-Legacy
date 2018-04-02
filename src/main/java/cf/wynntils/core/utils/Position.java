@@ -16,9 +16,16 @@ public class Position {
         return drawingY;
     }
 
-    public void Refresh(ScaledResolution screen) {
+    public void refresh(ScaledResolution screen) {
         if(screen == null) return;
         drawingX = offsetX + MathHelper.fastFloor(anchorX*screen.getScaledWidth());
         drawingY = offsetY + MathHelper.fastFloor(anchorY*screen.getScaledHeight());
+    }
+
+    public void copy(Position position) {
+        this.anchorX = position.anchorX;
+        this.anchorY = position.anchorY;
+        this.offsetX = position.offsetX;
+        this.offsetY = position.offsetY;
     }
 }

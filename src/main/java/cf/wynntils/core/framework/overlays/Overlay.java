@@ -4,7 +4,6 @@ import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Position;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -25,7 +24,7 @@ public abstract class Overlay extends ScreenRenderer {
         this.position.anchorY = anchorY;
         this.position.offsetX = offsetX;
         this.position.offsetY = offsetY;
-        this.position.Refresh(screen);
+        this.position.refresh(screen);
     }
 
     public void render(RenderGameOverlayEvent.Pre event){}

@@ -145,7 +145,7 @@ public class FrameworkManager {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
-                        overlay.position.Refresh(ScreenRenderer.screen);
+                        overlay.position.refresh(ScreenRenderer.screen);
                         overlay.tick(e, tick);
                     }
                 }

@@ -3,12 +3,15 @@ package cf.wynntils.modules.utilities;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.configs.UtilitiesDataConfig;
 import cf.wynntils.modules.utilities.events.CommonEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
+import cf.wynntils.modules.utilities.overlays.uis.DebugUI;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -47,8 +50,8 @@ public class UtilitiesModule extends Module {
         dataConfig = new UtilitiesDataConfig();
         registerSettings(dataConfig);
 
-        registerKeyBinding("test", Keyboard.KEY_K, "test", true, () -> {
-            getMainConfig().saveSettings(this);
+        registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {
+            UI.show(new DebugUI());
         });
     }
 
