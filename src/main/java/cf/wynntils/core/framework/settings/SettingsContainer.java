@@ -5,7 +5,9 @@ import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -22,12 +24,9 @@ public class SettingsContainer {
         this.holder = holder;
         this.m = m;
 
-        for(Field f : holder.getClass().getDeclaredFields()) {
-            if(f.getAnnotation(Setting.class) == null) {
-                continue;
-            }
-            fields.add(f);
-        }
+        for(Field f : holder.getClass().getDeclaredFields())
+            if(!Modifier.isStatic(f.getModifiers()))
+                fields.add(f);
 
         try{
             tryToLoad();
@@ -78,10 +77,6 @@ public class SettingsContainer {
         }
 
         for(Field f : newH.getClass().getDeclaredFields()) {
-            if(f.getAnnotation(Setting.class) == null) {
-                continue;
-            }
-
             if(!fieldsName.contains(f.getName())) {
                 save = true;
                 continue;

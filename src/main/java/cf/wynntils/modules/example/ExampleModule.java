@@ -13,7 +13,7 @@ import org.lwjgl.input.Keyboard;
  * register their event listeners, overlays and keybindings,
  * and (TODO) house the module's user prefrences
  */
-@ModuleInfo(name = "ExampleModule")
+@ModuleInfo(name = "example_snake-cased_name", displayName = "Display Name For The Module")
 public class ExampleModule extends Module {
 
     /**

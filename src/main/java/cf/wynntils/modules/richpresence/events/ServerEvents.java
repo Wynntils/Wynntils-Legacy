@@ -9,6 +9,7 @@ import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import cf.wynntils.modules.richpresence.RichPresenceConfig;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
@@ -117,7 +118,7 @@ public class ServerEvents implements Listener {
      */
     public static String getPlayerInfo() {
         Minecraft mc = Minecraft.getMinecraft();
-        return RichPresenceModule.getMainConfig().showUserInformation ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() : null;
+        return RichPresenceConfig.INSTANCE.showUserInformation ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() : null;
     }
 
 }

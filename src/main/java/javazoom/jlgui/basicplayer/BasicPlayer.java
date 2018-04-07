@@ -999,4 +999,8 @@ public class BasicPlayer implements BasicController, Runnable
     {
         m_mixerName = name;
     }
+
+    public long getMillisLeft() {
+        return Math.round(1000 * m_audioInputStream.getFrameLength() / m_audioInputStream.getFormat().getFrameRate());
+    }
 }

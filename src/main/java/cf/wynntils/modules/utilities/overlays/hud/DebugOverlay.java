@@ -10,7 +10,7 @@ public class DebugOverlay extends Overlay {
         super("", 20,20, true, 0.5f, 0.5f, 0, 0);
     }
 
-    float hue = 0.0f;
+    //float hue = 0.0f;
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {

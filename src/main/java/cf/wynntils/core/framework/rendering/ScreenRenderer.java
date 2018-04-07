@@ -31,7 +31,7 @@ public class ScreenRenderer {
     private static float scale = 1.0f;
     private static float rotation = 0;
     private static boolean mask = false;
-    private static Point drawingOrigin = new Point(0,0);
+    private static Point drawingOrigin = new Point(0,0); public static Point drawingOrigin() { return drawingOrigin; }
     private static Point transformationOrigin = new Point(0,0);
     public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
     private static RenderItem itemRenderer = null;
@@ -41,7 +41,7 @@ public class ScreenRenderer {
     public static float getRotation() { return rotation; }
     public static boolean isMasking() { return mask; }
 
-    /** void refresh
+    /** refresh
      * Triggered by a slower loop(client tick), refresh
      * updates the screen resolution to match the window
      * size and sets the font renderer in until its ok.

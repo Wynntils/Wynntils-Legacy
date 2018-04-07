@@ -15,13 +15,21 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  * Copyright © HeyZeer0 - 2016
  */
 
-@Mod(name = Reference.NAME, modid = Reference.MOD_ID, version = Reference.VERSION, acceptedMinecraftVersions = "[" + Reference.MINECRAFT_VERSIONS + "]", clientSideOnly = true)
+@Mod(
+        name = Reference.NAME,
+        modid = Reference.MOD_ID,
+        acceptedMinecraftVersions = "[" + Reference.MINECRAFT_VERSIONS + "]",
+        guiFactory = "cf.wynntils.core.framework.settings.ui.ModConfigFactory",
+        clientSideOnly = true
+)
 public class ModCore {
 
     public static final boolean DEBUG = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        Reference.VERSION = e.getModMetadata().version;
+
         CoreManager.setupCore();
         WebManager.setupWebApi();
         ModuleManager.initModules();

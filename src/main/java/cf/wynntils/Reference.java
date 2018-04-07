@@ -14,7 +14,7 @@ public class Reference {
     public static final String MOD_ID = "wynntils";
     public static final String NAME = "Wynntils";
     public static final String MINECRAFT_VERSIONS = "1.11,1.12.2";
-    public static final String VERSION = "1.0.0";
+    public static String VERSION = "";
     public static final File MOD_STORAGE_ROOT = new File("wynntils");
     public static final File MOD_ASSETS_ROOT = new File(MOD_STORAGE_ROOT + "\\assets");
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);

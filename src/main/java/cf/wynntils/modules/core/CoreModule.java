@@ -12,24 +12,18 @@ import cf.wynntils.modules.core.overlays.UpdateOverlay;
  * Copyright © HeyZeer0 - 2016
  */
 
-@ModuleInfo(name = "Core")
+@ModuleInfo(name = "core", displayName = "Core")
 public class CoreModule extends Module {
 
-    private static CoreDBConfig database;
     private static CoreModule module;
 
     public void onEnable() {
         registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
 
-        database = new CoreDBConfig();
-        registerSettings(database);
+        registerSettings(CoreDBConfig.class);
 
         module = this;
-    }
-
-    public static CoreDBConfig getDatabase() {
-        return database;
     }
 
     public static CoreModule getModule() {

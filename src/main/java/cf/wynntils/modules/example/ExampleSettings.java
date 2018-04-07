@@ -15,8 +15,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @SettingsInfo is just the name of the config, can more things be added later
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SettingsInfo(name = "ExampleConfig")
+@SettingsInfo(name = "example_settings", displayPath = "Example Settings")
 public class ExampleSettings extends SettingsHolder {
+    /** You must ALWAYS put an INSTANCE
+     *  of the class!
+     */
+    public static ExampleSettings INSTANCE;
+
 
     /**
      * Normal config with the @Setting annotation

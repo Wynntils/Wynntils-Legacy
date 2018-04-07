@@ -38,7 +38,7 @@ public abstract class Module {
         FrameworkManager.registerEvents(this, listenerClass);
     }
 
-    public void registerSettings(SettingsHolder settingsClass) {
+    public void registerSettings(Class<? extends SettingsHolder> settingsClass) {
         FrameworkManager.registerSettings(this, settingsClass);
     }
 

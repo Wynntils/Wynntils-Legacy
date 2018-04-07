@@ -1,5 +1,7 @@
 package cf.wynntils.core.framework.settings.annotations;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -10,8 +12,9 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SettingsInfo {
-
     String name();
-    boolean ignore() default false;
+    String displayPath() default "";
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Instance {}
 }

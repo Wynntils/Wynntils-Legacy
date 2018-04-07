@@ -10,15 +10,15 @@ import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SettingsInfo(name = "data", ignore = true)
+@SettingsInfo(name = "main")
 public class CoreDBConfig extends SettingsHolder {
+    public static CoreDBConfig INSTANCE;
 
-    @Setting(displayName = "useless", description = "useless")
+
     public String lastToken = "";
 
     @Override
     public void onSettingChanged(String name) {
 
     }
-
 }

@@ -11,92 +11,111 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SettingsInfo(name = "main")
+@SettingsInfo(name = "main", displayPath = "Main")
 public class UtilitiesConfig extends SettingsHolder {
+    public static UtilitiesConfig INSTANCE;
 
-    @Setting(displayName = "Acessory Highlight on Inventories", description = "Do you want accessories to be highlighted on inventories?")
-    public boolean accesoryHighlightChest = true;
 
-    @Setting(displayName = "Hotbar Highlight on Inventories", description = "Do you want hotbar to be highlighted on inventories?")
-    public boolean hotbarHighlightChest = true;
-
-    @Setting(displayName = "Main Highlight on Inventories", description = "Do you want main to be highlighted on inventories?")
-    public boolean mainHighlightChest = true;
-
-    @Setting(displayName = "Acessory Highlight on the Player Inventory", description = "Do you want accessories to be highlighted on the player inventory?")
-    public boolean accesoryHighlightInventory = true;
-
-    @Setting(displayName = "Hotbar Highlight on the Player Inventory", description = "Do you want hotbar to be highlighted on the player inventory?")
-    public boolean hotbarHighlightInventory = true;
-
-    @Setting(displayName = "Main Highlight on the Player Inventory", description = "Do you want main to be highlighted on the player inventory?")
-    public boolean mainHighlightInventory = true;
-
-    @Setting(displayName = "Armor Highlight on the Player Inventory", description = "Do you want armor to be highlighted on the player inventory?")
-    public boolean armorHighlightInventory = true;
-
-    @Setting(displayName = "Mythic Items Highlight on the Player Inventory", description = "Do you want mythic items to be highlighted on the player inventory?")
-    public boolean mythicHighlightInventory = true;
-
-    @Setting(displayName = "Legendary Items Highlight on the Player Inventory", description = "Do you want legendary items to be highlighted on the player inventory?")
-    public boolean legendaryHighlightInventory = true;
-
-    @Setting(displayName = "Rare Items Highlight on the Player Inventory", description = "Do you want rare items to be highlighted on the player inventory?")
-    public boolean rareHighlightInventory = true;
-
-    @Setting(displayName = "Unique Items Highlight on the Player Inventory", description = "Do you want unique items to be highlighted on the player inventory?")
-    public boolean uniqueHighlightInventory = true;
-
-    @Setting(displayName = "Set Items Highlight on the Player Inventory", description = "Do you want set items to be highlighted on the player inventory?")
-    public boolean setHighlightInventory = true;
-
-    @Setting(displayName = "Mythic Items Highlight on inventories", description = "Do you want mythic items to be highlighted on inventories?")
-    public boolean mythicHighlightChest = true;
-
-    @Setting(displayName = "Legendary Items Highlight on inventories", description = "Do you want legendary items to be highlighted on inventories?")
-    public boolean legendaryHighlightChest = true;
-
-    @Setting(displayName = "Rare Items Highlight on inventories", description = "Do you want rare items to be highlighted on inventories?")
-    public boolean rareHighlightChest = true;
-
-    @Setting(displayName = "Unique Items Highlight on inventories", description = "Do you want unique items to be highlighted on inventories?")
-    public boolean uniqueHighlightChest = true;
-
-    @Setting(displayName = "Set Items Highlight on inventories", description = "Do you want set items to be highlighted on inventories?")
-    public boolean setHighlightChest = true;
-
-    @Setting(displayName = "Godly effects Highlight on inventories", description = "Do you want godly effects to be highlighted on inventories?")
-    public boolean godlyEffectsHighlightChest = true;
-
-    @Setting(displayName = "Epic effects Highlight on inventories", description = "Do you want epic effects to be highlighted on inventories?")
-    public boolean epicEffectsHighlightChest = true;
-
-    @Setting(displayName = "Rare effects Highlight on inventories", description = "Do you want rare effects to be highlighted on inventories?")
-    public boolean rareEffectsHighlightChest = true;
-
-    @Setting(displayName = "Common effects Highlight on inventories", description = "Do you want common effects to be highlighted on inventories?")
-    public boolean commonEffectsHighlightChest = true;
-
-    @Setting(displayName = "Allow emerald count on inventories", description = "Do you want to allow emerald count on inventories?")
-    public boolean allowEmeraldCountChest = true;
-
-    @Setting(displayName = "Allow emerald count on the Player Inventory", description = "Do you want to allow emerald count on the Player Inventory?")
-    public boolean allowEmeraldCountInventory = true;
-
-    @Setting(displayName = "Show World TPS on TAB", description = "Do you want to see the world TPS on tab?")
-    public boolean showTPSCount = true;
-
-    @Setting(displayName = "Daily Chest Reminder", description = "Do you want to receive daily chest reminders?")
+    @Setting(displayName = "Daily Chest Reminder", description = "Should you get a chat notification when you join if you need to loot your daily chest")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Chat Timestamps", description = "Do you want to add timestamps to the chat?")
-    public boolean addTimestampsToChat = true;
+    @Setting(displayName = "Show Server TPS on TAB", description = "Should the server ticks per second be shown while holding TAB")
+    public boolean showTPSCount = true;
 
-    @Setting(displayName = "Chat Mentions", description = "Do you want to receive pings when someone mentions you on the chat?")
-    public boolean allowChatMentions = true;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @SettingsInfo(name = "highlights", displayPath = "Main/Item Items")
+    public static class Data extends SettingsHolder {
+        public static Data INSTANCE;
 
-    @Setting(displayName = "Chat Spam Filter", description = "Do you want to stack repeated messages?")
-    public boolean blockChatSpamFilter = true;
+
+        public long dailyReminder = 0L;
+
+        @Override
+        public void onSettingChanged(String name) {
+
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @SettingsInfo(name = "chat", displayPath = "Main/Chat")
+    public static class Chat extends SettingsHolder {
+        public static Chat INSTANCE;
+
+
+        @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps")
+        public boolean addTimestampsToChat = true;
+
+        @Setting(displayName = "Chat Mentions", description = "The game ping a sound when your name appears in chat")
+        public boolean allowChatMentions = true;
+
+        @Setting(displayName = "Chat Spam Filter", description = "Repeating chat messages would stack up instead of filling the screen")
+        public boolean blockChatSpamFilter = true;
+
+        @Override
+        public void onSettingChanged(String name) {
+
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Items")
+    public static class Items extends SettingsHolder {
+        public static Items INSTANCE;
+
+
+        @Setting(displayName = "Item highlights in containers", description = "Should items be highlighted in remote containers(chests, bank, etc)")
+        public boolean mainHighlightChest = true;
+
+        @Setting(displayName = "Item highlights in inventory", description = "Should items be highlighted in the player's inventory")
+        public boolean mainHighlightInventory = true;
+
+        @Setting(displayName = "Accessories highlight", description = "Should the worn accessories be highlighted")
+        public boolean accesoryHighlight = true;
+
+        @Setting(displayName = "Highlight hotbar items", description = "Should the items in the hotbar be highlighted")
+        public boolean hotbarHighlight = true;
+
+        @Setting(displayName = "Highlight armor items", description = "Should the player's armor be highlighted")
+        public boolean armorHighlight = true;
+
+        @Setting(displayName = "Highlight mythics", description = "Should mythic items be highlighted")
+        public boolean mythicHighlight = true;
+
+        @Setting(displayName = "Highlight legendaries", description = "Should legendary items be highlighted")
+        public boolean legendaryHighlight = true;
+
+        @Setting(displayName = "Highligh rares", description = "Should rare items be highlighted")
+        public boolean rareHighlight = true;
+
+        @Setting(displayName = "Highlight uniques", description = "Should unique items be highlighted")
+        public boolean uniqueHighlight = true;
+
+        @Setting(displayName = "Highlight sets", description = "Should set items be highlighted")
+        public boolean setHighlight = true;
+
+        @Setting(displayName = "Highlight godly cosmetics", description = "Should godly cosmetic items be highlighted")
+        public boolean godlyEffectsHighlight = true;
+
+        @Setting(displayName = "Highlight epic cosmetics", description = "Should epic cosmetic items be highlighted")
+        public boolean epicEffectsHighlight = true;
+
+        @Setting(displayName = "Highlight rare cosmetics", description = "Should rare cosmetic items be highlighted")
+        public boolean rareEffectsHighlight = true;
+
+        @Setting(displayName = "Highlight common cosmetics", description = "Should common cosmetic items be highlighted")
+        public boolean commonEffectsHighlight = true;
+
+        @Setting(displayName = "Show emerald count in containers", description = "Show emerald count in remote containers(chests, bank, etc)")
+        public boolean emeraldCountChest = true;
+
+        @Setting(displayName = "Show emerald count in inventory", description = "Show emerald count in the player's inventory")
+        public boolean emeraldCountInventory = true;
+
+        @Override
+        public void onSettingChanged(String name) {
+
+        }
+    }
 
     @Override
     public void onSettingChanged(String name) {

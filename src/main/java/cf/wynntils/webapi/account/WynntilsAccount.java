@@ -7,6 +7,7 @@ package cf.wynntils.webapi.account;
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.modules.core.CoreModule;
+import cf.wynntils.modules.core.config.CoreDBConfig;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
@@ -33,7 +34,7 @@ public class WynntilsAccount {
             login();
         }catch (Exception ex) {
             ex.printStackTrace();
-            token = CoreModule.getDatabase().lastToken;
+            token = CoreDBConfig.INSTANCE.lastToken;
         }
     }
 
@@ -80,8 +81,8 @@ public class WynntilsAccount {
         if(finalResult.has("result")) {
             token = finalResult.getString("authtoken");
             ready = true;
-            CoreModule.getDatabase().lastToken = token;
-            CoreModule.getDatabase().saveSettings(CoreModule.getModule());
+            CoreDBConfig.INSTANCE.lastToken = token;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
 
             Reference.LOGGER.warn("Wynntils Account Token = " + token);
         }

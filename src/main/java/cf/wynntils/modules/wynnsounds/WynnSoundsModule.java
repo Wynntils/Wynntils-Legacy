@@ -5,7 +5,7 @@ import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "Wynn Sounds")
+@ModuleInfo(name = "wynn_sounds", displayName = "Wynn Sounds")
 public class WynnSoundsModule extends Module{
     @Override
     public void onEnable() {

@@ -10,7 +10,9 @@ import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -76,13 +78,24 @@ public class ModuleContainer {
         }
     }
 
-    public void registerSettings(SettingsHolder holder) {
-        SettingsInfo info = holder.getClass().getAnnotation(SettingsInfo.class);
+    public void registerSettings(Class<? extends SettingsHolder> holder) {
+        SettingsInfo info = holder.getAnnotation(SettingsInfo.class);
         if(info == null) {
             return;
         }
 
-        registeredSettings.put(info.name(), new SettingsContainer(this, holder));
+        for(Field field : holder.getDeclaredFields()){
+            if(field.getType() == holder && Modifier.isStatic(field.getModifiers())) {
+                try {
+                    field.set(null, holder.getConstructor().newInstance());
+                    registeredSettings.put(info.name(), new SettingsContainer(this, (SettingsHolder) field.get(null)));
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        }
+
     }
 
     public HashMap<String, SettingsContainer> getRegisteredSettings() {

@@ -11,13 +11,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@SettingsInfo(name = "main")
+@SettingsInfo(name = "main", displayPath = "Main")
 public class RichPresenceConfig extends SettingsHolder {
+    public static RichPresenceConfig INSTANCE;
 
-    @Setting(displayName = "Entering Notifier", description = "Do you want to receive notification of area entering?")
+
+    @Setting(displayName = "Entering Notification", description = "Show a notification in the upper corner when entering a region")
     public boolean enteringNotifier = true;
 
-    @Setting(displayName = "User Information", description = "Do you want to allow to show your nick and class at RichPresence?")
+    @Setting(displayName = "Show class info", description = "Should RichPresence show in discord basic information about the current class")
     public boolean showUserInformation = true;
 
     @Override

@@ -7,6 +7,7 @@ public abstract class UIElement extends ScreenRenderer {
     private int id;
     private static int topID = Integer.MIN_VALUE;
     public Position position = new Position();
+    public boolean visible = true;
 
     public UIElement(float anchorX, float anchorY, int offsetX, int offsetY) {
         this.id = topID++;

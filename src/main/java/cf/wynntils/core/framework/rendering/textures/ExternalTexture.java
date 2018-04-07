@@ -55,6 +55,4 @@ public class ExternalTexture extends Texture {
         GlStateManager.bindTexture(glID);
         return ActionResult.SUCCESS;
     }
-
-    //TODO this whole system
 }

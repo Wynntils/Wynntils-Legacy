@@ -4,6 +4,7 @@ import cf.wynntils.core.framework.enums.MouseButton;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.ui.elements.UIEClickZone;
+import cf.wynntils.core.framework.ui.elements.UIEList;
 import cf.wynntils.core.framework.ui.elements.UIETextBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,12 +23,11 @@ public abstract class UI extends GuiScreen {
     protected int screenWidth = 0, screenHeight = 0, mouseX = 0, mouseY = 0;
     protected List<UIElement> UIElements = new ArrayList<>();
 
-    public UI() {
-        onInit();
-    }
+    private boolean initiated = false;
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if(!initiated) { initiated = true; onInit(); }
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.mouseX = mouseX;
         this.mouseY = mouseY;
@@ -40,8 +40,10 @@ public abstract class UI extends GuiScreen {
         onRenderPreUIE(screenRenderer);
         for (UIElement uie : UIElements) {
             uie.position.refresh(screen);
+            if(!uie.visible) continue;
             uie.render(mouseX, mouseY);
         }
+
         onRenderPostUIE(screenRenderer);
 
         ScreenRenderer.endGL();
@@ -52,38 +54,62 @@ public abstract class UI extends GuiScreen {
         for (UIElement uie : UIElements)
             uie.tick(ticks);
     }
-    @Override public void initGui() { onWindowUpdate(); }
+    @Override public void initGui() { if(!initiated) { initiated = true; onInit(); } onWindowUpdate(); }
     @Override public void onGuiClosed() {onClose();}
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         for (UIElement uie : UIElements)
-            if(uie instanceof UIEClickZone)
+            if (uie instanceof UIEList) {
+                List<UIElement> UIElements_old = this.UIElements;
+                this.UIElements = ((UIEList) uie).elements;
+                mouseClicked(mouseX, mouseY, mouseButton);
+                this.UIElements = UIElements_old;
+            } else if (uie instanceof UIEClickZone)
                 ((UIEClickZone)uie).click(mouseX,mouseY,MouseButton.values()[mouseButton],this);
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        for (UIElement uie : UIElements)
-            if(uie instanceof UIEClickZone)
-                ((UIEClickZone)uie).release(mouseX,mouseY,MouseButton.values()[state],this);
+        for (UIElement uie : UIElements) {
+            if (uie instanceof UIEList) {
+                List<UIElement> UIElements_old = this.UIElements;
+                this.UIElements = ((UIEList) uie).elements;
+                mouseReleased(mouseX, mouseY, state);
+                this.UIElements = UIElements_old;
+            } else if (uie instanceof UIEClickZone)
+                ((UIEClickZone) uie).release(mouseX, mouseY, MouseButton.values()[state], this);
+        }
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        for (UIElement uie : UIElements)
-            if(uie instanceof UIEClickZone)
-                ((UIEClickZone)uie).clickMove(mouseX,mouseY,MouseButton.values()[clickedMouseButton],timeSinceLastClick,this);
+        for (UIElement uie : UIElements) {
+            if (uie instanceof UIEList) {
+                List<UIElement> UIElements_old = this.UIElements;
+                this.UIElements = ((UIEList) uie).elements;
+                mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+                this.UIElements = UIElements_old;
+            } else if (uie instanceof UIEClickZone)
+                ((UIEClickZone) uie).clickMove(mouseX, mouseY, MouseButton.values()[clickedMouseButton], timeSinceLastClick, this);
+        }
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        for (UIElement uie : UIElements)
-            if(uie instanceof UIETextBox)
-                ((UIETextBox)uie).keyTyped(typedChar,keyCode);
+        for (UIElement uie : UIElements) {
+            if (uie instanceof UIEList) {
+                List<UIElement> UIElements_old = this.UIElements;
+                this.UIElements = ((UIEList) uie).elements;
+                keyTyped(typedChar, keyCode);
+                this.UIElements = UIElements_old;
+            }
+            else if (uie instanceof UIETextBox)
+                ((UIETextBox) uie).keyTyped(typedChar, keyCode);
+        }
     }
 
     // v  USE THESE INSTEAD OF GUISCREEN METHODS IF POSSIBLE  v \\
@@ -100,17 +126,19 @@ public abstract class UI extends GuiScreen {
         GlStateManager.enableBlend();
     }
 
-    public static void show(UI ui) {
+    public static void setupUI(UI ui) {
         for (Field f : ui.getClass().getFields()) {
-            if (UIElement.class.isAssignableFrom(f.getType())) {
-                try {
-                    ui.UIElements.add((UIElement) f.get(ui));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            try {
+                UIElement uie = (UIElement) f.get(ui);
+                if (uie != null)
+                    ui.UIElements.add(uie);
+            } catch (Exception e) {}
         }
-        Minecraft.getMinecraft().displayGuiScreen(ui);
+    }
+
+    public void show() {
+        setupUI(this);
+        Minecraft.getMinecraft().displayGuiScreen(this);
     }
 
     public static abstract class CommonUIFeatures {

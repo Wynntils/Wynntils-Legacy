@@ -3,6 +3,7 @@ package cf.wynntils.modules.utilities.overlays.inventories;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
@@ -70,10 +71,10 @@ public class InventoryOverlay extends GuiInventory {
         int armorfloor = 0;
         boolean armorcheck = false;
 
-        boolean accessories = UtilitiesModule.getMainConfig().accesoryHighlightInventory;
-        boolean hotbar = UtilitiesModule.getMainConfig().hotbarHighlightInventory;
-        boolean armor = UtilitiesModule.getMainConfig().armorHighlightInventory;
-        boolean main = UtilitiesModule.getMainConfig().mainHighlightInventory;
+        boolean accessories = UtilitiesConfig.Items.INSTANCE.accesoryHighlight;
+        boolean hotbar = UtilitiesConfig.Items.INSTANCE.hotbarHighlight;
+        boolean armor = UtilitiesConfig.Items.INSTANCE.armorHighlight;
+        boolean main = UtilitiesConfig.Items.INSTANCE.mainHighlightInventory;
 
 
         for (int i = 0; i <= player.inventory.getSizeInventory(); i++) {
@@ -108,15 +109,15 @@ public class InventoryOverlay extends GuiInventory {
 
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
-            } else if (lore.contains("§bLegendary") && UtilitiesModule.getMainConfig().legendaryHighlightInventory) {
+            } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = 0; g = 1; b = 1; alpha = .4f;
-            } else if (lore.contains("§5Mythic") && UtilitiesModule.getMainConfig().mythicHighlightInventory) {
+            } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                 r = 0.3; g = 0; b = 0.3; alpha = .6f;
-            } else if (lore.contains("§dRare") && UtilitiesModule.getMainConfig().rareHighlightInventory) {
+            } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                 r = 1; g = 0; b = 1; alpha = .4f;
-            } else if (lore.contains("§eUnique") && UtilitiesModule.getMainConfig().uniqueHighlightInventory) {
+            } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                 r = 1; g = 1; b = 0; alpha = .4f;
-            } else if (lore.contains("§aSet") && UtilitiesModule.getMainConfig().setHighlightInventory) {
+            } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                 r = 0; g = 1; b = 0; alpha = .4f;
             } else if (floor >= 4) {
                 r = 0; g = 0; b = 0; alpha = 0f;
@@ -170,7 +171,7 @@ public class InventoryOverlay extends GuiInventory {
         GL11.glPopMatrix();
 
 
-        if (!UtilitiesModule.getMainConfig().allowEmeraldCountInventory) {
+        if (!UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
             return;
         }
 

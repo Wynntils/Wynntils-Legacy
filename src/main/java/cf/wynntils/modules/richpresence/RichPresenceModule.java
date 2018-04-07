@@ -15,15 +15,13 @@ import com.jagrosh.discordipc.entities.DiscordBuild;
  * Copyright © HeyZeer0 - 2016
  */
 
-@ModuleInfo(name = "RichPresence")
+@ModuleInfo(name = "rich_presence", displayName = "Rich Presence")
 public class RichPresenceModule extends Module {
 
     private static RichPresenceModule module;
 
     private RichProfile richPresence;
     private DataProfile modData = new DataProfile();
-
-    private static RichPresenceConfig mainConfig;
 
     public void onEnable() {
         try {
@@ -36,8 +34,7 @@ public class RichPresenceModule extends Module {
         registerEvents(new ChatEvents());
         registerEvents(new ServerEvents());
 
-        mainConfig = new RichPresenceConfig();
-        registerSettings(mainConfig);
+        registerSettings(RichPresenceConfig.class);
     }
 
     public static RichPresenceModule getModule() {
@@ -59,13 +56,4 @@ public class RichPresenceModule extends Module {
     public DataProfile getData() {
         return modData;
     }
-
-    /**
-     * Gets the main conifg
-     * @return The main config
-     */
-    public static RichPresenceConfig getMainConfig() {
-        return mainConfig;
-    }
-
 }

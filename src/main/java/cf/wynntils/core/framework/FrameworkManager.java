@@ -60,7 +60,7 @@ public class FrameworkManager {
         availableModules.get(info.name()).registerEvents(listener);
     }
 
-    public static void registerSettings(Module module, SettingsHolder settingsClass) {
+    public static void registerSettings(Module module, Class<? extends SettingsHolder> settingsClass) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
         if(info == null) {
             return;

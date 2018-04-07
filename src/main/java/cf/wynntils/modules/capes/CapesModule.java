@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
  * Copyright © HeyZeer0 - 2016
  */
 
-@ModuleInfo(name = "Capes")
+@ModuleInfo(name = "capes", displayName = "Capes")
 public class CapesModule extends Module {
 
     public void onEnable() {

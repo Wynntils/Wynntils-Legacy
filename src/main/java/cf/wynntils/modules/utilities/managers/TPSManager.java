@@ -3,6 +3,7 @@ package cf.wynntils.modules.utilities.managers;
 import cf.wynntils.ModCore;
 import cf.wynntils.core.utils.LimitedList;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.util.text.TextComponentString;
 
 import java.text.DecimalFormat;
@@ -17,7 +18,7 @@ public class TPSManager {
     private static final DecimalFormat tpsFormat = new DecimalFormat("00.0");
 
     public static void updateTPS() {
-        if(!UtilitiesModule.getMainConfig().showTPSCount) return;
+        if(!UtilitiesConfig.INSTANCE.showTPSCount) return;
 
         tpsInfo.add(new double[] {System.currentTimeMillis(), ModCore.mc().world.getWorldTime()});
 

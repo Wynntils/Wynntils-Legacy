@@ -7,6 +7,7 @@ package cf.wynntils.modules.utilities.managers;
 import cf.wynntils.ModCore;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;
@@ -36,7 +37,7 @@ public class ChatManager {
 
         boolean cancel = false;
 
-        if(UtilitiesModule.getMainConfig().allowChatMentions && message.contains("/") && message.contains(":") && message.contains(ModCore.mc().player.getName())) {
+        if(UtilitiesConfig.Chat.INSTANCE.allowChatMentions && message.contains("/") && message.contains(":") && message.contains(ModCore.mc().player.getName())) {
             String[] messageSplitted = message.split(":");
             if(!messageSplitted[0].contains(ModCore.mc().player.getName())) {
                 String playerName = ModCore.mc().player.getName();
@@ -49,7 +50,7 @@ public class ChatManager {
             }
         }
 
-        if(UtilitiesModule.getMainConfig().addTimestampsToChat) {
+        if(UtilitiesConfig.Chat.INSTANCE.addTimestampsToChat) {
             after = "§8[§7" + dateFormat.format(new Date()) + "§8] " + after;
         }
 
@@ -57,7 +58,7 @@ public class ChatManager {
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
         }
 
-        if (UtilitiesModule.getMainConfig().blockChatSpamFilter && message.equals(lastMessage)) {
+        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && message.equals(lastMessage)) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
 
             if(ch != null) {

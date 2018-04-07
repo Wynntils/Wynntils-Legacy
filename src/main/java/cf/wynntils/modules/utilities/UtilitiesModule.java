@@ -3,15 +3,12 @@ package cf.wynntils.modules.utilities;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
-import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
-import cf.wynntils.modules.utilities.configs.UtilitiesDataConfig;
 import cf.wynntils.modules.utilities.events.CommonEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
 import cf.wynntils.modules.utilities.overlays.uis.DebugUI;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -19,13 +16,11 @@ import org.lwjgl.input.Keyboard;
  * Copyright © HeyZeer0 - 2016
  */
 
-@ModuleInfo(name = "Utilities")
+@ModuleInfo(name = "utilities", displayName = "Utils")
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
 
-    private static UtilitiesConfig mainConfig;
-    private static UtilitiesDataConfig dataConfig;
 
     public void onEnable() {
         module = this;
@@ -45,26 +40,16 @@ public class UtilitiesModule extends Module {
 
         registerOverlay(new DebugOverlay(),Priority.NORMAL);
 
-        mainConfig = new UtilitiesConfig();
-        registerSettings(mainConfig);
-        dataConfig = new UtilitiesDataConfig();
-        registerSettings(dataConfig);
+        registerSettings(UtilitiesConfig.class);
+        registerSettings(UtilitiesConfig.Data.class);
+        registerSettings(UtilitiesConfig.Items.class);
 
         registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {
-            UI.show(new DebugUI());
+            new DebugUI().show();
         });
     }
 
     public static UtilitiesModule getModule() {
         return module;
     }
-
-    public static UtilitiesConfig getMainConfig() {
-        return mainConfig;
-    }
-
-    public static UtilitiesDataConfig getData() {
-        return dataConfig;
-    }
-
 }

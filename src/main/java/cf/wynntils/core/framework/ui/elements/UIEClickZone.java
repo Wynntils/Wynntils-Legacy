@@ -37,6 +37,14 @@ public class UIEClickZone extends UIElement {
 
     }
 
+    public void click(boolean hovering, MouseButton button, UI ui) {
+        if(active && hovering) {
+            if(clickSound != null)
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
+            if(onClick != null)
+                onClick.accept(ui,button);
+        }
+    }
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
         if(active && hovering) {

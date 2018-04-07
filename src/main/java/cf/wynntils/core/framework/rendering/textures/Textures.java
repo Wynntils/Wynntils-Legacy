@@ -3,24 +3,32 @@ package cf.wynntils.core.framework.rendering.textures;
 import cf.wynntils.Reference;
 import net.minecraft.util.ResourceLocation;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Textures {
-    /** Textures
-     * In here, you can organize all the mod's textures.
-     * Do NOT forget to initialize them in {loadTextures()}!
-     *
-     */
     public static void loadTextures() {
-        Masks.full = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/full.png"));
-        Masks.circle = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/masks/circle.png"));
+        List<Class<?>> textureClasses = new ArrayList<>();
 
-        Bars.health = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_health.png"));
-        Bars.mana = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_mana.png"));
-        Bars.exp = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/overlays/bars_exp.png"));
 
-        UIs.book = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/book.png"));
-        UIs.button_a = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/button_a.png"));
-        UIs.button_b = new AssetsTexture(new ResourceLocation(Reference.MOD_ID + ":textures/uis/button_b.png"));
+        textureClasses.add(Masks.class);
+        textureClasses.add(Overlays.class);
+        textureClasses.add(UIs.class);
 
+        for(Class<?> clazz : textureClasses) {
+            String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase() + "/";
+            for(Field f : clazz.getDeclaredFields()) {
+                try {
+                    if (f.get(null) == null && f.getType().isAssignableFrom(AssetsTexture.class)) {
+                        String file = path + f.getName() + ".png";
+                        f.set(null, new AssetsTexture(new ResourceLocation(file)));
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public static class Masks {
@@ -28,10 +36,10 @@ public class Textures {
         public static AssetsTexture circle;
     }
 
-    public static class Bars {
-        public static AssetsTexture health;
-        public static AssetsTexture mana;
-        public static AssetsTexture exp;
+    public static class Overlays {
+        public static AssetsTexture bars_health;
+        public static AssetsTexture bars_mana;
+        public static AssetsTexture bars_exp;
     }
 
     public static class UIs {
@@ -39,5 +47,6 @@ public class Textures {
 
         public static AssetsTexture button_a;
         public static AssetsTexture button_b;
+        public static AssetsTexture button_red_x;
     }
 }
