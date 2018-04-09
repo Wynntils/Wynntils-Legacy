@@ -1,6 +1,7 @@
 package cf.wynntils.modules.capes.managers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
@@ -26,12 +27,16 @@ public class ImageDownloader extends SimpleTexture {
     @Nullable
     private Thread imageThread;
 
+    @Nullable
+    private final IImageBuffer imageBuffer;
+
     private boolean textureUploaded;
 
-    public ImageDownloader(ResourceLocation textureResourceLocation, String url) {
+    public ImageDownloader(ResourceLocation textureResourceLocation, String url, @Nullable IImageBuffer imageBuffer) {
         super(textureResourceLocation);
 
         this.url = url;
+        this.imageBuffer = imageBuffer;
     }
 
     private void checkTextureUploaded()
@@ -48,6 +53,14 @@ public class ImageDownloader extends SimpleTexture {
                 TextureUtil.uploadTextureImage(super.getGlTextureId(), this.bufferedImage);
                 this.textureUploaded = true;
             }
+        }
+    }
+
+    public void setBufferedImage(BufferedImage bufferedImageIn) {
+        this.bufferedImage = bufferedImageIn;
+
+        if (this.imageBuffer != null) {
+            this.imageBuffer.skinAvailable();
         }
     }
 
@@ -91,6 +104,11 @@ public class ImageDownloader extends SimpleTexture {
                         BufferedImage bufferedimage;
 
                         bufferedimage = TextureUtil.readBufferedImage(httpurlconnection.getInputStream());
+
+                        if (imageBuffer != null)
+                        {
+                            bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
+                        }
 
                         downloader.bufferedImage = bufferedimage;
                         return;

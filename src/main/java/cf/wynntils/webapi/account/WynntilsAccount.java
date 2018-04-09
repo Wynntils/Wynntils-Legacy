@@ -77,7 +77,7 @@ public class WynntilsAccount {
         if(finalResult.has("error")) {
             return;
         }
-        
+
         if(finalResult.has("result")) {
             token = finalResult.getString("authtoken");
             ready = true;

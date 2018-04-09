@@ -294,4 +294,18 @@ public class WebManager {
         return apiUrls.get("Jars") + "artifact/" + main.getJSONObject("artifacts").getJSONObject("0").getString("relativePath");
     }
 
+    public static ArrayList<String> getAllUsersWithCapes() throws Exception {
+        URLConnection st = new URL(apiUrls.get("UserAccount") + "/getUsersCapes").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("usersWithCapes");
+        ArrayList<String> result = new ArrayList<>();
+
+        for(int i = 0; i < main.length(); i++ ) {
+            result.add(main.getString(i));
+        }
+
+        return result;
+    }
+
 }
