@@ -2,6 +2,7 @@ package cf.wynntils.core.framework.settings;
 
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.settings.annotations.Setting;
+import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ import java.util.HashMap;
  * Copyright © HeyZeer0 - 2016
  */
 public class SettingsContainer {
-
+    String displayPath;
     SettingsHolder holder;
     ArrayList<Field> fields = new ArrayList<>();
     ModuleContainer m;
@@ -23,6 +24,7 @@ public class SettingsContainer {
     public SettingsContainer(ModuleContainer m, SettingsHolder holder) {
         this.holder = holder;
         this.m = m;
+        this.displayPath = holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
         for(Field f : holder.getClass().getDeclaredFields())
             if(!Modifier.isStatic(f.getModifiers()))
@@ -35,7 +37,7 @@ public class SettingsContainer {
         }
     }
 
-    private void tryToLoad() throws Exception {
+    public void tryToLoad() throws Exception {
         updateValues(SettingsManager.getSettings(m, holder));
     }
 
@@ -54,10 +56,7 @@ public class SettingsContainer {
     }
 
     public void setValue(Field f, Object value) throws Exception {
-        f.set(holder, value);
-        holder.onSettingChanged(f.getName());
-
-        SettingsManager.saveSettings(m, holder);
+        setValue(f,value,true);
     }
 
     public void setValue(Field f, Object value, boolean save) throws Exception {
@@ -89,4 +88,16 @@ public class SettingsContainer {
             saveSettings();
     }
 
+    public void resetValue(Field field) throws Exception {
+        field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    }
+
+    public void resetValues() throws Exception {
+        for(Field field : fields)
+            field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    }
+
+    public String getDisplayPath() {
+        return this.displayPath;
+    }
 }

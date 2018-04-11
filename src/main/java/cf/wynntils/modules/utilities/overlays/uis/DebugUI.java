@@ -24,18 +24,18 @@ public class DebugUI extends UI {
         ((DebugUI)ui).textBoxTing.active = true;
     });
 
-    public UIETextBox textBoxTing = new UIETextBox(0.5f,0.5f,5,25,150,true,"Write Text Here",true);
+    public UIETextBox textBoxTing = new UIETextBox(0.5f,0.5f,5,25,150,true,"Write Text Here",true, (ui, s) -> {});
 
-    public UIESlider slider = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_b,0.5f,0.5f,5,50,150,true,30f,26f,0.5f,0.2f);
+    public UIESlider slider = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_b,0.5f,0.5f,5,50,150,true,30f,26f,0.5f,0.2f,null);
 
 
     public int button_amount = 100;
 
     public UIEList buttons = new UIEList(0.5f,0.5f,-70,-100);
-    public UIESlider vslider = new UIESlider.Vertical(CommonColors.CYAN, Textures.UIs.button_b,0.5f,0.5f,-30,-100, 200, true, -100f,100-(button_amount*(20)), 1f, 0f);
+    public UIESlider vslider = new UIESlider.Vertical(CommonColors.CYAN, Textures.UIs.button_b,0.5f,0.5f,-30,-100, 200, true, -100f,100-(button_amount*(20)), 1f, 0f,null);
 
     public UIEButton.Toggle toggleButton = new UIEButton.Toggle("Dis Buddon: On",Textures.UIs.button_a,"Dis Buddon: Off", Textures.UIs.button_a, true, 0.5f, 0.5f, 10,-100,-10,true,null);
-    public UIEButton.Enum<TestEnum> enumButton = new UIEButton.Enum<>(ds -> "val: " + ds,Textures.UIs.button_b,TestEnum.class,TestEnum.dis_b,0.5f,0.5f,15,-80,-10,true,null);
+    public UIEButton.Enum enumButton = new UIEButton.Enum(ds -> "val: " + ds,Textures.UIs.button_b,TestEnum.class,TestEnum.dis_b,0.5f,0.5f,15,-80,-10,true,null);
 
     @Override
     public void onInit() {

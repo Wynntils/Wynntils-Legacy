@@ -43,6 +43,8 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
+        registerSettings(UtilitiesConfig.Chat.class);
+        registerSettings(UtilitiesConfig.Debug.class);
 
         registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {
             new DebugUI().show();

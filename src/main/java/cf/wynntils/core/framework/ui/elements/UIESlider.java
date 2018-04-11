@@ -1,21 +1,26 @@
 package cf.wynntils.core.framework.ui.elements;
 
 import cf.wynntils.core.framework.enums.MouseButton;
-import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Texture;
 import cf.wynntils.core.framework.ui.UI;
 import net.minecraft.util.math.MathHelper;
 
+import java.text.DecimalFormat;
+import java.util.function.BiConsumer;
+
 public abstract class UIESlider extends UIEClickZone {
-    public float min, max, progress, precision;
+    public float min, max, progress, precision, old;
     public UIEButton sliderButton;
     public CustomColor backColor;
+    public DecimalFormat decimalFormat = null;
     boolean moving = false; public boolean isMoving() {return moving;}
     int mouseOffset = 0;
+    BiConsumer<UI, Float> onRelease;
 
-    public UIESlider(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, float min, float max, float precision, float progress) {
+    public UIESlider(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
         super(anchorX, anchorY, offsetX, offsetY, width, height, active, null);
+        this.onRelease = onRelease;
         this.backColor = backColor;
         this.sliderButton = new UIEButton("",sliderButton,anchorX,anchorY,offsetX,offsetY,0,active,null);
         this.sliderButton.clickSound = null;
@@ -29,17 +34,25 @@ public abstract class UIESlider extends UIEClickZone {
         float m = 1f / precision;
         return Math.round((max - min) * progress * m) / m + min;
     }
+    public void setValue(float val) {
+        this.progress = MathHelper.clamp((val-min)/(max-min),0f,1f);
+    }
 
     @Override
     public void release(int mouseX, int mouseY, MouseButton button, UI ui) {
         super.release(mouseX, mouseY, button, ui);
-        if(button == MouseButton.LEFT)
+        if(moving && button == MouseButton.LEFT) {
             this.moving = false;
+            if(onRelease != null) {
+                float m = 1f / precision;
+                this.onRelease.accept(ui, Math.round((max - min) * progress * m) / m + min);
+            }
+        }
     }
 
     public static class Horizontal extends UIESlider {
-        public Horizontal(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, boolean active, float min, float max, float precision, float progress) {
-            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, width, MathHelper.fastFloor(sliderButton.height/3), active, min, max, precision, progress);
+        public Horizontal(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
+            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, width, MathHelper.fastFloor(sliderButton.height/3), active, min, max, precision, progress, onRelease);
         }
 
         @Override
@@ -48,8 +61,8 @@ public abstract class UIESlider extends UIEClickZone {
             if(this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
             this.sliderButton.active = this.active;
             this.sliderButton.position.copy(this.position);
-            this.sliderButton.position.offsetX = MathHelper.fastFloor(progress * (width - sliderButton.width)) + this.position.offsetX;
-            this.sliderButton.position.refresh(screen);
+            this.sliderButton.position.drawingX += MathHelper.fastFloor(progress * (width - sliderButton.width));
+            this.sliderButton.text = decimalFormat == null ? "" : decimalFormat.format(this.getValue());
             this.sliderButton.render(this.hovering || this.moving ? this.sliderButton.position.getDrawingX() : mouseX, this.hovering || this.moving ? this.sliderButton.position.getDrawingY() : mouseY);
         }
 
@@ -64,6 +77,7 @@ public abstract class UIESlider extends UIEClickZone {
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             super.click(mouseX, mouseY, button, ui);
             if(button == MouseButton.LEFT && active && hovering) {
+                old = progress;
                 this.moving = true;
                 if(mouseX >= this.sliderButton.position.getDrawingX() && mouseX <= this.sliderButton.position.getDrawingX() + this.sliderButton.width) {
                     this.mouseOffset = mouseX - this.sliderButton.position.getDrawingX();
@@ -76,8 +90,8 @@ public abstract class UIESlider extends UIEClickZone {
     }
 
     public static class Vertical extends UIESlider {
-        public Vertical(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int height, boolean active, float min, float max, float precision, float progress) {
-            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, MathHelper.fastFloor(sliderButton.width), height, active, min, max, precision, progress);
+        public Vertical(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
+            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, MathHelper.fastFloor(sliderButton.width), height, active, min, max, precision, progress, onRelease);
         }
 
         @Override
@@ -88,6 +102,7 @@ public abstract class UIESlider extends UIEClickZone {
             this.sliderButton.position.copy(this.position);
             this.sliderButton.position.offsetY = MathHelper.fastFloor(progress * (height - sliderButton.height)) + this.position.offsetY;
             this.sliderButton.position.refresh(screen);
+            this.sliderButton.text = decimalFormat == null ? "" : decimalFormat.format(this.getValue());
             this.sliderButton.render(this.hovering || this.moving ? this.sliderButton.position.getDrawingX() : mouseX, this.hovering || this.moving ? this.sliderButton.position.getDrawingY() : mouseY);
         }
 
@@ -102,6 +117,7 @@ public abstract class UIESlider extends UIEClickZone {
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             super.click(mouseX, mouseY, button, ui);
             if(button == MouseButton.LEFT && active && hovering) {
+                old = progress;
                 this.moving = true;
                 if(mouseY >= this.sliderButton.position.getDrawingY() && mouseY <= this.sliderButton.position.getDrawingY() + this.sliderButton.height) {
                     this.mouseOffset = mouseY - this.sliderButton.position.getDrawingY();

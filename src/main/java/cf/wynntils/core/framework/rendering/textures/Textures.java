@@ -16,6 +16,7 @@ public class Textures {
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
 
+
         for(Class<?> clazz : textureClasses) {
             String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase() + "/";
             for(Field f : clazz.getDeclaredFields()) {
@@ -44,9 +45,11 @@ public class Textures {
 
     public static class UIs {
         public static AssetsTexture book;
+        public static AssetsTexture book_scrollarea_settings;
 
         public static AssetsTexture button_a;
         public static AssetsTexture button_b;
         public static AssetsTexture button_red_x;
+        public static AssetsTexture button_scrollbar;
     }
 }

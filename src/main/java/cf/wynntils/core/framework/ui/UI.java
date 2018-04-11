@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static cf.wynntils.core.framework.rendering.ScreenRenderer.screen;
@@ -60,14 +61,16 @@ public abstract class UI extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        for (UIElement uie : UIElements)
-            if (uie instanceof UIEList) {
-                List<UIElement> UIElements_old = this.UIElements;
-                this.UIElements = ((UIEList) uie).elements;
-                mouseClicked(mouseX, mouseY, mouseButton);
-                this.UIElements = UIElements_old;
-            } else if (uie instanceof UIEClickZone)
-                ((UIEClickZone)uie).click(mouseX,mouseY,MouseButton.values()[mouseButton],this);
+        try {
+            for (UIElement uie : UIElements)
+                if (uie instanceof UIEList) {
+                    List<UIElement> UIElements_old = this.UIElements;
+                    this.UIElements = ((UIEList) uie).elements;
+                    mouseClicked(mouseX, mouseY, mouseButton);
+                    this.UIElements = UIElements_old;
+                } else if (uie instanceof UIEClickZone)
+                    ((UIEClickZone) uie).click(mouseX, mouseY, MouseButton.values()[mouseButton], this);
+        } catch (ConcurrentModificationException ignored) {}
     }
 
     @Override
@@ -106,9 +109,8 @@ public abstract class UI extends GuiScreen {
                 this.UIElements = ((UIEList) uie).elements;
                 keyTyped(typedChar, keyCode);
                 this.UIElements = UIElements_old;
-            }
-            else if (uie instanceof UIETextBox)
-                ((UIETextBox) uie).keyTyped(typedChar, keyCode);
+            } else if (uie instanceof UIETextBox)
+                ((UIETextBox) uie).keyTyped(typedChar, keyCode, this);
         }
     }
 
@@ -146,6 +148,10 @@ public abstract class UI extends GuiScreen {
         public static void drawBook() {
             int wh = screen.getScaledWidth()/2, hh = screen.getScaledHeight()/2;
             render.drawRect(Textures.UIs.book,wh-200,hh-110,wh+200,hh+110, 0f,0f,1f,1f);
+        }
+        public static void drawScrollArea() {
+            int wh = screen.getScaledWidth()/2, hh = screen.getScaledHeight()/2;
+            render.drawRect(Textures.UIs.book_scrollarea_settings,wh-190,hh-100,wh-12,hh+85,0f,0f,1f,1f);
         }
     }
 }

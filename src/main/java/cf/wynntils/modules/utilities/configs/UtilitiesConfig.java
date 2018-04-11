@@ -23,7 +23,7 @@ public class UtilitiesConfig extends SettingsHolder {
     public boolean showTPSCount = true;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @SettingsInfo(name = "highlights", displayPath = "Main/Item Items")
+    @SettingsInfo(name = "data", displayPath = "")
     public static class Data extends SettingsHolder {
         public static Data INSTANCE;
 
@@ -58,15 +58,15 @@ public class UtilitiesConfig extends SettingsHolder {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Items")
+    @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
     public static class Items extends SettingsHolder {
         public static Items INSTANCE;
 
 
-        @Setting(displayName = "Item highlights in containers", description = "Should items be highlighted in remote containers(chests, bank, etc)")
+        @Setting(displayName = "Item highlights in containers", description = "Should items be highlighted in _nlremote containers(chests, bank, etc)")
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item highlights in inventory", description = "Should items be highlighted in the player's inventory")
+        @Setting(displayName = "Item highlights in inventory", description = "Should items be highlighted in _nlthe player's inventory")
         public boolean mainHighlightInventory = true;
 
         @Setting(displayName = "Accessories highlight", description = "Should the worn accessories be highlighted")
@@ -110,6 +110,51 @@ public class UtilitiesConfig extends SettingsHolder {
 
         @Setting(displayName = "Show emerald count in inventory", description = "Show emerald count in the player's inventory")
         public boolean emeraldCountInventory = true;
+
+        @Override
+        public void onSettingChanged(String name) {
+
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
+    public static class Debug extends SettingsHolder {
+        public static Debug INSTANCE;
+
+        @Setting.Limitations.StringLimit(maxLength = 15)
+        @Setting(displayName = "Test text field", description = "this is a weird piece of text used to check the description length handling on complicated and long descriptions")
+        public String testTextField = "default text";
+
+        @Setting(displayName = "Enum test", description = "")//empty description is just no description
+        public TestEnum testEnumSetting = TestEnum.TEST_B;
+
+        @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
+        @Setting(displayName = "Test Integer Ting", description = "this tests the usability of integer settings")
+        public int lol = -3;
+
+        @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
+        @Setting(displayName = "Float ting", description = "dis float setting")
+        public float floatlol = 4.6f;
+
+        @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
+        @Setting(displayName = "Double tang", description = "ye, dis description")
+        public double doublelawl = 0.2d;
+
+        public enum TestEnum {
+            TEST_A("Test A"),
+            TEST_B("Test B"),
+            TEST_C("Test C"),
+            TEST_D("Test D"),
+            TEST_E("Test E"),
+            ;
+
+            public String displayName;
+
+            TestEnum(String displayName) {
+                this.displayName = displayName;
+            }
+        }
 
         @Override
         public void onSettingChanged(String name) {

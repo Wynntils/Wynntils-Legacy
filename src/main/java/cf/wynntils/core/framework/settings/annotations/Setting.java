@@ -10,38 +10,40 @@ import java.lang.annotation.Target;
 public @interface Setting {
 
     String displayName();
-    String description();
+    String description() default "";
 
     class Limitations {
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
         public @interface IntLimit {
             int min();
             int max();
             int precision() default 1;
         }
-
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
         public @interface FloatLimit {
             float min();
             float max();
             float precision() default 0.1f;
         }
-
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
         public @interface DoubleLimit {
             double min();
             double max();
             double precision() default 0.1d;
         }
-
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
         public @interface StringLimit {
-            int minLength() default 0;
             int maxLength();
-        }
-
-        public @interface EnumLimit {
-            boolean allowNull() default false;
         }
     }
 
     class Features {
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
         public @interface StringParameters {
             String[] parameters();
         }

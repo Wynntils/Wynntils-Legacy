@@ -23,8 +23,10 @@ public class UIEList extends UIElement {
             uie.position.offsetX += this.position.offsetX;
             uie.position.offsetY += this.position.offsetY;
             uie.position.refresh(screen);
-            uie.position.offsetX -= this.position.offsetX;
-            uie.position.offsetY -= this.position.offsetY;
+            if(!(uie instanceof UIEList)) {
+                uie.position.offsetX -= this.position.offsetX;
+                uie.position.offsetY -= this.position.offsetY;
+            }
             if(!uie.visible) continue;
             uie.render(mouseX, mouseY);
         }
