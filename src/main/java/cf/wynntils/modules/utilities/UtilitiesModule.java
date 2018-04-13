@@ -4,8 +4,6 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
-import cf.wynntils.modules.utilities.events.ClientEvents;
-import cf.wynntils.modules.utilities.events.CommonEvents;
 import cf.wynntils.modules.utilities.events.ServerEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
@@ -31,8 +29,6 @@ public class UtilitiesModule extends Module {
 
         registerEvents(new ServerEvents());
         registerEvents(new OverlayEvents());
-        registerEvents(new ClientEvents());
-        registerEvents(new CommonEvents());
 
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
