@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  */
 public class CommonEvents implements Listener {
 
-    private static LimitedList<Integer> ids = new LimitedList<>(2);
+    private static LimitedList<Integer> ids = new LimitedList<>(200);
 
     @EventHandler
     public void onWorldLeft(WynnWorldLeftEvent e) {
