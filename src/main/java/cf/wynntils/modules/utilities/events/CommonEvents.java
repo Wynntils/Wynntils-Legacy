@@ -48,7 +48,7 @@ public class CommonEvents implements Listener {
             DailyReminderManager.checkDailyReminder(ModCore.mc().player);
         }
 
-        if(ids.size() > 0) {
+        if(ids.size() > 0 && ModCore.mc().player.world != null) {
             for(int i = 0; i < ids.size(); i++) {
                 Entity ent = ModCore.mc().player.world.getEntityByID(ids.get(i));
                 if(ent != null) {

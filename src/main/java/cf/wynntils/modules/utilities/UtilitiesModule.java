@@ -5,6 +5,7 @@ import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.events.CommonEvents;
+import cf.wynntils.modules.utilities.events.ServerEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
@@ -27,6 +28,7 @@ public class UtilitiesModule extends Module {
 
         KeyManager.registerKeys();
 
+        registerEvents(new ServerEvents());
         registerEvents(new OverlayEvents());
         registerEvents(new CommonEvents());
 

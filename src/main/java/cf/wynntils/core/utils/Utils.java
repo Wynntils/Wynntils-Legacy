@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -239,6 +240,17 @@ public class Utils {
             if(destination != null) {
                 destination.close();
             }
+        }
+    }
+
+    public static void copyInstance(Object original, Object target) throws Exception {
+        if(original.getClass() != target.getClass()) {
+            return;
+        }
+        for(Field f : original.getClass().getDeclaredFields()) {
+            if(!f.isAccessible()) f.setAccessible(true);
+
+            f.set(target, f.get(original));
         }
     }
 }
