@@ -29,13 +29,16 @@ public class WynntilsAccount {
     boolean ready = false;
 
     public WynntilsAccount() {
-
         try{
             login();
         }catch (Exception ex) {
             ex.printStackTrace();
             token = CoreDBConfig.INSTANCE.lastToken;
         }
+    }
+
+    public String getToken() {
+        return token;
     }
 
     private void login() throws Exception {
