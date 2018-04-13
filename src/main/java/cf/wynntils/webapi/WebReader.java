@@ -36,6 +36,10 @@ public class WebReader {
         parseFile();
     }
 
+    public HashMap<String, String> getValues() {
+        return values;
+    }
+
     private void parseFile() throws Exception {
         FileReader fr = new FileReader(file);
         BufferedReader bf = new BufferedReader(fr);

@@ -10,7 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,5 +254,14 @@ public class Utils {
 
             f.set(target, f.get(original));
         }
+    }
+
+    public static String toMD5(String msg) {
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(msg.getBytes(), 0, msg.length());
+            return new BigInteger(1, m.digest()).toString(16);
+        }catch (Exception ex) { }
+        return msg;
     }
 }
