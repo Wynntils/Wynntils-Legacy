@@ -5,6 +5,7 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
@@ -15,7 +16,6 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -33,26 +33,18 @@ public class ServerEvents implements Listener {
     public static ScheduledFuture updateTimer;
 
     @EventHandler
-    public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        if(!RichPresenceModule.getModule().getRichPresence().isReady()) {
-            Reference.LOGGER.warn("not ready");
-            return;
-        }
-
+    public void onServerJoin(WynncraftServerEvent.Login e) {
         if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
         }
     }
 
     @EventHandler
-    public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
-        if(Reference.onServer) {
-            RichPresenceModule.getModule().getRichPresence().stopRichPresence();
+    public void onServerLeave(WynncraftServerEvent.Leave e) {
+        RichPresenceModule.getModule().getRichPresence().stopRichPresence();
 
-            if(updateTimer != null && !updateTimer.isCancelled()) {
-                updateTimer.cancel(true);
-            }
-        }
+        if(updateTimer != null && !updateTimer.isCancelled()) {
+            updateTimer.cancel(true); }
     }
 
     @EventHandler
