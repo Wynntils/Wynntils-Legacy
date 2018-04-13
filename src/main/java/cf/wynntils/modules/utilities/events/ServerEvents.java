@@ -4,10 +4,13 @@
 
 package cf.wynntils.modules.utilities.events;
 
+import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
 import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.utilities.instances.PacketFilter;
+import cf.wynntils.modules.utilities.managers.TPSManager;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -45,6 +48,16 @@ public class ServerEvents implements Listener {
     @EventHandler
     public void leaveServer(WynncraftServerEvent.Leave e) {
         PacketFilter.loadedResourcePack = false;
+    }
+
+    @EventHandler
+    public void onWorldLeft(WynnWorldLeftEvent e) {
+        TPSManager.clearTpsInfo();
+    }
+
+    @EventHandler
+    public void onWorldLeft(WynnWorldJoinEvent e) {
+        TPSManager.clearTpsInfo();
     }
 
 }
