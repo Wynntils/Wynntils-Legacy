@@ -42,4 +42,8 @@ public class LimitedList<T> {
         array.clear();
     }
 
+    public ArrayList<T> getArray() {
+        return array;
+    }
+
 }

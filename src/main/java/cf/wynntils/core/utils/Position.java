@@ -5,6 +5,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.math.MathHelper;
 
 public class Position {
+
     public int drawingX = -1, drawingY = -1;
     public int offsetX = 0, offsetY = 0;
     public float anchorX = 0.0f, anchorY = 0.0f;
@@ -22,6 +23,7 @@ public class Position {
         drawingX = offsetX + MathHelper.fastFloor(anchorX*screen.getScaledWidth());
         drawingY = offsetY + MathHelper.fastFloor(anchorY*screen.getScaledHeight());
     }
+
     public void refresh() {
         refresh(ScreenRenderer.screen);
     }
@@ -34,4 +36,5 @@ public class Position {
         this.drawingX = position.drawingX;
         this.drawingY = position.drawingY;
     }
+
 }

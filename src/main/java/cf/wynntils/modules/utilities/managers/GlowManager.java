@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.managers;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.utils.TeamHelper;
@@ -25,7 +26,7 @@ public class GlowManager {
     private static TeamHelper set = new TeamHelper("set", "a");
 
     //Players
-    private static TeamHelper helpers = new TeamHelper("helpers", "5");
+    private static TeamHelper helpers = new TeamHelper("helpers", "5", true);
 
     public static void verifyEntity(Entity i) {
         if(!Reference.onWorld || i == null) return;
@@ -90,8 +91,12 @@ public class GlowManager {
 
             return;
         }
-        if(i instanceof EntityPlayer) {
-
+        if(i instanceof EntityPlayer && !i.getUniqueID().toString().equalsIgnoreCase(ModCore.mc().player.getUniqueID().toString())) {
+            EntityPlayer player = (EntityPlayer) i;
+            if(WebManager.isHelper(player.getUniqueID().toString())) {
+                helpers.addPlayer(player);
+                if(!player.isGlowing()) i.setGlowing(true);
+            }
         }
     }
 

@@ -16,4 +16,5 @@ public class NanoTracker {
         System.out.println((System.nanoTime() - start) + "ns reported by: " + stackTraceElements[2].toString());
         if(shouldStart) start();
     }
+
 }

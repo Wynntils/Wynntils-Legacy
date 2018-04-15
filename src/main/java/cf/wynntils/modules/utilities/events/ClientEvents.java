@@ -70,7 +70,6 @@ public class ClientEvents implements Listener {
     @EventHandler
     public void entitySpawned(EntityJoinWorldEvent e) {
         if(e.getEntity() instanceof EntityItem || e.getEntity() instanceof EntityPlayer) {
-            long now = System.nanoTime();
             ids.add(e.getEntity().getEntityId());
         }
     }

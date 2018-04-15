@@ -56,14 +56,6 @@ public class ImageDownloader extends SimpleTexture {
         }
     }
 
-    public void setBufferedImage(BufferedImage bufferedImageIn) {
-        this.bufferedImage = bufferedImageIn;
-
-        if (this.imageBuffer != null) {
-            this.imageBuffer.skinAvailable();
-        }
-    }
-
     public int getGlTextureId()
     {
         this.checkTextureUploaded();

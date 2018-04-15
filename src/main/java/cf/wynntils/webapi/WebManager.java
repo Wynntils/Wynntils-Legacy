@@ -27,6 +27,7 @@ public class WebManager {
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+    private static ArrayList<String> helpers = new ArrayList<>();
 
     private static WynntilsAccount account = null;
 
@@ -54,6 +55,7 @@ public class WebManager {
             updateItemGuesses();
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
 
+            updateHelpers();
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -82,6 +84,10 @@ public class WebManager {
     }
 
     public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
+
+    public static boolean isHelper(String uuid) {
+        return helpers.contains(uuid);
+    }
 
     /**
      * Request a update to territories {@link ArrayList}
@@ -284,6 +290,12 @@ public class WebManager {
         }
 
         itemGuesses = guessers;
+    }
+
+    public static void updateHelpers() throws Exception {
+        WebReader reader = new WebReader(apiUrls.get("Helpers"));
+
+        helpers = reader.getList("Helpers");
     }
 
     public static String getLatestJarFileUrl() throws Exception {
