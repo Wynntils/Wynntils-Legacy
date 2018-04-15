@@ -10,6 +10,7 @@ import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileUpdater {
@@ -41,30 +42,50 @@ public class FileUpdater {
 
         HashMap<String, String> values = reader.getValues();
 
+        ArrayList<String> localFiles = new ArrayList<>();
+        for(File f : location.listFiles()) {
+            localFiles.add(f.getName());
+        }
+
         int count = 0;
+        boolean hasUpdatedSomething = false;
         for(String fileName : values.keySet()) {
             count++;
 
             File f = new File(location, fileName);
             if(f.exists()) {
                 if(Utils.toMD5(String.valueOf(f.length())).equals(values.get(fileName))) {
-                    break;
+                    localFiles.remove(fileName);
+                    continue;
                 }
 
+                hasUpdatedSomething = true;
                 if(count == values.size()) {
                     DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> runnable.run());
                 }else{
                     DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> {});
                 }
 
-                break;
+                localFiles.remove(fileName);
+                continue;
             }
 
+            hasUpdatedSomething = true;
             if(count == values.size()) {
                 DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> runnable.run());
             }else{
                 DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> {});
             }
+        }
+
+        if(localFiles.size() > 0) {
+            for(String toRemove : localFiles) {
+                new File(location, toRemove).delete();
+            }
+        }
+
+        if(!hasUpdatedSomething) {
+            runnable.run();
         }
 
         return this;
