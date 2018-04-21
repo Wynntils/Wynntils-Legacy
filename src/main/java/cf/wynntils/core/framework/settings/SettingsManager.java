@@ -4,6 +4,7 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -15,7 +16,7 @@ import java.io.*;
  */
 public class SettingsManager {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);

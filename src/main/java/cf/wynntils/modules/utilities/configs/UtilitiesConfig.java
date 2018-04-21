@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Copyright © HeyZeer0 - 2016
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @SettingsInfo(name = "main", displayPath = "Main")
 public class UtilitiesConfig extends SettingsHolder {
     public static UtilitiesConfig INSTANCE;
@@ -36,7 +35,6 @@ public class UtilitiesConfig extends SettingsHolder {
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @SettingsInfo(name = "chat", displayPath = "Main/Chat")
     public static class Chat extends SettingsHolder {
         public static Chat INSTANCE;
@@ -57,7 +55,6 @@ public class UtilitiesConfig extends SettingsHolder {
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
     public static class Items extends SettingsHolder {
         public static Items INSTANCE;
@@ -117,7 +114,6 @@ public class UtilitiesConfig extends SettingsHolder {
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
     public static class Debug extends SettingsHolder {
         public static Debug INSTANCE;

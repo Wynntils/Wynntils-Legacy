@@ -39,4 +39,5 @@ public class Reference {
     public static boolean onNether = false;
     public static boolean onWars = false;
     public static boolean onLobby = false;
+
 }

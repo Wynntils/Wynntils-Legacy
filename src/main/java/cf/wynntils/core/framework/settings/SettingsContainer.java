@@ -1,14 +1,12 @@
 package cf.wynntils.core.framework.settings;
 
 import cf.wynntils.core.framework.instances.ModuleContainer;
-import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -16,6 +14,7 @@ import java.util.HashMap;
  * Copyright © HeyZeer0 - 2016
  */
 public class SettingsContainer {
+
     String displayPath;
     SettingsHolder holder;
     ArrayList<Field> fields = new ArrayList<>();
