@@ -2,17 +2,14 @@ package cf.wynntils.modules.richpresence;
 
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
 /**
  * Created by HeyZeer0 on 25/03/2018.
  * Copyright © HeyZeer0 - 2016
  */
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 @SettingsInfo(name = "main", displayPath = "Main")
-public class RichPresenceConfig extends SettingsHolder {
+public class RichPresenceConfig extends SettingsClass {
     public static RichPresenceConfig INSTANCE;
 
 

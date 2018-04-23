@@ -32,7 +32,7 @@ public class ManaBarOverlay extends Overlay {
     @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CommonColors.LIGHT_BLUE;
 
-    private transient float mana = 0.0f;
+    private static float mana = 0.0f;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {

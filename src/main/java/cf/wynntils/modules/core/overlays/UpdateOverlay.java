@@ -21,18 +21,18 @@ import java.io.File;
  */
 public class UpdateOverlay extends Overlay {
 
-    private CustomColor background = CustomColor.fromString("333341",1);
-    private CustomColor box = CustomColor.fromString("434355",1);
-    private CustomColor yes = CustomColor.fromString("80fd80",1);
-    private CustomColor no = CustomColor.fromString("fd8080",1);
+    private static CustomColor background = CustomColor.fromString("333341",1);
+    private static CustomColor box = CustomColor.fromString("434355",1);
+    private static CustomColor yes = CustomColor.fromString("80fd80",1);
+    private static CustomColor no = CustomColor.fromString("fd8080",1);
 
     public UpdateOverlay() {
         super("Update Overlay", 20, 20, true, 1f, 0f, 0, 0);
     }
 
-    boolean disappear = false;
-    boolean acceptYesOrNo = false;
-    boolean download = false;
+    static boolean disappear = false;
+    static boolean acceptYesOrNo = false;
+    static boolean download = false;
 
     public static int size = 63;
     public static long timeout = 0;

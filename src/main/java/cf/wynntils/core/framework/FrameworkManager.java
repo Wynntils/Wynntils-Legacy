@@ -62,15 +62,24 @@ public class FrameworkManager {
 
     public static void registerSettings(Module module, Class<? extends SettingsHolder> settingsClass) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null) {
+        if(info == null)
             return;
-        }
 
         availableModules.get(info.name()).registerSettings(settingsClass);
     }
 
 
-    public static void registerOverlay(Overlay overlay, Priority priority) {
+    public static void registerOverlay(Module module, Overlay overlay, Priority priority) {
+        ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
+        if(info == null)
+            return;
+
+        ModuleContainer mc = availableModules.get(info.name());
+
+        overlay.module = mc;
+
+        mc.registerSettings("overlay" + overlay.displayName,overlay);
+
         registeredOverlays.get(priority).add(overlay);
     }
 
@@ -166,7 +175,10 @@ public class FrameworkManager {
 
         SettingsInfo info2 = holder.getClass().getAnnotation(SettingsInfo.class);
         if(info2 == null) {
-            return null;
+            if(holder instanceof Overlay)
+                return availableModules.get(info.name()).getRegisteredSettings().get("overlay" + ((Overlay) holder).displayName);
+            else
+                return null;
         }
 
         return availableModules.get(info.name()).getRegisteredSettings().get(info2.name());

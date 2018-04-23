@@ -3,6 +3,7 @@ package cf.wynntils.core.framework.settings.ui;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.MouseButton;
 import cf.wynntils.core.framework.instances.ModuleContainer;
+import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
@@ -76,7 +77,7 @@ public class SettingsUI extends UI {
 
             for(String skey : mcn.getRegisteredSettings().keySet()) {
                 SettingsContainer scn = mcn.getRegisteredSettings().get(skey);
-
+                if(!(scn.getHolder() instanceof Overlay))//DEBUG
                 if(!scn.getDisplayPath().equals("")) {
                     registeredSettings.put(scn.getDisplayPath(), scn);
                     sortedSettings.add(scn.getDisplayPath());

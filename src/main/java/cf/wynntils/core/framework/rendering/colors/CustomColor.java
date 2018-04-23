@@ -25,6 +25,8 @@ public class CustomColor {
         this.a = a;
     }
 
+    public CustomColor(){}
+
     /** applyColor
      * Will set the color to OpenGL's active color
      */

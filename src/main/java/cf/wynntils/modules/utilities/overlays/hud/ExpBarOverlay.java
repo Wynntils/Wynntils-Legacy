@@ -32,7 +32,7 @@ public class ExpBarOverlay extends Overlay{
     @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CustomColor.fromString("aaff00",1f);
 
-    private transient float exp = 0.0f;
+    private static float exp = 0.0f;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {

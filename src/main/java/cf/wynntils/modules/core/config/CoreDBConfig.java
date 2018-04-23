@@ -5,10 +5,10 @@
 package cf.wynntils.modules.core.config;
 
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
+import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
 @SettingsInfo(name = "main")
-public class CoreDBConfig extends SettingsHolder {
+public class CoreDBConfig extends SettingsClass {
 
     public static CoreDBConfig INSTANCE;
 
@@ -18,5 +18,4 @@ public class CoreDBConfig extends SettingsHolder {
     public void onSettingChanged(String name) {
 
     }
-
 }

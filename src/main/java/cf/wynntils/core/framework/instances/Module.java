@@ -43,7 +43,7 @@ public abstract class Module {
     }
 
     public void registerOverlay(Overlay overlay, Priority priority) {
-        FrameworkManager.registerOverlay(overlay, priority);
+        FrameworkManager.registerOverlay(this, overlay, priority);
     }
 
     public void registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {

@@ -14,11 +14,11 @@ public class LocationOverlay extends Overlay {
     public static String location = "Waiting";
     public static String last_loc = "Waiting";
 
-    int size = 50;
-    long timeout = System.currentTimeMillis();
+    static int size = 50;
+    static long timeout = System.currentTimeMillis();
 
-    boolean showing = false;
-    boolean animation = false;
+    static boolean showing = false;
+    static boolean animation = false;
 
     public LocationOverlay() {
         super("Update Overlay", 20, 20, false, 1.0f, 0.0f, 0, 0);

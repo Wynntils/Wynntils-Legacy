@@ -2,16 +2,14 @@ package cf.wynntils.modules.utilities.configs;
 
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
 /**
  * Created by HeyZeer0 on 24/03/2018.
  * Copyright © HeyZeer0 - 2016
  */
-
 @SettingsInfo(name = "main", displayPath = "Main")
-public class UtilitiesConfig extends SettingsHolder {
+public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
 
@@ -21,9 +19,8 @@ public class UtilitiesConfig extends SettingsHolder {
     @Setting(displayName = "Show Server TPS on TAB", description = "Should the server ticks per second be shown while holding TAB")
     public boolean showTPSCount = true;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     @SettingsInfo(name = "data", displayPath = "")
-    public static class Data extends SettingsHolder {
+    public static class Data extends SettingsClass {
         public static Data INSTANCE;
 
 
@@ -36,7 +33,7 @@ public class UtilitiesConfig extends SettingsHolder {
     }
 
     @SettingsInfo(name = "chat", displayPath = "Main/Chat")
-    public static class Chat extends SettingsHolder {
+    public static class Chat extends SettingsClass {
         public static Chat INSTANCE;
 
 
@@ -56,7 +53,7 @@ public class UtilitiesConfig extends SettingsHolder {
     }
 
     @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
-    public static class Items extends SettingsHolder {
+    public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
 
@@ -115,7 +112,7 @@ public class UtilitiesConfig extends SettingsHolder {
     }
 
     @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
-    public static class Debug extends SettingsHolder {
+    public static class Debug extends SettingsClass {
         public static Debug INSTANCE;
 
         @Setting.Limitations.StringLimit(maxLength = 15)

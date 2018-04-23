@@ -95,7 +95,10 @@ public class ModuleContainer {
                 return;
             }
         }
+    }
 
+    public void registerSettings(String name, SettingsHolder sh) {
+        registeredSettings.put(name, new SettingsContainer(this, sh));
     }
 
     public HashMap<String, SettingsContainer> getRegisteredSettings() {

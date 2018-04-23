@@ -1,19 +1,28 @@
 package cf.wynntils.core.framework.overlays;
 
+import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.utils.Position;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 
-public abstract class Overlay extends ScreenRenderer {
+public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
+    @JsonIgnore
     public ModuleContainer module = null;
+    @JsonIgnore
     public String displayName;
+    @JsonIgnore
     public Point staticSize;
-    public boolean active = true, visible;
+    @JsonIgnore
+    public boolean visible;
+    public boolean active = true;
     public Position position = new Position();
 
     public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY) {
@@ -33,5 +42,17 @@ public abstract class Overlay extends ScreenRenderer {
 
     public PlayerInfo getPlayerInfo() {
         return PlayerInfo.getPlayerInfo();
+    }
+
+    @Override
+    public void saveSettings(Module m) {
+        try {
+            FrameworkManager.getSettings(m == null ? module.getModule() : m, this).saveSettings();
+        }catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+    @Override
+    public void onSettingChanged(String name) {
+
     }
 }

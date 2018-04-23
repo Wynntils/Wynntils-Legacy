@@ -2,8 +2,7 @@ package cf.wynntils.modules.example;
 
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
 /**
  * Created by HeyZeer0 on 24/03/2018.
@@ -14,9 +13,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @JsonIgnoreProperties is needed 100% needed, you always will need to put it
  * @SettingsInfo is just the name of the config, can more things be added later
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @SettingsInfo(name = "example_settings", displayPath = "Example Settings")
-public class ExampleSettings extends SettingsHolder {
+public class ExampleSettings extends SettingsClass {
     /** You must ALWAYS put an INSTANCE
      *  of the class!
      */
