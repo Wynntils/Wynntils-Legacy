@@ -21,7 +21,7 @@ public class LocationOverlay extends Overlay {
     static boolean animation = false;
 
     public LocationOverlay() {
-        super("Update Overlay", 20, 20, false, 1.0f, 0.0f, 0, 0);
+        super("Location", 20, 20, false, 1.0f, 0.0f, 0, 0);
     }
 
     @Override

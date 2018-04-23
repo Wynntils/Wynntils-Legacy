@@ -15,7 +15,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class LevelingOverlay extends Overlay {
 
     public LevelingOverlay() {
-        super("Leveling Helper Overlay", 20, 20, true, 0.5f, 1.0f, 0, -58);
+        super("Leveling Helper", 20, 20, true, 0.5f, 1.0f, 0, -58);
     }
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})

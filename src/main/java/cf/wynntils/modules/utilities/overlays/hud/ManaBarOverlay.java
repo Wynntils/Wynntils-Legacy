@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ManaBarOverlay extends Overlay {
     public ManaBarOverlay() {
-        super("Mana Bar Overlay", 20, 20, true, 0.5f, 1.0f, 10, -38);
+        super("Mana Bar", 20, 20, true, 0.5f, 1.0f, 10, -38);
     }
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)

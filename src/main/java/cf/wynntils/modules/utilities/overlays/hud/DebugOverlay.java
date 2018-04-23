@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class DebugOverlay extends Overlay {
 
     public DebugOverlay() {
-        super("", 20,20, true, 0.5f, 0.5f, 0, 0);
+        super("Debug", 20,20, true, 0.5f, 0.5f, 0, 0);
     }
 
     //float hue = 0.0f;

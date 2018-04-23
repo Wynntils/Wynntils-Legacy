@@ -43,10 +43,10 @@ public class SettingsManager {
         File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
         f.mkdirs();
 
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + (info == null ? "overlay-" + ((Overlay)obj).displayName : info.name()) + ".json");
-        if(!f.exists()) {
+        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs",
+                m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
+        if(!f.exists())
             f.createNewFile();
-        }
 
         mapper.writeValue(f, obj);
     }
@@ -60,7 +60,8 @@ public class SettingsManager {
         File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
         f.mkdirs();
 
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs", m.getInfo().name() + "-" + (info == null ? "overlay-" + ((Overlay)obj).displayName : info.name()) + ".json");
+        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs",
+                m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
         if(!f.exists()) {
             f.createNewFile();
             saveSettings(m, obj);

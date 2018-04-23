@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ExpBarOverlay extends Overlay{
     public ExpBarOverlay() {
-        super("Experience Bar Overlay", 20, 20, true, 0.5f, 1.0f, 0, -29);
+        super("Experience Bar", 20, 20, true, 0.5f, 1.0f, 0, -29);
     }
 
 

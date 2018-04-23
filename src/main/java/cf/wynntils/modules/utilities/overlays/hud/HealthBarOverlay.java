@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class HealthBarOverlay extends Overlay {
 
     public HealthBarOverlay() {
-        super("Health Bar Overlay", 20, 20, true, 0.5f, 1.0f, -10, -38);
+        super("Health Bar", 20, 20, true, 0.5f, 1.0f, -10, -38);
     }
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)

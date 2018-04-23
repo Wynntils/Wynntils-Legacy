@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class ExampleOverlay extends Overlay {
     public ExampleOverlay() { //always have no parameters in the constructor and define values in "super"
         super(
-                "Example Overlay", //The name that'll be displayed in the options
+                "Example", //The name that'll be displayed in the options
                 20, //The width of the overlay(to be dragged in the options)
                 20, //The height of the overlay(to be dragged in the options)
                 true, //Should the overlay start visible
