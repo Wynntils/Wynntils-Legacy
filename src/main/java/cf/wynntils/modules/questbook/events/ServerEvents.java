@@ -4,7 +4,6 @@
 
 package cf.wynntils.modules.questbook.events;
 
-import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
@@ -23,7 +22,6 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
-import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +108,6 @@ public class ServerEvents implements Listener {
                 e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                 QuestManager.setReadingQuestBook(false);
                 Reference.LOGGER.warn("Took " + (System.currentTimeMillis() - time) + "ms to read the QuestBook!");
-                ModCore.mc().player.sendMessage(new TextComponentString("§cYour QuestBook was ben updated! (debug)"));
             }
         }
     }
