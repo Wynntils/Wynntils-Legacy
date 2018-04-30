@@ -4,50 +4,24 @@
 
 package cf.wynntils.modules.utilities.events;
 
+import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
 import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
-import cf.wynntils.modules.utilities.instances.PacketFilter;
 import cf.wynntils.modules.utilities.managers.TPSManager;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-
-import java.lang.reflect.Field;
+import net.minecraft.network.play.client.CPacketResourcePackStatus;
 
 public class ServerEvents implements Listener {
 
-    @EventHandler
-    public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-
-        //apply packet filter
-        try{
-            NetworkManager nm = e.getManager();
-            Field field = NetworkManager.class.getDeclaredFields()[12];
-            field.setAccessible(true);
-            NetHandlerPlayClient nhpc = (NetHandlerPlayClient)field.get(nm);
-            Field[] fields = NetHandlerPlayClient.class.getDeclaredFields();
-            field = fields[3];
-            field.setAccessible(true);
-            GuiScreen gui = (GuiScreen)field.get(nhpc);
-            field = fields[2];
-            field.setAccessible(true);
-            GameProfile prof = (GameProfile)field.get(nhpc);
-            NetHandlerPlayClient nnhpc = new PacketFilter(Minecraft.getMinecraft(), gui, nm, prof, nhpc);
-            field = NetworkManager.class.getDeclaredFields()[12];
-            field.setAccessible(true);
-            field.set(nm, nnhpc);
-        }catch (Exception ex) { ex.printStackTrace();}
-    }
+    public static boolean loadedResourcePack = false;
 
     @EventHandler
     public void leaveServer(WynncraftServerEvent.Leave e) {
-        PacketFilter.loadedResourcePack = false;
+        loadedResourcePack = false;
     }
 
     @EventHandler
@@ -59,5 +33,21 @@ public class ServerEvents implements Listener {
     public void onWorldLeft(WynnWorldJoinEvent e) {
         TPSManager.clearTpsInfo();
     }
+
+    @EventHandler
+    public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
+        if(loadedResourcePack) {
+            NetworkManager nm = e.getNetworkManager();
+            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
+            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
+            e.setCanceled(true);
+            return;
+        }
+
+        if(Reference.onServer) {
+            loadedResourcePack = true;
+        }
+    }
+
 
 }

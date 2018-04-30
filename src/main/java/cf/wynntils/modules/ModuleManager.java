@@ -4,6 +4,7 @@ package cf.wynntils.modules;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.modules.capes.CapesModule;
 import cf.wynntils.modules.core.CoreModule;
+import cf.wynntils.modules.questbook.QuestBookModule;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.wynnicmap.WynnicMapModule;
@@ -16,6 +17,7 @@ import cf.wynntils.modules.wynnsounds.WynnSoundsModule;
 public class ModuleManager {
 
     public static void initModules() {
+        FrameworkManager.registerModule(new QuestBookModule());
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
         FrameworkManager.registerModule(new WynnSoundsModule());
