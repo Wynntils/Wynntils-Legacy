@@ -60,7 +60,8 @@ public class GlowManager {
             ItemProfile wynnItem = WebManager.getItems().getOrDefault(displayName, null);
 
             if(wynnItem != null) {
-                String text = (identified ? wynnItem.getName() : "Unidentified " + wynnItem.getType()) + " §6[Lv.  " + wynnItem.getLevel() + "]";
+                String type  = wynnItem.getType() == null ? wynnItem.getAccessoryType() : wynnItem.getType();
+                String text = (identified ? wynnItem.getName() : "Unidentified " + type) + " §6[Lv.  " + wynnItem.getLevel() + "]";
                 if(wynnItem.tier.equals("Mythic")) {
                     i.setCustomNameTag("§5" + text);
                     i.setAlwaysRenderNameTag(true);

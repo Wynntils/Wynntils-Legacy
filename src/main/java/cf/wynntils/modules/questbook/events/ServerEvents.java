@@ -4,7 +4,6 @@
 
 package cf.wynntils.modules.questbook.events;
 
-import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
@@ -41,12 +40,9 @@ public class ServerEvents implements Listener {
     }
 
     private boolean acceptItems = false;
-    private InventoryBasic lastContainer = null;
     private short transactionId = 0;
 
     private ArrayList<String> readedQuests = new ArrayList<>();
-
-    private long time = System.currentTimeMillis();
 
     @EventHandler
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
@@ -55,16 +51,11 @@ public class ServerEvents implements Listener {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
 
                 if(base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
-                    lastContainer = base;
-
                     if(!acceptItems) {
                         readedQuests.clear();
                         transactionId = 0;
                         acceptItems = true;
-
-                        time = System.currentTimeMillis();
                     }
-
                     e.setCanceled(true);
                 }
             }
@@ -107,7 +98,6 @@ public class ServerEvents implements Listener {
                 acceptItems = false;
                 e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                 QuestManager.setReadingQuestBook(false);
-                Reference.LOGGER.warn("Took " + (System.currentTimeMillis() - time) + "ms to read the QuestBook!");
             }
         }
     }
