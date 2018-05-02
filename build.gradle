@@ -66,9 +66,6 @@ processResources {
 
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest {
-        attributes 'FMLAT': 'wynntils_at.cfg'
-    }
 }
 
 reobfJar {
@@ -80,8 +77,8 @@ shadowJar {
     classifier = null
     version = null
     configurations = [project.configurations.compile]
-    relocate "org.slf4j", "cf.wynntils.relocate.org.slf4j"
-    relocate "org.json", "cf.wynntils.relocate.org.json"
+    relocate "org.slf4j", "com.expansion.relocate.org.slf4j"
+    relocate "org.json", "com.expansion.relocate.org.json"
 }
 
 task wrapper(type: Wrapper) {

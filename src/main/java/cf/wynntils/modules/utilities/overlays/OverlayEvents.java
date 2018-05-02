@@ -7,7 +7,10 @@ import cf.wynntils.modules.utilities.overlays.inventories.ChestOverlay;
 import cf.wynntils.modules.utilities.overlays.inventories.InventoryOverlay;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraftforge.client.event.GuiOpenEvent;
+
+import java.lang.reflect.Field;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -28,7 +31,12 @@ public class OverlayEvents implements Listener {
             if(e.getGui() instanceof ChestOverlay) {
                 return;
             }
-            e.setGui(new ChestOverlay(ModCore.mc().player.inventory, ((GuiChest)e.getGui()).lowerChestInventory));
+            Field f = e.getGui().getClass().getDeclaredFields()[2];
+            f.setAccessible(true);
+
+            try{
+                e.setGui(new ChestOverlay(ModCore.mc().player.inventory, (IInventory)f.get(e.getGui())));
+            }catch (Exception ex) { ex.printStackTrace(); }
         }
     }
 
