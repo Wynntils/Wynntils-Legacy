@@ -6,6 +6,7 @@ package cf.wynntils.modules.core.events;
 
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
@@ -14,31 +15,13 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.lang.reflect.Field;
-
 public class ServerEvents implements Listener {
 
     @EventHandler
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-
-        //apply packet filter
-        try{
-            NetworkManager nm = e.getManager();
-            Field field = NetworkManager.class.getDeclaredFields()[12];
-            field.setAccessible(true);
-            NetHandlerPlayClient nhpc = (NetHandlerPlayClient)field.get(nm);
-            Field[] fields = NetHandlerPlayClient.class.getDeclaredFields();
-            field = fields[3];
-            field.setAccessible(true);
-            GuiScreen gui = (GuiScreen)field.get(nhpc);
-            field = fields[2];
-            field.setAccessible(true);
-            GameProfile prof = (GameProfile)field.get(nhpc);
-            NetHandlerPlayClient nnhpc = new PacketFilter(Minecraft.getMinecraft(), gui, nm, prof, nhpc);
-            field = NetworkManager.class.getDeclaredFields()[12];
-            field.setAccessible(true);
-            field.set(nm, nnhpc);
-        }catch (Exception ex) { ex.printStackTrace();}
+        NetworkManager nm = e.getManager();
+        NetHandlerPlayClient client = (NetHandlerPlayClient) ReflectionFields.NetworkManager_packetListener.getValue(nm);
+        ReflectionFields.NetworkManager_packetListener.setValue(nm, new PacketFilter(Minecraft.getMinecraft(), (GuiScreen)ReflectionFields.NetHandlerPlayClient_guiScreenServer.getValue(client), nm, (GameProfile)ReflectionFields.NetHandlerPlayClient_profile.getValue(client), client));
     }
 
 }

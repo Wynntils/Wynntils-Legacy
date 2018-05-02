@@ -6,7 +6,7 @@ package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ChatLine;
@@ -17,7 +17,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -63,15 +62,11 @@ public class ChatManager {
 
             if(ch != null) {
                 try{
-                    Field lField = ch.getClass().getDeclaredFields()[3];
-                    lField.setAccessible(true);
-                    List<ChatLine> oldLines = (List<ChatLine>)lField.get(ch);
+                    List<ChatLine> oldLines = (List<ChatLine>) ReflectionFields.GuiNewChat_chatLines.getValue(ch);
 
                     if(oldLines != null && oldLines.size() > 0) {
                         ChatLine line = oldLines.get(0);
-                        Field txt = line.getClass().getDeclaredFields()[1];
-                        txt.setAccessible(true);
-                        txt.set(line, new TextComponentString(after + " §7[" + lastAmount++ + "x]"));
+                        ReflectionFields.ChatLine_lineString.setValue(line, new TextComponentString(after + " §7[" + lastAmount++ + "x]"));
 
                         ch.refreshChat();
                         cancel = true;
