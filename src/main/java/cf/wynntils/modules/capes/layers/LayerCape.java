@@ -1,6 +1,6 @@
 package cf.wynntils.modules.capes.layers;
 
-import cf.wynntils.modules.capes.managers.CapeManager;
+import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -28,7 +28,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
     {
 
         ResourceLocation rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
-        if (rl != null && CapeManager.users.contains(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
+        if (rl != null && WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
         {
             ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
