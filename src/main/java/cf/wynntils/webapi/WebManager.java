@@ -27,7 +27,10 @@ public class WebManager {
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+
     private static ArrayList<String> helpers = new ArrayList<>();
+    private static ArrayList<String> moderators = new ArrayList<>();
+    private static ArrayList<String> premiums = new ArrayList<>();
 
     private static WynntilsAccount account = null;
 
@@ -55,7 +58,7 @@ public class WebManager {
             updateItemGuesses();
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
 
-            updateHelpers();
+            updateUsersRoles();
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -87,6 +90,14 @@ public class WebManager {
 
     public static boolean isHelper(String uuid) {
         return helpers.contains(uuid);
+    }
+
+    public static boolean isModerator(String uuid) {
+        return moderators.contains(uuid);
+    }
+
+    public static boolean isPremium(String uuid) {
+        return premiums.contains(uuid);
     }
 
     /**
@@ -292,10 +303,30 @@ public class WebManager {
         itemGuesses = guessers;
     }
 
-    public static void updateHelpers() throws Exception {
-        WebReader reader = new WebReader(apiUrls.get("Helpers"));
+    public static void updateUsersRoles() throws Exception {
+        URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        helpers = reader.getList("Helpers");
+        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+
+        JSONArray helper = main.getJSONArray("helperUsers");
+        if(helper.length() > 0) {
+            for(int i = 0; i < helper.length(); i++) {
+                helpers.add(helper.getString(i));
+            }
+        }
+        JSONArray moderator = main.getJSONArray("helperUsers");
+        if(moderator.length() > 0) {
+            for(int i = 0; i < moderator.length(); i++) {
+                moderators.add(moderator.getString(i));
+            }
+        }
+        JSONArray premium = main.getJSONArray("helperUsers");
+        if(premium.length() > 0) {
+            for(int i = 0; i < premium.length(); i++) {
+                premiums.add(premium.getString(i));
+            }
+        }
     }
 
     public static String getLatestJarFileUrl() throws Exception {
@@ -304,20 +335,6 @@ public class WebManager {
 
         JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
         return apiUrls.get("Jars") + "artifact/" + main.getJSONObject("artifacts").getJSONObject("0").getString("relativePath");
-    }
-
-    public static ArrayList<String> getAllUsersWithCapes() throws Exception {
-        URLConnection st = new URL(apiUrls.get("UserAccount") + "/getUsersCapes").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("usersWithCapes");
-        ArrayList<String> result = new ArrayList<>();
-
-        for(int i = 0; i < main.length(); i++ ) {
-            result.add(main.getString(i));
-        }
-
-        return result;
     }
 
 }

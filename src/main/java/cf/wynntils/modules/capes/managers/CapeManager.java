@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 /**
  * Created by HeyZeer0 on 07/02/2018.
@@ -16,20 +15,12 @@ import java.util.ArrayList;
  */
 public class CapeManager {
 
-    public static ArrayList<String> users = new ArrayList<>();
-
-    public static void updateCapes() {
-        if(WebManager.apiUrls == null) return;
-        try{
-            users = WebManager.getAllUsersWithCapes();
-        }catch (Exception ex) { ex.printStackTrace(); }
-    }
-
     public static void downloadCape(String uuid) {
-        if(users.size() <= 0) {
-            return;
-        }
-        if ((uuid != null) && (!uuid.isEmpty()) && users.contains(uuid.replace("-", ""))) {
+        if ((uuid != null) && (!uuid.isEmpty())) {
+            if(!WebManager.isPremium(uuid)) {
+                return;
+            }
+
             String url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
             ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
 
