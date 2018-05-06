@@ -4,7 +4,6 @@ import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.capes.events.EntityEvents;
 import cf.wynntils.modules.capes.layers.LayerCape;
-import cf.wynntils.modules.capes.managers.CapeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
@@ -18,7 +17,6 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 public class CapesModule extends Module {
 
     public void onEnable() {
-        CapeManager.updateCapes();
         registerEvents(new EntityEvents());
     }
 
