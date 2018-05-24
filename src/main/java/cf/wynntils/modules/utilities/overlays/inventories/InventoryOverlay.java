@@ -1,12 +1,14 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.framework.rendering.SmartFontRenderer;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.utils.Utils;
-import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -35,6 +38,7 @@ public class InventoryOverlay extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
+    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
     EntityPlayer player;
 
     public InventoryOverlay(EntityPlayer player) {
@@ -141,25 +145,50 @@ public class InventoryOverlay extends GuiInventory {
             }
 
             if (!armorcheck) {
-                GL11.glBegin(GL11.GL_QUADS);
+//                    GL11.glColor4d(r, g, b, alpha);
+//                    int r1 = (int)Math.round(r * 255);
+//                    int g1 = (int)Math.round(g * 255);
+//                    int b1 = (int)Math.round(b * 255);
+//                    int color = (r1 << 16) + (g1 << 8) + b1;
+//                    float f = (float)(color >> 16 & 255) / 255.0F;
+//                    float f1 = (float)(color >> 8 & 255) / 255.0F;
+//                    float f2 = (float)(color & 255) / 255.0F;
+//                    GlStateManager.color(f, f1, f2, 1.0f);
+                ScreenRenderer screen = new ScreenRenderer();
+                ScreenRenderer.beginGL(0, 0);
                 {
-                    GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
-                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color((float) r, (float) g, (float) b, 1.0f);
+                    Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
                 }
-                GL11.glEnd();
+                ScreenRenderer.endGL();
+//                GL11.glBegin(GL11.GL_QUADS);
+//                {
+//                    GL11.glColor4d(r, g, b, alpha);
+//                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
+//                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
+//                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
+//                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
+//                }
+//                GL11.glEnd();
             } else {
-                GL11.glBegin(GL11.GL_QUADS);
+                ScreenRenderer screen = new ScreenRenderer();
+                ScreenRenderer.beginGL(0, 0);
                 {
-                    GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
-                    GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
-                    GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
-                    GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color((float) r, (float) g, (float) b, 1.0f);
+                    Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
                 }
-                GL11.glEnd();
+                ScreenRenderer.endGL();
+//                GL11.glBegin(GL11.GL_QUADS);
+//                {
+//                    GL11.glColor4d(r, g, b, alpha);
+//                    GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
+//                    GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
+//                    GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
+//                    GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
+//                }
+//                GL11.glEnd();
             }
         }
 
@@ -221,16 +250,19 @@ public class InventoryOverlay extends GuiInventory {
             }
             ScreenRenderer.beginGL(0, 0);
             {
-                ScreenRenderer.scale(0.9f);
+                ScreenRenderer.scale(0.7f);
+                int xoffset = 290;
+                int yoffset = 130;
                 ItemStack liquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                liquids.setCount(leAmount);
+                liquids.setCount(liquid);
                 ItemStack block = new ItemStack(Blocks.EMERALD_BLOCK);
                 block.setCount(blockAmount);
                 ItemStack emerald = new ItemStack(Items.EMERALD);
                 emerald.setCount(money);
-                screen.drawItemStack(liquids, 110, 62, true);
-                screen.drawItemStack(block, 130, 62, true);
-                screen.drawItemStack(emerald, 150, 62, true);
+                screen.drawString("" + leAmount, xoffset - 15, yoffset - 36, CommonColors.GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                screen.drawItemStack(liquids, xoffset, yoffset - 40, true);
+                screen.drawItemStack(block, xoffset, yoffset - 20, true);
+                screen.drawItemStack(emerald, xoffset, yoffset, true);
             }
             ScreenRenderer.endGL();
         }

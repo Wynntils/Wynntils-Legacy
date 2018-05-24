@@ -549,6 +549,14 @@ public class ScreenRenderer {
         drawRectF(color,xMin,(float)y1,xMax,(float)y2);
     }
 
+    public void color(CustomColor color){
+        color.applyColor();
+    }
+
+    public void color(float r, float g, float b, float alpha){
+        GlStateManager.color(r, g, b, alpha);
+    }
+
     public void drawItemStack(ItemStack is, int x, int y) {
         drawItemStack(is, x, y, false, "", true);
     }
