@@ -137,7 +137,7 @@ public class ServerEvents implements Listener {
             status = QuestStatus.CAN_START;
         }
 
-        int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Min. Lv: ", ""));
+        int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Min. Lv: ", "").replace("✖ Min. Lv: ", ""));
         QuestSize size = QuestSize.valueOf(Utils.stripColor(lore.get(3)).replace("- Length: ", "").toUpperCase());
 
         String description = "";
