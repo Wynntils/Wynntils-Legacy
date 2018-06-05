@@ -2,11 +2,11 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -22,7 +22,7 @@ public class HealthBarOverlay extends Overlay {
     public float animated = 2f;
 
     @Setting(displayName = "Texture", description = "What texture to use")
-    public HealthTextures texture = HealthTextures.wynn;
+    public HealthTextures texture = HealthTextures.b;
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = false;
@@ -41,7 +41,7 @@ public class HealthBarOverlay extends Overlay {
         if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
             health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
         } else {
-            this.health = getPlayerInfo().getCurrentHealth();
+            health = getPlayerInfo().getCurrentHealth();
         }
     }
 

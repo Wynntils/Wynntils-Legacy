@@ -2,11 +2,11 @@ package cf.wynntils.modules.utilities.overlays.hud;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
-import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -21,7 +21,7 @@ public class ManaBarOverlay extends Overlay {
     public float animated = 2f;
 
     @Setting(displayName = "Texture", description = "What texture to use")
-    public ManaTextures texture = ManaTextures.wynn;
+    public ManaTextures texture = ManaTextures.b;
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = true;
@@ -39,8 +39,7 @@ public class ManaBarOverlay extends Overlay {
         if (!(visible = (getPlayerInfo().getCurrentMana() != -1 && !Reference.onLobby))) return;
         if(this.animated > 0.0f && this.animated < 10.0f)
             mana -= (animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
-        else
-            this.mana = getPlayerInfo().getCurrentMana();
+        else mana = getPlayerInfo().getCurrentMana();
 
         /*
         //debug, activate this to make it switch between the textures every few seconds

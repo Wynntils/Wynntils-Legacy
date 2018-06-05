@@ -38,8 +38,8 @@ public class InventoryOverlay extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
-    //    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
-    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/blocks/wool_colored_white.png");
+    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+
 
     EntityPlayer player;
 
@@ -65,7 +65,6 @@ public class InventoryOverlay extends GuiInventory {
 
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 10, 0F);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
         if(getSlotUnderMouse() != null) {
             if(getSlotUnderMouse().slotNumber == 45 || getSlotUnderMouse().slotNumber == 44)
                 GL11.glEnable(GL11.GL_BLEND);
@@ -108,7 +107,7 @@ public class InventoryOverlay extends GuiInventory {
             }
 
 
-            float r, g, b, a;
+            float r, g, b;
 
             String lore = getStringLore(is);
 
@@ -118,32 +117,28 @@ public class InventoryOverlay extends GuiInventory {
                 r = 0;
                 g = 1;
                 b = 1;
-                a = .4f;
             } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                 r = 0.3f;
                 g = 0;
                 b = 0.3f;
-                a = .6f;
             } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                 r = 1;
                 g = 0;
                 b = 1;
-                a = .4f;
             } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                 r = 1;
                 g = 1;
                 b = 0;
-                a = .4f;
             } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                 r = 0;
                 g = 1;
                 b = 0;
-                a = .4f;
-            } else if (floor >= 4) {
+            } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                 r = 0;
                 g = 0;
                 b = 0;
-                a = 0f;
+            } else if (floor >= 4) {
+                continue;
             } else {
                 continue;
             }
@@ -164,15 +159,22 @@ public class InventoryOverlay extends GuiInventory {
             }
 
             if (!armorcheck) {
-                //Texture isn't getting rendered
                 mc.getTextureManager().bindTexture(RESOURCE);
-                GlStateManager.color(r, g, b, a);
+                GlStateManager.color(r, g, b, 1.0f);
                 GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
                 Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
                 GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
             } else {
+                mc.getTextureManager().bindTexture(RESOURCE);
+                GlStateManager.color(r, g, b, 1.0f);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
+                Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 //XY: 8 + extra, offset + 8 - (18 * armorfloor)
             }
         }

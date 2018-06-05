@@ -87,6 +87,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight sets", description = "Should set items be highlighted")
         public boolean setHighlight = true;
 
+        @Setting(displayName = "Highlight normals", description = "Should normal items be highlighted")
+        public boolean normalHighlight = false;
+
         @Setting(displayName = "Highlight godly cosmetics", description = "Should godly cosmetic items be highlighted")
         public boolean godlyEffectsHighlight = true;
 

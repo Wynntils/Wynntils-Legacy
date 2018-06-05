@@ -2,11 +2,11 @@ package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Utils;
-import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -34,6 +35,8 @@ public class ChestOverlay extends GuiChest {
 
     IInventory lowerInv;
     IInventory upperInv;
+
+    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
 
     public ChestOverlay(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
@@ -60,7 +63,6 @@ public class ChestOverlay extends GuiChest {
         GL11.glPushMatrix();
         {
             GL11.glTranslatef(0, 10, 0F);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
             if(getSlotUnderMouse() != null) {
                 if(getSlotUnderMouse().slotNumber == 89)
                     GL11.glEnable(GL11.GL_BLEND);
@@ -81,10 +83,8 @@ public class ChestOverlay extends GuiChest {
                     continue;
                 }
 
-                double r, g, b;
-                float alpha;
-
                 String lore = getStringLore(is);
+
 
                 if (this.lowerInv.getName().contains("skill points remaining") && lore.contains("points")) {
                     lore = lore.replace("§", "");
@@ -97,37 +97,63 @@ public class ChestOverlay extends GuiChest {
                     is.setCount(count == 0 ? 1 : count);
                 }
 
-                if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-                    r = 0; g = 1; b = 1; alpha = .4f;
+                float r, g, b;
+
+                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+                    r = 0;
+                    g = 1;
+                    b = 1;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-                    r = 0.3; g = 0; b = 0.3; alpha = .6f;
+                    r = 0.3f;
+                    g = 0;
+                    b = 0.3f;
                 } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
-                    r = 1; g = 0; b = 1; alpha = .4f;
+                    r = 1;
+                    g = 0;
+                    b = 1;
                 } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
-                    r = 1; g = 1; b = 0; alpha = .4f;
+                    r = 1;
+                    g = 1;
+                    b = 0;
                 } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
-                    r = 0; g = 1; b = 0; alpha = .4f;
+                    r = 0;
+                    g = 1;
+                    b = 0;
+                } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
+                    r = 0;
+                    g = 0;
+                    b = 0;
                 } else if (lore.contains("§6Epic") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.epicEffectsHighlight) {
-                    r = 1; g = 0.666; b = 0; alpha = .4f;
+                    r = 1;
+                    g = 0.666f;
+                    b = 0;
                 } else if (lore.contains("§cGodly") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.godlyEffectsHighlight) {
-                    r = 1; g = 0; b = 0; alpha = .6f;
+                    r = 1;
+                    g = 0;
+                    b = 0;
                 } else if (lore.contains("§dRare") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.rareEffectsHighlight) {
-                    r = 1; g = 0; b = 1; alpha = .4f;
+                    r = 1;
+                    g = 0;
+                    b = 1;
                 } else if (lore.contains("§fCommon") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.commonEffectsHighlight) {
-                    r = 1; g = 1; b = 1; alpha = .4f;
+                    r = 1;
+                    g = 1;
+                    b = 1;
+                } else if (floor >= 4) {
+                    continue;
                 } else {
                     continue;
                 }
 
-                GL11.glBegin(GL11.GL_QUADS);
-                {
-                    GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + (18 * amount), 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), 24 + (18 * floor));
-                    GL11.glVertex2f(24 + (18 * amount), 24 + (18 * floor));
-                }
-                GL11.glEnd();
+                mc.getTextureManager().bindTexture(RESOURCE);
+                GlStateManager.color(r, g, b, 1.0f);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
             }
 
             amount = -1;
@@ -172,54 +198,51 @@ public class ChestOverlay extends GuiChest {
                     continue;
                 }
 
-                double r, g, b;
-                float alpha;
+                float r, g, b;
 
                 String lore = getStringLore(is);
 
-                if (lore.contains("Reward")) {
+                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
                 } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0;
                     g = 1;
                     b = 1;
-                    alpha = .4f;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-                    r = 0.3;
+                    r = 0.3f;
                     g = 0;
-                    b = 0.3;
-                    alpha = .6f;
+                    b = 0.3f;
                 } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                     r = 1;
                     g = 0;
                     b = 1;
-                    alpha = .4f;
                 } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                     r = 1;
                     g = 1;
                     b = 0;
-                    alpha = .4f;
                 } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                     r = 0;
                     g = 1;
                     b = 0;
-                    alpha = .4f;
+                } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                } else if (floor >= 4) {
+                    continue;
                 } else {
                     continue;
                 }
 
-                GL11.glBegin(GL11.GL_QUADS);
-                {
-                    GL11.glColor4d(r, g, b, alpha);
-                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
-                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
-                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
-                }
-                GL11.glEnd();
+                mc.getTextureManager().bindTexture(RESOURCE);
+                GlStateManager.color(r, g, b, 1.0f);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
             }
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
             if(getSlotUnderMouse() != null) {
                 if(getSlotUnderMouse().slotNumber == 89)
                     GL11.glDisable(GL11.GL_BLEND);
