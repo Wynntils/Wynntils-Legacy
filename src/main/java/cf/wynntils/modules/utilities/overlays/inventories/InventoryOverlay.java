@@ -38,7 +38,9 @@ public class InventoryOverlay extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+    //    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/blocks/wool_colored_white.png");
+
     EntityPlayer player;
 
     public InventoryOverlay(EntityPlayer player) {
@@ -106,25 +108,42 @@ public class InventoryOverlay extends GuiInventory {
             }
 
 
-            double r, g, b;
-            float alpha;
+            float r, g, b, a;
 
             String lore = getStringLore(is);
 
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
             } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-                r = 0; g = 1; b = 1; alpha = .4f;
+                r = 0;
+                g = 1;
+                b = 1;
+                a = .4f;
             } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-                r = 0.3; g = 0; b = 0.3; alpha = .6f;
+                r = 0.3f;
+                g = 0;
+                b = 0.3f;
+                a = .6f;
             } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
-                r = 1; g = 0; b = 1; alpha = .4f;
+                r = 1;
+                g = 0;
+                b = 1;
+                a = .4f;
             } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
-                r = 1; g = 1; b = 0; alpha = .4f;
+                r = 1;
+                g = 1;
+                b = 0;
+                a = .4f;
             } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
-                r = 0; g = 1; b = 0; alpha = .4f;
+                r = 0;
+                g = 1;
+                b = 0;
+                a = .4f;
             } else if (floor >= 4) {
-                r = 0; g = 0; b = 0; alpha = 0f;
+                r = 0;
+                g = 0;
+                b = 0;
+                a = 0f;
             } else {
                 continue;
             }
@@ -145,50 +164,16 @@ public class InventoryOverlay extends GuiInventory {
             }
 
             if (!armorcheck) {
-//                    GL11.glColor4d(r, g, b, alpha);
-//                    int r1 = (int)Math.round(r * 255);
-//                    int g1 = (int)Math.round(g * 255);
-//                    int b1 = (int)Math.round(b * 255);
-//                    int color = (r1 << 16) + (g1 << 8) + b1;
-//                    float f = (float)(color >> 16 & 255) / 255.0F;
-//                    float f1 = (float)(color >> 8 & 255) / 255.0F;
-//                    float f2 = (float)(color & 255) / 255.0F;
-//                    GlStateManager.color(f, f1, f2, 1.0f);
-                ScreenRenderer screen = new ScreenRenderer();
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    mc.getTextureManager().bindTexture(RESOURCE);
-                    GlStateManager.color((float) r, (float) g, (float) b, 1.0f);
-                    Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                }
-                ScreenRenderer.endGL();
-//                GL11.glBegin(GL11.GL_QUADS);
-//                {
-//                    GL11.glColor4d(r, g, b, alpha);
-//                    GL11.glVertex2f(24 + (18 * amount), offset + 8 + (18 * floor));
-//                    GL11.glVertex2f(8 + (18 * amount), offset + 8 + (18 * floor));
-//                    GL11.glVertex2f(8 + (18 * amount), offset + 24 + (18 * floor));
-//                    GL11.glVertex2f(24 + (18 * amount), offset + 24 + (18 * floor));
-//                }
-//                GL11.glEnd();
+                //Texture isn't getting rendered
+                mc.getTextureManager().bindTexture(RESOURCE);
+                GlStateManager.color(r, g, b, a);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
+                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
             } else {
-                ScreenRenderer screen = new ScreenRenderer();
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    mc.getTextureManager().bindTexture(RESOURCE);
-                    GlStateManager.color((float) r, (float) g, (float) b, 1.0f);
-                    Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
-                }
-                ScreenRenderer.endGL();
-//                GL11.glBegin(GL11.GL_QUADS);
-//                {
-//                    GL11.glColor4d(r, g, b, alpha);
-//                    GL11.glVertex2f(24 + extra, offset + 8 - (18 * armorfloor));
-//                    GL11.glVertex2f(8 + extra, offset + 8 - (18 * armorfloor));
-//                    GL11.glVertex2f(8 + extra, offset + 24 - (18 * armorfloor));
-//                    GL11.glVertex2f(24 + extra, offset + 24 - (18 * armorfloor));
-//                }
-//                GL11.glEnd();
+                //XY: 8 + extra, offset + 8 - (18 * armorfloor)
             }
         }
 
@@ -200,74 +185,72 @@ public class InventoryOverlay extends GuiInventory {
         GL11.glPopMatrix();
 
 
-        if (!UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-            return;
+        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
+
+            int blocks = 0, liquid = 0, emeralds = 0;
+
+            for (int i = 0; i < mc.player.inventory.getSizeInventory(); i++) {
+                ItemStack it = mc.player.inventory.getStackInSlot(i);
+                if (it == null || it.isEmpty()) {
+                    continue;
+                }
+
+                if (it.getItem() == Items.EMERALD) {
+                    emeralds += it.getCount();
+                    continue;
+                }
+                if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                    blocks += it.getCount();
+                    continue;
+                }
+                if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                    liquid += it.getCount();
+                }
+            }
+
+            int money = (liquid * 4096) + (blocks * 64) + emeralds, leAmount = 0, blockAmount = 0;
+
+            GlStateManager.disableLighting();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+            ScreenRenderer screen = new ScreenRenderer();
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                ScreenRenderer.beginGL(0, 0);
+                {
+                    ScreenRenderer.scale(0.9f);
+                    ItemStack is = new ItemStack(Items.EMERALD);
+                    is.setCount(money);
+                    screen.drawItemStack(is, 150, 62, true);
+                }
+                ScreenRenderer.endGL();
+
+            } else {
+                if (money != 0) {
+                    leAmount = (int) Math.floor(money / 4096);
+                    money -= leAmount * 4096;
+
+                    blockAmount = (int) Math.floor(money / 64);
+                    money -= blockAmount * 64;
+                }
+                ScreenRenderer.beginGL(0, 0);
+                {
+                    ScreenRenderer.scale(0.7f);
+                    int xoffset = 290;
+                    int yoffset = 130;
+                    ItemStack liquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
+                    liquids.setCount(liquid);
+                    ItemStack block = new ItemStack(Blocks.EMERALD_BLOCK);
+                    block.setCount(blockAmount);
+                    ItemStack emerald = new ItemStack(Items.EMERALD);
+                    emerald.setCount(money);
+                    screen.drawString("" + leAmount, xoffset - 15, yoffset - 36, CommonColors.GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                    screen.drawItemStack(liquids, xoffset, yoffset - 40, true);
+                    screen.drawItemStack(block, xoffset, yoffset - 20, true);
+                    screen.drawItemStack(emerald, xoffset, yoffset, true);
+                }
+                ScreenRenderer.endGL();
+            }
+            GlStateManager.enableLighting();
         }
-
-        int blocks = 0, liquid = 0, emeralds = 0;
-
-        for(int i = 0; i < mc.player.inventory.getSizeInventory(); i++) {
-            ItemStack it = mc.player.inventory.getStackInSlot(i);
-            if(it == null || it.isEmpty()) {
-                continue;
-            }
-
-            if(it.getItem() == Items.EMERALD) {
-                emeralds+= it.getCount();
-                continue;
-            }
-            if(it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                blocks+= it.getCount();
-                continue;
-            }
-            if(it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                liquid+= it.getCount();
-            }
-        }
-
-        int money = (liquid * 4096) + (blocks * 64) + emeralds, leAmount = 0, blockAmount = 0;
-
-        GlStateManager.disableLighting();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-        ScreenRenderer screen = new ScreenRenderer();
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            ScreenRenderer.beginGL(0, 0);
-            {
-                ScreenRenderer.scale(0.9f);
-                ItemStack is = new ItemStack(Items.EMERALD);
-                is.setCount(money);
-                screen.drawItemStack(is, 150, 62, true);
-            }
-            ScreenRenderer.endGL();
-
-        }else{
-            if (money != 0) {
-                leAmount = (int) Math.floor(money / 4096);
-                money -= leAmount * 4096;
-
-                blockAmount = (int) Math.floor(money / 64);
-                money -= blockAmount * 64;
-            }
-            ScreenRenderer.beginGL(0, 0);
-            {
-                ScreenRenderer.scale(0.7f);
-                int xoffset = 290;
-                int yoffset = 130;
-                ItemStack liquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                liquids.setCount(liquid);
-                ItemStack block = new ItemStack(Blocks.EMERALD_BLOCK);
-                block.setCount(blockAmount);
-                ItemStack emerald = new ItemStack(Items.EMERALD);
-                emerald.setCount(money);
-                screen.drawString("" + leAmount, xoffset - 15, yoffset - 36, CommonColors.GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
-                screen.drawItemStack(liquids, xoffset, yoffset - 40, true);
-                screen.drawItemStack(block, xoffset, yoffset - 20, true);
-                screen.drawItemStack(emerald, xoffset, yoffset, true);
-            }
-            ScreenRenderer.endGL();
-        }
-
-        GlStateManager.enableLighting();
     }
 
     public void drawHoverGuess(ItemStack stack) {
