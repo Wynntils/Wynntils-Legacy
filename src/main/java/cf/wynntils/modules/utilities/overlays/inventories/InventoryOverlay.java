@@ -1,13 +1,15 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
-import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
+import com.ibm.icu.text.DecimalFormat;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,7 +28,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class InventoryOverlay extends GuiInventory {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
 
     EntityPlayer player;
@@ -107,7 +108,7 @@ public class InventoryOverlay extends GuiInventory {
             }
 
 
-            float r, g, b;
+            float r, g, b, a;
 
             String lore = getStringLore(is);
 
@@ -117,26 +118,32 @@ public class InventoryOverlay extends GuiInventory {
                 r = 0;
                 g = 1;
                 b = 1;
+                a = .4f;
             } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                 r = 0.3f;
                 g = 0;
                 b = 0.3f;
+                a = .6f;
             } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                 r = 1;
                 g = 0;
                 b = 1;
+                a = .4f;
             } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                 r = 1;
                 g = 1;
                 b = 0;
+                a = .4f;
             } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                 r = 0;
                 g = 1;
                 b = 0;
+                a = .4f;
             } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
-                r = 0;
-                g = 0;
-                b = 0;
+                r = 1;
+                g = 1;
+                b = 1;
+                a = .4f;
             } else if (floor >= 4) {
                 continue;
             } else {
@@ -159,22 +166,60 @@ public class InventoryOverlay extends GuiInventory {
             }
 
             if (!armorcheck) {
-                mc.getTextureManager().bindTexture(RESOURCE);
-                GlStateManager.color(r, g, b, 1.0f);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
+                    GL11.glPushMatrix();
+                    {
+                        GlStateManager.color(r, g, b, a);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+                    }
+                    GL11.glPopMatrix();
+                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                    GL11.glPushMatrix();
+                    {
+                        mc.getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                }
                 //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
             } else {
-                mc.getTextureManager().bindTexture(RESOURCE);
-                GlStateManager.color(r, g, b, 1.0f);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
-                Gui.drawModalRectWithCustomSizedTexture(8 + extra, offset + 8 - (18 * armorfloor), 0, 0, 16, 16, 16, 16);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                int x = 8 + extra, y = offset + 8 - (18 * armorfloor);
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
+                    GL11.glPushMatrix();
+                    {
+                        GlStateManager.color(r, g, b, a);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+                    }
+                    GL11.glPopMatrix();
+                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                    GL11.glPushMatrix();
+                    {
+                        mc.getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                }
                 //XY: 8 + extra, offset + 8 - (18 * armorfloor)
             }
         }
@@ -188,6 +233,8 @@ public class InventoryOverlay extends GuiInventory {
 
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
+
+            final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
             int blocks = 0, liquid = 0, emeralds = 0;
 
@@ -215,13 +262,16 @@ public class InventoryOverlay extends GuiInventory {
             GlStateManager.disableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
             ScreenRenderer screen = new ScreenRenderer();
+            int x = 190;
+            int y = 80;
+//            CustomColor emeraldColor = CustomColor.fromString("595959", 1);
+            CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 ScreenRenderer.beginGL(0, 0);
                 {
                     ScreenRenderer.scale(0.9f);
-                    ItemStack is = new ItemStack(Items.EMERALD);
-                    is.setCount(money);
-                    screen.drawItemStack(is, 150, 62, true);
+                    String moneyText = decimalFormat.format(money) + E;
+                    screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                 }
                 ScreenRenderer.endGL();
 
@@ -235,19 +285,9 @@ public class InventoryOverlay extends GuiInventory {
                 }
                 ScreenRenderer.beginGL(0, 0);
                 {
-                    ScreenRenderer.scale(0.7f);
-                    int xoffset = 290;
-                    int yoffset = 130;
-                    ItemStack liquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                    liquids.setCount(liquid);
-                    ItemStack block = new ItemStack(Blocks.EMERALD_BLOCK);
-                    block.setCount(blockAmount);
-                    ItemStack emerald = new ItemStack(Items.EMERALD);
-                    emerald.setCount(money);
-                    screen.drawString("" + leAmount, xoffset - 15, yoffset - 36, CommonColors.GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
-                    screen.drawItemStack(liquids, xoffset, yoffset - 40, true);
-                    screen.drawItemStack(block, xoffset, yoffset - 20, true);
-                    screen.drawItemStack(emerald, xoffset, yoffset, true);
+                    ScreenRenderer.scale(0.9f);
+                    String moneyText = decimalFormat.format(leAmount) + L + E + " " + decimalFormat.format(blockAmount) + E + B + " " + decimalFormat.format(money) + E;
+                    screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                 }
                 ScreenRenderer.endGL();
             }

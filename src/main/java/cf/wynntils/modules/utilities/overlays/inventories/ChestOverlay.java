@@ -1,6 +1,8 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.framework.rendering.SmartFontRenderer;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
@@ -24,6 +26,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +40,8 @@ public class ChestOverlay extends GuiChest {
     IInventory upperInv;
 
     private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     public ChestOverlay(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
@@ -97,7 +102,7 @@ public class ChestOverlay extends GuiChest {
                     is.setCount(count == 0 ? 1 : count);
                 }
 
-                float r, g, b;
+                float r, g, b, a;
 
                 if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
@@ -105,55 +110,84 @@ public class ChestOverlay extends GuiChest {
                     r = 0;
                     g = 1;
                     b = 1;
+                    a = .4f;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                     r = 0.3f;
                     g = 0;
                     b = 0.3f;
+                    a = .6f;
                 } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                     r = 1;
                     g = 0;
                     b = 1;
+                    a = .4f;
                 } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                     r = 1;
                     g = 1;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                     r = 0;
                     g = 1;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
-                    r = 0;
-                    g = 0;
-                    b = 0;
+                    r = 1;
+                    g = 1;
+                    b = 1;
+                    a = .4f;
                 } else if (lore.contains("§6Epic") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.epicEffectsHighlight) {
                     r = 1;
                     g = 0.666f;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§cGodly") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.godlyEffectsHighlight) {
                     r = 1;
                     g = 0;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§dRare") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.rareEffectsHighlight) {
                     r = 1;
                     g = 0;
                     b = 1;
+                    a = .4f;
                 } else if (lore.contains("§fCommon") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.commonEffectsHighlight) {
                     r = 1;
                     g = 1;
                     b = 1;
+                    a = .4f;
                 } else if (floor >= 4) {
                     continue;
                 } else {
                     continue;
                 }
+                int x = 8 + (18 * amount), y = 8 + (18 * floor);
 
-                mc.getTextureManager().bindTexture(RESOURCE);
-                GlStateManager.color(r, g, b, 1.0f);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
+                    GL11.glPushMatrix();
+                    {
+                        GlStateManager.color(r, g, b, a);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+                    }
+                    GL11.glPopMatrix();
+                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                    GL11.glPushMatrix();
+                    {
+                        mc.getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                }
             }
 
             amount = -1;
@@ -198,7 +232,7 @@ public class ChestOverlay extends GuiChest {
                     continue;
                 }
 
-                float r, g, b;
+                float r, g, b, a;
 
                 String lore = getStringLore(is);
 
@@ -208,39 +242,64 @@ public class ChestOverlay extends GuiChest {
                     r = 0;
                     g = 1;
                     b = 1;
+                    a = .4f;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                     r = 0.3f;
                     g = 0;
                     b = 0.3f;
+                    a = .6f;
                 } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                     r = 1;
                     g = 0;
                     b = 1;
+                    a = .4f;
                 } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                     r = 1;
                     g = 1;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                     r = 0;
                     g = 1;
                     b = 0;
+                    a = .4f;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
-                    r = 0;
-                    g = 0;
-                    b = 0;
+                    r = 1;
+                    g = 1;
+                    b = 1;
+                    a = .4f;
                 } else if (floor >= 4) {
                     continue;
                 } else {
                     continue;
                 }
 
-                mc.getTextureManager().bindTexture(RESOURCE);
-                GlStateManager.color(r, g, b, 1.0f);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                Gui.drawModalRectWithCustomSizedTexture(8 + (18 * amount), offset + 8 + (18 * floor), 0, 0, 16, 16, 16, 16);
-                GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
+                    GL11.glPushMatrix();
+                    {
+                        GlStateManager.color(r, g, b, a);
+                        GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
+                    }
+                    GL11.glPopMatrix();
+                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                    GL11.glPushMatrix();
+                    {
+                        mc.getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                }
             }
 
             if(getSlotUnderMouse() != null) {
@@ -251,112 +310,119 @@ public class ChestOverlay extends GuiChest {
         GL11.glPopMatrix();
 
         if (!UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
-            return;
-        }
+            if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
+                int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
+                int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
 
-        int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
-        int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
+                for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
+                    ItemStack it = lowerInv.getStackInSlot(i);
+                    if (it == null || it.isEmpty()) {
+                        continue;
+                    }
 
-        for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
-            ItemStack it = lowerInv.getStackInSlot(i);
-            if (it == null || it.isEmpty()) {
-                continue;
-            }
-
-            if (it.getItem() == Items.EMERALD) {
-                LWRemeralds += it.getCount();
-                continue;
-            }
-            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                LWRblocks += it.getCount();
-                continue;
-            }
-            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                LWRliquid += it.getCount();
-            }
-        }
-        for (int i = 0; i < upperInv.getSizeInventory(); i++) {
-            ItemStack it = upperInv.getStackInSlot(i);
-            if (it == null || it.isEmpty()) {
-                continue;
-            }
-
-            if (it.getItem() == Items.EMERALD) {
-                UPRemeralds += it.getCount();
-                continue;
-            }
-            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                UPRblocks += it.getCount();
-                continue;
-            }
-            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                UPRliquid += it.getCount();
-            }
-        }
-
-        int LWRmoney = (LWRliquid * 4096) + (LWRblocks * 64) + LWRemeralds;
-        int UPRmoney = (UPRliquid * 4096) + (UPRblocks * 64) + UPRemeralds;
-
-        GlStateManager.disableLighting();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-        ScreenRenderer screen = new ScreenRenderer();
-        if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    ScreenRenderer.scale(0.9f);
-                    ItemStack LWRis = new ItemStack(Items.EMERALD);
-                    LWRis.setCount(LWRmoney);
-                    screen.drawItemStack(LWRis, 170, 0);
-
-                    ItemStack UPRis = new ItemStack(Items.EMERALD);
-                    UPRis.setCount(UPRmoney);
-                    screen.drawItemStack(UPRis, 170, 135);
+                    if (it.getItem() == Items.EMERALD) {
+                        LWRemeralds += it.getCount();
+                        continue;
+                    }
+                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                        LWRblocks += it.getCount();
+                        continue;
+                    }
+                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                        LWRliquid += it.getCount();
+                    }
                 }
-                ScreenRenderer.endGL();
-            } else {
-                if (LWRmoney != 0) {
-                    LWRleAmount = (int) Math.floor(LWRmoney / 4096);
-                    LWRmoney -= LWRleAmount * 4096;
+                for (int i = 0; i < upperInv.getSizeInventory(); i++) {
+                    ItemStack it = upperInv.getStackInSlot(i);
+                    if (it == null || it.isEmpty()) {
+                        continue;
+                    }
 
-                    LWRblockAmount = (int) Math.floor(LWRmoney / 64);
-                    LWRmoney -= LWRblockAmount * 64;
-                }
-                if (UPRmoney != 0) {
-                    UPRleAmount = (int) Math.floor(UPRmoney / 4096);
-                    UPRmoney -= UPRleAmount * 4096;
-
-                    UPRblockAmount = (int) Math.floor(UPRmoney / 64);
-                    UPRmoney -= UPRblockAmount * 64;
+                    if (it.getItem() == Items.EMERALD) {
+                        UPRemeralds += it.getCount();
+                        continue;
+                    }
+                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                        UPRblocks += it.getCount();
+                        continue;
+                    }
+                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                        UPRliquid += it.getCount();
+                    }
                 }
 
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    ScreenRenderer.scale(0.9f);
-                    ItemStack LWRliquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                    LWRliquids.setCount(LWRleAmount);
-                    ItemStack LWRblock = new ItemStack(Blocks.EMERALD_BLOCK);
-                    LWRblock.setCount(LWRblockAmount);
-                    ItemStack LWRemerald = new ItemStack(Items.EMERALD);
-                    LWRemerald.setCount(LWRmoney);
-                    screen.drawItemStack(LWRliquids, 130, 0, true);
-                    screen.drawItemStack(LWRblock, 150, 0, true);
-                    screen.drawItemStack(LWRemerald, 170, 0, true);
+                int LWRmoney = (LWRliquid * 4096) + (LWRblocks * 64) + LWRemeralds;
+                int UPRmoney = (UPRliquid * 4096) + (UPRblocks * 64) + UPRemeralds;
 
-                    ItemStack UPRliquids = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                    UPRliquids.setCount(UPRleAmount);
-                    ItemStack UPRblock = new ItemStack(Blocks.EMERALD_BLOCK);
-                    UPRblock.setCount(UPRblockAmount);
-                    ItemStack UPRemerald = new ItemStack(Items.EMERALD);
-                    UPRemerald.setCount(UPRmoney);
-                    screen.drawItemStack(UPRliquids, 130, 135, true);
-                    screen.drawItemStack(UPRblock, 150, 135, true);
-                    screen.drawItemStack(UPRemerald, 170, 135, true);
+
+                GlStateManager.disableLighting();
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+
+                final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
+
+                GlStateManager.disableLighting();
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
+                ScreenRenderer screen = new ScreenRenderer();
+                //LWR INV
+                int x = 150;
+                int y = 135;
+                CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    ScreenRenderer.beginGL(0, 0);
+                    {
+                        ScreenRenderer.scale(0.9f);
+                        String moneyText = decimalFormat.format(LWRmoney) + E;
+                        screen.drawString(moneyText, x, 0, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                    ScreenRenderer.endGL();
+
+                } else {
+                    if (LWRmoney != 0) {
+                        LWRleAmount = (int) Math.floor(LWRmoney / 4096);
+                        LWRmoney -= LWRleAmount * 4096;
+
+                        LWRblockAmount = (int) Math.floor(LWRmoney / 64);
+                        LWRmoney -= LWRblockAmount * 64;
+                    }
+                    ScreenRenderer.beginGL(0, 0);
+                    {
+                        ScreenRenderer.scale(0.9f);
+                        String moneyText = decimalFormat.format(LWRleAmount) + L + E + " " + decimalFormat.format(LWRblockAmount) + E + B + " " + decimalFormat.format(LWRmoney) + E;
+                        screen.drawString(moneyText, x, 0, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                    ScreenRenderer.endGL();
                 }
-                ScreenRenderer.endGL();
+
+                //UPR INV
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    ScreenRenderer.beginGL(0, 0);
+                    {
+                        ScreenRenderer.scale(0.9f);
+                        String moneyText = decimalFormat.format(UPRmoney) + E;
+                        screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                    ScreenRenderer.endGL();
+
+                } else {
+                    if (UPRmoney != 0) {
+                        UPRleAmount = (int) Math.floor(UPRmoney / 4096);
+                        UPRmoney -= UPRleAmount * 4096;
+
+                        UPRblockAmount = (int) Math.floor(UPRmoney / 64);
+                        UPRmoney -= UPRblockAmount * 64;
+                    }
+                    ScreenRenderer.beginGL(0, 0);
+                    {
+                        ScreenRenderer.scale(0.9f);
+                        String moneyText = decimalFormat.format(UPRleAmount) + L + E + " " + decimalFormat.format(UPRblockAmount) + E + B + " " + decimalFormat.format(UPRmoney) + E;
+                        screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                    ScreenRenderer.endGL();
+                }
+
+                GlStateManager.enableLighting();
             }
         }
-        GlStateManager.enableLighting();
     }
 
     public String getStringLore(ItemStack is){

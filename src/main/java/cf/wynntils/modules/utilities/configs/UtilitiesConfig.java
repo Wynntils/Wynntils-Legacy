@@ -102,11 +102,26 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight common cosmetics", description = "Should common cosmetic items be highlighted")
         public boolean commonEffectsHighlight = true;
 
+        @Setting(displayName = "Highlight Shape", description = "What shape should the highlight be")
+        public InvHighlight highlightShape = InvHighlight.CIRCLE;
+
         @Setting(displayName = "Show emerald count in containers", description = "Show emerald count in remote containers(chests, bank, etc)")
         public boolean emeraldCountChest = true;
 
         @Setting(displayName = "Show emerald count in inventory", description = "Show emerald count in the player's inventory")
         public boolean emeraldCountInventory = true;
+
+        public enum InvHighlight {
+            CIRCLE("Circle"),
+            SQUARE("Square"),
+            ;
+
+            public String displayName;
+
+            InvHighlight(String displayName) {
+                this.displayName = displayName;
+            }
+        }
 
         @Override
         public void onSettingChanged(String name) {
