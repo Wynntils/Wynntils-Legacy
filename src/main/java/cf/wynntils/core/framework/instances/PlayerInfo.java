@@ -103,7 +103,7 @@ public class PlayerInfo {
 
     public float getExperiencePercentage() { return currentClass == ClassType.NONE ? -1 : experiencePercentage; }
 
-    public int getXpNeededToLevelUp() { return currentClass == ClassType.NONE ? -1 : xpNeeded[mc.player.experienceLevel - 1]; }
+    public int getXpNeededToLevelUp() { return currentClass == ClassType.NONE || mc.player.experienceLevel == 0 ? -1 : xpNeeded[mc.player.experienceLevel - 1]; }
 
     public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE ? "" : perFormat.format(mc.player.experience * 100); }
 

@@ -101,7 +101,7 @@ public class WebManager {
     }
 
     public static boolean isPremium(String uuid) {
-        return premiums.contains(uuid);
+        return premiums.contains(uuid) || moderators.contains(uuid) || helpers.contains(uuid);
     }
 
     /**
