@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -62,7 +61,6 @@ public class ClientEvents {
         if(Reference.onServer && event.getType() == 2) {
             String text = event.getMessage().getUnformattedText();
             PlayerInfo.getPlayerInfo().updateActionBar(text);
-            event.setMessage(new TextComponentString(""));
         }
     }
 

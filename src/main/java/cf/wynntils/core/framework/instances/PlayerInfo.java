@@ -36,6 +36,9 @@ public class PlayerInfo {
     }
 
     public void updateActionBar(String lastActionBar) {
+        //avoid useless processing
+        if(this.lastActionBar.equals(lastActionBar)) return;
+
         this.lastActionBar = lastActionBar;
 
         if (currentClass != ClassType.NONE) {

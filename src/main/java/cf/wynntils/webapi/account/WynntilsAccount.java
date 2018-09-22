@@ -5,7 +5,6 @@
 package cf.wynntils.webapi.account;
 
 import cf.wynntils.ModCore;
-import cf.wynntils.Reference;
 import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.core.config.CoreDBConfig;
 import cf.wynntils.webapi.WebManager;
@@ -86,8 +85,6 @@ public class WynntilsAccount {
             ready = true;
             CoreDBConfig.INSTANCE.lastToken = token;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-
-            Reference.LOGGER.warn("Wynntils Account Token = " + token);
         }
     }
 
