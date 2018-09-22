@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class ActionBarOverlay extends Overlay {
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 20, 20, true, 0.5f, 1f, 0, -75);
+        super("ActionBar Helper", 20, 20, true, 0.5f, 0.5f, 0, -75);
     }
 
     @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
@@ -32,7 +32,7 @@ public class ActionBarOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
-            String lastActionBar = PlayerInfo.getPlayerInfo().getSpecialActionBar();
+            String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
             if (lastActionBar == null) return;
 
             String[] divisor = lastActionBar.split("/");
@@ -53,7 +53,7 @@ public class ActionBarOverlay extends Overlay {
                 middle = spaces[7] + " " + spaces[8];
             } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
                 String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5];
+                middle = spaces[5].replace("§n", "").replace("§r", "");
                 preference = true;
             } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
@@ -66,10 +66,13 @@ public class ActionBarOverlay extends Overlay {
                 middle = "";
             }
 
-
+            int padding = 3;
 
             if (preference || !renderItemName(new ScaledResolution(mc))) {
-                drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
+//                drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
+                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, shadow);
+                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
+                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, shadow);
             }
         }
 
