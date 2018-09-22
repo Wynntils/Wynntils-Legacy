@@ -146,6 +146,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
+        @Setting(displayName = "Action bar Overwrite Coords", description = "Should the coords be overwritten by the action bar")
+        public boolean overwrite = true;
+
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
         public float animated = 2f;

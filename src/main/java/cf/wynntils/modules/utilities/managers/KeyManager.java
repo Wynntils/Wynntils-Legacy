@@ -52,8 +52,6 @@ public class KeyManager {
             UI.setupUI(ui);
             ModCore.mc().displayGuiScreen(ui);
         });
-
-
     }
 
 }
