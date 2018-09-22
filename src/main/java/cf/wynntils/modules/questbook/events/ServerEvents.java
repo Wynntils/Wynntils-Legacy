@@ -4,7 +4,6 @@
 
 package cf.wynntils.modules.questbook.events;
 
-import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
@@ -16,12 +15,14 @@ import cf.wynntils.modules.questbook.enums.QuestSize;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,6 @@ public class ServerEvents implements Listener {
     }
 
     private boolean acceptItems = false;
-    private InventoryBasic lastContainer = null;
     private short transactionId = 0;
 
     private ArrayList<String> readedQuests = new ArrayList<>();
@@ -55,7 +55,6 @@ public class ServerEvents implements Listener {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
 
                 if(base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
-                    lastContainer = base;
 
                     if(!acceptItems) {
                         readedQuests.clear();
@@ -107,7 +106,7 @@ public class ServerEvents implements Listener {
                 acceptItems = false;
                 e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                 QuestManager.setReadingQuestBook(false);
-                Reference.LOGGER.warn("Took " + (System.currentTimeMillis() - time) + "ms to read the QuestBook!");
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§cTook " + (System.currentTimeMillis() - time) + "ms to read the QuestBook!"));
             }
         }
     }

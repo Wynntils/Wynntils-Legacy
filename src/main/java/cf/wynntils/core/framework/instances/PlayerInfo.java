@@ -1,6 +1,7 @@
 package cf.wynntils.core.framework.instances;
 
 import cf.wynntils.core.framework.enums.ClassType;
+import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 
 import java.text.DecimalFormat;
@@ -26,6 +27,7 @@ public class PlayerInfo {
     private float experiencePercentage = -1;
 
     private String lastActionBar;
+    private String specialActionBar = null;
 
     public PlayerInfo(Minecraft mc) {
         this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
@@ -35,7 +37,14 @@ public class PlayerInfo {
 
     public void updateActionBar(String lastActionBar) {
         this.lastActionBar = lastActionBar;
+
         if (currentClass != ClassType.NONE) {
+            if(lastActionBar.contains("|") || lastActionBar.contains("_"))  {
+                specialActionBar = Utils.getCutString(lastActionBar,"    ","    §b",false);
+            }else{
+                specialActionBar = null;
+            }
+
             if (lastActionBar.contains("❤")) {
                 StringBuilder read = new StringBuilder();
                 for (char c : lastActionBar.substring(4).toCharArray()) {

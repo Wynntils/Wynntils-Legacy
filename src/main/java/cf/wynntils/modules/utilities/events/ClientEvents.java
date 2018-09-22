@@ -9,9 +9,7 @@ import cf.wynntils.core.utils.LimitedList;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.managers.ChatManager;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
-import cf.wynntils.modules.utilities.managers.GlowManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -33,15 +31,6 @@ public class ClientEvents implements Listener {
         if(Reference.onWorld) {
             TPSManager.updateTPS();
             DailyReminderManager.checkDailyReminder(ModCore.mc().player);
-        }
-
-        if(ids.size() > 0 && ModCore.mc().player.world != null) {
-            for(int i = 0; i < ids.size(); i++) {
-                Entity ent = ModCore.mc().player.world.getEntityByID(ids.get(i));
-                if(ent != null) {
-                    GlowManager.verifyEntity(ent);
-                }
-            }
         }
     }
 

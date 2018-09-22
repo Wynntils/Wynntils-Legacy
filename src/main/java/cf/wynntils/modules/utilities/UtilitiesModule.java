@@ -40,8 +40,6 @@ public class UtilitiesModule extends Module {
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
 
-        registerOverlay(new DebugOverlay(),Priority.NORMAL);
-
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);

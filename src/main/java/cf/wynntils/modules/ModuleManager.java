@@ -7,8 +7,6 @@ import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.questbook.QuestBookModule;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
-import cf.wynntils.modules.wynnicmap.WynnicMapModule;
-import cf.wynntils.modules.wynnsounds.WynnSoundsModule;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -20,8 +18,6 @@ public class ModuleManager {
         FrameworkManager.registerModule(new QuestBookModule());
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
-        FrameworkManager.registerModule(new WynnSoundsModule());
-        FrameworkManager.registerModule(new WynnicMapModule());
         FrameworkManager.registerModule(new RichPresenceModule());
         FrameworkManager.registerModule(new CapesModule());
         //FrameworkManager.registerModule(new ExampleModule());

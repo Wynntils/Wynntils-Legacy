@@ -10,7 +10,6 @@ import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
-import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
@@ -63,10 +62,7 @@ public class ClientEvents {
         if(Reference.onServer && event.getType() == 2) {
             String text = event.getMessage().getUnformattedText();
             PlayerInfo.getPlayerInfo().updateActionBar(text);
-            if(text.contains("|"))
-                event.setMessage(new TextComponentString(Utils.getCutString(text,"    ","    §b",false)));
-            else
-                event.setMessage(new TextComponentString(""));
+            event.setMessage(new TextComponentString(""));
         }
     }
 
