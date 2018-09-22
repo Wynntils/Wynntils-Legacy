@@ -40,8 +40,10 @@ public class ExpBarOverlay extends Overlay{
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby))) return;
-        if (this.animated > 0.0f && this.animated < 10.0f)
-            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+//        if (this.animated > 0.0f && this.animated < 10.0f)
+//            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f)
+            exp -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
         else
             exp = getPlayerInfo().getExperiencePercentage();
     }
@@ -66,6 +68,6 @@ public class ExpBarOverlay extends Overlay{
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_exp,-91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
-        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
     }
 }

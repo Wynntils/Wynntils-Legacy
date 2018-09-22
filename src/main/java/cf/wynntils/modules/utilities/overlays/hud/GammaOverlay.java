@@ -3,6 +3,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class GammaOverlay extends Overlay {
@@ -18,7 +19,7 @@ public class GammaOverlay extends Overlay {
         }
 
         if (mc.gameSettings.gammaSetting >= 1000) {
-            drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
         }
     }
 }

@@ -18,9 +18,9 @@ public class HealthBarOverlay extends Overlay {
         super("Health Bar", 20, 20, true, 0.5f, 1.0f, -10, -38);
     }
 
-    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
-    public float animated = 2f;
+//    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+//    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+//    public float animated = 2f;
 
     /* Temp in UtilitiesConfig so users can change textures on the fly
     @Setting(displayName = "Texture", description = "What texture to use")
@@ -41,8 +41,10 @@ public class HealthBarOverlay extends Overlay {
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!(visible = (getPlayerInfo().getCurrentHealth() != -1 && !Reference.onLobby))) return;
-        if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
-            health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
+//        if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
+//            health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
+        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
+            health -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
         } else {
             health = getPlayerInfo().getCurrentHealth();
         }
@@ -71,7 +73,7 @@ public class HealthBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_health, -81, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
-        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
     }
 }
 

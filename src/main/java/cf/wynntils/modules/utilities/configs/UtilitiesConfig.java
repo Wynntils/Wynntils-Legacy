@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.configs;
 
+import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
@@ -139,8 +140,15 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
         public ManaTextures manaTexture = ManaTextures.a;
 
-        @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
+        @Setting(displayName = "EXP Texture", description = "What texture to use for the exp bar")
         public ExpTextures expTexture = ExpTextures.a;
+
+        @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
+        public float animated = 2f;
 
         public enum HealthTextures {
             Wynn,

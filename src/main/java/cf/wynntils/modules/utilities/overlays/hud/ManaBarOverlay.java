@@ -17,9 +17,9 @@ public class ManaBarOverlay extends Overlay {
         super("Mana Bar", 20, 20, true, 0.5f, 1.0f, 10, -38);
     }
 
-    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
-    public float animated = 2f;
+//    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+//    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+//    public float animated = 2f;
 
 
     /* Temp in UtilitiesConfig so users can change textures on the fly
@@ -41,8 +41,10 @@ public class ManaBarOverlay extends Overlay {
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!(visible = (getPlayerInfo().getCurrentMana() != -1 && !Reference.onLobby))) return;
-        if(this.animated > 0.0f && this.animated < 10.0f)
-            mana -= (animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
+//        if(this.animated > 0.0f && this.animated < 10.0f)
+//            mana -= (animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
+        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f)
+            mana -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
         else mana = getPlayerInfo().getCurrentMana();
 
         /*
@@ -79,6 +81,6 @@ public class ManaBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_mana, 81, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
-        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
     }
 }

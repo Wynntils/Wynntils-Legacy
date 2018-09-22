@@ -10,6 +10,7 @@ import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
@@ -25,8 +26,8 @@ public class ActionBarOverlay extends Overlay {
         super("ActionBar Helper", 20, 20, true, 0.5f, 1f, 0, -75);
     }
 
-    @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
-    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
+//    @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
+//    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     @Setting(displayName = "Coords", description = "Should coords display in action bar")
     public boolean actionBarCoords = true;
@@ -72,9 +73,9 @@ public class ActionBarOverlay extends Overlay {
 
             if (preference || !renderItemName(new ScaledResolution(mc))) {
 //                drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
-                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, shadow);
-                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
-                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, shadow);
+                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, UtilitiesConfig.HUD.INSTANCE.textShadow);
+                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
+                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, UtilitiesConfig.HUD.INSTANCE.textShadow);
             }
         }
 
