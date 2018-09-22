@@ -1,7 +1,5 @@
 package cf.wynntils.webapi;
 
-import cf.wynntils.Reference;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -26,7 +24,6 @@ public class WebReader {
     public WebReader(String url) throws Exception {
         this.url = url;
 
-        Reference.LOGGER.info("Reading " + url);
         parseWebsite();
     }
 

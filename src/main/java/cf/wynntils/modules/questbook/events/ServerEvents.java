@@ -15,14 +15,12 @@ import cf.wynntils.modules.questbook.enums.QuestSize;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
-import net.minecraft.util.text.TextComponentString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +104,6 @@ public class ServerEvents implements Listener {
                 acceptItems = false;
                 e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                 QuestManager.setReadingQuestBook(false);
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§cTook " + (System.currentTimeMillis() - time) + "ms to read the QuestBook!"));
             }
         }
     }
