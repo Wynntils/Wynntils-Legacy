@@ -9,7 +9,6 @@ import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
-import com.ibm.icu.text.DecimalFormat;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,6 +27,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,16 +37,17 @@ import java.util.List;
  */
 public class InventoryOverlay extends GuiInventory {
 
-    public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
-
-    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
-
     EntityPlayer player;
+
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
+    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
     public InventoryOverlay(EntityPlayer player) {
         super(player);
+
         this.player = player;
     }
+
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {

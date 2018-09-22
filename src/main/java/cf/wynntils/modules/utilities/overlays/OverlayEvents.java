@@ -20,16 +20,13 @@ public class OverlayEvents implements Listener {
     @EventHandler
     public void onGuiOpened(GuiOpenEvent e) {
         if(e.getGui() instanceof GuiInventory) {
-            if(e.getGui() instanceof InventoryOverlay) {
-                return;
-            }
+            if(e.getGui() instanceof InventoryOverlay) return;
+
             e.setGui(new InventoryOverlay(ModCore.mc().player));
             return;
         }
         if(e.getGui() instanceof GuiChest) {
-            if(e.getGui() instanceof ChestOverlay) {
-                return;
-            }
+            if(e.getGui() instanceof ChestOverlay) return;
 
             e.setGui(new ChestOverlay(ModCore.mc().player.inventory, (IInventory)ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
         }
