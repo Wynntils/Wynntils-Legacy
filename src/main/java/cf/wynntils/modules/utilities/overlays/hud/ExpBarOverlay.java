@@ -45,7 +45,7 @@ public class ExpBarOverlay extends Overlay{
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
+        if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) {
             event.setCanceled(true);
 
             switch (texture) {

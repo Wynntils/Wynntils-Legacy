@@ -54,7 +54,7 @@ public class ManaBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
+        if ((event.getType() == RenderGameOverlayEvent.ElementType.FOOD) || (event.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
             event.setCanceled(true);
 
             switch (texture) {

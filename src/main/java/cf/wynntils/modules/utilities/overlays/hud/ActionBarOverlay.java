@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class ActionBarOverlay extends Overlay {
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 20, 20, true, 0.5f, 0.5f, 0, -75);
+        super("ActionBar Helper", 20, 20, true, 0.5f, 1f, 0, -75);
     }
 
     @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
