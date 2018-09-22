@@ -112,18 +112,14 @@ public class ActionBarOverlay extends Overlay {
 
             int padding = 3;
 
-            ScaledResolution resolution = new ScaledResolution(mc);
-            int x = resolution.getScaledWidth() / 2;
-            int y = resolution.getScaledHeight();
 
-
-            if (preference || !renderItemName(resolution)) {
-                drawString(l, (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, CommonColors.BLACK);
-                drawCenteredString(middle, x, y - 65, CommonColors.BLACK);
-                drawString(r, (x + mc.fontRenderer.getStringWidth(middle) / 2 + padding), y - 65, CommonColors.BLACK);
+            if (preference /* || !renderItemName(resolution) */) {
+                drawString(l, (mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), -65, CommonColors.BLACK);
+                drawCenteredString(middle, 0, -65, CommonColors.BLACK);
+                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), -65, CommonColors.BLACK);
             }
 
-            drawString("TESTING", (x - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y - 65, CommonColors.BLACK);
+            drawString("TESTING", (mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), -65, CommonColors.BLACK);
 
 //            drawCenteredString(health, (x - 5 - (86 / 2)), y - 50, CommonColors.BLACK); // DO NOT EDIT
 //            drawCenteredString(mana, (x + 5 + (86 / 2)), y - 50, CommonColors.BLACK); // DO NOT EDIT
