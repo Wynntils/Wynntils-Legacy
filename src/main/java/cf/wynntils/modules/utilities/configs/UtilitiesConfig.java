@@ -133,7 +133,40 @@ public class UtilitiesConfig extends SettingsClass {
     public static class HUD extends SettingsClass {
         public static HUD INSTANCE;
 
+        @Setting(displayName = "Health Texture", description = "What texture to use for the health bar")
+        public HealthTextures healthTexture = HealthTextures.a;
 
+        @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
+        public ManaTextures manaTexture = ManaTextures.a;
+
+        @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
+        public ExpTextures expTexture = ExpTextures.a;
+
+        public enum HealthTextures {
+            Wynn,
+            a,
+            b,
+            c,
+            d
+            //following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+
+        public enum ManaTextures {
+            Wynn,
+            a,
+            b,
+            c,
+            d
+            //following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+
+        public enum ExpTextures {
+            wynn,
+            a,
+            b,
+            c
+            //following the format, to add more textures, register them here with a name and add to the bars.png texture 16 more pixels in height, NOTE THAT SPECIAL ONES MUST BE IN THE END!
+        }
     }
 
     @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")

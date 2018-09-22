@@ -17,13 +17,18 @@ public class CapeManager {
 
     public static void downloadCape(String uuid) {
         if ((uuid != null) && (!uuid.isEmpty())) {
-            if(!WebManager.isPremium(uuid)) {
+            if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
                 return;
             }
-
-            String url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
-            ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
-
+            String url = "";
+            ResourceLocation rl = new ResourceLocation("");
+            if (WebManager.isPremium(uuid)) {
+                url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
+                rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
+            } else {
+                url = WebManager.apiUrls.get("Capes") + "/user/default";
+                rl = new ResourceLocation("wynntils:capes/default");
+            }
             IImageBuffer ibuffer = new IImageBuffer() {
                 @Override
                 public BufferedImage parseUserSkin(BufferedImage image) {

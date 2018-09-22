@@ -7,6 +7,7 @@ import cf.wynntils.webapi.account.WynntilsAccount;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import org.lwjgl.input.Keyboard;
@@ -33,7 +34,13 @@ public class KeyManager {
             ITextComponent token = new TextComponentString(WynntilsAccount.getToken());
             token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.cf/register.php?token=" + WynntilsAccount.getToken()));
             token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register account")));
+            token.getStyle().setColor(TextFormatting.DARK_AQUA);
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§bWynntils Token: §3").appendSibling(token));
+        });
+
+        CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_L, "Core", true, () -> {
+//            ModCore.mc().player.openGui()
+            //HeyZeer0 pls make this work
         });
     }
 

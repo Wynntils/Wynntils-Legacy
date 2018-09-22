@@ -31,6 +31,7 @@ public class WebManager {
     private static ArrayList<String> helpers = new ArrayList<>();
     private static ArrayList<String> moderators = new ArrayList<>();
     private static ArrayList<String> premiums = new ArrayList<>();
+    private static ArrayList<String> users = new ArrayList<>();
 
     private static WynntilsAccount account = null;
 
@@ -102,6 +103,10 @@ public class WebManager {
 
     public static boolean isPremium(String uuid) {
         return premiums.contains(uuid.replace("-", ""));
+    }
+
+    public static boolean isUser(String uuid) {
+        return users.contains(uuid.replace("-", ""));
     }
 
     /**
@@ -328,8 +333,13 @@ public class WebManager {
         JSONArray premium = main.getJSONArray("premiumUsers");
         if(premium.length() > 0) {
             for(int i = 0; i < premium.length(); i++) {
-                System.out.print(premium.getString(i));
                 premiums.add(premium.getString(i));
+            }
+        }
+        JSONArray user = main.getJSONArray("normalUsers");
+        if (user.length() > 0) {
+            for (int i = 0; i < user.length(); i++) {
+                users.add(user.getString(i));
             }
         }
     }

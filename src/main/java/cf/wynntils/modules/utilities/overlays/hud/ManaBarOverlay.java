@@ -8,6 +8,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -20,8 +21,11 @@ public class ManaBarOverlay extends Overlay {
     @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
     public float animated = 2f;
 
+
+    /* Temp in UtilitiesConfig so users can change textures on the fly
     @Setting(displayName = "Texture", description = "What texture to use")
     public ManaTextures texture = ManaTextures.a;
+    */
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = true;
@@ -57,8 +61,9 @@ public class ManaBarOverlay extends Overlay {
         if ((event.getType() == RenderGameOverlayEvent.ElementType.FOOD) || (event.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
             event.setCanceled(true);
 
-            switch (texture) {
-                case wynn: drawDefaultBar(-1,8,0,17);
+            switch (UtilitiesConfig.HUD.INSTANCE.manaTexture) {
+                case Wynn:
+                    drawDefaultBar(-1, 8, 0, 17);
                     break;
                 case a: drawDefaultBar(-1,7,18,33);
                     break;
@@ -75,14 +80,5 @@ public class ManaBarOverlay extends Overlay {
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_mana, 81, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
         drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-    }
-
-    public enum ManaTextures {
-        wynn,
-        a,
-        b,
-        c,
-        d
-        //following the format, to add more textures, register them here with a name and create a special case in the render method
     }
 }
