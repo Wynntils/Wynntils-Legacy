@@ -98,7 +98,7 @@ public class UpdateOverlay extends Overlay {
 
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
-                DownloaderManager.queueDownload("Update " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
+                DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
                     if(x) {
                         try{
                             copyUpdate(jar_name);
