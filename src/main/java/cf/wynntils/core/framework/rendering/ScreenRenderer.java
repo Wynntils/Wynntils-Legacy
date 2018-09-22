@@ -256,6 +256,10 @@ public class ScreenRenderer {
         return drawString(text, x, y, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NORMAL);
     }
 
+    public float drawCenteredString(String text, float x, float y, CustomColor color) {
+        return drawString(text, x, y, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+    }
+
     /** float getStringWidth
      * Gets the length of the string in pixels without
      * drawing it (not taking scale into account).

@@ -32,6 +32,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
+        registerOverlay(new ActionBarOverlay(), Priority.NORMAL);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
@@ -44,6 +45,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Chat.class);
+        registerSettings(UtilitiesConfig.HUD.class);
         registerSettings(UtilitiesConfig.Debug.class);
 
         registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {

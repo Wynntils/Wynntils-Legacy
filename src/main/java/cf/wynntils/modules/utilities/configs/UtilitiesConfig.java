@@ -129,6 +129,15 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "hud_settings", displayPath = "Main/HUD")
+    public static class HUD extends SettingsClass {
+        public static HUD INSTANCE;
+
+        @Setting(displayName = "Coords", description = "Should coords display in action bar")
+        public boolean actionBarCoords = true;
+
+    }
+
     @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
     public static class Debug extends SettingsClass {
         public static Debug INSTANCE;

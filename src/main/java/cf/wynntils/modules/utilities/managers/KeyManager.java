@@ -1,7 +1,11 @@
 package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.ModCore;
+import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.webapi.account.WynntilsAccount;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextComponentString;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -20,6 +24,10 @@ public class KeyManager {
             }else{
                 ModCore.mc().gameSettings.gammaSetting = lastGamma;
             }
+        });
+
+        CoreModule.getModule().registerKeyBinding("Get Token", Keyboard.KEY_Z, "Core", true, () -> {
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§bWynntils Token: §3" + WynntilsAccount.getToken()));
         });
     }
 
