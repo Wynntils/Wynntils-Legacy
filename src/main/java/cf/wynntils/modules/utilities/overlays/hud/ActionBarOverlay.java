@@ -22,7 +22,9 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ActionBarOverlay extends Overlay {
 
-    public ActionBarOverlay() { super("ActionBar Helper", 20, 20, true, 0.5f, 0.5f, 0, -60); }
+    public ActionBarOverlay() {
+        super("ActionBar Helper", 20, 20, true, 0.5f, 1f, 0, -75);
+    }
 
     @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
@@ -30,7 +32,7 @@ public class ActionBarOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
-            String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
+            String lastActionBar = PlayerInfo.getPlayerInfo().getSpecialActionBar();
             if (lastActionBar == null) return;
 
             String[] divisor = lastActionBar.split("/");
@@ -49,7 +51,7 @@ public class ActionBarOverlay extends Overlay {
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[7] + " " + spaces[8];
-            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
+            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
                 preference = true;
@@ -63,6 +65,7 @@ public class ActionBarOverlay extends Overlay {
             } else {
                 middle = "";
             }
+
 
 
             if (preference || !renderItemName(new ScaledResolution(mc))) {
@@ -114,7 +117,7 @@ public class ActionBarOverlay extends Overlay {
                 }
 
                 int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2;
-                int j = scaledRes.getScaledHeight() - 90;
+                int j = scaledRes.getScaledHeight() - 75;
 
                 if (!mc.playerController.shouldDrawHUD()) {
                     j += 14;
