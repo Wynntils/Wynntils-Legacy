@@ -20,8 +20,8 @@ public class CapeManager {
             if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
                 return;
             }
-            String url = "";
-            ResourceLocation rl = new ResourceLocation("");
+            String url;
+            ResourceLocation rl;
             if (WebManager.isPremium(uuid)) {
                 url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
                 rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
