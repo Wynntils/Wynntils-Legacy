@@ -133,8 +133,6 @@ public class UtilitiesConfig extends SettingsClass {
     public static class HUD extends SettingsClass {
         public static HUD INSTANCE;
 
-        @Setting(displayName = "Coords", description = "Should coords display in action bar")
-        public boolean actionBarCoords = true;
 
     }
 

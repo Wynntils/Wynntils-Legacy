@@ -10,7 +10,6 @@ import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Utils;
-import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
@@ -28,6 +27,9 @@ public class ActionBarOverlay extends Overlay {
 
     @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+    @Setting(displayName = "Coords", description = "Should coords display in action bar")
+    public boolean actionBarCoords = true;
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -58,7 +60,7 @@ public class ActionBarOverlay extends Overlay {
             } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
-            } else if (UtilitiesConfig.HUD.INSTANCE.actionBarCoords) {
+            } else if (actionBarCoords) {
                 l = "§7" + (int) mc.player.posX;
                 middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
                 r = "§7" + (int) mc.player.posZ;
