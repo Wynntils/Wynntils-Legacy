@@ -8,6 +8,7 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.core.instances.PacketFilter;
+import cf.wynntils.webapi.WebManager;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,6 +23,8 @@ public class ServerEvents implements Listener {
         NetworkManager nm = e.getManager();
         NetHandlerPlayClient client = (NetHandlerPlayClient) ReflectionFields.NetworkManager_packetListener.getValue(nm);
         ReflectionFields.NetworkManager_packetListener.setValue(nm, new PacketFilter(Minecraft.getMinecraft(), (GuiScreen)ReflectionFields.NetHandlerPlayClient_guiScreenServer.getValue(client), nm, (GameProfile)ReflectionFields.NetHandlerPlayClient_profile.getValue(client), client));
+
+        WebManager.checkForUpdates();
     }
 
 }
