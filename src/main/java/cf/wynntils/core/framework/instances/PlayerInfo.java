@@ -67,6 +67,10 @@ public class PlayerInfo {
         }
     }
 
+    public String getSpecialActionBar() {
+        return specialActionBar;
+    }
+
     public void updatePlayerClass(ClassType currentClass) {
         this.currentClass = currentClass;
     }
