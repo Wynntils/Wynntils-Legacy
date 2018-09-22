@@ -21,7 +21,7 @@ public class ManaBarOverlay extends Overlay {
     public float animated = 2f;
 
     @Setting(displayName = "Texture", description = "What texture to use")
-    public ManaTextures texture = ManaTextures.b;
+    public ManaTextures texture = ManaTextures.a;
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = true;
