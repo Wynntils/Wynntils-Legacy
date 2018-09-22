@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
@@ -39,9 +40,9 @@ public class ChestOverlay extends GuiChest {
     IInventory lowerInv;
     IInventory upperInv;
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation("textures/wynn/equipment_slot.png");
+    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
-    public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     public ChestOverlay(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
