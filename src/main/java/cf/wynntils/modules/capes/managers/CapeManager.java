@@ -22,13 +22,13 @@ public class CapeManager {
             }
             String url;
             ResourceLocation rl;
-            if (WebManager.isPremium(uuid)) {
+//            if (WebManager.isPremium(uuid)) {
                 url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
                 rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
-            } else {
-                url = WebManager.apiUrls.get("Capes") + "/user/default";
-                rl = new ResourceLocation("wynntils:capes/default");
-            }
+//            } else {
+//                url = WebManager.apiUrls.get("Capes") + "/user/default";
+//                rl = new ResourceLocation("wynntils:capes/default");
+//            }
             IImageBuffer ibuffer = new IImageBuffer() {
                 @Override
                 public BufferedImage parseUserSkin(BufferedImage image) {
