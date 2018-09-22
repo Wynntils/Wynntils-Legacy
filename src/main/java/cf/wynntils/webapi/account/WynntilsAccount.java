@@ -24,7 +24,7 @@ import java.security.PublicKey;
 
 public class WynntilsAccount {
 
-    String token;
+    static String token;
     boolean ready = false;
 
     public WynntilsAccount() {
@@ -36,7 +36,7 @@ public class WynntilsAccount {
         }
     }
 
-    public String getToken() {
+    public static String getToken() {
         return token;
     }
 
