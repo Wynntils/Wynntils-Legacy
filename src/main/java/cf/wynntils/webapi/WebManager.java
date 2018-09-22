@@ -46,6 +46,8 @@ public class WebManager {
         Reference.LOGGER.info("Territory list loaded on " + (System.currentTimeMillis() - ms) + "ms");
 
         try{
+            updateUsersRoles();
+
             ms = System.currentTimeMillis();
             updateItemList();
             Reference.LOGGER.info("Loaded " + items.size() + " items on " + (System.currentTimeMillis() - ms) + "ms");
@@ -57,8 +59,6 @@ public class WebManager {
             ms = System.currentTimeMillis();
             updateItemGuesses();
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
-
-            updateUsersRoles();
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -101,7 +101,7 @@ public class WebManager {
     }
 
     public static boolean isPremium(String uuid) {
-        return premiums.contains(uuid) || moderators.contains(uuid) || helpers.contains(uuid);
+        return premiums.contains(uuid.replace("-", ""));
     }
 
     /**
@@ -319,15 +319,16 @@ public class WebManager {
                 helpers.add(helper.getString(i));
             }
         }
-        JSONArray moderator = main.getJSONArray("helperUsers");
+        JSONArray moderator = main.getJSONArray("moderatorUsers");
         if(moderator.length() > 0) {
             for(int i = 0; i < moderator.length(); i++) {
                 moderators.add(moderator.getString(i));
             }
         }
-        JSONArray premium = main.getJSONArray("helperUsers");
+        JSONArray premium = main.getJSONArray("premiumUsers");
         if(premium.length() > 0) {
             for(int i = 0; i < premium.length(); i++) {
+                System.out.print(premium.getString(i));
                 premiums.add(premium.getString(i));
             }
         }

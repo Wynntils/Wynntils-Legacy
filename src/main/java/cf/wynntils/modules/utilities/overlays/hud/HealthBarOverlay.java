@@ -22,7 +22,7 @@ public class HealthBarOverlay extends Overlay {
     public float animated = 2f;
 
     @Setting(displayName = "Texture", description = "What texture to use")
-    public HealthTextures texture = HealthTextures.a;
+    public HealthTextures texture = HealthTextures.b;
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = false;

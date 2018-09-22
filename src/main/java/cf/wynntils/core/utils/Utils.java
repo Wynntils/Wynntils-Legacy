@@ -264,4 +264,8 @@ public class Utils {
         }catch (Exception ex) { }
         return msg;
     }
+
+    public static File getDataFolder() {
+        return new File(System.getProperty("user.dir"));
+    }
 }
