@@ -22,15 +22,57 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ActionBarOverlay extends Overlay {
 
-    public ActionBarOverlay() {
-        super("ActionBar Helper", 20, 20, true, 0.5f, 1.0f, 0, -58);
-    }
+    public ActionBarOverlay() { super("ActionBar Helper", 20, 20, true, 0.5f, 0.5f, 0, -60); }
 
-
-    @Setting(displayName = "Text Shadow", description = "The Levelling Text shadow type")
+    @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-    public static String getPlayerDirection(float yaw) {
+    @Override
+    public void render(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
+            String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
+            if (lastActionBar == null) return;
+
+            String[] divisor = lastActionBar.split("/");
+            if (divisor.length < 2) {
+                return;
+            }
+
+            String middle;
+            String l = "";
+            String r = "";
+
+            boolean preference = false;
+
+            //Order:
+            //Powder % | RLR | Sprint | and if there is nothing more coordinates
+            if (lastActionBar.contains("%")) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[7] + " " + spaces[8];
+            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[5];
+                preference = true;
+            } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[5];
+            } else if (UtilitiesConfig.HUD.INSTANCE.actionBarCoords) {
+                l = "§7" + (int) mc.player.posX;
+                middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
+                r = "§7" + (int) mc.player.posZ;
+            } else {
+                middle = "";
+            }
+
+
+            if (preference || !renderItemName(new ScaledResolution(mc))) {
+                drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
+            }
+        }
+
+    }
+
+    private static String getPlayerDirection(float yaw) {
         double num = (yaw + 202.5) / 45.0;
         while (num < 0.0) {
             num += 360.0;
@@ -58,78 +100,7 @@ public class ActionBarOverlay extends Overlay {
         }
     }
 
-    @Override
-    public void render(RenderGameOverlayEvent.Pre event) {
-        //draw
-        if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) {
-
-            //this is to check if the action bar still exists
-//            if (System.currentTimeMillis() - lastActionBarTime >= 3000) {
-//                return;
-//            }
-
-            String lastActionBar = PlayerInfo.getPlayerInfo().getSpecialActionBar();
-
-            if (lastActionBar == null) return;
-
-
-            String[] divisor = lastActionBar.split("/");
-            if (divisor.length < 2) {
-                return;
-            }
-
-//            String life = divisor[0].split(" ")[1] + " ❤ " + divisor[1].split(" ")[0];
-
-//            String health = "§c" + life + " ";
-
-            String middle;
-            String l = "";
-            String r = "";
-
-            boolean preference = false;
-
-            //Order:
-            //Powder % | RLR | Sprint | and if there is nothing more coordinates
-            if (lastActionBar.contains("%")) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[7] + " " + spaces[8];
-            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("N§7-")) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5];
-                preference = true;
-            } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5];
-            } else if (UtilitiesConfig.HUD.INSTANCE.actionBarCoords) {
-                l = "§7" + (int) mc.player.posX;
-                middle = "§a§l" + getPlayerDirection(mc.player.rotationYaw);
-                r = "§7" + (int) mc.player.posZ;
-            } else {
-                middle = "";
-            }
-
-//            String mana = " §b" + mc.player.getFoodStats().getFoodLevel() + " ✺ 20";
-
-            int padding = 3;
-
-
-            if (preference /* || !renderItemName(resolution) */) {
-                drawString(l, (mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), -65, CommonColors.BLACK);
-                drawCenteredString(middle, 0, -65, CommonColors.BLACK);
-                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), -65, CommonColors.BLACK);
-            }
-
-            drawString("TESTING", (mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), -65, CommonColors.BLACK);
-
-//            drawCenteredString(health, (x - 5 - (86 / 2)), y - 50, CommonColors.BLACK); // DO NOT EDIT
-//            drawCenteredString(mana, (x + 5 + (86 / 2)), y - 50, CommonColors.BLACK); // DO NOT EDIT
-
-
-        }
-
-    }
-
-    public boolean renderItemName(ScaledResolution scaledRes) {
+    private boolean renderItemName(ScaledResolution scaledRes) {
         mc.gameSettings.heldItemTooltips = false;
         try {
             int remainingHighlightTicks = (int) ReflectionHelper.findField(GuiIngame.class, "remainingHighlightTicks", "field_92017_k").get(Minecraft.getMinecraft().ingameGUI);

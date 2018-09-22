@@ -41,7 +41,6 @@ public class InventoryOverlay extends GuiInventory {
 
     private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
-
     EntityPlayer player;
 
     public InventoryOverlay(EntityPlayer player) {
