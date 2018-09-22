@@ -18,7 +18,7 @@ public class QuestBookModule extends Module {
         registerEvents(new ServerEvents());
         registerEvents(new ClientEvents());
 
-        registerKeyBinding("requestUpdate", Keyboard.KEY_O, "tests", true, QuestManager::requestQuestBookReading);
+        registerKeyBinding("requestUpdate", Keyboard.KEY_O, "DEBUG", true, QuestManager::requestQuestBookReading);
     }
 
 }

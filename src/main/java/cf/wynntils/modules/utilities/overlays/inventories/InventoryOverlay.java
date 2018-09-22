@@ -198,7 +198,7 @@ public class InventoryOverlay extends GuiInventory {
                 if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
                     GL11.glPushMatrix();
                     {
-                        GlStateManager.color(r, g, b, a);
+                        GL11.glColor4f(r, g, b, a);
                         GL11.glDisable(GL11.GL_TEXTURE_2D);
                         Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
                     }
