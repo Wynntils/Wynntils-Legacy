@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.overlays.hud;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -36,6 +37,7 @@ public class ActionBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
+        if(!Reference.onWorld) return;
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
             String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
             if (lastActionBar == null) return;
