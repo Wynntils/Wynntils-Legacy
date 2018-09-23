@@ -17,6 +17,7 @@ import cf.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,45 +32,6 @@ public class ServerEvents implements Listener {
 
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     public static ScheduledFuture updateTimer;
-
-    @EventHandler
-    public void onServerJoin(WynncraftServerEvent.Login e) {
-        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
-        }
-    }
-
-    @EventHandler
-    public void onServerLeave(WynncraftServerEvent.Leave e) {
-        RichPresenceModule.getModule().getRichPresence().stopRichPresence();
-
-        if(updateTimer != null && !updateTimer.isCancelled()) {
-            updateTimer.cancel(true); }
-    }
-
-    @EventHandler
-    public void onWorldJoin(WynnWorldJoinEvent e) {
-        startUpdateRegionName();
-    }
-
-    @EventHandler
-    public void onWorldLeft(WynnWorldLeftEvent e) {
-        if (updateTimer != null) {
-            updateTimer.cancel(true);
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, null);
-        }
-    }
-
-    public static boolean classUpdate = false;
-
-    @EventHandler
-    public void onClassChange(WynnClassChangeEvent e) {
-        if(e.getCurrentClass() != ClassType.NONE) {
-            classUpdate = true;
-        }else if(Reference.onWorld) {
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), null);
-        }
-    }
 
     /**
      * Starts to check player location for RichPresence current player territory info
@@ -93,15 +55,55 @@ public class ServerEvents implements Listener {
                     classUpdate = false;
 
                     if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), null);
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                     }else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), null);
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), OffsetDateTime.now());
                     }
                     break;
                 }
             }
 
         }, 0, 3, TimeUnit.SECONDS);
+    }
+
+    @EventHandler
+    public void onServerLeave(WynncraftServerEvent.Leave e) {
+        RichPresenceModule.getModule().getRichPresence().stopRichPresence();
+
+        if (updateTimer != null && !updateTimer.isCancelled()) {
+            updateTimer.cancel(true);
+        }
+    }
+
+    @EventHandler
+    public void onWorldJoin(WynnWorldJoinEvent e) {
+        startUpdateRegionName();
+    }
+
+    @EventHandler
+    public void onServerJoin(WynncraftServerEvent.Login e) {
+        if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, OffsetDateTime.now());
+        }
+    }
+
+    public static boolean classUpdate = false;
+
+    @EventHandler
+    public void onWorldLeft(WynnWorldLeftEvent e) {
+        if (updateTimer != null) {
+            updateTimer.cancel(true);
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, OffsetDateTime.now());
+        }
+    }
+
+    @EventHandler
+    public void onClassChange(WynnClassChangeEvent e) {
+        if (e.getCurrentClass() != ClassType.NONE) {
+            classUpdate = true;
+        } else if (Reference.onWorld) {
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
+        }
     }
 
     /**
