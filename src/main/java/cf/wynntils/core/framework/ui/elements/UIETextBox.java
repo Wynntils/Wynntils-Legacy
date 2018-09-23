@@ -55,7 +55,7 @@ public class UIETextBox extends UIEClickZone {
     }
 
     public String getText() {
-        return textField.getText().replace("&", "§");
+        return textField.getText();
     }
 
     public void writeText(String textToWrite) {
