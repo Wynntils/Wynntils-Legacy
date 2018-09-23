@@ -26,9 +26,16 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
+        //loading cape
+        ResourceLocation rl;
+        if(WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))){
+            rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
+        }else if(WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+            rl = new ResourceLocation("wynntils:capes/default");
+        }else{ return; }
 
-        ResourceLocation rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
-        if (rl != null && WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
+        //applying cape
+        if (rl != null && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
         {
             ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
@@ -59,7 +66,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
                 if (entitylivingbaseIn.isSneaking())
                 {
-                    f1 += 25.0F;
+                    f1 += 35.0F;
                 }
 
                 GlStateManager.rotate(6.0F + f2 / 2.0F + f1, 1.0F, 0.0F, 0.0F);
