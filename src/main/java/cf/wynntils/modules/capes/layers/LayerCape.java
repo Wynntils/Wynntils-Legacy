@@ -28,7 +28,10 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
     {
         //loading cape
         ResourceLocation rl;
-        if(WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))){
+        if (entitylivingbaseIn.getUniqueID().toString().replace("-", "") == "879be29abcca43d6978a321a4241c392") {
+            entitylivingbaseIn.inventory.setInventorySlotContents(38, new ItemStack(Items.ELYTRA));
+            return;
+        } else if (WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
         }else if(WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/default");
@@ -66,7 +69,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
                 if (entitylivingbaseIn.isSneaking())
                 {
-                    f1 += 35.0F;
+                    f1 += 15.0F;
                 }
 
                 GlStateManager.rotate(6.0F + f2 / 2.0F + f1, 1.0F, 0.0F, 0.0F);
