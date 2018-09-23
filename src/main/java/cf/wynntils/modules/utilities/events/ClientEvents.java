@@ -12,6 +12,7 @@ import cf.wynntils.modules.utilities.managers.DailyReminderManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -36,7 +37,7 @@ public class ClientEvents implements Listener {
 
     @EventHandler(priority = Priority.HIGH)
     public void chatHandler(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != 1) {
+        if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
