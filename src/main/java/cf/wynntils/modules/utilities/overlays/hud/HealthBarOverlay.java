@@ -8,7 +8,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -43,8 +43,8 @@ public class HealthBarOverlay extends Overlay {
         if (!(visible = (getPlayerInfo().getCurrentHealth() != -1 && !Reference.onLobby))) return;
 //        if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
 //            health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
-        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
-            health -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
+        if (OverlayConfig.Health.INSTANCE.animated > 0.0f && OverlayConfig.Health.INSTANCE.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
+            health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
         } else {
             health = getPlayerInfo().getCurrentHealth();
         }
@@ -52,10 +52,10 @@ public class HealthBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && OverlayConfig.Health.INSTANCE.enabled) {
             event.setCanceled(true);
 
-            switch (UtilitiesConfig.HUD.INSTANCE.healthTexture) {
+            switch (OverlayConfig.Health.INSTANCE.healthTexture) {
                 case Wynn:
                     drawDefaultBar(-1, 8, 0, 17);
                     break;
@@ -73,7 +73,7 @@ public class HealthBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_health, -81, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
-        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
+        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
     }
 }
 

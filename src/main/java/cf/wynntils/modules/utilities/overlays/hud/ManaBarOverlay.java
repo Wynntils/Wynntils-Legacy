@@ -8,7 +8,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -43,8 +43,8 @@ public class ManaBarOverlay extends Overlay {
         if (!(visible = (getPlayerInfo().getCurrentMana() != -1 && !Reference.onLobby))) return;
 //        if(this.animated > 0.0f && this.animated < 10.0f)
 //            mana -= (animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
-        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f)
-            mana -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
+        if (OverlayConfig.Mana.INSTANCE.animated > 0.0f && OverlayConfig.Mana.INSTANCE.animated < 10.0f)
+            mana -= (OverlayConfig.Mana.INSTANCE.animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
         else mana = getPlayerInfo().getCurrentMana();
 
         /*
@@ -60,10 +60,10 @@ public class ManaBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if ((event.getType() == RenderGameOverlayEvent.ElementType.FOOD) || (event.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
+        if ((event.getType() == RenderGameOverlayEvent.ElementType.FOOD) || (event.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT) && OverlayConfig.Mana.INSTANCE.enabled) {
             event.setCanceled(true);
 
-            switch (UtilitiesConfig.HUD.INSTANCE.manaTexture) {
+            switch (OverlayConfig.Mana.INSTANCE.manaTexture) {
                 case Wynn:
                     drawDefaultBar(-1, 8, 0, 17);
                     break;
@@ -81,6 +81,6 @@ public class ManaBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_mana, 81, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
-        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
+        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
     }
 }

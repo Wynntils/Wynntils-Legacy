@@ -1,6 +1,5 @@
 package cf.wynntils.modules.utilities.configs;
 
-import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
@@ -130,56 +129,6 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "hud_settings", displayPath = "Main/HUD")
-    public static class HUD extends SettingsClass {
-        public static HUD INSTANCE;
-
-        @Setting(displayName = "Health Texture", description = "What texture to use for the health bar")
-        public HealthTextures healthTexture = HealthTextures.a;
-
-        @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
-        public ManaTextures manaTexture = ManaTextures.a;
-
-        @Setting(displayName = "EXP Texture", description = "What texture to use for the exp bar")
-        public ExpTextures expTexture = ExpTextures.a;
-
-        @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
-        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
-
-        @Setting(displayName = "Action bar Overwrite Coords", description = "Should the coords be overwritten by the action bar")
-        public boolean overwrite = true;
-
-        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
-        public float animated = 2f;
-
-        public enum HealthTextures {
-            Wynn,
-            a,
-            b,
-            c,
-            d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
-        }
-
-        public enum ManaTextures {
-            Wynn,
-            a,
-            b,
-            c,
-            d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
-        }
-
-        public enum ExpTextures {
-            wynn,
-            a,
-            b,
-            c
-            //following the format, to add more textures, register them here with a name and add to the bars.png texture 16 more pixels in height, NOTE THAT SPECIAL ONES MUST BE IN THE END!
-        }
-    }
-
     @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
     public static class Debug extends SettingsClass {
         public static Debug INSTANCE;
@@ -230,3 +179,4 @@ public class UtilitiesConfig extends SettingsClass {
     }
 
 }
+

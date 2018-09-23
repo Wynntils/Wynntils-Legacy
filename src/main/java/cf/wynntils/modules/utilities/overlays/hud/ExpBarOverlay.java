@@ -7,7 +7,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -42,19 +42,20 @@ public class ExpBarOverlay extends Overlay{
         if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby))) return;
 //        if (this.animated > 0.0f && this.animated < 10.0f)
 //            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
-        if (UtilitiesConfig.HUD.INSTANCE.animated > 0.0f && UtilitiesConfig.HUD.INSTANCE.animated < 10.0f)
-            exp -= (UtilitiesConfig.HUD.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+        if (OverlayConfig.Exp.INSTANCE.animated > 0.0f && OverlayConfig.Exp.INSTANCE.animated < 10.0f)
+            exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
         else
             exp = getPlayerInfo().getExperiencePercentage();
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) {
+        if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && OverlayConfig.Exp.INSTANCE.enabled) {
             event.setCanceled(true);
 
-            switch (UtilitiesConfig.HUD.INSTANCE.expTexture) {
-                case wynn: drawDefaultBar(0,5,0,9);
+            switch (OverlayConfig.Exp.INSTANCE.expTexture) {
+                case Wynn:
+                    drawDefaultBar(0, 5, 0, 9);
                     break;
                 case a: drawDefaultBar(0,5,10,19);
                     break;
@@ -68,6 +69,6 @@ public class ExpBarOverlay extends Overlay{
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_exp,-91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
-        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, UtilitiesConfig.HUD.INSTANCE.textShadow);
+        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 }

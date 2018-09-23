@@ -3,6 +3,7 @@ package cf.wynntils.modules.utilities;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.events.ClientEvents;
 import cf.wynntils.modules.utilities.events.ServerEvents;
@@ -46,8 +47,13 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Chat.class);
-        registerSettings(UtilitiesConfig.HUD.class);
         registerSettings(UtilitiesConfig.Debug.class);
+
+        registerSettings(OverlayConfig.class);
+        registerSettings(OverlayConfig.Health.class);
+        registerSettings(OverlayConfig.Leveling.class);
+        registerSettings(OverlayConfig.Exp.class);
+        registerSettings(OverlayConfig.Mana.class);
 
         registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {
             new DebugUI().show();
