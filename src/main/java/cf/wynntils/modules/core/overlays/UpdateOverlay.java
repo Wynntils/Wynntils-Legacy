@@ -1,5 +1,6 @@
 package cf.wynntils.modules.core.overlays;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -9,6 +10,10 @@ import cf.wynntils.core.utils.Utils;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
@@ -84,6 +89,14 @@ public class UpdateOverlay extends Overlay {
         }
     }
 
+    public static void reset() {
+        disappear = false;
+        acceptYesOrNo = false;
+        download = false;
+        size = 63;
+        timeout = 0;
+    }
+
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks){
         if(download && disappear) {
@@ -134,8 +147,24 @@ public class UpdateOverlay extends Overlay {
             }
         }
 
+        if (oldJar == null || !oldJar.exists()) {
+            TextComponentString message = new TextComponentString("Wynntils could not find its jar in your mods folder, perhaps you renamed the file or you are a developer. ");
+            TextComponentString uwu = new TextComponentString("^_^");
+            uwu.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("You probably need to update the project")));
+            message.getStyle().setColor(TextFormatting.AQUA);
+            ModCore.mc().player.sendMessage(message.appendSibling(uwu));
+        }
+
         File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
         Utils.copyFile(newJar, oldJar);
+        TextComponentString message = new TextComponentString("Update (" + newJar.toString().replace("wynntils\\updates\\", "") + ") has been downloaded to: ");
+        TextComponentString file = new TextComponentString(oldJar.toString());
+        message.getStyle().setColor(TextFormatting.AQUA);
+        file.getStyle().setColor(TextFormatting.DARK_AQUA);
+        file.getStyle().setUnderlined(true);
+        file.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to open folder")));
+        file.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, oldJar.getParent()));
+        ModCore.mc().player.sendMessage(message.appendSibling(file));
         newJar.delete();
     }
 

@@ -1,6 +1,7 @@
 package cf.wynntils.webapi.profiles;
 
 import cf.wynntils.Reference;
+import cf.wynntils.modules.core.overlays.UpdateOverlay;
 import cf.wynntils.webapi.WebReader;
 
 public class UpdateProfile {
@@ -21,6 +22,8 @@ public class UpdateProfile {
                     Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
 
                     if(latest > actual) {
+                        System.out.println("Update Found");
+                        UpdateOverlay.reset();
                         hasUpdate = true;
                         latestUpdate = versions.get(Reference.MINECRAFT_VERSIONS);
                     }

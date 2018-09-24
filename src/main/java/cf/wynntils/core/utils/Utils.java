@@ -223,8 +223,10 @@ public class Utils {
      @param destFile Where it will be
      */
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if(!destFile.exists()) {
-            destFile.createNewFile();
+        if (destFile == null || !destFile.exists()) {
+            destFile = new File(sourceFile.getParent() + "/mods/Wynntils.jar");
+            sourceFile.renameTo(destFile);
+            return;
         }
 
         FileChannel source = null;
@@ -234,6 +236,8 @@ public class Utils {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         finally {
             if(source != null) {

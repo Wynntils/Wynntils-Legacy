@@ -50,8 +50,6 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
         this.bipedFoxEar.rotateAngleX = 0f;
         this.bipedFoxEar.rotateAngleY = 0f;
         this.bipedFoxEar.rotateAngleZ = 0f;
-//        this.bipedFoxEar.rotationPointX = 0.0F;
-//        this.bipedFoxEar.rotationPointY = 0.0F;
         this.bipedFoxEar.render(scale);
     }
 
