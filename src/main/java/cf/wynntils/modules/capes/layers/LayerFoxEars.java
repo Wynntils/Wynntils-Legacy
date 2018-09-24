@@ -7,11 +7,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 
-public class LayerDeadmau5Head implements LayerRenderer<AbstractClientPlayer> {
+public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
     private final RenderPlayer playerRenderer;
-    private ModelRenderer bipedDeadmau5Head;
+    private ModelRenderer bipedFoxEar;
 
-    public LayerDeadmau5Head(RenderPlayer playerRendererIn) {
+    public LayerFoxEars(RenderPlayer playerRendererIn) {
         this.playerRenderer = playerRendererIn;
     }
 
@@ -25,26 +25,34 @@ public class LayerDeadmau5Head implements LayerRenderer<AbstractClientPlayer> {
                 GlStateManager.pushMatrix();
                 GlStateManager.rotate(f, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(f1, 1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(0.375F * (float) (i * 2 - 1), 0.0F, 0.0F);
-                GlStateManager.translate(0.0F, -0.375F, 0.0F);
-                GlStateManager.rotate(-f1, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(-f, 0.0F, 1.0F, 0.0F);
-                float f2 = 1.3333334F;
+                GlStateManager.translate(0.375F * (float) (i * 1.1 - 1), 0.0F, 0.0F);
+                GlStateManager.translate(0.0F, -0.5F, 0.0F);
+                GlStateManager.rotate(f1, 0.5F, 0.0F, 0.0F);
+                GlStateManager.rotate(45f, 0.0F, 0.0F, 1.0F);
+
                 GlStateManager.scale(1.3333334F, 1.3333334F, 1.3333334F);
 //                this.playerRenderer.getMainModel().renderDeadmau5Head(0.0625F);
-                renderModel(this.playerRenderer.getMainModel(), 0.0625f);
+                renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
                 GlStateManager.popMatrix();
             }
         }
     }
 
-    public void renderModel(ModelBase model, float scale) {
-        this.bipedDeadmau5Head = new ModelRenderer(model, 24, 0);
-        this.bipedDeadmau5Head.addBox(-3.0F, -6.0F, -1.0F, 6, 6, 1, false);
-        ModelBase.copyModelAngles(this.playerRenderer.getMainModel().bipedHead, this.bipedDeadmau5Head);
-        this.bipedDeadmau5Head.rotationPointX = 0.0F;
-        this.bipedDeadmau5Head.rotationPointY = 0.0F;
-        this.bipedDeadmau5Head.render(scale);
+    public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
+        this.bipedFoxEar = new ModelRenderer(model, 24, 0);
+        if (player.isSneaking()) {
+            this.bipedFoxEar.addBox(2F, -1.5F, 2F, 3, 3, 1);
+        } else {
+            this.bipedFoxEar.addBox(-0.1F, -3.0F, -1.0F, 3, 3, 1);
+        }
+        ModelBase.copyModelAngles(this.playerRenderer.getMainModel().bipedHead, this.bipedFoxEar);
+        this.bipedFoxEar.rotateAngleZ = 45.0f;
+        this.bipedFoxEar.rotateAngleX = 0f;
+        this.bipedFoxEar.rotateAngleY = 0f;
+        this.bipedFoxEar.rotateAngleZ = 0f;
+//        this.bipedFoxEar.rotationPointX = 0.0F;
+//        this.bipedFoxEar.rotationPointY = 0.0F;
+        this.bipedFoxEar.render(scale);
     }
 
     public boolean shouldCombineTextures() {

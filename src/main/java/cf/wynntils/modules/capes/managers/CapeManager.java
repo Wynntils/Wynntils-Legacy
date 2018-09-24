@@ -20,15 +20,10 @@ public class CapeManager {
             if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
                 return;
             }
-            String url;
-            ResourceLocation rl;
-            if (WebManager.isPremium(uuid)) {
-                url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
-                rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
-            } else {
-                url = WebManager.apiUrls.get("Capes") + "/user/71925ed885424db6b0874edd4c021062";
-                rl = new ResourceLocation("wynntils:capes/71925ed885424db6b0874edd4c021062");
-            }
+
+            String url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
+            ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
+
             IImageBuffer ibuffer = new IImageBuffer() {
                 @Override
                 public BufferedImage parseUserSkin(BufferedImage image) {

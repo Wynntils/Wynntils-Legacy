@@ -28,10 +28,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
     {
         //loading cape
         ResourceLocation rl;
-        if (entitylivingbaseIn.getUniqueID().toString().replace("-", "") == "879be29abcca43d6978a321a4241c392") {
-            entitylivingbaseIn.inventory.setInventorySlotContents(38, new ItemStack(Items.ELYTRA));
+        if (entitylivingbaseIn.getUniqueID().toString().replace("-", "").equals("879be29abcca43d6978a321a4241c392")) {
             return;
-        } else if (WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+        } else if (WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) || WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
         }else if(WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/default");

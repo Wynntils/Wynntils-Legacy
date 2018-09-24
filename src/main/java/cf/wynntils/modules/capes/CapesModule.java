@@ -4,8 +4,8 @@ import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.capes.events.EntityEvents;
 import cf.wynntils.modules.capes.layers.LayerCape;
-import cf.wynntils.modules.capes.layers.LayerDeadmau5Head;
 import cf.wynntils.modules.capes.layers.LayerElytra;
+import cf.wynntils.modules.capes.layers.LayerFoxEars;
 import cf.wynntils.modules.capes.managers.CapeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -30,7 +30,7 @@ public class CapesModule extends Module {
         for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
             render.addLayer(new LayerCape(render));
             render.addLayer(new LayerElytra(render));
-            render.addLayer(new LayerDeadmau5Head(render));
+            render.addLayer(new LayerFoxEars(render));
         }
     }
 
