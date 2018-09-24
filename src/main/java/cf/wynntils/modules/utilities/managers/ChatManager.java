@@ -37,8 +37,8 @@ public class ChatManager {
         boolean cancel = false;
 
         if(UtilitiesConfig.Chat.INSTANCE.allowChatMentions && message.contains("/") && message.contains(":") && message.contains(ModCore.mc().player.getName())) {
-            String[] messageSplitted = message.split(":");
-            if(!messageSplitted[0].contains(ModCore.mc().player.getName())) {
+            String[] messageSplitted = message.split(":", 2);
+            if (messageSplitted[1].contains(ModCore.mc().player.getName())) {
                 String playerName = ModCore.mc().player.getName();
                 String afterSplit = StringUtils.join(Arrays.copyOfRange(messageSplitted, 1, messageSplitted.length));
                 if(afterSplit.contains(playerName)) {
@@ -57,7 +57,7 @@ public class ChatManager {
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
         }
 
-        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && message.equals(lastMessage)) {
+        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && message.replaceFirst("§8\\[§7.*§8\\]", "").equals(lastMessage)) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
 
             if(ch != null) {
