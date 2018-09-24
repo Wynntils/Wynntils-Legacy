@@ -2,14 +2,14 @@
   {
   "modid": "wynntils",
   "name": "Wynntils",
-  "description": "",
-  "version": "0.0.8",
+  "description": "The best wynncraft mod you'll probably find!",
+  "version": "0.0.9",
   "mcversion": "[1.11,1.12.2]",
-  "url": "http://wynntils.cf",
-  "updateUrl": "",
+  "url": "https://wynntils.cf",
+  "updateUrl": "https://api.wynntils.cf/update.json",
   "authorList": ["Scyu","HeyZeer0","EHTYCSCYTHE","SHsuperCM"],
   "credits": "",
-  "logoFile": "",
+  "logoFile": "assets/wynntils/logo.png",
   "screenshots": [],
   "dependencies": []
   }

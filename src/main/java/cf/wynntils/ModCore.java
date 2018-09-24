@@ -20,7 +20,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
         modid = Reference.MOD_ID,
         acceptedMinecraftVersions = "[" + Reference.MINECRAFT_VERSIONS + "]",
         guiFactory = "cf.wynntils.core.framework.settings.ui.ModConfigFactory",
-        clientSideOnly = true
+        clientSideOnly = true,
+        updateJSON = "https://api.wynntils.cf/update.json"
 )
 public class ModCore {
 
