@@ -80,10 +80,10 @@ public class OverlayConfig extends SettingsClass {
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
 
-        @Setting(displayName = "Mana Texture", description = "What texture to use for the mana bar")
+        @Setting(displayName = "Exp Texture", description = "What texture to use for the exp bar")
         public expTextures expTexture = expTextures.a;
 
-        @Setting(displayName = "Enabled", description = "Should the mana bar display?")
+        @Setting(displayName = "Enabled", description = "Should the exp bar display?")
         public boolean enabled = true;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
