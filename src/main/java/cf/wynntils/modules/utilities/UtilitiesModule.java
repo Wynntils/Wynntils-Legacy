@@ -10,8 +10,6 @@ import cf.wynntils.modules.utilities.events.ServerEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
-import cf.wynntils.modules.utilities.overlays.uis.DebugUI;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -54,10 +52,6 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Leveling.class);
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
-
-        registerKeyBinding("The holy key of debugging", Keyboard.KEY_K, "DEBUG", true, () -> {
-            new DebugUI().show();
-        });
     }
 
     public static UtilitiesModule getModule() {

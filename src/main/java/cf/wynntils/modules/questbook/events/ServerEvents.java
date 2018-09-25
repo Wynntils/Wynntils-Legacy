@@ -144,7 +144,7 @@ public class ServerEvents implements Listener {
             description = description + Utils.stripColor(lore.get(i));
         }
 
-        QuestManager.addQuestInfo(new QuestInfo(displayName, status, minLevel, size, description));
+        QuestManager.addQuestInfo(new QuestInfo(displayName, status, minLevel, size, description, lore));
     }
 
 }
