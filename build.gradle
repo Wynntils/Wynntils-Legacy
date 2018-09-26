@@ -34,8 +34,6 @@ minecraft {
 repositories {
     mavenCentral()
     jcenter()
-    // JourneyMap API snapshots are here
-    maven { url 'https://oss.sonatype.org/content/groups/public/' }
 }
 
 configurations {
