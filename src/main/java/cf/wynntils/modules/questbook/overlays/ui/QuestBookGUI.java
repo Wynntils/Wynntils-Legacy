@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2018.
  */
 
-package cf.wynntils.modules.questbook.guis;
+package cf.wynntils.modules.questbook.overlays.ui;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
@@ -56,9 +56,11 @@ public class QuestBookGUI extends GuiScreen {
     int currentSelection = 0;
     boolean acceptNext = false;
     boolean acceptBack = false;
+    QuestInfo overQuest = null;
 
     boolean animationCompleted = false;
     int selected = 0;
+
 
     //search bar
     String searchBarText = "";
@@ -68,6 +70,8 @@ public class QuestBookGUI extends GuiScreen {
     //colors
     private static final CustomColor background_1 = CustomColor.fromString("000000", 0.3f);
     private static final CustomColor background_2 = CustomColor.fromString("000000", 0.2f);
+    private static final CustomColor background_3 = CustomColor.fromString("00ff00", 0.3f);
+    private static final CustomColor background_4 = CustomColor.fromString("008f00", 0.2f);
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_BACK) {
@@ -108,6 +112,14 @@ public class QuestBookGUI extends GuiScreen {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if(overQuest != null) {
+            if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
+                QuestManager.setTrackedQuest(null);
+                return;
+            }
+            QuestManager.setTrackedQuest(overQuest);
+            return;
+        }
         ScaledResolution res = new ScaledResolution(getMinecraft());
 
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
@@ -160,11 +172,6 @@ public class QuestBookGUI extends GuiScreen {
         page = QuestBookPage.QUESTS;
 
         List<String> hoveredText = new ArrayList<>();
-
-        //default texts
-        render.scale(0.7f);
-        render.drawString("v" + Reference.VERSION, x + 90, y + 232, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-        render.resetScale();
 
         //page per page
         //quests
@@ -262,6 +269,8 @@ public class QuestBookGUI extends GuiScreen {
                     QuestInfo selected = toSearch.get(i);
                     if(!searchBarText.equals("") && !selected.getName().startsWith(searchBarText)) continue;
 
+                    List<String> lore = new ArrayList<>(selected.getLore());
+
                     if(posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY) {
                         if(lastTick == 0 && !animationCompleted) {
                             lastTick = getMinecraft().world.getTotalWorldTime();
@@ -275,29 +284,47 @@ public class QuestBookGUI extends GuiScreen {
                                 animationCompleted = true;
                                 animationTick = 133;
                             }
-                        }else{ animationTick = 133;
-                       }
+                        }else{ animationTick = 133; }
 
-                        render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
-                        render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(selected.getName())) {
+                            render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
+                            render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        }else{
+                            render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
+                            render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        }
 
-                        hoveredText = selected.getLore();
+                        if(selected.getStatus() != QuestStatus.COMPLETED)  overQuest = selected;
+                        hoveredText = lore;
                         GlStateManager.disableLighting();
                     }else{
                         if(this.selected == i) {
                             animationCompleted = false;
                             lastTick = 0;
+                            overQuest = null;
                         }
-                        render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+
+                        if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(selected.getName())) {
+                            render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        }else{
+                            render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        }
                     }
+
 
                     render.color(1, 1, 1, 1);
                     if (selected.getStatus() == QuestStatus.COMPLETED) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 223, 245, 11, 7);
                     } else if (selected.getStatus() == QuestStatus.CAN_START) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
+                        if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
+                            lore.set(lore.size() - 1, "§c§lLeft click to unpin it!");
+                        }else{ lore.set(lore.size() - 1, "§a§lLeft click to pin it!"); }
                     } else if (selected.getStatus() == QuestStatus.STARTED) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
+                        if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
+                            lore.set(lore.size() - 1, "§c§lLeft click to unpin it!");
+                        }else{ lore.set(lore.size() - 1, "§a§lLeft click to pin it!"); }
                     }
 
                     render.drawString(selected.getName(), x + 26, y -95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -345,6 +372,11 @@ public class QuestBookGUI extends GuiScreen {
         }
 
         if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
+
+        //default texts
+        render.scale(0.7f);
+        render.drawString("v" + Reference.VERSION, x + 90, y + 232, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+        render.resetScale();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
         ScreenRenderer.endGL();

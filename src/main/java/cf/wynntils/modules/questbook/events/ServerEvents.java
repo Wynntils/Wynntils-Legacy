@@ -103,6 +103,7 @@ public class ServerEvents implements Listener {
             }else{
                 acceptItems = false;
                 e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
+                QuestManager.updateTrackedQuest();
                 QuestManager.setReadingQuestBook(false);
             }
         }

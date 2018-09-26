@@ -53,6 +53,12 @@ public class QuestManager {
         QuestManager.readingQuestBook = readingQuestBook;
     }
 
+    public static void updateTrackedQuest() {
+        if(trackedQuest == null) return;
+
+        trackedQuest = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).findFirst().get();
+    }
+
     public static void addQuestInfo(QuestInfo quest) {
         currentQuestsData.add(quest);
     }
