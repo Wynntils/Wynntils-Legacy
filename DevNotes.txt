@@ -1,4 +1,0 @@
---SHCM
-https://api.github.com/repos/[owner]/[project]/contents/[path]
-https://github.com/delthas/JavaMP3
-enumObject.getClass().getEnumConstants()

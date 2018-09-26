@@ -27,5 +27,5 @@ All help is welcome =)
 License
 ========
 
-Wynntils is licensed over the license [GNU Affero General Public License v3.0](https://github.com/AladdinBOT/Aladdin/blob/master/LICENSE)<br>
+Wynntils is licensed over the license [GNU Affero General Public License v3.0](https://github.com/Wynntils/Wynntils/blob/master/LICENSE)<br>
 All the assets **are over Wynntils domain © Wynntils**.
