@@ -39,8 +39,7 @@ public class QuestBookGUI extends GuiScreen {
     public QuestBookGUI() { }
 
     public void open() {
-        QuestManager.requestQuestBookReading();
-        lastTick = 0;
+        lastTick = getMinecraft().world.getTotalWorldTime();
         acceptBack = false;
         acceptNext = false;
         animationCompleted = false;
@@ -79,10 +78,12 @@ public class QuestBookGUI extends GuiScreen {
                 return;
             }
             searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
             text_flicker = System.currentTimeMillis();
             keepForTime = false;
         } else if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
             searchBarText = searchBarText + typedChar;
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
             text_flicker = System.currentTimeMillis();
             keepForTime = true;
         }
@@ -115,8 +116,10 @@ public class QuestBookGUI extends GuiScreen {
         if(overQuest != null) {
             if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                 QuestManager.setTrackedQuest(null);
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 return;
             }
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
             QuestManager.setTrackedQuest(overQuest);
             return;
         }
@@ -142,27 +145,22 @@ public class QuestBookGUI extends GuiScreen {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         ScreenRenderer.beginGL(0,0);
-        ScaledResolution res = new ScaledResolution(getMinecraft());
 
-        int x = res.getScaledWidth() / 2;
-        int y = res.getScaledHeight() / 2;
+        int x = width / 2;
+        int y = height / 2;
 
         if(requestOpening) {
-            if(lastTick == 0) {
-                lastTick = getMinecraft().world.getTotalWorldTime();
-            }
+            float animationTick = ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 0.5f;
 
-            float animationTick = ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) / 2;
-
-            x = (int)(x / animationTick);
-            y = (int)(y / animationTick);
-
-            if(animationTick < 1) {
+            if(animationTick <= 1) {
                 render.scale(animationTick);
-            }else{ render.scale(1); requestOpening = false; }
+
+                x = (int)(x / animationTick);
+                y = (int)(y / animationTick);
+            }else{ render.resetScale(); requestOpening = false; }
 
         }else{
-            x = res.getScaledWidth() / 2; y = res.getScaledHeight() / 2;
+            x = width / 2; y = height / 2;
         }
 
         render.drawRect(Textures.UIs.quest_book, x-(339/2), y-(220/2), 0, 0, 339, 220);
@@ -183,9 +181,11 @@ public class QuestBookGUI extends GuiScreen {
             render.drawString("available for you. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("quest just typing it name.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("You can go to the next page", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("by clicking on the two buttons", x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("or scrolling your mouse.", x - 154, y + 40, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("You can go to the next page", x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("by clicking on the two buttons", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("or scrolling your mouse.", x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("You can pin/unpin a quest", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("by cliking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
 
             if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
@@ -271,7 +271,7 @@ public class QuestBookGUI extends GuiScreen {
 
                     List<String> lore = new ArrayList<>(selected.getLore());
 
-                    if(posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY) {
+                    if(posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
                         if(lastTick == 0 && !animationCompleted) {
                             lastTick = getMinecraft().world.getTotalWorldTime();
                             this.selected = i;
@@ -279,7 +279,7 @@ public class QuestBookGUI extends GuiScreen {
 
                         int animationTick;
                         if(!animationCompleted) {
-                            animationTick = (int)((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 50;
+                            animationTick = (int)((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 30;
                             if(animationTick >= 133) {
                                 animationCompleted = true;
                                 animationTick = 133;
@@ -300,7 +300,8 @@ public class QuestBookGUI extends GuiScreen {
                     }else{
                         if(this.selected == i) {
                             animationCompleted = false;
-                            lastTick = 0;
+
+                            if(!requestOpening) lastTick = 0;
                             overQuest = null;
                         }
 
@@ -371,12 +372,13 @@ public class QuestBookGUI extends GuiScreen {
             render.resetScale();
         }
 
-        if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
-
         //default texts
         render.scale(0.7f);
-        render.drawString("v" + Reference.VERSION, x + 90, y + 232, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+        render.drawString("v" + Reference.VERSION, (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         render.resetScale();
+
+        GlStateManager.disableLighting();
+        if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
         ScreenRenderer.endGL();

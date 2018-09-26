@@ -12,6 +12,7 @@ import cf.wynntils.modules.questbook.events.ClientEvents;
 import cf.wynntils.modules.questbook.events.ServerEvents;
 import cf.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
 import cf.wynntils.modules.questbook.overlays.ui.QuestBookGUI;
+import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "quest_book", displayName = "Quest Book")
 public class QuestBookModule extends Module {
@@ -24,6 +25,8 @@ public class QuestBookModule extends Module {
 
         registerSettings(QuestBookConfig.class);
         registerOverlay(new TrackedQuestOverlay(), Priority.HIGHEST);
+
+        registerKeyBinding("Open QuestBook", Keyboard.KEY_K, "QuestBook", true, gui::open);
     }
 
 }
