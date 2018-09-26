@@ -33,12 +33,14 @@ public class TrackedQuestOverlay extends Overlay {
             if(chars + x.length() > 37) {
                 messages.add(currentMessage);
                 currentMessage = x + " ";
-                chars = x.length() + 1;
+                chars = x.length();
                 continue;
             }
-            chars+= x.length() + 1;
+            chars+= x.length() ;
             currentMessage+=x + " ";
         }
+
+        messages.add(currentMessage);
 
         int currentY = 0;
         for(String message : messages) {
