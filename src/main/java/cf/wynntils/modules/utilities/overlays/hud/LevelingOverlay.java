@@ -26,11 +26,11 @@ public class LevelingOverlay extends Overlay {
 
     @Setting(displayName = "Text Shadow", description = "The Levelling Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
-    
+
     @Override
-	public void tick(ClientTickEvent event, long ticks) {
-		this.visible = this.getPlayerInfo().getXpNeededToLevelUp() != -1;
-	}
+    public void tick(ClientTickEvent event, long ticks) {
+        this.visible = this.getPlayerInfo().getXpNeededToLevelUp() != -1;
+    }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
