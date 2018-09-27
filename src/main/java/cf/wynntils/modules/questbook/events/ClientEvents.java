@@ -16,6 +16,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class ClientEvents implements Listener {
 
+    public static boolean customQuestbookRequest = false;
+
     @EventHandler(priority = Priority.HIGHEST)
     public void onChat(ClientChatReceivedEvent e)  {
         if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[New Quest Started:")) {
@@ -35,7 +37,7 @@ public class ClientEvents implements Listener {
     public void onClickOnQuestBook(PlayerInteractEvent.RightClickItem e) {
         if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
             if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
-                e.setCanceled(true);
+                customQuestbookRequest = true;
                 QuestBookModule.gui.open();
             }
         }
