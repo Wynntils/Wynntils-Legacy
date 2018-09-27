@@ -8,6 +8,7 @@ import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 /**
  * Created by HeyZeer0 on 17/03/2018.
@@ -25,6 +26,11 @@ public class LevelingOverlay extends Overlay {
 
     @Setting(displayName = "Text Shadow", description = "The Levelling Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
+    
+    @Override
+	public void tick(ClientTickEvent event, long ticks) {
+		this.visible = this.getPlayerInfo().getXpNeededToLevelUp() != -1;
+	}
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
