@@ -23,10 +23,10 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import scala.actors.threadpool.Arrays;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QuestBookGUI extends GuiScreen {
@@ -189,7 +189,7 @@ public class QuestBookGUI extends GuiScreen {
 
 
             if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(new String[] {"Back to Menu", "§aAt Development"});
+                hoveredText = Arrays.asList("Back to Menu", "§aAt Development");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
             }else{
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -360,7 +360,7 @@ public class QuestBookGUI extends GuiScreen {
             //engine
             if(posX >= 24 && posX <= 50 && posY >= -28 && posY <= 0) {
                 render.drawRect(Textures.UIs.quest_book, x-50, y, 280, 248, 27, 27);
-                hoveredText = Arrays.asList(new String[] {"In Development"});
+                hoveredText = Arrays.asList("In Development");
             }else{ render.drawRect(Textures.UIs.quest_book, x-50, y, 280, 221, 27, 27); }
 
             render.drawString("Please select an option", x-79, y-30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
