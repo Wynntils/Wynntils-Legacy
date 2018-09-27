@@ -6,13 +6,15 @@ import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.instances.ModuleContainer;
-import cf.wynntils.core.framework.settings.SettingsContainer;
-import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
-import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.framework.settings.SettingsContainer;
+import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
+import cf.wynntils.core.framework.settings.instances.SettingsHolder;
+import cf.wynntils.modules.core.commands.CommandToken;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -98,6 +100,10 @@ public class FrameworkManager {
 
     public static void postEnableModules() {
         availableModules.values().forEach(c -> c.getModule().postEnable());
+    }
+
+    public static void registerCommands() {
+        ClientCommandHandler.instance.registerCommand(new CommandToken());
     }
 
     public static void disableModules() {
