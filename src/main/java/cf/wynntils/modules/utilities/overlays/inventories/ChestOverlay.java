@@ -105,9 +105,7 @@ public class ChestOverlay extends GuiChest {
 
                 float r, g, b, a;
 
-                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
-                    continue;
-                } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+                if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0;
                     g = 1;
                     b = 1;
@@ -164,15 +162,7 @@ public class ChestOverlay extends GuiChest {
                 }
                 int x = 8 + (18 * amount), y = 8 + (18 * floor);
 
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
-                    GL11.glPushMatrix();
-                    {
-                        GlStateManager.color(r, g, b, a);
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
-                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
-                    }
-                    GL11.glPopMatrix();
-                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
                     GL11.glPushMatrix();
                     {
                         mc.getTextureManager().bindTexture(RESOURCE);
@@ -276,15 +266,7 @@ public class ChestOverlay extends GuiChest {
                 }
 
                 int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
-                    GL11.glPushMatrix();
-                    {
-                        GlStateManager.color(r, g, b, a);
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
-                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
-                    }
-                    GL11.glPopMatrix();
-                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
+                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
                     GL11.glPushMatrix();
                     {
                         mc.getTextureManager().bindTexture(RESOURCE);
@@ -310,7 +292,7 @@ public class ChestOverlay extends GuiChest {
         }
         GL11.glPopMatrix();
 
-        if (!UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
+        if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
             if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
                 int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
                 int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
@@ -365,15 +347,15 @@ public class ChestOverlay extends GuiChest {
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
                 ScreenRenderer screen = new ScreenRenderer();
                 //LWR INV
-                int x = 150;
-                int y = 135;
+                int x = 190;
+                int y = 143;
                 CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     ScreenRenderer.beginGL(0, 0);
                     {
                         ScreenRenderer.scale(0.9f);
                         String moneyText = decimalFormat.format(LWRmoney) + E;
-                        screen.drawString(moneyText, x, 0, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                     }
                     ScreenRenderer.endGL();
 
@@ -389,7 +371,7 @@ public class ChestOverlay extends GuiChest {
                     {
                         ScreenRenderer.scale(0.9f);
                         String moneyText = decimalFormat.format(LWRleAmount) + L + E + " " + decimalFormat.format(LWRblockAmount) + E + B + " " + decimalFormat.format(LWRmoney) + E;
-                        screen.drawString(moneyText, x, 0, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                     }
                     ScreenRenderer.endGL();
                 }
