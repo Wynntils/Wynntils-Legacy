@@ -6,13 +6,6 @@ import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.webapi.WebManager;
-import cf.wynntils.webapi.account.WynntilsAccount;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -31,15 +24,6 @@ public class KeyManager {
             }else{
                 ModCore.mc().gameSettings.gammaSetting = lastGamma;
             }
-        });
-
-        CoreModule.getModule().registerKeyBinding("Get Token", Keyboard.KEY_Z, "Wynntils", true, () -> {
-            ITextComponent token = new TextComponentString(WynntilsAccount.getToken());
-            token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.cf/register.php?token=" + WynntilsAccount.getToken()));
-            token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register account")));
-            token.getStyle().setColor(TextFormatting.DARK_AQUA);
-            token.getStyle().setUnderlined(true);
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§bWynntils Token: §3").appendSibling(token));
         });
 
         CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, () -> {

@@ -42,6 +42,7 @@ public class ModCore {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
         FrameworkManager.postEnableModules();
+        FrameworkManager.registerCommands();
         Textures.loadTextures();
     }
 
