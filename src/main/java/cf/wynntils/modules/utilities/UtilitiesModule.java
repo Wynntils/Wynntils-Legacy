@@ -47,6 +47,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Chat.class);
         registerSettings(UtilitiesConfig.Debug.class);
+        registerSettings(UtilitiesConfig.Wars.class);
 
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);
