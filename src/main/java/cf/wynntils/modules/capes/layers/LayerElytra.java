@@ -1,6 +1,7 @@
 package cf.wynntils.modules.capes.layers;
 
 import cf.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelElytra;
@@ -35,6 +36,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
     @Override
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
         if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && itemstack.getItem() != Items.ELYTRA) {

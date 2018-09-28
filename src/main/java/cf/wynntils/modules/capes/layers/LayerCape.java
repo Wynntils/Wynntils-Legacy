@@ -1,6 +1,7 @@
 package cf.wynntils.modules.capes.layers;
 
 import cf.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -29,6 +30,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         //loading cape
         ResourceLocation rl;
         if (WebManager.hasCape(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
