@@ -32,6 +32,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ClientEvents());
 
 
+        registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
