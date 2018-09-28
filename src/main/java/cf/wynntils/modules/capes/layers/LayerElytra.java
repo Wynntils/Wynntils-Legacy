@@ -37,7 +37,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (WebManager.hasCape(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && itemstack.getItem() != Items.ELYTRA) {
+        if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
