@@ -138,7 +138,6 @@ public class ChatManager {
         }
 
         lastMessage = message;
-        System.out.println(lastMessage);
 
         return cancel;
     }
