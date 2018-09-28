@@ -39,6 +39,27 @@ public class WebManager {
 
     private static WynntilsAccount account = null;
 
+    public static void reset() {
+        apiUrls = null;
+
+        territories = new ArrayList<>();
+        updateProfile = null;
+        items = new HashMap<>();
+        mapMarkers = new ArrayList<>();
+        itemGuesses = new HashMap<>();
+
+        helpers = new ArrayList<>();
+        moderators = new ArrayList<>();
+        premiums = new ArrayList<>();
+        users = new ArrayList<>();
+
+        ears = new ArrayList<>();
+        elytras = new ArrayList<>();
+        capes = new ArrayList<>();
+
+        account = null;
+    }
+
     public static void setupWebApi() {
         updateProfile = new UpdateProfile();
 

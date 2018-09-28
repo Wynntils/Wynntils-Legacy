@@ -36,6 +36,11 @@ public class KeyManager {
             UI.setupUI(ui);
             ModCore.mc().displayGuiScreen(ui);
         });
+
+        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_EQUALS, "Debug", true, () -> {
+            WebManager.reset();
+            WebManager.setupWebApi();
+        });
     }
 
 }
