@@ -8,6 +8,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -88,6 +89,32 @@ public class PacketEvent extends Event {
         public NetHandlerPlayClient getPlayClient() {
             return playClient;
         }
+    }
+
+    public static class SpawnObject extends Event {
+
+        SPacketSpawnObject packet;
+        NetHandlerPlayClient playClient;
+
+        public SpawnObject(SPacketSpawnObject packet, NetHandlerPlayClient playClient) {
+            this.packet = packet;
+            this.playClient = playClient;
+
+        }
+
+        public boolean isCancelable()
+        {
+            return true;
+        }
+
+        public SPacketSpawnObject getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
     }
 
 }

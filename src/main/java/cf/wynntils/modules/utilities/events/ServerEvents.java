@@ -12,6 +12,7 @@ import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.utilities.managers.TPSManager;
+import cf.wynntils.modules.utilities.managers.WarManager;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
 
@@ -52,6 +53,11 @@ public class ServerEvents implements Listener {
         if(Reference.onServer) {
             loadedResourcePack = true;
         }
+    }
+
+    @EventHandler
+    public void onSpawnObject(PacketEvent.SpawnObject e) {
+        if(WarManager.filterMob(e)) e.setCanceled(true);
     }
 
 

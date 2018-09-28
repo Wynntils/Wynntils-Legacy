@@ -48,12 +48,6 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
-        if(ClientEvents.customQuestbookRequest) {
-            ClientEvents.customQuestbookRequest = false;
-            e.setCanceled(true);
-            e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
-            return;
-        }
         if(QuestManager.isReadingQuestBook()) {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());

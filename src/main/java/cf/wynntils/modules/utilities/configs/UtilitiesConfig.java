@@ -19,6 +19,15 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Server TPS on TAB", description = "Should the server ticks per second be shown while holding TAB")
     public boolean showTPSCount = true;
 
+    @SettingsInfo(name = "wars", displayPath = "Wars")
+    public static class Wars extends SettingsClass {
+        public static Wars INSTANCE;
+
+        @Setting(displayName = "Entity Filter", description = "Should useless entities be filtered out")
+        public boolean allowEntityFilter = true;
+
+    }
+
     @SettingsInfo(name = "data", displayPath = "")
     public static class Data extends SettingsClass {
         public static Data INSTANCE;
