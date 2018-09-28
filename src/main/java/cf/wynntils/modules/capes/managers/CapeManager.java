@@ -42,8 +42,8 @@ public class CapeManager {
     }
 
     public static BufferedImage formatCape(BufferedImage img) {
-        int imageWidth = 64;
-        int imageHeight = 32;
+        int imageWidth = 128;
+        int imageHeight = 64;
 
         BufferedImage finalImg = new BufferedImage(imageWidth, imageHeight, 2);
         Graphics g = finalImg.getGraphics();

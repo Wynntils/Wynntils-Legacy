@@ -2,6 +2,7 @@ package cf.wynntils.modules.capes.layers;
 
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -14,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class LayerElytra implements LayerRenderer<AbstractClientPlayer> {
+public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClientPlayer> {
     /**
      * The basic Elytra texture.
      */
@@ -36,7 +37,7 @@ public class LayerElytra implements LayerRenderer<AbstractClientPlayer> {
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (entitylivingbaseIn.getUniqueID().toString().replace("-", "").equals("879be29abcca43d6978a321a4241c392") && itemstack.getItem() != Items.ELYTRA) {
+        if (WebManager.hasCape(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -86,8 +87,7 @@ public class LayerElytra implements LayerRenderer<AbstractClientPlayer> {
 //            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-            if (itemstack.isItemEnchanted()) {
+            if (WebManager.isModerator(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
                 LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, this.modelElytra, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             }
 

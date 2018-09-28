@@ -2,6 +2,8 @@ package cf.wynntils.modules.capes.layers;
 
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -18,6 +20,7 @@ import net.minecraft.util.math.MathHelper;
 public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 {
     private final RenderPlayer playerRenderer;
+    private ModelRenderer bipedCape;
 
     public LayerCape(RenderPlayer playerRendererIn)
     {
@@ -28,11 +31,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
     {
         //loading cape
         ResourceLocation rl;
-        if (entitylivingbaseIn.getUniqueID().toString().replace("-", "").equals("879be29abcca43d6978a321a4241c392")) {
-            return;
-        } else if (WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) || WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+        if (WebManager.hasCape(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
-        }else if(WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+        } else if (WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && !WebManager.hasElytra(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
             rl = new ResourceLocation("wynntils:capes/default");
         }else{ return; }
 
@@ -75,10 +76,25 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 GlStateManager.rotate(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-                this.playerRenderer.getMainModel().renderCape(0.0625F);
+//                this.playerRenderer.getMainModel().renderCape(0.0625F);
+                renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
                 GlStateManager.popMatrix();
             }
         }
+    }
+
+    public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
+        this.bipedCape = new ModelRenderer(model, 0, 0);
+        this.bipedCape.setTextureSize(128, 64);
+        this.bipedCape.addBox(-10.0F, 0.0F, -2.0F, 20, 32, 2);
+        if (player.isSneaking()) {
+            this.bipedCape.rotationPointY = 3.0F;
+        } else {
+            this.bipedCape.rotationPointY = 0.0F;
+        }
+
+
+        this.bipedCape.render(scale / 2);
     }
 
     public boolean shouldCombineTextures()

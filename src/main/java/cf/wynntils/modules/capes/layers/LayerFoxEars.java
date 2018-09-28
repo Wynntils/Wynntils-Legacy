@@ -1,5 +1,6 @@
 package cf.wynntils.modules.capes.layers;
 
+import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -16,9 +17,8 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
     }
 
     public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if ("Scyu_".equals(entitylivingbaseIn.getName()) && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
+        if (WebManager.hasEars(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
             this.playerRenderer.bindTexture(entitylivingbaseIn.getLocationSkin());
-
             for (int i = 0; i < 2; ++i) {
                 float f = entitylivingbaseIn.prevRotationYaw + (entitylivingbaseIn.rotationYaw - entitylivingbaseIn.prevRotationYaw) * partialTicks - (entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks);
                 float f1 = entitylivingbaseIn.prevRotationPitch + (entitylivingbaseIn.rotationPitch - entitylivingbaseIn.prevRotationPitch) * partialTicks;
@@ -31,7 +31,6 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
                 GlStateManager.rotate(45f, 0.0F, 0.0F, 1.0F);
 
                 GlStateManager.scale(1.3333334F, 1.3333334F, 1.3333334F);
-//                this.playerRenderer.getMainModel().renderDeadmau5Head(0.0625F);
                 renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
                 GlStateManager.popMatrix();
             }

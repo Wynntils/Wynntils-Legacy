@@ -33,6 +33,10 @@ public class WebManager {
     private static ArrayList<String> premiums = new ArrayList<>();
     private static ArrayList<String> users = new ArrayList<>();
 
+    private static ArrayList<String> ears = new ArrayList<>();
+    private static ArrayList<String> elytras = new ArrayList<>();
+    private static ArrayList<String> capes = new ArrayList<>();
+
     private static WynntilsAccount account = null;
 
     public static void setupWebApi() {
@@ -48,6 +52,7 @@ public class WebManager {
 
         try{
             updateUsersRoles();
+            updateUsersModels();
 
             ms = System.currentTimeMillis();
             updateItemList();
@@ -103,6 +108,18 @@ public class WebManager {
 
     public static boolean isPremium(String uuid) {
         return premiums.contains(uuid.replace("-", ""));
+    }
+
+    public static boolean hasElytra(String uuid) {
+        return elytras.contains(uuid.replace("-", ""));
+    }
+
+    public static boolean hasEars(String uuid) {
+        return ears.contains(uuid.replace("-", ""));
+    }
+
+    public static boolean hasCape(String uuid) {
+        return capes.contains(uuid.replace("-", ""));
     }
 
     public static boolean isUser(String uuid) {
@@ -340,6 +357,32 @@ public class WebManager {
         if (user.length() > 0) {
             for (int i = 0; i < user.length(); i++) {
                 users.add(user.getString(i));
+            }
+        }
+    }
+
+    public static void updateUsersModels() throws Exception {
+        URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+
+        JSONArray ear = main.getJSONArray("earsActive");
+        if (ear.length() > 0) {
+            for (int i = 0; i < ear.length(); i++) {
+                ears.add(ear.getString(i));
+            }
+        }
+        JSONArray elytra = main.getJSONArray("elytraActive");
+        if (elytra.length() > 0) {
+            for (int i = 0; i < elytra.length(); i++) {
+                elytras.add(elytra.getString(i));
+            }
+        }
+        JSONArray cape = main.getJSONArray("capeActive");
+        if (cape.length() > 0) {
+            for (int i = 0; i < cape.length(); i++) {
+                capes.add(cape.getString(i));
             }
         }
     }
