@@ -16,6 +16,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.util.text.event.HoverEvent.Action;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,6 +32,9 @@ public class ChatManager {
     private  static int lastAmount = 2;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
+
+    private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
+    private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
     public static Boolean applyUpdates(ITextComponent message) {
 
@@ -96,7 +101,76 @@ public class ChatManager {
         if(message.getUnformattedText().contains(" requires your ") && message.getUnformattedText().contains(" skill to be at least ")){
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
         }
-        
+
+        if (hasWynnic(message.getUnformattedText())) {
+            List<ITextComponent> newTextComponents = new ArrayList<>();
+            for (ITextComponent component : message.getSiblings()) {
+                if (hasWynnic(component.getUnformattedText())) {
+                    String toAdd = "";
+                    String currentNonTranslatable = "";
+                    boolean previousWynnic = false;
+                    String oldText = "";
+                    for (char character : component.getUnformattedText().toCharArray()) {
+                        if (String.valueOf(character).matches(wynnicRegex)) {
+                            if (previousWynnic) {
+                                toAdd += currentNonTranslatable;
+                                oldText += currentNonTranslatable;
+                                currentNonTranslatable = "";
+                            } else {
+                                ITextComponent newComponent = new TextComponentString(oldText);
+                                newComponent.setStyle(component.getStyle().createDeepCopy());
+                                newTextComponents.add(newComponent);
+                                oldText = "";
+                                toAdd = "";
+                                previousWynnic = true;
+                            }
+                            String englishVersion = translateCharacter(character);
+                            toAdd += englishVersion;
+                            oldText += character;
+                        } else if (String.valueOf(character).matches(nonTranslatable)) {
+                            if (previousWynnic) {
+                                currentNonTranslatable += character;
+                            } else {
+                                oldText += character;
+                            }
+                        } else {
+                            if (previousWynnic) {
+                                previousWynnic = false;
+                                ITextComponent oldComponent = new TextComponentString(oldText);
+                                oldComponent.setStyle(component.getStyle().createDeepCopy());
+                                ITextComponent newComponent = new TextComponentString(toAdd);
+                                newComponent.setStyle(component.getStyle().createDeepCopy());
+                                newTextComponents.add(oldComponent);
+                                oldComponent.getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, newComponent));
+                                oldText = currentNonTranslatable;
+                                currentNonTranslatable = "";
+                                oldText += character;
+                            } else {
+                                oldText += character;
+                            }
+                        }
+                    }
+                    if (previousWynnic) {
+                        ITextComponent oldComponent = new TextComponentString(oldText);
+                        oldComponent.setStyle(component.getStyle().createDeepCopy());
+                        ITextComponent newComponent = new TextComponentString(toAdd);
+                        newComponent.setStyle(component.getStyle().createDeepCopy());
+                        newTextComponents.add(oldComponent);
+                        oldComponent.getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, newComponent));
+                    } else {
+                        ITextComponent oldComponent = new TextComponentString(oldText);
+                        oldComponent.setStyle(component.getStyle().createDeepCopy());
+                        newTextComponents.add(oldComponent);
+                    }
+
+                } else {
+                    newTextComponents.add(component);
+                }
+            }
+            message.getSiblings().clear();
+            message.getSiblings().addAll(newTextComponents);
+        }
+
         ITextComponent thisClone = message.createCopy();
         thisClone.getSiblings().remove(0);
         thisClone.getSiblings().remove(0);
@@ -140,6 +214,27 @@ public class ChatManager {
         lastMessage = message;
 
         return cancel;
+    }
+
+    private static boolean hasWynnic(String text) {
+        for (char character : text.toCharArray()) {
+            if (String.valueOf(character).matches(wynnicRegex)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String translateCharacter(char wynnic) {
+        if (String.valueOf(wynnic).matches("[\u249C-\u24B5]")) {
+            return String.valueOf((char) (((int) wynnic) - 9275));
+        } else if (String.valueOf(wynnic).matches("[\u2474-\u247C]")) {
+            return String.valueOf((char) (((int) wynnic) - 9283));
+        } else if (String.valueOf(wynnic).matches("[\u247D-\u247F]")) {
+            return wynnic == '\u247D' ? "10" : wynnic == '\u247E' ? "50" : wynnic == '\u247F' ? "100" : "";
+        } else {
+            return wynnic == '\uFF10' ? "." : wynnic == '\uFF11' ? "!" : wynnic == '\uFF12' ? "?" : "";
+        }
     }
 
 }
