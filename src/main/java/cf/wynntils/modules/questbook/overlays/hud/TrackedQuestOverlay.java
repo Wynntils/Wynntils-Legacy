@@ -6,8 +6,6 @@ import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.ArrayList;
-
 public class TrackedQuestOverlay extends Overlay {
 
     public TrackedQuestOverlay() {
@@ -24,26 +22,8 @@ public class TrackedQuestOverlay extends Overlay {
 
         drawString("Tracked Quest Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
 
-        String lore = QuestManager.getTrackedQuest().getCurrentDescription();
-        ArrayList<String> messages = new ArrayList<>();
-
-        String currentMessage = "";
-        int chars = 0;
-        for(String x : lore.split(" ")) {
-            if(chars + x.length() > 37) {
-                messages.add(currentMessage);
-                currentMessage = x + " ";
-                chars = x.length();
-                continue;
-            }
-            chars+= x.length() ;
-            currentMessage+=x + " ";
-        }
-
-        messages.add(currentMessage);
-
         int currentY = 0;
-        for(String message : messages) {
+        for(String message : QuestManager.getTrackedQuest().getSplittedDescription()) {
             drawString(message, 0, 10+currentY, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
             currentY+=10;
         }

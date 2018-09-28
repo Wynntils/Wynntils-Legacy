@@ -52,7 +52,6 @@ public class QuestBookGUI extends GuiScreen {
     //cache
     QuestBookPage page = QuestBookPage.DEFAULT;
     int currentPage = 1;
-    int currentSelection = 0;
     boolean acceptNext = false;
     boolean acceptBack = false;
     QuestInfo overQuest = null;

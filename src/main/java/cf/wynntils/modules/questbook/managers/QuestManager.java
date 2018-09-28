@@ -21,6 +21,9 @@ public class QuestManager {
     private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
     public static QuestInfo trackedQuest = null;
 
+    /**
+     * Requests a full QuestBook re-read, when the player is not with the book in hand
+     */
     public static void requestQuestBookReading() {
         readingQuestBook = true;
         currentQuestsData.clear();
@@ -28,9 +31,22 @@ public class QuestManager {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
+        if(slot == 7) {
+            PacketFilter.instance.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+            return;
+        }
+
         PacketFilter.instance.sendPacket(new CPacketHeldItemChange(7));
         PacketFilter.instance.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
         PacketFilter.instance.sendPacket(new CPacketHeldItemChange(slot));
+    }
+
+    /**
+     * Requests a full QuestBook re-read, when the player already clicked on the book by itself
+     */
+    public static void requestLessIntrusiveQuestBookReading() {
+        readingQuestBook = true;
+        currentQuestsData.clear();
     }
 
     public static ArrayList<QuestInfo> getCurrentQuestsData() {
