@@ -26,7 +26,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    @EventHandler(priority = Priority.HIGH)
+    @EventHandler(priority = Priority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
         if(e.isCanceled() || e.getType() != 1) {
             return;

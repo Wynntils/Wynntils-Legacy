@@ -8,6 +8,8 @@ import cf.wynntils.ModCore;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumHand;
@@ -72,7 +74,8 @@ public class QuestManager {
     public static void updateTrackedQuest() {
         if(trackedQuest == null) return;
 
-        trackedQuest = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).findFirst().get();
+        trackedQuest = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).findFirst().orElse(null);
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
     }
 
     public static void addQuestInfo(QuestInfo quest) {
