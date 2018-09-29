@@ -24,9 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class ChatManager {
 
@@ -225,51 +223,36 @@ public class ChatManager {
         boolean cancel = false;
 
         if (message.contains("{")) {
-            HashMap<Integer, Integer> wynnicSectionsStartEnd = new HashMap<>();
-            int start = -1;
-            for (int index = 0; index < message.length(); index++) {
-                char character = message.charAt(index);
-                if (start == -1 && character == '{') {
-                    start = index;
-                } else if (start != -1 && character == '}') {
-                    wynnicSectionsStartEnd.put(start, index);
-                    start = -1;
-                }
-            }
-            if (start != -1) {
-                wynnicSectionsStartEnd.put(start, message.length());
-            }
-            ArrayList<String> sections = new ArrayList<>();
-
-            for (Entry<Integer, Integer> wynnicSectionStartEndEntry : wynnicSectionsStartEnd.entrySet()) {
-                sections.add(message.substring(wynnicSectionStartEndEntry.getKey(), wynnicSectionStartEndEntry.getValue()));
-            }
-
-            for (String section : sections) {
-                String wynnic = "";
-                for (char character : section.toCharArray()) {
+            String newString = "";
+            boolean isWynnic = false;
+            for (char character : message.toCharArray()) {
+                if (character == '{') {
+                    isWynnic = true;
+                } else if (isWynnic && character == '}') {
+                    isWynnic = false;
+                } else if (isWynnic) {
                     if (!String.valueOf(character).matches(nonTranslatable)) {
                         if (String.valueOf(character).matches("[a-z]")) {
-                            wynnic += ((char) (((int) character) + 9275));
+                            newString += ((char) (((int) character) + 9275));
                         } else if (String.valueOf(character).matches("[A-Z]")) {
-                            wynnic += ((char) (((int) character) + 9307));
+                            newString += ((char) (((int) character) + 9307));
                         } else if (String.valueOf(character).matches("[1-9]")) {
-                            wynnic += ((char) (((int) character) + 9283));
+                            newString += ((char) (((int) character) + 9283));
                         } else if (character == '.') {
-                            wynnic += "\uFF10";
+                            newString += "\uFF10";
                         } else if (character == '!') {
-                            wynnic += "\uFF11";
+                            newString += "\uFF11";
                         } else if (character == '?') {
-                            wynnic += "\uFF12";
+                            newString += "\uFF12";
                         }
                     } else {
-                        wynnic += character;
+                        newString += character;
                     }
+                } else {
+                    newString += character;
                 }
-                after = after.replace(section, wynnic);
             }
-            after = after.replace("{", "");
-            after = after.replace("}", "");
+            after = newString;
 
         }
 
