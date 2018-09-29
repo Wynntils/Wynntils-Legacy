@@ -51,6 +51,7 @@ public class ServerEvents implements Listener {
                 if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                     RichPresenceModule.getModule().getData().setLocation(pf.getName());
                     RichPresenceModule.getModule().getData().setLocId(i);
+                    RichPresenceModule.getModule().getData().setUnknownLocation(false);
 
                     classUpdate = false;
 
@@ -59,7 +60,16 @@ public class ServerEvents implements Listener {
                     }else {
                         RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), OffsetDateTime.now());
                     }
-                    break;
+                    return;
+                }
+            }
+
+            if (!RichPresenceModule.getModule().getData().getUnknownLocation() || classUpdate) {
+                classUpdate = false;
+                RichPresenceModule.getModule().getData().setUnknownLocation(true);
+                RichPresenceModule.getModule().getData().setLocId(-1);
+                if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
+                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                 }
             }
 
