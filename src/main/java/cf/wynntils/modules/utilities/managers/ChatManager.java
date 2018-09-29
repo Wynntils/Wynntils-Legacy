@@ -5,6 +5,7 @@
 package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.ModCore;
+import cf.wynntils.core.utils.Pair;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -23,7 +24,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class ChatManager {
 
@@ -36,7 +39,7 @@ public class ChatManager {
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
-    public static Boolean applyUpdates(ITextComponent message) {
+    public static Boolean applyUpdatesToClient(ITextComponent message) {
 
         boolean cancel = false;
 
@@ -214,6 +217,63 @@ public class ChatManager {
         lastMessage = message;
 
         return cancel;
+    }
+
+    public static Pair<String, Boolean> applyUpdatesToServer(String message) {
+        String after = message;
+
+        boolean cancel = false;
+
+        if (message.contains("{")) {
+            HashMap<Integer, Integer> wynnicSectionsStartEnd = new HashMap<>();
+            int start = -1;
+            for (int index = 0; index < message.length(); index++) {
+                char character = message.charAt(index);
+                if (start == -1 && character == '{') {
+                    start = index;
+                } else if (start != -1 && character == '}') {
+                    wynnicSectionsStartEnd.put(start, index);
+                    start = -1;
+                }
+            }
+            if (start != -1) {
+                wynnicSectionsStartEnd.put(start, message.length());
+            }
+            ArrayList<String> sections = new ArrayList<>();
+
+            for (Entry<Integer, Integer> wynnicSectionStartEndEntry : wynnicSectionsStartEnd.entrySet()) {
+                sections.add(message.substring(wynnicSectionStartEndEntry.getKey(), wynnicSectionStartEndEntry.getValue()));
+            }
+
+            for (String section : sections) {
+                String wynnic = "";
+                for (char character : section.toCharArray()) {
+                    if (!String.valueOf(character).matches(nonTranslatable)) {
+                        if (String.valueOf(character).matches("[a-z]")) {
+                            wynnic += ((char) (((int) character) + 9275));
+                        } else if (String.valueOf(character).matches("[A-Z]")) {
+                            wynnic += ((char) (((int) character) + 9307));
+                        } else if (String.valueOf(character).matches("[1-9]")) {
+                            wynnic += ((char) (((int) character) + 9283));
+                        } else if (character == '.') {
+                            wynnic += "\uFF10";
+                        } else if (character == '!') {
+                            wynnic += "\uFF11";
+                        } else if (character == '?') {
+                            wynnic += "\uFF12";
+                        }
+                    } else {
+                        wynnic += character;
+                    }
+                }
+                after = after.replace(section, wynnic);
+            }
+            after = after.replace("{", "");
+            after = after.replace("}", "");
+
+        }
+
+        return new Pair<String, Boolean>(after, cancel);
     }
 
     private static boolean hasWynnic(String text) {

@@ -41,7 +41,7 @@ public class ClientEvents implements Listener {
             DailyReminderManager.openedDaily();
         }
         if(Reference.onWorld) {
-            boolean message = ChatManager.applyUpdates(e.getMessage());
+            boolean message = ChatManager.applyUpdatesToClient(e.getMessage());
             if(message) {
                 e.setCanceled(true);
             }
