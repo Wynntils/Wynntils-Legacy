@@ -10,16 +10,15 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.network.play.server.SPacketResourcePackSend;
-import net.minecraft.network.play.server.SPacketSpawnObject;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.*;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PacketFilter extends NetHandlerPlayClient {
 
     public static PacketFilter instance;
+    private static Minecraft mc = Minecraft.getMinecraft();
 
     public PacketFilter(Minecraft mcIn, GuiScreen p_i46300_2_, NetworkManager networkManagerIn, GameProfile profileIn, NetHandlerPlayClient original) {
         super(mcIn, p_i46300_2_, networkManagerIn, profileIn);
@@ -76,6 +75,29 @@ public class PacketFilter extends NetHandlerPlayClient {
         }
 
         super.handleResourcePack(packet);
+    }
+
+    @Override
+    public void handleEntityVelocity(SPacketEntityVelocity packetIn) {
+        Entity entity = mc.world.getEntityByID(packetIn.getEntityID());
+        Entity vehicle = mc.player.getLowestRidingEntity();
+        if ((entity != vehicle) || (vehicle == mc.player) || (!vehicle.canPassengerSteer())) {
+            super.handleEntityVelocity(packetIn);
+        }
+    }
+
+    @Override
+    public void handleMoveVehicle(SPacketMoveVehicle packetIn) {
+        Entity vehicle = mc.player.getLowestRidingEntity();
+        if ((vehicle != mc.player) && (vehicle.canPassengerSteer())) {
+            double x = packetIn.getX();
+            double y = packetIn.getY();
+            double z = packetIn.getZ();
+            double d = vehicle.getDistance(x, y, z);
+            if (d > 25.0D) {
+                super.handleMoveVehicle(packetIn);
+            }
+        }
     }
 
 }
