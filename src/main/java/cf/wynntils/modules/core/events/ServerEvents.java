@@ -22,7 +22,7 @@ public class ServerEvents implements Listener {
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         NetworkManager nm = e.getManager();
         NetHandlerPlayClient client = (NetHandlerPlayClient) ReflectionFields.NetworkManager_packetListener.getValue(nm);
-        ReflectionFields.NetworkManager_packetListener.setValue(nm, new PacketFilter(Minecraft.getMinecraft(), (GuiScreen)ReflectionFields.NetHandlerPlayClient_guiScreenServer.getValue(client), nm, (GameProfile)ReflectionFields.NetHandlerPlayClient_profile.getValue(client), client));
+        ReflectionFields.NetworkManager_packetListener.setValue(nm, new PacketFilter(Minecraft.getMinecraft(), (GuiScreen) ReflectionFields.NetHandlerPlayClient_guiScreenServer.getValue(client), nm, (GameProfile) ReflectionFields.NetHandlerPlayClient_profile.getValue(client), client));
 
         WebManager.checkForUpdates();
     }
