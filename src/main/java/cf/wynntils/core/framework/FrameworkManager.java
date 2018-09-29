@@ -1,5 +1,6 @@
 package cf.wynntils.core.framework;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.Priority;
@@ -121,7 +122,7 @@ public class FrameworkManager {
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        if (Reference.onServer) {
+        if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
             if(e.getType() == RenderGameOverlayEvent.ElementType.AIR ||//move it to somewhere else if you want, it seems pretty core to wynncraft tho..
                e.getType() == RenderGameOverlayEvent.ElementType.ARMOR)
             {
@@ -141,7 +142,7 @@ public class FrameworkManager {
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        if (Reference.onServer) {
+        if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
