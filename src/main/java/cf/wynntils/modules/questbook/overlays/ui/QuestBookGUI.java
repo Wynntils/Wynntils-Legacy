@@ -311,10 +311,16 @@ public class QuestBookGUI extends GuiScreen {
                         }
                     }
 
-
                     render.color(1, 1, 1, 1);
                     if (selected.getStatus() == QuestStatus.COMPLETED) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 223, 245, 11, 7);
+                        lore.remove(lore.size() - 1);
+                        lore.remove(lore.size() - 1);
+                        lore.remove(lore.size() - 1);
+                    }else if(selected.getStatus() == QuestStatus.CANNOT_START) {
+                        render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 235, 245, 7, 7);
+                        lore.remove(lore.size() - 1);
+                        lore.remove(lore.size() - 1);
                     } else if (selected.getStatus() == QuestStatus.CAN_START) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
                         if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {

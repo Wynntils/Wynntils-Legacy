@@ -173,16 +173,20 @@ public class ChatManager {
         }
 
         ITextComponent thisClone = message.createCopy();
-        thisClone.getSiblings().remove(0);
-        thisClone.getSiblings().remove(0);
-        thisClone.getSiblings().remove(0);
+        if(thisClone.getSiblings().size() >= 3) {
+            thisClone.getSiblings().remove(0);
+            thisClone.getSiblings().remove(0);
+            thisClone.getSiblings().remove(0);
+        }
         
         ITextComponent lastClone = null;
         if (lastMessage != null) {
             lastClone = lastMessage.createCopy();
-            lastClone.getSiblings().remove(0);
-            lastClone.getSiblings().remove(0);
-            lastClone.getSiblings().remove(0);
+            if(lastClone.getSiblings().size() >= 3) {
+                lastClone.getSiblings().remove(0);
+                lastClone.getSiblings().remove(0);
+                lastClone.getSiblings().remove(0);
+            }
         }
 
         if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && thisClone.getUnformattedText().equals(lastClone == null ? null : lastClone.getUnformattedText())) {

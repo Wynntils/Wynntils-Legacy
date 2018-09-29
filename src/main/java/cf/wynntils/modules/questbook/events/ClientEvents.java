@@ -4,7 +4,6 @@
 
 package cf.wynntils.modules.questbook.events;
 
-import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
@@ -19,7 +18,6 @@ public class ClientEvents implements Listener {
 
     @EventHandler(priority = Priority.HIGHEST)
     public void onChat(ClientChatReceivedEvent e)  {
-        Reference.LOGGER.warn(Utils.stripColor(e.getMessage().getFormattedText()));
         if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[New Quest Started:")) {
             QuestManager.requestQuestBookReading();
             return;

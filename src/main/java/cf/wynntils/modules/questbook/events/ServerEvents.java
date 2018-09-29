@@ -132,6 +132,8 @@ public class ServerEvents implements Listener {
             status = QuestStatus.STARTED;
         }else if(lore.get(0).contains("Can start")) {
             status = QuestStatus.CAN_START;
+        }else if(lore.get(0).contains("Cannot start")) {
+            status = QuestStatus.CANNOT_START;
         }
 
         int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Min. Lv: ", "").replace("✖ Min. Lv: ", ""));
