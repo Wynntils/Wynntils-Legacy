@@ -74,7 +74,11 @@ public class QuestManager {
     public static void updateTrackedQuest() {
         if(trackedQuest == null) return;
 
-        trackedQuest = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).findFirst().orElse(null);
+        QuestInfo questInfo = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).findFirst().orElse(null);
+        if(questInfo != null && questInfo.getCurrentDescription().equals(trackedQuest.getCurrentDescription())) {
+            return;
+        }
+        trackedQuest = questInfo;
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
     }
 
