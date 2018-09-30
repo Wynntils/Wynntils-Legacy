@@ -139,20 +139,15 @@ public class UpdateOverlay extends Overlay {
     }
 
     public void copyUpdate(String jarName) throws Exception {
-        File oldJar = null;
-        for (File mod : new File(Utils.getDataFolder(), "mods").listFiles()) {
-            if (mod.getName().toLowerCase().contains("wynntils")) {
-                oldJar = mod;
-                break;
-            }
-        }
+        File oldJar = ModCore.jarFile;
 
-        if (oldJar == null || !oldJar.exists()) {
-            TextComponentString message = new TextComponentString("Wynntils could not find its jar in your mods folder, perhaps you renamed the file or you are a developer. ");
+        if (oldJar == null || !oldJar.exists() || oldJar.isDirectory()) {
+            TextComponentString message = new TextComponentString("The jar Forge provided Wynntils either no longer exists or is a directory, perhaps you renamed the file or you are a developer. ");
             TextComponentString uwu = new TextComponentString("^_^");
             uwu.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("You probably need to update the project")));
             message.getStyle().setColor(TextFormatting.AQUA);
             ModCore.mc().player.sendMessage(message.appendSibling(uwu));
+            return;
         }
 
         File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);

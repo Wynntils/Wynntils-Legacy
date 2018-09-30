@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import java.io.File;
+
 /**
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
@@ -26,6 +28,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ModCore {
 
     public static final boolean DEBUG = false;
+    public static File jarFile = null;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
@@ -37,6 +40,8 @@ public class ModCore {
 
         FrameworkManager.startModules();
         WebManager.setupUserAccount();
+
+        jarFile = e.getSourceFile();
     }
 
     @Mod.EventHandler
