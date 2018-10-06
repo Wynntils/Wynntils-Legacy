@@ -5,7 +5,6 @@
 package cf.wynntils.modules.questbook.managers;
 
 import cf.wynntils.ModCore;
-import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -34,13 +33,13 @@ public class QuestManager {
         int slot = mc.player.inventory.currentItem;
 
         if(slot == 7) {
-            PacketFilter.instance.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+            mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             return;
         }
 
-        PacketFilter.instance.sendPacket(new CPacketHeldItemChange(7));
-        PacketFilter.instance.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        PacketFilter.instance.sendPacket(new CPacketHeldItemChange(slot));
+        mc.getConnection().sendPacket(new CPacketHeldItemChange(7));
+        mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+        mc.getConnection().sendPacket(new CPacketHeldItemChange(slot));
     }
 
     /**
