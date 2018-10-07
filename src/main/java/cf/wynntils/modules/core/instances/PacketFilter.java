@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketMoveVehicle;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraft.network.play.server.SPacketWindowItems;
@@ -35,8 +36,9 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
             e = new PacketEvent.InventoryItemsReceived((SPacketWindowItems) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketResourcePackSend) {
             e = new PacketEvent.ResourcePackReceived((SPacketResourcePackSend) msg, ModCore.mc().getConnection().getNetworkManager());
-        }
-        else if (msg instanceof SPacketEntityVelocity) {
+        } else if (msg instanceof SPacketPlayerListItem) {
+            e = new PacketEvent.TabListChangeEvent((SPacketPlayerListItem) msg, ModCore.mc().getConnection().getNetworkManager());
+        } else if (msg instanceof SPacketEntityVelocity) {
             SPacketEntityVelocity velocity = (SPacketEntityVelocity) msg;
             Entity entity = mc.world.getEntityByID(velocity.getEntityID());
             Entity vehicle = mc.player.getLowestRidingEntity();

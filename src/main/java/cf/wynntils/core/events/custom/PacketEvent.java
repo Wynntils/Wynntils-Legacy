@@ -7,6 +7,7 @@ package cf.wynntils.core.events.custom;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraft.network.play.server.SPacketWindowItems;
@@ -38,8 +39,6 @@ public class PacketEvent extends Event {
             return networkManager;
         }
     }
-
-
 
     public static class InventoryReceived extends Event {
 
@@ -115,6 +114,29 @@ public class PacketEvent extends Event {
             return playClient;
         }
 
+    }
+
+    public static class TabListChangeEvent extends Event {
+        SPacketPlayerListItem packet;
+        NetworkManager networkManager;
+
+        public TabListChangeEvent(SPacketPlayerListItem packet, NetworkManager networkManager) {
+            this.packet = packet;
+            this.networkManager = networkManager;
+
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+        public SPacketPlayerListItem getPacket() {
+            return packet;
+        }
+
+        public NetworkManager getNetworkManager() {
+            return networkManager;
+        }
     }
 
 }

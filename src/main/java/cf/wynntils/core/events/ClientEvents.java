@@ -2,6 +2,7 @@ package cf.wynntils.core.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
@@ -13,16 +14,16 @@ import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.managers.ChatManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
+import net.minecraft.network.play.server.SPacketPlayerListItem.AddPlayerData;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,8 +32,8 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Collection;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -97,68 +98,62 @@ public class ClientEvents {
     }
 
     private static String lastWorld = "";
-    private boolean acceptsLeft = false;
     private static boolean acceptClass = true;
+    private static boolean acceptLeft = false;
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void onWorldJoin(EntityJoinWorldEvent e) {
-        if(!Reference.onServer) return;
+    public void onTabListChange(PacketEvent.TabListChangeEvent e) {
+        if (!Reference.onServer) return;
+        for (AddPlayerData playerData : e.getPacket().getEntries()) {
+            UUID id = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
+            if (playerData.getProfile().getId().equals(id) && (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME || e.getPacket().getAction() == Action.REMOVE_PLAYER)) {
+                if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
+                    String name = playerData.getDisplayName().getUnformattedText();
+                    String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+                    if (!world.equals(lastWorld)) {
+                        Reference.setUserWorld(world);
+                        acceptClass = true;
+                        MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
+                        lastWorld = world;
+                        acceptLeft = true;
+                    }
+                } else if (acceptLeft) {
+                    acceptLeft = false;
+                    lastWorld = "";
+                    Reference.setUserWorld(null);
+                    MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
+                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+                    MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
+                }
+                Minecraft mc = Minecraft.getMinecraft();
+                if (acceptClass) {
+                    if (mc.player.experienceLevel > 0) {
+                        try {
+                            ItemStack book = mc.player.inventory.getStackInSlot(7);
+                            if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
+                                for (int i = 0; i < 36; i++) {
+                                    try {
+                                        ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
+                                        NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
+                                        for (int j = 1; j < Lore.tagCount(); j++) {
+                                            String ClassTest = Lore.get(j).toString();
+                                            if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a') {
+                                                ClassType newClass = ClassType.valueOf(ClassTest.substring(18, ClassTest.lastIndexOf('/')).toUpperCase());
 
+                                                PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
+                                                MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
 
-        Collection<NetworkPlayerInfo> tab = Objects.requireNonNull(ModCore.mc().getConnection()).getPlayerInfoMap();
-        String world = null;
-        for(NetworkPlayerInfo pl : tab) {
-            String name = ModCore.mc().ingameGUI.getTabList().getPlayerName(pl);
-            if(name.contains("Global") && name.contains("[") && name.contains("]")) {
-                world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
-                break;
-            }
-        }
-
-        Reference.setUserWorld(world);
-
-        if(world == null && acceptsLeft) {
-            acceptsLeft = false;
-            MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
-            PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-            MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
-        }else if(world != null && !acceptsLeft && !lastWorld.equalsIgnoreCase(world)) {
-            acceptsLeft = true;
-            acceptClass = true;
-            MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
-        }
-
-        lastWorld = world == null ? "" : world;
-
-        Minecraft mc = Minecraft.getMinecraft();
-        if(acceptClass) {
-            if (mc.player.experienceLevel > 0) {
-                try {
-                    ItemStack book = mc.player.inventory.getStackInSlot(7);
-                    if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
-                        for (int i=0;i<36;i++) {
-                            try {
-                                ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
-                                NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-                                for (int j = 1; j < Lore.tagCount(); j++) {
-                                    String ClassTest = Lore.get(j).toString();
-                                    if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a'){
-                                        ClassType newClass = ClassType.valueOf(ClassTest.substring(18,ClassTest.lastIndexOf('/')).toUpperCase());
-
-                                        PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
-                                        MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
-
-                                        acceptClass = false;
+                                                acceptClass = false;
+                                            }
+                                        }
+                                    } catch (Exception ignored) {
                                     }
                                 }
                             }
-                            catch (Exception ignored){
-                            }
+                        } catch (Exception ignored) {
                         }
                     }
-                }
-                catch (Exception ignored) {
                 }
             }
         }
