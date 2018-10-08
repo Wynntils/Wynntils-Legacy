@@ -13,11 +13,18 @@ import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.managers.ChatManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
-import net.minecraft.network.play.server.SPacketPlayerListItem.AddPlayerData;
+import net.minecraft.util.EnumTypeAdapterFactory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -32,6 +39,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.Constructor;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -105,57 +113,73 @@ public class ClientEvents {
     @SideOnly(Side.CLIENT)
     public void onTabListChange(PacketEvent.TabListChangeEvent e) {
         if (!Reference.onServer) return;
-        for (AddPlayerData playerData : e.getPacket().getEntries()) {
-            UUID id = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
-            if (playerData.getProfile().getId().equals(id) && (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME || e.getPacket().getAction() == Action.REMOVE_PLAYER)) {
-                if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
-                    String name = playerData.getDisplayName().getUnformattedText();
-                    String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
-                    if (!world.equals(lastWorld)) {
-                        Reference.setUserWorld(world);
-                        acceptClass = true;
-                        MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
-                        lastWorld = world;
-                        acceptLeft = true;
+        try {
+            Class<?> gameProfileSerializer = Class.forName("com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService$GameProfileSerializer");
+            Constructor<?> constructor = gameProfileSerializer.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeHierarchyAdapter(ITextComponent.class, new ITextComponent.Serializer());
+            gsonBuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
+            gsonBuilder.registerTypeHierarchyAdapter(GameProfile.class, constructor.newInstance());
+            gsonBuilder.registerTypeAdapterFactory(new EnumTypeAdapterFactory());
+            Gson gson = gsonBuilder.create();
+            String json = gsonBuilder.create().toJson(e.getPacket());
+            for (JsonElement playerInfoJson : new JsonParser().parse(json).getAsJsonObject().get("players").getAsJsonArray()) {
+                UUID id = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
+                GameProfile profile = gson.fromJson(playerInfoJson.getAsJsonObject().get("profile"), GameProfile.class);
+                ITextComponent displayName = gson.fromJson(playerInfoJson.getAsJsonObject().get("displayName"), TextComponentString.class);
+                if (profile.getId().equals(id) && (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME || e.getPacket().getAction() == Action.REMOVE_PLAYER)) {
+                    if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
+                        String name = displayName.getUnformattedText();
+                        String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+                        if (!world.equals(lastWorld)) {
+                            Reference.setUserWorld(world);
+                            acceptClass = true;
+                            MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
+                            lastWorld = world;
+                            acceptLeft = true;
+                        }
+                    } else if (acceptLeft) {
+                        acceptLeft = false;
+                        lastWorld = "";
+                        Reference.setUserWorld(null);
+                        MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
+                        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+                        MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
                     }
-                } else if (acceptLeft) {
-                    acceptLeft = false;
-                    lastWorld = "";
-                    Reference.setUserWorld(null);
-                    MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
-                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-                    MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
-                }
-                Minecraft mc = Minecraft.getMinecraft();
-                if (acceptClass) {
-                    if (mc.player.experienceLevel > 0) {
-                        try {
-                            ItemStack book = mc.player.inventory.getStackInSlot(7);
-                            if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
-                                for (int i = 0; i < 36; i++) {
-                                    try {
-                                        ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
-                                        NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-                                        for (int j = 1; j < Lore.tagCount(); j++) {
-                                            String ClassTest = Lore.get(j).toString();
-                                            if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a') {
-                                                ClassType newClass = ClassType.valueOf(ClassTest.substring(18, ClassTest.lastIndexOf('/')).toUpperCase());
+                    Minecraft mc = Minecraft.getMinecraft();
+                    if (acceptClass) {
+                        if (mc.player.experienceLevel > 0) {
+                            try {
+                                ItemStack book = mc.player.inventory.getStackInSlot(7);
+                                if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
+                                    for (int i = 0; i < 36; i++) {
+                                        try {
+                                            ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
+                                            NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
+                                            for (int j = 1; j < Lore.tagCount(); j++) {
+                                                String ClassTest = Lore.get(j).toString();
+                                                if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a') {
+                                                    ClassType newClass = ClassType.valueOf(ClassTest.substring(18, ClassTest.lastIndexOf('/')).toUpperCase());
 
-                                                PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
-                                                MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
+                                                    PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
+                                                    MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
 
-                                                acceptClass = false;
+                                                    acceptClass = false;
+                                                }
                                             }
+                                        } catch (Exception ignored) {
                                         }
-                                    } catch (Exception ignored) {
                                     }
                                 }
+                            } catch (Exception ignored) {
                             }
-                        } catch (Exception ignored) {
                         }
                     }
                 }
             }
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
     }
 
