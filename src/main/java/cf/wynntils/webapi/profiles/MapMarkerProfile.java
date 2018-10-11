@@ -33,7 +33,7 @@ public class MapMarkerProfile {
     }
 
     public String getIcon(){
-        return icon;
+        return icon.replace(".png", "");
     }
 
 }

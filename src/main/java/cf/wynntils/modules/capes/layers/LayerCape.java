@@ -33,9 +33,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
         if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         //loading cape
         ResourceLocation rl;
-        if (WebManager.hasCape(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+        if (WebManager.hasCape(entitylivingbaseIn.getUniqueID())) {
             rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
-        } else if (WebManager.isUser(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && !WebManager.hasElytra(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+        } else if (WebManager.isUser(entitylivingbaseIn.getUniqueID()) && !WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
             rl = new ResourceLocation("wynntils:capes/default");
         }else{ return; }
 

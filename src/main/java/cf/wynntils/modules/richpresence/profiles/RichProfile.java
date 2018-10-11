@@ -1,8 +1,8 @@
 package cf.wynntils.modules.richpresence.profiles;
 
-import com.jagrosh.discordipc.IPCClient;
-import com.jagrosh.discordipc.entities.DiscordBuild;
-import com.jagrosh.discordipc.entities.RichPresence;
+import cf.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
+import cf.wynntils.modules.richpresence.discordrpc.DiscordRichPresence.DiscordRPC;
+import cf.wynntils.modules.richpresence.discordrpc.DiscordRichPresence.DiscordRichPresenceStructure;
 
 import java.time.OffsetDateTime;
 
@@ -12,12 +12,15 @@ import java.time.OffsetDateTime;
  */
 public class RichProfile {
 
-    IPCClient client;
+    final DiscordRPC rpc = DiscordRichPresence.discordInitialize();
     boolean ready = false;
+    Thread shutdown = new Thread(() -> {
+        rpc.Discord_Shutdown();
+    });
 
-    public RichProfile(long id, DiscordBuild build) throws Exception {
-        client = new IPCClient(id);
-        client.connect(build);
+    public RichProfile(String id) throws Exception {
+        rpc.Discord_Initialize(id, null, false, null);
+        Runtime.getRuntime().addShutdownHook(shutdown);
 
         ready = true;
     }
@@ -26,7 +29,7 @@ public class RichProfile {
      * Cleans user current RichPresence
      */
     public void stopRichPresence() {
-        client.sendRichPresence(null);
+        rpc.Discord_ClearPresence();
     }
 
     /**
@@ -42,7 +45,13 @@ public class RichProfile {
      *        RichPresence Date
      */
     public void updateRichPresence(String state, String details, String largText, OffsetDateTime date) {
-        client.sendRichPresence(new RichPresence(state, details, date, null, "wynn", largText, null, null, null, 0, 0, null, null, null, false));
+        DiscordRichPresenceStructure richPresence = new DiscordRichPresenceStructure();
+        richPresence.state = state;
+        richPresence.details = details;
+        richPresence.largeImageText = largText;
+        richPresence.startTimestamp = date.toInstant().getEpochSecond();
+        richPresence.largeImageKey = "wynn";
+        rpc.Discord_UpdatePresence(richPresence);
     }
 
     /**
@@ -60,7 +69,18 @@ public class RichProfile {
      *        RichPresence Date
      */
     public void updateRichPresence(String state, String details, String largeImg, String largText, OffsetDateTime date) {
-        client.sendRichPresence(new RichPresence(state, details, date, null, largeImg, largText, "wynn", null, null, 0, 0, null, null, null, false));
+        DiscordRichPresenceStructure richPresence = new DiscordRichPresenceStructure();
+        richPresence.state = state;
+        richPresence.details = details;
+        richPresence.largeImageKey = largeImg;
+        richPresence.largeImageText = largText;
+        richPresence.startTimestamp = date.toInstant().getEpochSecond();
+        richPresence.smallImageKey = "wynn";
+        rpc.Discord_UpdatePresence(richPresence);
+    }
+
+    public void disconnectRichPresence() {
+        rpc.Discord_Shutdown();
     }
 
     /**

@@ -7,21 +7,16 @@ import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.utils.Position;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
+import java.awt.Point;
 
 public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
-    @JsonIgnore
-    public ModuleContainer module = null;
-    @JsonIgnore
-    public String displayName;
-    @JsonIgnore
-    public Point staticSize;
-    @JsonIgnore
-    public boolean visible;
+    public transient ModuleContainer module = null;
+    public transient String displayName;
+    public transient Point staticSize;
+    public transient boolean visible;
     public boolean active = true;
     public Position position = new Position();
 

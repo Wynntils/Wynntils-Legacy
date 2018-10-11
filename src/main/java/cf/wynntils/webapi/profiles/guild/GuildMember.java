@@ -1,14 +1,16 @@
 package cf.wynntils.webapi.profiles.guild;
 
+import java.util.Date;
+
 public class GuildMember {
 
     String name;
     String rank;
     int contributed;
     String joinedFriendly;
-    String joined;
+    Date joined;
 
-    public GuildMember(String name, String rank, int contributed, String joinedFriendly, String joined) {
+    public GuildMember(String name, String rank, int contributed, String joinedFriendly, Date joined) {
         this.name = name; this.rank = rank; this.contributed = contributed; this.joinedFriendly = joinedFriendly; this.joined = joined;
     }
 
@@ -24,12 +26,25 @@ public class GuildMember {
         return rank;
     }
 
-    public String getJoined() {
+    public Date getJoined() {
         return joined;
     }
 
     public String getJoinedFriendly() {
         return joinedFriendly;
+    }
+
+    public static enum Rank {
+
+        RECRUIT,
+
+        RECRUITER,
+
+        CAPTAIN,
+
+        CHIEF,
+
+        OWNER;
     }
 
 }

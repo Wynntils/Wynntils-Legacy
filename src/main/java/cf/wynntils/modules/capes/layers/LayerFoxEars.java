@@ -17,7 +17,7 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
     }
 
     public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (WebManager.hasEars(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
+        if (WebManager.hasEars(entitylivingbaseIn.getUniqueID()) && entitylivingbaseIn.hasSkin() && !entitylivingbaseIn.isInvisible()) {
             this.playerRenderer.bindTexture(entitylivingbaseIn.getLocationSkin());
             for (int i = 0; i < 2; ++i) {
                 float f = entitylivingbaseIn.prevRotationYaw + (entitylivingbaseIn.rotationYaw - entitylivingbaseIn.prevRotationYaw) * partialTicks - (entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks);

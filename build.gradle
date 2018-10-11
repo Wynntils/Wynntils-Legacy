@@ -42,8 +42,6 @@ configurations {
 }
 
 dependencies {
-    embed 'com.jagrosh:DiscordIPC:+'
-    embed 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     embed fileTree(dir: 'lib', include: ['*.jar'])
 }
 

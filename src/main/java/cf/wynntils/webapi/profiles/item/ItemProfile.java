@@ -1,17 +1,35 @@
 package cf.wynntils.webapi.profiles.item;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
+import com.mojang.util.UUIDTypeAdapter;
+import net.minecraft.item.Item;
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.codec.binary.Base64;
+
+import java.awt.Color;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class ItemProfile {
+
+    public static Gson GSON;
 
     public String name;
     public String tier;
     public int sockets;
-    public String armorColor;
+    public Color armorColor;
     public String armorType;
     public String addedLore;
     public String type;
     public String set;
-    public String material;
+    public ItemType material;
     public String dropType;
     public String restrictions;
     public String damage;
@@ -74,7 +92,16 @@ public class ItemProfile {
     public String classRequirement;
     public boolean identified;
     public String displayName;
-    public String skin;
+    public MinecraftTexturesPayload skin;
+
+    static {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeHierarchyAdapter(Color.class, new ColorDeserialiser());
+        builder.registerTypeHierarchyAdapter(ItemType.class, new ItemType.ItemTypeDeserialiser());
+        builder.registerTypeHierarchyAdapter(MinecraftTexturesPayload.class, new SkinDeserialiser());
+        builder.registerTypeHierarchyAdapter(HashMap.class, new HashMapDeserialiser());
+        GSON = builder.create();
+    }
 
     public boolean isIdentified() {
         return identified;
@@ -100,7 +127,7 @@ public class ItemProfile {
         return type;
     }
 
-    public String getMaterial() {
+    public ItemType getMaterial() {
         return material;
     }
 
@@ -312,7 +339,7 @@ public class ItemProfile {
         return category;
     }
 
-    public String getArmorColor() {
+    public Color getArmorColor() {
         return armorColor;
     }
 
@@ -360,7 +387,81 @@ public class ItemProfile {
         return  displayName;
     }
 
-    public String getSkin() {
+    public MinecraftTexturesPayload getSkin() {
         return skin;
+    }
+
+    public static class ItemType {
+        private Item item = null;
+
+        private int damage = 0;
+
+        public ItemType(Item item, int damage) {
+            this.item = item;
+            this.damage = damage;
+        }
+
+        public Item getItem() {
+            return item;
+        }
+
+        public int getDamage() {
+            return damage;
+        }
+
+        public static class ItemTypeDeserialiser implements JsonDeserializer<ItemType> {
+
+            @Override
+            public ItemType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                String itemType = json.getAsString();
+                String[] itemIDs = itemType.split(":");
+                int itemID = Integer.valueOf(itemIDs[0]);
+                int damage = itemIDs.length == 2 ? Integer.valueOf(itemIDs[1]) : 0;
+                Item item = Item.REGISTRY.getObjectById(itemID);
+                return new ItemType(item, damage);
+            }
+
+        }
+    }
+
+    public static class ColorDeserialiser implements JsonDeserializer<Color> {
+
+        @Override
+        public Color deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            String color = json.getAsString();
+            String[] colors = color.split("[^\\d]");
+            int red = Integer.valueOf(colors[0]);
+            int green = Integer.valueOf(colors[1]);
+            int blue = Integer.valueOf(colors[2]);
+            return new Color(red, green, blue);
+        }
+
+    }
+
+    public static class SkinDeserialiser implements JsonDeserializer<MinecraftTexturesPayload> {
+
+        @Override
+        public MinecraftTexturesPayload deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            String texturesPayLoad = new String(Base64.decodeBase64(json.getAsString()), Charsets.UTF_8);
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeAdapter(UUID.class, new UUIDTypeAdapter());
+            return builder.create().fromJson(texturesPayLoad, MinecraftTexturesPayload.class);
+        }
+
+    }
+
+    public static class HashMapDeserialiser implements JsonDeserializer<HashMap<String, ItemProfile>> {
+
+        @Override
+        public HashMap<String, ItemProfile> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            HashMap<String, ItemProfile> items = new HashMap<>();
+            for (JsonElement element : json.getAsJsonArray()) {
+                String name = element.getAsJsonObject().get("name").getAsString();
+                ItemProfile item = context.deserialize(element, ItemProfile.class);
+                items.put(name, item);
+            }
+            return items;
+        }
+
     }
 }

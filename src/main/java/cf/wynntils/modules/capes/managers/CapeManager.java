@@ -6,8 +6,9 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.UUID;
 
 /**
  * Created by HeyZeer0 on 07/02/2018.
@@ -15,30 +16,36 @@ import java.awt.image.BufferedImage;
  */
 public class CapeManager {
 
-    public static void downloadCape(String uuid) {
-        if ((uuid != null) && (!uuid.isEmpty())) {
-            if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
-                return;
+    public static void downloadCape(UUID uuid) {
+        if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
+            return;
+        }
+
+        String url = null;
+        ResourceLocation rl = null;
+        if (uuid != null) {
+            url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.toString().replace("-", "");
+            rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
+        } else {
+            url = WebManager.apiUrls.get("Capes") + "/user/default";
+            rl = new ResourceLocation("wynntils:capes/default");
+        }
+
+        IImageBuffer ibuffer = new IImageBuffer() {
+            @Override
+            public BufferedImage parseUserSkin(BufferedImage image) {
+                return formatCape(image);
             }
 
-            String url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.replace("-", "");
-            ResourceLocation rl = new ResourceLocation("wynntils:capes/" + uuid.replace("-", ""));
+            @Override
+            public void skinAvailable() {
+            }
+        };
 
-            IImageBuffer ibuffer = new IImageBuffer() {
-                @Override
-                public BufferedImage parseUserSkin(BufferedImage image) {
-                    return formatCape(image);
-                }
+        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+        ImageDownloader textureCape = new ImageDownloader(null, url, ibuffer);
 
-                @Override
-                public void skinAvailable() { }
-            };
-
-            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-            ImageDownloader textureCape = new ImageDownloader(null, url, ibuffer);
-
-            textureManager.loadTexture(rl, textureCape);
-        }
+        textureManager.loadTexture(rl, textureCape);
     }
 
     public static BufferedImage formatCape(BufferedImage img) {

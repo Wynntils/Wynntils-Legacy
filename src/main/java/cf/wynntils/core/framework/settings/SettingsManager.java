@@ -5,13 +5,16 @@ import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.lang.reflect.Modifier;
 
 /**
  * Created by HeyZeer0 on 24/03/2018.
@@ -19,18 +22,13 @@ import java.io.*;
  */
 public class SettingsManager {
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static Gson gson = null;
 
     static {
-        mapper
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .setVisibility(mapper.getSerializationConfig().getDefaultVisibilityChecker()
-                    .withFieldVisibility(JsonAutoDetect.Visibility.PUBLIC_ONLY)
-                    .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                    .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-                    .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
-            );
+        gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .addSerializationExclusionStrategy(new Exclude())
+            .create();
     }
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
@@ -47,8 +45,10 @@ public class SettingsManager {
                 m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
         if(!f.exists())
             f.createNewFile();
-
-        mapper.writeValue(f, obj);
+        
+        FileWriter fileWriter = new FileWriter(f);
+        gson.toJson(obj, fileWriter);
+        fileWriter.close();
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
@@ -68,7 +68,21 @@ public class SettingsManager {
             return obj;
         }
 
-        return mapper.readValue(f, obj.getClass());
+        return gson.fromJson(new JsonReader(new FileReader(f)), obj.getClass());
+    }
+    
+    private static class Exclude implements ExclusionStrategy {
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes f) {
+            return !f.hasModifier(Modifier.PUBLIC);
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
+        
     }
 
 }

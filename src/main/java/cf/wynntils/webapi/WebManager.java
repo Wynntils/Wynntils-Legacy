@@ -5,44 +5,52 @@ import cf.wynntils.webapi.account.WynntilsAccount;
 import cf.wynntils.webapi.profiles.MapMarkerProfile;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import cf.wynntils.webapi.profiles.UpdateProfile;
-import cf.wynntils.webapi.profiles.guild.GuildMember;
 import cf.wynntils.webapi.profiles.guild.GuildProfile;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.util.UUIDTypeAdapter;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class WebManager {
 
     public static WebReader apiUrls;
 
-    private static ArrayList<TerritoryProfile> territories = new ArrayList<>();
+    private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
-    private static ArrayList<String> helpers = new ArrayList<>();
-    private static ArrayList<String> moderators = new ArrayList<>();
-    private static ArrayList<String> premiums = new ArrayList<>();
-    private static ArrayList<String> users = new ArrayList<>();
+    private static ArrayList<UUID> helpers = new ArrayList<>();
+    private static ArrayList<UUID> moderators = new ArrayList<>();
+    private static ArrayList<UUID> premiums = new ArrayList<>();
+    private static ArrayList<UUID> users = new ArrayList<>();
 
-    private static ArrayList<String> ears = new ArrayList<>();
-    private static ArrayList<String> elytras = new ArrayList<>();
-    private static ArrayList<String> capes = new ArrayList<>();
+    private static ArrayList<UUID> ears = new ArrayList<>();
+    private static ArrayList<UUID> elytras = new ArrayList<>();
+    private static ArrayList<UUID> capes = new ArrayList<>();
 
     private static WynntilsAccount account = null;
+
+    private static Gson gson = new Gson();
 
     public static void reset() {
         apiUrls = null;
 
-        territories = new ArrayList<>();
+        territories = new HashMap<>();
         updateProfile = null;
         items = new HashMap<>();
         mapMarkers = new ArrayList<>();
@@ -101,7 +109,7 @@ public class WebManager {
         return account;
     }
 
-    public static ArrayList<TerritoryProfile> getTerritories() {
+    public static HashMap<String, TerritoryProfile> getTerritories() {
         return territories;
     }
 
@@ -119,32 +127,32 @@ public class WebManager {
 
     public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
 
-    public static boolean isHelper(String uuid) {
+    public static boolean isHelper(UUID uuid) {
         return helpers.contains(uuid);
     }
 
-    public static boolean isModerator(String uuid) {
+    public static boolean isModerator(UUID uuid) {
         return moderators.contains(uuid);
     }
 
-    public static boolean isPremium(String uuid) {
-        return premiums.contains(uuid.replace("-", ""));
+    public static boolean isPremium(UUID uuid) {
+        return premiums.contains(uuid);
     }
 
-    public static boolean hasElytra(String uuid) {
-        return elytras.contains(uuid.replace("-", ""));
+    public static boolean hasElytra(UUID uuid) {
+        return elytras.contains(uuid);
     }
 
-    public static boolean hasEars(String uuid) {
-        return ears.contains(uuid.replace("-", ""));
+    public static boolean hasEars(UUID uuid) {
+        return ears.contains(uuid);
     }
 
-    public static boolean hasCape(String uuid) {
-        return capes.contains(uuid.replace("-", ""));
+    public static boolean hasCape(UUID uuid) {
+        return capes.contains(uuid);
     }
 
-    public static boolean isUser(String uuid) {
-        return users.contains(uuid.replace("-", ""));
+    public static boolean isUser(UUID uuid) {
+        return users.contains(uuid);
     }
 
     /**
@@ -156,17 +164,17 @@ public class WebManager {
                 URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-                JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONObject("territories");
+                GsonBuilder builder = new GsonBuilder();
+                builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+                Gson gson = builder.create();
 
-                for(String key : main.keySet()) {
-                    if(main.getJSONObject(key).has("location")) {
-                        JSONObject value = main.getJSONObject(key);
-                        JSONObject loc = value.getJSONObject("location");
-                        territories.add(new TerritoryProfile(key, loc.getInt("startX"), loc.getInt("startY"), loc.getInt("endX"), loc.getInt("endY"), value.getString("guild"), (value.isNull("attacker") ? null : value.getString("attacker")), value.getString("acquired")));
-                    }
-                }
+                Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {
+                }.getType();
 
-                territories.add(new TerritoryProfile("Rodoroc", 965, -5238, 1265, -5067, null, null, null));
+                JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                territories.putAll(gson.fromJson(json.get("territories"), type));
+
+                territories.put("Rodoroc", new TerritoryProfile("Rodoroc", 965, -5238, 1265, -5067, null, null, null));
 
             }catch (Exception ex) {
                 Reference.LOGGER.warn("Error captured while trying to connect to Wynncraft Territory API", ex);}
@@ -186,11 +194,11 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONArray array = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("guilds");
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
 
-        for(int i = 0; i < array.length(); i++) {
-            guilds.add(array.getString(i));
-        }
+        JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        guilds.addAll(gson.fromJson(json.get("guilds"), type));
 
         return guilds;
     }
@@ -205,25 +213,15 @@ public class WebManager {
      */
     public static GuildProfile getGuildProfile(String guild) throws Exception {
         URLConnection st = new URL(apiUrls.get("GuildInfo") + guild).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject obj = new JSONObject(IOUtils.toString(st.getInputStream()));
+        JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
         if(obj.has("error")) {
             return null;
         }
 
-        ArrayList<GuildMember> gmembers = new ArrayList<>();
-        JSONArray members = obj.getJSONArray("members");
-        if(members.length() >= 1) {
-            for(int i = 0; i < members.length(); i++) {
-                JSONObject member = members.getJSONObject(i);
-
-                gmembers.add(new GuildMember(member.getString("name"), member.getString("rank"), member.getInt("contributed"), member.getString("joinedFriendly"), member.getString("joined")));
-            }
-        }
-
-        return new GuildProfile(obj.getString("name"), obj.getString("prefix"),  obj.getDouble("xp"), obj.getInt("level"), obj.getString("created"), obj.getString("createdFriendly"), obj.getInt("territories"), gmembers);
+        return gson.fromJson(obj, GuildProfile.class);
     }
 
     /**
@@ -233,30 +231,16 @@ public class WebManager {
      * @throws Exception
      */
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
-        HashMap<String, ArrayList<String>> servers = new HashMap<>();
-
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        main.remove("request");
 
-        for(String key : main.keySet()) {
-            if(key.equalsIgnoreCase("request")) {
-                continue;
-            }
+        Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
+        }.getType();
 
-            ArrayList<String> players = new ArrayList<>();
-            JSONArray array = main.getJSONArray(key);
-            if(array.length() >= 1) {
-                for(int i = 0; i < array.length(); i++) {
-                    players.add(array.getString(i));
-                }
-            }
-
-            servers.put(key, players);
-        }
-
-        return servers;
+        return gson.fromJson(main, type);
     }
 
     /**
@@ -265,34 +249,15 @@ public class WebManager {
      * @throws Exception
      */
     public static void updateItemList() throws Exception {
-        HashMap<String, ItemProfile> citems = new HashMap<>();
-
         URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("items");
+        JsonArray main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("items");
 
-        for(int i = 0; i < main.length(); i++) {
-            JSONObject item = main.getJSONObject(i);
-            String name = item.getString("name");
-            ItemProfile pf = new ItemProfile();
+        Type type = new TypeToken<HashMap<String, ItemProfile>>() {
+        }.getType();
 
-            for(String key : item.keySet()) {
-                if(!item.isNull(key)) {
-                    if(key.equals("material") && (item.get("material").getClass() == int.class || item.get("material").getClass() == Integer.class)) {
-                        pf.getClass().getField(key).set(pf, String.valueOf(item.get(key)));
-                    }else{
-                        if(key.equals("droptype") || key.equals("sropType")) {
-                            pf.getClass().getField("dropType").set(pf, item.get(key));
-                        }else{
-                            pf.getClass().getField(key).set(pf, item.get(key));
-                        }
-                    }
-                }
-            }
-
-            citems.put(name, pf);
-        }
+        HashMap<String, ItemProfile> citems = ItemProfile.GSON.fromJson(main, type);
 
         items = citems;
     }
@@ -308,13 +273,11 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONArray main = new JSONObject(IOUtils.toString(st.getInputStream())).getJSONArray("locations");
+        Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
+        }.getType();
 
-        for(int i = 0; i < main.length(); i++) {
-            JSONObject loc = main.getJSONObject(i);
-
-            markers.add(new MapMarkerProfile(loc.getString("name"), loc.getInt("x"), loc.getInt("y") + 3, loc.getInt("z"), loc.getString("icon").replace(".png", "")));
-        }
+        JsonArray json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("locations");
+        markers.addAll(gson.fromJson(json, type));
 
         mapMarkers = markers;
     }
@@ -330,22 +293,12 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+        String json = IOUtils.toString(st.getInputStream());
 
-        for(String range : main.keySet()) {
-            ItemGuessProfile pf = new ItemGuessProfile(range);
-            for (String pieces : main.getJSONObject(range).keySet()) {
-                HashMap<String, String> parts = new HashMap<>();
+        Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
+        }.getType();
 
-                for (String rarity : main.getJSONObject(range).getJSONObject(pieces).keySet()) {
-                    parts.put(rarity, main.getJSONObject(range).getJSONObject(pieces).getString(rarity));
-                }
-
-                pf.addItems(pieces, parts);
-            }
-
-            guessers.put(range, pf);
-        }
+        guessers.putAll(gson.fromJson(json, type));
 
         itemGuesses = guessers;
     }
@@ -354,66 +307,57 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
-        JSONArray helper = main.getJSONArray("helperUsers");
-        if(helper.length() > 0) {
-            for(int i = 0; i < helper.length(); i++) {
-                helpers.add(helper.getString(i));
-            }
-        }
-        JSONArray moderator = main.getJSONArray("moderatorUsers");
-        if(moderator.length() > 0) {
-            for(int i = 0; i < moderator.length(); i++) {
-                moderators.add(moderator.getString(i));
-            }
-        }
-        JSONArray premium = main.getJSONArray("premiumUsers");
-        if(premium.length() > 0) {
-            for(int i = 0; i < premium.length(); i++) {
-                premiums.add(premium.getString(i));
-            }
-        }
-        JSONArray user = main.getJSONArray("normalUsers");
-        if (user.length() > 0) {
-            for (int i = 0; i < user.length(); i++) {
-                users.add(user.getString(i));
-            }
-        }
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
+        Gson gson = builder.create();
+
+        Type type = new TypeToken<ArrayList<UUID>>() {
+        }.getType();
+
+        JsonArray helper = main.getAsJsonArray("helperUsers");
+        helpers = gson.fromJson(helper, type);
+
+        JsonArray moderator = main.getAsJsonArray("moderatorUsers");
+        moderators = gson.fromJson(moderator, type);
+
+        JsonArray premium = main.getAsJsonArray("premiumUsers");
+        premiums = gson.fromJson(premium, type);
+
+        JsonArray user = main.getAsJsonArray("normalUsers");
+        users = gson.fromJson(user, type);
     }
 
     public static void updateUsersModels() throws Exception {
         URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
-        JSONArray ear = main.getJSONArray("earsActive");
-        if (ear.length() > 0) {
-            for (int i = 0; i < ear.length(); i++) {
-                ears.add(ear.getString(i));
-            }
-        }
-        JSONArray elytra = main.getJSONArray("elytraActive");
-        if (elytra.length() > 0) {
-            for (int i = 0; i < elytra.length(); i++) {
-                elytras.add(elytra.getString(i));
-            }
-        }
-        JSONArray cape = main.getJSONArray("capeActive");
-        if (cape.length() > 0) {
-            for (int i = 0; i < cape.length(); i++) {
-                capes.add(cape.getString(i));
-            }
-        }
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
+        Gson gson = builder.create();
+
+        Type type = new TypeToken<ArrayList<UUID>>() {
+        }.getType();
+
+        JsonArray ear = main.getAsJsonArray("earsActive");
+        ears = gson.fromJson(ear, type);
+
+        JsonArray elytra = main.getAsJsonArray("elytraActive");
+        elytras = gson.fromJson(elytra, type);
+
+        JsonArray cape = main.getAsJsonArray("capeActive");
+        capes = gson.fromJson(cape, type);
     }
 
     public static String getLatestJarFileUrl() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JSONObject main = new JSONObject(IOUtils.toString(st.getInputStream()));
-        return apiUrls.get("Jars") + "artifact/" + main.getJSONArray("artifacts").getJSONObject(0).getString("relativePath");
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
 }

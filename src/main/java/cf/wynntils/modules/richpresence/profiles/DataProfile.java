@@ -7,7 +7,6 @@ package cf.wynntils.modules.richpresence.profiles;
 public class DataProfile {
 
     String location = "Waiting";
-    int locId = -1;
     boolean unknownLocation = false;
 
     public DataProfile(){
@@ -17,20 +16,12 @@ public class DataProfile {
         return location;
     }
 
-    public int getLocId() {
-        return locId;
-    }
-
     public boolean getUnknownLocation() {
         return unknownLocation;
     }
 
     public void setLocation(String value) {
         location = value;
-    }
-
-    public void setLocId(int value) {
-        locId = value;
     }
 
     public void setUnknownLocation(boolean value) {

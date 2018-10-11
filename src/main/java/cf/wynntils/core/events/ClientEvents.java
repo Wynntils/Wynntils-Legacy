@@ -16,10 +16,12 @@ import cf.wynntils.modules.utilities.managers.ChatManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.EnumTypeAdapterFactory;
@@ -124,10 +126,12 @@ public class ClientEvents {
             gsonBuilder.registerTypeAdapterFactory(new EnumTypeAdapterFactory());
             Gson gson = gsonBuilder.create();
             String json = gsonBuilder.create().toJson(e.getPacket());
-            for (JsonElement playerInfoJson : new JsonParser().parse(json).getAsJsonObject().get("players").getAsJsonArray()) {
+            JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+            boolean dev = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+            for (JsonElement playerInfoJson : jsonObject.get(dev ? "players" : "field_179769_b").getAsJsonArray()) {
                 UUID id = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
-                GameProfile profile = gson.fromJson(playerInfoJson.getAsJsonObject().get("profile"), GameProfile.class);
-                ITextComponent displayName = gson.fromJson(playerInfoJson.getAsJsonObject().get("displayName"), TextComponentString.class);
+                GameProfile profile = gson.fromJson(playerInfoJson.getAsJsonObject().get(dev ? "profile" : "field_179964_d"), GameProfile.class);
+                ITextComponent displayName = gson.fromJson(playerInfoJson.getAsJsonObject().get(dev ? "displayName" : "field_179965_e"), TextComponentString.class);
                 if (profile.getId().equals(id) && (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME || e.getPacket().getAction() == Action.REMOVE_PLAYER)) {
                     if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
                         String name = displayName.getUnformattedText();

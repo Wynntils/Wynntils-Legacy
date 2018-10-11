@@ -40,17 +40,15 @@ public class ServerEvents implements Listener {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
 
-            if(RichPresenceModule.getModule().getData().getLocId() != -1) {
-                if(WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocId()).insideArea((int)pl.posX, (int)pl.posZ) && !classUpdate) {
+            if (!RichPresenceModule.getModule().getData().getLocation().equals("Waiting")) {
+                if (WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocation()).insideArea((int) pl.posX, (int) pl.posZ) && !classUpdate) {
                     return;
                 }
             }
 
-            for(int i = 0; i < WebManager.getTerritories().size(); i++) {
-                TerritoryProfile pf = WebManager.getTerritories().get(i);
+            for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                 if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                     RichPresenceModule.getModule().getData().setLocation(pf.getName());
-                    RichPresenceModule.getModule().getData().setLocId(i);
                     RichPresenceModule.getModule().getData().setUnknownLocation(false);
 
                     classUpdate = false;
@@ -67,7 +65,7 @@ public class ServerEvents implements Listener {
             if (!RichPresenceModule.getModule().getData().getUnknownLocation() || classUpdate) {
                 classUpdate = false;
                 RichPresenceModule.getModule().getData().setUnknownLocation(true);
-                RichPresenceModule.getModule().getData().setLocId(-1);
+                RichPresenceModule.getModule().getData().setLocation("Waiting");
                 if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
                     RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                 }

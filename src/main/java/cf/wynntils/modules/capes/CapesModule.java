@@ -22,7 +22,7 @@ public class CapesModule extends Module {
     public void onEnable() {
         registerEvents(new EntityEvents());
 
-        CapeManager.downloadCape("default");
+        CapeManager.downloadCape(null);
     }
 
     public void postEnable() {

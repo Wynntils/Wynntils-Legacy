@@ -39,7 +39,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
         if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID().toString().replace("-", "")) && itemstack.getItem() != Items.ELYTRA) {
+        if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID()) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -49,8 +49,8 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
                 if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
                     this.renderPlayer.bindTexture(abstractclientplayer.getLocationElytra());
-                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.isPremium(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
-                    this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
+                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.isPremium(entitylivingbaseIn.getUniqueID())) {
+                    this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID()));
                 } else {
                     this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
                 }
@@ -89,7 +89,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 //            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            if (WebManager.isModerator(entitylivingbaseIn.getUniqueID().toString().replace("-", ""))) {
+            if (WebManager.isModerator(entitylivingbaseIn.getUniqueID())) {
                 LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, this.modelElytra, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
             }
 

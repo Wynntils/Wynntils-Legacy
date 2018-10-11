@@ -1,6 +1,7 @@
 package cf.wynntils.webapi.profiles.guild;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GuildProfile {
 
@@ -10,11 +11,11 @@ public class GuildProfile {
     String prefix;
     double xp;
     int level;
-    String created;
+    Date created;
     String createdFriendly;
     int territories;
 
-    public GuildProfile(String name, String prefix, double xp, int level, String created, String createdFriendly, int territories, ArrayList<GuildMember> members) {
+    public GuildProfile(String name, String prefix, double xp, int level, Date created, String createdFriendly, int territories, ArrayList<GuildMember> members) {
         this.name = name; this.prefix = prefix; this.xp = xp; this.level = level; this.created = created; this.createdFriendly = createdFriendly; this.territories = territories;
         this.members = members;
     }
@@ -39,7 +40,7 @@ public class GuildProfile {
         return territories;
     }
 
-    public String getCreated() {
+    public Date getCreated() {
         return created;
     }
 
