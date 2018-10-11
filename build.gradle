@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:+'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
     }
 }
 
@@ -73,8 +74,8 @@ shadowJar {
     classifier = null
     version = null
     configurations = [project.configurations.compile]
-    relocate "org.slf4j", "com.expansion.relocate.org.slf4j"
-    relocate "org.json", "com.expansion.relocate.org.json"
+    relocate "org.slf4j", "cf.wynntils.relocate.org.slf4j"
+    relocate "org.json", "cf.wybbtuls.relocate.org.json"
 }
 
 task wrapper(type: Wrapper) {
