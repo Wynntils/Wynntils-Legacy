@@ -449,7 +449,7 @@ public class ChestOverlay extends GuiChest {
         }
 
         ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
-        if (!igp.getItems().containsKey(itemType)) {
+        if (igp == null || !igp.getItems().containsKey(itemType)) {
             return;
         }
 

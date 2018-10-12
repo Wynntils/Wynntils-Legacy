@@ -326,7 +326,7 @@ public class InventoryOverlay extends GuiInventory {
         }
 
         ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
-        if(!igp.getItems().containsKey(itemType)) {
+        if(igp == null || !igp.getItems().containsKey(itemType)) {
             return;
         }
 
