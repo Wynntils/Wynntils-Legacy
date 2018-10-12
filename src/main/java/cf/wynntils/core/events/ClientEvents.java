@@ -55,7 +55,7 @@ public class ClientEvents {
     @SideOnly(Side.CLIENT)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
-            Reference.onServer = true;
+            Reference.setUserWorld(null);
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
         }
     }

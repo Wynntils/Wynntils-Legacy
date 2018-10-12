@@ -22,6 +22,7 @@ public class Reference {
     private static String userWorld = null;
 
     public static void setUserWorld(String uw) {
+        onServer = true;
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;

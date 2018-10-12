@@ -5,6 +5,7 @@
 package cf.wynntils.webapi.account;
 
 import cf.wynntils.ModCore;
+import cf.wynntils.Reference;
 import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.core.config.CoreDBConfig;
 import cf.wynntils.webapi.WebManager;
@@ -17,7 +18,6 @@ import org.apache.commons.io.IOUtils;
 
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
-
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
@@ -61,11 +61,12 @@ public class WynntilsAccount {
         byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretkey.getEncoded());
         String lastKey = DatatypeConverter.printHexBinary(secretKeyEncrypted);
 
-        URLConnection st2 = new URL(WebManager.apiUrls.get("UserAccount") + "/responseEncryption").openConnection();
+        URLConnection st2 = new URL(WebManager.apiUrls.get("UserAccount") + "/responseEncryption/").openConnection();
 
         JsonObject object = new JsonObject();
         object.addProperty("username", mc.getSession().getUsername());
         object.addProperty("key", lastKey);
+        object.addProperty("version", Reference.VERSION);
 
         byte[] postAsBytes = object.toString().getBytes(Charsets.UTF_8);
 

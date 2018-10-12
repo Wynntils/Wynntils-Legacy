@@ -6,7 +6,7 @@ import cf.wynntils.modules.capes.events.EntityEvents;
 import cf.wynntils.modules.capes.layers.LayerCape;
 import cf.wynntils.modules.capes.layers.LayerElytra;
 import cf.wynntils.modules.capes.layers.LayerFoxEars;
-import cf.wynntils.modules.capes.managers.CapeManager;
+import cf.wynntils.modules.utilities.events.ServerEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
@@ -21,8 +21,7 @@ public class CapesModule extends Module {
 
     public void onEnable() {
         registerEvents(new EntityEvents());
-
-        CapeManager.downloadCape(null);
+        registerEvents(new ServerEvents());
     }
 
     public void postEnable() {

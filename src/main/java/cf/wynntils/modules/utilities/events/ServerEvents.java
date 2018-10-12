@@ -26,11 +26,6 @@ public class ServerEvents implements Listener {
     }
 
     @EventHandler
-    public void joinServer(WynncraftServerEvent.Login e){
-
-    }
-
-    @EventHandler
     public void onWorldLeft(WynnWorldLeftEvent e) {
         TPSManager.clearTpsInfo();
     }

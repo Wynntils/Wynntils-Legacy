@@ -15,6 +15,7 @@ import cf.wynntils.core.framework.settings.SettingsContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.modules.core.commands.CommandToken;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -129,29 +130,37 @@ public class FrameworkManager {
                 e.setCanceled(true);
                 return;
             }
+            Minecraft.getMinecraft().mcProfiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                        Minecraft.getMinecraft().mcProfiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
+                        Minecraft.getMinecraft().mcProfiler.endSection();
                     }
                 }
             }
+            Minecraft.getMinecraft().mcProfiler.endSection();
         }
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
+            Minecraft.getMinecraft().mcProfiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
+                        Minecraft.getMinecraft().mcProfiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
+                        Minecraft.getMinecraft().mcProfiler.endSection();
                     }
                 }
             }
+            Minecraft.getMinecraft().mcProfiler.endSection();
         }
     }
 
