@@ -298,6 +298,10 @@ public class WebManager {
         Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
         }.getType();
 
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
+        Gson gson = gsonBuilder.create();
+
         guessers.putAll(gson.fromJson(json, type));
 
         itemGuesses = guessers;
