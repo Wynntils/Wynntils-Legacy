@@ -13,16 +13,17 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.utilities.managers.TPSManager;
 import cf.wynntils.modules.utilities.managers.WarManager;
+import cf.wynntils.webapi.WebManager;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
 
 public class ServerEvents implements Listener {
 
-    public static boolean loadedResourcePack = false;
+    public static int loadedResourcePack = 0;
 
     @EventHandler
     public void leaveServer(WynncraftServerEvent.Leave e) {
-        loadedResourcePack = false;
+        loadedResourcePack = 0;
     }
 
     @EventHandler
@@ -37,7 +38,8 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
-        if(loadedResourcePack) {
+        System.out.println("WynnPack URL = " + e.getPacket().getURL());
+        if(loadedResourcePack >= Integer.valueOf(WebManager.apiUrls.get("ResourcePackUpdateAmount"))) {
             NetworkManager nm = e.getNetworkManager();
             nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
             nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
@@ -46,7 +48,7 @@ public class ServerEvents implements Listener {
         }
 
         if(Reference.onServer) {
-            loadedResourcePack = true;
+            loadedResourcePack+= 1;
         }
     }
 
