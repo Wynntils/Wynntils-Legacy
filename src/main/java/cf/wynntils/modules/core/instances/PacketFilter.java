@@ -26,6 +26,8 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if(msg == null) return;
+
         Event e = null;
         boolean cancel = false;
         if (msg instanceof SPacketSpawnObject) {
