@@ -15,9 +15,8 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        e.getManager().channel().pipeline().addBefore("packet_handler", Reference.MOD_ID + ":packet_filter", new PacketFilter());
+        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketFilter());
 
         WebManager.checkForUpdates();
     }
-
 }

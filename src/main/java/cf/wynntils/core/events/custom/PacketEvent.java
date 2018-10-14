@@ -6,11 +6,7 @@ package cf.wynntils.core.events.custom;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.network.play.server.SPacketPlayerListItem;
-import net.minecraft.network.play.server.SPacketResourcePackSend;
-import net.minecraft.network.play.server.SPacketSpawnObject;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.*;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 
@@ -118,11 +114,11 @@ public class PacketEvent extends Event {
 
     public static class TabListChangeEvent extends Event {
         SPacketPlayerListItem packet;
-        NetworkManager networkManager;
+        NetHandlerPlayClient playClient;
 
-        public TabListChangeEvent(SPacketPlayerListItem packet, NetworkManager networkManager) {
+        public TabListChangeEvent(SPacketPlayerListItem packet, NetHandlerPlayClient playClient) {
             this.packet = packet;
-            this.networkManager = networkManager;
+            this.playClient = playClient;
 
         }
 
@@ -134,8 +130,8 @@ public class PacketEvent extends Event {
             return packet;
         }
 
-        public NetworkManager getNetworkManager() {
-            return networkManager;
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
         }
     }
 

@@ -10,13 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.play.server.SPacketEntityVelocity;
-import net.minecraft.network.play.server.SPacketMoveVehicle;
-import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.network.play.server.SPacketPlayerListItem;
-import net.minecraft.network.play.server.SPacketResourcePackSend;
-import net.minecraft.network.play.server.SPacketSpawnObject;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -39,13 +33,15 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
         } else if (msg instanceof SPacketResourcePackSend) {
             e = new PacketEvent.ResourcePackReceived((SPacketResourcePackSend) msg, ModCore.mc().getConnection().getNetworkManager());
         } else if (msg instanceof SPacketPlayerListItem) {
-            e = new PacketEvent.TabListChangeEvent((SPacketPlayerListItem) msg, ModCore.mc().getConnection().getNetworkManager());
+            e = new PacketEvent.TabListChangeEvent((SPacketPlayerListItem) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketEntityVelocity) {
             SPacketEntityVelocity velocity = (SPacketEntityVelocity) msg;
-            Entity entity = mc.world.getEntityByID(velocity.getEntityID());
-            Entity vehicle = mc.player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
-                cancel = true;
+            if (mc.world != null) {
+                Entity entity = mc.world.getEntityByID(velocity.getEntityID());
+                Entity vehicle = mc.player.getLowestRidingEntity();
+                if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
+                    cancel = true;
+                }
             }
         } else if (msg instanceof SPacketMoveVehicle) {
             SPacketMoveVehicle moveVehicle = (SPacketMoveVehicle) msg;
