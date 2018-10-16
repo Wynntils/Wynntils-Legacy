@@ -9,6 +9,7 @@ import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumHand;
@@ -50,26 +51,59 @@ public class QuestManager {
         currentQuestsData.clear();
     }
 
+    /**
+     * Returns the current quests data
+     *
+     * @return the current quest data in a {@link java.util.ArrayList}
+     */
     public static ArrayList<QuestInfo> getCurrentQuestsData() {
         return currentQuestsData;
     }
 
+    /**
+     * Returns the current tracked quest
+     * if null, no quest is being tracked
+     *
+     * @return the current tracked quest
+     */
     public static QuestInfo getTrackedQuest() {
         return trackedQuest;
     }
 
+    /**
+     * Sets the current tracked quest.
+     *
+     * @param selected the track that will be tracked.
+     */
     public static void setTrackedQuest(QuestInfo selected) {
         trackedQuest = selected;
     }
 
+    /**
+     * If the questbook is being read.
+     * This can be used to avoid duplicates or crashes
+     *
+     * @return if the questbook is being read
+     */
     public static boolean isReadingQuestBook() {
         return readingQuestBook;
     }
 
+    /**
+     * Called when the questbook is starting or finish to be read
+     *  @see cf.wynntils.modules.questbook.events.ServerEvents#onInventoryReceiveItems line 107
+     *
+     * @param readingQuestBook selected boolean
+     */
     public static void setReadingQuestBook(boolean readingQuestBook) {
         QuestManager.readingQuestBook = readingQuestBook;
     }
 
+    /**
+     * Called when the questbook updates to update the current tracked quest
+     * @see cf.wynntils.modules.questbook.events.ServerEvents#onInventoryReceiveItems line 106
+     *
+     */
     public static void updateTrackedQuest() {
         if(trackedQuest == null) return;
 
@@ -81,6 +115,13 @@ public class QuestManager {
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
     }
 
+    /**
+     * Registers a new {@link cf.wynntils.modules.questbook.instances.QuestInfo} into the cache
+     * Called when the questbook is reading for new quests
+     * @see cf.wynntils.modules.questbook.events.ServerEvents#parseQuest(ItemStack) line 150
+     *
+     * @param quest the quest that will be registered
+     */
     public static void addQuestInfo(QuestInfo quest) {
         currentQuestsData.add(quest);
     }

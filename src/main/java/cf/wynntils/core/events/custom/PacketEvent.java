@@ -10,8 +10,17 @@ import net.minecraft.network.play.server.*;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 
+/**
+ * Represents events that are triggered when a packet is sent to the client
+ * all of them are cancelable (you can avoid it to reach the client processor)
+ *
+ */
 public class PacketEvent extends Event {
 
+    /**
+     * Triggered when the client receives a {@link ResourcePackReceived} packet from the server
+     *
+     */
     public static class ResourcePackReceived extends Event {
         SPacketResourcePackSend packet;
         NetworkManager networkManager;
@@ -36,6 +45,10 @@ public class PacketEvent extends Event {
         }
     }
 
+    /**
+     * Triggered when the client receives a {@link SPacketOpenWindow} packet from the server
+     *
+     */
     public static class InventoryReceived extends Event {
 
         SPacketOpenWindow packet;
@@ -61,6 +74,10 @@ public class PacketEvent extends Event {
         }
     }
 
+    /**
+     * Triggered when the client receives a {@link SPacketWindowItems} packet from the server
+     *
+     */
     public static class InventoryItemsReceived extends Event {
 
         SPacketWindowItems packet;
@@ -86,6 +103,10 @@ public class PacketEvent extends Event {
         }
     }
 
+    /**
+     * Triggered when the client receives a {@link SPacketSpawnObject} packet from the server
+     *
+     */
     public static class SpawnObject extends Event {
 
         SPacketSpawnObject packet;
@@ -112,6 +133,10 @@ public class PacketEvent extends Event {
 
     }
 
+    /**
+     * Triggered when the client receives a {@link SPacketPlayerListItem} packet from the server
+     *
+     */
     public static class TabListChangeEvent extends Event {
         SPacketPlayerListItem packet;
         NetHandlerPlayClient playClient;

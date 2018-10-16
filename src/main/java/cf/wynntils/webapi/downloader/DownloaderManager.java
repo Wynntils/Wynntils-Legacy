@@ -37,10 +37,19 @@ public class DownloaderManager {
         startDownloading();
     }
 
+    /**
+     * Request the game to restart when the queue finishes
+     */
     public static void restartGameOnNextQueue() {
         restartOnQueueFinish = true;
     }
 
+    /**
+     * Returns the current download file data
+     * if null, no data is being downloaded
+     *
+     * @return the current download file data
+     */
     public static DownloadProfile getCurrentDownload() {
         return futureDownloads.size() <= 0 ? null : futureDownloads.get(0);
     }
