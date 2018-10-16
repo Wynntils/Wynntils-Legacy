@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuestBookGUI extends GuiScreen {
 
@@ -198,32 +199,36 @@ public class QuestBookGUI extends GuiScreen {
             if(searchBarText.length() <= 0) {
                 render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }else{
-                if(searchBarText.length() >= 22) {
-                    render.drawString(searchBarText.substring(searchBarText.length() - 22), x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                }else{
-                    if(System.currentTimeMillis() - text_flicker >= 500) {
-                        keepForTime = !keepForTime;
-                        text_flicker = System.currentTimeMillis();
-                    }
 
-                    if(keepForTime) {
-                        render.drawString(searchBarText + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                    }else{
-                        render.drawString(searchBarText, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                String text = searchBarText;
+
+                if(render.getStringWidth(text) >= 110) {
+                    int remove = searchBarText.length();
+                    while(render.getStringWidth((text = searchBarText.substring(searchBarText.length() - remove))) >= 110) {
+                        remove-=1;
                     }
+                }
+
+                if(System.currentTimeMillis() - text_flicker >= 500) {
+                    keepForTime = !keepForTime;
+                        text_flicker = System.currentTimeMillis();
+                }
+
+                if(keepForTime) {
+                    render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                }else{
+                    render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 }
             }
 
             //filtering quests
-            ArrayList<QuestInfo> quests = (ArrayList<QuestInfo>)QuestManager.getCurrentQuestsData().clone();
+            ArrayList<QuestInfo> quests = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
 
-            ArrayList<QuestInfo> toSearch = new ArrayList<>();
+            //represents the real list that will be checked
+            ArrayList<QuestInfo> toSearch;
 
-            if(!searchBarText.equals("")) {
-                quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).forEach(toSearch::add);
-            }else{
-                toSearch.addAll(quests);
-            }
+
+            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : (ArrayList<QuestInfo>)quests.clone();
 
             int pages = toSearch.size() <= 13 ? 1 : (int)Math.ceil(toSearch.size() / 13d);
             if(pages < currentPage) {

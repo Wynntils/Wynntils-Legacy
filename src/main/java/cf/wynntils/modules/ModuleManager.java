@@ -14,6 +14,9 @@ import cf.wynntils.modules.utilities.UtilitiesModule;
  */
 public class ModuleManager {
 
+    /**
+     * This registers all modules that should be loaded
+     */
     public static void initModules() {
         FrameworkManager.registerModule(new QuestBookModule());
         FrameworkManager.registerModule(new CoreModule());

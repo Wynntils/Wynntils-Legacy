@@ -22,8 +22,7 @@ import java.io.File;
         modid = Reference.MOD_ID,
         acceptedMinecraftVersions = "[" + Reference.MINECRAFT_VERSIONS + "]",
         guiFactory = "cf.wynntils.core.framework.settings.ui.ModConfigFactory",
-        clientSideOnly = true,
-        updateJSON = "https://api.wynntils.cf/update.json"
+        clientSideOnly = true
 )
 public class ModCore {
 
