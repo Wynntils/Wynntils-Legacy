@@ -208,7 +208,7 @@ public class QuestBookGUI extends GuiScreen {
             if(posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
                 if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
                     hoveredText = QuestManager.secretdiscoveryLore;
-                } else { hoveredText = new ArrayList<>(QuestManager.discoveryLore); hoveredText.add(" "); hoveredText.add("§Hold shift to see Secret Discoveries!"); }
+                } else { hoveredText = new ArrayList<>(QuestManager.discoveryLore); hoveredText.add(" "); hoveredText.add("§aHold shift to see Secret Discoveries!"); }
             }
 
             //searchBar
