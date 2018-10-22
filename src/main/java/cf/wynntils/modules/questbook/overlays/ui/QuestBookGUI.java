@@ -76,6 +76,7 @@ public class QuestBookGUI extends GuiScreen {
     private static final CustomColor background_4 = CustomColor.fromString("008f00", 0.2f);
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
         if (keyCode == Keyboard.KEY_BACK) {
             if(searchBarText.length() <= 0) {
                 return;
@@ -287,8 +288,9 @@ public class QuestBookGUI extends GuiScreen {
                     if(posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
                         if(lastTick == 0 && !animationCompleted) {
                             lastTick = getMinecraft().world.getTotalWorldTime();
-                            this.selected = i;
                         }
+
+                        this.selected = i;
 
                         int animationTick;
                         if(!animationCompleted) {
