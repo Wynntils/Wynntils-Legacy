@@ -2,22 +2,14 @@ package cf.wynntils.core.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.PacketEvent;
-import cf.wynntils.core.events.custom.WynnClassChangeEvent;
-import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
-import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
-import cf.wynntils.core.events.custom.WynncraftServerEvent;
+import cf.wynntils.core.events.custom.*;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.managers.ChatManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -151,6 +143,7 @@ public class ClientEvents {
                         PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                         MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
                     }
+
                     Minecraft mc = Minecraft.getMinecraft();
                     if (acceptClass) {
                         if (mc.player.experienceLevel > 0) {
@@ -158,8 +151,10 @@ public class ClientEvents {
                                 ItemStack book = mc.player.inventory.getStackInSlot(7);
                                 if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
                                     for (int i = 0; i < 36; i++) {
+
                                         try {
                                             ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
+
                                             NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
                                             for (int j = 1; j < Lore.tagCount(); j++) {
                                                 String ClassTest = Lore.get(j).toString();
@@ -172,8 +167,7 @@ public class ClientEvents {
                                                     acceptClass = false;
                                                 }
                                             }
-                                        } catch (Exception ignored) {
-                                        }
+                                        } catch (Exception ignored) { }
                                     }
                                 }
                             } catch (Exception ignored) {

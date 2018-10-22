@@ -29,6 +29,9 @@ public class PlayerInfo {
     private String lastActionBar;
     private String specialActionBar = null;
 
+    int lastLevel = 0;
+    int lastXp = 0;
+
     public PlayerInfo(Minecraft mc) {
         this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
 
@@ -103,7 +106,10 @@ public class PlayerInfo {
 
     public float getExperiencePercentage() { return currentClass == ClassType.NONE ? -1 : experiencePercentage; }
 
-    public int getXpNeededToLevelUp() { return currentClass == ClassType.NONE || mc.player.experienceLevel == 0 || mc.player.experienceLevel > xpNeeded.length ? -1 : xpNeeded[mc.player.experienceLevel - 1]; }
+    public int getXpNeededToLevelUp() {
+        if(mc.player.experienceLevel != 0 && currentClass != ClassType.NONE && lastLevel != mc.player.experienceLevel) { lastLevel = mc.player.experienceLevel; lastXp = xpNeeded[mc.player.experienceLevel - 1]; }
+        return currentClass == ClassType.NONE || mc.player.experienceLevel == 0 || mc.player.experienceLevel > xpNeeded.length ? -1 : lastXp;
+    }
 
     public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE ? "" : perFormat.format(mc.player.experience * 100); }
 

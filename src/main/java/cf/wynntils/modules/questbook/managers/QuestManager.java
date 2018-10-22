@@ -15,6 +15,7 @@ import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumHand;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class QuestManager {
 
@@ -22,6 +23,8 @@ public class QuestManager {
 
     private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
     public static QuestInfo trackedQuest = null;
+    public static List<String> discoveryLore = new ArrayList<>();
+    public static List<String> secretdiscoveryLore = new ArrayList<>();
 
     /**
      * Requests a full QuestBook re-read, when the player is not with the book in hand
@@ -124,6 +127,28 @@ public class QuestManager {
      */
     public static void addQuestInfo(QuestInfo quest) {
         currentQuestsData.add(quest);
+    }
+
+    /**
+     * Update the current discovery lore
+     *
+     * @param lore the selected lore
+     */
+    public static void updateDiscoveryLore(String name, List<String> lore) {
+        List<String> list = new ArrayList<>();
+        list.add(name); list.addAll(lore);
+        discoveryLore = list;
+    }
+
+    /**
+     * Update the current secret discovery lore
+     *
+     * @param lore the selected lore
+     */
+    public static void updateSecretDiscoveryLore(String name, List<String> lore) {
+        List<String> list = new ArrayList<>();
+        list.add(name); list.addAll(lore);
+        secretdiscoveryLore = list;
     }
 
 }

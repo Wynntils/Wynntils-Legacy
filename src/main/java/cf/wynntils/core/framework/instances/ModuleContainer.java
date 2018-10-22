@@ -1,6 +1,5 @@
 package cf.wynntils.core.framework.instances;
 
-import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
@@ -63,10 +62,10 @@ public class ModuleContainer {
 
     public void registerEvents(Listener sClass) {
         for(Method m : sClass.getClass().getMethods()) {
+            if(m.getParameterCount() <= 0 || m.getParameterCount() > 1) continue;
+
             EventHandler eh = m.getAnnotation(EventHandler.class);
-            if(eh == null) {
-                continue;
-            }
+            if(eh == null) continue;
 
             if(registeredEvents.containsKey(eh.priority())) {
                 registeredEvents.get(eh.priority()).add(new ListenerContainer(sClass, m));
@@ -151,13 +150,11 @@ public class ModuleContainer {
     }
 
     private void callEvent(Event e, Priority priority) {
+        if(!registeredEvents.containsKey(priority)) return;
         for(ListenerContainer container : registeredEvents.get(priority)) {
             Method m = container.m;
-            if(m.getParameterCount() <= 0 || m.getParameterCount() > 1) {
-                continue;
-            }
 
-            if(m.getParameterTypes()[0].isAssignableFrom(e.getClass())) {
+            if(container.parameter.isAssignableFrom(e.getClass())) {
                 try{
                     m.invoke(container.instance, e);
                 }catch (Exception ex) { ex.printStackTrace(); }
@@ -167,10 +164,12 @@ public class ModuleContainer {
 
     class ListenerContainer {
 
-        public Listener instance; public Method m;
+        public Listener instance; public Method m; public Class<?> parameter;
 
         public ListenerContainer(Listener instance, Method m) {
             this.instance = instance; this.m = m;
+
+            parameter = m.getParameterTypes()[0];
         }
 
     }

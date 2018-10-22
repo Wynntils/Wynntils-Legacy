@@ -66,6 +66,9 @@ public class QuestBookGUI extends GuiScreen {
     long text_flicker = System.currentTimeMillis();
     boolean keepForTime = false;
 
+    //quest search
+    ArrayList<QuestInfo> toSearch;
+
     //colors
     private static final CustomColor background_1 = CustomColor.fromString("000000", 0.3f);
     private static final CustomColor background_2 = CustomColor.fromString("000000", 0.2f);
@@ -86,6 +89,13 @@ public class QuestBookGUI extends GuiScreen {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
             text_flicker = System.currentTimeMillis();
             keepForTime = true;
+        }
+
+        //updating questbook search
+        if(page == QuestBookPage.QUESTS) {
+            ArrayList<QuestInfo> quests = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
+            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : (ArrayList<QuestInfo>)quests.clone();
+            overQuest = null; currentPage = 1;
         }
 
         super.keyTyped(typedChar, keyCode);
@@ -187,12 +197,18 @@ public class QuestBookGUI extends GuiScreen {
             render.drawString("You can pin/unpin a quest", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("by cliking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-
             if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                 hoveredText = Arrays.asList("Back to Menu", "§aAt Development");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
             }else{
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
+            }
+
+            render.drawRect(Textures.UIs.quest_book, x - 86, y - 100, 206, 252, 15, 15);
+            if(posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
+                if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+                    hoveredText = QuestManager.secretdiscoveryLore;
+                } else { hoveredText = new ArrayList<>(QuestManager.discoveryLore); hoveredText.add(" "); hoveredText.add("§Hold shift to see Secret Discoveries!"); }
             }
 
             //searchBar
@@ -221,14 +237,7 @@ public class QuestBookGUI extends GuiScreen {
                 }
             }
 
-            //filtering quests
-            ArrayList<QuestInfo> quests = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
-
-            //represents the real list that will be checked
-            ArrayList<QuestInfo> toSearch;
-
-
-            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : (ArrayList<QuestInfo>)quests.clone();
+            if(searchBarText.isEmpty()) toSearch = (ArrayList<QuestInfo>)QuestManager.getCurrentQuestsData().clone();
 
             int pages = toSearch.size() <= 13 ? 1 : (int)Math.ceil(toSearch.size() / 13d);
             if(pages < currentPage) {

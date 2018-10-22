@@ -13,6 +13,7 @@ import java.util.List;
 public class QuestInfo {
 
     private final String name;
+    private final String lowerCaseName;
     private final QuestStatus status;
     private final int minLevel;
     private final QuestSize size;
@@ -23,6 +24,7 @@ public class QuestInfo {
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
+        this.lowerCaseName = name.toLowerCase();
 
         ArrayList<String> splittedDescription = new ArrayList<>();
         StringBuilder currentMessage = new StringBuilder();
@@ -64,6 +66,10 @@ public class QuestInfo {
 
     public String getName() {
         return name;
+    }
+
+    public String getLowerCaseName() {
+        return lowerCaseName;
     }
 
     public ArrayList<String> getSplittedDescription() {

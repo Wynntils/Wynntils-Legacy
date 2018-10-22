@@ -79,6 +79,9 @@ public class ServerEvents implements Listener {
 
             for(ItemStack i : e.getPacket().getItemStacks()) {
                 inventory++;
+
+                if(inventory == 35) QuestManager.updateDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
+                if(inventory == 44) QuestManager.updateSecretDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
                 if(inventory == 54) break;
 
                 if(inventory == 8) {

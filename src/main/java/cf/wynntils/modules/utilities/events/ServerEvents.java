@@ -38,7 +38,6 @@ public class ServerEvents implements Listener {
 
     @EventHandler
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
-        System.out.println("WynnPack URL = " + e.getPacket().getURL());
         if(loadedResourcePack >= Integer.valueOf(WebManager.apiUrls.get("ResourcePackUpdateAmount"))) {
             NetworkManager nm = e.getNetworkManager();
             nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
