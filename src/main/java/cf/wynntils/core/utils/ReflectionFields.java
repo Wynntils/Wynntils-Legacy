@@ -1,6 +1,5 @@
 package cf.wynntils.core.utils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -14,8 +13,7 @@ import java.lang.reflect.Field;
 public enum ReflectionFields {
 
     ItemRenderer_itemRenderer(ItemRenderer.class, "itemRenderer", "field_178112_h"),
-    Minecraft_mcMusicTicker(Minecraft.getMinecraft().getClass(), "mcMusicTicker", "field_147126_aw"),
-    NetworkManager_packetListener(NetworkManager.class, "packetListener", "field_150744_m"),
+    NetworkManager_packetListener(NetworkManager.class, "packetListener", "field_150744_m", "field_150744_m"),
     NetHandlerPlayClient_guiScreenServer(NetHandlerPlayClient.class, "guiScreenServer", "field_147307_j"),
     NetHandlerPlayClient_profile(NetHandlerPlayClient.class, "profile", "field_175107_d"),
     GuiNewChat_chatLines(GuiNewChat.class, "chatLines", "field_146252_h"),
@@ -24,8 +22,8 @@ public enum ReflectionFields {
 
     Field field;
 
-    ReflectionFields(Class<?> holdingClass, String deobfName, String srgName) {
-        this.field = ReflectionHelper.findField(holdingClass,deobfName,srgName);
+    ReflectionFields(Class<?> holdingClass, String... values) {
+        this.field = ReflectionHelper.findField(holdingClass, values);
         this.field.setAccessible(true);
     }
 
