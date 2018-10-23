@@ -40,6 +40,8 @@ public class ChatManager {
     public static Boolean applyUpdatesToClient(ITextComponent message) {
 
         boolean cancel = false;
+        
+        ITextComponent originalMessage = message.createCopy();
 
         if(UtilitiesConfig.Chat.INSTANCE.allowChatMentions && message.getSiblings().size() >= 2 && message.getSiblings().get(0).getUnformattedText().contains("/")) {
             if (message.getFormattedText().contains(ModCore.mc().player.getName())) {
@@ -172,24 +174,14 @@ public class ChatManager {
             message.getSiblings().addAll(newTextComponents);
         }
 
-        ITextComponent thisClone = message.createCopy();
-        if(thisClone.getSiblings().size() >= 3) {
-            thisClone.getSiblings().remove(0);
-            thisClone.getSiblings().remove(0);
-            thisClone.getSiblings().remove(0);
-        }
+        ITextComponent thisClone = originalMessage.createCopy();
         
         ITextComponent lastClone = null;
         if (lastMessage != null) {
             lastClone = lastMessage.createCopy();
-            if(lastClone.getSiblings().size() >= 3) {
-                lastClone.getSiblings().remove(0);
-                lastClone.getSiblings().remove(0);
-                lastClone.getSiblings().remove(0);
-            }
         }
 
-        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && thisClone.getUnformattedText().equals(lastClone == null ? null : lastClone.getUnformattedText())) {
+        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && thisClone.getFormattedText().equals(lastClone == null ? null : lastClone.getFormattedText())) {
             GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
 
             if(ch != null) {
@@ -216,7 +208,7 @@ public class ChatManager {
             lastAmount = 2;
         }
 
-        lastMessage = message;
+        lastMessage = originalMessage;
 
         return cancel;
     }
