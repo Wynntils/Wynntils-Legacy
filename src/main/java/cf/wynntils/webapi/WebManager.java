@@ -3,6 +3,7 @@ package cf.wynntils.webapi;
 import cf.wynntils.Reference;
 import cf.wynntils.webapi.account.WynntilsAccount;
 import cf.wynntils.webapi.profiles.MapMarkerProfile;
+import cf.wynntils.webapi.profiles.MusicProfile;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import cf.wynntils.webapi.profiles.UpdateProfile;
 import cf.wynntils.webapi.profiles.guild.GuildProfile;
@@ -362,6 +363,22 @@ public class WebManager {
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
+    }
+
+    public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws Exception {
+        URLConnection st = new URL(apiUrls.get("WynnSounds")).openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        ArrayList<MusicProfile> result = new ArrayList<>();
+        JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonArray();
+        for(int i = 0; i < array.size(); i++) {
+            JsonObject obj = array.get(i).getAsJsonObject();
+            if(!obj.has("name") || !obj.has("download_url") || !obj.has("size")) continue;
+
+            result.add(new MusicProfile(obj.get("name").getAsString(), obj.get("download_url").getAsString(), obj.get("size").getAsLong()));
+        }
+
+        return result;
     }
 
 }

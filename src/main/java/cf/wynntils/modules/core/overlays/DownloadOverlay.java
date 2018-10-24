@@ -74,6 +74,8 @@ public class DownloadOverlay extends Overlay {
 
             drawRect(progress, -160, 20 - size, ((lastPercent * (-10 + 160)) + 100 * -160) / 100, 36 - size);
             drawString(lastPercent + "%", -84, 25 - size, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+
+            drawString((DownloaderManager.getQueueSizeLeft() + 1) + " files left", -84, 40 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
 
         if (size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {

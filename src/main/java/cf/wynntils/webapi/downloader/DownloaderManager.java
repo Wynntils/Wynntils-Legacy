@@ -54,6 +54,10 @@ public class DownloaderManager {
         return futureDownloads.size() <= 0 ? null : futureDownloads.get(0);
     }
 
+    public static int getQueueSizeLeft() {
+        return futureDownloads.size();
+    }
+
     private static void startDownloading() {
         if(!Reference.onServer) {
             startDownloading();
@@ -87,7 +91,7 @@ public class DownloaderManager {
 
                 int fileLenght = st.getContentLength();
 
-                File fileSaved = new File(pf.getLocation(), urlSplited[urlSplited.length - 1]);
+                File fileSaved = new File(pf.getLocation(), urlSplited[urlSplited.length - 1].replace("%20", " "));
 
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);

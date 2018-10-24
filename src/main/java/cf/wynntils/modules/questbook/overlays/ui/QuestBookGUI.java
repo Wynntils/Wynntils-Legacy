@@ -94,8 +94,8 @@ public class QuestBookGUI extends GuiScreen {
 
         //updating questbook search
         if(page == QuestBookPage.QUESTS) {
-            ArrayList<QuestInfo> quests = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
-            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : (ArrayList<QuestInfo>)quests.clone();
+            ArrayList<QuestInfo> quests = new ArrayList<>(QuestManager.getCurrentQuestsData());
+            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getLowerCaseName().startsWith(searchBarText)).collect(Collectors.toList()) : quests;
             overQuest = null; currentPage = 1;
         }
 
