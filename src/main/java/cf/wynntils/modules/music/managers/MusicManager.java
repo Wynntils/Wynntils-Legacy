@@ -33,8 +33,6 @@ public class MusicManager {
     public static void checkForUpdates() {
         if(!MusicConfig.INSTANCE.allowMusicModule) return;
 
-        checked = true;
-
         File musicFolder = new File(Reference.MOD_STORAGE_ROOT, "sounds");
         if(!musicFolder.exists() || !musicFolder.isDirectory()) musicFolder.mkdirs();
 
@@ -51,10 +49,15 @@ public class MusicManager {
             for(MusicProfile mp : updated) {
                 if(!availableMusics.containsKey(mp.getSize())) {
                     DownloaderManager.queueDownload(mp.getNameWithoutMP3(), mp.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
-                        if(c) availableMusics.put(mp.getSize(), new MusicProfile(new File(musicFolder, mp.getName())));
+                        if(c) {
+                            availableMusics.put(mp.getSize(), new MusicProfile(new File(musicFolder, mp.getName())));
+                            if(availableMusics.size() >= updated.size()) checked = true;
+                        }
                     });
                 }
             }
+
+            if(availableMusics.size() >= updated.size()) checked = true;
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 

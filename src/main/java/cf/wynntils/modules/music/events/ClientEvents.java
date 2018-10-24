@@ -14,7 +14,6 @@ public class ClientEvents implements Listener {
 
     @EventHandler
     public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        System.out.println("atualizou!!!!");
         MusicManager.checkForMusic();
     }
 
