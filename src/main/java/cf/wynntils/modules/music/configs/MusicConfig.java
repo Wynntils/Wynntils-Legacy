@@ -8,7 +8,7 @@ import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
-@SettingsInfo(name = "questbook", displayPath = "QuestBook")
+@SettingsInfo(name = "music", displayPath = "Music")
 public class MusicConfig extends SettingsClass {
 
     public static MusicConfig INSTANCE;
