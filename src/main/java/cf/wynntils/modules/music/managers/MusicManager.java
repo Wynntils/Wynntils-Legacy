@@ -30,6 +30,10 @@ public class MusicManager {
 
     private static boolean checked = false;
 
+    public static void stopReproduction() {
+        player.stop();
+    }
+
     public static void checkForUpdates() {
         if(!MusicConfig.INSTANCE.allowMusicModule) return;
 

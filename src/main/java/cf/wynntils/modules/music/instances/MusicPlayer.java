@@ -20,6 +20,10 @@ public class MusicPlayer {
         executor.play(f);
     }
 
+    public void stop() {
+        executor.stop();
+    }
+
     public class PlayerExecutor {
 
         File f;
