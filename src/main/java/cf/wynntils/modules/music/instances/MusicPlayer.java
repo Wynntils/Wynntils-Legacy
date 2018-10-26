@@ -70,7 +70,6 @@ public class MusicPlayer {
                 nextMusic = null;
                 startReproduction();
             }else{
-                System.out.println(currentVolume);
                 if(currentVolume <= -20) {
                     currentMusic = nextMusic;
                     nextMusic = null;
