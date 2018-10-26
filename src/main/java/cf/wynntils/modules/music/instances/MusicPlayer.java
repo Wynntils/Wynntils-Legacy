@@ -14,27 +14,29 @@ import java.io.FileInputStream;
 
 public class MusicPlayer {
 
-    PlayerExecutor executor = new PlayerExecutor();
+    private static PlayerExecutor executor = new PlayerExecutor();
 
-    public void play(File f) {
+    public static void play(File f) {
         executor.play(f);
     }
 
-    public void stop() {
+    public static void stop() {
         executor.stop();
     }
 
-    public class PlayerExecutor {
+    public static class PlayerExecutor {
 
         File f;
         AdvancedPlayer currentPlayer;
+        Thread th;
 
         boolean playing = false;
 
         public void play(File f) {
             if(this.f != null && this.f.getName().equalsIgnoreCase(f.getName())) return;
-            if(playing) stop();
+            if(playing || (th != null && th.isAlive())) stop();
 
+            playing = true;
             this.f = f;
             run();
         }
@@ -43,6 +45,7 @@ public class MusicPlayer {
             if(!playing) return;
 
             currentPlayer.stop();
+            if(th != null && th.isAlive()) th.stop();
         }
 
         public void checkForTheEnd() {
@@ -52,21 +55,21 @@ public class MusicPlayer {
         }
 
         private void run() {
-            new Thread(() -> {
+           th = new Thread(() -> {
                 try{
                     FileInputStream fis = new FileInputStream(f);
                     BufferedInputStream bis = new BufferedInputStream(fis);
                     currentPlayer = new AdvancedPlayer(bis);
                     currentPlayer.setPlayBackListener(new PlaybackListener() {
-                        public void playbackStarted(PlaybackEvent playbackEvent) { playing = true; }
                         public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                     });
 
                     currentPlayer.play();
                     fis.close();
                     bis.close();
-                }catch (Exception ex) { }
-            }).start();
+                }catch (Exception ex) { ex.printStackTrace(); }
+            });
+           th.setName("Wynntils - Music Module"); th.start();
         }
     }
 

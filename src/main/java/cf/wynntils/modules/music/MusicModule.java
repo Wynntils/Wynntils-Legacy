@@ -20,7 +20,7 @@ public class MusicModule extends Module {
         registerEvents(new ClientEvents());
 
         registerKeyBinding("Update Sounds", Keyboard.KEY_RBRACKET, "Music", true, MusicManager::checkForUpdates);
-        registerKeyBinding("Start Sounds", Keyboard.KEY_LBRACKET, "Music", true, MusicManager::checkForMusic);
+        registerKeyBinding("Start Sounds", Keyboard.KEY_LBRACKET, "Music", true, () -> MusicManager.checkForMusic("Detlas"));
     }
 
 }

@@ -34,7 +34,6 @@ public class DataProfile {
     }
 
     public void setUnknownLocation(boolean value) {
-        if(value == true) MinecraftForge.EVENT_BUS.post(new WynnTerritoryChangeEvent(location, "Unknown"));
         unknownLocation = value;
     }
 

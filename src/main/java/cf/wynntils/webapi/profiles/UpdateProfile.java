@@ -38,6 +38,10 @@ public class UpdateProfile {
         return hasUpdate;
     }
 
+    public void forceUpdate() {
+        hasUpdate = true;
+    }
+
     public String getLatestUpdate() {
         return latestUpdate;
     }

@@ -16,22 +16,20 @@ import cf.wynntils.webapi.profiles.MusicProfile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MusicManager {
 
     private static HashMap<Long, MusicProfile> availableMusics = new HashMap<>();
-    private static MusicPlayer player = new MusicPlayer();
 
     private static final Pattern regex = Pattern.compile("\\(([^)]+)\\)");
-    private static final Random r = new Random();
 
     private static boolean checked = false;
 
     public static void stopReproduction() {
-        player.stop();
+        MusicPlayer.stop();
     }
 
     public static void checkForUpdates() {
@@ -50,12 +48,19 @@ public class MusicManager {
         try{
             ArrayList<MusicProfile> updated = WebManager.getCurrentAvailableSongs();
 
+            ArrayList<String> names = new ArrayList<>(); updated.forEach(c -> names.add(c.getName()));
+            ArrayList<MusicProfile> toRemove = new ArrayList<>();
+            availableMusics.values().stream().filter(c -> !names.contains(c.getName())).forEach(toRemove::add);
+            toRemove.forEach(c -> { c.getFile().get().delete(); availableMusics.remove(c); });
+
             for(MusicProfile mp : updated) {
                 if(!availableMusics.containsKey(mp.getSize())) {
                     DownloaderManager.queueDownload(mp.getNameWithoutMP3(), mp.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
                         if(c) {
                             availableMusics.put(mp.getSize(), new MusicProfile(new File(musicFolder, mp.getName())));
-                            if(availableMusics.size() >= updated.size()) checked = true;
+                            if(availableMusics.size() >= updated.size()) {
+                                checked = true; checkForMusic(RichPresenceModule.getModule().getData().getLocation());
+                            }
                         }
                     });
                 }
@@ -65,60 +70,44 @@ public class MusicManager {
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
-    public static void checkForMusic() {
+    public static void checkForMusic(String location) {
         if(!MusicConfig.INSTANCE.allowMusicModule) return;
 
-        if(!checked) checkForUpdates();
-
-        String location = RichPresenceModule.getModule().getData().getLocation();
+        if(!checked) {
+            checkForUpdates();
+            return;
+        }
 
         MusicProfile selected = null;
 
-        //direct search
+        Optional<MusicProfile> direct = Optional.empty();
+        Optional<MusicProfile> firstWord = Optional.empty();
+        Optional<MusicProfile> lessPossible = Optional.empty();
+
         for(MusicProfile mp : availableMusics.values()) {
             if(mp.getName().contains("(") && mp.getName().contains(")")) {
                 Matcher mc = regex.matcher(mp.getName());
                 while(mc.find()) {
-                    if(mc.group(1).replace("(", "").replace(")", "").equalsIgnoreCase(location)) {
-                        selected = mp;
-                        break;
-                    }
-                }
-            }
-        }
-
-        //less possible search
-        if(selected == null) {
-            for(MusicProfile mp : availableMusics.values()) {
-                if(mp.getName().contains("(") && mp.getName().contains(")")) {
-                    Matcher mc = regex.matcher(mp.getName());
-                    while(mc.find()) {
-                        if(mc.group(1).replace("(", "").replace(")", "").startsWith(location)) {
-                            selected = mp;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        //first word search
-        if(selected == null) {
-            for(MusicProfile mp : availableMusics.values()) {
-                if(mp.getName().contains("(") && mp.getName().contains(")")) {
-                    Matcher mc = regex.matcher(mp.getName());
+                    String value = mc.group(1).replace("(", "").replace(")", "");
                     String toSearch = location.contains(" ") ? location.split(" ")[0] : location;
-                    while(mc.find()) {
-                        if(mc.group(1).replace("(", "").replace(")", "").startsWith(toSearch)) {
-                            selected = mp;
-                            break;
-                        }
+                    if(value.equalsIgnoreCase(location)) {
+                        direct = Optional.of(mp);
+                    }else if(value.startsWith(toSearch)) {
+                        firstWord = Optional.of(mp);
+                    }else if(value.startsWith(location)) {
+                        lessPossible = Optional.of(mp);
                     }
                 }
             }
         }
 
-        player.play(selected.getFile().get());
+        if(direct.isPresent()) { selected = direct.get();
+        }else if(firstWord.isPresent()) { selected = firstWord.get();
+        }else if(lessPossible.isPresent()) { selected = lessPossible.get(); }
+
+        if(selected == null) return;
+
+        MusicPlayer.play(selected.getFile().get());
     }
 
 }

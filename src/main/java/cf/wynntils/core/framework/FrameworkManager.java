@@ -14,6 +14,7 @@ import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.settings.SettingsContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
+import cf.wynntils.modules.core.commands.CommandForceUpdate;
 import cf.wynntils.modules.core.commands.CommandToken;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -106,6 +107,7 @@ public class FrameworkManager {
 
     public static void registerCommands() {
         ClientCommandHandler.instance.registerCommand(new CommandToken());
+        ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
     }
 
     public static void disableModules() {

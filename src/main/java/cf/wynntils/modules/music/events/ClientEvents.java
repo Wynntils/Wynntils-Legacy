@@ -17,7 +17,9 @@ public class ClientEvents implements Listener {
 
     @EventHandler
     public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        MusicManager.checkForMusic();
+       if(e.getNewTerritory().equals("Waiting")) return;
+
+       MusicManager.checkForMusic(e.getNewTerritory());
     }
 
     @EventHandler
