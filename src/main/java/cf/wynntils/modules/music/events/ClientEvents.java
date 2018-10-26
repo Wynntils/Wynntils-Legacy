@@ -11,6 +11,7 @@ import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.music.managers.MusicManager;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 
 public class ClientEvents implements Listener {
@@ -24,12 +25,17 @@ public class ClientEvents implements Listener {
 
     @EventHandler
     public void classChange(WynnClassChangeEvent e) {
-        if(e.getCurrentClass() == ClassType.NONE) MusicManager.stopReproduction();
+        if(e.getCurrentClass() == ClassType.NONE) MusicManager.getPlayer().stop();
+    }
+
+    @EventHandler
+    public void tick(TickEvent.ClientTickEvent e) {
+        MusicManager.getPlayer().setupController();
     }
 
     @EventHandler
     public void serverLeft(WynncraftServerEvent.Leave e) {
-        MusicManager.stopReproduction();
+        MusicManager.getPlayer().stop();
     }
 
 }

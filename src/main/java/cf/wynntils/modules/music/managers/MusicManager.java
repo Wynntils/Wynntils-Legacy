@@ -25,11 +25,11 @@ public class MusicManager {
     private static HashMap<Long, MusicProfile> availableMusics = new HashMap<>();
 
     private static final Pattern regex = Pattern.compile("\\(([^)]+)\\)");
-
     private static boolean checked = false;
+    private static MusicPlayer player = new MusicPlayer();
 
-    public static void stopReproduction() {
-        MusicPlayer.stop();
+    public static MusicPlayer getPlayer() {
+        return player;
     }
 
     public static void checkForUpdates() {
@@ -47,11 +47,6 @@ public class MusicManager {
 
         try{
             ArrayList<MusicProfile> updated = WebManager.getCurrentAvailableSongs();
-
-            ArrayList<String> names = new ArrayList<>(); updated.forEach(c -> names.add(c.getName()));
-            ArrayList<MusicProfile> toRemove = new ArrayList<>();
-            availableMusics.values().stream().filter(c -> !names.contains(c.getName())).forEach(toRemove::add);
-            toRemove.forEach(c -> { c.getFile().get().delete(); availableMusics.remove(c); });
 
             for(MusicProfile mp : updated) {
                 if(!availableMusics.containsKey(mp.getSize())) {
@@ -107,7 +102,7 @@ public class MusicManager {
 
         if(selected == null) return;
 
-        MusicPlayer.play(selected.getFile().get());
+        player.play(selected.getFile().get());
     }
 
 }

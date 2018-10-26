@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.music.instances;
 
+import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
@@ -14,63 +15,96 @@ import java.io.FileInputStream;
 
 public class MusicPlayer {
 
-    private static PlayerExecutor executor = new PlayerExecutor();
+    Thread musicPlayer;
+    boolean active = false;
 
-    public static void play(File f) {
-        executor.play(f);
+    float currentVolume = 1;
+    File currentMusic;
+    File nextMusic = null;
+    AdvancedPlayer currentPlayer;
+
+    public void play(File f) {
+        if(currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
+
+        nextMusic = f;
+        setupController();
     }
 
-    public static void stop() {
-        executor.stop();
+    public void stop() {
+        if(!active) return;
+
+        currentPlayer.stop();
+        active = false;
     }
 
-    public static class PlayerExecutor {
+    private void checkForTheEnd() {
+        if(!active) return;
 
-        File f;
-        AdvancedPlayer currentPlayer;
-        Thread th;
+        nextMusic = currentMusic;
+        currentMusic = null;
+    }
 
-        boolean playing = false;
+    public void setVolume(float volume) {
+        if(!active) return;
+        if(currentPlayer != null && currentPlayer.getAudioDevice() == null) return;
 
-        public void play(File f) {
-            if(this.f != null && this.f.getName().equalsIgnoreCase(f.getName())) return;
-            if(playing || (th != null && th.isAlive())) stop();
-
-            playing = true;
-            this.f = f;
-            run();
+        if(currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
+            JavaSoundAudioDevice dv = (JavaSoundAudioDevice) currentPlayer.getAudioDevice();
+            dv.setLineGain(volume);
+            currentVolume = volume;
         }
+    }
 
-        public void stop() {
-            if(!playing) return;
+    public float getCurrentVolume() {
+        return currentVolume;
+    }
 
+    private long lastSetup = 0;
+    public void setupController() {
+        if(System.currentTimeMillis() - lastSetup <= 150) return;
+
+        active = true;
+        if(nextMusic != null) {
+            if(currentMusic == null) {
+                currentMusic = nextMusic;
+                nextMusic = null;
+                startReproduction();
+            }else{
+                System.out.println(currentVolume);
+                if(currentVolume <= -20) {
+                    currentMusic = nextMusic;
+                    nextMusic = null;
+                    startReproduction();
+                }else{
+                    setVolume(getCurrentVolume() - 0.2f);
+                }
+            }
+        }else{
+            if(getCurrentVolume() < 1) { setVolume(getCurrentVolume() + 0.2f); }
+        }
+    }
+
+    private void startReproduction() {
+        if(currentPlayer != null) {
             currentPlayer.stop();
-            if(th != null && th.isAlive()) th.stop();
+            if(musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();
         }
 
-        public void checkForTheEnd() {
-            if(!playing) return;
+        musicPlayer = new Thread(() -> {
+            try{
+                FileInputStream fis = new FileInputStream(currentMusic);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                currentPlayer = new AdvancedPlayer(bis);
+                currentPlayer.setPlayBackListener(new PlaybackListener() {
+                    public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
+                });
 
-            run();
-        }
-
-        private void run() {
-           th = new Thread(() -> {
-                try{
-                    FileInputStream fis = new FileInputStream(f);
-                    BufferedInputStream bis = new BufferedInputStream(fis);
-                    currentPlayer = new AdvancedPlayer(bis);
-                    currentPlayer.setPlayBackListener(new PlaybackListener() {
-                        public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
-                    });
-
-                    currentPlayer.play();
-                    fis.close();
-                    bis.close();
-                }catch (Exception ex) { ex.printStackTrace(); }
-            });
-           th.setName("Wynntils - Music Module"); th.start();
-        }
+                currentPlayer.play();
+                fis.close();
+                bis.close();
+            }catch (Exception ex) { ex.printStackTrace(); }
+        });
+        musicPlayer.setName("Wynntils - Music Reproducer"); musicPlayer.start();
     }
 
 }
