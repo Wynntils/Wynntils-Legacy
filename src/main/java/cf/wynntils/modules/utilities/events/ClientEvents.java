@@ -7,9 +7,11 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.utilities.managers.ChatManager;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
+import cf.wynntils.modules.utilities.managers.NametagManager;
 import cf.wynntils.modules.utilities.managers.TPSManager;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
@@ -40,6 +42,11 @@ public class ClientEvents implements Listener {
                 e.setCanceled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void changeNametagColors(RenderLivingEvent.Specials.Pre e) {
+        if(NametagManager.checkForNametag(e)) e.setCanceled(true);
     }
 
     @EventHandler
