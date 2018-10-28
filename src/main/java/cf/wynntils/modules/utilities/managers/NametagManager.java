@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.managers;
 
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -20,20 +22,22 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 public class NametagManager {
 
     public static boolean checkForNametag(RenderLivingEvent.Specials.Pre e) {
-        if(!(e.getEntity() instanceof EntityPlayer)) return false;
-        EntityPlayer entity = (EntityPlayer) e.getEntity();
+        Entity entity =  e.getEntity();
 
         //TODO add this for guild, party and friends
         float r = 0; float g = 0; float b = 0;
-        if(WebManager.isModerator(entity.getUniqueID())) {
-            r = 0.75f; g = 0; b = 0.75f;
-        }else if(WebManager.isHelper(entity.getUniqueID())) {
-            r = 1f; g = 1; b = 0.25f;
+
+        boolean player = false;
+        if(entity instanceof EntityPlayer) {
+            player = true;
+            if(WebManager.isModerator(entity.getUniqueID())) {
+                r = 0.75f; g = 0; b = 0.75f;
+            }else if(WebManager.isHelper(entity.getUniqueID())) {
+                r = 1f; g = 1; b = 0.25f;
+            }
         }
 
-        if(r == 0 && g == 0 && b == 0) return false;
-
-        if(canRenderName((EntityPlayer)e.getEntity(), e.getRenderer().getRenderManager())) {
+        if((!player && UtilitiesConfig.INSTANCE.hideNametags) || canRenderName(e.getEntity(), e.getRenderer().getRenderManager())) {
             double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
@@ -43,12 +47,14 @@ public class NametagManager {
                 GlStateManager.alphaFunc(516, 0.1F);
                 renderLivingLabel(entity, s, e.getX(), e.getY(), e.getZ(), 64, e.getRenderer().getRenderManager(), r, g, b);
             }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
-    private static boolean canRenderName(EntityPlayer entity, RenderManager renderManager) {
+    private static boolean canRenderName(Entity entity, RenderManager renderManager) {
         EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
         boolean flag = !entity.isInvisibleToPlayer(entityplayersp);
 
@@ -80,7 +86,7 @@ public class NametagManager {
         return Minecraft.isGuiEnabled() && entity != renderManager.renderViewEntity && flag && !entity.isBeingRidden();
     }
 
-    private static void renderLivingLabel(EntityPlayer entityIn, String str, double x, double y, double z, int maxDistance, RenderManager renderManager, float r, float g, float b)
+    private static void renderLivingLabel(Entity entityIn, String str, double x, double y, double z, int maxDistance, RenderManager renderManager, float r, float g, float b)
     {
         double d0 = entityIn.getDistanceSqToEntity(renderManager.renderViewEntity);
 
@@ -107,8 +113,7 @@ public class NametagManager {
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
 
-        if (!isSneaking)
-        {
+        if (!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
             GlStateManager.disableDepth();
         }
 

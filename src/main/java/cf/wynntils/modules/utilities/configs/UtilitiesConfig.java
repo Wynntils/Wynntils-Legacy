@@ -19,6 +19,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Server TPS on TAB", description = "Should the server ticks per second be shown while holding TAB")
     public boolean showTPSCount = true;
 
+    @Setting(displayName = "Hide Nametags through walls", description = "Should the nametags be hidden to see through walls")
+    public boolean hideNametags = true;
+
     @SettingsInfo(name = "wars", displayPath = "Wars")
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
