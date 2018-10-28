@@ -27,17 +27,17 @@ public class NametagManager {
         //TODO add this for guild, party and friends
         float r = 0; float g = 0; float b = 0;
 
-        boolean player = false;
         if(entity instanceof EntityPlayer) {
-            player = true;
             if(WebManager.isModerator(entity.getUniqueID())) {
                 r = 0.75f; g = 0; b = 0.75f;
             }else if(WebManager.isHelper(entity.getUniqueID())) {
                 r = 1f; g = 1; b = 0.25f;
             }
+        }else if(!UtilitiesConfig.INSTANCE.hideNametags) {
+            return false;
         }
 
-        if((!player && UtilitiesConfig.INSTANCE.hideNametags) || canRenderName(e.getEntity(), e.getRenderer().getRenderManager())) {
+        if(canRenderName(e.getEntity(), e.getRenderer().getRenderManager())) {
             double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
@@ -55,6 +55,10 @@ public class NametagManager {
     }
 
     private static boolean canRenderName(Entity entity, RenderManager renderManager) {
+        if(!(entity instanceof EntityPlayer)) {
+            return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
+        }
+
         EntityPlayerSP entityplayersp = Minecraft.getMinecraft().player;
         boolean flag = !entity.isInvisibleToPlayer(entityplayersp);
 
