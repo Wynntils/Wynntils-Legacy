@@ -40,6 +40,10 @@ public class WarTimerOverlay extends Overlay {
     private static long lastTimeChanged = 0;
     
     private static long afterSecond = 0;
+    
+    private static final Pattern secondsPattern = Pattern.compile("(\\d+) second");
+    
+    private static final Pattern minutesPattern = Pattern.compile("(\\d+) minute");
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -79,13 +83,11 @@ public class WarTimerOverlay extends Overlay {
             stage = WarStage.WAITING;
         } else if (message.startsWith("The war will start in ") && (stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
             try {
-            Pattern secondsPattern = Pattern.compile("(\\d+) second");
             Matcher secondsMatcher = secondsPattern.matcher(message);
             timer = 0;
             if (secondsMatcher.find()) {
                 timer += Integer.valueOf(secondsMatcher.group(1));
             }
-            Pattern minutesPattern = Pattern.compile("(\\d+) minute");
             Matcher minutesMatcher = minutesPattern.matcher(message);
             if (minutesMatcher.find()) {
                 timer += Integer.parseInt(minutesMatcher.group(1)) * 60;
