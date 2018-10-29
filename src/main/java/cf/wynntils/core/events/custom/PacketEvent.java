@@ -159,5 +159,32 @@ public class PacketEvent extends Event {
             return playClient;
         }
     }
+    
+    /**
+     * Triggered when the client receives a {@link SPacketTitle} packet from the server
+     *
+     */
+    public static class TitleEvent extends Event {
+        SPacketTitle packet;
+        NetHandlerPlayClient playClient;
+
+        public TitleEvent(SPacketTitle packet, NetHandlerPlayClient playClient) {
+            this.packet = packet;
+            this.playClient = playClient;
+
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+        public SPacketTitle getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+    }
 
 }

@@ -1,15 +1,188 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
+import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.PacketEvent;
+import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.overlays.Overlay;
+import cf.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.network.play.server.SPacketTitle.Type;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
     public WarTimerOverlay() {
-        super("War Timer overlay", 20, 20, true, 0.5f, 1f, 0, -70);
+        super("War Timer overlay", 20, 20, true, 0.5f, 0f, 0, 26);
     }
+    
+    private static int timer = -1;
+    
+    private static String territory = null;
+    
+    private static WarStage stage = WarStage.WAITING;
+    
+    private static String lastTerritory = null;
+    
+    private static int lastTimer = -1;
+    
+    private static boolean afterWar = false;
+    
+    private static boolean startTimer = false;
+    
+    private static long lastTimeChanged = 0;
+    
+    private static long afterSecond = 0;
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        //render timer
+        if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) || !OverlayConfig.WarTimer.INSTANCE.enabled) return;
+        if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
+            drawString(String.valueOf((int) (Math.floor(((double) lastTimer) / 60))) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+        } else if ((timer != 0 || !Reference.onLobby) && stage == WarStage.WAR_STARTING) {
+            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+        } else if (stage == WarStage.WAITING_FOR_MOBS) {
+            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+        } else if (stage == WarStage.IN_WAR) {
+            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString("You have been warring in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+        }
+    }
+    
+    public static void warMessage(ClientChatReceivedEvent event) {
+        if (!OverlayConfig.WarTimer.INSTANCE.enabled || !Reference.onWorld || Reference.onNether) return;
+        
+        String message = event.getMessage().getUnformattedText();
+        if (message.startsWith("[WAR] ")) {
+            message = message.replaceFirst("\\[WAR\\] ", "");
+        }
+        if (message.startsWith("The war for ") && message.endsWith(" will start soon!") && stage == WarStage.WAITING) {
+            if (Reference.onWars) {
+                afterWar = true;
+            }
+            territory = message.substring(12, message.indexOf(" will start soon!"));
+            stage = WarStage.WAITING_FOR_TIMER;
+        } else if (message.equals("You were not in the territory.") && stage == WarStage.WAR_STARTING) {
+            timer = -1;
+            startTimer = false;
+            territory = null;
+            stage = WarStage.WAITING;
+        } else if (message.startsWith("The war will start in ") && (stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
+            try {
+            Pattern secondsPattern = Pattern.compile("(\\d+) second");
+            Matcher secondsMatcher = secondsPattern.matcher(message);
+            timer = 0;
+            if (secondsMatcher.find()) {
+                timer += Integer.valueOf(secondsMatcher.group(1));
+            }
+            Pattern minutesPattern = Pattern.compile("(\\d+) minute");
+            Matcher minutesMatcher = minutesPattern.matcher(message);
+            if (minutesMatcher.find()) {
+                timer += Integer.parseInt(minutesMatcher.group(1)) * 60;
+            }
+            afterSecond = (System.currentTimeMillis() % 1000);
+            lastTimeChanged = System.currentTimeMillis();
+            startTimer = true;
+            stage = WarStage.WAR_STARTING;
+            } catch (Exception e) {e.printStackTrace();}
+        } else if (message.endsWith("...") && message.length() == 4 && stage == WarStage.WAR_STARTING) {
+            String timerString = message.substring(0, 1);
+            if (timerString.matches("\\d")) {
+                timer = Integer.valueOf(timerString);
+                afterSecond = (System.currentTimeMillis() % 1000);
+                startTimer = true;
+                lastTimeChanged = System.currentTimeMillis();
+            }
+        } else if (message.startsWith("Mobs will start spawning in ") && (stage == WarStage.WAITING_FOR_MOB_TIMER || stage == WarStage.WAITING_FOR_MOBS)) {
+            timer = Integer.parseInt(message.substring(28, message.indexOf(" seconds")));
+            afterSecond = (System.currentTimeMillis() % 1000);
+            lastTimeChanged = System.currentTimeMillis();
+            startTimer = true;
+            stage = WarStage.WAITING_FOR_MOBS;
+        } else if (message.endsWith("...") && message.length() == 4 && stage == WarStage.WAITING_FOR_MOBS) {
+            String timerString = message.substring(0, 1);
+            if (timerString.matches("\\d")) {
+                timer = Integer.valueOf(timerString);
+                afterSecond = (System.currentTimeMillis() % 1000);
+                startTimer = true;
+                lastTimeChanged = System.currentTimeMillis();
+            }
+        }
+    }
+    
+    public static void onWorldJoin(WynnWorldJoinEvent event) {
+        if (Reference.onWars) {
+            if (stage == WarStage.WAR_STARTING) {
+                stage = WarStage.WAITING_FOR_MOB_TIMER;
+                startTimer = false;
+                timer = -1;
+            }
+        } else {
+            if (afterWar) {
+                stage = WarStage.WAR_STARTING;
+                afterWar = false;
+            } else if (timer == 0) {
+                resetTimer();
+            }
+            lastTerritory = null;
+        }
+    }
+    
+    public static void onTitle(PacketEvent.TitleEvent event) {
+        if (event.getPacket().getType() == Type.SUBTITLE && event.getPacket().getMessage().getUnformattedText().equals(TextFormatting.GOLD + "0 Mobs Left")) {
+            lastTimer = timer;
+            lastTerritory = territory;
+            resetTimer();
+        }
+    }
+    
+    @Override
+    public void tick(ClientTickEvent event, long ticks) {
+        if (event.phase == Phase.END) {
+            updateTimer();
+        }
+    }
+    
+    private static void updateTimer() {
+        long currentTime = System.currentTimeMillis();
+        if (!Reference.onWars && stage != WarStage.WAITING && stage != WarStage.WAITING_FOR_TIMER && stage != WarStage.WAR_STARTING) {
+           resetTimer();
+        } else if (Reference.onNether && timer == 0) {
+           resetTimer();
+        } else if (Reference.onWars && stage == WarStage.WAITING_FOR_MOBS && timer == 0) {
+            timer = 0;
+            afterSecond = (int) (System.currentTimeMillis() % 1000);
+            startTimer = true;
+            stage = WarStage.IN_WAR;
+            lastTimeChanged = System.currentTimeMillis();
+        } else if (startTimer && currentTime >= 1000 + lastTimeChanged) {
+            if (timer > 0 && stage != WarStage.IN_WAR) {
+                timer = Math.max(0, timer - ((int) Math.floor((double) (currentTime - lastTimeChanged) / 1000)));
+            } else if (timer > -1 && stage == WarStage.IN_WAR) {
+                timer += (int) Math.floor((double) (currentTime - lastTimeChanged) / 1000);
+            }
+            lastTimeChanged = TimeUnit.MILLISECONDS.toSeconds(currentTime) * 1000 + afterSecond;
+        }
+    }
+    
+    private static void resetTimer() {
+        stage = WarStage.WAITING;
+        timer = -1;
+        startTimer = false;
+        afterSecond = 0;
+    }
+    
+    public static enum WarStage {
+        WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR;
     }
 }
