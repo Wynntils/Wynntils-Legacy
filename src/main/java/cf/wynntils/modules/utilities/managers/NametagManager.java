@@ -19,7 +19,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class NametagManager {
+
+    public static final Pattern MOB_LEVEL = Pattern.compile("(\u00A7\\d \\[Lv\\. (.*?)\\])");
 
     public static boolean checkForNametag(RenderLivingEvent.Specials.Pre e) {
         Entity entity =  e.getEntity();
@@ -41,18 +46,15 @@ public class NametagManager {
             double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
-            if (d0 < (double)(f * f))
-            {
+            if (d0 < (double)(f * f)) {
                 String s = entity.getDisplayName().getFormattedText();
                 GlStateManager.alphaFunc(516, 0.1F);
                 renderLivingLabel(entity, s, e.getX(), e.getY(), e.getZ(), 64, e.getRenderer().getRenderManager(), r, g, b);
             }
+        }
 
             return true;
         }
-
-        return false;
-    }
 
     private static boolean canRenderName(Entity entity, RenderManager renderManager) {
         if(!(entity instanceof EntityPlayer)) {
@@ -102,7 +104,42 @@ public class NametagManager {
             boolean flag1 = renderManager.options.thirdPersonView == 2;
             float f2 = entityIn.height + 0.5F - (flag ? 0.25F : 0.0F);
             int i = "deadmau5".equals(str) ? -10 : 0;
-            drawNameplate(renderManager.getFontRenderer(), str, (float)x, (float)y + f2, (float)z, i, f, f1, flag1, flag, r, g, b);
+            if (!str.isEmpty() && !str.contains("\u0001")) {
+                if (entityIn instanceof EntityPlayer) {
+                    if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    }
+                    if (WebManager.isModerator(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    } else if (WebManager.isPremium(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    } else if (WebManager.isHelper(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    } else if (WebManager.isUser(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A73Wynntils User", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    }
+                } else {
+                    Matcher m = MOB_LEVEL.matcher(str);
+                    while (m.find()) {
+                        String s = m.group(1);
+                        str = str.replace(s, "");
+                        i = 5;
+                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    }
+                    if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                        str = str.replace("\u00A77 [Disguised]\u00A7r", "");
+                    }
+                }
+                drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+            }
         }
     }
 
@@ -121,19 +158,21 @@ public class NametagManager {
             GlStateManager.disableDepth();
         }
 
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        int i = fontRendererIn.getStringWidth(str) / 2;
-        GlStateManager.disableTexture2D();
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        vertexbuffer.pos((double)(-i - 1), (double)(-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-        vertexbuffer.pos((double)(-i - 1), (double)(8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-        vertexbuffer.pos((double)(i + 1), (double)(8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-        vertexbuffer.pos((double)(i + 1), (double)(-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
+        if (!UtilitiesConfig.INSTANCE.hideNametagBox) {
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            int i = fontRendererIn.getStringWidth(str) / 2;
+            GlStateManager.disableTexture2D();
+            Tessellator tessellator = Tessellator.getInstance();
+            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            vertexbuffer.pos((double) (-i - 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+            vertexbuffer.pos((double) (-i - 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+            vertexbuffer.pos((double) (i + 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+            vertexbuffer.pos((double) (i + 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+            tessellator.draw();
+            GlStateManager.enableTexture2D();
+        }
 
         if (!isSneaking)
         {

@@ -22,6 +22,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Hide Nametags through walls", description = "Should the nametags be hidden to see through walls")
     public boolean hideNametags = true;
 
+    @Setting(displayName = "Hide Nametags boxes", description = "Should the nametags boxes be hidden")
+    public boolean hideNametagBox = true;
+
     @SettingsInfo(name = "wars", displayPath = "Wars")
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
