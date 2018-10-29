@@ -121,4 +121,16 @@ public class OverlayConfig extends SettingsClass {
 
 
     }
+    
+    
+    @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
+    public static class WarTimer extends SettingsClass {
+        public static WarTimer INSTANCE;
+        
+        @Setting(displayName = "Enabled", description = "Should the war timer display?")
+        public boolean enabled = true;
+        
+        @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
 }
