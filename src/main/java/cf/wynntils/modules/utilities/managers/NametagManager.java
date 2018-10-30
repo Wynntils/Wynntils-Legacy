@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
@@ -46,7 +47,7 @@ public class NametagManager {
             double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
-            if (d0 < (double)(f * f)) {
+            if (d0 < (double) (f * f)) {
                 String s = entity.getDisplayName().getFormattedText();
                 GlStateManager.alphaFunc(516, 0.1F);
                 renderLivingLabel(entity, s, e.getX(), e.getY(), e.getZ(), 64, e.getRenderer().getRenderManager(), r, g, b);
@@ -123,12 +124,19 @@ public class NametagManager {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A73Wynntils User", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
                         i -= 10;
                     }
+                    if (UtilitiesConfig.INSTANCE.showArmors) {
+                        for (ItemStack is : entityIn.getEquipmentAndArmor()) {
+                            if (is.getDisplayName().equals("Air")) continue;
+                            i -= 10;
+                            drawNameplate(renderManager.getFontRenderer(), is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        }
+                    }
                 } else {
+                    i = 6;
                     Matcher m = MOB_LEVEL.matcher(str);
                     while (m.find()) {
                         String s = m.group(1);
                         str = str.replace(s, "");
-                        i = 5;
                         drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
                         i -= 10;
                     }

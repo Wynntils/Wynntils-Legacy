@@ -25,6 +25,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Hide Nametags boxes", description = "Should the nametags boxes be hidden")
     public boolean hideNametagBox = true;
 
+    @Setting(displayName = "Show players armor", description = "Should what players are wearing be listed in their name tag")
+    public boolean showArmors = false;
+
     @SettingsInfo(name = "wars", displayPath = "Wars")
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
