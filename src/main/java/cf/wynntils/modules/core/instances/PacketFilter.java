@@ -52,6 +52,8 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
                 cancel = true;
             }
         }
+
+
         if (e != null) {
             MinecraftForge.EVENT_BUS.post(e);
 

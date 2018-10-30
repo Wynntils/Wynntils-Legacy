@@ -9,7 +9,6 @@ import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import cf.wynntils.modules.music.configs.MusicConfig;
 import cf.wynntils.modules.music.events.ClientEvents;
 import cf.wynntils.modules.music.managers.MusicManager;
-import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "sounds", displayName = "WynnSounds")
 public class MusicModule extends Module {
@@ -19,8 +18,7 @@ public class MusicModule extends Module {
         registerSettings(MusicConfig.class);
         registerEvents(new ClientEvents());
 
-        registerKeyBinding("Update Sounds", Keyboard.KEY_RBRACKET, "Wynntils", true, MusicManager::checkForUpdates);
-        registerKeyBinding("Start Sounds", Keyboard.KEY_LBRACKET, "Wynntils", true, () -> MusicManager.checkForMusic("Detlas"));
+        MusicManager.checkForUpdates();
     }
 
 }
