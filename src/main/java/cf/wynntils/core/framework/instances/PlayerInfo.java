@@ -31,6 +31,7 @@ public class PlayerInfo {
     private String specialActionBar = null;
 
     private HashSet<String> friendList = new HashSet<>();
+    private HashSet<String> guildList = new HashSet<>();
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -77,8 +78,16 @@ public class PlayerInfo {
         return friendList;
     }
 
+    public HashSet<String> getGuildList() {
+        return guildList;
+    }
+
     public void setFriendList(HashSet<String> value) {
         friendList = value;
+    }
+
+    public void setGuildList(HashSet<String> value) {
+        guildList = value;
     }
 
     public String getSpecialActionBar() {

@@ -113,6 +113,9 @@ public class NametagManager {
                     if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
+                    } else if (PlayerInfo.getPlayerInfo().getGuildList().contains(entityIn.getName())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A7b\u00A7lGuild Member", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
                     }
                     if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
