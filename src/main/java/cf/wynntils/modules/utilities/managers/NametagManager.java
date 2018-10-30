@@ -110,6 +110,10 @@ public class NametagManager {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
                         i -= 10;
                     }
+                    if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        i -= 10;
+                    }
                     if (WebManager.isModerator(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
                         i -= 10;
