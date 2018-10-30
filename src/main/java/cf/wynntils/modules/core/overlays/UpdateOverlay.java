@@ -97,6 +97,12 @@ public class UpdateOverlay extends Overlay {
         timeout = 0;
     }
 
+    public static void forceDownload() {
+        disappear = true;
+        acceptYesOrNo = false;
+        download = true;
+    }
+
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks){
         if(download && disappear) {

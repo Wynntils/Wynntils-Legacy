@@ -4,9 +4,6 @@ import cf.wynntils.Reference;
 import cf.wynntils.modules.core.overlays.UpdateOverlay;
 import cf.wynntils.webapi.WebReader;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-
 public class UpdateProfile {
 
     boolean hasUpdate = false;
@@ -27,12 +24,11 @@ public class UpdateProfile {
 
                     if (latest != actual && versions.get(Reference.MINECRAFT_VERSIONS).contains("!")) {
                         System.out.println("Emergency Update");
-                        emergencyUpdate = true;
-                        Robot robot = new Robot();
-                        robot.keyPress(KeyEvent.VK_Y);
+                        UpdateOverlay.forceDownload();
+                        hasUpdate = true;
                     }
 
-                    if (latest > actual || emergencyUpdate) {
+                    if (latest > actual) {
                         System.out.println("Update Found");
                         UpdateOverlay.reset();
                         hasUpdate = true;
