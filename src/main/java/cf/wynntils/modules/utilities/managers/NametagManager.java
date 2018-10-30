@@ -107,24 +107,21 @@ public class NametagManager {
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
                     if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (WebManager.isModerator(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isPremium(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
-                        i -= 10;
-                    } else if (WebManager.isUser(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A73Wynntils User", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                 } else {
@@ -133,24 +130,25 @@ public class NametagManager {
                         String s = m.group(1);
                         str = str.replace(s, "");
                         i = 5;
-                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
                         i -= 10;
                     }
                     if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
                         i -= 10;
                         str = str.replace("\u00A77 [Disguised]\u00A7r", "");
                     }
                 }
-                drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
             }
         }
     }
 
-    private static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float r, float g, float b)
+    private static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float r, float g, float b, float scale)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        if(scale != 1) GlStateManager.scale(scale, scale, scale);
+        GlStateManager.translate(x/scale, y/scale, z/scale);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate((float)(isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
