@@ -55,9 +55,9 @@ public class ServerEvents implements Listener {
                     classUpdate = false;
 
                     if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                     }else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "At " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), OffsetDateTime.now());
                     }
                     return;
                 }
@@ -113,7 +113,7 @@ public class ServerEvents implements Listener {
     @EventHandler
     public void onServerJoin(WynncraftServerEvent.Login e) {
         if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, OffsetDateTime.now());
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
         }
     }
 
@@ -123,7 +123,7 @@ public class ServerEvents implements Listener {
     public void onWorldLeft(WynnWorldLeftEvent e) {
         if (updateTimer != null) {
             updateTimer.cancel(true);
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("At Lobby", null, null, OffsetDateTime.now());
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
         }
     }
 

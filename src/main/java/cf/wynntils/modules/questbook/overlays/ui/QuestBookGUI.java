@@ -164,11 +164,14 @@ public class QuestBookGUI extends GuiScreen {
             float animationTick = ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 0.5f;
 
             if(animationTick <= 1) {
-                render.scale(animationTick);
+                ScreenRenderer.scale(animationTick);
 
                 x = (int)(x / animationTick);
                 y = (int)(y / animationTick);
-            }else{ render.resetScale(); requestOpening = false; }
+            } else {
+                ScreenRenderer.resetScale();
+                requestOpening = false;
+            }
 
         }else{
             x = width / 2; y = height / 2;
@@ -199,7 +202,7 @@ public class QuestBookGUI extends GuiScreen {
             render.drawString("by cliking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList("Back to Menu", "§aAt Development");
+                hoveredText = Arrays.asList("Back to Menu", "§aIn Development");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
             }else{
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -355,9 +358,9 @@ public class QuestBookGUI extends GuiScreen {
                 }
             }
 
-            render.scale(2f);
+            ScreenRenderer.scale(2f);
             render.drawString("Quests", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.resetScale();
+            ScreenRenderer.resetScale();
         }else if(page == QuestBookPage.CONFIGS) {
             render.drawRect(Textures.UIs.quest_book, x-168, y-81, 34, 222, 168, 33);
 
@@ -367,9 +370,9 @@ public class QuestBookGUI extends GuiScreen {
             }else { render.drawRect(Textures.UIs.quest_book, x - 140, y, 0, 221, 31, 27); }
             render.drawRect(Textures.UIs.quest_book, x-50, y, 280, 248, 27, 27);
 
-            render.scale(2f);
+            ScreenRenderer.scale(2f);
             render.drawString("Configs", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.resetScale();
+            ScreenRenderer.resetScale();
         }else if(page == QuestBookPage.DEFAULT) {
             render.drawRect(Textures.UIs.quest_book, x-168, y-81, 34, 222, 168, 33);
 
@@ -388,15 +391,15 @@ public class QuestBookGUI extends GuiScreen {
             render.drawString("^ Quests", x-110, y+35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Configs ^", x-55, y+35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            render.scale(2f);
+            ScreenRenderer.scale(2f);
             render.drawString("Wynntils v" + Reference.VERSION, (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.resetScale();
+            ScreenRenderer.resetScale();
         }
 
         //default texts
-        render.scale(0.7f);
+        ScreenRenderer.scale(0.7f);
         render.drawString("v" + Reference.VERSION, (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-        render.resetScale();
+        ScreenRenderer.resetScale();
 
         GlStateManager.disableLighting();
         if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
