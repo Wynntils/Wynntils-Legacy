@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.music.instances;
 
+import cf.wynntils.modules.music.configs.MusicConfig;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
@@ -81,7 +82,15 @@ public class MusicPlayer {
                 }
             }
         }else{
-            if(getCurrentVolume() < 1) { setVolume(getCurrentVolume() + 0.2f); }
+            if(getCurrentVolume() > MusicConfig.INSTANCE.baseVolume) {
+                if(getCurrentVolume() - 0.2f < MusicConfig.INSTANCE.baseVolume) {
+                    setVolume(MusicConfig.INSTANCE.baseVolume);
+                }else{ setVolume(getCurrentVolume() - 0.2f); }
+            } else if(getCurrentVolume() < MusicConfig.INSTANCE.baseVolume) {
+                if(getCurrentVolume() + 0.2f > MusicConfig.INSTANCE.baseVolume) {
+                    setVolume(MusicConfig.INSTANCE.baseVolume);
+                }else{ setVolume(getCurrentVolume() + 0.2f); }
+            }
         }
     }
 
