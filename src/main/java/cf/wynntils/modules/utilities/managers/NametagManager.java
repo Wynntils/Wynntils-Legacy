@@ -5,8 +5,10 @@
 package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.core.framework.instances.PlayerInfo;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -132,9 +134,33 @@ public class NametagManager {
                     }
                     if (UtilitiesConfig.INSTANCE.showArmors) {
                         for (ItemStack is : entityIn.getEquipmentAndArmor()) {
-                            if (is.getDisplayName().equals("Air")) continue;
+                            if (!WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
+                            ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(is.getDisplayName()));
+                            String prefix;
+                            switch (wItem.getTier()) {
+                                case "Mythic":
+                                    prefix = "\u00A75";
+                                    break;
+                                case "Legendary":
+                                    prefix = "\u00A7b";
+                                    break;
+                                case "Rare":
+                                    prefix = "\u00A7d";
+                                    break;
+                                case "Unique":
+                                    prefix = "\u00A7e";
+                                    break;
+                                case "Set":
+                                    prefix = "\u00A7a";
+                                    break;
+                                case "Normal":
+                                    prefix = "\u00A7f";
+                                    break;
+                                default:
+                                    prefix = "";
+                            }
                             i -= 10;
-                            drawNameplate(renderManager.getFontRenderer(), is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                            drawNameplate(renderManager.getFontRenderer(), prefix + is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         }
                     }
                 } else {
