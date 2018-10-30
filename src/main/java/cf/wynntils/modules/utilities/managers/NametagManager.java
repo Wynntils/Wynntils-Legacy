@@ -162,9 +162,10 @@ public class NametagManager {
                                 default:
                                     prefix = "";
                             }
-                            i -= 10;
                             drawNameplate(renderManager.getFontRenderer(), prefix + is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                            i -= 10;
                         }
+                        i = (int) (i / 1.2);
                     }
                 } else {
                     i = 6;
