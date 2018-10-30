@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.managers;
 
+import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -106,15 +107,19 @@ public class NametagManager {
             int i = "deadmau5".equals(str) ? -10 : 0;
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
-                    if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
+                    if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    }
+                    else if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
-                    if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
+                    else if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
-                    if (WebManager.isModerator(entityIn.getUniqueID())) {
+                    else if (WebManager.isModerator(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isPremium(entityIn.getUniqueID())) {
