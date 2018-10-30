@@ -35,6 +35,8 @@ public class MusicPlayer {
 
         currentPlayer.stop();
         active = false;
+        currentMusic = null;
+        nextMusic = null;
     }
 
     private void checkForTheEnd() {

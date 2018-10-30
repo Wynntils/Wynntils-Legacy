@@ -5,6 +5,7 @@ import cf.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 
 import java.text.DecimalFormat;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -28,6 +29,8 @@ public class PlayerInfo {
 
     private String lastActionBar;
     private String specialActionBar = null;
+
+    private HashSet<String> friendList = new HashSet<>();
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -68,6 +71,14 @@ public class PlayerInfo {
             this.level = mc.player.experienceLevel;
             this.experiencePercentage = mc.player.experience;
         }
+    }
+
+    public HashSet<String> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(HashSet<String> value) {
+        friendList = value;
     }
 
     public String getSpecialActionBar() {

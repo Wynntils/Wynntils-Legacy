@@ -4,6 +4,8 @@
 
 package cf.wynntils.webapi.profiles;
 
+import cf.wynntils.core.utils.Utils;
+
 import java.io.File;
 import java.util.Optional;
 
@@ -45,6 +47,10 @@ public class MusicProfile {
 
     public Optional<File> getFile() {
         return Optional.of(f);
+    }
+
+    public String getAsHash() {
+        return Utils.toMD5(name + size);
     }
 
     public boolean equalsTo(MusicProfile mp) {

@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.managers;
 
+import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -47,7 +48,7 @@ public class NametagManager {
             double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
-            if (d0 < (double) (f * f)) {
+            if (d0 < (double)(f * f)) {
                 String s = entity.getDisplayName().getFormattedText();
                 GlStateManager.alphaFunc(516, 0.1F);
                 renderLivingLabel(entity, s, e.getX(), e.getY(), e.getZ(), 64, e.getRenderer().getRenderManager(), r, g, b);
@@ -107,28 +108,33 @@ public class NametagManager {
             int i = "deadmau5".equals(str) ? -10 : 0;
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
+                    if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    }
                     if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    }
+                    else if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (WebManager.isModerator(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isPremium(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
-                        i -= 10;
-                    } else if (WebManager.isUser(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A73Wynntils User", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (UtilitiesConfig.INSTANCE.showArmors) {
                         for (ItemStack is : entityIn.getEquipmentAndArmor()) {
                             if (is.getDisplayName().equals("Air")) continue;
                             i -= 10;
-                            drawNameplate(renderManager.getFontRenderer(), is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                            drawNameplate(renderManager.getFontRenderer(), is.getDisplayName(), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         }
                     }
                 } else {
@@ -137,24 +143,25 @@ public class NametagManager {
                     while (m.find()) {
                         String s = m.group(1);
                         str = str.replace(s, "");
-                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
                         i -= 10;
                     }
                     if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
                         i -= 10;
                         str = str.replace("\u00A77 [Disguised]\u00A7r", "");
                     }
                 }
-                drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b);
+                drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
             }
         }
     }
 
-    private static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float r, float g, float b)
+    private static void drawNameplate(FontRenderer fontRendererIn, String str, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float r, float g, float b, float scale)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        if(scale != 1) GlStateManager.scale(scale, scale, scale);
+        GlStateManager.translate(x/scale, y/scale, z/scale);
         GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate((float)(isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
