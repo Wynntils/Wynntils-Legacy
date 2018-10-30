@@ -12,7 +12,6 @@ import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -32,7 +31,7 @@ public class ServerEvents implements Listener {
     boolean waitingForFriendList = false;
     @EventHandler
     public void joinWorldEvent(WynnWorldJoinEvent e) {
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentString("/friends list"));
+        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
         waitingForFriendList = true;
     }
