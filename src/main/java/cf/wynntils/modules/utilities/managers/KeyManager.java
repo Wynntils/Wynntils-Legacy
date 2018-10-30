@@ -41,6 +41,10 @@ public class KeyManager {
             WebManager.reset();
             WebManager.setupWebApi();
         });
+
+        UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> {
+
+        });
     }
 
 }
