@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
@@ -7,6 +8,9 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
+import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.profiles.TerritoryProfile;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -49,17 +53,31 @@ public class WarTimerOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) || !OverlayConfig.WarTimer.INSTANCE.enabled) return;
         if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
-            drawString(String.valueOf((int) (Math.floor(((double) lastTimer) / 60))) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
-            drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            if (lastTerritory != null) {
+                drawString(String.valueOf((int) (Math.floor(((double) lastTimer) / 60))) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            }
         } else if ((timer != 0 || !Reference.onLobby) && stage == WarStage.WAR_STARTING) {
             drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
-            drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            if (territory != null) {
+                drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            } else {
+                drawString("The war will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            }
         } else if (stage == WarStage.WAITING_FOR_MOBS) {
             drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
-            drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            if (territory != null) {
+                drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            } else {
+                drawString("The mobs will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            }
         } else if (stage == WarStage.IN_WAR) {
             drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
-            drawString("You have been warring in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            if (territory != null) {
+                drawString("You have been warring in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            } else {
+                drawString("You have been warring for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            }
         }
     }
     
@@ -81,8 +99,7 @@ public class WarTimerOverlay extends Overlay {
             startTimer = false;
             territory = null;
             stage = WarStage.WAITING;
-        } else if (message.startsWith("The war will start in ") && (stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
-            try {
+        } else if (message.startsWith("The war will start in ") && (stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING || stage == WarStage.WAITING)) {
             Matcher secondsMatcher = secondsPattern.matcher(message);
             timer = 0;
             if (secondsMatcher.find()) {
@@ -96,8 +113,7 @@ public class WarTimerOverlay extends Overlay {
             lastTimeChanged = System.currentTimeMillis();
             startTimer = true;
             stage = WarStage.WAR_STARTING;
-            } catch (Exception e) {e.printStackTrace();}
-        } else if (message.endsWith("...") && message.length() == 4 && stage == WarStage.WAR_STARTING) {
+        } else if (message.endsWith("...") && message.length() == 4 && (stage == WarStage.WAR_STARTING || stage == WarStage.WAITING)) {
             String timerString = message.substring(0, 1);
             if (timerString.matches("\\d")) {
                 timer = Integer.valueOf(timerString);
@@ -119,6 +135,8 @@ public class WarTimerOverlay extends Overlay {
                 startTimer = true;
                 lastTimeChanged = System.currentTimeMillis();
             }
+        } else if (message.startsWith("You have taken control of ") && Reference.onWars && lastTerritory == null) {
+            lastTerritory = message.substring(26, message.indexOf(" from "));
         }
     }
     
@@ -128,6 +146,15 @@ public class WarTimerOverlay extends Overlay {
                 stage = WarStage.WAITING_FOR_MOB_TIMER;
                 startTimer = false;
                 timer = -1;
+                if (territory == null) {
+                    EntityPlayerSP pl = ModCore.mc().player;
+                    for (TerritoryProfile pf : WebManager.getTerritories().values()) {
+                        if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                            territory = pf.getName();
+                            return;
+                        }
+                    }
+                }
             }
         } else {
             if (afterWar) {
@@ -182,8 +209,21 @@ public class WarTimerOverlay extends Overlay {
         timer = -1;
         startTimer = false;
         afterSecond = 0;
+        territory = null;
     }
     
+    public static int getTimer() {
+        return timer;
+    }
+
+    public static String getTerritory() {
+        return territory;
+    }
+
+    public static WarStage getStage() {
+        return stage;
+    }
+
     public static enum WarStage {
         WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR;
     }

@@ -11,7 +11,6 @@ public class DataProfile {
 
     String location = "Waiting";
     boolean unknownLocation = false;
-    String warTerritory = null;
 
     public DataProfile(){
     }
@@ -24,10 +23,6 @@ public class DataProfile {
         return unknownLocation;
     }
 
-    public String getWarTerritory() {
-        return warTerritory;
-    }
-
     public void setLocation(String value) {
         MinecraftForge.EVENT_BUS.post(new WynnTerritoryChangeEvent(location, value));
         location = value;
@@ -35,10 +30,6 @@ public class DataProfile {
 
     public void setUnknownLocation(boolean value) {
         unknownLocation = value;
-    }
-
-    public void setWarTerritory(String warTerritory) {
-        this.warTerritory = warTerritory;
     }
 
 }
