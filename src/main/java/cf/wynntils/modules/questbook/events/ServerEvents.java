@@ -9,7 +9,6 @@ import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.questbook.enums.QuestSize;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
@@ -21,18 +20,19 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerEvents implements Listener {
 
-    @EventHandler
+    @SubscribeEvent
     public void joinWorld(WynnWorldJoinEvent e) {
         QuestManager.requestQuestBookReading();
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         if(e.getCurrentClass() != ClassType.NONE) {
             QuestManager.requestQuestBookReading();
@@ -46,7 +46,7 @@ public class ServerEvents implements Listener {
 
     private long time = System.currentTimeMillis();
 
-    @EventHandler
+    @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
         if(QuestManager.isReadingQuestBook()) {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
@@ -68,7 +68,7 @@ public class ServerEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onInventoryReceiveItems(PacketEvent.InventoryItemsReceived e) {
         if(acceptItems) {
             e.setCanceled(true);

@@ -9,7 +9,6 @@ import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.richpresence.RichPresenceConfig;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
@@ -17,6 +16,7 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -75,7 +75,7 @@ public class ServerEvents implements Listener {
         }, 0, 3, TimeUnit.SECONDS);
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         RichPresenceModule.getModule().getRichPresence().stopRichPresence();
 
@@ -84,7 +84,7 @@ public class ServerEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onWorldJoin(WynnWorldJoinEvent e) {
         if (Reference.onWars) {
             if (WarTimerOverlay.getTerritory() != null) {
@@ -101,7 +101,7 @@ public class ServerEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
         if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft")) {
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
@@ -110,7 +110,7 @@ public class ServerEvents implements Listener {
 
     public static boolean classUpdate = false;
 
-    @EventHandler
+    @SubscribeEvent
     public void onWorldLeft(WynnWorldLeftEvent e) {
         if (updateTimer != null) {
             updateTimer.cancel(true);
@@ -118,7 +118,7 @@ public class ServerEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         if (Reference.onWars && e.getCurrentClass() != ClassType.NONE) {
             if (WarTimerOverlay.getTerritory() != null) {
