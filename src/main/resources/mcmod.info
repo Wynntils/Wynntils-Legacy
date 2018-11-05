@@ -3,7 +3,7 @@
   "modid": "wynntils",
   "name": "Wynntils",
   "description": "The best wynncraft mod you'll probably find!",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "mcversion": "[1.11,1.12.2]",
   "url": "https://wynntils.cf",
   "updateUrl": "https://api.wynntils.cf/update.json",

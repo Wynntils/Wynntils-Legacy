@@ -14,12 +14,14 @@ import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.settings.SettingsContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
+import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.core.commands.CommandForceUpdate;
 import cf.wynntils.modules.core.commands.CommandToken;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
@@ -36,6 +38,8 @@ public class FrameworkManager {
 
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
     public static HashMap<Priority, ArrayList<Overlay>> registeredOverlays = new HashMap<>();
+
+    private static EventBus eventBus = new EventBus();
 
     static {
         registeredOverlays.put(Priority.LOWEST,new ArrayList<>());
@@ -111,16 +115,15 @@ public class FrameworkManager {
     }
 
     public static void disableModules() {
-        availableModules.values().forEach(c -> c.getModule().onDisable());
+        availableModules.values().forEach(c -> {
+            c.getModule().onDisable(); c.unregisterAllEvents();
+        });
     }
 
     public static void triggerEvent(Event e) {
         if(Reference.onServer || e instanceof WynncraftServerEvent) {
-            availableModules.values().forEach(c -> c.triggerEventHighest(e));
-            availableModules.values().forEach(c -> c.triggerEventHigh(e));
-            availableModules.values().forEach(c -> c.triggerEventNormal(e));
-            availableModules.values().forEach(c -> c.triggerEventLow(e));
-            availableModules.values().forEach(c -> c.triggerEventLowest(e));
+            ReflectionFields.Event_phase.setValue(e, null);
+            eventBus.post(e);
         }
     }
 
@@ -200,6 +203,10 @@ public class FrameworkManager {
         }
 
         return availableModules.get(info.name()).getRegisteredSettings().get(info2.name());
+    }
+
+    public static EventBus getEventBus() {
+        return eventBus;
     }
 
 }

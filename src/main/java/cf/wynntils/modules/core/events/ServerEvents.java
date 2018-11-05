@@ -8,12 +8,12 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import java.util.HashSet;
 
 public class ServerEvents implements Listener {
 
-    @EventHandler
+    @SubscribeEvent
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketFilter());
 
@@ -29,14 +29,14 @@ public class ServerEvents implements Listener {
     }
 
     boolean waitingForFriendList = false;
-    @EventHandler
+    @SubscribeEvent
     public void joinWorldEvent(WynnWorldJoinEvent e) {
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
         waitingForFriendList = true;
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void chatMessage(ClientChatReceivedEvent e) {
         if(e.isCanceled() || e.getType() != 1) {
             return;
@@ -56,7 +56,7 @@ public class ServerEvents implements Listener {
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
         if(e.getMessage().startsWith("/friend add ")) {
             PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));

@@ -48,7 +48,7 @@ public class MusicPlayer {
     }
 
     public void setVolume(float volume) {
-        if(!active) return;
+        if(!active || currentPlayer == null) return;
         if(currentPlayer != null && currentPlayer.getAudioDevice() == null) return;
 
         if(currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
@@ -86,7 +86,7 @@ public class MusicPlayer {
                 if(getCurrentVolume() - 0.2f < MusicConfig.INSTANCE.baseVolume) {
                     setVolume(MusicConfig.INSTANCE.baseVolume);
                 }else{ setVolume(getCurrentVolume() - 0.2f); }
-            } else if(getCurrentVolume() < MusicConfig.INSTANCE.baseVolume) {
+            }else if(getCurrentVolume() < MusicConfig.INSTANCE.baseVolume) {
                 if(getCurrentVolume() + 0.2f > MusicConfig.INSTANCE.baseVolume) {
                     setVolume(MusicConfig.INSTANCE.baseVolume);
                 }else{ setVolume(getCurrentVolume() + 0.2f); }

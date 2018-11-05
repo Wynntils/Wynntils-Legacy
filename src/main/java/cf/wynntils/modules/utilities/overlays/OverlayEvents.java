@@ -4,7 +4,6 @@ import cf.wynntils.ModCore;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import cf.wynntils.modules.utilities.overlays.inventories.ChestOverlay;
@@ -14,6 +13,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -21,7 +21,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
  */
 public class OverlayEvents implements Listener {
 
-    @EventHandler
+    @SubscribeEvent
     public void onGuiOpened(GuiOpenEvent e) {
         if(e.getGui() instanceof GuiInventory) {
             if(e.getGui() instanceof InventoryOverlay) return;
@@ -36,17 +36,17 @@ public class OverlayEvents implements Listener {
         }
     }
     
-    @EventHandler
+    @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
     }
     
-    @EventHandler
+    @SubscribeEvent
     public void onWorldJoin(WynnWorldJoinEvent e) {
         WarTimerOverlay.onWorldJoin(e);
     }
     
-    @EventHandler
+    @SubscribeEvent
     public void onTitle(PacketEvent.TitleEvent e) {
         WarTimerOverlay.onTitle(e);
     }

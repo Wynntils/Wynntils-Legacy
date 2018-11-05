@@ -1,8 +1,8 @@
 package cf.wynntils.modules.example;
 
-import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.framework.interfaces.annotations.EventHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /** EXAMPLE CLASS
@@ -20,7 +20,7 @@ public class ExampleListener implements Listener {
      *
      * @param e Requested Event
      */
-    @EventHandler(priority = Priority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void tickEventHH(TickEvent.ClientTickEvent e) {
     }
 
@@ -30,7 +30,7 @@ public class ExampleListener implements Listener {
      *
      * @param e Requested Event
      */
-    @EventHandler(priority = Priority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void tickEventH(TickEvent.ClientTickEvent e) {
     }
 
@@ -40,7 +40,7 @@ public class ExampleListener implements Listener {
      *
      * @param e Requested Event
      */
-    @EventHandler(priority = Priority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     public void tickEventN(TickEvent.ClientTickEvent e) {
     }
 
@@ -50,7 +50,7 @@ public class ExampleListener implements Listener {
      *
      * @param e Requested Event
      */
-    @EventHandler(priority = Priority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void tickEventL(TickEvent.ClientTickEvent e) {
     }
 
@@ -60,7 +60,7 @@ public class ExampleListener implements Listener {
      *
      * @param e Requested Event
      */
-    @EventHandler(priority = Priority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickEventLL(TickEvent.ClientTickEvent e) {
     }
 
