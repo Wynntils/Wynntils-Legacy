@@ -128,9 +128,6 @@ public class NametagManager {
                     if (WebManager.isModerator(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
-                    } else if (WebManager.isPremium(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A75Wynntils Premium", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
-                        i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;

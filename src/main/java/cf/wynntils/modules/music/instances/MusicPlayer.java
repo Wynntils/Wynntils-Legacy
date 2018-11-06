@@ -71,7 +71,7 @@ public class MusicPlayer {
                 nextMusic = null;
                 startReproduction();
             }else{
-                if(currentVolume <= -20) {
+                if(currentVolume <= -30) {
                     currentMusic = nextMusic;
                     nextMusic = null;
                     startReproduction();
@@ -104,7 +104,7 @@ public class MusicPlayer {
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 currentPlayer = new AdvancedPlayer(bis);
                 currentPlayer.setPlayBackListener(new PlaybackListener() {
-                    public void playbackStarted(PlaybackEvent var1) { setVolume(currentVolume); }
+                    public void playbackStarted(PlaybackEvent var1) { setVolume(-30); }
                     public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                 });
 
