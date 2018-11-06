@@ -32,7 +32,7 @@ public class MusicPlayer {
     }
 
     public void stop() {
-        if(!active) return;
+        if(!active || currentPlayer == null) return;
 
         currentPlayer.stop();
         active = false;
