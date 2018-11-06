@@ -9,6 +9,7 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import org.lwjgl.opengl.Display;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -82,13 +83,13 @@ public class MusicPlayer {
                 }
             }
         }else{
-            if(getCurrentVolume() > MusicConfig.INSTANCE.baseVolume) {
-                if(getCurrentVolume() - 0.2f < MusicConfig.INSTANCE.baseVolume) {
-                    setVolume(MusicConfig.INSTANCE.baseVolume);
+            if(getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
+                if(getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10));
                 }else{ setVolume(getCurrentVolume() - 0.2f); }
-            }else if(getCurrentVolume() < MusicConfig.INSTANCE.baseVolume) {
-                if(getCurrentVolume() + 0.2f > MusicConfig.INSTANCE.baseVolume) {
-                    setVolume(MusicConfig.INSTANCE.baseVolume);
+            }else if(getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
+                if(getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10));
                 }else{ setVolume(getCurrentVolume() + 0.2f); }
             }
         }
@@ -106,6 +107,7 @@ public class MusicPlayer {
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 currentPlayer = new AdvancedPlayer(bis);
                 currentPlayer.setPlayBackListener(new PlaybackListener() {
+                    public void playbackStarted(PlaybackEvent var1) { setVolume(currentVolume); }
                     public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                 });
 
