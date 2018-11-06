@@ -13,6 +13,7 @@ public class CoreDBConfig extends SettingsClass {
     public static CoreDBConfig INSTANCE;
 
     public String lastToken = "";
+    public int lastSelectedClass = -1;
 
     @Override
     public void onSettingChanged(String name) {

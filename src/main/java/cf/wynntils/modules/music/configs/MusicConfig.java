@@ -23,6 +23,10 @@ public class MusicConfig extends SettingsClass {
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float baseVolume = 1;
 
+    @Setting(displayName = "Off Focus Volume", description = "The volume that will be if the game is out of focus")
+    @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
+    public float focusVolume = -10;
+
     @Override
     public void onSettingChanged(String name) {
         if(!allowMusicModule && Reference.onWorld) MusicManager.getPlayer().stop();

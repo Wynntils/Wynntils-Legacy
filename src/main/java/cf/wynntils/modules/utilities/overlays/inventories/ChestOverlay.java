@@ -1,6 +1,8 @@
 package cf.wynntils.modules.utilities.overlays.inventories;
 
 import cf.wynntils.Reference;
+import cf.wynntils.core.events.custom.InventoryClickEvent;
+import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
@@ -14,6 +16,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -60,6 +63,14 @@ public class ChestOverlay extends GuiChest {
             drawHoverItem(slot.getStack());
             drawHoverGuess(slot.getStack());
         }
+    }
+
+    @Override
+    public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        if(lowerInv != null && lowerInv.getName() != null && slotIn != null && slotIn.getStack() != null)
+            FrameworkManager.getEventBus().post(new InventoryClickEvent(slotIn.getStack(), slotId, type, mouseButton, lowerInv.getName()));
+
+        super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
     @Override
@@ -266,6 +277,7 @@ public class ChestOverlay extends GuiChest {
                 }
 
                 int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
+
                 if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
                     GL11.glPushMatrix();
                     {

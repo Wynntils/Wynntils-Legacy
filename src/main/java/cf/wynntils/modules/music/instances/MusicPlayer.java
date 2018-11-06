@@ -63,10 +63,7 @@ public class MusicPlayer {
         return currentVolume;
     }
 
-    private long lastSetup = 0;
     public void setupController() {
-        if(System.currentTimeMillis() - lastSetup <= 150) return;
-
         active = true;
         if(nextMusic != null) {
             if(currentMusic == null) {
@@ -83,13 +80,13 @@ public class MusicPlayer {
                 }
             }
         }else{
-            if(getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
-                if(getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
-                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10));
+            if(getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if(getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
                 }else{ setVolume(getCurrentVolume() - 0.2f); }
-            }else if(getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
-                if(getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10)) {
-                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : -10));
+            }else if(getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if(getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
                 }else{ setVolume(getCurrentVolume() + 0.2f); }
             }
         }

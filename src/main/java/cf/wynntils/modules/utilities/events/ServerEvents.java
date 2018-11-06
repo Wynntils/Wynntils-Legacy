@@ -22,7 +22,7 @@ public class ServerEvents implements Listener {
     public static int loadedResourcePack = 0;
 
     @SubscribeEvent
-    public static void leaveServer(WynncraftServerEvent.Leave e) {
+    public void leaveServer(WynncraftServerEvent.Leave e) {
         loadedResourcePack = 0;
     }
 
