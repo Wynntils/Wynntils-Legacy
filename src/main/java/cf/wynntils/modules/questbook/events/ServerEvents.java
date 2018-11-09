@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.questbook.events;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
@@ -44,10 +45,9 @@ public class ServerEvents implements Listener {
 
     private ArrayList<String> readedQuests = new ArrayList<>();
 
-    private long time = System.currentTimeMillis();
-
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
+        if(!Reference.onWorld) return;
         if(QuestManager.isReadingQuestBook()) {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
@@ -58,8 +58,6 @@ public class ServerEvents implements Listener {
                         readedQuests.clear();
                         transactionId = 0;
                         acceptItems = true;
-
-                        time = System.currentTimeMillis();
                     }
 
                     e.setCanceled(true);
