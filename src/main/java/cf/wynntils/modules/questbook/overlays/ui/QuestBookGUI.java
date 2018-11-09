@@ -234,7 +234,7 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString("by cliking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                    hoveredText = Arrays.asList("Back to Menu", "§aIn Development");
+                    hoveredText = Arrays.asList("Back to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
