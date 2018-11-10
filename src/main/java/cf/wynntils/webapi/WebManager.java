@@ -32,6 +32,7 @@ public class WebManager {
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
+    private static ArrayList<ItemProfile> directItems = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
@@ -127,6 +128,10 @@ public class WebManager {
     }
 
     public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
+
+    public static ArrayList<ItemProfile> getDirectItems() {
+        return directItems;
+    }
 
     public static boolean isHelper(UUID uuid) {
         return helpers.contains(uuid);
@@ -259,6 +264,7 @@ public class WebManager {
         }.getType();
 
         HashMap<String, ItemProfile> citems = ItemProfile.GSON.fromJson(main, type);
+        directItems.addAll(citems.values());
 
         items = citems;
     }
