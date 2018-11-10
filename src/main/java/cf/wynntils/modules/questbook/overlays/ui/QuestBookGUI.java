@@ -18,13 +18,18 @@ import cf.wynntils.modules.questbook.enums.QuestBookPage;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
+import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -32,6 +37,7 @@ import org.lwjgl.input.Mouse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +51,7 @@ public class QuestBookGUI extends GuiScreen {
     public QuestBookGUI() { }
 
     public void open() {
+        updateItemListSearch();
         lastTick = getMinecraft().world.getTotalWorldTime();
         acceptBack = false;
         acceptNext = false;
@@ -61,6 +68,7 @@ public class QuestBookGUI extends GuiScreen {
     boolean acceptNext = false;
     boolean acceptBack = false;
     QuestInfo overQuest = null;
+    ItemProfile overItem = null;
 
     boolean animationCompleted = false;
     int selected = 0;
@@ -74,11 +82,43 @@ public class QuestBookGUI extends GuiScreen {
     //quest search
     ArrayList<QuestInfo> toSearch;
 
+    //itemguide search
+    ArrayList<ItemProfile> itemSearch;
+    boolean byAlphabetical = true;
+    boolean byLevel = false;
+
+    boolean allowHelmet = true;
+    boolean allowChestplate = true;
+    boolean allowLeggings = true;
+    boolean allowBoots = true;
+    boolean allowWands = true;
+    boolean allowDaggers = true;
+    boolean allowSpears = true;
+    boolean allowBows = true;
+    boolean allowNecklaces = true;
+    boolean allowBracelets = true;
+    boolean allowRings = true;
+
+    private final ItemStack helmetIcon = new ItemStack(Items.DIAMOND_HELMET);
+    private final ItemStack chestplateIcon = new ItemStack(Items.DIAMOND_CHESTPLATE);
+    private final ItemStack leggingsIcon = new ItemStack(Items.DIAMOND_LEGGINGS);
+    private final ItemStack bootsIcon = new ItemStack(Items.DIAMOND_BOOTS);
+    private final ItemStack wandsIcon = new ItemStack(Items.STICK);
+    private final ItemStack daggersIcon = new ItemStack(Items.SHEARS);
+    private final ItemStack spearsIcon = new ItemStack(Items.IRON_SHOVEL);
+    private final ItemStack bowsIcon = new ItemStack(Items.BOW);
+    private final ItemStack necklaceIcon = new ItemStack(Blocks.GLASS_PANE);
+    private final ItemStack braceletsIcon = new ItemStack(Blocks.SPRUCE_FENCE);
+    private final ItemStack ringsIcon = new ItemStack(Blocks.STAINED_GLASS);
+
+
     //colors
     private static final CustomColor background_1 = CustomColor.fromString("000000", 0.3f);
     private static final CustomColor background_2 = CustomColor.fromString("000000", 0.2f);
     private static final CustomColor background_3 = CustomColor.fromString("00ff00", 0.3f);
     private static final CustomColor background_4 = CustomColor.fromString("008f00", 0.2f);
+    private static final CustomColor unselected_cube = new CustomColor(0, 0, 0, 0.2f);
+    private static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
@@ -102,6 +142,11 @@ public class QuestBookGUI extends GuiScreen {
             ArrayList<QuestInfo> quests = new ArrayList<>(QuestManager.getCurrentQuestsData());
             toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : quests;
             overQuest = null; currentPage = 1;
+        }
+        //updating itemguide search
+        if(page == QuestBookPage.ITEM_GUIDE) {
+            updateItemListSearch();
+            overItem = null; currentPage = 1;
         }
 
         super.keyTyped(typedChar, keyCode);
@@ -159,7 +204,98 @@ public class QuestBookGUI extends GuiScreen {
                 page = QuestBookPage.DEFAULT;
                 currentPage = 1;
                 searchBarText = "";
+                acceptNext = false; acceptBack = false;
                 return;
+            }
+        }
+        if(page == QuestBookPage.ITEM_GUIDE) {
+            if(acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage++;
+                return;
+            }
+            if(acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage--;
+                return;
+            }
+            if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                page = QuestBookPage.DEFAULT;
+                currentPage = 1;
+                searchBarText = "";
+                selected = 0;
+                acceptNext = false; acceptBack = false;
+                return;
+            }
+            if(selected == 1) {
+                if(!byAlphabetical) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    byAlphabetical = true;
+                    byLevel = false;
+                }
+            }
+            if(selected == 2) {
+                if(!byLevel) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    byAlphabetical = false;
+                    byLevel = true;
+                }
+            }
+            if(selected == 10) {
+                allowHelmet = !allowHelmet;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 20) {
+                allowChestplate = !allowChestplate;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 30) {
+                allowLeggings = !allowLeggings;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 40) {
+                allowBoots = !allowBoots;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 50) {
+                allowWands = !allowWands;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 60) {
+                allowDaggers = !allowDaggers;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 70) {
+                allowSpears = !allowSpears;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 80) {
+                allowBows = !allowBows;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 90) {
+                allowNecklaces = !allowNecklaces;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 100) {
+                allowRings = !allowRings;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            }
+            if(selected == 110) {
+                allowBracelets = !allowBracelets;
+                updateItemListSearch();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             }
         }
         if(page == QuestBookPage.DEFAULT) {
@@ -177,10 +313,38 @@ public class QuestBookGUI extends GuiScreen {
 
                 ModCore.mc().displayGuiScreen(ui);
             }
+            if(selected == 3) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                searchBarText = "";
+                currentPage = 1;
+                selected = 0;
+                page = QuestBookPage.ITEM_GUIDE;
+            }
             return;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    private void updateItemListSearch() {
+        ArrayList<ItemProfile> items = new ArrayList<>(WebManager.getDirectItems());
+
+        itemSearch = !searchBarText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : items;
+
+        itemSearch = (ArrayList<ItemProfile>)itemSearch.stream().filter(c -> {
+            if(allowHelmet && c.getType() != null && c.getType().equalsIgnoreCase("Helmet")) return true;
+            if(allowChestplate && c.getType() != null && c.getType().equalsIgnoreCase("Chestplate")) return true;
+            if(allowBoots && c.getType() != null && c.getType().equalsIgnoreCase("Boots")) return true;
+            if(allowLeggings && c.getType() != null && c.getType().equalsIgnoreCase("Leggings")) return true;
+            if(allowWands && c.getType() != null && c.getType().equalsIgnoreCase("Wand")) return true;
+            if(allowSpears && c.getType() != null && c.getType().equalsIgnoreCase("Spear")) return true;
+            if(allowDaggers && c.getType() != null && c.getType().equalsIgnoreCase("Dagger")) return true;
+            if(allowBows && c.getType() != null && c.getType().equalsIgnoreCase("Bow")) return true;
+            if(allowBracelets && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Bracelet")) return true;
+            if(allowRings && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Ring")) return true;
+            if(allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace")) return true;
+            return false;
+        }).collect(Collectors.toList());
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -216,8 +380,209 @@ public class QuestBookGUI extends GuiScreen {
         List<String> hoveredText = new ArrayList<>();
 
         //page per page
+        //item guide
+        if(page == QuestBookPage.ITEM_GUIDE) {
+            ScreenRenderer.beginGL(0, 0);
+            {
+                render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
+                render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
+
+                //order buttons
+                render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                if(posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
+                    selected = 1;
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
+                }else{
+                    if(selected == 1) selected = 0;
+                    if(byAlphabetical) {
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
+                    }else{
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 254, 259, 7, 7);
+                    }
+                }
+
+                render.drawString("Level Order (100-0)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                if(posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
+                    selected = 2;
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
+                }else{
+                    if(selected == 2) selected = 0;
+                    if(byLevel) {
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
+                    }else{
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 254, 259, 7, 7);
+                    }
+                }
+
+                //filter ++
+                render.drawString("Item Filter", x - 84, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+                int placed = 0;
+                int plusY = 0;
+                for (int i = 0; i < 11; i++) {
+                    if(placed + 1 >= 7) {
+                        placed = 0;
+                        plusY ++;
+                    }
+
+                    int maxX = x - 139 + (placed * 20);
+                    int maxY = y + 50 + (plusY * 20);
+                    int minX = x - 123 + (placed * 20);
+                    int minY = y + 34 + (plusY * 20);
+
+                    if(mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
+                        render.drawRect(selected_cube, maxX, maxY, minX, minY);
+
+                        selected = (i + 1) * 10;
+                    }else{
+                        if(selected == (i + 1) * 10) selected = 0;
+
+                        if(i == 0 && allowHelmet) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 1 && allowChestplate) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 2 && allowLeggings) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 3 && allowBoots) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 4 && allowWands) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 5 && allowDaggers) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 6 && allowSpears) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 7 && allowBows) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 8 && allowNecklaces) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 9 && allowRings) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else if(i == 10 && allowBracelets) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        else render.drawRect(unselected_cube, maxX, maxY, minX, minY);
+                    }
+
+                    if(i == 0) render.drawItemStack(helmetIcon, maxX, minY, false);
+                    else if(i == 1) render.drawItemStack(chestplateIcon, maxX, minY, false);
+                    else if(i == 2) render.drawItemStack(leggingsIcon, maxX, minY, false);
+                    else if(i == 3) render.drawItemStack(bootsIcon, maxX, minY, false);
+                    else if(i == 4) render.drawItemStack(wandsIcon, maxX, minY, false);
+                    else if(i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
+                    else if(i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
+                    else if(i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
+                    else if(i == 8) render.drawItemStack(necklaceIcon, maxX, minY, false);
+                    else if(i == 9) render.drawItemStack(ringsIcon, maxX, minY, false);
+                    else if(i == 10) render.drawItemStack(braceletsIcon, maxX, minY, false);
+
+                    placed++;
+                }
+
+                //back to menu button
+                if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+                    hoveredText = Arrays.asList("§6[>] §6§lBack to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
+                } else {
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
+                }
+
+                //searchBar
+                if (searchBarText.length() <= 0) {
+                    render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else {
+
+                    String text = searchBarText;
+
+                    if (render.getStringWidth(text) >= 110) {
+                        int remove = searchBarText.length();
+                        while (render.getStringWidth((text = searchBarText.substring(searchBarText.length() - remove))) >= 110) {
+                            remove -= 1;
+                        }
+                    }
+
+                    if (System.currentTimeMillis() - text_flicker >= 500) {
+                        keepForTime = !keepForTime;
+                        text_flicker = System.currentTimeMillis();
+                    }
+
+                    if (keepForTime) {
+                        render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    } else {
+                        render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                }
+
+                render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+                //page counter including search
+                int pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
+                if (pages < currentPage) {
+                    currentPage = pages;
+                }
+
+                if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+                if(byLevel) itemSearch.sort(Comparator.comparingInt(ItemProfile::getLevel).reversed());
+
+                render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+                //but next and back button
+                if (currentPage == pages) {
+                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+                    acceptNext = false;
+                } else {
+                    acceptNext = true;
+                    if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+                        render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+                    } else {
+                        render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
+                    }
+                }
+
+                if (currentPage == 1) {
+                    acceptBack = false;
+                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+                } else {
+                    acceptBack = true;
+                    if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+                        render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+                    } else {
+                        render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
+                    }
+                }
+
+                //available items
+                int placedCubes = 0;
+                int currentY = 0;
+                for (int i = ((currentPage - 1) * 42); i < 42 * currentPage; i++) {
+                    if (itemSearch.size() <= i) break;
+
+                    if(placedCubes + 1 >= 7) {
+                        placedCubes = 0;
+                        currentY += 1;
+                    }
+
+                    int maxX = x + 22 + (placedCubes * 20);
+                    int maxY = y - 66 + (currentY * 20);
+                    int minX = x + 38 + (placedCubes * 20);
+                    int minY = y - 50 + (currentY * 20);
+
+                    if(mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
+                        render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        ItemProfile pf = itemSearch.get(i);
+                        if(pf.asStack() != null) {
+                            render.drawItemStack(pf.asStack().a, maxX, maxY, false);
+                        }else { continue; }
+
+                        hoveredText = pf.asStack().b;
+                    }else{
+                        render.drawRect(unselected_cube, maxX, maxY, minX, minY);
+                        ItemProfile pf = itemSearch.get(i);
+                        if(pf.asStack() != null) {
+                            render.drawItemStack(pf.asStack().a, maxX, maxY, false);
+                        }else { continue; }
+                    }
+
+                    placedCubes++;
+                }
+
+                ScreenRenderer.scale(2f);
+                render.drawString("Item Guide", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            }
+            ScreenRenderer.endGL();
+        }
         //quests
-        if(page == QuestBookPage.QUESTS) {
+        else if(page == QuestBookPage.QUESTS) {
             ScreenRenderer.beginGL(0, 0);
             {
                 render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
@@ -234,7 +599,7 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString("by cliking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                    hoveredText = Arrays.asList("Back to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
+                    hoveredText = Arrays.asList("§6[>] §6§lBack to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -444,29 +809,39 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString(PlayerInfo.getPlayerInfo().getCurrentClass().toString() + " Level " + PlayerInfo.getPlayerInfo().getLevel(), x + 80, y + 40, CommonColors.PURPLE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("At Development", x + 80, y + 50, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-                render.drawRect(new CustomColor(0f, 0f, 0f, 0.2f), x - 45, y - 15, x - 15, y + 15);
 
                 if(posX >= 116 && posX <= 145 && posY >= -14 && posY <= 15) {
                     selected = 1;
-                    render.drawRect(new CustomColor(0f, 0f, 0f, 0.3f), x - 145, y - 15, x - 115, y + 15);
+                    render.drawRect(selected_cube, x - 145, y - 15, x - 115, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 144, y - 8, 0, 239, 26, 17);
                     hoveredText = Arrays.asList("§6[>] §6§lQuestBook", "§7See and pin all your", "§7current available", "§7quests.",  "", "§aLeft click to select");
                 }else{
                     if(selected == 1) selected = 0;
-                    render.drawRect(new CustomColor(0f, 0f, 0f, 0.2f), x - 145, y - 15, x - 115, y + 15);
+                    render.drawRect(unselected_cube, x - 145, y - 15, x - 115, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 144, y - 8, 0, 221, 26, 17);
                 }
 
                 if(posX >= 65 && posX <= 95 && posY >= -14 && posY <= 15) {
                     selected = 2;
-                    render.drawRect(new CustomColor(0f, 0f, 0f, 0.3f), x - 95, y - 15, x - 64, y + 15);
-                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 10, 283, 245, 21, 21);
+                    render.drawRect(selected_cube, x - 95, y - 15, x - 64, y + 15);
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 10, 283, 243, 21, 21);
 
-                    hoveredText = Arrays.asList("§6[>] §6§lConfiguration", "§7Change Wynntils settings", "§7the way you want",  "", "§cBETA VERSION", "§aLeft click to select");
+                    hoveredText = Arrays.asList("§6[>] §6§lConfigurations", "§7Change Wynntils settings", "§7the way you want",  "", "§cBETA VERSION", "§aLeft click to select");
                 }else {
                     if(selected == 2) selected = 0;
-                    render.drawRect(new CustomColor(0f, 0f, 0f, 0.2f), x - 95, y - 15, x - 64, y + 15);
-                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 10, 283, 223, 21, 21);
+                    render.drawRect(unselected_cube, x - 95, y - 15, x - 64, y + 15);
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 10, 283, 221, 21, 21);
+                }
+
+                if(posX >= 16 && posX <= 45 && posY >= -14 && posY <= 15) {
+                    selected = 3;
+                    render.drawRect(selected_cube, x - 45, y - 15, x - 15, y + 15);
+                    render.drawRect(Textures.UIs.quest_book, x - 39, y - 10, 307, 242, 18, 20);
+                    hoveredText = Arrays.asList("§6[>] §6§lItem Guide", "§7See all items", "§7currently available", "§7in the game.",  "", "§aLeft click to select");
+                }else{
+                    if(selected == 3) selected = 0;
+                    render.drawRect(unselected_cube, x - 45, y - 15, x - 15, y + 15);
+                    render.drawRect(Textures.UIs.quest_book, x - 39, y - 10, 307, 221, 18, 20);
                 }
 
                 render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
@@ -475,11 +850,11 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString("or select some of the options", x - 155, y + 45, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("above for more features.", x - 155, y + 55, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-                render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 258, 17, 18);
-                render.drawRect(Textures.UIs.quest_book, x + 48, y - 90, 224, 258, 17, 18);
-                render.drawRect(Textures.UIs.quest_book, x + 74, y - 90, 224, 258, 17, 18);
-                render.drawRect(Textures.UIs.quest_book, x + 100, y - 90, 224, 258, 17, 18);
-                render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 258, 17, 18);
+                render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);
+                render.drawRect(Textures.UIs.quest_book, x + 48, y - 90, 224, 253, 17, 18);
+                render.drawRect(Textures.UIs.quest_book, x + 74, y - 90, 224, 253, 17, 18);
+                render.drawRect(Textures.UIs.quest_book, x + 100, y - 90, 224, 253, 17, 18);
+                render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
 
                 ScreenRenderer.scale(2f);
                 render.drawString("User Profile", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
