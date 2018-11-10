@@ -90,7 +90,7 @@ public class ServerEvents implements Listener {
                     continue;
                 }
 
-                if(i != null && !(i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ")) && !readedQuests.contains(i.getDisplayName())) {
+                if(!(i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ")) && !readedQuests.contains(i.getDisplayName())) {
                     if((inventory+1)%9 == 0 || (inventory+1)%9 == 8) {
                         continue;
                     }
