@@ -395,7 +395,7 @@ public class ItemProfile {
 
     transient Pair<ItemStack, ArrayList<String>> generated = null;
     public Pair<ItemStack, ArrayList<String>> asStack() {
-        //if(generated == null) {
+        if(generated == null) {
             ItemStack original;
 
             if (material != null) {
@@ -616,7 +616,7 @@ public class ItemProfile {
             }
 
             generated = new Pair<>(original, description);
-        //}
+        }
 
         return generated;
     }
