@@ -625,7 +625,7 @@ public class ItemProfile {
         int maxStatus = (int)(rawStatus * 1.3);
         int minStatus = (rawStatus < 0 ? (int)(rawStatus * 0.7) : (int)(rawStatus * 0.3));
 
-        return identified ? (rawStatus > 0 ? "§a+" + rawStatus + format : "§c-" + rawStatus + format) : (rawStatus > 0 ? "§a+" + minStatus + format +  " §7to§a +" + maxStatus + format : "§c" + minStatus + format + " §7to§c " + maxStatus + format);
+        return identified ? (rawStatus > 0 ? "§a+" + rawStatus + format : "§c" + rawStatus + format) : (rawStatus > 0 ? "§a+" + minStatus + format +  " §7to§a +" + maxStatus + format : "§c" + minStatus + format + " §7to§c " + maxStatus + format);
     }
 
     public static class ItemType {
