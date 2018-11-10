@@ -551,7 +551,7 @@ public class ItemProfile {
             if(attackSpeedBonus != 0) description.add(calculateStatus(attackSpeedBonus, identified, "") + " §7Attack Speed");
 
             if(damageBonusRaw != 0) description.add(calculateStatus(damageBonusRaw, identified, "") + " §7Melee Damage");
-            if(damageBonus != 0) description.add(calculateStatus(damageBonusRaw, identified, "%") + " §7Melee Damage");
+            if(damageBonus != 0) description.add(calculateStatus(damageBonus, identified, "%") + " §7Melee Damage");
 
             if(spellDamageRaw != 0) description.add(calculateStatus(spellDamageRaw, identified, "") + " §7Spell Damage");
             if(spellDamage != 0) description.add(calculateStatus(spellDamage, identified, "%") + " §7Spell Damage");
