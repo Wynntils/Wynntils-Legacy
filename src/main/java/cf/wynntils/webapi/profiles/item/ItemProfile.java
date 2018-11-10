@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -395,7 +395,7 @@ public class ItemProfile {
 
     transient Pair<ItemStack, ArrayList<String>> generated = null;
     public Pair<ItemStack, ArrayList<String>> asStack() {
-        if(generated == null) {
+        //if(generated == null) {
             ItemStack original;
 
             if (material != null) {
@@ -616,14 +616,14 @@ public class ItemProfile {
             }
 
             generated = new Pair<>(original, description);
-        }
+        //}
 
         return generated;
     }
 
     private static String calculateStatus(int rawStatus, boolean identified, String format) {
-        int maxStatus = (int)(rawStatus * 1.3);
-        int minStatus = (rawStatus < 0 ? (int)(rawStatus * 0.7) : (int)(rawStatus * 0.3));
+        int maxStatus = (int)Math.round(rawStatus * 1.3);
+        int minStatus = (rawStatus < 0 ? (int)Math.round(rawStatus * 0.7) : (int)Math.round(rawStatus * 0.3));
 
         return identified ? (rawStatus > 0 ? "§a+" + rawStatus + format : "§c" + rawStatus + format) : (rawStatus > 0 ? "§a+" + minStatus + format +  " §7to§a +" + maxStatus + format : "§c" + minStatus + format + " §7to§c " + maxStatus + format);
     }
