@@ -172,24 +172,21 @@ public class ChestOverlay extends GuiChest {
                     continue;
                 }
                 int x = 8 + (18 * amount), y = 8 + (18 * floor);
-
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
-                    GL11.glPushMatrix();
-                    {
-                        mc.getTextureManager().bindTexture(RESOURCE);
-                        GlStateManager.color(r, g, b, 1.0f);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                        float zoom = 2.0f;
-                        float factor = (16.0f + zoom * 2) / 16.0f;
-                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                        GL11.glScalef(factor, factor, 0);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    }
-                    GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                {
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color(r, g, b, 1.0f);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                    float zoom = 2.0f;
+                    float factor = (16.0f + zoom * 2) / 16.0f;
+                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                    GL11.glScalef(factor, factor, 0);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
+                GL11.glPopMatrix();
             }
 
             amount = -1;
@@ -278,23 +275,21 @@ public class ChestOverlay extends GuiChest {
 
                 int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
 
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
-                    GL11.glPushMatrix();
-                    {
-                        mc.getTextureManager().bindTexture(RESOURCE);
-                        GlStateManager.color(r, g, b, 1.0f);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                        float zoom = 2.0f;
-                        float factor = (16.0f + zoom * 2) / 16.0f;
-                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                        GL11.glScalef(factor, factor, 0);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    }
-                    GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                {
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color(r, g, b, 1.0f);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                    float zoom = 2.0f;
+                    float factor = (16.0f + zoom * 2) / 16.0f;
+                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                    GL11.glScalef(factor, factor, 0);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
+                GL11.glPopMatrix();
             }
 
             if(getSlotUnderMouse() != null) {

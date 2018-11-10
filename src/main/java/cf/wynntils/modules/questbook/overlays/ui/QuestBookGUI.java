@@ -22,6 +22,7 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -31,8 +32,10 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +48,9 @@ public class QuestBookGUI extends GuiScreen {
 
     boolean requestOpening = true;
     final ScreenRenderer render = new ScreenRenderer();
+
+    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
+
 
     long lastTick = 0;
 
@@ -342,8 +348,7 @@ public class QuestBookGUI extends GuiScreen {
             if(allowBows && c.getType() != null && c.getType().equalsIgnoreCase("Bow")) return true;
             if(allowBracelets && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Bracelet")) return true;
             if(allowRings && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Ring")) return true;
-            if(allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace")) return true;
-            return false;
+            return allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace");
         }).collect(Collectors.toList());
     }
 
@@ -557,17 +562,89 @@ public class QuestBookGUI extends GuiScreen {
                     int minX = x + 38 + (placedCubes * 20);
                     int minY = y - 50 + (currentY * 20);
 
+
+                    ItemProfile pf = itemSearch.get(i);
+
+                    float r, g, b;
+
+                    switch (pf.getTier().toUpperCase()) {
+                        case "MYTHIC":
+                            r = 0.3f;
+                            g = 0;
+                            b = 0.3f;
+                            break;
+                        case "LEGENDARY":
+                            r = 0;
+                            g = 1;
+                            b = 1;
+                            break;
+                        case "RARE":
+                            r = 1;
+                            g = 0;
+                            b = 1;
+                            break;
+                        case "UNIQUE":
+                            r = .8f;
+                            g = .8f;
+                            b = 0;
+                            break;
+                        case "SET":
+                            r = 0;
+                            g = 1;
+                            b = 0;
+                            break;
+                        case "NORMAL":
+                            r = 0.1f;
+                            g = 0.1f;
+                            b = 0.1f;
+                            break;
+                        default:
+                            r = 0;
+                            g = 0;
+                            b = 0;
+                            break;
+                    }
+
+
                     if(mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
-                        render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        ItemProfile pf = itemSearch.get(i);
+//                        render.drawRect(new CustomColor(r, g, b, a-0.1f), maxX, maxY, minX, minY);
+                        GL11.glPushMatrix();
+                        {
+                            mc.getTextureManager().bindTexture(RESOURCE);
+                            GlStateManager.color(r, g, b, 0.5f);
+                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                            float zoom = 2.0f;
+                            float factor = (16.0f + zoom * 2) / 16.0f;
+                            GL11.glTranslatef(maxX - zoom, maxY - zoom, 0.0f);
+                            GL11.glScalef(factor, factor, 0);
+                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                        }
+                        GL11.glPopMatrix();
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }
 
                         hoveredText = pf.asStack().b;
                     }else{
-                        render.drawRect(unselected_cube, maxX, maxY, minX, minY);
-                        ItemProfile pf = itemSearch.get(i);
+//                        render.drawRect(new CustomColor(r, g, b, a), maxX, maxY, minX, minY);
+                        GL11.glPushMatrix();
+                        {
+                            mc.getTextureManager().bindTexture(RESOURCE);
+                            GlStateManager.color(r, g, b, 1.0f);
+                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                            float zoom = 2.0f;
+                            float factor = (16.0f + zoom * 2) / 16.0f;
+                            GL11.glTranslatef(maxX - zoom, maxY - zoom, 0.0f);
+                            GL11.glScalef(factor, factor, 0);
+                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                        }
+                        GL11.glPopMatrix();
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }

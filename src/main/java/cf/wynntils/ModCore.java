@@ -40,6 +40,8 @@ public class ModCore {
         FrameworkManager.startModules();
         WebManager.setupUserAccount();
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("In shutdown hook"), "Shutdown-thread"));
+
         jarFile = e.getSourceFile();
     }
 

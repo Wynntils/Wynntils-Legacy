@@ -167,59 +167,39 @@ public class InventoryOverlay extends GuiInventory {
 
             if (!armorcheck) {
                 int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
-                    GL11.glPushMatrix();
-                    {
-                        GlStateManager.color(r, g, b, a);
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
-                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
-                    }
-                    GL11.glPopMatrix();
-                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
-                    GL11.glPushMatrix();
-                    {
-                        mc.getTextureManager().bindTexture(RESOURCE);
-                        GlStateManager.color(r, g, b, 1.0f);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                        float zoom = 2.0f;
-                        float factor = (16.0f + zoom * 2) / 16.0f;
-                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                        GL11.glScalef(factor, factor, 0);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    }
-                    GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                {
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color(r, g, b, 1.0f);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                    float zoom = 2.0f;
+                    float factor = (16.0f + zoom * 2) / 16.0f;
+                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                    GL11.glScalef(factor, factor, 0);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
+                GL11.glPopMatrix();
                 //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
             } else {
                 int x = 8 + extra, y = offset + 8 - (18 * armorfloor);
-                if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.SQUARE) {
-                    GL11.glPushMatrix();
-                    {
-                        GL11.glColor4f(r, g, b, a);
-                        GL11.glDisable(GL11.GL_TEXTURE_2D);
-                        Gui.drawModalRectWithCustomSizedTexture(x, y, 0, 0, 16, 16, 16, 16);
-                    }
-                    GL11.glPopMatrix();
-                } else if (UtilitiesConfig.Items.INSTANCE.highlightShape == UtilitiesConfig.Items.InvHighlight.CIRCLE) {
-                    GL11.glPushMatrix();
-                    {
-                        mc.getTextureManager().bindTexture(RESOURCE);
-                        GlStateManager.color(r, g, b, 1.0f);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                        float zoom = 2.0f;
-                        float factor = (16.0f + zoom * 2) / 16.0f;
-                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                        GL11.glScalef(factor, factor, 0);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    }
-                    GL11.glPopMatrix();
+                GL11.glPushMatrix();
+                {
+                    mc.getTextureManager().bindTexture(RESOURCE);
+                    GlStateManager.color(r, g, b, 1.0f);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                    float zoom = 2.0f;
+                    float factor = (16.0f + zoom * 2) / 16.0f;
+                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                    GL11.glScalef(factor, factor, 0);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
+                GL11.glPopMatrix();
                 //XY: 8 + extra, offset + 8 - (18 * armorfloor)
             }
         }
