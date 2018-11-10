@@ -2,6 +2,8 @@ package cf.wynntils.core.framework.instances;
 
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.core.CoreModule;
+import cf.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 
 import java.text.DecimalFormat;
@@ -26,6 +28,7 @@ public class PlayerInfo {
     private int maxHealth = -1;
     private int level = -1;
     private float experiencePercentage = -1;
+    private int classId = CoreDBConfig.INSTANCE.lastSelectedClass;
 
     private String lastActionBar;
     private String specialActionBar = null;
@@ -138,6 +141,16 @@ public class PlayerInfo {
     public int getLevel() { return currentClass == ClassType.NONE ? -1 : level; }
 
     public int getMaxMana() {return currentClass == ClassType.NONE ? -1 : 20;}
+
+    public int getClassId() {
+        return classId;
+    }
+
+    public void setClassId(int id) {
+        this.classId = id;
+        CoreDBConfig.INSTANCE.lastSelectedClass = id;
+        CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+    }
 
     public static PlayerInfo getPlayerInfo() {
         if(instance == null)

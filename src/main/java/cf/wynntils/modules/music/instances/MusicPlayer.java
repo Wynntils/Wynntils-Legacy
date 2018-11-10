@@ -9,6 +9,7 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import org.lwjgl.opengl.Display;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -32,7 +33,7 @@ public class MusicPlayer {
     }
 
     public void stop() {
-        if(!active) return;
+        if(!active || currentPlayer == null) return;
 
         currentPlayer.stop();
         active = false;
@@ -62,10 +63,7 @@ public class MusicPlayer {
         return currentVolume;
     }
 
-    private long lastSetup = 0;
     public void setupController() {
-        if(System.currentTimeMillis() - lastSetup <= 150) return;
-
         active = true;
         if(nextMusic != null) {
             if(currentMusic == null) {
@@ -73,7 +71,7 @@ public class MusicPlayer {
                 nextMusic = null;
                 startReproduction();
             }else{
-                if(currentVolume <= -20) {
+                if(currentVolume <= -30) {
                     currentMusic = nextMusic;
                     nextMusic = null;
                     startReproduction();
@@ -82,13 +80,13 @@ public class MusicPlayer {
                 }
             }
         }else{
-            if(getCurrentVolume() > MusicConfig.INSTANCE.baseVolume) {
-                if(getCurrentVolume() - 0.2f < MusicConfig.INSTANCE.baseVolume) {
-                    setVolume(MusicConfig.INSTANCE.baseVolume);
+            if(getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if(getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
                 }else{ setVolume(getCurrentVolume() - 0.2f); }
-            }else if(getCurrentVolume() < MusicConfig.INSTANCE.baseVolume) {
-                if(getCurrentVolume() + 0.2f > MusicConfig.INSTANCE.baseVolume) {
-                    setVolume(MusicConfig.INSTANCE.baseVolume);
+            }else if(getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if(getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
                 }else{ setVolume(getCurrentVolume() + 0.2f); }
             }
         }
@@ -106,6 +104,7 @@ public class MusicPlayer {
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 currentPlayer = new AdvancedPlayer(bis);
                 currentPlayer.setPlayBackListener(new PlaybackListener() {
+                    public void playbackStarted(PlaybackEvent var1) { setVolume(-30); }
                     public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                 });
 

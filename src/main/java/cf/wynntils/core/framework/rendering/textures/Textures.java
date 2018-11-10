@@ -52,6 +52,8 @@ public class Textures {
         public static AssetsTexture button_red_x;
         public static AssetsTexture button_scrollbar;
 
+        public static AssetsTexture hud_overlays;
+
         public static AssetsTexture quest_book;
     }
 }
