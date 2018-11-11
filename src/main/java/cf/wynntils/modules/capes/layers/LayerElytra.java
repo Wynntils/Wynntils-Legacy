@@ -8,7 +8,6 @@ import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -89,9 +88,6 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 //            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            if (WebManager.isModerator(entitylivingbaseIn.getUniqueID())) {
-                LayerArmorBase.renderEnchantedGlint(this.renderPlayer, entitylivingbaseIn, this.modelElytra, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-            }
 
             GlStateManager.disableBlend();
             GlStateManager.popMatrix();

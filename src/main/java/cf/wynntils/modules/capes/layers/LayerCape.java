@@ -35,8 +35,6 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
         ResourceLocation rl;
         if (WebManager.hasCape(entitylivingbaseIn.getUniqueID())) {
             rl = new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", ""));
-        } else if (WebManager.isUser(entitylivingbaseIn.getUniqueID()) && !WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
-            rl = new ResourceLocation("wynntils:capes/default");
         }else{ return; }
 
         //applying cape
