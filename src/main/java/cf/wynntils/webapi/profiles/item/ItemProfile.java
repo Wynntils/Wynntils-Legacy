@@ -2,6 +2,8 @@ package cf.wynntils.webapi.profiles.item;
 
 import cf.wynntils.core.utils.Pair;
 import com.google.gson.*;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.block.Block;
@@ -10,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTUtil;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
@@ -94,13 +97,13 @@ public class ItemProfile {
     public String classRequirement;
     public boolean identified;
     public String displayName;
-    public MinecraftTexturesPayload skin;
+    public String skin;
 
     static {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(Color.class, new ColorDeserialiser());
         builder.registerTypeHierarchyAdapter(ItemType.class, new ItemType.ItemTypeDeserialiser());
-        builder.registerTypeHierarchyAdapter(MinecraftTexturesPayload.class, new SkinDeserialiser());
+        builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
         builder.registerTypeHierarchyAdapter(HashMap.class, new HashMapDeserialiser());
         GSON = builder.create();
     }
@@ -389,7 +392,7 @@ public class ItemProfile {
         return  displayName;
     }
 
-    public MinecraftTexturesPayload getSkin() {
+    public String getSkin() {
         return skin;
     }
 
@@ -403,7 +406,7 @@ public class ItemProfile {
             } else {
                 Item result = null;
                 Block resultBlock = null;
-
+                
                 if(accessoryType != null) {
                     if (accessoryType.equalsIgnoreCase("Necklace")) {
                         resultBlock = Blocks.GLASS_PANE;
@@ -432,6 +435,7 @@ public class ItemProfile {
                             if (armorType.equalsIgnoreCase("Iron")) result = Items.IRON_HELMET;
                             if (armorType.equalsIgnoreCase("Golden")) result = Items.GOLDEN_HELMET;
                             if (armorType.equalsIgnoreCase("Chain")) result = Items.CHAINMAIL_HELMET;
+                            if (skin != null) result = Items.SKULL;
                         } else if (type.equalsIgnoreCase("Chestplate")) {
                             if (armorType.equalsIgnoreCase("Leather")) {
                                 result = Items.LEATHER_CHESTPLATE;
@@ -465,7 +469,13 @@ public class ItemProfile {
                     original = new ItemStack(resultBlock);
                 }else{ original = new ItemStack(result); }
 
-                if (armorType != null && armorType.equals("Leather") && armorColor != null) {
+                if (skin != null && type.equalsIgnoreCase("Helmet")) {
+                    original.setItemDamage(3);
+                    MinecraftTexturesPayload deserializedSkin = GSON.fromJson(new String(Base64.decodeBase64(skin), Charsets.UTF_8), MinecraftTexturesPayload.class);
+                    GameProfile profile = new GameProfile(deserializedSkin.getProfileId(), deserializedSkin.getProfileName());
+                    profile.getProperties().put("textures", new Property("textures", skin));
+                    NBTUtil.writeGameProfile(original.getOrCreateSubCompound("SkullOwner"), profile);
+                } else if (armorType != null && armorType.equals("Leather") && armorColor != null) {
                     ((ItemArmor) original.getItem()).setColor(original, (armorColor.getRed() << 16) + (armorColor.getGreen() << 8) + armorColor.getBlue());
                 }
             }
@@ -680,18 +690,6 @@ public class ItemProfile {
             int green = Integer.valueOf(colors[1]);
             int blue = Integer.valueOf(colors[2]);
             return new Color(red, green, blue);
-        }
-
-    }
-
-    public static class SkinDeserialiser implements JsonDeserializer<MinecraftTexturesPayload> {
-
-        @Override
-        public MinecraftTexturesPayload deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            String texturesPayLoad = new String(Base64.decodeBase64(json.getAsString()), Charsets.UTF_8);
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(UUID.class, new UUIDTypeAdapter());
-            return builder.create().fromJson(texturesPayLoad, MinecraftTexturesPayload.class);
         }
 
     }
