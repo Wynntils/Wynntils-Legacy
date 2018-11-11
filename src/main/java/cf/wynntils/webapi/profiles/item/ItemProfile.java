@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.StringUtils;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
@@ -472,9 +473,11 @@ public class ItemProfile {
                 if (skin != null && type.equalsIgnoreCase("Helmet")) {
                     original.setItemDamage(3);
                     MinecraftTexturesPayload deserializedSkin = GSON.fromJson(new String(Base64.decodeBase64(skin), Charsets.UTF_8), MinecraftTexturesPayload.class);
-                    GameProfile profile = new GameProfile(deserializedSkin.getProfileId(), deserializedSkin.getProfileName());
-                    profile.getProperties().put("textures", new Property("textures", skin));
-                    NBTUtil.writeGameProfile(original.getOrCreateSubCompound("SkullOwner"), profile);
+                    if (deserializedSkin.getProfileId() != null || !StringUtils.isNullOrEmpty(deserializedSkin.getProfileName())) {
+                        GameProfile profile = new GameProfile(deserializedSkin.getProfileId(), deserializedSkin.getProfileName());
+                        profile.getProperties().put("textures", new Property("textures", skin));
+                        NBTUtil.writeGameProfile(original.getOrCreateSubCompound("SkullOwner"), profile);
+                    }
                 } else if (armorType != null && armorType.equals("Leather") && armorColor != null) {
                     ((ItemArmor) original.getItem()).setColor(original, (armorColor.getRed() << 16) + (armorColor.getGreen() << 8) + armorColor.getBlue());
                 }
