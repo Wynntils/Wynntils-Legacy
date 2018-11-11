@@ -602,8 +602,12 @@ public class ItemProfile {
             if(lootBonus != 0) description.add(calculateStatus(lootBonus, identified, "%") + " §7Loot Bonus");
             if(xpBonus != 0) description.add(calculateStatus(xpBonus, identified, "%") + " §7XP Bonus");
 
-            description.add(" ");
-            description.add("§7[" + sockets + " Powder Slots]");
+            if (!description.get(description.size() - 1).equals(" ")) {
+                description.add(" ");
+            }
+            if (sockets != 0) {
+                description.add("§7[" + sockets + " Powder Slot" + (sockets != 1 ? "s" : "") + "]");
+            }
 
             switch (getTier().toLowerCase()) {
                 case "legendary":
@@ -623,6 +627,10 @@ public class ItemProfile {
                     break;
                 default:
                     break;
+            }
+            
+            if (description.get(description.size() - 1).equals(" ")) {
+                description.remove(description.size() - 1);
             }
 
             generated = new Pair<>(original, description);
