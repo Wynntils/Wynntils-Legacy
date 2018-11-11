@@ -540,11 +540,11 @@ public class ItemProfile {
                 description.add(" ");
 
                 description.add("§4❤ Health: " + getHealth());
-                if(fireDefense != 0) description.add("§c✹ Fire §7Defense: " + getFireDefense());
-                if(waterDefense != 0) description.add("§b❉ Water §7Defense: " + getWaterDefense());
-                if(airDefense != 0) description.add("§f❋ Air §7Defense: " + getAirDefense());
-                if(thunderDefense != 0) description.add("§e✦ Thunder §7Defense: " + getThunderDefense());
-                if(earthDefense != 0) description.add("§2✤ Earth §7Defense: " + getEarthDefense());
+                if(fireDefense != 0) description.add("§c✹ Fire §7Defense: " + (getFireDefense() > 0 ? "+" + getFireDefense() : getFireDefense()));
+                if(waterDefense != 0) description.add("§b❉ Water §7Defense: " + (getWaterDefense() > 0 ? "+" + getWaterDefense() : getWaterDefense()));
+                if(airDefense != 0) description.add("§f❋ Air §7Defense: " + (getAirDefense() > 0 ? "+" + getAirDefense() : getAirDefense()));
+                if(thunderDefense != 0) description.add("§e✦ Thunder §7Defense: " + (getThunderDefense() > 0 ? "+" + getThunderDefense() : getThunderDefense()));
+                if(earthDefense != 0) description.add("§2✤ Earth §7Defense: " + (getEarthDefense() > 0 ? "+" + getEarthDefense() : getEarthDefense()));
             }
 
             description.add(" ");
