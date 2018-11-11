@@ -542,7 +542,7 @@ public class ItemProfile {
             if(category != null && category.equalsIgnoreCase("armor")) {
                 description.add(" ");
 
-                description.add("§4❤ Health: " + "+" + getHealth());
+                description.add("§4❤ Health: " + (getHealth() < 0 ? "" : "+") + getHealth());
                 if(fireDefense != 0) description.add("§c✹ Fire §7Defense: " + (getFireDefense() > 0 ? "+" + getFireDefense() : getFireDefense()));
                 if(waterDefense != 0) description.add("§b❉ Water §7Defense: " + (getWaterDefense() > 0 ? "+" + getWaterDefense() : getWaterDefense()));
                 if(airDefense != 0) description.add("§f❋ Air §7Defense: " + (getAirDefense() > 0 ? "+" + getAirDefense() : getAirDefense()));
