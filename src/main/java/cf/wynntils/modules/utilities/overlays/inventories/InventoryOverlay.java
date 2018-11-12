@@ -8,7 +8,6 @@ import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
-import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,9 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,7 +52,7 @@ public class InventoryOverlay extends GuiInventory {
 
         Slot slot = getSlotUnderMouse();
         if (mc.player.inventory.getItemStack().isEmpty() && slot != null && slot.getHasStack()) {
-            drawHoverItem(slot.getStack());
+            ChestOverlay.drawHoverItem(slot.getStack());
             drawHoverGuess(slot.getStack());
         }
     }
@@ -341,121 +338,6 @@ public class InventoryOverlay extends GuiInventory {
             nbt.setTag("display", display);
             stack.setTagCompound(nbt);
         }
-    }
-
-    public void drawHoverItem(ItemStack stack) {
-        if(!WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
-            return;
-        }
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(stack.getDisplayName()));
-
-        if(wItem.isIdentified()) {
-            return;
-        }
-
-        List<String> actualLore = Utils.getLore(stack);
-        for(int i = 0; i < actualLore.size(); i++) {
-            String lore = actualLore.get(i);
-            String wColor = Utils.stripColor(lore);
-
-            if(lore.contains("Set") && lore.contains("Bonus")) {
-                break;
-            }
-
-            if(!wColor.startsWith("+") && !wColor.startsWith("-")) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            String[] values = wColor.split(" ");
-
-            if(values.length < 2) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");
-
-            if(pField == null) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            boolean raw = !lore.contains("%");
-
-            try{
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
-
-                String fieldName;
-                if(raw) {
-                    fieldName = Utils.getFieldName("raw" + pField);
-                    if(fieldName == null) {
-                        fieldName = Utils.getFieldName(pField);
-                    }
-                }else{
-                    fieldName = Utils.getFieldName(pField);
-                }
-
-                if(fieldName == null) {
-                    actualLore.set(i, lore);
-                    continue;
-                }
-
-                Field f = wItem.getClass().getField(fieldName);
-                if(f == null) {
-                    actualLore.set(i, lore);
-                    continue;
-                }
-
-                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
-                int min;
-                int max;
-                if (amount < 0) {
-                    max = (int) Math.min(Math.round(itemVal * 1.3d), -1);
-                    min = (int) Math.min(Math.round(itemVal * 0.7d), -1);
-                } else {
-                    max = (int) Math.max(Math.round(itemVal * 1.3d), 1);
-                    min = (int) Math.max(Math.round(itemVal * 0.3d), 1);
-                }
-
-                if (max == min) {
-                    actualLore.set(i, lore);
-                    continue;
-                }
-
-                double intVal = (double) (max - min);
-                double pVal = (double) (amount - min);
-                int percent = (int) ((pVal / intVal) * 100);
-
-                String color = "§";
-
-                if(amount < 0) percent = 100 - percent;
-
-                if(percent >= 97) {
-                    color += "b";
-                }else if(percent >= 80) {
-                    color += "a";
-                }else if(percent >= 30) {
-                    color += "e";
-                }else {
-                    color += "c";
-                }
-
-                actualLore.set(i,lore + color + " [" + percent + "%]");
-
-            }catch (Exception ex) { actualLore.set(i, lore); }
-        }
-
-        NBTTagCompound nbt = stack.getTagCompound();
-        NBTTagCompound display = nbt.getCompoundTag("display");
-        NBTTagList tag = new NBTTagList();
-
-        actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-
-        display.setTag("Lore", tag);
-        nbt.setTag("display", display);
-        stack.setTagCompound(nbt);
-
     }
 
     public String getStringLore(ItemStack is){

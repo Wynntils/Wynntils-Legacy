@@ -62,7 +62,6 @@ public class QuestBookGUI extends GuiScreen {
         acceptBack = false;
         acceptNext = false;
         animationCompleted = false;
-        searchBarText = "";
         requestOpening = true;
 
         getMinecraft().displayGuiScreen(this);
@@ -146,7 +145,7 @@ public class QuestBookGUI extends GuiScreen {
         //updating questbook search
         if(page == QuestBookPage.QUESTS) {
             ArrayList<QuestInfo> quests = new ArrayList<>(QuestManager.getCurrentQuestsData());
-            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().startsWith(searchBarText)).collect(Collectors.toList()) : quests;
+            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
             overQuest = null; currentPage = 1;
         }
         //updating itemguide search
@@ -719,8 +718,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                if (searchBarText.isEmpty())
-                    toSearch = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
+                if (searchBarText.isEmpty()) toSearch = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
 
                 int pages = toSearch.size() <= 13 ? 1 : (int) Math.ceil(toSearch.size() / 13d);
                 if (pages < currentPage) {

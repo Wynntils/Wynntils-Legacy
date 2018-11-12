@@ -43,4 +43,5 @@ public class CommandToken extends CommandBase implements IClientCommand {
     public int getRequiredPermissionLevel() {
         return 0;
     }
+
 }

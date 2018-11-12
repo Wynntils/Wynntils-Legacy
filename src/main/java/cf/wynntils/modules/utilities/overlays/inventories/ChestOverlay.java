@@ -33,6 +33,8 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -46,6 +48,8 @@ public class ChestOverlay extends GuiChest {
     private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
+    private final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
+    private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
 
     public ChestOverlay(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
@@ -231,7 +235,7 @@ public class ChestOverlay extends GuiChest {
                     continue;
                 }
 
-                float r, g, b, a;
+                float r, g, b;
 
                 String lore = getStringLore(is);
 
@@ -241,32 +245,26 @@ public class ChestOverlay extends GuiChest {
                     r = 0;
                     g = 1;
                     b = 1;
-                    a = .4f;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                     r = 0.3f;
                     g = 0;
                     b = 0.3f;
-                    a = .6f;
                 } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                     r = 1;
                     g = 0;
                     b = 1;
-                    a = .4f;
                 } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
                     r = 1;
                     g = 1;
                     b = 0;
-                    a = .4f;
                 } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                     r = 0;
                     g = 1;
                     b = 0;
-                    a = .4f;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                     r = 1;
                     g = 1;
                     b = 1;
-                    a = .4f;
                 } else if (floor >= 4) {
                     continue;
                 } else {
@@ -347,8 +345,6 @@ public class ChestOverlay extends GuiChest {
 
                 GlStateManager.disableLighting();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-
-                final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
                 GlStateManager.disableLighting();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -498,7 +494,9 @@ public class ChestOverlay extends GuiChest {
         }
     }
 
-    public void drawHoverItem(ItemStack stack){
+    public static void drawHoverItem(ItemStack stack) {
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils")) return;
+
         if (!WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
             return;
         }
@@ -512,6 +510,34 @@ public class ChestOverlay extends GuiChest {
         for (int i = 0; i < actualLore.size(); i++) {
             String lore = actualLore.get(i);
             String wColor = Utils.stripColor(lore);
+
+            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*")) {
+                int rerollValue = 0;
+
+                //thanks nbcss for this Math
+                if(wColor.contains("Mythics")) {
+                    rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
+                }else if(wColor.contains("Legendary")) {
+                    rerollValue = (int)Math.ceil(30.0D + wItem.getLevel() * 6);
+                }else if(wColor.contains("Rare")) {
+                    rerollValue = (int)Math.ceil(10.0D + wItem.getLevel() * 1.4d);
+                }else if(wColor.contains("Set")) {
+                    rerollValue = (int)Math.ceil(10.0D + wItem.getLevel() * 1.6d);
+                }else if(wColor.contains("Unique")) {
+                    rerollValue = (int)Math.ceil(3.0D + wItem.getLevel() * 0.5d);
+                }
+
+                int alreadyRolled = 1;
+                Matcher m = BRACKETS.matcher(wColor);
+                if(m.find()) {
+                    alreadyRolled = Integer.valueOf(m.group().replace("[", "").replace("]", ""));
+                }
+
+                for(int bb = 1; bb <= alreadyRolled; bb++) rerollValue *= 5;
+
+                actualLore.set(i, lore + " §a[" + decimalFormat.format(rerollValue) + E + "]");
+                break;
+            }
 
             if (lore.contains("Set") && lore.contains("Bonus")) {
                 break;
@@ -604,6 +630,7 @@ public class ChestOverlay extends GuiChest {
         }
 
         NBTTagCompound nbt = stack.getTagCompound();
+        nbt.setBoolean("verifiedWynntils", true);
         NBTTagCompound display = nbt.getCompoundTag("display");
         NBTTagList tag = new NBTTagList();
 
