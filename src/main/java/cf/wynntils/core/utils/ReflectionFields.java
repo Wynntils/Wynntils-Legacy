@@ -23,7 +23,7 @@ public enum ReflectionFields {
     GuiChest_lowerChestInventory(GuiChest.class, "lowerChestInventory", "field_147015_w"),
     Event_phase(Event.class, "phase"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
-    GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029");
+    GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w");
 
     Field field;
 
