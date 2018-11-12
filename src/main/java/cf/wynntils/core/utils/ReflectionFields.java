@@ -3,6 +3,7 @@ package cf.wynntils.core.utils;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.network.NetworkManager;
@@ -20,7 +21,9 @@ public enum ReflectionFields {
     GuiNewChat_chatLines(GuiNewChat.class, "chatLines", "field_146252_h"),
     ChatLine_lineString(ChatLine.class, "lineString", "field_74541_b"),
     GuiChest_lowerChestInventory(GuiChest.class, "lowerChestInventory", "field_147015_w"),
-    Event_phase(Event.class, "phase");
+    Event_phase(Event.class, "phase"),
+    GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
+    GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029");
 
     Field field;
 

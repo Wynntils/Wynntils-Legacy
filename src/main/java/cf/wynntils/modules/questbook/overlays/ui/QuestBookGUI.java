@@ -64,6 +64,8 @@ public class QuestBookGUI extends GuiScreen {
         animationCompleted = false;
         requestOpening = true;
 
+        if(page == QuestBookPage.ITEM_GUIDE) updateItemListSearch();
+
         getMinecraft().displayGuiScreen(this);
     }
 

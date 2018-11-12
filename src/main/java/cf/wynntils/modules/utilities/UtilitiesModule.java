@@ -10,6 +10,9 @@ import cf.wynntils.modules.utilities.events.ServerEvents;
 import cf.wynntils.modules.utilities.managers.KeyManager;
 import cf.wynntils.modules.utilities.overlays.OverlayEvents;
 import cf.wynntils.modules.utilities.overlays.hud.*;
+import cf.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
+import cf.wynntils.modules.utilities.overlays.inventories.RarityColorOverlay;
+import cf.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -31,6 +34,10 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
+        //Inventory Overlays
+        registerEvents(new ItemIdentificationOverlay());
+        registerEvents(new RarityColorOverlay());
+        registerEvents(new SkillPointOverlay());
 
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);

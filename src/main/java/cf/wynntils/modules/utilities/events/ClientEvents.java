@@ -2,8 +2,6 @@ package cf.wynntils.modules.utilities.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.InventoryClickEvent;
-import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.modules.utilities.managers.ChatManager;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
@@ -54,15 +52,6 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void inventoryOpened(GuiScreenEvent.InitGuiEvent.Post e) {
         DailyReminderManager.openedDailyInventory(e);
-    }
-
-    @SubscribeEvent
-    public void changeClass(InventoryClickEvent e) {
-        if(e.getScreenTitle().contains("Select a Class")) {
-            if(e.getUsedButton() == 0 && e.getClickedItem().hasDisplayName() && e.getClickedItem().getDisplayName().contains("[>] Select")) {
-                PlayerInfo.getPlayerInfo().setClassId(e.getSlotdId());
-            }
-        }
     }
 
 }
