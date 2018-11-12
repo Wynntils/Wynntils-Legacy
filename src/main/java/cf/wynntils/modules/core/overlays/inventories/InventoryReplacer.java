@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 
+import java.io.IOException;
+
 public class InventoryReplacer extends GuiInventory {
 
     EntityPlayer player;
@@ -43,6 +45,12 @@ public class InventoryReplacer extends GuiInventory {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer(this, mouseX, mouseY));
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.KeyTyped(this, typedChar, keyCode)))
+            super.keyTyped(typedChar, keyCode);
     }
 
 

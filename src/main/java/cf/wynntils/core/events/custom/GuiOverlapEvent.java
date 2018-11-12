@@ -100,6 +100,31 @@ public class GuiOverlapEvent extends Event {
             }
         }
 
+        public static class KeyTyped extends InventoryOverlap {
+
+            char typedChar; int keyCode;
+
+            public KeyTyped(InventoryReplacer guiInventory, char typedChar, int keyCode) {
+                super(guiInventory);
+
+                this.typedChar = typedChar;
+                this.keyCode = keyCode;
+            }
+
+            public char getTypedChar() {
+                return typedChar;
+            }
+
+            public int getKeyCode() {
+                return keyCode;
+            }
+
+            public boolean isCancelable() {
+                return true;
+            }
+
+        }
+
     }
 
     public static class ChestOverlap extends GuiOverlapEvent {
@@ -189,6 +214,31 @@ public class GuiOverlapEvent extends Event {
             }
         }
 
+        public static class KeyTyped extends ChestOverlap {
+
+            char typedChar; int keyCode;
+
+            public KeyTyped(ChestReplacer guiChest, char typedChar, int keyCode) {
+                super(guiChest);
+
+                this.typedChar = typedChar;
+                this.keyCode = keyCode;
+            }
+
+            public char getTypedChar() {
+                return typedChar;
+            }
+
+            public int getKeyCode() {
+                return keyCode;
+            }
+
+            public boolean isCancelable() {
+                return true;
+            }
+
+        }
+
     }
 
     public static class HorseOverlap extends GuiOverlapEvent {
@@ -275,6 +325,30 @@ public class GuiOverlapEvent extends Event {
 
             public int getMouseX() {
                 return mouseX;
+            }
+        }
+
+        public static class KeyTyped extends HorseOverlap {
+
+            char typedChar; int keyCode;
+
+            public KeyTyped(HorseReplacer guiHorse, char typedChar, int keyCode) {
+                super(guiHorse);
+
+                this.typedChar = typedChar;
+                this.keyCode = keyCode;
+            }
+
+            public char getTypedChar() {
+                return typedChar;
+            }
+
+            public int getKeyCode() {
+                return keyCode;
+            }
+
+            public boolean isCancelable() {
+                return true;
             }
         }
 

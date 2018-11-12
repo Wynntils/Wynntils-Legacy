@@ -26,7 +26,7 @@ public class QuestBookModule extends Module {
         registerSettings(QuestBookConfig.class);
         registerOverlay(new TrackedQuestOverlay(), Priority.HIGHEST);
 
-        registerKeyBinding("Open QuestBook", Keyboard.KEY_K, "QuestBook", true, gui::open);
+        registerKeyBinding("Open QuestBook", Keyboard.KEY_K, "Wynntils", true, gui::open);
     }
 
 }

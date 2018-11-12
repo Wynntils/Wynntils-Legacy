@@ -92,13 +92,14 @@ public class FrameworkManager {
         registeredOverlays.get(priority).add(overlay);
     }
 
-    public static void registerKeyBinding(Module module, KeyHolder holder) {
+    public static KeyHolder registerKeyBinding(Module module, KeyHolder holder) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
         if(info == null) {
-            return;
+            return null;
         }
 
         availableModules.get(info.name()).registerKeyBinding(holder);
+        return holder;
     }
 
     public static void startModules() {

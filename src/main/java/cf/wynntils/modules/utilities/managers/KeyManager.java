@@ -1,6 +1,7 @@
 package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.ModCore;
+import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.settings.ui.SettingsUI;
 import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.core.CoreModule;
@@ -16,8 +17,10 @@ public class KeyManager {
 
     private static float lastGamma = 1f;
 
+    private static KeyHolder lockInventoryKey;
+
     public static void registerKeys() {
-        UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Utilities", true, () -> {
+        UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
             if(ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
@@ -45,6 +48,13 @@ public class KeyManager {
         UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> {
 
         });
+
+        lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
     }
+
+    public static KeyHolder getLockInventoryKey() {
+        return lockInventoryKey;
+    }
+
 
 }

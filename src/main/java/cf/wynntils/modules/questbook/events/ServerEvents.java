@@ -7,7 +7,6 @@ package cf.wynntils.modules.questbook.events;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
-import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Utils;
@@ -29,14 +28,9 @@ import java.util.List;
 public class ServerEvents implements Listener {
 
     @SubscribeEvent
-    public void joinWorld(WynnWorldJoinEvent e) {
-        QuestManager.requestQuestBookReading();
-    }
-
-    @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         if(e.getCurrentClass() != ClassType.NONE) {
-            QuestManager.requestQuestBookReading();
+            QuestManager.setTrackedQuest(null);
         }
     }
 
@@ -48,6 +42,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
         if(!Reference.onWorld) return;
+
         if(QuestManager.isReadingQuestBook()) {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());

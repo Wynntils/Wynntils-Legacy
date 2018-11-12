@@ -4,6 +4,9 @@ import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 /**
  * Created by HeyZeer0 on 24/03/2018.
  * Copyright © HeyZeer0 - 2016
@@ -27,6 +30,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Show players armor", description = "Should what players are wearing be listed in their name tag")
     public boolean showArmors = false;
+
+    //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
+    public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
     @SettingsInfo(name = "wars", displayPath = "Wars")
     public static class Wars extends SettingsClass {

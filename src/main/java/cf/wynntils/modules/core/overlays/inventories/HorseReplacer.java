@@ -12,6 +12,8 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
+import java.io.IOException;
+
 public class HorseReplacer extends GuiScreenHorseInventory  {
 
     IInventory lowerInv, upperInv;
@@ -48,6 +50,12 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer(this, mouseX, mouseY));
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
+            super.keyTyped(typedChar, keyCode);
     }
 
 }

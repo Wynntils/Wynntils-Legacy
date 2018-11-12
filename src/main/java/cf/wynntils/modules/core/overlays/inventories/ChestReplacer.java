@@ -11,6 +11,8 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
+import java.io.IOException;
+
 public class ChestReplacer extends GuiChest {
 
     IInventory lowerInv;
@@ -51,5 +53,10 @@ public class ChestReplacer extends GuiChest {
         FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer(this, mouseX, mouseY));
     }
 
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.KeyTyped(this, typedChar, keyCode)))
+            super.keyTyped(typedChar, keyCode);
+    }
 
 }

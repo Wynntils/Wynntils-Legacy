@@ -6,6 +6,7 @@ package cf.wynntils.core.events.custom;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.server.*;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -21,7 +22,7 @@ public class PacketEvent extends Event {
      * Triggered when the client receives a {@link ResourcePackReceived} packet from the server
      *
      */
-    public static class ResourcePackReceived extends Event {
+    public static class ResourcePackReceived extends PacketEvent {
         SPacketResourcePackSend packet;
         NetworkManager networkManager;
 
@@ -49,7 +50,7 @@ public class PacketEvent extends Event {
      * Triggered when the client receives a {@link SPacketOpenWindow} packet from the server
      *
      */
-    public static class InventoryReceived extends Event {
+    public static class InventoryReceived extends PacketEvent {
 
         SPacketOpenWindow packet;
         NetHandlerPlayClient playClient;
@@ -78,7 +79,7 @@ public class PacketEvent extends Event {
      * Triggered when the client receives a {@link SPacketWindowItems} packet from the server
      *
      */
-    public static class InventoryItemsReceived extends Event {
+    public static class InventoryItemsReceived extends PacketEvent {
 
         SPacketWindowItems packet;
         NetHandlerPlayClient playClient;
@@ -107,7 +108,7 @@ public class PacketEvent extends Event {
      * Triggered when the client receives a {@link SPacketSpawnObject} packet from the server
      *
      */
-    public static class SpawnObject extends Event {
+    public static class SpawnObject extends PacketEvent {
 
         SPacketSpawnObject packet;
         NetHandlerPlayClient playClient;
@@ -137,7 +138,7 @@ public class PacketEvent extends Event {
      * Triggered when the client receives a {@link SPacketPlayerListItem} packet from the server
      *
      */
-    public static class TabListChangeEvent extends Event {
+    public static class TabListChangeEvent extends PacketEvent {
         SPacketPlayerListItem packet;
         NetHandlerPlayClient playClient;
 
@@ -185,6 +186,33 @@ public class PacketEvent extends Event {
         public NetHandlerPlayClient getPlayClient() {
             return playClient;
         }
+    }
+
+    /**
+     * Triggered when the player tries to drop an item and {@link CPacketPlayerDigging} is triggered
+     *
+     */
+    public static class PlayerDropItemEvent extends PacketEvent {
+
+        CPacketPlayerDigging packet;
+        NetHandlerPlayClient playClient;
+
+        public PlayerDropItemEvent(CPacketPlayerDigging packet, NetHandlerPlayClient playClient) {
+            this.packet = packet; this.playClient = playClient;
+        }
+
+        public CPacketPlayerDigging getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
     }
 
 }

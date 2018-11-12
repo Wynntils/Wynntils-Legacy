@@ -8,6 +8,7 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.modules.core.instances.OutgoingFilter;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketFilter());
+        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new OutgoingFilter());
 
         WebManager.checkForUpdates();
     }
@@ -32,6 +34,8 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void joinWorldEvent(WynnWorldJoinEvent e) {
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+
+        if(PlayerInfo.getPlayerInfo().getClassId() == -1) Minecraft.getMinecraft().player.sendChatMessage("/class");
 
         waitingForFriendList = true;
     }

@@ -24,7 +24,6 @@ public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
 
-
     public void onEnable() {
         module = this;
 

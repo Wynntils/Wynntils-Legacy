@@ -46,8 +46,8 @@ public abstract class Module {
         FrameworkManager.registerOverlay(this, overlay, priority);
     }
 
-    public void registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {
-        FrameworkManager.registerKeyBinding(this, new KeyHolder(name, key, tab, press, onPress));
+    public KeyHolder registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {
+        return FrameworkManager.registerKeyBinding(this, new KeyHolder(name, key, tab, press, onPress));
     }
 
     public Minecraft getMinecraft() {
