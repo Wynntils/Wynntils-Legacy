@@ -11,6 +11,7 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
 
@@ -56,6 +57,11 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public void renderToolTip(ItemStack stack, int x, int y) {
+        super.renderToolTip(stack, x, y);
     }
 
 }

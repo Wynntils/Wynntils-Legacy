@@ -10,6 +10,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
 
@@ -57,6 +58,11 @@ public class ChestReplacer extends GuiChest {
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public void renderToolTip(ItemStack stack, int x, int y) {
+        super.renderToolTip(stack, x, y);
     }
 
 }

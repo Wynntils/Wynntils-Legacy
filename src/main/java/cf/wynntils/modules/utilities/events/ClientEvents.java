@@ -59,48 +59,87 @@ public class ClientEvents implements Listener {
         DailyReminderManager.openedDailyInventory(e);
     }
 
-    //HeyZeer0: Handles the inventory lock, 2 methods below, first one on inventory, other one by dropping the item (without inventory)
+    //HeyZeer0: Handles the inventory lock, 4 methods below, first 3 on inventory, last one by dropping the item (without inventory)
     @SubscribeEvent
     public void keyPressOnInventory(GuiOverlapEvent.InventoryOverlap.KeyTyped e) {
         if(!Reference.onWorld) return;
 
-        if(e.getKeyCode() == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
-            if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
-                if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+        if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
+            if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
-                if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(e.getGuiInventory().getSlotUnderMouse().getSlotIndex())) {
-                    e.setCanceled(true);
-                }
-            }
-            return;
+            e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
         }
 
         if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
             if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
-                if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) {
-                    UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.getPlayerInfo().getClassId(), new HashSet<>());
-                }
+                checkLockState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex());
+            }
+        }
+    }
 
-                if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(e.getGuiInventory().getSlotUnderMouse().getSlotIndex())) {
-                    UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).remove(e.getGuiInventory().getSlotUnderMouse().getSlotIndex());
-                }else{
-                    UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).add(e.getGuiInventory().getSlotUnderMouse().getSlotIndex());
-                }
+    @SubscribeEvent
+    public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
+        if(!Reference.onWorld) return;
 
-                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+        if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
+            if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+
+            e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+        }
+
+        if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
+            if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
+                checkLockState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void keyPressOnChest(GuiOverlapEvent.HorseOverlap.KeyTyped e) {
+        if(!Reference.onWorld) return;
+
+        if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
+            if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+
+            e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+        }
+
+        if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
+            if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
+                checkLockState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex());
             }
         }
     }
 
     @SubscribeEvent
     public void keyPress(PacketEvent.PlayerDropItemEvent e) {
-        if(Minecraft.getMinecraft().gameSettings.keyBindDrop.isKeyDown()) {
-            if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
-            if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem)) {
-                e.setCanceled(true);
-            }
+        if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
+            e.setCanceled(true);
+    }
+
+    private boolean checkDropState(int slot, int key) {
+        if(key == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
+            if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return false;
+
+            return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(slot);
         }
+        return false;
+    }
+
+    private void checkLockState(int slot) {
+        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) {
+            UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.getPlayerInfo().getClassId(), new HashSet<>());
+        }
+
+        if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(slot)) {
+            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).remove(slot);
+        }else{
+            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).add(slot);
+        }
+
+        UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 
 }
