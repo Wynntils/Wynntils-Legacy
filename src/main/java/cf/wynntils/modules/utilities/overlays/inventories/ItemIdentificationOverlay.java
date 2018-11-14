@@ -139,6 +139,9 @@ public class ItemIdentificationOverlay implements Listener {
         if (wItem.isIdentified()) {
             return;
         }
+        
+        int total = 0;
+        int identifications = 0;
 
         List <String> actualLore = Utils.getLore(stack);
         for (int i = 0; i < actualLore.size(); i++) {
@@ -257,21 +260,43 @@ public class ItemIdentificationOverlay implements Listener {
                 }
 
                 actualLore.set(i, lore + color + " [" + percent + "%]");
+                
+                total += percent;
+                identifications += 1;
 
             } catch (Exception ex) {
                 actualLore.set(i, lore);
             }
         }
-
+        
         NBTTagCompound nbt = stack.getTagCompound();
         nbt.setBoolean("verifiedWynntils", true);
-        NBTTagCompound display = nbt.getCompoundTag("display");
-        NBTTagList tag = new NBTTagList();
 
-        actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+        if (identifications > 0) {
+            int average = total / identifications;
+            String color = "§";
+            if (average >= 97) {
+                color += "b";
+            } else if (average >= 80) {
+                color += "a";
+            } else if (average >= 30) {
+                color += "e";
+            } else {
+                color += "c";
+            }
 
-        display.setTag("Lore", tag);
-        nbt.setTag("display", display);
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            NBTTagList tag = new NBTTagList();
+
+            actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+            
+            String name = display.getString("Name");
+
+            display.setTag("Lore", tag);
+            display.setString("Name", name + " " + color + "[" + average + "%]");
+            nbt.setTag("display", display);
+        }
+        
         stack.setTagCompound(nbt);
     }
 
