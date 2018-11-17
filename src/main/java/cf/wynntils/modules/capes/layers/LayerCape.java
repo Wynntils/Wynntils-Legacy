@@ -71,12 +71,14 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 {
                     f1 += 15.0F;
                 }
-
-                GlStateManager.rotate(6.0F + f2 / 2.0F + f1, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
+                float xMaxAngle = 100F;
+                float zMaxAngle = 50f;
+                float xAngle = (6.0F + f2 / 2.0F + f1) > xMaxAngle ? xMaxAngle : 6.0F + f2 / 2.0F + f1;
+                float zAngle = (f3 / 2.0F) > zMaxAngle ? zMaxAngle : (f3 / 2.0F) < -zMaxAngle ? -zMaxAngle : f3 / 2.0F;
+//                System.out.println(xAngle);
+                GlStateManager.rotate(xAngle, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(zAngle, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-//                this.playerRenderer.getMainModel().renderCape(0.0625F);
                 renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
                 GlStateManager.popMatrix();
             }
