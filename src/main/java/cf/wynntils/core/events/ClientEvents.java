@@ -64,7 +64,7 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void updateActionBar(ClientChatReceivedEvent event) {
-        if(Reference.onServer && event.getType() == 2) {
+        if(Reference.onServer && event.getType() == ChatType.GAME_INFO) {
             String text = event.getMessage().getUnformattedText();
             PlayerInfo.getPlayerInfo().updateActionBar(text);
             event.setMessage(new TextComponentString(""));

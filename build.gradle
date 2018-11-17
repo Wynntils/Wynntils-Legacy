@@ -25,10 +25,10 @@ targetCompatibility = "1.8"
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.11.2-13.20.1.2386"
+    version = "1.12.2-14.23.4.2705"
     runDir = "run"
 
-    mappings = "stable_31"
+    mappings = "snapshot_20171003"
     makeObfSourceJar = false
 }
 
