@@ -20,21 +20,13 @@ public class CapeManager {
     public static ArrayList<String> downloaded = new ArrayList<>();
 
     public static void downloadCape(UUID uuid) {
-        if (!WebManager.isPremium(uuid) && !WebManager.isUser(uuid)) {
+        if (!WebManager.hasCape(uuid)) {
             return;
         }
 
         String url; ResourceLocation rl;
-        if (uuid != null && WebManager.isPremium(uuid)) {
-            url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.toString().replace("-", "");
-            rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
-        } else if(uuid != null && WebManager.isUser(uuid)) {
-            url = WebManager.apiUrls.get("Capes") + "/user/default";
-            rl = new ResourceLocation("wynntils:capes/default");
-        } else {
-            url = WebManager.apiUrls.get("Capes") + "/user/default";
-            rl = new ResourceLocation("wynntils:capes/default");
-        }
+        url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.toString().replace("-", "");
+        rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
 
         //avoid extra downloading
         if(downloaded.contains(rl.getResourcePath())) { return; }
