@@ -82,10 +82,12 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
                 f1 += 15.0F;
             }
 
-            GlStateManager.rotate(6.0F + f2 / 2.0F + f1, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(f3 / 2.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.rotate(-f3 / 2.0F, 0.0F, 1.0F, 0.0F);
-//            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            float xMaxAngle = 80F;
+            float zMaxAngle = 50f;
+            float xAngle = (6.0F + f2 / 2.0F + f1) > xMaxAngle ? xMaxAngle : 6.0F + f2 / 2.0F + f1;
+            float zAngle = (f3 / 2.0F) > zMaxAngle ? zMaxAngle : (f3 / 2.0F) < -zMaxAngle ? -zMaxAngle : f3 / 2.0F;
+            GlStateManager.rotate(xAngle, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(zAngle, 0.0F, 0.0F, 1.0F);
             this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 

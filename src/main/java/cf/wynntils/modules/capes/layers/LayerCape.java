@@ -75,7 +75,6 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 float zMaxAngle = 50f;
                 float xAngle = (6.0F + f2 / 2.0F + f1) > xMaxAngle ? xMaxAngle : 6.0F + f2 / 2.0F + f1;
                 float zAngle = (f3 / 2.0F) > zMaxAngle ? zMaxAngle : (f3 / 2.0F) < -zMaxAngle ? -zMaxAngle : f3 / 2.0F;
-//                System.out.println(xAngle);
                 GlStateManager.rotate(xAngle, 1.0F, 0.0F, 0.0F);
                 GlStateManager.rotate(zAngle, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
@@ -87,7 +86,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
     public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
         this.bipedCape = new ModelRenderer(model, 0, 0);
-        this.bipedCape.setTextureSize(128, 64);
+        this.bipedCape.setTextureSize(128, 64); // 128x64 Capes, double the default mc capes
         this.bipedCape.addBox(-10.0F, 0.0F, -2.0F, 20, 32, 2);
         if (player.isSneaking()) {
             this.bipedCape.rotationPointY = 3.0F;
