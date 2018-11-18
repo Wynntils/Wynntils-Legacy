@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays.hud;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -46,6 +47,7 @@ public class ExpBarOverlay extends Overlay{
             exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
         else
             exp = getPlayerInfo().getExperiencePercentage();
+        if (ModCore.mc().player.getHorseJumpPower() > 0) exp = ModCore.mc().player.getHorseJumpPower();
     }
 
     @Override

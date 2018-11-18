@@ -113,7 +113,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Current Text", description = "What will be showed at the Leveling Text")
         public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
-        @Setting(displayName = "Enabled", description = "Should the mana bar display?")
+        @Setting(displayName = "Enabled", description = "Should the lvl bar display?")
         public boolean enabled = true;
 
         @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
