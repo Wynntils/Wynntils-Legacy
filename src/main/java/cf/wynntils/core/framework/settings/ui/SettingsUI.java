@@ -7,7 +7,6 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
-import cf.wynntils.core.framework.rendering.textures.Texture;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.SettingsContainer;
 import cf.wynntils.core.framework.settings.annotations.Setting;
@@ -127,7 +126,7 @@ public class SettingsUI extends UI {
 
         holders.render(mouseX,mouseY);
 
-        render.createMask(Textures.Masks.full,screenWidth/2+5, screenHeight/2-100, screenWidth/2+185,screenHeight/2+100);
+        ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 + 5, screenHeight / 2 - 100, screenWidth / 2 + 185, screenHeight / 2 + 100);
         settings.elements.forEach(setting -> {
             setting.position.anchorX = settings.position.anchorX;
             setting.position.anchorY = settings.position.anchorY;
@@ -147,27 +146,28 @@ public class SettingsUI extends UI {
                 });
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
-                render.scale(0.8f);
+                ScreenRenderer.scale(0.8f);
                 render.drawString(((SettingElement) setting).info.displayName(), (setting.position.getDrawingX() + 33f) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.resetScale();
+                ScreenRenderer.resetScale();
             }
             setting.position.offsetX -= settings.position.offsetX;
             setting.position.offsetY -= settings.position.offsetY;
         });
-        render.clearMask();
+        ScreenRenderer.clearMask();
         //TODO add mask and scroll for holders
 
     }
 
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
-        render.scale(0.7f);
+        ScreenRenderer.scale(0.7f);
         render.drawString(this.currentSettingsPath.replace('/','>'),(screenWidth/2+10)/0.7f,(screenHeight/2-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-        render.resetScale();
+        ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
                 List<String> lines = Arrays.asList(((SettingElement) setting).info.description().split("_nl"));
-                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
+//                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
+                GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
             }
         });
     }
@@ -331,7 +331,7 @@ public class SettingsUI extends UI {
                     if(limit != null) {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,limit.min(),limit.max(),limit.precision(),0,(ui, aFloat) -> {
                             try {
-                                registeredSettings.get(currentSettingsPath).setValue(field, (float)((UIESlider)valueElement).getValue(), false);
+                                registeredSettings.get(currentSettingsPath).setValue(field, ((UIESlider) valueElement).getValue(), false);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

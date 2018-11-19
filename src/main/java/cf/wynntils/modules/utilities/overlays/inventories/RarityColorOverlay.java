@@ -31,6 +31,8 @@ public class RarityColorOverlay implements Listener {
 
     private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
+    int lowerInvFloor;
+
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         drawChest(e.getGuiInventory().getLowerInv(), e.getGuiInventory().getUpperInv(), e.getGuiInventory().getSlotUnderMouse(), 1);
@@ -308,6 +310,8 @@ public class RarityColorOverlay implements Listener {
                 GL11.glPopMatrix();
             }
 
+            lowerInvFloor = floor;
+
             amount = -1;
             int invfloor = 0;
             boolean accessories = UtilitiesConfig.Items.INSTANCE.accesoryHighlight;
@@ -456,7 +460,9 @@ public class RarityColorOverlay implements Listener {
                 ScreenRenderer screen = new ScreenRenderer();
                 //LWR INV
                 int x = 190;
-                int y = 143;
+//                int y = (lowerInvFloor * 18) + 36;
+                int y = (int) (lowerInvFloor * 19.7) + 25;
+//                System.out.println(lowerInvFloor);
                 CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
                 if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     ScreenRenderer.beginGL(0, 0);

@@ -48,7 +48,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
                 if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
                     this.renderPlayer.bindTexture(abstractclientplayer.getLocationElytra());
-                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.isPremium(entitylivingbaseIn.getUniqueID())) {
+                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
                     this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
                 } else {
                     this.renderPlayer.bindTexture(TEXTURE_ELYTRA);

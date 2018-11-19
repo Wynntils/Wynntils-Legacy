@@ -22,8 +22,12 @@ public class SkillPointOverlay implements Listener {
                 lore = lore.replace(tokens[j], "");
             }
             String[] numbers = lore.split(" ");
-            int count = Integer.parseInt(numbers[0]);
-            e.getGuiInventory().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
+            try {
+                int count = Integer.parseInt(numbers[0]);
+                e.getGuiInventory().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
+            } catch (Exception ex) {
+                System.out.print(ex.toString());
+            }
         }
     }
 

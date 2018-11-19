@@ -20,7 +20,7 @@ public class CapeManager {
     public static ArrayList<String> downloaded = new ArrayList<>();
 
     public static void downloadCape(UUID uuid) {
-        if (!WebManager.hasCape(uuid)) {
+        if (!WebManager.hasCape(uuid) && !WebManager.hasElytra(uuid)) {
             return;
         }
 
