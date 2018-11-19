@@ -2,6 +2,7 @@ package cf.wynntils.core.framework.settings;
 
 import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.overlays.Overlay;
+import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 
@@ -27,7 +28,7 @@ public class SettingsContainer {
         this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
         for(Field f : holder.getClass().getDeclaredFields())
-            if(!Modifier.isStatic(f.getModifiers()))
+            if(!Modifier.isStatic(f.getModifiers()) && f.getAnnotation(Setting.class) != null)
                 fields.add(f);
 
         try{
