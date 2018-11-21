@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SettingsUI extends UI {
     private GuiScreen parentScreen;
@@ -182,8 +183,8 @@ public class SettingsUI extends UI {
         settings.elements.clear();
         settingsScrollbar.max = settingsScrollbar.min;
         try {
-            List<Field> sorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
-            Collections.sort(sorted, Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName()));
+            List<Field> notSorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
+            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).collect(Collectors.toList());
 
             for (Field field : sorted) {
                 try {

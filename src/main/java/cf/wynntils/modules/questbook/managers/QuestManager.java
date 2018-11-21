@@ -5,6 +5,7 @@
 package cf.wynntils.modules.questbook.managers;
 
 import cf.wynntils.ModCore;
+import cf.wynntils.Reference;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -20,6 +21,7 @@ import java.util.List;
 public class QuestManager {
 
     private static boolean readingQuestBook = false;
+    private static long readRequestTime = 0;
 
     private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
     public static QuestInfo trackedQuest = null;
@@ -30,6 +32,7 @@ public class QuestManager {
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
+        readRequestTime = System.currentTimeMillis();
         readingQuestBook = true;
         currentQuestsData.clear();
 
@@ -50,6 +53,7 @@ public class QuestManager {
      * Requests a full QuestBook re-read, when the player already clicked on the book by itself
      */
     public static void requestLessIntrusiveQuestBookReading() {
+        readRequestTime = System.currentTimeMillis();
         readingQuestBook = true;
         currentQuestsData.clear();
     }
@@ -89,6 +93,10 @@ public class QuestManager {
      * @return if the questbook is being read
      */
     public static boolean isReadingQuestBook() {
+        if(System.currentTimeMillis() - readRequestTime >= 3000) {
+            readingQuestBook = false;
+            Reference.LOGGER.warn("Could not read questbook, timedout (" + (System.currentTimeMillis() - readRequestTime) + "ms)");
+        }
         return readingQuestBook;
     }
 
@@ -99,6 +107,7 @@ public class QuestManager {
      * @param readingQuestBook selected boolean
      */
     public static void setReadingQuestBook(boolean readingQuestBook) {
+        readRequestTime = System.currentTimeMillis();
         QuestManager.readingQuestBook = readingQuestBook;
     }
 

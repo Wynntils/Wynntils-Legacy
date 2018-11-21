@@ -7,6 +7,8 @@ package cf.wynntils.core.events.custom;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.server.*;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -202,6 +204,60 @@ public class PacketEvent extends Event {
         }
 
         public CPacketPlayerDigging getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
+
+    /**
+     * Triggered when the player try to use an item
+     *
+     */
+    public static class PlayerUseItemEvent extends PacketEvent {
+
+        CPacketPlayerTryUseItem packet;
+        NetHandlerPlayClient playClient;
+
+        public PlayerUseItemEvent(CPacketPlayerTryUseItem packet, NetHandlerPlayClient playClient) {
+            this.packet = packet; this.playClient = playClient;
+        }
+
+        public CPacketPlayerTryUseItem getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
+
+    /**
+     * Triggered when the player try to use an item on a block
+     *
+     */
+    public static class PlayerUseItemOnBlockEvent extends PacketEvent {
+
+        CPacketPlayerTryUseItemOnBlock packet;
+        NetHandlerPlayClient playClient;
+
+        public PlayerUseItemOnBlockEvent(CPacketPlayerTryUseItemOnBlock packet, NetHandlerPlayClient playClient) {
+            this.packet = packet; this.playClient = playClient;
+        }
+
+        public CPacketPlayerTryUseItemOnBlock getPacket() {
             return packet;
         }
 

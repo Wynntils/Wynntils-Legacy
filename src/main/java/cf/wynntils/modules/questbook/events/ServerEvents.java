@@ -34,8 +34,19 @@ public class ServerEvents implements Listener {
         }
     }
 
+    @SubscribeEvent
+    public void onUserUseItem(PacketEvent.PlayerUseItemEvent e) {
+        if(acceptItems) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onUserUseItemOnBlock(PacketEvent.PlayerUseItemOnBlockEvent e) {
+        if(acceptItems) e.setCanceled(true);
+    }
+
     private boolean acceptItems = false;
     private short transactionId = 0;
+    private InventoryBasic currentInventory = null;
 
     private ArrayList<String> readedQuests = new ArrayList<>();
 
@@ -53,9 +64,12 @@ public class ServerEvents implements Listener {
                         readedQuests.clear();
                         transactionId = 0;
                         acceptItems = true;
+                        currentInventory = base;
                     }
 
                     e.setCanceled(true);
+                }else{
+                    acceptItems = false; QuestManager.setReadingQuestBook(false);
                 }
             }
         }
@@ -63,6 +77,11 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onInventoryReceiveItems(PacketEvent.InventoryItemsReceived e) {
+        if(currentInventory == null || !currentInventory.hasCustomName()|| !currentInventory.getDisplayName().getFormattedText().contains("Quests")) {
+            acceptItems = false;
+            QuestManager.setReadingQuestBook(false);
+            return;
+        }
         if(acceptItems) {
             e.setCanceled(true);
 
