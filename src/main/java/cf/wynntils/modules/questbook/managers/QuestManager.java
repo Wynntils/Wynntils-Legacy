@@ -102,7 +102,7 @@ public class QuestManager {
 
     /**
      * Called when the questbook is starting or finish to be read
-     *  @see cf.wynntils.modules.questbook.events.ServerEvents#onInventoryReceiveItems line 107
+     * @see cf.wynntils.modules.questbook.events.ServerEvents#onInventoryReceiveItems line 107
      *
      * @param readingQuestBook selected boolean
      */

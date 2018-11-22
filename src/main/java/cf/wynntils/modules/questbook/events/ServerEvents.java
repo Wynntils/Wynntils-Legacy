@@ -58,7 +58,7 @@ public class ServerEvents implements Listener {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
 
-                if(base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
+                if(e.getPacket().getSlotCount() >= 54 && base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
 
                     if(!acceptItems) {
                         readedQuests.clear();
@@ -137,7 +137,7 @@ public class ServerEvents implements Listener {
         displayName = displayName.substring(0, displayName.length() - 1);
         displayName = Utils.stripColor(displayName).replace("À", "").replace("\u058E", "");
 
-        QuestStatus status = QuestStatus.CAN_START;
+        QuestStatus status = null;
 
         List<String> lore = Utils.getLore(item);
 
@@ -149,6 +149,13 @@ public class ServerEvents implements Listener {
             status = QuestStatus.CAN_START;
         }else if(lore.get(0).contains("Cannot start")) {
             status = QuestStatus.CANNOT_START;
+        }
+
+        if(status == null) {
+            acceptItems = false;
+            QuestManager.setReadingQuestBook(false);
+            QuestManager.requestQuestBookReading();
+            return;
         }
 
         int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Min. Lv: ", "").replace("✖ Min. Lv: ", ""));
