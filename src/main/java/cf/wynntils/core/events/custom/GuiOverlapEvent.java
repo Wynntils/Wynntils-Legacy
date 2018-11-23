@@ -6,6 +6,7 @@ package cf.wynntils.core.events.custom;
 
 import cf.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import cf.wynntils.modules.core.overlays.inventories.HorseReplacer;
+import cf.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import cf.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
@@ -350,6 +351,67 @@ public class GuiOverlapEvent extends Event {
             public boolean isCancelable() {
                 return true;
             }
+        }
+
+    }
+
+    public static class IngameMenuOverlap extends GuiOverlapEvent {
+
+        IngameMenuReplacer ingameMenuReplacer;
+
+        public IngameMenuOverlap(IngameMenuReplacer ingameMenuReplacer) {
+            this.ingameMenuReplacer = ingameMenuReplacer;
+        }
+
+        public IngameMenuReplacer getGui() {
+            return ingameMenuReplacer;
+        }
+
+        public static class DrawScreen extends IngameMenuOverlap {
+
+            int mouseX, mouseY; float partialTicks;
+
+            public DrawScreen(IngameMenuReplacer ingameMenuReplacer, int mouseX, int mouseY, float partialTicks) {
+                super(ingameMenuReplacer);
+
+                this.mouseX = mouseX; this.mouseY = mouseY; this.partialTicks = partialTicks;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public float getPartialTicks() {
+                return partialTicks;
+            }
+        }
+
+        public static class MouseClicked extends IngameMenuOverlap {
+
+            int mouseX, mouseY, mouseButton;
+
+            public MouseClicked(IngameMenuReplacer ingameMenuReplacer, int mouseX, int mouseY, int mouseButton) {
+                super(ingameMenuReplacer);
+
+                this.mouseX = mouseX; this.mouseY = mouseY; this.mouseButton = mouseButton;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+
+            public int getMouseButton() {
+                return mouseButton;
+            }
+
         }
 
     }

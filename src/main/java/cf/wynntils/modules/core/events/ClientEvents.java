@@ -11,7 +11,9 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import cf.wynntils.modules.core.overlays.inventories.HorseReplacer;
+import cf.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import cf.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
@@ -40,6 +42,11 @@ public class ClientEvents implements Listener {
             if(e.getGui() instanceof HorseReplacer) return;
 
             e.setGui(new HorseReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+        }
+        if(e.getGui() instanceof GuiIngameMenu) {
+            if(e.getGui() instanceof IngameMenuReplacer) return;
+
+            e.setGui(new IngameMenuReplacer());
         }
     }
 

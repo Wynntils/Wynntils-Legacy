@@ -5,6 +5,8 @@
 package cf.wynntils.modules.music.instances;
 
 import cf.wynntils.modules.music.configs.MusicConfig;
+import cf.wynntils.modules.music.managers.MusicManager;
+import cf.wynntils.modules.richpresence.RichPresenceModule;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
@@ -24,6 +26,8 @@ public class MusicPlayer {
     File currentMusic;
     File nextMusic = null;
     AdvancedPlayer currentPlayer;
+
+    boolean paused = false;
 
     public void play(File f) {
         if(currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
@@ -48,6 +52,10 @@ public class MusicPlayer {
         currentMusic = null;
     }
 
+    public File getCurrentMusic() {
+        return currentMusic;
+    }
+
     public void setVolume(float volume) {
         if(!active || currentPlayer == null) return;
         if(currentPlayer != null && currentPlayer.getAudioDevice() == null) return;
@@ -61,6 +69,18 @@ public class MusicPlayer {
 
     public float getCurrentVolume() {
         return currentVolume;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void changePausedState() {
+        paused = !paused;
+
+
+        if(!paused) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
+        if(paused) stop();
     }
 
     public void setupController() {
@@ -98,17 +118,22 @@ public class MusicPlayer {
             if(musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();
         }
 
+        if(paused) return;
+
         musicPlayer = new Thread(() -> {
             try{
                 FileInputStream fis = new FileInputStream(currentMusic);
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 currentPlayer = new AdvancedPlayer(bis);
                 currentPlayer.setPlayBackListener(new PlaybackListener() {
-                    public void playbackStarted(PlaybackEvent var1) { setVolume(-30); }
+                    public void playbackStarted(PlaybackEvent var1) {
+                        setVolume(-30);
+                    }
                     public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                 });
 
                 currentPlayer.play();
+
                 fis.close();
                 bis.close();
             }catch (Exception ex) { ex.printStackTrace(); }
