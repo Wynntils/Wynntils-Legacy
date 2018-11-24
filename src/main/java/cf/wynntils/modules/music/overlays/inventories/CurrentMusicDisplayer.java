@@ -26,17 +26,17 @@ public class CurrentMusicDisplayer implements Listener {
         ScreenRenderer.beginGL(e.getGui().width / 2, e.getGui().height / 4 - 16);
         float size = r.drawString((MusicManager.getPlayer().getCurrentMusic() != null ? MusicManager.getPlayer().getCurrentMusic().getName().replace(".mp3", "") : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
-        r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)) - 9, 150, 0, 17, 4, 49); // left corner
-        r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)) - 5, 150, (int)(size/2) + 5, 199, 5, 17, 9, 66); //middle
-        r.drawRect(Textures.UIs.hud_overlays, (int)(size/2) + 5, 150, 10, 17, 4, 49); //right corner
+        r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)) - 4, 150, 0, 17, 4, 49); // left corner
+        r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)), 150, (int)(size/2), 199, 5, 17, 9, 66); //middle
+        r.drawRect(Textures.UIs.hud_overlays, (int)(size/2), 150, 10, 17, 4, 49); //right corner
 
         r.drawString((MusicManager.getPlayer().getCurrentMusic() != null ? MusicManager.getPlayer().getCurrentMusic().getName().replace(".mp3", "") : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
         if(MusicManager.getPlayer() != null) {
             if(MusicManager.getPlayer().isPaused()) {
-               r.drawRect(Textures.UIs.hud_overlays, -7, 170, 34, 0, 16, 16);
+                r.drawRect(Textures.UIs.hud_overlays, -8, 170, 17, 0, 16, 16);
             }else{
-               r.drawRect(Textures.UIs.hud_overlays, -7, 170, 17, 0, 16, 16);
+                r.drawRect(Textures.UIs.hud_overlays, -8, 170, 34, 0, 16, 16);
             }
         }
 

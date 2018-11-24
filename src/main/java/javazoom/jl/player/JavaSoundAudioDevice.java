@@ -58,6 +58,7 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
             if (var2 instanceof SourceDataLine) {
                 this.source = (SourceDataLine)var2;
                 this.source.open(this.fmt);
+                setLineGain(-30);
                 this.source.start();
             }
         } catch (RuntimeException var3) {
