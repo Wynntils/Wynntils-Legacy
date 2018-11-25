@@ -29,8 +29,8 @@ public class CapeManager {
         rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
 
         //avoid extra downloading
-        if(downloaded.contains(rl.getResourcePath())) { return; }
-        downloaded.add(rl.getResourcePath());
+        if(downloaded.contains(rl.getPath())) { return; }
+        downloaded.add(rl.getPath());
 
         IImageBuffer ibuffer = new IImageBuffer() {
             public BufferedImage parseUserSkin(BufferedImage image) {

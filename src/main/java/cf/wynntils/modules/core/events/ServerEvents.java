@@ -12,6 +12,7 @@ import cf.wynntils.modules.core.instances.OutgoingFilter;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -42,7 +43,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void chatMessage(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != 1) {
+        if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
         if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {

@@ -12,9 +12,9 @@ import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -47,7 +47,7 @@ public class NametagManager {
         }
 
         if(canRenderName(e.getEntity(), e.getRenderer().getRenderManager())) {
-            double d0 = entity.getDistanceSqToEntity(e.getRenderer().getRenderManager().renderViewEntity);
+            double d0 = entity.getDistanceSq(e.getRenderer().getRenderManager().renderViewEntity);
             float f = entity.isSneaking() ? 32.0f : 64;
 
             if (d0 < (double)(f * f)) {
@@ -98,7 +98,7 @@ public class NametagManager {
 
     private static void renderLivingLabel(Entity entityIn, String str, double x, double y, double z, int maxDistance, RenderManager renderManager, float r, float g, float b)
     {
-        double d0 = entityIn.getDistanceSqToEntity(renderManager.renderViewEntity);
+        double d0 = entityIn.getDistanceSq(renderManager.renderViewEntity);
 
         if (d0 <= (double)(maxDistance * maxDistance))
         {
@@ -206,7 +206,7 @@ public class NametagManager {
             int i = fontRendererIn.getStringWidth(str) / 2;
             GlStateManager.disableTexture2D();
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            BufferBuilder vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
             vertexbuffer.pos((double) (-i - 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
             vertexbuffer.pos((double) (-i - 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();

@@ -17,6 +17,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.EnumTypeAdapterFactory;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -64,7 +65,7 @@ public class ClientEvents {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void updateActionBar(ClientChatReceivedEvent event) {
-        if(Reference.onServer && event.getType() == 2) {
+        if(Reference.onServer && event.getType() == ChatType.GAME_INFO) {
             String text = event.getMessage().getUnformattedText();
             PlayerInfo.getPlayerInfo().updateActionBar(text);
             event.setMessage(new TextComponentString(""));

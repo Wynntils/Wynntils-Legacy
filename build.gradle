@@ -5,7 +5,7 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
     }
 }
@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-def versionObj = new Version(major: 0, minor: 0, revision: 38)
+def versionObj = new Version(major: 0, minor: 1, revision: 0)
 
 version = versionObj.toString()
 group = "cf.wynntils"
@@ -25,10 +25,10 @@ targetCompatibility = "1.8"
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.11.2-13.20.1.2386"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
 
-    mappings = "stable_31"
+    mappings = "stable_39"
     makeObfSourceJar = false
 }
 

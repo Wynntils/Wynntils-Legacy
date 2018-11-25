@@ -110,7 +110,7 @@ public class Utils {
             if (nbttagcompound.getTagId("Lore") == 9) {
                 NBTTagList nbttaglist3 = nbttagcompound.getTagList("Lore", 8);
 
-                if (!nbttaglist3.hasNoTags()) {
+                if (!nbttaglist3.isEmpty()) {
                     for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
                         lore.add(nbttaglist3.getStringTagAt(l1));
                     }

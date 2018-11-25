@@ -136,37 +136,37 @@ public class FrameworkManager {
                 e.setCanceled(true);
                 return;
             }
-            Minecraft.getMinecraft().mcProfiler.startSection("preRenOverlay");
+            Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().mcProfiler.startSection(overlay.displayName);
+                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
-                        Minecraft.getMinecraft().mcProfiler.endSection();
+                        Minecraft.getMinecraft().profiler.endSection();
                     }
                 }
             }
-            Minecraft.getMinecraft().mcProfiler.endSection();
+            Minecraft.getMinecraft().profiler.endSection();
         }
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
-            Minecraft.getMinecraft().mcProfiler.startSection("posRenOverlay");
+            Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().mcProfiler.startSection(overlay.displayName);
+                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
-                        Minecraft.getMinecraft().mcProfiler.endSection();
+                        Minecraft.getMinecraft().profiler.endSection();
                     }
                 }
             }
-            Minecraft.getMinecraft().mcProfiler.endSection();
+            Minecraft.getMinecraft().profiler.endSection();
         }
     }
 
