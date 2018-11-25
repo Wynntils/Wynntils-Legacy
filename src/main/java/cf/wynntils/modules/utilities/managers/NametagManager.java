@@ -42,7 +42,7 @@ public class NametagManager {
             }else if(WebManager.isHelper(entity.getUniqueID())) {
                 r = 1f; g = 1; b = 0.25f;
             }
-        }else if(!UtilitiesConfig.INSTANCE.hideNametags) {
+        }else if(!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) {
             return false;
         }
 
