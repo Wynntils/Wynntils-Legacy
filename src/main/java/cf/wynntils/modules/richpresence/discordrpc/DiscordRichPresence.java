@@ -1,12 +1,12 @@
 package cf.wynntils.modules.richpresence.discordrpc;
 
 import com.sun.jna.*;
-import scala.actors.threadpool.Arrays;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class DiscordRichPresence {
@@ -111,7 +111,7 @@ public class DiscordRichPresence {
 
         @Override
         protected List<String> getFieldOrder() {
-            return Arrays.asList(new String[] {"state", "details", "startTimestamp", "endTimestamp", "largeImageKey", "largeImageText", "smallImageKey", "smallImageText", "partyId", "partySize", "partyMax", "matchSecret", "joinSecret", "spectateSecret", "instance"});
+            return Arrays.asList("state", "details", "startTimestamp", "endTimestamp", "largeImageKey", "largeImageText", "smallImageKey", "smallImageText", "partyId", "partySize", "partyMax", "matchSecret", "joinSecret", "spectateSecret", "instance");
         }
 
     }
@@ -127,7 +127,7 @@ public class DiscordRichPresence {
 
         @Override
         protected List<String> getFieldOrder() {
-            return Arrays.asList(new String[] {"userId", "username", "discriminator", "avatar"});
+            return Arrays.asList("userId", "username", "discriminator", "avatar");
         }
 
     }
@@ -172,7 +172,7 @@ public class DiscordRichPresence {
 
         @Override
         protected List<String> getFieldOrder() {
-            return Arrays.asList(new String[] {"ready", "disconnected", "errored", "joinGame", "spectateGame", "joinRequest"});
+            return Arrays.asList("ready", "disconnected", "errored", "joinGame", "spectateGame", "joinRequest");
         }
     }
 
