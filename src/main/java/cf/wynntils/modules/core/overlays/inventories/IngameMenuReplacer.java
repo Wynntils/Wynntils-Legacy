@@ -25,4 +25,9 @@ public class IngameMenuReplacer extends GuiIngameMenu {
         FrameworkManager.getEventBus().post(new GuiOverlapEvent.IngameMenuOverlap.MouseClicked(this, mouseX, mouseY, mouseButton));
     }
 
+    @Override
+    public void drawHoveringText(String text, int x, int y) {
+        super.drawHoveringText(text, x, y);
+    }
+
 }

@@ -32,11 +32,14 @@ public class CurrentMusicDisplayer implements Listener {
 
         r.drawString((MusicManager.getPlayer().getCurrentMusic() != null ? MusicManager.getPlayer().getCurrentMusic().getName().replace(".mp3", "") : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
+        int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();
         if(MusicManager.getPlayer() != null) {
             if(MusicManager.getPlayer().isPaused()) {
                 r.drawRect(Textures.UIs.hud_overlays, -8, 170, 17, 0, 16, 16);
+                if(x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Play", e.getMouseX(), e.getMouseY());
             }else{
                 r.drawRect(Textures.UIs.hud_overlays, -8, 170, 34, 0, 16, 16);
+                if(x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Pause", e.getMouseX(), e.getMouseY());
             }
         }
 

@@ -51,13 +51,11 @@ public class QuestBookGUI extends GuiScreen {
 
     private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
 
-
     long lastTick = 0;
 
     public QuestBookGUI() { }
 
     public void open() {
-        updateItemListSearch();
         lastTick = getMinecraft().world.getTotalWorldTime();
         acceptBack = false;
         acceptNext = false;
@@ -65,6 +63,7 @@ public class QuestBookGUI extends GuiScreen {
         requestOpening = true;
 
         if(page == QuestBookPage.ITEM_GUIDE) updateItemListSearch();
+        if(page == QuestBookPage.QUESTS) updateQuestSearch();
 
         getMinecraft().displayGuiScreen(this);
     }
@@ -87,7 +86,7 @@ public class QuestBookGUI extends GuiScreen {
     boolean keepForTime = false;
 
     //quest search
-    ArrayList<QuestInfo> toSearch;
+    ArrayList<QuestInfo> questSearch;
 
     //itemguide search
     ArrayList<ItemProfile> itemSearch;
@@ -146,8 +145,7 @@ public class QuestBookGUI extends GuiScreen {
 
         //updating questbook search
         if(page == QuestBookPage.QUESTS) {
-            ArrayList<QuestInfo> quests = new ArrayList<>(QuestManager.getCurrentQuestsData());
-            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+            updateQuestSearch();
             overQuest = null; currentPage = 1;
         }
         //updating itemguide search
@@ -307,11 +305,12 @@ public class QuestBookGUI extends GuiScreen {
         }
         if(page == QuestBookPage.DEFAULT) {
             if(selected == 1) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 searchBarText = "";
                 currentPage = 1;
                 selected = 0;
+                updateQuestSearch();
                 page = QuestBookPage.QUESTS;
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             }
             if(selected == 2) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
@@ -325,6 +324,7 @@ public class QuestBookGUI extends GuiScreen {
                 searchBarText = "";
                 currentPage = 1;
                 selected = 0;
+                updateItemListSearch();
                 page = QuestBookPage.ITEM_GUIDE;
             }
             return;
@@ -351,6 +351,12 @@ public class QuestBookGUI extends GuiScreen {
             if(allowRings && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Ring")) return true;
             return allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace");
         }).collect(Collectors.toList());
+    }
+
+    private void updateQuestSearch() {
+        ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
+
+        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -720,9 +726,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                if (searchBarText.isEmpty()) toSearch = (ArrayList<QuestInfo>) QuestManager.getCurrentQuestsData().clone();
-
-                int pages = toSearch.size() <= 13 ? 1 : (int) Math.ceil(toSearch.size() / 13d);
+                int pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
                 if (pages < currentPage) {
                     currentPage = pages;
                 }
@@ -757,14 +761,13 @@ public class QuestBookGUI extends GuiScreen {
 
                 //drawing all quests
                 int currentY = 12;
-                if (toSearch.size() > 0) {
+                if (questSearch.size() > 0) {
                     for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
-                        if (toSearch.size() <= i) {
+                        if (questSearch.size() <= i) {
                             break;
                         }
 
-                        QuestInfo selected = toSearch.get(i);
-                        if (!searchBarText.equals("") && !selected.getName().startsWith(searchBarText)) continue;
+                        QuestInfo selected = questSearch.get(i);
 
                         List<String> lore = new ArrayList<>(selected.getLore());
 
