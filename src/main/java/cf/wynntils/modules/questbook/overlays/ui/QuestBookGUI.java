@@ -147,7 +147,7 @@ public class QuestBookGUI extends GuiScreen {
         //updating questbook search
         if(page == QuestBookPage.QUESTS) {
             ArrayList<QuestInfo> quests = new ArrayList<>(QuestManager.getCurrentQuestsData());
-            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+            toSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().contains(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
             overQuest = null; currentPage = 1;
         }
         //updating itemguide search
@@ -336,7 +336,7 @@ public class QuestBookGUI extends GuiScreen {
     private void updateItemListSearch() {
         ArrayList<ItemProfile> items = new ArrayList<>(WebManager.getDirectItems());
 
-        itemSearch = !searchBarText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : items;
+        itemSearch = !searchBarText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> c.getName().toLowerCase().contains(searchBarText.toLowerCase())).collect(Collectors.toList()) : items;
 
         itemSearch = (ArrayList<ItemProfile>)itemSearch.stream().filter(c -> {
             if(allowHelmet && c.getType() != null && c.getType().equalsIgnoreCase("Helmet")) return true;
@@ -764,7 +764,8 @@ public class QuestBookGUI extends GuiScreen {
                         }
 
                         QuestInfo selected = toSearch.get(i);
-                        if (!searchBarText.equals("") && !selected.getName().startsWith(searchBarText)) continue;
+//                        if (!searchBarText.equals("") && !selected.getName().toLowerCase().contains(searchBarText.toLowerCase())) continue;
+                        if (!searchBarText.equals("") && toSearch.contains((Object)selected.getName())) continue;
 
                         List<String> lore = new ArrayList<>(selected.getLore());
 
