@@ -6,6 +6,7 @@ package cf.wynntils.modules.questbook.managers;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
+import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -125,6 +126,8 @@ public class QuestManager {
         }
         trackedQuest = questInfo;
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
+
+        if(trackedQuest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
     }
 
     /**

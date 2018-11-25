@@ -26,7 +26,7 @@ public class ClientEvents implements Listener {
             QuestManager.requestQuestBookReading();
             return;
         }
-        if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("                            [Quest Completed]")) {
+        if(e.getMessage().getFormattedText().contains("§6[Quest Completed]")) {
             QuestManager.requestQuestBookReading();
         }
     }
