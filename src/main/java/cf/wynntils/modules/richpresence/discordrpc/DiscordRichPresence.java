@@ -2,63 +2,19 @@ package cf.wynntils.modules.richpresence.discordrpc;
 
 import com.sun.jna.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
 public class DiscordRichPresence {
     
-    private static File file = null;
-    
-    public static void loadDiscordRPC() {
-        InputStream inputStream = null;
-        FileOutputStream outputStream = null;
-        try {
-            String os = (getNativeLibraryResourcePath(Platform.getOSType(), System.getProperty("os.arch"), System.getProperty("os.name"))).replace("/com/sun/jna/", "assets/wynntils/native/") + "/";
-            
-            String libraryName = System.mapLibraryName("discord-rpc");
-            
-            inputStream = DiscordRichPresence.class.getClassLoader().getResourceAsStream(os + libraryName);
-            file = File.createTempFile("rpc", Platform.isWindows() ? ".dll" : null);
-            file.deleteOnExit();
-            outputStream = new FileOutputStream(file);
-            
-            int fileByte;
-            while ((fileByte = inputStream.read()) > -1) {
-                outputStream.write(fileByte);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-    
     public static DiscordRPC discordInitialize() {
-        loadDiscordRPC();
         DiscordRPC instance = DiscordRPC.INSTANCE;
         return instance;
     }
     
     public static interface DiscordRPC extends Library {
         
-        DiscordRPC INSTANCE = (DiscordRPC) Native.loadLibrary(file.getAbsolutePath(), DiscordRPC.class);
+        DiscordRPC INSTANCE = (DiscordRPC) Native.loadLibrary("/assets/wynntils/native/" + Platform.RESOURCE_PREFIX + "/" + System.mapLibraryName("discord-rpc"), DiscordRPC.class);
         
         void Discord_Initialize(String applicationID, DiscordEventHandlers eventHandler, boolean autoRegister, String steamID);
         
@@ -174,56 +130,5 @@ public class DiscordRichPresence {
         protected List<String> getFieldOrder() {
             return Arrays.asList("ready", "disconnected", "errored", "joinGame", "spectateGame", "joinRequest");
         }
-    }
-
-    private static String getNativeLibraryResourcePath(int osType, String arch, String name) {
-        String osPrefix;
-        arch = arch.toLowerCase();
-        if ("powerpc".equals(arch)) {
-            arch = "ppc";
-        }
-        else if ("powerpc64".equals(arch)) {
-            arch = "ppc64";
-        }
-        switch(osType) {
-            case Platform.WINDOWS:
-                if ("i386".equals(arch))
-                    arch = "x86";
-                osPrefix = "win32-" + arch;
-                break;
-            case Platform.WINDOWSCE:
-                osPrefix = "w32ce-" + arch;
-                break;
-            case Platform.MAC:
-                osPrefix = "darwin";
-                break;
-            case Platform.LINUX:
-                if ("x86".equals(arch)) {
-                    arch = "i386";
-                }
-                else if ("x86_64".equals(arch)) {
-                    arch = "amd64";
-                }
-                osPrefix = "linux-" + arch;
-                break;
-            case Platform.SOLARIS:
-                osPrefix = "sunos-" + arch;
-                break;
-            default:
-                osPrefix = name.toLowerCase();
-                if ("x86".equals(arch)) {
-                    arch = "i386";
-                }
-                if ("x86_64".equals(arch)) {
-                    arch = "amd64";
-                }
-                int space = osPrefix.indexOf(" ");
-                if (space != -1) {
-                    osPrefix = osPrefix.substring(0, space);
-                }
-                osPrefix += "-" + arch;
-                break;
-        }
-        return "/com/sun/jna/" + osPrefix;
     }
 }
