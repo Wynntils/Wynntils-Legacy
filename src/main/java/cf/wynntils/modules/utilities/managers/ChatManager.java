@@ -37,7 +37,7 @@ public class ChatManager {
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
-    public static Boolean applyUpdatesToClient(ITextComponent message) {
+    public static Pair<ITextComponent, Boolean> applyUpdatesToClient(ITextComponent message) {
 
         boolean cancel = false;
         
@@ -88,6 +88,15 @@ public class ChatManager {
         }
 
         if(UtilitiesConfig.Chat.INSTANCE.addTimestampsToChat) {
+            if (!message.getUnformattedComponentText().isEmpty() && message instanceof TextComponentString) {
+                ITextComponent newMessage = new TextComponentString("");
+                newMessage.setStyle(message.getStyle().createDeepCopy());
+                newMessage.appendSibling(message);
+                newMessage.getSiblings().addAll(message.getSiblings());
+                message.getSiblings().clear();
+                message.setStyle(null);
+                message = newMessage;
+            }
             List<ITextComponent> timeStamp = new ArrayList<ITextComponent>();
             ITextComponent startBracket = new TextComponentString("[");
             startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
@@ -210,7 +219,7 @@ public class ChatManager {
 
         lastMessage = originalMessage;
 
-        return cancel;
+        return new Pair<ITextComponent, Boolean>(message, cancel);
     }
 
     public static Pair<String, Boolean> applyUpdatesToServer(String message) {
