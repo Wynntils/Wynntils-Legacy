@@ -115,7 +115,7 @@ public class MusicPlayer {
     private void startReproduction() {
         if(currentPlayer != null) {
             currentPlayer.stop();
-            if(musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();
+//            if(musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();  Why is this even here ? There is no loop in the run function...
         }
 
         if(paused) return;

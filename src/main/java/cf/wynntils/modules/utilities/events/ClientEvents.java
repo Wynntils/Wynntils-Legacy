@@ -54,7 +54,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void changeNametagColors(RenderLivingEvent.Specials.Pre e) {
+    public void changeNametagColors(RenderLivingEvent.Specials.Pre<?> e) {
         if(NametagManager.checkForNametag(e)) e.setCanceled(true);
     }
 

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class ServerEvents implements Listener {
 
     public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    public static ScheduledFuture updateTimer;
+    public static ScheduledFuture<?> updateTimer;
 
     /**
      * Starts to check player location for RichPresence current player territory info

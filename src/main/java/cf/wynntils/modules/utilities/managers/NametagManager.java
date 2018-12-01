@@ -30,7 +30,7 @@ public class NametagManager {
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(\u00A7\\d \\[Lv\\. (.*?)\\])");
 
-    public static boolean checkForNametag(RenderLivingEvent.Specials.Pre e) {
+    public static boolean checkForNametag(RenderLivingEvent.Specials.Pre<?> e) {
         Entity entity =  e.getEntity();
 
         //TODO add this for guild, party and friends

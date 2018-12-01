@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 
 import javax.crypto.SecretKey;
@@ -22,6 +21,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 
 public class WynntilsAccount {
@@ -46,7 +46,7 @@ public class WynntilsAccount {
         URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "/requestEncryption").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject result = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject result = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
 
         byte[] publicKeyBy = DatatypeConverter.parseHexBinary(result.get("publicKeyIn").getAsString());
 
@@ -68,7 +68,7 @@ public class WynntilsAccount {
         object.addProperty("key", lastKey);
         object.addProperty("version", Reference.VERSION);
 
-        byte[] postAsBytes = object.toString().getBytes(Charsets.UTF_8);
+        byte[] postAsBytes = object.toString().getBytes(StandardCharsets.UTF_8);
 
         st2.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st2.setRequestProperty("Content-Length", "" + postAsBytes.length);
@@ -82,7 +82,7 @@ public class WynntilsAccount {
             IOUtils.closeQuietly(outputStream);
         }
 
-        JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st2.getInputStream())).getAsJsonObject();
+        JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st2.getInputStream(), "UTF-8")).getAsJsonObject();
         if(finalResult.has("error")) {
             return;
         }

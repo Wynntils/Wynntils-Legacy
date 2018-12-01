@@ -177,7 +177,7 @@ public class WebManager {
                 Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {
                 }.getType();
 
-                JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
                 territories.putAll(gson.fromJson(json.get("territories"), type));
 
                 territories.put("Rodoroc", new TerritoryProfile("Rodoroc", 965, -5238, 1265, -5067, null, null, null));
@@ -203,7 +203,7 @@ public class WebManager {
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
 
-        JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
         guilds.addAll(gson.fromJson(json.get("guilds"), type));
 
         return guilds;
@@ -221,7 +221,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("GuildInfo") + guild).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
 
         if(obj.has("error")) {
             return null;
@@ -240,7 +240,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
         main.remove("request");
 
         Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
@@ -258,7 +258,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonArray main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("items");
+        JsonArray main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject().getAsJsonArray("items");
 
         Type type = new TypeToken<HashMap<String, ItemProfile>>() {
         }.getType();
@@ -283,7 +283,7 @@ public class WebManager {
         Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
         }.getType();
 
-        JsonArray json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("locations");
+        JsonArray json = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject().getAsJsonArray("locations");
         markers.addAll(gson.fromJson(json, type));
 
         mapMarkers = markers;
@@ -300,7 +300,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        String json = IOUtils.toString(st.getInputStream());
+        String json = IOUtils.toString(st.getInputStream(), "UTF-8");
 
         Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
         }.getType();
@@ -318,7 +318,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -344,7 +344,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -367,7 +367,7 @@ public class WebManager {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonObject();
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
@@ -376,7 +376,7 @@ public class WebManager {
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         ArrayList<MusicProfile> result = new ArrayList<>();
-        JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonArray();
+        JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream(), "UTF-8")).getAsJsonArray();
         for(int i = 0; i < array.size(); i++) {
             JsonObject obj = array.get(i).getAsJsonObject();
             if(!obj.has("name") || !obj.has("download_url") || !obj.has("size")) continue;
