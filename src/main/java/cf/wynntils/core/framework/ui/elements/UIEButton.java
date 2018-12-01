@@ -3,13 +3,12 @@ package cf.wynntils.core.framework.ui.elements;
 import cf.wynntils.core.framework.enums.MouseButton;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
-import cf.wynntils.core.framework.rendering.textures.AssetsTexture;
+//import cf.wynntils.core.framework.rendering.textures.AssetsTexture;
 import cf.wynntils.core.framework.rendering.textures.Texture;
 import cf.wynntils.core.framework.ui.UI;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -105,11 +104,11 @@ public class UIEButton extends UIEClickZone {
     }
 
     public static class Enum extends UIEButton {
-        public Class<? extends java.lang.Enum> e;
+        public Class<? extends java.lang.Enum<?>> e;
         public Object value;
         public Function<String, String> displayTextFunc;
 
-        public Enum(Function<String, String> displayTextFunc, Texture texture, Class<? extends java.lang.Enum> e, Object value, float anchorX, float anchorY, int offsetX, int offsetY, int setWidth, boolean active, BiConsumer<UI, MouseButton> onClick) {
+        public Enum(Function<String, String> displayTextFunc, Texture texture, Class<? extends java.lang.Enum<?>> e, Object value, float anchorX, float anchorY, int offsetX, int offsetY, int setWidth, boolean active, BiConsumer<UI, MouseButton> onClick) {
             super("", texture, anchorX, anchorY, offsetX, offsetY, setWidth, active, onClick);
             this.displayTextFunc = displayTextFunc;
             this.e = e;
@@ -138,7 +137,7 @@ public class UIEButton extends UIEClickZone {
                         e.printStackTrace();
                     }
 
-            return ((java.lang.Enum)value).name();
+            return ((java.lang.Enum<?>)value).name();
         }
     }
 }

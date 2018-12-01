@@ -40,14 +40,14 @@ public class Utils {
     }
 
     /**
-     * Returns a cutted string after x characters
+     * Returns a cut string after x characters
      *
      * @param x
      *        Original String
      * @param amount
      *        The max string char amount
      *
-     * @return Original string cutted after x characters
+     * @return Original string cut after x characters
      */
     public static String removeAfterChar(String x, int amount) {
         String toReturn = x;
@@ -59,7 +59,7 @@ public class Utils {
     }
 
     /**
-     * Gets by text the current player drection
+     * Gets by text the current player direction
      *
      * @param yaw player's yaw
      * @return
@@ -229,22 +229,26 @@ public class Utils {
             return;
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
+        
+        FileInputStream sourceStream = null;
+        FileOutputStream destinationStream = null;
+        
         try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
+            sourceStream = new FileInputStream(sourceFile);
+            destinationStream = new FileOutputStream(destFile);
+            FileChannel sourceChannel = sourceStream.getChannel();
+            FileChannel destinationChannel = destinationStream.getChannel();
+            
+            destinationChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
         finally {
-            if(source != null) {
-                source.close();
+            if(sourceStream != null) {
+                sourceStream.close();
             }
-            if(destination != null) {
-                destination.close();
+            if(destinationStream != null) {
+                destinationStream.close();
             }
         }
     }

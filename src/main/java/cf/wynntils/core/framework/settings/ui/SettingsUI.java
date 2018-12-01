@@ -307,7 +307,7 @@ public class SettingsUI extends UI {
                         }
                     });
                 } else if (value instanceof Enum) {
-                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) field.getType(), value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum<?>>) field.getType(), value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Enum) valueElement).value, false);
                         } catch (Exception e) {
