@@ -27,7 +27,7 @@ public class ItemProfile {
     public static Gson GSON;
 
     public String name;
-    public String tier;
+    public ItemRarity tier;
     public int sockets;
     public Color armorColor;
     public String armorType;
@@ -105,6 +105,7 @@ public class ItemProfile {
         builder.registerTypeHierarchyAdapter(ItemType.class, new ItemType.ItemTypeDeserialiser());
         builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
         builder.registerTypeHierarchyAdapter(HashMap.class, new HashMapDeserialiser());
+        builder.registerTypeHierarchyAdapter(ItemRarity.class, new ItemRarity.ItemRariryDeserializer());
         GSON = builder.create();
     }
 
@@ -120,7 +121,7 @@ public class ItemProfile {
         return name;
     }
 
-    public String getTier() {
+    public ItemRarity getTier() {
         return tier;
     }
 
@@ -484,20 +485,20 @@ public class ItemProfile {
 
             ArrayList<String> description = new ArrayList<>();
 
-            switch (getTier().toLowerCase()) {
-                case "legendary":
+            switch (getTier()) {
+                case LEGENDARY:
                     description.add("§b" + getName());
                     break;
-                case "mythic":
+                case MYTHIC:
                     description.add("§5" + getName());
                     break;
-                case "rare":
+                case RARE:
                     description.add("§d" + getName());
                     break;
-                case "unique":
+                case UNIQUE:
                     description.add("§e" + getName());
                     break;
-                case "set":
+                case SET:
                     description.add("§a" + getName());
                     break;
                 default:
@@ -611,20 +612,20 @@ public class ItemProfile {
                 description.add("§7[" + sockets + " Powder Slot" + (sockets != 1 ? "s" : "") + "]");
             }
 
-            switch (getTier().toLowerCase()) {
-                case "legendary":
+            switch (getTier()) {
+                case LEGENDARY:
                     description.add("§bLegendary Item");
                     break;
-                case "mythic":
+                case MYTHIC:
                     description.add("§5Mythic Item");
                     break;
-                case "rare":
+                case RARE:
                     description.add("§dRare Item");
                     break;
-                case "unique":
+                case UNIQUE:
                     description.add("§eUnique Item");
                     break;
-                case "set":
+                case SET:
                     description.add("§aSet Item");
                     break;
                 default:
@@ -718,4 +719,29 @@ public class ItemProfile {
         }
 
     }
+
+    public static enum ItemRarity {
+
+        NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), MYTHIC(5);
+
+        int id;
+
+        ItemRarity(int i) {
+            id = i;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public static class ItemRariryDeserializer implements JsonDeserializer<ItemRarity> {
+
+            @Override
+            public ItemRarity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                return ItemRarity.valueOf(json.getAsString().toUpperCase());
+            }
+
+        }
+    }
+
 }

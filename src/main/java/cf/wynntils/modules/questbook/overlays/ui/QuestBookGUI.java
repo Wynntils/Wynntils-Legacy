@@ -92,6 +92,7 @@ public class QuestBookGUI extends GuiScreen {
     ArrayList<ItemProfile> itemSearch;
     boolean byAlphabetical = true;
     boolean byLevel = false;
+    boolean byRarity = false;
 
     boolean allowHelmet = true;
     boolean allowChestplate = true;
@@ -125,6 +126,7 @@ public class QuestBookGUI extends GuiScreen {
     private static final CustomColor background_4 = CustomColor.fromString("008f00", 0.2f);
     private static final CustomColor unselected_cube = new CustomColor(0, 0, 0, 0.2f);
     private static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
+    private static final CustomColor selected_cube_2 = CustomColor.fromString("#adf8b3", 0.3f);
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
@@ -238,6 +240,7 @@ public class QuestBookGUI extends GuiScreen {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     byAlphabetical = true;
                     byLevel = false;
+                    byRarity = false;
                 }
             }
             if(selected == 2) {
@@ -245,6 +248,15 @@ public class QuestBookGUI extends GuiScreen {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     byAlphabetical = false;
                     byLevel = true;
+                    byRarity = false;
+                }
+            }
+            if(selected == 3) {
+                if(!byRarity) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    byRarity = true;
+                    byAlphabetical = false;
+                    byLevel = false;
                 }
             }
             if(selected == 10) {
@@ -429,6 +441,20 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
+                render.drawString("Rarity Order (MYTH-NORM)", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                if(posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
+                    selected = 3;
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
+                }else{
+                    if(selected == 3) selected = 0;
+                    if(byRarity) {
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 246, 259, 7, 7);
+                    }else{
+                        render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 254, 259, 7, 7);
+                    }
+                }
+
                 //filter ++
                 render.drawString("Item Filter", x - 84, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
@@ -452,17 +478,17 @@ public class QuestBookGUI extends GuiScreen {
                     }else{
                         if(selected == (i + 1) * 10) selected = 0;
 
-                        if(i == 0 && allowHelmet) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 1 && allowChestplate) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 2 && allowLeggings) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 3 && allowBoots) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 4 && allowWands) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 5 && allowDaggers) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 6 && allowSpears) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 7 && allowBows) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 8 && allowNecklaces) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 9 && allowRings) render.drawRect(selected_cube, maxX, maxY, minX, minY);
-                        else if(i == 10 && allowBracelets) render.drawRect(selected_cube, maxX, maxY, minX, minY);
+                        if(i == 0 && allowHelmet) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 1 && allowChestplate) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 2 && allowLeggings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 3 && allowBoots) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 4 && allowWands) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 8 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 9 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                        else if(i == 10 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                         else render.drawRect(unselected_cube, maxX, maxY, minX, minY);
                     }
 
@@ -525,6 +551,7 @@ public class QuestBookGUI extends GuiScreen {
 
                 if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
                 if(byLevel) itemSearch.sort(Comparator.comparingInt(ItemProfile::getLevel).reversed());
+                if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getId()));
 
                 render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
@@ -574,33 +601,33 @@ public class QuestBookGUI extends GuiScreen {
 
                     float r, g, b;
 
-                    switch (pf.getTier().toUpperCase()) {
-                        case "MYTHIC":
+                    switch (pf.getTier()) {
+                        case MYTHIC:
                             r = 0.3f;
                             g = 0;
                             b = 0.3f;
                             break;
-                        case "LEGENDARY":
+                        case LEGENDARY:
                             r = 0;
                             g = 1;
                             b = 1;
                             break;
-                        case "RARE":
+                        case RARE:
                             r = 1;
                             g = 0;
                             b = 1;
                             break;
-                        case "UNIQUE":
+                        case UNIQUE:
                             r = .8f;
                             g = .8f;
                             b = 0;
                             break;
-                        case "SET":
+                        case SET:
                             r = 0;
                             g = 1;
                             b = 0;
                             break;
-                        case "NORMAL":
+                        case NORMAL:
                             r = 0.1f;
                             g = 0.1f;
                             b = 0.1f;

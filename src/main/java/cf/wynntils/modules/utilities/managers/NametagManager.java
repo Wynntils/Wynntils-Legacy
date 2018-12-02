@@ -138,22 +138,22 @@ public class NametagManager {
                             ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(is.getDisplayName()));
                             String prefix;
                             switch (wItem.getTier()) {
-                                case "Mythic":
+                                case MYTHIC:
                                     prefix = "\u00A75";
                                     break;
-                                case "Legendary":
+                                case LEGENDARY:
                                     prefix = "\u00A7b";
                                     break;
-                                case "Rare":
+                                case RARE:
                                     prefix = "\u00A7d";
                                     break;
-                                case "Unique":
+                                case UNIQUE:
                                     prefix = "\u00A7e";
                                     break;
-                                case "Set":
+                                case SET:
                                     prefix = "\u00A7a";
                                     break;
-                                case "Normal":
+                                case NORMAL:
                                     prefix = "\u00A7f";
                                     break;
                                 default:
