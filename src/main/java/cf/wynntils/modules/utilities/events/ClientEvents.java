@@ -6,11 +6,13 @@ import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.managers.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -43,8 +45,9 @@ public class ClientEvents implements Listener {
             DailyReminderManager.openedDaily();
         }
         if(Reference.onWorld) {
-            boolean message = ChatManager.applyUpdatesToClient(e.getMessage());
-            if(message) {
+            Pair<ITextComponent, Boolean> message = ChatManager.applyUpdatesToClient(e.getMessage());
+            e.setMessage(message.a);
+            if(message.b) {
                 e.setCanceled(true);
             }
         }
