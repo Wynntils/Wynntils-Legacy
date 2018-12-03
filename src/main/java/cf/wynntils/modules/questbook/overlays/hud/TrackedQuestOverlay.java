@@ -3,7 +3,9 @@ package cf.wynntils.modules.questbook.overlays.hud;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.modules.questbook.configs.QuestBookConfig;
 import cf.wynntils.modules.questbook.managers.QuestManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class TrackedQuestOverlay extends Overlay {
@@ -28,6 +30,8 @@ public class TrackedQuestOverlay extends Overlay {
             currentY+=10;
         }
 
+        if(QuestBookConfig.INSTANCE.compassFollowQuests && QuestManager.getTrackedQuest().getX() != 0 && QuestManager.getTrackedQuest().getZ() != 0)
+            mc.world.setSpawnPoint(new BlockPos(QuestManager.getTrackedQuest().getX(), 0, QuestManager.getTrackedQuest().getZ()));
     }
 
 }

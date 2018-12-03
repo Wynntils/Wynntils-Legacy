@@ -9,6 +9,8 @@ import cf.wynntils.modules.questbook.enums.QuestStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class QuestInfo {
 
@@ -20,6 +22,9 @@ public class QuestInfo {
     private final ArrayList<String> splittedDescription;
 
     private final String currentDescription;
+    private final int x, z;
+
+    private final Pattern coordinatePattern = Pattern.compile("(\\[[0-9]+[,][0-9]+[,][0-9]+])");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
@@ -38,6 +43,15 @@ public class QuestInfo {
             currentMessage.append(x).append(" ");
         }
         splittedDescription.add(currentMessage.toString());
+
+        Matcher m = coordinatePattern.matcher(currentDescription);
+        if(m.find()) {
+            String[] coords = m.group(0).replace("[", "").replace("]", "").split(",");
+            x = Integer.valueOf(coords[0]);
+            z = Integer.valueOf(coords[2]);
+        }else {
+            x = 0; z = 0;
+        }
 
         this.splittedDescription = splittedDescription;
     }
@@ -68,6 +82,14 @@ public class QuestInfo {
 
     public ArrayList<String> getSplittedDescription() {
         return splittedDescription;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getZ() {
+        return z;
     }
 
     public String toString() {
