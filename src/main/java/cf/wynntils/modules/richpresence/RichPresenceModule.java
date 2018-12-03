@@ -9,10 +9,6 @@ import cf.wynntils.modules.richpresence.overlays.LocationOverlay;
 import cf.wynntils.modules.richpresence.profiles.DataProfile;
 import cf.wynntils.modules.richpresence.profiles.RichProfile;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  * Created by HeyZeer0 on 03/02/2018.
  * Copyright © HeyZeer0 - 2016
@@ -27,28 +23,10 @@ public class RichPresenceModule extends Module {
     private DataProfile modData = new DataProfile();
 
     public void onEnable() {
-        InputStream inputStream = null;
-        FileOutputStream outputStream = null;
         try {
             richPresence = new RichProfile("387266678607577088");
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (outputStream != null) {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                
-            }
         }
 
         module = this;
