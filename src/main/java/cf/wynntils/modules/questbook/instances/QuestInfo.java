@@ -24,7 +24,7 @@ public class QuestInfo {
     private final String currentDescription;
     private final int x, z;
 
-    private final Pattern coordinatePattern = Pattern.compile("(\\[[0-9]+[,][0-9]+[,][0-9]+])");
+    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+),(-?\\d+),(-?\\d+)\\]");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
@@ -46,12 +46,9 @@ public class QuestInfo {
 
         Matcher m = coordinatePattern.matcher(currentDescription);
         if(m.find()) {
-            String[] coords = m.group(0).replace("[", "").replace("]", "").split(",");
-            x = Integer.valueOf(coords[0]);
-            z = Integer.valueOf(coords[2]);
-        }else {
-            x = 0; z = 0;
-        }
+            x = Integer.valueOf(m.group(1));
+            z = Integer.valueOf(m.group(3));
+        }else { x = 0; z = 0; }
 
         this.splittedDescription = splittedDescription;
     }

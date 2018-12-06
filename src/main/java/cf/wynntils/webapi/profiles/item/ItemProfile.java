@@ -95,7 +95,7 @@ public class ItemProfile {
     public int health;
     public String accessoryType;
     public String classRequirement;
-    public boolean identified;
+    public boolean identified = false;
     public String displayName;
     public String skin;
 
