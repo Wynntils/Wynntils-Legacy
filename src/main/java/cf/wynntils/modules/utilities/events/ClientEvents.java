@@ -38,7 +38,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
+        if(e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
             return;
         }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
