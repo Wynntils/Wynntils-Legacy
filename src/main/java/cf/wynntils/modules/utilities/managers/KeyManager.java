@@ -7,6 +7,9 @@ import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Team;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -46,7 +49,14 @@ public class KeyManager {
         });
 
         UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> {
-
+            Minecraft mc = Minecraft.getMinecraft();
+            Scoreboard Scoreboard = mc.player.getWorldScoreboard();
+            if (!Scoreboard.getTeamNames().contains("Player"))
+                Scoreboard.createTeam("Player").setPrefix(String.valueOf('\u00a7') + 'f');
+            if (!mc.player.isOnScoreboardTeam(Scoreboard.getTeam("Player"))) {
+                Scoreboard.addPlayerToTeam(mc.player.getName(), "Player");
+            }
+            Minecraft.getMinecraft().player.getWorldScoreboard().getTeam("Player").setCollisionRule(Team.CollisionRule.NEVER);
         });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});

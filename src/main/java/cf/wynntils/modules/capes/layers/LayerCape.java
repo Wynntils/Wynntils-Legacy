@@ -64,6 +64,10 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                     f2 = 0.0F;
                 }
 
+                // Clamping f2 and f3 ...
+                f2 = MathHelper.clamp(f2, 0.0F, 150.0F);
+                f3 = MathHelper.clamp(f3, 0.0F, 50.0F);
+
                 float f4 = entitylivingbaseIn.prevCameraYaw + (entitylivingbaseIn.cameraYaw - entitylivingbaseIn.prevCameraYaw) * partialTicks;
                 f1 = f1 + MathHelper.sin((entitylivingbaseIn.prevDistanceWalkedModified + (entitylivingbaseIn.distanceWalkedModified - entitylivingbaseIn.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
 
@@ -71,12 +75,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 {
                     f1 += 15.0F;
                 }
-                float xMaxAngle = 100F;
-                float zMaxAngle = 50f;
-                float xAngle = (6.0F + f2 / 2.0F + f1) > xMaxAngle ? xMaxAngle : 6.0F + f2 / 2.0F + f1;
-                float zAngle = (f3 / 2.0F) > zMaxAngle ? zMaxAngle : (f3 / 2.0F) < -zMaxAngle ? -zMaxAngle : f3 / 2.0F;
-                GlStateManager.rotate(xAngle, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(zAngle, 0.0F, 0.0F, 1.0F);
+
+                GlStateManager.rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
                 GlStateManager.popMatrix();

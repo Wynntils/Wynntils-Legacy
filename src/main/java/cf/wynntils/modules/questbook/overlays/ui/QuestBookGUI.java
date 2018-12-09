@@ -368,7 +368,7 @@ public class QuestBookGUI extends GuiScreen {
     private void updateQuestSearch() {
         ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
 
-        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>)quests.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> c.getName().toLowerCase().contains(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
