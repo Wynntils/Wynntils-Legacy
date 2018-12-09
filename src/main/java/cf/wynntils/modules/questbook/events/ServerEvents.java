@@ -140,6 +140,7 @@ public class ServerEvents implements Listener {
         QuestStatus status = null;
 
         List<String> lore = Utils.getLore(item);
+        if(lore.size() <= 0) return;
 
         if(lore.get(0).contains("Completed!")) {
             status = QuestStatus.COMPLETED;
