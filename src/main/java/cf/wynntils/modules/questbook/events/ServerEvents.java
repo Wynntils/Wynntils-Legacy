@@ -59,7 +59,6 @@ public class ServerEvents implements Listener {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
 
                 if(e.getPacket().getSlotCount() >= 54 && base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
-
                     if(!acceptItems) {
                         readedQuests.clear();
                         transactionId = 0;
@@ -77,7 +76,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onInventoryReceiveItems(PacketEvent.InventoryItemsReceived e) {
-        if(currentInventory == null || !currentInventory.hasCustomName()|| !currentInventory.getDisplayName().getFormattedText().contains("Quests")) {
+        if(currentInventory == null || !currentInventory.hasCustomName() || !currentInventory.getDisplayName().getFormattedText().contains("Quests") || e.getPacket().getWindowId() == 0) {
             acceptItems = false;
             QuestManager.setReadingQuestBook(false);
             return;
