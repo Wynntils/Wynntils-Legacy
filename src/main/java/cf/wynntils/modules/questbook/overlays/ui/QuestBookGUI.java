@@ -56,6 +56,8 @@ public class QuestBookGUI extends GuiScreen {
     public QuestBookGUI() { }
 
     public void open() {
+        if(!Reference.onWorld) return;
+        
         lastTick = getMinecraft().world.getTotalWorldTime();
         acceptBack = false;
         acceptNext = false;
