@@ -68,6 +68,22 @@ public class QuestBookGUI extends GuiScreen {
         getMinecraft().displayGuiScreen(this);
     }
 
+    public void openAtQuests() {
+        page = QuestBookPage.QUESTS;
+        searchBarText = "";
+        currentPage = 1;
+        selected = 0;
+        open();
+    }
+
+    public void openAtItemGuide() {
+        page = QuestBookPage.ITEM_GUIDE;
+        searchBarText = "";
+        currentPage = 1;
+        selected = 0;
+        open();
+    }
+
     //cache
     QuestBookPage page = QuestBookPage.DEFAULT;
     int currentPage = 1;
