@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
@@ -57,8 +58,8 @@ public class NametagManager {
             }
         }
 
-            return true;
-        }
+        return true;
+    }
 
     private static boolean canRenderName(Entity entity, RenderManager renderManager) {
         if(!(entity instanceof EntityPlayer)) {
@@ -165,18 +166,20 @@ public class NametagManager {
                         i = (int) (i / 1.2);
                     }
                 } else {
-                    i = 6;
-                    Matcher m = MOB_LEVEL.matcher(str);
-                    while (m.find()) {
-                        String s = m.group(1);
-                        str = str.replace(s, "");
-                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
-                        i -= 10;
-                    }
-                    if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
-                        i -= 10;
-                        str = str.replace("\u00A77 [Disguised]\u00A7r", "");
+                    if(!(entityIn instanceof EntityArmorStand)) {
+                        i = 0;
+                        Matcher m = MOB_LEVEL.matcher(str);
+                        while (m.find()) {
+                            String s = m.group(1);
+                            str = str.replace(s, "");
+                            drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
+                            i -= 10;
+                        }
+                        if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
+                            drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
+                            i -= 10;
+                            str = str.replace("\u00A77 [Disguised]\u00A7r", "");
+                        }
                     }
                 }
                 drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
