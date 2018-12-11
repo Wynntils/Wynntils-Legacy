@@ -11,8 +11,13 @@ import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.managers.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -86,6 +91,23 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if(!Reference.onWorld) return;
+
+        if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
+            if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
+                IInventory inv = e.getGuiInventory().getLowerInv();
+                if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
+                    for (int i = 0; i < inv.getSizeInventory(); i++) {
+                        if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith("§5")) {
+                            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§cYou cannot close this loot chest while there is mythic in it!"));
+                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
+                            e.setCanceled(true);
+                            break;
+                        }
+                    }
+                }
+                return;
+            }
+        }
 
         if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
             if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {
