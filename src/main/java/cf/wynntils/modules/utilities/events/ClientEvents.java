@@ -7,7 +7,6 @@ import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.managers.*;
@@ -95,13 +94,15 @@ public class ClientEvents implements Listener {
                 IInventory inv = e.getGuiInventory().getLowerInv();
                 if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
-                        ItemStack inSlot = inv.getStackInSlot(i);
-                        if (Utils.getStringLore(inSlot).contains("§5Mythic")) {
+                        if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith("§5")) {
+                            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§cYou cannot close this loot chest while there is mythic in it!"));
+                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                             e.setCanceled(true);
-                            return;
+                            break;
                         }
                     }
                 }
+                return;
             }
         }
 
