@@ -91,7 +91,7 @@ public class RarityColorOverlay implements Listener {
 
             float r, g, b;
 
-            String lore = getStringLore(is);
+            String lore = Utils.getStringLore(is);
 
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
@@ -263,7 +263,7 @@ public class RarityColorOverlay implements Listener {
                     continue;
                 }
 
-                String lore = getStringLore(is);
+                String lore = Utils.getStringLore(is);
 
                 float r, g, b;
 
@@ -358,7 +358,7 @@ public class RarityColorOverlay implements Listener {
 
                 float r, g, b;
 
-                String lore = getStringLore(is);
+                String lore = Utils.getStringLore(is);
 
                 if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
@@ -521,15 +521,4 @@ public class RarityColorOverlay implements Listener {
             }
         }
     }
-
-    public static String getStringLore(ItemStack is){
-        StringBuilder toReturn = new StringBuilder();
-
-        for (String x : Utils.getLore(is)) {
-            toReturn.append(x);
-        }
-
-        return toReturn.toString();
-    }
-
 }

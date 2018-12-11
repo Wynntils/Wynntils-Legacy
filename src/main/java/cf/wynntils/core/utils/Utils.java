@@ -120,6 +120,14 @@ public class Utils {
         return lore;
     }
 
+    public static String getStringLore(ItemStack is){
+        StringBuilder toReturn = new StringBuilder();
+        for (String x : getLore(is)) {
+            toReturn.append(x);
+        }
+        return toReturn.toString();
+    }
+
     public static String arrayWithCommas(ArrayList<String> values) {
         StringBuilder total = new StringBuilder();
 

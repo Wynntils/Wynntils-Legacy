@@ -7,10 +7,13 @@ import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Pair;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.managers.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 /**
@@ -86,6 +90,21 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if(!Reference.onWorld) return;
+
+        if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
+            if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
+                IInventory inv = e.getGuiInventory().getLowerInv();
+                if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
+                    for (int i = 0; i < inv.getSizeInventory(); i++) {
+                        ItemStack inSlot = inv.getStackInSlot(i);
+                        if (Utils.getStringLore(inSlot).contains("§5Mythic")) {
+                            e.setCanceled(true);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
 
         if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
             if(e.getGuiInventory().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGuiInventory().getSlotUnderMouse().inventory) {

@@ -31,6 +31,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show players armor", description = "Should what players are wearing be listed in their name tag")
     public boolean showArmors = false;
 
+    @Setting(displayName = "Prevent mythic loot chest closing", description = "Should the closing of loot chests be prevented when that loot chest contains a mythic")
+    public boolean preventMythicChestClose = true;
+
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
