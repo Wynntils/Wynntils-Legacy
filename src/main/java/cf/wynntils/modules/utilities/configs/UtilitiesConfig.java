@@ -102,7 +102,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight legendaries", description = "Should legendary items be highlighted")
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highligh rares", description = "Should rare items be highlighted")
+        @Setting(displayName = "Highlight rares", description = "Should rare items be highlighted")
         public boolean rareHighlight = true;
 
         @Setting(displayName = "Highlight uniques", description = "Should unique items be highlighted")
