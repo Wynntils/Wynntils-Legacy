@@ -94,7 +94,7 @@ public class QuestManager {
      * @return if the questbook is being read
      */
     public static boolean isReadingQuestBook() {
-        if(System.currentTimeMillis() - readRequestTime >= 3000) {
+        if(readingQuestBook && System.currentTimeMillis() - readRequestTime >= 3000) {
             readingQuestBook = false;
             Reference.LOGGER.warn("Could not read questbook, timedout (" + (System.currentTimeMillis() - readRequestTime) + "ms)");
         }
