@@ -96,19 +96,19 @@ public class RarityColorOverlay implements Listener {
             if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
             } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-                r = 0;
-                g = 1;
-                b = 1;
+                r = 0; g = 1; b = 1;
             } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                 r = 0.3f; g = 0; b = 0.3f;
             } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
                 r = 1; g = 0; b = 1;
-            } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {  r = 1; g = 1; b = 0;
+            } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
+                r = 1; g = 1; b = 0;
             } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
                 r = 0; g = 1; b = 0;
             } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                 r = 1; g = 1; b = 1;
             } else if (floor >= 4) {
+                armorfloor++;
                 continue;
             } else {
                 continue;
