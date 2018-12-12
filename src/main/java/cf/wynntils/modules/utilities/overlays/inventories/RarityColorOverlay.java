@@ -107,6 +107,12 @@ public class RarityColorOverlay implements Listener {
                 r = 0; g = 1; b = 0;
             } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                 r = 1; g = 1; b = 1;
+            } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
+                if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
+                    continue;
+                r = getPowderColor(is)[0];
+                g = getPowderColor(is)[1];
+                b = getPowderColor(is)[2];
             } else if (floor >= 4) {
                 armorfloor++;
                 continue;
@@ -287,6 +293,12 @@ public class RarityColorOverlay implements Listener {
                     r = 1; g = 0; b = 1;
                 } else if (lore.contains("§fCommon") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.commonEffectsHighlight) {
                     r = 1; g = 1; b = 1;
+                } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
+                    if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
+                        continue;
+                    r = getPowderColor(is)[0];
+                    g = getPowderColor(is)[1];
+                    b = getPowderColor(is)[2];
                 } else if (floor >= 4) {
                     continue;
                 } else {
@@ -374,6 +386,12 @@ public class RarityColorOverlay implements Listener {
                     r = 0; g = 1; b = 0;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                     r = 1; g = 1; b = 1;
+                } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
+                    if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
+                        continue;
+                    r = getPowderColor(is)[0];
+                    g = getPowderColor(is)[1];
+                    b = getPowderColor(is)[2];
                 } else if (floor >= 4) {
                     continue;
                 } else {
@@ -520,5 +538,46 @@ public class RarityColorOverlay implements Listener {
                 GlStateManager.enableLighting();
             }
         }
+    }
+
+    private boolean isPowder(ItemStack is) {
+        return (is.hasDisplayName() && is.getDisplayName().contains("Powder"));
+    }
+
+    private int getPowderTier(ItemStack is) {
+        if (is.getDisplayName().endsWith("III")) {
+            return 3;
+        } else if (is.getDisplayName().endsWith("IV")) {
+            return 4;
+        } else if (is.getDisplayName().endsWith("VI")) {
+            return 6;
+        } else if (is.getDisplayName().endsWith("V")) {
+            return 5;
+        } else if (is.getDisplayName().endsWith("II")) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    private float[] getPowderColor(ItemStack is) {
+        float[] returnVal;
+        if (is.getDisplayName().startsWith("§e")) {
+            // Lightning
+            returnVal = new float[]{1f, 1f, 0.333f};
+        } else if (is.getDisplayName().startsWith("§b")) {
+            // Water
+            returnVal = new float[]{0.333f, 1f, 1f};
+        } else if (is.getDisplayName().startsWith("§f")) {
+            // Air
+            returnVal = new float[]{1f, 1f, 1f};
+        } else if (is.getDisplayName().startsWith("§2")) {
+            // Earth
+            returnVal = new float[]{0f, 0.666f, 0f};
+        } else {
+            // Fire
+            returnVal = new float[]{1f, 0.333f, 0.333f};
+        }
+        return returnVal;
     }
 }
