@@ -135,6 +135,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show emerald count in inventory", description = "Show emerald count in the player's inventory")
         public boolean emeraldCountInventory = true;
 
+        @Setting(displayName = "Highlight powders", description = "Should powders be highlighted")
+        public boolean powderHighlight = true;
+
+        @Setting(displayName = "Min powder tier highlight", description = "The minimum tier of powder that should be highlighted. No effect if powder highlighting is disabled")
+        @Setting.Limitations.IntLimit(min = 1, max = 6)
+        public int minPowderTier = 4;
+
         @Override
         public void onSettingChanged(String name) {
 
