@@ -597,7 +597,7 @@ public class ItemProfile {
 
             if(speed != 0) description.add(calculateStatus(speed, identified, "%") + " §7Walk Speed");
             if(exploding != 0) description.add(calculateStatus(exploding, identified, "%") + " §7Exploding");
-            if(poison != 0) description.add(calculateStatus(poison, identified, "%") + " §7Poison");
+            if(poison != 0) description.add(calculateStatus(poison, identified, "") + " §7Poison");
             if(thorns != 0) description.add(calculateStatus(thorns, identified, "%") + " §7Thorns");
             if(reflection != 0) description.add(calculateStatus(reflection, identified, "%") + " §7Reflection");
             if(soulPoints != 0) description.add(calculateStatus(soulPoints, identified, "%") + " §7Soul Point Regen");
