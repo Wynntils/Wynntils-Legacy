@@ -563,14 +563,19 @@ public class RarityColorOverlay implements Listener {
     private float[] getPowderColor(ItemStack is) {
         float[] returnVal;
         if (is.getDisplayName().startsWith("§e")) {
+            // Lightning
             returnVal = new float[]{1f, 1f, 0.333f};
         } else if (is.getDisplayName().startsWith("§b")) {
+            // Water
             returnVal = new float[]{0.333f, 1f, 1f};
         } else if (is.getDisplayName().startsWith("§f")) {
+            // Air
             returnVal = new float[]{1f, 1f, 1f};
         } else if (is.getDisplayName().startsWith("§2")) {
+            // Earth
             returnVal = new float[]{0f, 0.666f, 0f};
         } else {
+            // Fire
             returnVal = new float[]{1f, 0.333f, 0.333f};
         }
         return returnVal;
