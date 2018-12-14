@@ -20,13 +20,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ServerEvents implements Listener {
 
     public static int loadedResourcePack = 0;
-    
-    public static String loadedResourcePackURL = "";
 
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
         loadedResourcePack = 0;
-        loadedResourcePackURL = "";
     }
 
     @SubscribeEvent
@@ -41,11 +38,6 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
-        if (!e.getPacket().getURL().equals(loadedResourcePackURL)) {
-            loadedResourcePack = 0;
-            loadedResourcePackURL = e.getPacket().getURL();
-        }
-        
         if(loadedResourcePack >= Integer.valueOf(WebManager.apiUrls.get("ResourcePackUpdateAmount"))) {
             NetworkManager nm = e.getNetworkManager();
             nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
