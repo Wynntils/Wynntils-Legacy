@@ -220,9 +220,7 @@ public class QuestBookGUI extends GuiScreen {
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     try {
                         Desktop.getDesktop().browse(new URI("https://wynncraft.gamepedia.com/" + URLEncoder.encode(overQuest.getName().replace(" ", "_"), "UTF-8")));
-                    } catch (URISyntaxException ignored) {
-                        ignored.printStackTrace();
-                    }
+                    } catch (URISyntaxException ignored) {}
                 }
             }
         }
