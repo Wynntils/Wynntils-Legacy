@@ -214,7 +214,6 @@ public class QuestBookGUI extends GuiScreen {
                 }
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(overQuest);
-                return;
             } else {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -223,6 +222,7 @@ public class QuestBookGUI extends GuiScreen {
                     } catch (URISyntaxException ignored) {}
                 }
             }
+            return;
         }
         ScaledResolution res = new ScaledResolution(getMinecraft());
 
