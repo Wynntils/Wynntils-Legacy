@@ -19,4 +19,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Set quest location to compass", description = "Should the compass follow the quest coordinates")
     public boolean compassFollowQuests = true;
 
+    @Setting(displayName = "Quest NPC icons", description = "Should quest NPCs have icons above their heads")
+    public boolean questGiverIcons = true;
+
 }
