@@ -61,7 +61,7 @@ public class ClientEvents implements Listener {
                 for (QuestInfo info : infoList) {
                     if (info.getStatus() == QuestStatus.COMPLETED || info.getStatus() == QuestStatus.CANNOT_START)
                         continue;
-                    if (info.getCurrentDescription().contains(Utils.stripColor(npcNameStand.getDisplayName().getUnformattedText()))) {
+                    if (info.getCurrentDescription().toLowerCase().contains(Utils.stripColor(npcNameStand.getDisplayName().getUnformattedText().toLowerCase()))) {
                         if (info.getStatus() == QuestStatus.CAN_START) {
                             drawQuestNameplate(e.getRenderer().getRenderManager().getFontRenderer(), "§e!", (float) e.getX(), (float) e.getY(), (float) e.getZ(), e.getRenderer().getRenderManager().playerViewY, e.getRenderer().getRenderManager().playerViewX, e.getRenderer().getRenderManager().options.thirdPersonView == 2);
                         } else {
