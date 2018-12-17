@@ -12,12 +12,16 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -29,6 +33,7 @@ import java.util.regex.Pattern;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
+    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
     public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
@@ -53,6 +58,19 @@ public class ItemIdentificationOverlay implements Listener {
         if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
             drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack());
+        }
+    }
+
+    @SubscribeEvent
+    public void InputEventKeyInputEvent(GuiScreenEvent.KeyboardInputEvent e){
+        if (!(e.getGui() instanceof GuiContainer) || e.getGui().mc == null || e.getGui().mc.player == null){
+            return;
+        }
+        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && ((GuiContainer) e.getGui()).getSlotUnderMouse() != null && ((GuiContainer) e.getGui()).getSlotUnderMouse().getHasStack()) {
+            Slot InvSlot = ((GuiContainer) e.getGui()).getSlotUnderMouse();
+            if (InvSlot != null) {
+                drawHoverItem(((GuiContainer) e.getGui()).getSlotUnderMouse().getStack());
+            }
         }
     }
 
@@ -155,26 +173,30 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static void drawHoverItem(ItemStack stack) {
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils")) return;
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && (stack.getTagCompound().getBoolean("extendedStats") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))) return;
+        boolean extended = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
 
-        if (!WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
+        if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName())))) {
             return;
         }
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(stack.getDisplayName()));
+        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(cleanse(stack.getDisplayName())));
 
         if (wItem.isIdentified()) {
             return;
         }
-        
+
         int total = 0;
         int identifications = 0;
+        double chanceUp = 0;
+        double chanceDown = 0;
+        double chanceBest = 1;
 
         List <String> actualLore = Utils.getLore(stack);
         for (int i = 0; i < actualLore.size(); i++) {
-            String lore = actualLore.get(i);
+            String lore = cleanse(actualLore.get(i));
             String wColor = Utils.stripColor(lore);
 
-            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*")) {
+            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
 
                 //thanks nbcss for this Math
@@ -219,6 +241,7 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");
+
 
             if (pField == null) {
                 actualLore.set(i, lore);
@@ -267,63 +290,140 @@ public class ItemIdentificationOverlay implements Listener {
                     continue;
                 }
 
-                double intVal = (double) (max - min);
-                double pVal = (double) (amount - min);
-                int percent = (int) ((pVal / intVal) * 100);
+                if (extended) {
+                    float downPercent;
+                    float upPercent;
+                    float bestPercent;
+                    if (amount < 0){
+                        downPercent = 0;
+                        upPercent = 0;
+                        bestPercent = 0;
+                        for (double j = 70;j <= 130; j++){
+                            if (Math.round(itemVal * (j/100)) < amount){
+                                downPercent++;
+                            } else if (Math.round(itemVal * (j/100)) > amount){
+                                upPercent++;
+                            }
+                            if (Math.round(itemVal * (j/100)) == min){
+                                bestPercent++;
+                            }
+                        }
+                        downPercent = downPercent / 0.61f;
+                        upPercent = upPercent / 0.61f;
+                        bestPercent = bestPercent / 0.61f;
 
-                String color = "§";
+                        // Equations for calculating percent chances (not used currently because of a weird offset issue)
+                        //downPercent = (amount == max ? 0 : 100 - (float) (((Math.ceil(((amount - 0.5d) / itemVal) * 100) - 70) / 61) * 100));
+                        //upPercent = (amount == min ? 0 : (float) (((Math.ceil(((amount + 0.5d) / itemVal) * 100) - 69) / 61) * 100) );
+                        //bestPercent = (float) (((Math.ceil(((min * 100d) - 50d) / itemVal) - 70) / 61) * 100);
+                    } else {
+                        downPercent = 0;
+                        upPercent = 0;
+                        bestPercent = 0;
+                        for (double j = 30;j <= 130; j++){
+                            if (Math.round(itemVal * (j/100)) < amount){
+                                downPercent++;
+                            } else if (Math.round(itemVal * (j/100)) > amount){
+                                upPercent++;
+                            }
+                            if (Math.round(itemVal * (j/100)) == max){
+                                bestPercent++;
+                            }
+                        }
+                        downPercent = downPercent / 1.01f;
+                        upPercent = upPercent / 1.01f;
+                        bestPercent = bestPercent / 1.01f;
 
-                if (amount < 0) percent = 100 - percent;
+                        // Equations for calculating percent chances (not used currently because of a weird offset issue)
+                        //downPercent = (amount == min ? 0 : (float) (((Math.ceil(((amount - 0.5d) / itemVal) * 100) - 30) / 101) * 100) );
+                        //upPercent =  (amount == max ? 0 : 100 - (float) (((Math.ceil(((amount + 0.5d) / itemVal) * 100) - 30) / 101) * 100));
+                        //bestPercent = 100 - (float) (((Math.ceil(((max - 0.5d) / itemVal) * 100) - 30) / 101) * 100);
+                    }
 
-                if (percent >= 97) {
-                    color += "b";
-                } else if (percent >= 80) {
-                    color += "a";
-                } else if (percent >= 30) {
-                    color += "e";
+                    actualLore.set(i, lore + " §c§l\u21E9§r§c" + String.format("%.1f", downPercent) + "% §a§l\u21E7§r§a" + String.format("%.1f", upPercent) + "% §b§l\u21EA§r§b" + String.format("%.1f", bestPercent) + "%");
+                    identifications += 1;
+
+                    chanceUp = chanceUp + ((1 - chanceUp) * (upPercent / 100));
+                    chanceDown = chanceDown + ((1 - chanceDown) * (downPercent / 100));
+                    chanceBest *= (bestPercent / 100);
                 } else {
-                    color += "c";
+                    double intVal = (double) (max - min);
+                    double pVal = (double) (amount - min);
+                    int percent = (int) ((pVal / intVal) * 100);
+
+                    String color = "§";
+
+                    if (amount < 0) percent = 100 - percent;
+
+                    if (percent >= 97) {
+                        color += "b";
+                    } else if (percent >= 80) {
+                        color += "a";
+                    } else if (percent >= 30) {
+                        color += "e";
+                    } else {
+                        color += "c";
+                    }
+
+                    actualLore.set(i, lore + color + " [" + percent + "%]");
+                    total += percent;
+                    identifications += 1;
                 }
 
-                actualLore.set(i, lore + color + " [" + percent + "%]");
-                
-                total += percent;
-                identifications += 1;
 
             } catch (Exception ex) {
                 actualLore.set(i, lore);
             }
         }
-        
+
         NBTTagCompound nbt = stack.getTagCompound();
         nbt.setBoolean("verifiedWynntils", true);
+        nbt.setBoolean("extendedStats", extended);
 
         if (identifications > 0) {
-            int average = total / identifications;
-            String color = "§";
-            if (average >= 97) {
-                color += "b";
-            } else if (average >= 80) {
-                color += "a";
-            } else if (average >= 30) {
-                color += "e";
+            if (extended) {
+
+                NBTTagCompound display = nbt.getCompoundTag("display");
+                NBTTagList tag = new NBTTagList();
+
+                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+
+                String name = cleanse(display.getString("Name"));
+
+                display.setTag("Lore", tag);
+                display.setString("Name", name + " §c§l\u21E9§r§c" + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% §a§l\u21E7§r§a" + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                nbt.setTag("display", display);
             } else {
-                color += "c";
+                int average = total / identifications;
+                String color = "§";
+                if (average >= 97) {
+                    color += "b";
+                } else if (average >= 80) {
+                    color += "a";
+                } else if (average >= 30) {
+                    color += "e";
+                } else {
+                    color += "c";
+                }
+
+                NBTTagCompound display = nbt.getCompoundTag("display");
+                NBTTagList tag = new NBTTagList();
+
+                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+
+                String name = cleanse(display.getString("Name"));
+
+                display.setTag("Lore", tag);
+                display.setString("Name", name + color + " [" + average + "%]");
+                nbt.setTag("display", display);
             }
-
-            NBTTagCompound display = nbt.getCompoundTag("display");
-            NBTTagList tag = new NBTTagList();
-
-            actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-            
-            String name = display.getString("Name");
-
-            display.setTag("Lore", tag);
-            display.setString("Name", name + " " + color + "[" + average + "%]");
-            nbt.setTag("display", display);
         }
-        
+
         stack.setTagCompound(nbt);
+    }
+
+    private static String cleanse(String str){
+        return ID_PERCENTAGES.matcher(str).replaceAll("");
     }
 
 }
