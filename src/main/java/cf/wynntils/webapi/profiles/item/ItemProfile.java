@@ -16,7 +16,7 @@ import net.minecraft.nbt.NBTUtil;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.Color;
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +118,7 @@ public class ItemProfile {
     }
 
     public String getName() {
-        return name;
+        return displayName == null ? name : displayName;
     }
 
     public ItemRarity getTier() {
