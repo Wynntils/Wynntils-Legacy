@@ -58,7 +58,7 @@ public class MusicPlayer {
 
     public void setVolume(float volume) {
         if(!active || currentPlayer == null) return;
-        if(currentPlayer != null && currentPlayer.getAudioDevice() == null) return;
+        if(currentPlayer.getAudioDevice() == null) return;
 
         if(currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
             JavaSoundAudioDevice dv = (JavaSoundAudioDevice) currentPlayer.getAudioDevice();
