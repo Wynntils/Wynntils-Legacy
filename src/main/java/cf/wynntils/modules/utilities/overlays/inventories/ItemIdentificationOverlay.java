@@ -376,6 +376,8 @@ public class ItemIdentificationOverlay implements Listener {
             }
         }
 
+        if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+
         NBTTagCompound nbt = stack.getTagCompound();
         nbt.setBoolean("verifiedWynntils", true);
         nbt.setBoolean("extendedStats", extended);
