@@ -25,7 +25,7 @@ public enum ReflectionFields {
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
     GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w");
 
-    Field field;
+    final Field field;
 
     ReflectionFields(Class<?> holdingClass, String... values) {
         this.field = ReflectionHelper.findField(holdingClass, values);
@@ -48,5 +48,5 @@ public enum ReflectionFields {
             e.printStackTrace();
         }
     }
-    //todo more shit here that is not ghetto lazy code
+
 }

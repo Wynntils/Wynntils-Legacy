@@ -334,6 +334,7 @@ public class ScreenRenderer {
             xMax = x2 + drawingOrigin.x,
             yMin = y1 + drawingOrigin.y,
             yMax = y2 + drawingOrigin.y;
+
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glTexCoord2f(tx1, ty1);
         GlStateManager.glVertex3f(xMin, yMin, 0);

@@ -35,6 +35,7 @@ public class Textures {
     public static class Masks {
         public static AssetsTexture full;
         public static AssetsTexture circle;
+        public static AssetsTexture vignette;
     }
 
     public static class Overlays {

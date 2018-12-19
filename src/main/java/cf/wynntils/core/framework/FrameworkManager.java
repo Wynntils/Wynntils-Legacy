@@ -130,9 +130,8 @@ public class FrameworkManager {
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
-            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR ||//move it to somewhere else if you want, it seems pretty core to wynncraft tho..
-               e.getType() == RenderGameOverlayEvent.ElementType.ARMOR)
-            {
+            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR || //move it to somewhere else if you want, it seems pretty core to wynncraft tho..
+               e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
                 e.setCanceled(true);
                 return;
             }

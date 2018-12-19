@@ -30,6 +30,7 @@ public class AssetsTexture extends Texture {
             loaded = true;
             return ActionResult.SUCCESS;
         } catch(Exception e) {
+            e.printStackTrace();
             width = -1; height = -1;
             loaded = false;
             return ActionResult.ERROR;

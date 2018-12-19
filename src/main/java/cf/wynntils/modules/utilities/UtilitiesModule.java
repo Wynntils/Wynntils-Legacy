@@ -46,6 +46,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
+        registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
