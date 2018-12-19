@@ -135,7 +135,7 @@ public class NametagManager {
                     }
                     if (UtilitiesConfig.INSTANCE.showArmors) {
                         for (ItemStack is : entityIn.getEquipmentAndArmor()) {
-                            if (!WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
+                            if(!is.hasDisplayName() || WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
                             ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(is.getDisplayName()));
                             String prefix;
                             switch (wItem.getTier()) {

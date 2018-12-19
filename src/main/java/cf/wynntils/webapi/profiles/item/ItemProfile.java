@@ -711,7 +711,9 @@ public class ItemProfile {
         public HashMap<String, ItemProfile> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             HashMap<String, ItemProfile> items = new HashMap<>();
             for (JsonElement element : json.getAsJsonArray()) {
-                String name = element.getAsJsonObject().get("name").getAsString();
+                String name;
+                if(element.getAsJsonObject().has("displayName")) name = element.getAsJsonObject().get("displayName").getAsString();
+                else name = element.getAsJsonObject().get("name").getAsString();
                 ItemProfile item = context.deserialize(element, ItemProfile.class);
                 items.put(name, item);
             }
