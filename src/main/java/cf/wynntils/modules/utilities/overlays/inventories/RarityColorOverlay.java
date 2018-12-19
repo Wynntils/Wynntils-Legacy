@@ -47,10 +47,8 @@ public class RarityColorOverlay implements Listener {
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 10, 0F);
-        if(e.getGuiInventory().getSlotUnderMouse() != null) {
-            if(e.getGuiInventory().getSlotUnderMouse().slotNumber == 45 || e.getGuiInventory().getSlotUnderMouse().slotNumber == 44)
-                GL11.glEnable(GL11.GL_BLEND);
-        }
+        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack() && e.getGuiInventory().getSlotUnderMouse().getStack().hasEffect())
+            GL11.glEnable(GL11.GL_BLEND);
 
         int amount = -1;
         int extra = 0;
@@ -174,10 +172,7 @@ public class RarityColorOverlay implements Listener {
             }
         }
 
-        if(e.getGuiInventory().getSlotUnderMouse() != null) {
-            if(e.getGuiInventory().getSlotUnderMouse().slotNumber == 45 || e.getGuiInventory().getSlotUnderMouse().slotNumber == 44)
-                GL11.glDisable(GL11.GL_BLEND);
-        }
+        GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
 
@@ -249,10 +244,8 @@ public class RarityColorOverlay implements Listener {
         GL11.glPushMatrix();
         {
             GL11.glTranslatef(0, 10, 0F);
-            if(slot != null) {
-                if(slot.slotNumber == 89)
-                    GL11.glEnable(GL11.GL_BLEND);
-            }
+            if(slot != null && slot.getHasStack() && slot.getStack().hasEffect())
+                GL11.glEnable(GL11.GL_BLEND);
 
             int amount = -1;
             int floor = 0;
@@ -417,10 +410,7 @@ public class RarityColorOverlay implements Listener {
                 GL11.glPopMatrix();
             }
 
-            if(slot != null) {
-                if(slot.slotNumber == 89)
-                    GL11.glDisable(GL11.GL_BLEND);
-            }
+            GL11.glDisable(GL11.GL_BLEND);
         }
         GL11.glPopMatrix();
 
