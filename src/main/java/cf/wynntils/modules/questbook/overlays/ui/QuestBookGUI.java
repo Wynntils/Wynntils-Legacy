@@ -37,7 +37,11 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -200,13 +204,24 @@ public class QuestBookGUI extends GuiScreen {
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if(overQuest != null) {
-            if(QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
-                QuestManager.setTrackedQuest(null);
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
-                return;
+            if (mouseButton != 1) {
+                if (overQuest.getStatus() == QuestStatus.COMPLETED)
+                    return;
+                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
+                    QuestManager.setTrackedQuest(null);
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                    return;
+                }
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                QuestManager.setTrackedQuest(overQuest);
+            } else {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://wynncraft.gamepedia.com/" + URLEncoder.encode(overQuest.getName().replace(" ", "_"), "UTF-8")));
+                    } catch (URISyntaxException ignored) {}
+                }
             }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
-            QuestManager.setTrackedQuest(overQuest);
             return;
         }
         ScaledResolution res = new ScaledResolution(getMinecraft());
@@ -842,7 +857,7 @@ public class QuestBookGUI extends GuiScreen {
                                 render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                             }
 
-                            if (selected.getStatus() != QuestStatus.COMPLETED) overQuest = selected;
+                            overQuest = selected;
                             hoveredText = lore;
                             GlStateManager.disableLighting();
                         } else {
@@ -885,6 +900,7 @@ public class QuestBookGUI extends GuiScreen {
                                 lore.set(lore.size() - 1, "§a§lLeft click to pin it!");
                             }
                         }
+                        lore.add("§6§lRight click to open on the wiki!");
 
                         render.drawString(selected.getName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
