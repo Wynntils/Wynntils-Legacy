@@ -46,6 +46,7 @@ public class UpdateProfile {
     }
 
     public void forceUpdate() {
+        UpdateOverlay.reset();
         hasUpdate = true;
     }
 
