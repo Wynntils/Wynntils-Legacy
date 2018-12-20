@@ -42,11 +42,11 @@ public class FrameworkManager {
     private static EventBus eventBus = new EventBus();
 
     static {
-        registeredOverlays.put(Priority.LOWEST,new ArrayList<>());
-        registeredOverlays.put(Priority.LOW,new ArrayList<>());
-        registeredOverlays.put(Priority.NORMAL,new ArrayList<>());
-        registeredOverlays.put(Priority.HIGH,new ArrayList<>());
-        registeredOverlays.put(Priority.HIGHEST,new ArrayList<>());
+        registeredOverlays.put(Priority.LOWEST, new ArrayList<>());
+        registeredOverlays.put(Priority.LOW, new ArrayList<>());
+        registeredOverlays.put(Priority.NORMAL, new ArrayList<>());
+        registeredOverlays.put(Priority.HIGH, new ArrayList<>());
+        registeredOverlays.put(Priority.HIGHEST, new ArrayList<>());
     }
     
     public static void registerModule(Module module) {

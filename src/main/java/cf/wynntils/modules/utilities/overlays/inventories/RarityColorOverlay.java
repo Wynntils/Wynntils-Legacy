@@ -47,8 +47,7 @@ public class RarityColorOverlay implements Listener {
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 10, 0F);
-        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack() && e.getGuiInventory().getSlotUnderMouse().getStack().hasEffect())
-            GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_BLEND);
 
         int amount = -1;
         int extra = 0;
@@ -172,13 +171,11 @@ public class RarityColorOverlay implements Listener {
             }
         }
 
-        GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
 
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-
             final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
             int blocks = 0, liquid = 0, emeralds = 0;
@@ -236,7 +233,6 @@ public class RarityColorOverlay implements Listener {
                 }
                 ScreenRenderer.endGL();
             }
-            GlStateManager.enableLighting();
         }
     }
 
@@ -244,8 +240,7 @@ public class RarityColorOverlay implements Listener {
         GL11.glPushMatrix();
         {
             GL11.glTranslatef(0, 10, 0F);
-            if(slot != null && slot.getHasStack() && slot.getStack().hasEffect())
-                GL11.glEnable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_BLEND);
 
             int amount = -1;
             int floor = 0;
@@ -258,7 +253,7 @@ public class RarityColorOverlay implements Listener {
                     floor++;
                 }
 
-                if (is == null || is.isEmpty() || !is.hasDisplayName()) {
+                if (is.isEmpty() || !is.hasDisplayName()) {
                     continue;
                 }
 
@@ -409,8 +404,6 @@ public class RarityColorOverlay implements Listener {
                 }
                 GL11.glPopMatrix();
             }
-
-            GL11.glDisable(GL11.GL_BLEND);
         }
         GL11.glPopMatrix();
 
