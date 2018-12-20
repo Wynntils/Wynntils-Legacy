@@ -40,9 +40,7 @@ public class ExpBarOverlay extends Overlay{
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby))) return;
-//        if (this.animated > 0.0f && this.animated < 10.0f)
-//            exp -= (animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+        if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby && mc.player.getAir() == 300))) return;
         if (OverlayConfig.Exp.INSTANCE.animated > 0.0f && OverlayConfig.Exp.INSTANCE.animated < 10.0f)
             exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
         else
@@ -52,6 +50,7 @@ public class ExpBarOverlay extends Overlay{
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
+
         if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && OverlayConfig.Exp.INSTANCE.enabled) {
             event.setCanceled(true);
 

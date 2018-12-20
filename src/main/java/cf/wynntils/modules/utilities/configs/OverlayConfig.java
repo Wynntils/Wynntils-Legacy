@@ -104,6 +104,34 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "bubbles_settings", displayPath = "Overlays/Bubbles")
+    public static class Bubbles extends SettingsClass {
+        public static Bubbles INSTANCE;
+
+        @Setting(displayName = "Bubbles Texture", description = "What texture to use for the exp bar")
+        public BubbleTexture bubblesTexture = BubbleTexture.a;
+
+        @Setting(displayName = "Enabled", description = "Should the exp bar display?")
+        public boolean enabled = true;
+
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Setting(displayName = "Bubble Vignette", description = "Should the drowning viggnete apears")
+        public boolean drowningVignette = true;
+
+        public enum BubbleTexture {
+            Wynn,
+            a,
+            b,
+            c
+        }
+    }
+
 
     @SettingsInfo(name = "leveling_settings", displayPath = "Overlays/Leveling")
     public static class Leveling extends SettingsClass {

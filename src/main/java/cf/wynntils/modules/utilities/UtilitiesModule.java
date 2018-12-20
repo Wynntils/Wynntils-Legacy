@@ -64,6 +64,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
         registerSettings(OverlayConfig.WarTimer.class);
+        registerSettings(OverlayConfig.Bubbles.class);
     }
 
     public static UtilitiesModule getModule() {

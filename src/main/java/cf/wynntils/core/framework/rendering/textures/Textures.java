@@ -42,6 +42,7 @@ public class Textures {
         public static AssetsTexture bars_health;
         public static AssetsTexture bars_mana;
         public static AssetsTexture bars_exp;
+        public static AssetsTexture bars_bubbles;
     }
 
     public static class UIs {
