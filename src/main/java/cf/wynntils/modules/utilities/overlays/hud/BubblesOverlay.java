@@ -15,7 +15,7 @@ public class BubblesOverlay extends Overlay {
         super("Bubbles Overlay", 0, 0, true, 0, 0, 0, 0);
     }
 
-    float animation = 300.0f;
+    private static float animation = 300.0f;
 
     @Override
     public void render(RenderGameOverlayEvent.Post e) {
