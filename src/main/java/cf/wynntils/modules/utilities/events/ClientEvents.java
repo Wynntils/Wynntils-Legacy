@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -68,7 +67,7 @@ public class ClientEvents implements Listener {
         DailyReminderManager.openedDailyInventory(e);
     }
 
-    //HeyZeer0: Handles the inventory lock, 4 methods below, first 3 on inventory, last one by dropping the item (without inventory)
+    //HeyZeer0: Handles the inventory lock, 7 methods below, first 6 on inventory, last one by dropping the item (without inventory)
     @SubscribeEvent
     public void keyPressOnInventory(GuiOverlapEvent.InventoryOverlap.KeyTyped e) {
         if(!Reference.onWorld) return;
@@ -125,7 +124,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void keyPressOnChest(GuiOverlapEvent.HorseOverlap.KeyTyped e) {
+    public void keyPressOnHorse(GuiOverlapEvent.HorseOverlap.KeyTyped e) {
         if(!Reference.onWorld) return;
 
         if(e.getKeyCode() == KeyManager.getLockInventoryKey().getKeyBinding().getKeyCode()) {
@@ -144,6 +143,27 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void clickOnIventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+        }
+    }
+
+    @SubscribeEvent
+    public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+        }
+    }
+
+    @SubscribeEvent
+    public void clickOnHorse(GuiOverlapEvent.HorseOverlap.HandleMouseClick e) {
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+        }
+    }
+
+    @SubscribeEvent
     public void keyPress(PacketEvent.PlayerDropItemEvent e) {
         if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
@@ -152,6 +172,8 @@ public class ClientEvents implements Listener {
     }
 
     private boolean checkDropState(int slot, int key) {
+        if(!Reference.onWorld) return false;
+        
         if(key == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
             if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return false;
 
@@ -161,6 +183,8 @@ public class ClientEvents implements Listener {
     }
 
     private void checkLockState(int slot) {
+        if(!Reference.onWorld) return;
+
         if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) {
             UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.getPlayerInfo().getClassId(), new HashSet<>());
         }
