@@ -420,9 +420,9 @@ public class ChatOverlay extends GuiNewChat {
     public void setCurrentTab(ChatTab tab) {
         currentTab = tab;
 
-        if(tab == ChatTab.GLOBAL) globalNewMessages = false;
-        else if(tab == ChatTab.PARTY) partyNewMessages = false;
-        else if(tab == ChatTab.GUILD) guildNewMessages = false;
+        if(tab == ChatTab.GLOBAL) { globalNewMessages = false; globalMention = false; }
+        else if(tab == ChatTab.PARTY) { partyNewMessages = false; partyMention = false; }
+        else if(tab == ChatTab.GUILD) { guildNewMessages = false; guildMention = false; }
 
         scroll(0);
     }
