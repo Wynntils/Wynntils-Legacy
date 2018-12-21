@@ -7,8 +7,6 @@ import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
-import cf.wynntils.core.utils.Pair;
-import cf.wynntils.modules.utilities.managers.ChatManager;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
@@ -79,13 +77,6 @@ public class ClientEvents {
     public void onChat(ClientChatEvent e) {
         if(Reference.onWorld && e.getMessage().startsWith("/class")) {
             inClassSelection = true;
-        }
-        if(Reference.onWorld) {
-            Pair<String, Boolean> message = ChatManager.applyUpdatesToServer(e.getMessage());
-            e.setMessage(message.a);
-            if (message.b) {
-                e.setCanceled(true);
-            }
         }
     }
 

@@ -1,16 +1,9 @@
-/*
- *  * Copyright © Wynntils - 2018.
- */
-
-package cf.wynntils.modules.utilities.managers;
+package cf.wynntils.modules.chat.managers;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.core.utils.Pair;
-import cf.wynntils.core.utils.ReflectionFields;
-import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.chat.configs.ChatConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.ChatLine;
-import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -18,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraft.util.text.event.HoverEvent.Action;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,73 +21,24 @@ import java.util.List;
 public class ChatManager {
 
     private static final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-    private static ITextComponent lastMessage = null;
-    private  static int lastAmount = 2;
-
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
-    public static Pair<ITextComponent, Boolean> applyUpdatesToClient(ITextComponent message) {
 
+    public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
         boolean cancel = false;
-        
-        ITextComponent originalMessage = message.createCopy();
 
-        if(UtilitiesConfig.Chat.INSTANCE.allowChatMentions && message.getSiblings().size() >= 2 && message.getSiblings().get(0).getUnformattedText().contains("/")) {
-            if (message.getFormattedText().contains(ModCore.mc().player.getName())) {
-                boolean hasMention = false;
-                boolean foundStart = false;
-                ArrayList<ITextComponent> components = new ArrayList<ITextComponent>();
-                for (ITextComponent component : message.getSiblings()) {
-                    if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
-                        hasMention = true;
-                        String[] sections = component.getUnformattedText().split(ModCore.mc().player.getName());
-                        for (int index = 0; index < sections.length; index++) {
-                            String section = sections[index];
-                            ITextComponent sectionComponent = new TextComponentString(section);
-                            sectionComponent.setStyle(component.getStyle().createDeepCopy());
-                            components.add(sectionComponent);
-                            if (index != sections.length - 1) {
-                                ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                                playerComponent.setStyle(component.getStyle().createDeepCopy());
-                                playerComponent.getStyle().setColor(TextFormatting.YELLOW);
-                                components.add(playerComponent);
-                            }
-                            
-                        }
-                        if (component.getUnformattedText().endsWith(ModCore.mc().player.getName())) {
-                            ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                            playerComponent.setStyle(component.getStyle().createDeepCopy());
-                            playerComponent.getStyle().setColor(TextFormatting.YELLOW);
-                            components.add(playerComponent);
-                        }
-                        
-                    } else if (!foundStart) {
-                        foundStart = component.getUnformattedText().contains(":");
-                        components.add(component);
-                    } else {
-                        components.add(component);
-                    }
-                }
-                message.getSiblings().clear();
-                message.getSiblings().addAll(components);
-                if (hasMention) {  
-                    ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
-                }
-            }
-        }
-
-        if(UtilitiesConfig.Chat.INSTANCE.addTimestampsToChat) {
-            if (!message.getUnformattedComponentText().isEmpty() && message instanceof TextComponentString) {
+        if(ChatConfig.INSTANCE.addTimestampsToChat) {
+            if (!in.getUnformattedComponentText().isEmpty() && in instanceof TextComponentString) {
                 ITextComponent newMessage = new TextComponentString("");
-                newMessage.setStyle(message.getStyle().createDeepCopy());
-                newMessage.appendSibling(message);
-                newMessage.getSiblings().addAll(message.getSiblings());
-                message.getSiblings().clear();
-                message.setStyle(null);
-                message = newMessage;
+                newMessage.setStyle(in.getStyle().createDeepCopy());
+                newMessage.appendSibling(in);
+                newMessage.getSiblings().addAll(in.getSiblings());
+                in.getSiblings().clear();
+                in.setStyle(null);
+                in = newMessage;
             }
             List<ITextComponent> timeStamp = new ArrayList<ITextComponent>();
             ITextComponent startBracket = new TextComponentString("[");
@@ -107,16 +50,15 @@ public class ChatManager {
             ITextComponent endBracket = new TextComponentString("] ");
             endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             timeStamp.add(endBracket);
-            message.getSiblings().addAll(0, timeStamp);
+            in.getSiblings().addAll(0, timeStamp);
         }
 
-        if(message.getUnformattedText().contains(" requires your ") && message.getUnformattedText().contains(" skill to be at least ")){
+        if(in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
-        }
 
-        if (hasWynnic(message.getUnformattedText())) {
+        if (hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
-            for (ITextComponent component : message.getSiblings()) {
+            for (ITextComponent component : in.getSiblings()) {
                 if (hasWynnic(component.getUnformattedText())) {
                     String toAdd = "";
                     String currentNonTranslatable = "";
@@ -153,7 +95,7 @@ public class ChatManager {
                                 ITextComponent newComponent = new TextComponentString(toAdd);
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
                                 newTextComponents.add(oldComponent);
-                                oldComponent.getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, newComponent));
+                                oldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
                                 oldText = currentNonTranslatable;
                                 currentNonTranslatable = "";
                                 oldText += character;
@@ -168,7 +110,7 @@ public class ChatManager {
                         ITextComponent newComponent = new TextComponentString(toAdd);
                         newComponent.setStyle(component.getStyle().createDeepCopy());
                         newTextComponents.add(oldComponent);
-                        oldComponent.getStyle().setHoverEvent(new HoverEvent(Action.SHOW_TEXT, newComponent));
+                        oldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
                     } else {
                         ITextComponent oldComponent = new TextComponentString(oldText);
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -179,47 +121,62 @@ public class ChatManager {
                     newTextComponents.add(component);
                 }
             }
-            message.getSiblings().clear();
-            message.getSiblings().addAll(newTextComponents);
+            in.getSiblings().clear();
+            in.getSiblings().addAll(newTextComponents);
         }
 
-        ITextComponent thisClone = originalMessage.createCopy();
-        
-        ITextComponent lastClone = null;
-        if (lastMessage != null) {
-            lastClone = lastMessage.createCopy();
-        }
+        return new Pair<>(in, cancel);
+    }
 
-        if (UtilitiesConfig.Chat.INSTANCE.blockChatSpamFilter && thisClone.getFormattedText().equals(lastClone == null ? null : lastClone.getFormattedText())) {
-            GuiNewChat ch = ModCore.mc().ingameGUI.getChatGUI();
+    public static ITextComponent renderMessage(ITextComponent in) {
+        return in;
+    }
 
-            if(ch != null) {
-                try{
-                    List<ChatLine> oldLines = (List<ChatLine>) ReflectionFields.GuiNewChat_chatLines.getValue(ch);
+    public static boolean proccessUserMention(ITextComponent in) {
+        boolean hasMention = false;
+        if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2 && in.getSiblings().get(0).getUnformattedText().contains("/")) {
+            if (in.getFormattedText().contains(ModCore.mc().player.getName())) {
+                boolean foundStart = false;
+                ArrayList<ITextComponent> components = new ArrayList<ITextComponent>();
+                for (ITextComponent component : in.getSiblings()) {
+                    if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
+                        hasMention = true;
+                        String[] sections = component.getUnformattedText().split(ModCore.mc().player.getName());
+                        for (int index = 0; index < sections.length; index++) {
+                            String section = sections[index];
+                            ITextComponent sectionComponent = new TextComponentString(section);
+                            sectionComponent.setStyle(component.getStyle().createDeepCopy());
+                            components.add(sectionComponent);
+                            if (index != sections.length - 1) {
+                                ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
+                                playerComponent.setStyle(component.getStyle().createDeepCopy());
+                                playerComponent.getStyle().setColor(TextFormatting.YELLOW);
+                                components.add(playerComponent);
+                            }
 
-                    if(oldLines != null && oldLines.size() > 0) {
-                        ChatLine line = oldLines.get(0);
-                        ITextComponent chatLine = (ITextComponent) ReflectionFields.ChatLine_lineString.getValue(line);
-                        ITextComponent lastComponent = chatLine.getSiblings().get(chatLine.getSiblings().size() - 1);
-                        if (lastComponent.getUnformattedComponentText().matches(" \\[\\d*x]")) {
-                            chatLine.getSiblings().remove(lastComponent);
                         }
-                        ITextComponent counter = new TextComponentString(" [" + lastAmount++ + "x]");
-                        counter.getStyle().setColor(TextFormatting.GRAY);
-                        ((ITextComponent) ReflectionFields.ChatLine_lineString.getValue(line)).appendSibling(counter);
+                        if (component.getUnformattedText().endsWith(ModCore.mc().player.getName())) {
+                            ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
+                            playerComponent.setStyle(component.getStyle().createDeepCopy());
+                            playerComponent.getStyle().setColor(TextFormatting.YELLOW);
+                            components.add(playerComponent);
+                        }
 
-                        ch.refreshChat();
-                        cancel = true;
+                    } else if (!foundStart) {
+                        foundStart = component.getUnformattedText().contains(":");
+                        components.add(component);
+                    } else {
+                        components.add(component);
                     }
-                }catch (Exception  ex) { ex.printStackTrace(); }
+                }
+                in.getSiblings().clear();
+                in.getSiblings().addAll(components);
+                if (hasMention) {
+                    ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+                }
             }
-        }else{
-            lastAmount = 2;
         }
-
-        lastMessage = originalMessage;
-
-        return new Pair<ITextComponent, Boolean>(message, cancel);
+        return hasMention;
     }
 
     public static Pair<String, Boolean> applyUpdatesToServer(String message) {
@@ -261,7 +218,7 @@ public class ChatManager {
 
         }
 
-        return new Pair<String, Boolean>(after, cancel);
+        return new Pair<>(after, cancel);
     }
 
     private static boolean hasWynnic(String text) {

@@ -62,26 +62,6 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "chat", displayPath = "Main/Chat")
-    public static class Chat extends SettingsClass {
-        public static Chat INSTANCE;
-
-
-        @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps")
-        public boolean addTimestampsToChat = true;
-
-        @Setting(displayName = "Chat Mentions", description = "The game ping a sound when your name appears in chat")
-        public boolean allowChatMentions = true;
-
-        @Setting(displayName = "Chat Spam Filter", description = "Repeating chat messages would stack up instead of filling the screen")
-        public boolean blockChatSpamFilter = true;
-
-        @Override
-        public void onSettingChanged(String name) {
-
-        }
-    }
-
     @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
     public static class Items extends SettingsClass {
         public static Items INSTANCE;

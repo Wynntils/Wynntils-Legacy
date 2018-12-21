@@ -6,16 +6,17 @@ import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
-import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
-import cf.wynntils.modules.utilities.managers.*;
+import cf.wynntils.modules.utilities.managers.DailyReminderManager;
+import cf.wynntils.modules.utilities.managers.KeyManager;
+import cf.wynntils.modules.utilities.managers.NametagManager;
+import cf.wynntils.modules.utilities.managers.TPSManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -47,13 +48,6 @@ public class ClientEvents implements Listener {
         }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
-        }
-        if(Reference.onWorld) {
-            Pair<ITextComponent, Boolean> message = ChatManager.applyUpdatesToClient(e.getMessage());
-            e.setMessage(message.a);
-            if(message.b) {
-                e.setCanceled(true);
-            }
         }
     }
 

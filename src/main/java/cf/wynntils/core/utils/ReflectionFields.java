@@ -1,7 +1,7 @@
 package cf.wynntils.core.utils;
 
 import net.minecraft.client.gui.ChatLine;
-import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -18,12 +18,12 @@ public enum ReflectionFields {
     NetworkManager_packetListener(NetworkManager.class, "packetListener", "field_150744_m", "field_150744_m"),
     NetHandlerPlayClient_guiScreenServer(NetHandlerPlayClient.class, "guiScreenServer", "field_147307_j"),
     NetHandlerPlayClient_profile(NetHandlerPlayClient.class, "profile", "field_175107_d"),
-    GuiNewChat_chatLines(GuiNewChat.class, "chatLines", "field_146252_h"),
     ChatLine_lineString(ChatLine.class, "lineString", "field_74541_b"),
     GuiChest_lowerChestInventory(GuiChest.class, "lowerChestInventory", "field_147015_w"),
     Event_phase(Event.class, "phase"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
-    GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w");
+    GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w"),
+    GuiIngame_persistantChatGUI(GuiIngame.class, "persistantChatGUI", "field_73840_e");
 
     final Field field;
 
