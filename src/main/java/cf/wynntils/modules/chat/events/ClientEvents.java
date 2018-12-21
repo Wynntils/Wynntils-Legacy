@@ -23,8 +23,9 @@ public class ClientEvents implements Listener {
     public void onGuiOpen(GuiOpenEvent e) {
         if(e.getGui() instanceof GuiChat) {
             if(e.getGui() instanceof ChatGUI) return;
+            String defaultText = (String) ReflectionFields.GuiChat_defaultInputFieldText.getValue(e.getGui());
 
-            e.setGui(new ChatGUI());
+            e.setGui(new ChatGUI(defaultText));
         }
     }
 

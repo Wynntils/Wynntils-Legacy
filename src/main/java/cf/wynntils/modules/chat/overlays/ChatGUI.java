@@ -4,6 +4,14 @@ import cf.wynntils.modules.chat.enums.ChatTab;
 import net.minecraft.client.gui.GuiChat;
 
 public class ChatGUI extends GuiChat {
+    
+    public ChatGUI() {
+        
+    }
+    
+    public ChatGUI(String defaultInputText) {
+        super(defaultInputText);
+    }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(ChatOverlay.getChat().getMouseOver() == 1) ChatOverlay.getChat().setCurrentTab(ChatTab.GLOBAL);
