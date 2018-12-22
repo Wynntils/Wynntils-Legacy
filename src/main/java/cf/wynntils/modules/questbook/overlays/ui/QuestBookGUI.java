@@ -205,7 +205,7 @@ public class QuestBookGUI extends GuiScreen {
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if(overQuest != null) {
             if (mouseButton != 1) {
-                if (overQuest.getStatus() == QuestStatus.COMPLETED)
+                if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);

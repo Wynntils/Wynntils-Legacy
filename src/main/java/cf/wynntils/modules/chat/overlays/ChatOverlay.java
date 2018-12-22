@@ -220,7 +220,7 @@ public class ChatOverlay extends GuiNewChat {
 
         ChatTab selectedTab = ChatTab.GLOBAL;
 
-        if(chatComponent.getFormattedText().startsWith("§3[§r")) selectedTab = ChatTab.GUILD;
+        if(chatComponent.getFormattedText().startsWith("§3[§r") && !chatComponent.getUnformattedText().endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
         else if(chatComponent.getFormattedText().startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
 
         if(selectedTab != currentTab) {
@@ -305,7 +305,7 @@ public class ChatOverlay extends GuiNewChat {
     public void addToSentMessages(String message) {
         ChatTab selectedTab = ChatTab.GLOBAL;
 
-        if(message.startsWith("§3§3[§r")) selectedTab = ChatTab.GUILD;
+        if(message.startsWith("§3§3[§r") && !message.endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
         else if(message.startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
 
         sentMessages.get(selectedTab).add(message);

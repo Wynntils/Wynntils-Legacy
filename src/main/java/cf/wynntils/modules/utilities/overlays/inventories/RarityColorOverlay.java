@@ -524,7 +524,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private boolean isPowder(ItemStack is) {
-        return (is.hasDisplayName() && is.getDisplayName().contains("Powder"));
+        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && Utils.stripColor(Utils.getStringLore(is)).contains("Effect on Weapons"));
     }
 
     private int getPowderTier(ItemStack is) {

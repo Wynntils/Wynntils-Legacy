@@ -120,7 +120,7 @@ public class QuestManager {
     public static void updateTrackedQuest() {
         if(trackedQuest == null) return;
 
-        QuestInfo questInfo = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).filter(c -> c.getStatus() == QuestStatus.STARTED).findFirst().orElse(null);
+        QuestInfo questInfo = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).filter(c -> c.getStatus() == QuestStatus.STARTED || c.getStatus() == QuestStatus.CAN_START).findFirst().orElse(null);
         if(questInfo != null && questInfo.getCurrentDescription().equals(trackedQuest.getCurrentDescription())) {
             return;
         }
