@@ -32,7 +32,27 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onClickOnQuestBook(PlayerInteractEvent.RightClickItem e) {
+    public void onClickOnQuestBookItem(PlayerInteractEvent.RightClickItem e) {
+        if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
+            if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+                QuestManager.requestLessIntrusiveQuestBookReading();
+                QuestBookModule.gui.open();
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onClickOnQuestBookBlock(PlayerInteractEvent.RightClickBlock e) {
+        if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
+            if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+                QuestManager.requestLessIntrusiveQuestBookReading();
+                QuestBookModule.gui.open();
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onClickOnQuestBookEntity(PlayerInteractEvent.EntityInteract e) {
         if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
             if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
                 QuestManager.requestLessIntrusiveQuestBookReading();
