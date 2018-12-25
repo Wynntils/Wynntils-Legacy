@@ -191,40 +191,33 @@ public class OverlayConfig extends SettingsClass {
             public String expMessageFormat = "§2+%xc%XP (§6+%pc%%§2)";
         }
 
-        @SettingsInfo(name = "game_update_level_settings", displayPath = "Overlays/Update Ticker/Levelups")
-        public static class LevelupMessages extends SettingsClass {
-            public static LevelupMessages INSTANCE;
-
-            @Setting(displayName = "Enable levelup messages", description = "Should levelup messages be displayed in the game update ticker")
-            public boolean enabled = false;
-
-            @Setting(displayName = "Levelup message format", description = "The format of levelup ticker")
-            @Setting.Features.StringParameters(parameters = {"ol", "nl"})
-            @Setting.Limitations.StringLimit(maxLength = 100)
-            public String lvlupMessageFormat = "§5Level Up! [§d%ol%§5>§d%nl%§5]";
-        }
-
         @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
         public static class RedirectSystemMessages extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
 
             @Setting(displayName = "Redirect combat messages", description = "Should combat chat messages be redirected to game update ticker")
-            public boolean redirectCombat = true;
+            public boolean redirectCombat = false;
 
             @Setting(displayName = "Redirect horse messages", description = "Should messages related to the horse be redirected game update ticker")
-            public boolean redirectHorse = true;
+            public boolean redirectHorse = false;
 
-            @Setting(displayName = "Redirect login messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker")
-            public boolean redirectLogin = true;
+            @Setting(displayName = "Redirect local login messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker")
+            public boolean redirectLoginLocal = false;
+
+            @Setting(displayName = "Redirect friend login messages", description = "Should login messages for friends by redirected to the game update ticker")
+            public boolean redirectLoginFriend = false;
 
             @Setting(displayName = "Redirect merchant messages", description = "Should item buyer & identifier messages be redirected to the game update ticker")
             public boolean redirectMerchants = false;
 
             @Setting(displayName = "Redirect other messages", description = "Should skill point; other user level up; and identification required messages be redirected to the game update ticker")
-            public boolean redirectOther = true;
+            public boolean redirectOther = false;
 
             @Setting(displayName = "Redirect server status", description = "Should server shutdown messages be redirected to the game update ticker")
             public boolean redirectServer = false;
+
+            @Setting(displayName = "Redirect quest messages", description = "Redirect quest started and questbook updated messages to the game update ticker")
+            public boolean redirectQuest = false;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Overlays/Update Ticker/Territory Change")
@@ -238,7 +231,10 @@ public class OverlayConfig extends SettingsClass {
             public boolean enter = true;
 
             @Setting(displayName = "Enable territory leave", description = "Should territory leave messages be displayed in the game update ticker")
-            public boolean leave = true;
+            public boolean leave = false;
+
+            @Setting(displayName = "Enable music change", description = "Should music change messages be displayed in the game update ticker (no effect if the music module is disabled)")
+            public boolean musicChange = false;
 
             @Setting(displayName = "Territory enter format", description = "The format of territory enter ticker messages")
             @Setting.Features.StringParameters(parameters = {"t"})
@@ -249,6 +245,11 @@ public class OverlayConfig extends SettingsClass {
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String territoryLeaveFormat = "§7Now Leaving [%t%]";
+
+            @Setting(displayName = "Music change format", description = "The format of music change ticker messages")
+            @Setting.Features.StringParameters(parameters = {"np"})
+            @Setting.Limitations.StringLimit(maxLength = 100)
+            public String musicChangeFormat = "§7♫ %np%";
         }
     }
     
