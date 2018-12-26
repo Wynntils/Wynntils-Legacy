@@ -154,6 +154,9 @@ public class OverlayConfig extends SettingsClass {
     public static class GameUpdate extends SettingsClass {
         public static GameUpdate INSTANCE;
 
+        // Default settings designed for large gui scale @ 1080p
+        // I personally use gui scale normal - but this works fine with that too
+
         @Setting(displayName = "Message Limit", description = "The maximum amount of ticker messages to display in the game update list")
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
@@ -169,17 +172,16 @@ public class OverlayConfig extends SettingsClass {
         public boolean enabled = true;
 
         @Setting(displayName = "Offset X", description = "How far the ticker should be offset on the X axis")
-        @Setting.Limitations.IntLimit(min = -200, max = 10)
+        @Setting.Limitations.IntLimit(min = -300, max = 10)
         public int offsetX = 0;
 
         @Setting(displayName = "Offset Y", description = "How far the ticker should be offset on the Y axis")
-        @Setting.Limitations.IntLimit(min = -200, max = 10)
-        public int offsetY = 0;
+        @Setting.Limitations.IntLimit(min = -300, max = 10)
+        public int offsetY = -70;
 
         @Setting(displayName = "Max message length", description = "The maximum length of messages in the game update ticker. Messages longer than this value will be truncated. (0 = unlimited)")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
-        // Default setting works for large gui scale @ 1080p
-        public int messageMaxLength = 45;
+        public int messageMaxLength = 0;
 
         @Setting(displayName = "Text Shadow", description = "The text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;

@@ -136,7 +136,7 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
@@ -146,8 +146,8 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0].replace("§r", "") + "§7)");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
@@ -158,9 +158,9 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0] + "§7)");
-                GameUpdateOverlay.queueMessage("§bRemoved §7all fire (§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage("§bRemoved §7all fire (§b" + res[0].replace("§r", "") + "§7)");
                 e.setCanceled(true);
                 return;
             // ARCHER
@@ -169,7 +169,7 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\+3 minutes speed boost\\.")) {
-                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost (" + e.getMessage().getFormattedText().split(" ")[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost (" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
                 e.setCanceled(true);
                 return;
             }
