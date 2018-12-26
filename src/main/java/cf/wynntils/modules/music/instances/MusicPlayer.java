@@ -7,6 +7,8 @@ package cf.wynntils.modules.music.instances;
 import cf.wynntils.modules.music.configs.MusicConfig;
 import cf.wynntils.modules.music.managers.MusicManager;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
+import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
@@ -32,6 +34,11 @@ public class MusicPlayer {
     public void play(File f) {
         if(currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
 
+        // Queue the music change to the game update ticker
+        if (OverlayConfig.GameUpdate.INSTANCE.enabled && OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange) {
+            GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
+                    .replace("%np%", f.getName().replace(".mp3", "")));
+        }
         nextMusic = f;
         setupController();
     }

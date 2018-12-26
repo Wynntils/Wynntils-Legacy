@@ -35,10 +35,10 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
-        if(Reference.onWorld) {
-            TPSManager.updateTPS();
-            DailyReminderManager.checkDailyReminder(ModCore.mc().player);
-        }
+        if(!Reference.onWorld)
+            return;
+        TPSManager.updateTPS();
+        DailyReminderManager.checkDailyReminder(ModCore.mc().player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -171,7 +171,7 @@ public class ClientEvents implements Listener {
 
     private boolean checkDropState(int slot, int key) {
         if(!Reference.onWorld) return false;
-        
+
         if(key == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
             if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return false;
 

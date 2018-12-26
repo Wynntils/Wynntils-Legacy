@@ -24,7 +24,7 @@ public class BubblesOverlay extends Overlay {
     private static float animation = 300.0f;
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen (0 for instant)")
     public float animated = 2f;
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
