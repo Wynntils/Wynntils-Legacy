@@ -138,22 +138,26 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnIventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
-        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
-            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGuiInventory().getSlotUnderMouse() != null) {
+            e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
         }
     }
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
-            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+            if (e.getSlotId() - e.getGuiInventory().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGuiInventory().getLowerInv().getSizeInventory() < 27) {
+                e.setCanceled(checkDropState(e.getSlotId() - e.getGuiInventory().getLowerInv().getSizeInventory() + 9, Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+            } else {
+                e.setCanceled(checkDropState(e.getSlotId() - e.getGuiInventory().getLowerInv().getSizeInventory() - 27, Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+            }
         }
     }
 
     @SubscribeEvent
     public void clickOnHorse(GuiOverlapEvent.HorseOverlap.HandleMouseClick e) {
-        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
-            e.setCanceled(checkDropState(e.getSlotId(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGuiInventory().getSlotUnderMouse() != null) {
+            e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
         }
     }
 
