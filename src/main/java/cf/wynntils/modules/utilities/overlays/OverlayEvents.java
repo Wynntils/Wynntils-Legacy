@@ -91,6 +91,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCombat) {
+            // GENERAL
             if (e.getMessage().getUnformattedText().contains("You don't have enough mana to do that spell!")) {
                 GameUpdateOverlay.queueMessage("§4Not enough mana.");
                 e.setCanceled(true);
@@ -103,10 +104,36 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
                 e.setCanceled(true);
                 return;
+            // POTIONS
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\]")) {
                 GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
+                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
+                GameUpdateOverlay.queueMessage("§2" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
+                GameUpdateOverlay.queueMessage("§f" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
+                GameUpdateOverlay.queueMessage("§e" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❉ Intelligence for \\d+ seconds]")) {
+                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✹ Defense for \\d+ seconds]")) {
+                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            // MAGE
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
@@ -136,6 +163,7 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§bRemoved §7all fire (§b" + res[0] + "§7)");
                 e.setCanceled(true);
                 return;
+            // ARCHER
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost");
                 e.setCanceled(true);
@@ -232,7 +260,7 @@ public class OverlayEvents implements Listener {
                         total++;
                     } else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
-                            GameUpdateOverlay.queueMessage("§dSold " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d) items for §a" + s.replace("e", "") + (char) 0xB2 + "§d.");
+                            GameUpdateOverlay.queueMessage("§dSold " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d) item(s) for §a" + s.replace("e", "") + (char) 0xB2 + "§d.");
                             e.setCanceled(true);
                         } else {
                             countUnique++;
@@ -275,13 +303,11 @@ public class OverlayEvents implements Listener {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
                     GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + "§2]");
-                    e.setCanceled(true);
-                    return;
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + " " + res[9] + "§2]");
-                    e.setCanceled(true);
-                    return;
                 }
+                e.setCanceled(true);
+                return;
             } else if (colorStrippedMessage.matches(".+ left the game\\.")) {
                 GameUpdateOverlay.queueMessage("§4← §2" + colorStrippedMessage.split(" ")[0]);
                 e.setCanceled(true);
