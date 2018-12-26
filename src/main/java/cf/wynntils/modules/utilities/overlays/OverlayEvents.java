@@ -103,7 +103,49 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
                 e.setCanceled(true);
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\]")) {
+                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
+                String[] res = e.getMessage().getFormattedText().split(" ");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
+                GameUpdateOverlay.queueMessage("§4" + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
+                String[] res = e.getMessage().getFormattedText().split(" ");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0] + "§7)");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
+                GameUpdateOverlay.queueMessage("§4" + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects");
+                GameUpdateOverlay.queueMessage("§bRemoved §7all fire");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
+                String[] res = e.getMessage().getFormattedText().split(" ");
+                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0] + "§7)");
+                GameUpdateOverlay.queueMessage("§bRemoved §7all fire (§b" + res[0] + "§7)");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("+3 minutes speed boost.")) {
+                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\+3 minutes speed boost\\.")) {
+                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost (" + e.getMessage().getFormattedText().split(" ")[0] + "§7)");
+                e.setCanceled(true);
+                return;
             }
+            //TODO: Combat messages for Assassin & Warrior
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
             if (e.getMessage().getUnformattedText().contains(" unused skill points! Click with your compass to use them!")) {
@@ -118,6 +160,19 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (e.getMessage().getUnformattedText().contains("You must identify this item before using it.")) {
                 GameUpdateOverlay.queueMessage("§4Item not identified.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is not a .+ weapon\\. You must use a .+\\.")) {
+                GameUpdateOverlay.queueMessage("§4This weapon is not from your class.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is for level \\d+\\+ only\\.")) {
+                GameUpdateOverlay.queueMessage("§4You are not a high enough level to use this item.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ requires your .+ skill to be at least \\d+\\.")) {
+                String[] res = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
+                GameUpdateOverlay.queueMessage("§4You don't have enough " + res[res.length - 7] + " to use this item.");
                 e.setCanceled(true);
                 return;
             }
@@ -227,6 +282,10 @@ public class OverlayEvents implements Listener {
                     e.setCanceled(true);
                     return;
                 }
+            } else if (colorStrippedMessage.matches(".+ left the game\\.")) {
+                GameUpdateOverlay.queueMessage("§4← §2" + colorStrippedMessage.split(" ")[0]);
+                e.setCanceled(true);
+                return;
             }
         }
     }

@@ -165,8 +165,21 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Invert Growth", description = "Invert the way that the ticker messages grow")
         public boolean invertGrowth = false;
 
-        @Setting(displayName = "Enabled", description = "Should game updates be displayed")
+        @Setting(displayName = "Enabled", description = "Should the game update ticker be displayed")
         public boolean enabled = true;
+
+        @Setting(displayName = "Offset X", description = "How far the ticker should be offset on the X axis")
+        @Setting.Limitations.IntLimit(min = -200, max = 10)
+        public int offsetX = 0;
+
+        @Setting(displayName = "Offset Y", description = "How far the ticker should be offset on the Y axis")
+        @Setting.Limitations.IntLimit(min = -200, max = 10)
+        public int offsetY = 0;
+
+        @Setting(displayName = "Max message length", description = "The maximum length of messages in the game update ticker. Messages longer than this value will be truncated. (0 = unlimited)")
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        // Default setting works for large gui scale @ 1080p
+        public int messageMaxLength = 45;
 
         @Setting(displayName = "Text Shadow", description = "The text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;

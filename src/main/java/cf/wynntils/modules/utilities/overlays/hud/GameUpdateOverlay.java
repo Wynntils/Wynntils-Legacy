@@ -8,8 +8,10 @@ import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.*;
 
@@ -34,6 +36,18 @@ public class GameUpdateOverlay extends Overlay {
     @Setting(displayName = "Enabled", description = "Should game updates be displayed")
     public boolean enabled = true;
 
+    @Setting(displayName = "Offset X", description = "How far the ticker should be offset on the X axis")
+    @Setting.Limitations.IntLimit(min = -200, max = 10)
+    public int offsetX = 0;
+
+    @Setting(displayName = "Offset Y", description = "How far the ticker should be offset on the Y axis")
+    @Setting.Limitations.IntLimit(min = -200, max = 10)
+    public int offsetY = 0;
+
+    @Setting(displayName = "Max message length", description = "The maximum length of messages in the game update ticker. Messages longer than this value will be truncated. (0 = unlimited)")
+    @Setting.Limitations.IntLimit(min = 0, max = 100)
+    public int messageMaxLength = 0;
+
     @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
@@ -47,7 +61,7 @@ public class GameUpdateOverlay extends Overlay {
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled)
             return;
-        List<Pair<String, Integer>> updatedList = new ArrayList<>();
+        List<Pair<String, Integer>> updatedList = new LinkedList<>();
         for (Pair<String, Integer> message : messageQueue) {
             int toSet = message.b - 1;
             if (toSet == 0)
@@ -62,12 +76,12 @@ public class GameUpdateOverlay extends Overlay {
         if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled || !(event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR))
             return;
         int lines = 0;
-        for (Pair<String, Integer> message : new ArrayList<>(messageQueue)) {
+        for (Pair<String, Integer> message : new LinkedList<>(messageQueue)) {
             if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
                 if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.a, 0, (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), CommonColors.GREEN, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.a, OverlayConfig.GameUpdate.INSTANCE.offsetX, (OverlayConfig.GameUpdate.INSTANCE.offsetY - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), CommonColors.WHITE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 } else {
-                    drawString(message.a, 0, 0 - (LINE_HEIGHT * lines), CommonColors.GREEN, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.a, OverlayConfig.GameUpdate.INSTANCE.offsetX, OverlayConfig.GameUpdate.INSTANCE.offsetY - (LINE_HEIGHT * lines), CommonColors.WHITE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 }
                 lines++;
             } else
@@ -78,7 +92,13 @@ public class GameUpdateOverlay extends Overlay {
     public static boolean queueMessage(String message) {
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
             return false;
-        System.out.println("Queue message: " + message);
+        if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
+            message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
+            if (message.endsWith("§"))
+                message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+            message = message + "...";
+        }
+        LogManager.getFormatterLogger("gameupdate").info("Message Queued: " + message);
         messageQueue.add(new Pair<>(message, (int) (OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 20f)));
         if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
             messageQueue.remove(0);
