@@ -18,7 +18,7 @@ import java.util.*;
 public class GameUpdateOverlay extends Overlay {
 
     public GameUpdateOverlay() {
-        super("Game News Overlay", 20, 20, true, 1f, 1f, -3, -10);
+        super("Game Update Ticker Overlay", 20, 20, true, 1f, 1f, -3, -10);
     }
 
     @Setting(displayName = "Message Limit", description = "The maximum amount of messages to display in the game update list")
@@ -98,7 +98,7 @@ public class GameUpdateOverlay extends Overlay {
                 message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
             message = message + "...";
         }
-        LogManager.getFormatterLogger("gameupdate").info("Message Queued: " + message);
+        LogManager.getFormatterLogger("gameupdateticker").info("Message Queued: " + message);
         messageQueue.add(new Pair<>(message, (int) (OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 20f)));
         if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
             messageQueue.remove(0);

@@ -100,17 +100,13 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4Spell not unlocked.");
                 e.setCanceled(true);
                 return;
-            } else if (e.getMessage().getUnformattedText().contains("Sorry, you can't teleport... Try moving away from blocks.")) {
-                GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
-                e.setCanceled(true);
-                return;
             // POTIONS
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\]")) {
                 GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
-                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()).replace("for", "over"));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
@@ -134,6 +130,10 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // MAGE
+            } else if (e.getMessage().getUnformattedText().contains("Sorry, you can't teleport... Try moving away from blocks.")) {
+                GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
+                e.setCanceled(true);
+                return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0] + "§7)");
