@@ -18,6 +18,7 @@ import com.google.gson.JsonParser;
 import com.mojang.util.UUIDTypeAdapter;
 import org.apache.commons.io.IOUtils;
 
+import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
@@ -79,7 +80,7 @@ public class WebManager {
 
         long ms = System.currentTimeMillis();
         updateTerritories();
-        Reference.LOGGER.info("Territory list loaded on " + (System.currentTimeMillis() - ms) + "ms");
+        Reference.LOGGER.info("Territory list loaded in " + (System.currentTimeMillis() - ms) + "ms");
 
         try{
             updateUsersRoles();
@@ -87,15 +88,15 @@ public class WebManager {
 
             ms = System.currentTimeMillis();
             updateItemList();
-            Reference.LOGGER.info("Loaded " + items.size() + " items on " + (System.currentTimeMillis() - ms) + "ms");
+            Reference.LOGGER.info("Loaded " + items.size() + " items in " + (System.currentTimeMillis() - ms) + "ms");
 
             ms = System.currentTimeMillis();
             updateMapMarkers();
-            Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers on " + (System.currentTimeMillis() - ms) + "ms");
+            Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers in " + (System.currentTimeMillis() - ms) + "ms");
 
             ms = System.currentTimeMillis();
             updateItemGuesses();
-            Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses on " + (System.currentTimeMillis() - ms) + "ms");
+            Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses in " + (System.currentTimeMillis() - ms) + "ms");
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
@@ -165,27 +166,31 @@ public class WebManager {
      * Request a update to territories {@link ArrayList}
      */
     public static void updateTerritories() {
-        new Thread(() -> {
-            try{
-                URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
+        try {
+            URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+            Gson gson = builder.create();
+
+            JsonObject json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "territories.json"))).getAsJsonObject();
+            territories.putAll(gson.fromJson(json.get("territories"), type));
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error captured while trying to download territories data - attempting to load cached data", ex);
+            try {
+                FileInputStream stream = recallApiResult("territories.json");
+                JsonObject json = new JsonParser().parse(IOUtils.toString(stream)).getAsJsonObject();
                 GsonBuilder builder = new GsonBuilder();
                 builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
                 Gson gson = builder.create();
-
-                Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {
-                }.getType();
-
-                JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
                 territories.putAll(gson.fromJson(json.get("territories"), type));
-
-                territories.put("Rodoroc", new TerritoryProfile("Rodoroc", 965, -5238, 1265, -5067, null, null, null));
-
-            }catch (Exception ex) {
-                Reference.LOGGER.warn("Error captured while trying to connect to Wynncraft Territory API", ex);}
-
-        }).start();
+                Reference.LOGGER.info("Successfully loaded cached territory data!");
+            } catch (IOException ex2) {
+                Reference.LOGGER.warn("Unable to load backup territories data", ex2);
+            }
+        }
     }
 
     /**
@@ -196,14 +201,21 @@ public class WebManager {
      */
     public static ArrayList<String> getGuilds() throws Exception {
         ArrayList<String> guilds = new ArrayList<>();
+        JsonObject json;
 
-        URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        try {
+            URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "guilds.json"))).getAsJsonObject();
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error captured while trying to download guild data - attempting to load cached data", ex);
+            json = new JsonParser().parse(IOUtils.toString(recallApiResult("guilds.json"))).getAsJsonObject();
+            Reference.LOGGER.warn("Successfully loaded cached guild data!", ex);
+        }
 
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
 
-        JsonObject json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         guilds.addAll(gson.fromJson(json.get("guilds"), type));
 
         return guilds;
@@ -255,10 +267,16 @@ public class WebManager {
      * @throws Exception
      */
     public static void updateItemList() throws Exception {
-        URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        JsonArray main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("items");
+        JsonArray main;
+        try {
+            URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "items.json"))).getAsJsonObject().getAsJsonArray("items");
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error downloading item data - attempting to use cached data");
+            main = new JsonParser().parse(IOUtils.toString(recallApiResult("items.json"))).getAsJsonObject().getAsJsonArray("items");
+            Reference.LOGGER.info("Successfully loaded cached item data!");
+        }
 
         Type type = new TypeToken<HashMap<String, ItemProfile>>() {
         }.getType();
@@ -275,16 +293,23 @@ public class WebManager {
      * @throws Exception
      */
     public static void updateMapMarkers() throws Exception {
+        JsonArray jsonArray;
         ArrayList<MapMarkerProfile> markers = new ArrayList<>();
 
-        URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        try {
+            URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_markers.json"))).getAsJsonObject().getAsJsonArray("locations");
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error downloading map marker data - attempting to use cached data");
+            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("items.json"))).getAsJsonObject().getAsJsonArray("items");
+            Reference.LOGGER.info("Successfully loaded cached map marker data!");
+        }
 
         Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
         }.getType();
 
-        JsonArray json = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject().getAsJsonArray("locations");
-        markers.addAll(gson.fromJson(json, type));
+        markers.addAll(gson.fromJson(jsonArray, type));
 
         mapMarkers = markers;
     }
@@ -296,11 +321,17 @@ public class WebManager {
      */
     public static void updateItemGuesses() throws Exception {
         HashMap<String, ItemGuessProfile> guessers = new HashMap<>();
+        String json;
 
-        URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        String json = IOUtils.toString(st.getInputStream());
+        try {
+            URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            json = IOUtils.toString(cacheApiResult(st.getInputStream(), "item_guesses.json"));
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error downloading item guesses - attempting to use cached data");
+            json = IOUtils.toString(recallApiResult("item_guesses.json"));
+            Reference.LOGGER.info("Successfully loaded cached item guesses data!");
+        }
 
         Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
         }.getType();
@@ -315,10 +346,16 @@ public class WebManager {
     }
 
     public static void updateUsersRoles() throws Exception {
-        URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main;
+        try {
+            URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_roles.json"))).getAsJsonObject();
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error downloading user roles - attempting to use cached data");
+            main = new JsonParser().parse(IOUtils.toString(recallApiResult("user_roles.json"))).getAsJsonObject();
+            Reference.LOGGER.info("Successfully loaded cached user role data!");
+        }
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -341,10 +378,16 @@ public class WebManager {
     }
 
     public static void updateUsersModels() throws Exception {
-        URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main;
+        try {
+            URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_models.json"))).getAsJsonObject();
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error downloading user models - attempting to use cached data");
+            main = new JsonParser().parse(IOUtils.toString(recallApiResult("user_models.json"))).getAsJsonObject();
+            Reference.LOGGER.info("Successfully loaded cached user model data!");
+        }
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -386,5 +429,46 @@ public class WebManager {
 
         return result;
     }
+
+    /**
+     * Attempt to store an {@link InputStream} to a file on disk
+     *
+     * @param stream The {@link InputStream} to read
+     * @param fileName The filename to save to (file saved in /apicache directory)
+     * @return A {@link InputStream} for the saved result
+     * @throws IOException
+     */
+    public static FileInputStream cacheApiResult(InputStream stream, String fileName) throws IOException {
+        File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
+        File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
+        FileOutputStream cacheOutputStream;
+        if (!apiCacheFolder.exists())
+            apiCacheFolder.mkdir();
+        if (!apiCacheFile.exists())
+            apiCacheFile.createNewFile();
+        cacheOutputStream = new FileOutputStream(apiCacheFile);
+        IOUtils.copy(stream, cacheOutputStream);
+        cacheOutputStream.close();
+        stream.close();
+        return new FileInputStream(apiCacheFile);
+    }
+
+    /**
+     * Attempt to store an {@link InputStream} to a file on disk
+     *
+     * @param fileName The filename to load from - returns null if the file doesn't exist
+     * @return A {@link InputStream} for the saved result
+     * @throws IOException
+     */
+    public static FileInputStream recallApiResult(String fileName) throws IOException {
+        File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
+        File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
+        if (!apiCacheFolder.exists() || !apiCacheFolder.isDirectory())
+            return null;
+        if (!apiCacheFile.exists() || apiCacheFile.isDirectory())
+            return null;
+        return new FileInputStream(apiCacheFile);
+    }
+
 
 }
