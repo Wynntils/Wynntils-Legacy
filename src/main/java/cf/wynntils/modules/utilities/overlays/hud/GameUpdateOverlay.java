@@ -91,6 +91,7 @@ public class GameUpdateOverlay extends Overlay {
 
     public static boolean queueMessage(String message) {
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
+            return false;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
