@@ -166,33 +166,31 @@ public class WebManager {
      * Request a update to territories {@link ArrayList}
      */
     public static void updateTerritories() {
-        new Thread(() -> {
-            Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
-            try {
-                URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
+        try {
+            URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+            Gson gson = builder.create();
+
+            JsonObject json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "territories.json"))).getAsJsonObject();
+            territories.putAll(gson.fromJson(json.get("territories"), type));
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error captured while trying to update territories data, attempting to load cached data", ex);
+            try {
+                FileInputStream stream = recallApiResult("territories.json");
+                JsonObject json = new JsonParser().parse(IOUtils.toString(stream)).getAsJsonObject();
                 GsonBuilder builder = new GsonBuilder();
                 builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
                 Gson gson = builder.create();
-
-                JsonObject json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "territories.json"))).getAsJsonObject();
                 territories.putAll(gson.fromJson(json.get("territories"), type));
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error captured while trying to update territories data, attempting to load cached data", ex);
-                try {
-                    FileInputStream stream = recallApiResult("territories.json");
-                    JsonObject json = new JsonParser().parse(IOUtils.toString(stream)).getAsJsonObject();
-                    GsonBuilder builder = new GsonBuilder();
-                    builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
-                    Gson gson = builder.create();
-                    territories.putAll(gson.fromJson(json.get("territories"), type));
-                    Reference.LOGGER.info("Successfully loaded backup data!");
-                } catch (IOException ex2) {
-                    Reference.LOGGER.warn("Unable to load backup territories data", ex2);
-                }
+                Reference.LOGGER.info("Successfully loaded backup data!");
+            } catch (IOException ex2) {
+                Reference.LOGGER.warn("Unable to load backup territories data", ex2);
             }
-        }).start();
+        }
     }
 
     /**
