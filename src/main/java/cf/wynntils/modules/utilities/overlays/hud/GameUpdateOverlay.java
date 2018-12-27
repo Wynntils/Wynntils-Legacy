@@ -129,7 +129,7 @@ public class GameUpdateOverlay extends Overlay {
         }
 
         public void updateTime() {
-            time = BubblesOverlay.easeOut(time, 0, 0.2f, 30f);
+            time = BubblesOverlay.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
         }
     }
 }
