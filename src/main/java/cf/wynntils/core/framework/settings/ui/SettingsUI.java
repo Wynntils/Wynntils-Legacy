@@ -39,7 +39,7 @@ public class SettingsUI extends UI {
     public UIEList holders = new UIEList(0.5f,0.5f,-170,-87);
     public UIEList settings = new UIEList(0.5f,0.5f,5,-90);
 
-    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,0,1,0.01f,0,null);
+    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,-85,1,1f,0,null);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar,0.5f,0.5f,185,-100, 200,true,-95,-150,1f,0,null);
 
     public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
@@ -86,8 +86,20 @@ public class SettingsUI extends UI {
         }
 
         Collections.sort(sortedSettings);
-        for(String path : sortedSettings)
+        holdersScrollbar.max = holdersScrollbar.min;
+        for(String path : sortedSettings) {
             holders.add(new HolderButton(path));
+            holdersScrollbar.max -= 11;
+        }
+        if (holdersScrollbar.min - holdersScrollbar.max > 160) {
+            holders.position.offsetY = (int) holdersScrollbar.getValue();
+            holdersScrollbar.active = true;
+        } else {
+            holders.position.offsetY = (int) holdersScrollbar.min;
+            holdersScrollbar.active = false;
+            holdersScrollbar.progress = 0f;
+        }
+        holdersScrollbar.max += 160;
     }
 
     @Override
@@ -115,6 +127,15 @@ public class SettingsUI extends UI {
                 }
             }
         }
+        if (holdersScrollbar.active) {
+            float i = Mouse.getEventDWheel();
+            if (i != 0) {
+                if (mouseX <= screenWidth / 2 - 5 && mouseX > screenWidth / 2 - 185 && mouseY >= screenHeight / 2 - 100 && mouseY < screenHeight / 2 + 100) {
+                    i = MathHelper.clamp(i, -1, 1) * holdersScrollbar.precision * 8;
+                    holdersScrollbar.setValue(holdersScrollbar.getValue() + i);
+                }
+            }
+        }
     }
 
     @Override
@@ -124,8 +145,11 @@ public class SettingsUI extends UI {
         CommonUIFeatures.drawScrollArea();
 
         settings.position.offsetY = (int)settingsScrollbar.getValue();
+        holders.position.offsetY = (int)holdersScrollbar.getValue();
 
+        ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 - 165, screenHeight / 2 - 88, screenWidth / 2 - 25, screenHeight / 2 + 73);
         holders.render(mouseX,mouseY);
+        ScreenRenderer.clearMask();
 
         ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 + 5, screenHeight / 2 - 100, screenWidth / 2 + 185, screenHeight / 2 + 100);
         settings.elements.forEach(setting -> {
@@ -155,8 +179,6 @@ public class SettingsUI extends UI {
             setting.position.offsetY -= settings.position.offsetY;
         });
         ScreenRenderer.clearMask();
-        //TODO add mask and scroll for holders
-
     }
 
     @Override
@@ -238,7 +260,6 @@ public class SettingsUI extends UI {
                 drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             }
             int holderTabCount = path.split("/").length-1;
-            
         }
 
         @Override
