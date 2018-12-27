@@ -165,6 +165,10 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.2f, max = 20f, precision = 0.2f)
         public float messageTimeLimit = 10f;
 
+        @Setting(displayName = "Message FadeOut Animation", description = "The amout of time that the fadeout animation will take")
+        @Setting.Limitations.FloatLimit(min = 10f, max = 60f, precision = 1f)
+        public float messageFadeOut = 30f;
+
         @Setting(displayName = "Invert Growth", description = "Invert the way that the ticker messages grow")
         public boolean invertGrowth = false;
 

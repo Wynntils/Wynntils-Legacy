@@ -4,16 +4,15 @@ import cf.wynntils.Reference;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
-import cf.wynntils.core.framework.rendering.colors.CommonColors;
+import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.settings.annotations.Setting;
-import cf.wynntils.core.utils.Pair;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameUpdateOverlay extends Overlay {
 
@@ -52,7 +51,7 @@ public class GameUpdateOverlay extends Overlay {
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     /* Message Management */
-    public static List<Pair<String, Integer>> messageQueue = new LinkedList<>();
+    public static List<MessageContainer> messageQueue = new LinkedList<>();
 
     /* Rendering */
     public static final int LINE_HEIGHT = 12;
@@ -61,12 +60,12 @@ public class GameUpdateOverlay extends Overlay {
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled)
             return;
-        List<Pair<String, Integer>> updatedList = new LinkedList<>();
-        for (Pair<String, Integer> message : messageQueue) {
-            int toSet = message.b - 1;
-            if (toSet == 0)
-                continue;
-            updatedList.add(new Pair<>(message.a, toSet));
+        List<MessageContainer> updatedList = new LinkedList<>();
+        for (MessageContainer message : messageQueue) {
+            if(message.getTime() == 0.0f) continue;
+
+            message.updateTime();
+            updatedList.add(message);
         }
         messageQueue = updatedList;
     }
@@ -75,13 +74,14 @@ public class GameUpdateOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled || !(event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR))
             return;
+
         int lines = 0;
-        for (Pair<String, Integer> message : new LinkedList<>(messageQueue)) {
+        for (MessageContainer message : new LinkedList<>(messageQueue)) {
             if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
                 if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.a, OverlayConfig.GameUpdate.INSTANCE.offsetX, (OverlayConfig.GameUpdate.INSTANCE.offsetY - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), CommonColors.WHITE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), OverlayConfig.GameUpdate.INSTANCE.offsetX, (OverlayConfig.GameUpdate.INSTANCE.offsetY - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 } else {
-                    drawString(message.a, OverlayConfig.GameUpdate.INSTANCE.offsetX, OverlayConfig.GameUpdate.INSTANCE.offsetY - (LINE_HEIGHT * lines), CommonColors.WHITE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), OverlayConfig.GameUpdate.INSTANCE.offsetX, OverlayConfig.GameUpdate.INSTANCE.offsetY - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 }
                 lines++;
             } else
@@ -91,15 +91,15 @@ public class GameUpdateOverlay extends Overlay {
 
     public static boolean queueMessage(String message) {
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
-            return false;
+
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
             if (message.endsWith("§"))
                 message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
             message = message + "...";
         }
-        LogManager.getFormatterLogger("gameupdateticker").info("Message Queued: " + message);
-        messageQueue.add(new Pair<>(message, (int) (OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 20f)));
+        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + message);
+        messageQueue.add(new MessageContainer(message));
         if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
             messageQueue.remove(0);
         return true;
@@ -109,5 +109,26 @@ public class GameUpdateOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
             return;
         messageQueue.clear();
+    }
+
+
+    private static class MessageContainer {
+
+        final String message;
+        float time;
+
+        private MessageContainer(String message) { this.message = message; this.time = OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 20f; }
+
+        public float getTime() {
+            return time >= 1 ? 1 : time;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void updateTime() {
+            time = BubblesOverlay.easeOut(time, 0, 0.2f, 30f);
+        }
     }
 }

@@ -79,7 +79,7 @@ public class SmartFontRenderer extends FontRenderer {
     private float drawChars(String text, CustomColor color, boolean forceColor) {
         if(text.isEmpty()) return -CHAR_SPACING;
         if(text.startsWith("§")) {
-            Pair<String,CustomColor> sc = decodeColor(text.substring(1));
+            Pair<String,CustomColor> sc = decodeColor(text.substring(1), color);
             return drawChars(sc.a,forceColor ? color : sc.b,forceColor);
         }
         color.applyColor();
@@ -89,7 +89,7 @@ public class SmartFontRenderer extends FontRenderer {
         return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
     }
 
-    private Pair<String,CustomColor> decodeColor(String text) {
+    private Pair<String,CustomColor> decodeColor(String text, CustomColor baseColor) {
         if(text.startsWith("[")) {
             String[] s1 = text.substring(1).split("]");
             String[] s2 = s1[0].split(",");
@@ -99,12 +99,12 @@ public class SmartFontRenderer extends FontRenderer {
                             Float.parseFloat(s2[0]),
                             Float.parseFloat(s2[1]),
                             Float.parseFloat(s2[2]),
-                            (s2.length == 4) ? Float.parseFloat(s2[3]) : 1f));
+                            (s2.length == 4) ? Float.parseFloat(s2[3]) : 1f).setA(baseColor.a));
         } else
             for (ChatCommonColorCodes cccc : ChatCommonColorCodes.values())
                 if(cccc.name().charAt(6) == Character.toLowerCase(text.charAt(0)))
-                    return new Pair<>(text.substring(1),cccc.color);
-        return new Pair<>(text, ChatCommonColorCodes.color_f.color);
+                    return new Pair<>(text.substring(1),cccc.color.setA(baseColor.a));
+        return new Pair<>(text, ChatCommonColorCodes.color_f.color.setA(baseColor.a));
     }
 
     private float renderChar(char ch)

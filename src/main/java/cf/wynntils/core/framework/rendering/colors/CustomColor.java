@@ -34,6 +34,11 @@ public class CustomColor {
         GlStateManager.color(r,g,b,a);
     }
 
+    public CustomColor setA(float a) {
+        this.a = a;
+        return this;
+    }
+
     public static CustomColor fromString(String string, float a) {
         if(string.length() == 6) {
             try {
