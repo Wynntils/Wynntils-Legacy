@@ -10,11 +10,7 @@ import cf.wynntils.webapi.profiles.guild.GuildProfile;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
 import org.apache.commons.io.IOUtils;
 
@@ -443,7 +439,7 @@ public class WebManager {
         File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
         FileOutputStream cacheOutputStream;
         if (!apiCacheFolder.exists())
-            apiCacheFolder.mkdir();
+            apiCacheFolder.mkdirs();
         if (!apiCacheFile.exists())
             apiCacheFile.createNewFile();
         cacheOutputStream = new FileOutputStream(apiCacheFile);
