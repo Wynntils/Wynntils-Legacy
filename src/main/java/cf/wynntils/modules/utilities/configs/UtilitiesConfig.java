@@ -124,7 +124,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to rarity?")
         public boolean powderHighlight = true;
 
-        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be eligible for being highlighted? This setting has no effect if powder highlighting is disabled.")
+        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.")
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
@@ -139,22 +139,22 @@ public class UtilitiesConfig extends SettingsClass {
         public static Debug INSTANCE;
 
         @Setting.Limitations.StringLimit(maxLength = 15)
-        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
+        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public String testTextField = "default text";
 
         @Setting(displayName = "Enum test", description = "")//empty description is just no description
         public TestEnum testEnumSetting = TestEnum.TEST_B;
 
         @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
-        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
+        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public int lol = -3;
 
         @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
-        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
+        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public float floatlol = 4.6f;
 
         @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
-        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
+        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public double doublelawl = 0.2d;
 
         public enum TestEnum {
