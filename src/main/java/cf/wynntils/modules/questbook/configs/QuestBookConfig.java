@@ -16,7 +16,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Allow Wynntils' Questbook", description = "Should Wynncraft's quest book be replaced by Wynntils'?")
     public boolean allowCustomQuestbook = true;
 
-    @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of a quest?")
+    @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")
     public boolean compassFollowQuests = true;
 
 }
