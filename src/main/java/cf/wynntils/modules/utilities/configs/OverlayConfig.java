@@ -76,11 +76,11 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Exp")
+    @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
 
-        @Setting(displayName = "Exp Texture", description = "What texture should be used for the EXP bar?")
+        @Setting(displayName = "EXP Texture", description = "What texture should be used for the EXP bar?")
         public expTextures expTexture = expTextures.a;
 
         @Setting(displayName = "Enabled", description = "Should the EXP bar be displayed?")
@@ -161,11 +161,11 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
 
-        @Setting(displayName = "Message Expire Time", description = "How long (in seconds) should a ticker message remain on the screen?")
+        @Setting(displayName = "Message Expiry Time", description = "How long (in seconds) should a ticker message remain on the screen?")
         @Setting.Limitations.FloatLimit(min = 0.2f, max = 20f, precision = 0.2f)
         public float messageTimeLimit = 10f;
 
-        @Setting(displayName = "Message FadeOut Animation", description = "How long should the fadeout animation be played?")
+        @Setting(displayName = "Message Fadeout Animation", description = "How long should the fadeout animation be played?")
         @Setting.Limitations.FloatLimit(min = 10f, max = 60f, precision = 1f)
         public float messageFadeOut = 30f;
 
@@ -183,28 +183,28 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = -300, max = 10)
         public int offsetY = -70;
 
-        @Setting(displayName = "Max message length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
+        @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
         @Setting(displayName = "Text Shadow", description = "The text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "New message override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
+        @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
         public boolean overrideNewMessages = true;
 
         @SettingsInfo(name = "game_update_exp_settings", displayPath = "Overlays/Update Ticker/Experience")
         public static class GameUpdateEXPMessages extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
-            @Setting(displayName = "Enable EXP messages", description = "Should EXP messages be displayed in the game-update-ticker?")
+            @Setting(displayName = "Enable EXP Messages", description = "Should EXP messages be displayed in the game-update-ticker?")
             public boolean enabled = true;
 
-            @Setting(displayName = "EXP message update rate", description = "How often should the EXP change messages (in seconds) be added to the game update ticker?")
+            @Setting(displayName = "EXP Message Update Rate", description = "How often should the EXP change messages (in seconds) be added to the game update ticker?")
             @Setting.Limitations.FloatLimit(min = 0.2f, max = 10f, precision = 0.2f)
             public float expUpdateRate = 1f;
 
-            @Setting(displayName = "EXP message format", description = "How should the format of EXP messages be displayed?")
+            @Setting(displayName = "EXP Message Format", description = "How should the format of EXP messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"xo", "xn", "xc", "po", "pn", "pc"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String expMessageFormat = "§2+%xc%XP (§6+%pc%%§2)";
@@ -214,28 +214,28 @@ public class OverlayConfig extends SettingsClass {
         public static class RedirectSystemMessages extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
 
-            @Setting(displayName = "Redirect combat messages", description = "Should combat chat messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Combat Messages", description = "Should combat chat messages be redirected to the game update ticker?")
             public boolean redirectCombat = true;
 
-            @Setting(displayName = "Redirect horse messages", description = "Should messages related to your horse be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
             public boolean redirectHorse = true;
 
-            @Setting(displayName = "Redirect local login messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Local Login Messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker?")
             public boolean redirectLoginLocal = true;
 
-            @Setting(displayName = "Redirect friend login messages", description = "Should login messages for friends be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game update ticker?")
             public boolean redirectLoginFriend = true;
 
-            @Setting(displayName = "Redirect merchant messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
             public boolean redirectMerchants = true;
 
-            @Setting(displayName = "Redirect other messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
             public boolean redirectOther = true;
 
-            @Setting(displayName = "Redirect server status", description = "Should server shutdown messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game update ticker?")
             public boolean redirectServer = true;
 
-            @Setting(displayName = "Redirect quest messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
             public boolean redirectQuest = true;
         }
 
@@ -243,29 +243,29 @@ public class OverlayConfig extends SettingsClass {
         public static class TerritoryChangeMessages extends SettingsClass {
             public static TerritoryChangeMessages INSTANCE;
 
-            @Setting(displayName = "Enable territory change", description = "Should territory change messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game update ticker?")
             public boolean enabled = false;
 
-            @Setting(displayName = "Enable territory enter", description = "Should territory enter messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game update ticker?")
             public boolean enter = true;
 
-            @Setting(displayName = "Enable territory leave", description = "Should territory leave messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game update ticker?")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable music change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the music module is disabled)")
+            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the music module is disabled)")
             public boolean musicChange = true;
 
-            @Setting(displayName = "Territory enter format", description = "How should the format of the territory enter ticker messages be displayed?")
+            @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String territoryEnterFormat = "§7Now Entering [%t%]";
 
-            @Setting(displayName = "Territory leave format", description = "How should the format of the territory leave ticker messages be displayed?")
+            @Setting(displayName = "Territory Leave Format", description = "How should the format of the territory leave ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String territoryLeaveFormat = "§7Now Leaving [%t%]";
 
-            @Setting(displayName = "Music change format", description = "How should the format of the music change ticker messages be displayed?")
+            @Setting(displayName = "Music Change Format", description = "How should the format of the music change ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"np"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String musicChangeFormat = "§7♫ %np%";
@@ -276,7 +276,7 @@ public class OverlayConfig extends SettingsClass {
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
         
-        @Setting(displayName = "Enabled", description = "Should the war timer be displayed?")
+        @Setting(displayName = "Enabled", description = "Should a timer of when a war will start be displayed?")
         public boolean enabled = true;
         
         @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
