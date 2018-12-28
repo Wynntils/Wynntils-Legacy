@@ -281,6 +281,8 @@ public class RarityColorOverlay implements Listener {
                     r = 1; g = 0; b = 1;
                 } else if (lore.contains("§fCommon") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.commonEffectsHighlight) {
                     r = 1; g = 1; b = 1;
+                } else if (lore.contains("§4 Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
+                    r = 0; g = 0; b = 0;
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                         continue;
