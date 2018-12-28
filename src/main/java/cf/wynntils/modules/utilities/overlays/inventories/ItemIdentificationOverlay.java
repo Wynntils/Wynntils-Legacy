@@ -12,19 +12,17 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemGuessProfile;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,7 +31,7 @@ import java.util.regex.Pattern;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
-    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)");
+    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)|( §[24]\\[§[ac][-+]?\\d+§[24],§[ac] [-+]?\\d+§[24]\\])|( §[ac]\\[\\d+ SP\\])");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
     public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
@@ -58,19 +56,6 @@ public class ItemIdentificationOverlay implements Listener {
         if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
             drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack());
-        }
-    }
-
-    @SubscribeEvent
-    public void InputEventKeyInputEvent(GuiScreenEvent.KeyboardInputEvent e){
-        if (!(e.getGui() instanceof GuiContainer) || e.getGui().mc == null || e.getGui().mc.player == null){
-            return;
-        }
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && ((GuiContainer) e.getGui()).getSlotUnderMouse() != null && ((GuiContainer) e.getGui()).getSlotUnderMouse().getHasStack()) {
-            Slot InvSlot = ((GuiContainer) e.getGui()).getSlotUnderMouse();
-            if (InvSlot != null) {
-                drawHoverItem(((GuiContainer) e.getGui()).getSlotUnderMouse().getStack());
-            }
         }
     }
 
@@ -173,8 +158,9 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static void drawHoverItem(ItemStack stack) {
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && (stack.getTagCompound().getBoolean("extendedStats") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))) return;
-        boolean extended = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && stack.getTagCompound().getBoolean("showChances") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && stack.getTagCompound().getBoolean("showRanges") == Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) return;
+        boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+        boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
         if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName())))) {
             return;
@@ -189,9 +175,11 @@ public class ItemIdentificationOverlay implements Listener {
         int identifications = 0;
         double chanceUp = 0;
         double chanceDown = 0;
-        double chanceBest = 1;
+        int totalSP = 0;
 
         List <String> actualLore = Utils.getLore(stack);
+        List <Integer> statOrderMem = new ArrayList<>();
+
         for (int i = 0; i < actualLore.size(); i++) {
             String lore = cleanse(actualLore.get(i));
             String wColor = Utils.stripColor(lore);
@@ -265,6 +253,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                 if (fieldName == null) {
                     actualLore.set(i, lore);
+                    statOrderMem.add(1000);
                     continue;
                 }
 
@@ -287,24 +276,24 @@ public class ItemIdentificationOverlay implements Listener {
 
                 if (max == min) {
                     actualLore.set(i, lore);
-                    continue;
-                }
+                } else
 
-                if (extended) {
+
+                if (showChances) {
                     float downPercent;
                     float upPercent;
                     float bestPercent;
-                    if (amount < 0){
+                    if (amount < 0) {
                         downPercent = 0;
                         upPercent = 0;
                         bestPercent = 0;
-                        for (double j = 70;j <= 130; j++){
-                            if (Math.round(itemVal * (j/100)) < amount){
+                        for (double j = 70; j <= 130; j++) {
+                            if (Math.round(itemVal * (j / 100)) < amount) {
                                 downPercent++;
-                            } else if (Math.round(itemVal * (j/100)) > amount){
+                            } else if (Math.round(itemVal * (j / 100)) > amount) {
                                 upPercent++;
                             }
-                            if (Math.round(itemVal * (j/100)) == min){
+                            if (Math.round(itemVal * (j / 100)) == min) {
                                 bestPercent++;
                             }
                         }
@@ -320,13 +309,13 @@ public class ItemIdentificationOverlay implements Listener {
                         downPercent = 0;
                         upPercent = 0;
                         bestPercent = 0;
-                        for (double j = 30;j <= 130; j++){
-                            if (Math.round(itemVal * (j/100)) < amount){
+                        for (double j = 30; j <= 130; j++) {
+                            if (Math.round(itemVal * (j / 100)) < amount) {
                                 downPercent++;
-                            } else if (Math.round(itemVal * (j/100)) > amount){
+                            } else if (Math.round(itemVal * (j / 100)) > amount) {
                                 upPercent++;
                             }
-                            if (Math.round(itemVal * (j/100)) == max){
+                            if (Math.round(itemVal * (j / 100)) == max) {
                                 bestPercent++;
                             }
                         }
@@ -340,12 +329,33 @@ public class ItemIdentificationOverlay implements Listener {
                         //bestPercent = 100 - (float) (((Math.ceil(((max - 0.5d) / itemVal) * 100) - 30) / 101) * 100);
                     }
 
-                    actualLore.set(i, lore + " §c§l\u21E9§r§c" + String.format("%.1f", downPercent) + "% §a§l\u21E7§r§a" + String.format("%.1f", upPercent) + "% §b§l\u21EA§r§b" + String.format("%.1f", bestPercent) + "%");
+                    lore += " §c§l\u21E9§r§c" + String.format("%.1f", downPercent) + "% §a§l\u21E7§r§a" + String.format("%.1f", upPercent) + "% §b§l\u21EA§r§b" + String.format("%.1f", bestPercent) + "%";
                     identifications += 1;
 
                     chanceUp = chanceUp + ((1 - chanceUp) * (upPercent / 100));
                     chanceDown = chanceDown + ((1 - chanceDown) * (downPercent / 100));
-                    chanceBest *= (bestPercent / 100);
+                } else if (showRanges) {
+                    lore += " " + (amount < 0 ? "§4[§c" + max + "§4,§c " + min + "§4]" : "§2[§a" + min + "§2,§a " + max + "§2]");
+                    switch (fieldName) {
+                        case "agilityPoints":
+                            totalSP += amount;
+                            break;
+                        case "intelligencePoints":
+                            totalSP += amount;
+                            break;
+                        case "defencePoints":
+                            totalSP += amount;
+                            break;
+                        case "strengthPoints":
+                            totalSP += amount;
+                            break;
+                        case "dexterityPoints":
+                            totalSP += amount;
+                            break;
+                        default:
+                            break;
+                    }
+                    identifications++;
                 } else {
                     double intVal = (double) (max - min);
                     double pVal = (double) (amount - min);
@@ -365,11 +375,32 @@ public class ItemIdentificationOverlay implements Listener {
                         color += "c";
                     }
 
-                    actualLore.set(i, lore + color + " [" + percent + "%]");
+                    lore += color + " [" + percent + "%]";
                     total += percent;
                     identifications += 1;
                 }
 
+
+                int idRank = Utils.getFieldRank(fieldName);
+                if (statOrderMem.isEmpty()){
+                    statOrderMem.add(idRank);
+                    actualLore.set(i, lore);
+                    continue;
+                }
+                boolean notRepositioned = true;
+                for (int j = statOrderMem.size() -1; j >= 0; j--) {
+                    if (idRank < statOrderMem.get(j)) {
+                        statOrderMem.add(j+1, idRank);
+                        actualLore.add(i-(j+1), lore);
+                        actualLore.remove(i+1);
+                        notRepositioned = false;
+                        break;
+                    }
+                }
+                if (notRepositioned) {
+                    statOrderMem.add(0, idRank);
+                    actualLore.set(i, lore);
+                }
 
             } catch (Exception ex) {
                 actualLore.set(i, lore);
@@ -380,10 +411,11 @@ public class ItemIdentificationOverlay implements Listener {
 
         NBTTagCompound nbt = stack.getTagCompound();
         nbt.setBoolean("verifiedWynntils", true);
-        nbt.setBoolean("extendedStats", extended);
+        nbt.setBoolean("showChances", showChances);
+        nbt.setBoolean("showRanges", showRanges);
 
         if (identifications > 0) {
-            if (extended) {
+            if (showChances) {
 
                 NBTTagCompound display = nbt.getCompoundTag("display");
                 NBTTagList tag = new NBTTagList();
@@ -394,6 +426,25 @@ public class ItemIdentificationOverlay implements Listener {
 
                 display.setTag("Lore", tag);
                 display.setString("Name", name + " §c§l\u21E9§r§c" + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% §a§l\u21E7§r§a" + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                nbt.setTag("display", display);
+            } else if (showRanges) {
+                String Extra = "";
+
+                if (totalSP > 0) {
+                    Extra += " §a[" + totalSP + " SP]";
+                } else if (totalSP < 0) {
+                    Extra += " §c[" + totalSP + " SP]";
+                }
+
+                NBTTagCompound display = nbt.getCompoundTag("display");
+                NBTTagList tag = new NBTTagList();
+
+                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+
+                String name = cleanse(display.getString("Name"));
+
+                display.setTag("Lore", tag);
+                display.setString("Name", name + Extra);
                 nbt.setTag("display", display);
             } else {
                 int average = total / identifications;
