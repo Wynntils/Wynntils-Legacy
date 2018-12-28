@@ -115,10 +115,10 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?")
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count display in remote containers? (chests, bank, etc.)")
+        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)")
         public boolean emeraldCountChest = true;
 
-        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count display in your inventory?")
+        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
         public boolean emeraldCountInventory = true;
 
         @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted?")
