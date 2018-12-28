@@ -12,7 +12,7 @@ Wynntils is a Wynncraft mod that seeks to enhance the user's gameplay with a var
 
 Setup the Workspace
 ========
-Doing the setup of Wynntils is quite simple. First, you will need to run Forge ``setupDecompWorkspace`` gradle command, with that generating all of the Forge source. It's that easy!
+Doing the setup of Wynntils is quite simple. First, you will need to run Forge ``setupDecompWorkspace`` gradle command, with that all the Forge source will be generated. It's that easy!
 <br> Building the mod is even simpler. Just call the ``buildDependents`` and the artifact should be generated.
 
 You can also setup a test environment. Using IntelliJ, execute the ``genIntellijRuns`` task, which will generate a run environment for you.
