@@ -79,7 +79,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted?")
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armor Items", description = "Should your worn armor be highlighted?")
+        @Setting(displayName = "Highlight Armor Items", description = "Should your worn armor be highlighted according to rarity?")
         public boolean armorHighlight = true;
 
         @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
