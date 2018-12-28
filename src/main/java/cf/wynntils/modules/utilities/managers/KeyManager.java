@@ -29,9 +29,7 @@ public class KeyManager {
             }
         });
 
-        CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, () -> {
-            WebManager.checkForUpdates();
-        });
+        CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
 
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", true, () -> {
@@ -45,9 +43,7 @@ public class KeyManager {
             WebManager.setupWebApi();
         });
 
-        UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> {
-
-        });
+        UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> { });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
     }

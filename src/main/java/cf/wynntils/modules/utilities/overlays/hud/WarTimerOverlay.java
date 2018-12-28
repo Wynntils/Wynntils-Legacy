@@ -54,25 +54,25 @@ public class WarTimerOverlay extends Overlay {
         if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) || !OverlayConfig.WarTimer.INSTANCE.enabled) return;
         if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
             if (lastTerritory != null) {
-                drawString(String.valueOf((int) (Math.floor(((double) lastTimer) / 60))) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString((int) (Math.floor(((double) lastTimer) / 60)) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
                 drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if ((timer != 0 || !Reference.onLobby) && stage == WarStage.WAR_STARTING) {
-            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
                 drawString("The war will start in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.WAITING_FOR_MOBS) {
-            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
                 drawString("The mobs will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.IN_WAR) {
-            drawString(String.valueOf((int) (Math.floor(((double) timer) / 60))) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("You have been warring in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {

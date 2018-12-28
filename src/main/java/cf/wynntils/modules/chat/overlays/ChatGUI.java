@@ -15,14 +15,13 @@ public class ChatGUI extends GuiChat {
         super(defaultInputText);
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if(ChatOverlay.getChat().getMouseOver() == 1) ChatOverlay.getChat().setCurrentTab(ChatTab.GLOBAL);
         else if(ChatOverlay.getChat().getMouseOver() == 2) ChatOverlay.getChat().setCurrentTab(ChatTab.GUILD);
         else if(ChatOverlay.getChat().getMouseOver() == 3) ChatOverlay.getChat().setCurrentTab(ChatTab.PARTY);
-        try {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
-        } catch (IOException e) {
-        }
+
+
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
 }

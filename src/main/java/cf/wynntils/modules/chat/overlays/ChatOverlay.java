@@ -117,50 +117,51 @@ public class ChatOverlay extends GuiNewChat {
 
                 if (flag) {
 
-                    //rendering the buttons
-                    ScreenRenderer.beginGL(2, 0);
-                    if(mouseOver == 1)
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), -2, 3, 31, 16);
-                    else
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 31, 16);
+                    if(ChatConfig.INSTANCE.enableChatTabs) {
+                        //rendering the buttons
+                        ScreenRenderer.beginGL(2, 0);
+                        if (mouseOver == 1)
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), -2, 3, 31, 16);
+                        else
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 31, 16);
 
-                    if(currentTab == ChatTab.GLOBAL)
-                        renderer.drawString("Global", 15, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(globalMention)
-                        renderer.drawString("Global", 15, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(globalNewMessages)
-                        renderer.drawString("Global", 15, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else
-                        renderer.drawString("Global", 15, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        if (currentTab == ChatTab.GLOBAL)
+                            renderer.drawString("Global", 15, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (globalMention)
+                            renderer.drawString("Global", 15, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (globalNewMessages)
+                            renderer.drawString("Global", 15, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else
+                            renderer.drawString("Global", 15, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-                    if(mouseOver == 2)
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 34, 3, 67, 16);
-                    else
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 34, 3, 67, 16);
+                        if (mouseOver == 2)
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 34, 3, 67, 16);
+                        else
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 34, 3, 67, 16);
 
-                    if(currentTab == ChatTab.GUILD)
-                        renderer.drawString("Guild", 51, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(guildMention)
-                        renderer.drawString("Guild", 51, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(guildNewMessages)
-                        renderer.drawString("Guild", 51, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else
-                        renderer.drawString("Guild", 51, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        if (currentTab == ChatTab.GUILD)
+                            renderer.drawString("Guild", 51, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (guildMention)
+                            renderer.drawString("Guild", 51, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (guildNewMessages)
+                            renderer.drawString("Guild", 51, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else
+                            renderer.drawString("Guild", 51, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-                    if(mouseOver == 3)
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 70, 3, 103, 16);
-                    else
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 70, 3, 103, 16);
+                        if (mouseOver == 3)
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 70, 3, 103, 16);
+                        else
+                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 70, 3, 103, 16);
 
-                    if(currentTab == ChatTab.PARTY)
-                        renderer.drawString("Party", 87, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(partyMention)
-                        renderer.drawString("Party", 87, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else if(partyNewMessages)
-                        renderer.drawString("Party", 87, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    else
-                        renderer.drawString("Party", 87, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-
+                        if (currentTab == ChatTab.PARTY)
+                            renderer.drawString("Party", 87, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (partyMention)
+                            renderer.drawString("Party", 87, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else if (partyNewMessages)
+                            renderer.drawString("Party", 87, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        else
+                            renderer.drawString("Party", 87, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    }
 
                     //continuing chat render
                     int k2 = mc.fontRenderer.FONT_HEIGHT;
@@ -222,6 +223,8 @@ public class ChatOverlay extends GuiNewChat {
 
         if(chatComponent.getFormattedText().startsWith("§3[§r") && !chatComponent.getUnformattedText().endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
         else if(chatComponent.getFormattedText().startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
+
+        if(!ChatConfig.INSTANCE.enableChatTabs) selectedTab = ChatTab.GLOBAL;
 
         if(selectedTab != currentTab) {
             boolean m = ChatManager.proccessUserMention(chatComponent);
@@ -308,6 +311,8 @@ public class ChatOverlay extends GuiNewChat {
         if(message.startsWith("§3§3[§r") && !message.endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
         else if(message.startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
 
+        if(!ChatConfig.INSTANCE.enableChatTabs) selectedTab = ChatTab.GLOBAL;
+
         sentMessages.get(selectedTab).add(message);
     }
 
@@ -344,10 +349,12 @@ public class ChatOverlay extends GuiNewChat {
             j = MathHelper.floor((float)j / f);
             k = MathHelper.floor((float)k / f);
 
-            if(j >= -2 && j <= 31 && k >= -18 && k <= -5) mouseOver = 1;
-            else if(j >= 34 && j <= 67 && k >= -18 && k <= -5) mouseOver = 2;
-            else if(j >= 70 && j <= 103 && k >= -18 && k <= -5) mouseOver = 3;
-            else mouseOver = 0;
+            if(ChatConfig.INSTANCE.enableChatTabs) {
+                if (j >= -2 && j <= 31 && k >= -18 && k <= -5) mouseOver = 1;
+                else if (j >= 34 && j <= 67 && k >= -18 && k <= -5) mouseOver = 2;
+                else if (j >= 70 && j <= 103 && k >= -18 && k <= -5) mouseOver = 3;
+                else mouseOver = 0;
+            }
 
             if (j >= 0 && k >= 0) {
                 int l = Math.min(getLineCount(), chatMessages.get(currentTab).size());
