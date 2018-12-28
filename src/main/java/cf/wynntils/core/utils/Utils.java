@@ -26,6 +26,7 @@ public class Utils {
 
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('\u00A7') + "[0-9A-FK-OR]");
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
+    public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
 
     /**
      * Removes all color codes from a string
@@ -200,6 +201,57 @@ public class Utils {
         }
 
         return getItemFieldName.getOrDefault(key, null);
+    }
+
+    public static Integer getFieldRank(String key) {
+        if (getItemFieldRank.size() <= 0) {
+            getItemFieldRank.put("attackSpeedBonus", 1);
+
+            getItemFieldRank.put("damageBonus", 2);
+            getItemFieldRank.put("damageBonusRaw", 3);
+
+            getItemFieldRank.put("spellDamage", 4);
+            getItemFieldRank.put("spellDamageRaw", 5);
+
+            getItemFieldRank.put("healthBonus", 6);
+            getItemFieldRank.put("healthRegen", 7);
+            getItemFieldRank.put("healthRegenRaw", 8);
+
+            getItemFieldRank.put("lifeSteal", 9);
+            getItemFieldRank.put("manaRegen", 10);
+            getItemFieldRank.put("manaSteal", 11);
+
+            getItemFieldRank.put("bonusEarthDamage", 12);
+            getItemFieldRank.put("bonusThunderDamage", 13);
+            getItemFieldRank.put("bonusWaterDamage", 14);
+            getItemFieldRank.put("bonusFireDamage", 15);
+            getItemFieldRank.put("bonusAirDamage", 16);
+
+            getItemFieldRank.put("bonusEarthDefense", 17);
+            getItemFieldRank.put("bonusThunderDefense", 18);
+            getItemFieldRank.put("bonusWaterDefense", 19);
+            getItemFieldRank.put("bonusFireDefense", 20);
+            getItemFieldRank.put("bonusAirDefense", 21);
+
+            getItemFieldRank.put("strengthPoints", 22);
+            getItemFieldRank.put("dexterityPoints", 23);
+            getItemFieldRank.put("intelligencePoints", 24);
+            getItemFieldRank.put("defensePoints", 25);
+            getItemFieldRank.put("agilityPoints", 26);
+
+            getItemFieldRank.put("speed", 27);
+            getItemFieldRank.put("exploding", 28);
+            getItemFieldRank.put("poison", 29);
+            getItemFieldRank.put("thorns", 30);
+            getItemFieldRank.put("reflection", 31);
+
+            getItemFieldRank.put("soulPoints", 32);
+            getItemFieldRank.put("emeraldStealing", 33);
+            getItemFieldRank.put("lootBonus", 34);
+            getItemFieldRank.put("xpBonus", 35);
+        }
+
+        return getItemFieldRank.getOrDefault(key, 1000);
     }
 
     //ported from a really really fucking old C# code because im lazy, dont judge -SHCM
