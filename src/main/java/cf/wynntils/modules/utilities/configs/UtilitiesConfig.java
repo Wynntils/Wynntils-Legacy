@@ -67,16 +67,16 @@ public class UtilitiesConfig extends SettingsClass {
         public static Items INSTANCE;
 
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted in remote containers? (chests, bank, etc.)")
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted in your inventory?")
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?")
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted?")
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?")
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted?")
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?")
         public boolean hotbarHighlight = true;
 
         @Setting(displayName = "Highlight Armor Items", description = "Should your worn armor be highlighted according to rarity?")
@@ -121,7 +121,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
         public boolean emeraldCountInventory = true;
 
-        @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted?")
+        @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to rarity?")
         public boolean powderHighlight = true;
 
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be eligible for being highlighted? This setting has no effect if powder highlighting is disabled.")
