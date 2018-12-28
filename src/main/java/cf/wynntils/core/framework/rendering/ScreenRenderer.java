@@ -222,7 +222,6 @@ public class ScreenRenderer {
     public static void clearMask() {
         if (!mask || !rendering) return;
 
-        GL11.glDisable(GL_DEPTH_TEST);
         GlStateManager.depthMask(true);
         GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
         GlStateManager.enableDepth();
