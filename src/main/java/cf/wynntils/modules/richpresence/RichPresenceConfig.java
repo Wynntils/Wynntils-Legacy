@@ -14,13 +14,13 @@ public class RichPresenceConfig extends SettingsClass {
     public static RichPresenceConfig INSTANCE;
 
 
-    @Setting(displayName = "Entering Notification", description = "Show a notification in the upper corner when entering a region")
+    @Setting(displayName = "Entering Notification", description = "Should a notification be displayed in the up-right corner when entering a region?")
     public boolean enteringNotifier = true;
 
-    @Setting(displayName = "Show class info", description = "Should RichPresence show in discord basic information about the current class")
+    @Setting(displayName = "Show Class Info", description = "Should Rich Presence display basic information about the class you're using?")
     public boolean showUserInformation = true;
     
-    @Setting(displayName = "Enable RichPresence", description = "Should RichPresence show in discord")
+    @Setting(displayName = "Enable Rich Presence", description = "Should the mod enable Rich Presence on Discord?")
     public boolean enableRichPresence = true;
 
     @Override
