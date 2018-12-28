@@ -187,7 +187,7 @@ public class WebManager {
                 Gson gson = builder.create();
                 territories.putAll(gson.fromJson(json.get("territories"), type));
                 Reference.LOGGER.info("Successfully loaded cached territory data!");
-            } catch (IOException ex2) {
+            } catch (Exception ex2) {
                 Reference.LOGGER.warn("Unable to load backup territories data", ex2);
             }
         }
