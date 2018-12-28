@@ -10,16 +10,16 @@ import cf.wynntils.modules.chat.overlays.ChatOverlay;
 public class ChatConfig extends SettingsClass {
     public static ChatConfig INSTANCE;
 
-    @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps")
+    @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?")
     public boolean addTimestampsToChat = false;
 
-    @Setting(displayName = "Chat Mentions", description = "The game ping a sound when your name appears in chat")
+    @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?")
     public boolean allowChatMentions = true;
 
-    @Setting(displayName = "Chat Spam Filter", description = "Repeating chat messages would stack up instead of filling the screen")
+    @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Chat Tabs", description = "Should the chat be separated on chat tabs")
+    @Setting(displayName = "Chat Tabs", description = "Should the chat be separated into three chat tabs/channels? (global, guild, party)")
     public boolean enableChatTabs = true;
 
     @Override
