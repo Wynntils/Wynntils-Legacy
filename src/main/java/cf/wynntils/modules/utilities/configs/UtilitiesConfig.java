@@ -16,25 +16,25 @@ public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
 
-    @Setting(displayName = "Daily Chest Reminder", description = "Should you get a chat notification when you join if you need to loot your daily chest")
+    @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Show Server TPS on TAB", description = "Should the server ticks per second be shown while holding TAB")
+    @Setting(displayName = "Show Server TPS on Tab", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
     public boolean showTPSCount = true;
 
-    @Setting(displayName = "Hide Nametags through walls", description = "Should the nametags be hidden to see through walls")
+    @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
     public boolean hideNametags = true;
 
-    @Setting(displayName = "Hide Nametags boxes", description = "Should the nametags boxes be hidden")
+    @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show players armor", description = "Should what players are wearing be listed in their name tag")
+    @Setting(displayName = "Show Players' Armor", description = "Should the armor of what players are wearing be listed underneath their nametag?")
     public boolean showArmors = false;
 
-    @Setting(displayName = "Prevent mythic loot chest closing", description = "Should the closing of loot chests be prevented when that loot chest contains a mythic")
+    @Setting(displayName = "Prevent Mythic Loot Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
     public boolean preventMythicChestClose = true;
 
-    @Setting(displayName = "Prevent slot click on locked items", description = "Should the slot click be blocked when clicking on a locked item?")
+    @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
@@ -44,7 +44,7 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
 
-        @Setting(displayName = "Entity Filter", description = "Should useless entities be filtered out")
+        @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
 
     }
@@ -67,64 +67,64 @@ public class UtilitiesConfig extends SettingsClass {
         public static Items INSTANCE;
 
 
-        @Setting(displayName = "Item highlights in containers", description = "Should items be highlighted in _nlremote containers(chests, bank, etc)")
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item highlights in inventory", description = "Should items be highlighted in _nlthe player's inventory")
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?")
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories highlight", description = "Should the worn accessories be highlighted")
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?")
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight hotbar items", description = "Should the items in the hotbar be highlighted")
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?")
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight armor items", description = "Should the player's armor be highlighted")
+        @Setting(displayName = "Highlight Armor Items", description = "Should your worn armor be highlighted according to rarity?")
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight mythics", description = "Should mythic items be highlighted")
+        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight legendaries", description = "Should legendary items be highlighted")
+        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?")
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight rares", description = "Should rare items be highlighted")
+        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?")
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight uniques", description = "Should unique items be highlighted")
+        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?")
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight sets", description = "Should set items be highlighted")
+        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?")
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight normals", description = "Should normal items be highlighted")
+        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?")
         public boolean normalHighlight = false;
 
-        @Setting(displayName = "Highlight black market cosmetics", description = "Should black market cosmetic items be highlighted")
+        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?")
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight godly cosmetics", description = "Should godly cosmetic items be highlighted")
+        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?")
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight epic cosmetics", description = "Should epic cosmetic items be highlighted")
+        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?")
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight rare cosmetics", description = "Should rare cosmetic items be highlighted")
+        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?")
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight common cosmetics", description = "Should common cosmetic items be highlighted")
+        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?")
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Show emerald count in containers", description = "Show emerald count in remote containers(chests, bank, etc)")
+        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)")
         public boolean emeraldCountChest = true;
 
-        @Setting(displayName = "Show emerald count in inventory", description = "Show emerald count in the player's inventory")
+        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
         public boolean emeraldCountInventory = true;
 
-        @Setting(displayName = "Highlight powders", description = "Should powders be highlighted")
+        @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
         public boolean powderHighlight = true;
 
-        @Setting(displayName = "Min powder tier highlight", description = "The minimum tier of powder that should be highlighted. No effect if powder highlighting is disabled")
+        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.")
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
@@ -139,22 +139,22 @@ public class UtilitiesConfig extends SettingsClass {
         public static Debug INSTANCE;
 
         @Setting.Limitations.StringLimit(maxLength = 15)
-        @Setting(displayName = "Test text field", description = "this is a weird piece of text used to check the description length handling on complicated and long descriptions")
+        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public String testTextField = "default text";
 
         @Setting(displayName = "Enum test", description = "")//empty description is just no description
         public TestEnum testEnumSetting = TestEnum.TEST_B;
 
         @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
-        @Setting(displayName = "Test Integer Ting", description = "this tests the usability of integer settings")
+        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public int lol = -3;
 
         @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
-        @Setting(displayName = "Float ting", description = "dis float setting")
+        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public float floatlol = 4.6f;
 
         @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
-        @Setting(displayName = "Double tang", description = "ye, dis description")
+        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public double doublelawl = 0.2d;
 
         public enum TestEnum {
