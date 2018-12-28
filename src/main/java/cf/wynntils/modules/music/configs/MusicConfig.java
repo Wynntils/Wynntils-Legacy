@@ -16,14 +16,14 @@ public class MusicConfig extends SettingsClass {
 
     public static MusicConfig INSTANCE;
 
-    @Setting(displayName = "Music System", description = "Should the Wynncraft Music System be replaced with Wynntils Music System")
+    @Setting(displayName = "Music System", description = "Should Wynncraft's Music System be replaced with Wynntils' Music System?")
     public boolean allowMusicModule = false;
 
-    @Setting(displayName = "Base Volume", description = "The music volume")
+    @Setting(displayName = "Base Volume", description = "How loud should all soundtracks be?")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float baseVolume = 1;
 
-    @Setting(displayName = "Off Focus Volume", description = "The volume that will be if the game is out of focus")
+    @Setting(displayName = "Off Focus Volume", description = "How loud should the soundtrack be when Minecraft is not focused on?")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float focusVolume = -10;
 
