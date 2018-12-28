@@ -21,7 +21,7 @@ public class DailyReminderManager {
         if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
         if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
-            p.sendMessage(new TextComponentString("§8[§7!§8] §fDaily Rewards §7are available!"));
+            p.sendMessage(new TextComponentString("§8[§7!§8] §fDaily rewards §7are available to claim!"));
             ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
 
             UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 1800000;
