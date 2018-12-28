@@ -170,7 +170,7 @@ public class OverlayConfig extends SettingsClass {
         public float messageFadeOut = 30f;
 
         @Setting(displayName = "Invert Growth", description = "Invert the way that the ticker messages grow")
-        public boolean invertGrowth = false;
+        public boolean invertGrowth = true;
 
         @Setting(displayName = "Enabled", description = "Should the game update ticker be displayed")
         public boolean enabled = true;
@@ -198,7 +198,7 @@ public class OverlayConfig extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
             @Setting(displayName = "Enable EXP messages", description = "Should EXP messages be displayed in the game update ticker")
-            public boolean enabled = false;
+            public boolean enabled = true;
 
             @Setting(displayName = "EXP message update rate", description = "How often EXP change messages (in seconds) should be added to the game update ticker")
             @Setting.Limitations.FloatLimit(min = 0.2f, max = 10f, precision = 0.2f)
@@ -215,28 +215,28 @@ public class OverlayConfig extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
 
             @Setting(displayName = "Redirect combat messages", description = "Should combat chat messages be redirected to game update ticker")
-            public boolean redirectCombat = false;
+            public boolean redirectCombat = true;
 
             @Setting(displayName = "Redirect horse messages", description = "Should messages related to the horse be redirected game update ticker")
-            public boolean redirectHorse = false;
+            public boolean redirectHorse = true;
 
             @Setting(displayName = "Redirect local login messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker")
-            public boolean redirectLoginLocal = false;
+            public boolean redirectLoginLocal = true;
 
             @Setting(displayName = "Redirect friend login messages", description = "Should login messages for friends by redirected to the game update ticker")
-            public boolean redirectLoginFriend = false;
+            public boolean redirectLoginFriend = true;
 
             @Setting(displayName = "Redirect merchant messages", description = "Should item buyer & identifier messages be redirected to the game update ticker")
-            public boolean redirectMerchants = false;
+            public boolean redirectMerchants = true;
 
             @Setting(displayName = "Redirect other messages", description = "Should skill point; other user level up; and identification required messages be redirected to the game update ticker")
-            public boolean redirectOther = false;
+            public boolean redirectOther = true;
 
             @Setting(displayName = "Redirect server status", description = "Should server shutdown messages be redirected to the game update ticker")
-            public boolean redirectServer = false;
+            public boolean redirectServer = true;
 
             @Setting(displayName = "Redirect quest messages", description = "Redirect quest started and questbook updated messages to the game update ticker")
-            public boolean redirectQuest = false;
+            public boolean redirectQuest = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Overlays/Update Ticker/Territory Change")
@@ -253,7 +253,7 @@ public class OverlayConfig extends SettingsClass {
             public boolean leave = false;
 
             @Setting(displayName = "Enable music change", description = "Should music change messages be displayed in the game update ticker (no effect if the music module is disabled)")
-            public boolean musicChange = false;
+            public boolean musicChange = true;
 
             @Setting(displayName = "Territory enter format", description = "The format of territory enter ticker messages")
             @Setting.Features.StringParameters(parameters = {"t"})
