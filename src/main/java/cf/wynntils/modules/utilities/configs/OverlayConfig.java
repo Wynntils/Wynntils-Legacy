@@ -13,7 +13,7 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-    @Setting(displayName = "Action Bar Overwrite Coords", description = "Should the coords be overwritten by the action bar?")
+    @Setting(displayName = "Action Bar Overwrite Coordinates", description = "Should the coordinates be overwritten by the action bar?")
     public boolean overwrite = true;
 
 
@@ -108,10 +108,10 @@ public class OverlayConfig extends SettingsClass {
     public static class Bubbles extends SettingsClass {
         public static Bubbles INSTANCE;
 
-        @Setting(displayName = "Bubbles Texture", description = "What texture should be used for the EXP bar?")
+        @Setting(displayName = "Bubbles Texture", description = "What texture should be used for the EXP bar when it acts as the air meter?")
         public BubbleTexture bubblesTexture = BubbleTexture.a;
 
-        @Setting(displayName = "Enabled", description = "Should the EXP bar be displayed?")
+        @Setting(displayName = "Enabled", description = "Should the EXP bar act as the air meter when underwater?")
         public boolean enabled = true;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
@@ -157,7 +157,7 @@ public class OverlayConfig extends SettingsClass {
         // Default settings designed for large gui scale @ 1080p
         // I personally use gui scale normal - but this works fine with that too
 
-        @Setting(displayName = "Message Limit", description = "What should the maximum amount of ticker messages displayed in the game update list be?")
+        @Setting(displayName = "Message Limit", description = "What should the maximum amount of ticker messages displayed in the game-update-list be?")
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
 
@@ -169,10 +169,10 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 10f, max = 60f, precision = 1f)
         public float messageFadeOut = 30f;
 
-        @Setting(displayName = "Invert Growth", description = "Should the way the ticker messages grow be inverted?")
+        @Setting(displayName = "Invert Growth", description = "Should the way ticker messages grow be inverted?")
         public boolean invertGrowth = true;
 
-        @Setting(displayName = "Enabled", description = "Should the game update ticker be displayed?")
+        @Setting(displayName = "Enabled", description = "Should the game-update-ticker be displayed?")
         public boolean enabled = true;
 
         @Setting(displayName = "Offset X", description = "How far should the ticker be offset on the x-axis?")
@@ -183,7 +183,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = -300, max = 10)
         public int offsetY = -70;
 
-        @Setting(displayName = "Max message length", description = "The maximum length of messages in the game update ticker. Messages longer than the set value will be truncated. (0 = unlimited)")
+        @Setting(displayName = "Max message length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
@@ -197,7 +197,7 @@ public class OverlayConfig extends SettingsClass {
         public static class GameUpdateEXPMessages extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
-            @Setting(displayName = "Enable EXP messages", description = "Should EXP messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable EXP messages", description = "Should EXP messages be displayed in the game-update-ticker?")
             public boolean enabled = true;
 
             @Setting(displayName = "EXP message update rate", description = "How often should the EXP change messages (in seconds) be added to the game update ticker?")
