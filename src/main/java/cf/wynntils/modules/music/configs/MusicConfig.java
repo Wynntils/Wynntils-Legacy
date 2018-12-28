@@ -16,7 +16,7 @@ public class MusicConfig extends SettingsClass {
 
     public static MusicConfig INSTANCE;
 
-    @Setting(displayName = "Music System", description = "Should Wynncraft's music system be replaced by Wynntils'")
+    @Setting(displayName = "Music System", description = "Should Wynncraft's music system be replaced by Wynntils'?")
     public boolean allowMusicModule = false;
 
     @Setting(displayName = "Base Volume", description = "How loud should all soundtracks be?")
