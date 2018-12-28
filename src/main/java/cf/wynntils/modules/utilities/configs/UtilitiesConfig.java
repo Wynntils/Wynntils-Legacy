@@ -139,22 +139,22 @@ public class UtilitiesConfig extends SettingsClass {
         public static Debug INSTANCE;
 
         @Setting.Limitations.StringLimit(maxLength = 15)
-        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this setting by a developer.")
+        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
         public String testTextField = "default text";
 
         @Setting(displayName = "Enum test", description = "")//empty description is just no description
         public TestEnum testEnumSetting = TestEnum.TEST_B;
 
         @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
-        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this setting by a developer.")
+        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
         public int lol = -3;
 
         @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
-        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this setting by a developer.")
+        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
         public float floatlol = 4.6f;
 
         @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
-        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this setting by a developer.")
+        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told to modify this by a developer.")
         public double doublelawl = 0.2d;
 
         public enum TestEnum {
