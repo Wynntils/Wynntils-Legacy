@@ -11,7 +11,9 @@ import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,7 +26,9 @@ import java.text.DecimalFormat;
  * Copyright © HeyZeer0 - 2016
  */
 public class OverlayEvents implements Listener {
-    
+
+    private static boolean wynnExpTimestampNotified = false;
+
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
@@ -79,6 +83,12 @@ public class OverlayEvents implements Listener {
     public void onChatToRedirect(ClientChatReceivedEvent e) {
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled || e.getType() == ChatType.GAME_INFO)
             return;
+        if (Utils.stripColor(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
+            if (!wynnExpTimestampNotified) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§4[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility."));
+                wynnExpTimestampNotified = true;
+            }
+        }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
             if (e.getMessage().getUnformattedText().contains("There is no room for a horse.")) {
                 GameUpdateOverlay.queueMessage("§4There is no room for a horse.");
