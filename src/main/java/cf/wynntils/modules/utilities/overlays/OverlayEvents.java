@@ -129,6 +129,10 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You already have that potion active...")) {
+                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
             // MAGE
             } else if (e.getMessage().getUnformattedText().contains("Sorry, you can't teleport... Try moving away from blocks.")) {
                 GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
@@ -173,7 +177,22 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             }
-            //TODO: Combat messages for Assassin & Warrior
+            // WARRIOR
+            else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 10% resistance\\.")) {
+                GameUpdateOverlay.queueMessage("§b+10% resistance §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                e.setCanceled(true);
+                return;
+            }
+            else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 15% resistance\\.")) {
+                GameUpdateOverlay.queueMessage("§b+15% resistance §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                e.setCanceled(true);
+                return;
+            }
+            else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 20% resistance and 10% strength\\.")) {
+                GameUpdateOverlay.queueMessage("§b+20% resistance §7& §b+10% strength §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                e.setCanceled(true);
+                return;
+            }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
             if (e.getMessage().getUnformattedText().contains(" unused skill points! Click with your compass to use them!")) {
@@ -203,6 +222,18 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4You don't have enough " + res[res.length - 7] + " to use this item.");
                 e.setCanceled(true);
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("This potion is for Lv\\. \\d+\\+ only\\.")) {
+                GameUpdateOverlay.queueMessage("§4You are not a high enough level to use this potion.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("[Please empty some space in your inventory first]")) {
+                GameUpdateOverlay.queueMessage("§7Not enough inventory space.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You have never been to that area!")) {
+                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                e.setCanceled(true);
+                return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
@@ -229,7 +260,7 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§dIdentifying Item(s)...");
                 e.setCanceled(true);
                 return;
-            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("Item Identifier: It is done\\. Your items? has been identified\\. The magic it contains will now blossom\\.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("Item Identifier: It is done\\. Your items? (has|have) been identified\\. The magic (it|they) contains? will now blossom\\.")) {
                 GameUpdateOverlay.queueMessage("§dItem(s) Identified!");
                 e.setCanceled(true);
                 return;
@@ -269,6 +300,10 @@ public class OverlayEvents implements Listener {
                     }
                 }
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Item Buyer: I can't buy that item! I only accept weapons, accessories, and armour.")) {
+                GameUpdateOverlay.queueMessage("§dYou can only sell weapons, accessories, and armour here.");
+                e.setCanceled(true);
+                return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).endsWith(" Merchant: Thank you for your business. Come again!")) {
                 GameUpdateOverlay.queueMessage("§dPurchase complete.");
                 e.setCanceled(true);
@@ -299,7 +334,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.contains(" has logged into server ") && colorStrippedMessage.contains(" as a")) {
+            if (colorStrippedMessage.contains(" has logged into server ") && colorStrippedMessage.contains(" as a") && e.getMessage().getFormattedText().startsWith("§a")) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
                     GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + "§2]");
@@ -310,6 +345,19 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (colorStrippedMessage.matches(".+ left the game\\.")) {
                 GameUpdateOverlay.queueMessage("§4← §2" + colorStrippedMessage.split(" ")[0]);
+                e.setCanceled(true);
+                return;
+            }
+        }
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
+            String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
+            if (colorStrippedMessage.contains(" has logged into server ") && colorStrippedMessage.contains(" as a") && e.getMessage().getFormattedText().startsWith("§b")) {
+                String[] res = colorStrippedMessage.split(" ");
+                if (res.length == 9) {
+                    GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + "§3]");
+                } else if (res.length == 10) {
+                    GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + " " + res[9] + "§3]");
+                }
                 e.setCanceled(true);
                 return;
             }
