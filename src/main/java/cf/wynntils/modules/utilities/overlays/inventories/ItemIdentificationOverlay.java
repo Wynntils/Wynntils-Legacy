@@ -343,7 +343,7 @@ public class ItemIdentificationOverlay implements Listener {
                         case "intelligencePoints":
                             totalSP += amount;
                             break;
-                        case "defencePoints":
+                        case "defensePoints":
                             totalSP += amount;
                             break;
                         case "strengthPoints":
@@ -353,6 +353,7 @@ public class ItemIdentificationOverlay implements Listener {
                             totalSP += amount;
                             break;
                         default:
+                            System.out.println(fieldName + " - " + amount);
                             break;
                     }
                     identifications++;
