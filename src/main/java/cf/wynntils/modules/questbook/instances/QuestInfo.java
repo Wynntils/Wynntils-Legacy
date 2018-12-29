@@ -24,7 +24,7 @@ public class QuestInfo {
     private final String currentDescription;
     private final int x, z;
 
-    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+),(-?\\d+),(-?\\d+)\\]");
+    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
