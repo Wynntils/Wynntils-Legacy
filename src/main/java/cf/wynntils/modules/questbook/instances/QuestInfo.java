@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class QuestInfo {
 
     private String name;
+    private String questbookFriendlyName;
     private final QuestStatus status;
     private final int minLevel;
     private final QuestSize size;
@@ -24,7 +25,7 @@ public class QuestInfo {
     private final String currentDescription;
     private final int x, z;
 
-    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+),(-?\\d+),(-?\\d+)\\]");
+    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
@@ -44,6 +45,13 @@ public class QuestInfo {
         }
         splittedDescription.add(currentMessage.toString());
 
+        String questbookFriendlyName = this.name;
+        if (questbookFriendlyName.length() > 22) {
+            questbookFriendlyName = questbookFriendlyName.substring(0, 19);
+            questbookFriendlyName += "...";
+        }
+        lore.add(0, "§l" + this.name);
+
         Matcher m = coordinatePattern.matcher(currentDescription);
         if(m.find()) {
             x = Integer.valueOf(m.group(1));
@@ -51,6 +59,7 @@ public class QuestInfo {
         }else { x = 0; z = 0; }
 
         this.splittedDescription = splittedDescription;
+        this.questbookFriendlyName = questbookFriendlyName;
     }
 
     public List<String> getLore() {
@@ -75,6 +84,10 @@ public class QuestInfo {
 
     public String getName() {
         return name;
+    }
+
+    public String getQuestbookFriendlyName() {
+        return questbookFriendlyName;
     }
 
     public ArrayList<String> getSplittedDescription() {

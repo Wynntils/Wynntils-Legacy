@@ -902,7 +902,7 @@ public class QuestBookGUI extends GuiScreen {
                         }
                         lore.add("§6§lRight click to open on the wiki!");
 
-                        render.drawString(selected.getName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                        render.drawString(selected.getQuestbookFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                         currentY += 13;
                     }

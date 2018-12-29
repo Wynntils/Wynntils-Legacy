@@ -11,10 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by HeyZeer0 on 24/03/2018.
@@ -45,8 +44,8 @@ public class SettingsManager {
                 m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
         if(!f.exists())
             f.createNewFile();
-        
-        FileWriter fileWriter = new FileWriter(f);
+
+        OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8);
         gson.toJson(obj, fileWriter);
         fileWriter.close();
     }
@@ -68,7 +67,8 @@ public class SettingsManager {
             return obj;
         }
 
-        return gson.fromJson(new JsonReader(new FileReader(f)), obj.getClass());
+        InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8);
+        return gson.fromJson(new JsonReader(reader), obj.getClass());
     }
     
     private static class Exclude implements ExclusionStrategy {
