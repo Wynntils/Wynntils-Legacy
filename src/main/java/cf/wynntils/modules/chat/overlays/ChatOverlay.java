@@ -1,5 +1,7 @@
 package cf.wynntils.modules.chat.overlays;
 
+import cf.wynntils.core.events.custom.PreChatEvent;
+import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
@@ -273,6 +275,8 @@ public class ChatOverlay extends GuiNewChat {
 
         Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
         if(c.b) return selectedTab;
+
+        if(FrameworkManager.getEventBus().post(new PreChatEvent(chatComponent))) return selectedTab;
 
         chatComponent = c.a;
         //continue mc code

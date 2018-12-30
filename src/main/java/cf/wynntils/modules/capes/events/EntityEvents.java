@@ -14,8 +14,7 @@ public class EntityEvents implements Listener {
 
     @SubscribeEvent
     public void entityJoin(EntityJoinWorldEvent e) {
-        if (e.getEntity() instanceof EntityPlayer)
-            CapeManager.downloadCape(e.getEntity().getUniqueID());
+        if (e.getEntity() instanceof EntityPlayer) CapeManager.downloadCape(e.getEntity().getUniqueID());
     }
 
 }

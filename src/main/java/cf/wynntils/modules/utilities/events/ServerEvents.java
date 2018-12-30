@@ -40,8 +40,7 @@ public class ServerEvents implements Listener {
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
         if(loadedResourcePack >= Integer.valueOf(WebManager.apiUrls.get("ResourcePackUpdateAmount"))) {
             NetworkManager nm = e.getNetworkManager();
-            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
-            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
+            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.DECLINED));
             e.setCanceled(true);
             return;
         }
