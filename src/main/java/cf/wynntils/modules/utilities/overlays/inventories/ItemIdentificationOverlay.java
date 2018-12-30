@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
-    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)|( §[24]\\[§[ac][-+]?\\d+§[24],§[ac] [-+]?\\d+§[24]\\])|( §[ac]\\[\\d+ SP\\])");
+    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)|( §[24]\\[§[ac][-+]?\\d+§[24],§[ac] [-+]?\\d+§[24]\\])|( §[ac]\\[[-+]?\\d+ SP\\])");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
     public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
