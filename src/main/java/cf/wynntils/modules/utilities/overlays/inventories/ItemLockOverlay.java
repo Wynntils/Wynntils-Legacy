@@ -35,7 +35,7 @@ public class ItemLockOverlay implements Listener {
         if(!Reference.onWorld) return;
 
         for(Slot s : e.getGuiInventory().inventorySlots.inventorySlots) {
-            if(s.slotNumber < e.getGuiInventory().getUpperInv().getSizeInventory()) continue;
+            if(s.slotNumber < e.getGuiInventory().getLowerInv().getSizeInventory()) continue;
             renderItemLock(s, e.getGuiInventory().getGuiLeft(), e.getGuiInventory().getGuiTop());
         }
         if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
@@ -46,7 +46,7 @@ public class ItemLockOverlay implements Listener {
         if(!Reference.onWorld) return;
 
         for(Slot s : e.getGuiInventory().inventorySlots.inventorySlots) {
-            if(s.slotNumber < e.getGuiInventory().getUpperInv().getSizeInventory()) continue;
+            if(s.slotNumber < e.getGuiInventory().getLowerInv().getSizeInventory()) continue;
             renderItemLock(s, e.getGuiInventory().getGuiLeft(), e.getGuiInventory().getGuiTop());
         }
         if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
