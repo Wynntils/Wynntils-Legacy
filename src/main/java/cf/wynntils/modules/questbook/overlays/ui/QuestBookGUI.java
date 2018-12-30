@@ -14,6 +14,7 @@ import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.ui.SettingsUI;
 import cf.wynntils.core.framework.ui.UI;
+import cf.wynntils.modules.questbook.configs.QuestBookConfig;
 import cf.wynntils.modules.questbook.enums.QuestBookPage;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
@@ -79,6 +80,7 @@ public class QuestBookGUI extends GuiScreen {
         searchBarText = "";
         currentPage = 1;
         selected = 0;
+        searchBarFocused = false;
         open();
     }
 
@@ -87,6 +89,7 @@ public class QuestBookGUI extends GuiScreen {
         searchBarText = "";
         currentPage = 1;
         selected = 0;
+        searchBarFocused = false;
         open();
     }
 
@@ -106,6 +109,7 @@ public class QuestBookGUI extends GuiScreen {
     String searchBarText = "";
     long text_flicker = System.currentTimeMillis();
     boolean keepForTime = false;
+    boolean searchBarFocused = false;
 
     //quest search
     ArrayList<QuestInfo> questSearch;
@@ -152,32 +156,35 @@ public class QuestBookGUI extends GuiScreen {
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
-        if (keyCode == Keyboard.KEY_BACK) {
-            if(searchBarText.length() <= 0) {
-                return;
+        if (!QuestBookConfig.INSTANCE.searchBoxClickRequired || searchBarFocused) {
+            if (keyCode == Keyboard.KEY_BACK) {
+                if (searchBarText.length() <= 0) {
+                    return;
+                }
+                searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
+                text_flicker = System.currentTimeMillis();
+                keepForTime = false;
+            } else if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+                searchBarText = searchBarText + typedChar;
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
+                text_flicker = System.currentTimeMillis();
+                keepForTime = true;
             }
-            searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
-            text_flicker = System.currentTimeMillis();
-            keepForTime = false;
-        } else if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-            searchBarText = searchBarText + typedChar;
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
-            text_flicker = System.currentTimeMillis();
-            keepForTime = true;
-        }
 
-        //updating questbook search
-        if(page == QuestBookPage.QUESTS) {
-            updateQuestSearch();
-            overQuest = null; currentPage = 1;
+            //updating questbook search
+            if (page == QuestBookPage.QUESTS) {
+                updateQuestSearch();
+                overQuest = null;
+                currentPage = 1;
+            }
+            //updating itemguide search
+            if (page == QuestBookPage.ITEM_GUIDE) {
+                updateItemListSearch();
+                overItem = null;
+                currentPage = 1;
+            }
         }
-        //updating itemguide search
-        if(page == QuestBookPage.ITEM_GUIDE) {
-            updateItemListSearch();
-            overItem = null; currentPage = 1;
-        }
-
         super.keyTyped(typedChar, keyCode);
     }
 
@@ -229,6 +236,15 @@ public class QuestBookGUI extends GuiScreen {
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
         if(page == QuestBookPage.QUESTS) {
+            if (posX >= -145 && posX <= -13 && posY >= 86 && posY <= 100) {
+                searchBarFocused = true;
+                if (mouseButton == 1) {
+                    searchBarText = "";
+                    updateQuestSearch();
+                }
+            } else {
+                searchBarFocused = false;
+            }
             if(acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 currentPage++;
@@ -244,11 +260,21 @@ public class QuestBookGUI extends GuiScreen {
                 page = QuestBookPage.DEFAULT;
                 currentPage = 1;
                 searchBarText = "";
+                searchBarFocused = false;
                 acceptNext = false; acceptBack = false;
                 return;
             }
         }
         if(page == QuestBookPage.ITEM_GUIDE) {
+            if (posX >= -145 && posX <= -13 && posY >= 86 && posY <= 100) {
+                searchBarFocused = true;
+                if (mouseButton == 1) {
+                    searchBarText = "";
+                    updateItemListSearch();
+                }
+            } else {
+                searchBarFocused = false;
+            }
             if(acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 currentPage++;
@@ -264,6 +290,7 @@ public class QuestBookGUI extends GuiScreen {
                 page = QuestBookPage.DEFAULT;
                 currentPage = 1;
                 searchBarText = "";
+                searchBarFocused = false;
                 selected = 0;
                 acceptNext = false; acceptBack = false;
                 return;
@@ -352,6 +379,7 @@ public class QuestBookGUI extends GuiScreen {
             if(selected == 1) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 searchBarText = "";
+                searchBarFocused = false;
                 currentPage = 1;
                 selected = 0;
                 updateQuestSearch();
@@ -367,6 +395,7 @@ public class QuestBookGUI extends GuiScreen {
             if(selected == 3) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 searchBarText = "";
+                searchBarFocused = false;
                 currentPage = 1;
                 selected = 0;
                 updateItemListSearch();
@@ -381,7 +410,7 @@ public class QuestBookGUI extends GuiScreen {
     private void updateItemListSearch() {
         ArrayList<ItemProfile> items = new ArrayList<>(WebManager.getDirectItems());
 
-        itemSearch = !searchBarText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> c.getName().toLowerCase().startsWith(searchBarText.toLowerCase())).collect(Collectors.toList()) : items;
+        itemSearch = !searchBarText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : items;
 
         itemSearch = (ArrayList<ItemProfile>)itemSearch.stream().filter(c -> {
             if(allowHelmet && c.getType() != null && c.getType().equalsIgnoreCase("Helmet")) return true;
@@ -401,7 +430,7 @@ public class QuestBookGUI extends GuiScreen {
     private void updateQuestSearch() {
         ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
 
-        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> c.getName().toLowerCase().contains(searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -549,8 +578,10 @@ public class QuestBookGUI extends GuiScreen {
                 }
 
                 //searchBar
-                if (searchBarText.length() <= 0) {
+                if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
                     render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else if (searchBarText.length() <= 0 && !searchBarFocused) {
+                    render.drawString("Click to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
 
                     String text = searchBarText;
@@ -567,7 +598,7 @@ public class QuestBookGUI extends GuiScreen {
                         text_flicker = System.currentTimeMillis();
                     }
 
-                    if (keepForTime) {
+                    if (keepForTime && (searchBarFocused || !QuestBookConfig.INSTANCE.searchBoxClickRequired)) {
                         render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                     } else {
                         render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -761,8 +792,10 @@ public class QuestBookGUI extends GuiScreen {
                 }
 
                 //searchBar
-                if (searchBarText.length() <= 0) {
+                if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
                     render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else if (searchBarText.length() <= 0 && !searchBarFocused) {
+                    render.drawString("Click to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
 
                     String text = searchBarText;
@@ -779,7 +812,7 @@ public class QuestBookGUI extends GuiScreen {
                         text_flicker = System.currentTimeMillis();
                     }
 
-                    if (keepForTime) {
+                    if (keepForTime && (searchBarFocused || !QuestBookConfig.INSTANCE.searchBoxClickRequired)) {
                         render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                     } else {
                         render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -1020,6 +1053,26 @@ public class QuestBookGUI extends GuiScreen {
         ScreenRenderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    private boolean doesSearchMatch(String toCheck, String searchText) {
+        if (QuestBookConfig.INSTANCE.useFuzzySearch) {
+            int i = 0, j = 0;
+            char[] toCheckArray = toCheck.toCharArray();
+            for (char c : searchText.toCharArray()) {
+                for (; i < toCheck.length(); ) {
+                    if (c == toCheckArray[i]) {
+                        i++;
+                        j++;
+                        break;
+                    }
+                    i++;
+                }
+            }
+            return j == searchText.length();
+        } else {
+            return toCheck.contains(searchText);
+        }
     }
 
     public Minecraft getMinecraft() {
