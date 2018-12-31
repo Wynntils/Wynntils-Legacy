@@ -4,6 +4,7 @@ import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.core.utils.ReflectionFields;
+import cf.wynntils.modules.chat.configs.ChatConfig;
 import cf.wynntils.modules.chat.enums.ChatTab;
 import cf.wynntils.modules.chat.managers.ChatManager;
 import cf.wynntils.modules.chat.overlays.ChatGUI;
@@ -11,7 +12,9 @@ import cf.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEvents implements Listener {
@@ -24,6 +27,12 @@ public class ClientEvents implements Listener {
 
             e.setGui(new ChatGUI(defaultText));
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onChatRecieved(ClientChatReceivedEvent e) {
+        if (e.getMessage().getFormattedText().startsWith("§4[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo)
+            e.setCanceled(true);
     }
 
     @SubscribeEvent

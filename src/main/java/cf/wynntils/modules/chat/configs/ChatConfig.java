@@ -22,6 +22,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Tabs", description = "Should the chat be separated into three chat tabs/channels? (global, guild, party)")
     public boolean enableChatTabs = true;
 
+    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft info messages be filtered. (Messages starting with §4[Info]§f will no longer appear)")
+    public boolean filterWynncraftInfo = true;
+
     @Override
     public void onSettingChanged(String name) {
         if(!enableChatTabs) ChatOverlay.getChat().setCurrentTab(ChatTab.GLOBAL);
