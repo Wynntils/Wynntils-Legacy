@@ -13,10 +13,6 @@ import cf.wynntils.modules.richpresence.events.ServerEvents;
 public class RichPresenceConfig extends SettingsClass {
     public static RichPresenceConfig INSTANCE;
 
-
-    @Setting(displayName = "Entering Notification", description = "Should a notification be displayed in the upper-right corner when entering a region?")
-    public boolean enteringNotifier = true;
-
     @Setting(displayName = "Show Class Info", description = "Should Rich Presence display basic information about the class you're using?")
     public boolean showUserInformation = true;
     
