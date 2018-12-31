@@ -2,7 +2,7 @@ package cf.wynntils.modules.richpresence.events;
 
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Utils;
-import cf.wynntils.modules.richpresence.RichPresenceConfig;
+import cf.wynntils.modules.richpresence.configs.RichPresenceConfig;
 import cf.wynntils.modules.richpresence.overlays.LocationOverlay;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

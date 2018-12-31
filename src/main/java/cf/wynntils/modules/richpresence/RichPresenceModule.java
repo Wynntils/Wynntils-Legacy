@@ -1,11 +1,10 @@
 package cf.wynntils.modules.richpresence;
 
-import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.Module;
 import cf.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import cf.wynntils.modules.richpresence.configs.RichPresenceConfig;
 import cf.wynntils.modules.richpresence.events.ChatEvents;
 import cf.wynntils.modules.richpresence.events.ServerEvents;
-import cf.wynntils.modules.richpresence.overlays.LocationOverlay;
 import cf.wynntils.modules.richpresence.profiles.DataProfile;
 import cf.wynntils.modules.richpresence.profiles.RichProfile;
 
@@ -31,7 +30,6 @@ public class RichPresenceModule extends Module {
 
         module = this;
 
-        registerOverlay(new LocationOverlay(), Priority.NORMAL);
         registerEvents(new ChatEvents());
         registerEvents(new ServerEvents());
 

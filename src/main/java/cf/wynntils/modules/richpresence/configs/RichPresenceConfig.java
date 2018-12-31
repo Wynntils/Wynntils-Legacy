@@ -1,4 +1,4 @@
-package cf.wynntils.modules.richpresence;
+package cf.wynntils.modules.richpresence.configs;
 
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
@@ -25,9 +25,7 @@ public class RichPresenceConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if (name.equals("enableRichPresence")) {
-            ServerEvents.onEnableSettingChange();
-        }
+        if (name.equals("enableRichPresence")) ServerEvents.onEnableSettingChange();
     }
 
 }

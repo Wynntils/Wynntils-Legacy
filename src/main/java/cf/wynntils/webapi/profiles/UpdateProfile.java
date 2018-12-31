@@ -22,22 +22,20 @@ public class UpdateProfile {
                     Integer latest = Integer.valueOf(versions.get(Reference.MINECRAFT_VERSIONS).replace(".", "").replace("\n", "").replace("!", ""));
                     Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
 
-                    if (latest != actual && versions.get(Reference.MINECRAFT_VERSIONS).contains("!")) {
-                        System.out.println("Emergency Update");
+                    if (!latest.equals(actual) && versions.get(Reference.MINECRAFT_VERSIONS).contains("!")) {
                         UpdateOverlay.forceDownload();
                         hasUpdate = true;
                     }
 
                     if (latest > actual) {
-                        System.out.println("Update Found");
                         UpdateOverlay.reset();
                         hasUpdate = true;
                         latestUpdate = versions.get(Reference.MINECRAFT_VERSIONS);
                     }
 
-                }catch (Exception ignored) { ignored.printStackTrace(); }
+                }catch (Exception ex) { ex.printStackTrace(); }
 
-            }catch(Exception ignored) { ignored.printStackTrace(); }
+            }catch(Exception ex) { ex.printStackTrace(); }
         }).start();
     }
 

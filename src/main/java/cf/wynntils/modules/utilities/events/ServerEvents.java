@@ -12,18 +12,16 @@ import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.modules.utilities.managers.TPSManager;
 import cf.wynntils.modules.utilities.managers.WarManager;
-import cf.wynntils.webapi.WebManager;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ServerEvents implements Listener {
 
-    public static int loadedResourcePack = 0;
+    private static boolean loadedResourcePack = false;
 
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
-        loadedResourcePack = 0;
+        loadedResourcePack = false;
     }
 
     @SubscribeEvent
@@ -38,16 +36,14 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
-        if(loadedResourcePack >= Integer.valueOf(WebManager.apiUrls.get("ResourcePackUpdateAmount"))) {
-            NetworkManager nm = e.getNetworkManager();
-            nm.sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.DECLINED));
+        if(loadedResourcePack) {
+            e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
+            e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
             e.setCanceled(true);
             return;
         }
 
-        if(Reference.onServer) {
-            loadedResourcePack+= 1;
-        }
+        if(Reference.onWorld) loadedResourcePack = true;
     }
 
     @SubscribeEvent

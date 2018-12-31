@@ -32,7 +32,7 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
         } else if (msg instanceof SPacketWindowItems) {
             e = new PacketEvent.InventoryItemsReceived((SPacketWindowItems) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketResourcePackSend) {
-            e = new PacketEvent.ResourcePackReceived((SPacketResourcePackSend) msg, ModCore.mc().getConnection().getNetworkManager());
+            e = new PacketEvent.ResourcePackReceived((SPacketResourcePackSend) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketPlayerListItem) {
             e = new PacketEvent.TabListChangeEvent((SPacketPlayerListItem) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketTitle) {
@@ -55,14 +55,9 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
         }
 
 
-        if (e != null) {
-            MinecraftForge.EVENT_BUS.post(e);
+        if (e != null) cancel = MinecraftForge.EVENT_BUS.post(e);
+        if (cancel) return;
 
-            cancel = e.isCanceled();
-        }
-        if (cancel) {
-            return;
-        }
         super.channelRead(ctx, msg);
     }
 

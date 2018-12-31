@@ -332,7 +332,4 @@ public class Utils {
         return msg;
     }
 
-    public static File getDataFolder() {
-        return new File(System.getProperty("user.dir"));
-    }
 }

@@ -27,7 +27,6 @@ public class ModuleManager {
         FrameworkManager.registerModule(new CapesModule());
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());
-        //FrameworkManager.registerModule(new ExampleModule());
     }
 
 }

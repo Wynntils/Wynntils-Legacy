@@ -5,7 +5,6 @@
 package cf.wynntils.core.events.custom;
 
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -26,11 +25,11 @@ public class PacketEvent extends Event {
      */
     public static class ResourcePackReceived extends PacketEvent {
         SPacketResourcePackSend packet;
-        NetworkManager networkManager;
+        NetHandlerPlayClient playClient;
 
-        public ResourcePackReceived(SPacketResourcePackSend packet, NetworkManager networkManager) {
+        public ResourcePackReceived(SPacketResourcePackSend packet, NetHandlerPlayClient playClient) {
             this.packet = packet;
-            this.networkManager = networkManager;
+            this.playClient = playClient;
 
         }
 
@@ -43,8 +42,8 @@ public class PacketEvent extends Event {
             return packet;
         }
 
-        public NetworkManager getNetworkManager() {
-            return networkManager;
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
         }
     }
 
