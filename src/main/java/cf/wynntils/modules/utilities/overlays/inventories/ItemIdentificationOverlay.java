@@ -188,7 +188,7 @@ public class ItemIdentificationOverlay implements Listener {
                 int rerollValue = 0;
 
                 //thanks nbcss for this Math
-                if(wColor.contains("Mythics")) {
+                if(wColor.contains("Mythic")) {
                     rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
                 }else if(wColor.contains("Legendary")) {
                     rerollValue = (int)Math.ceil(30.0D + wItem.getLevel() * 6);
