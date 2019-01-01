@@ -43,7 +43,7 @@ public class ServerEvents implements Listener {
             return;
         }
 
-        if(Reference.onWorld) loadedResourcePack = true;
+        if(Reference.onServer) loadedResourcePack = true;
     }
 
     @SubscribeEvent
