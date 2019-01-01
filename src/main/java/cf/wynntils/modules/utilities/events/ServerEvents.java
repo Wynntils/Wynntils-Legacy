@@ -36,6 +36,8 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
+        if(!Reference.onWorld) return;
+
         if(loadedResourcePack) {
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
@@ -43,7 +45,7 @@ public class ServerEvents implements Listener {
             return;
         }
 
-        if(Reference.onServer) loadedResourcePack = true;
+        loadedResourcePack = true;
     }
 
     @SubscribeEvent
