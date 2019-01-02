@@ -16,7 +16,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 0, minor: 1, revision: 5)
+def versionObj = new Version(major: 0, minor: 1, revision: 6)
 
 version = versionObj.toString()
 group = "cf.wynntils"
