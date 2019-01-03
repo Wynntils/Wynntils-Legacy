@@ -35,12 +35,12 @@ public class RarityColorOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        drawChest(e.getGuiInventory().getLowerInv(), e.getGuiInventory().getUpperInv(), e.getGuiInventory().getSlotUnderMouse(), 1);
+        drawChest(e.getGuiInventory().getLowerInv(), e.getGuiInventory().getUpperInv(), e.getGuiInventory().getSlotUnderMouse(), 1, true, true);
     }
 
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        drawChest(e.getGuiInventory().getUpperInv(), e.getGuiInventory().getLowerInv(), e.getGuiInventory().getSlotUnderMouse(), 53);
+        drawChest(e.getGuiInventory().getUpperInv(), e.getGuiInventory().getLowerInv(), e.getGuiInventory().getSlotUnderMouse(), 53, true, false);
     }
 
     @SubscribeEvent
@@ -236,7 +236,7 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    public void drawChest(IInventory lowerInv, IInventory upperInv, Slot slot, int scaleOfset) {
+    public void drawChest(IInventory lowerInv, IInventory upperInv, Slot slot, int scaleOfset, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
         GL11.glPushMatrix();
         {
             GL11.glTranslatef(0, 10, 0F);
@@ -461,66 +461,68 @@ public class RarityColorOverlay implements Listener {
                 GlStateManager.disableLighting();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
                 ScreenRenderer screen = new ScreenRenderer();
-                //LWR INV
                 int x = 190;
-//                int y = (lowerInvFloor * 18) + 36;
                 int y = (int) (lowerInvFloor * 19.7) + 25;
-//                System.out.println(lowerInvFloor);
                 CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
-                if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    ScreenRenderer.beginGL(0, 0);
-                    {
-                        ScreenRenderer.scale(0.9f);
-                        String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
-                        screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                    }
-                    ScreenRenderer.endGL();
+                //LWR INV
+                if (emeraldsLowerInv) {
+                    if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                        ScreenRenderer.beginGL(0, 0);
+                        {
+                            ScreenRenderer.scale(0.9f);
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
+                            screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        }
+                        ScreenRenderer.endGL();
 
-                } else {
-                    if (LWRmoney != 0) {
-                        LWRleAmount = (int) Math.floor(LWRmoney / 4096);
-                        LWRmoney -= LWRleAmount * 4096;
+                    } else {
+                        if (LWRmoney != 0) {
+                            LWRleAmount = (int) Math.floor(LWRmoney / 4096);
+                            LWRmoney -= LWRleAmount * 4096;
 
-                        LWRblockAmount = (int) Math.floor(LWRmoney / 64);
-                        LWRmoney -= LWRblockAmount * 64;
+                            LWRblockAmount = (int) Math.floor(LWRmoney / 64);
+                            LWRmoney -= LWRblockAmount * 64;
+                        }
+                        ScreenRenderer.beginGL(0, 0);
+                        {
+                            ScreenRenderer.scale(0.9f);
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(LWRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
+                            screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        }
+                        ScreenRenderer.endGL();
                     }
-                    ScreenRenderer.beginGL(0, 0);
-                    {
-                        ScreenRenderer.scale(0.9f);
-                        String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(LWRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
-                        screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                    }
-                    ScreenRenderer.endGL();
                 }
 
                 //UPR INV
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    ScreenRenderer.beginGL(0, 0);
-                    {
-                        ScreenRenderer.scale(0.9f);
-                        String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
-                        screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                    }
-                    ScreenRenderer.endGL();
+                if (emeraldsUpperInv) {
+                    if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                        ScreenRenderer.beginGL(0, 0);
+                        {
+                            ScreenRenderer.scale(0.9f);
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
+                            screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        }
+                        ScreenRenderer.endGL();
 
-                } else {
-                    if (UPRmoney != 0) {
-                        UPRleAmount = (int) Math.floor(UPRmoney / 4096);
-                        UPRmoney -= UPRleAmount * 4096;
+                    } else {
+                        if (UPRmoney != 0) {
+                            UPRleAmount = (int) Math.floor(UPRmoney / 4096);
+                            UPRmoney -= UPRleAmount * 4096;
 
-                        UPRblockAmount = (int) Math.floor(UPRmoney / 64);
-                        UPRmoney -= UPRblockAmount * 64;
+                            UPRblockAmount = (int) Math.floor(UPRmoney / 64);
+                            UPRmoney -= UPRblockAmount * 64;
+                        }
+                        ScreenRenderer.beginGL(0, 0);
+                        {
+                            ScreenRenderer.scale(0.9f);
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(UPRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
+                            screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                        }
+                        ScreenRenderer.endGL();
                     }
-                    ScreenRenderer.beginGL(0, 0);
-                    {
-                        ScreenRenderer.scale(0.9f);
-                        String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(UPRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
-                        screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                    }
-                    ScreenRenderer.endGL();
+
+                    GlStateManager.enableLighting();
                 }
-
-                GlStateManager.enableLighting();
             }
         }
     }
