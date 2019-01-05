@@ -69,7 +69,7 @@ public abstract class UI extends GuiScreen {
                     mouseClicked(mouseX, mouseY, mouseButton);
                     this.UIElements = UIElements_old;
                 } else if (uie instanceof UIEClickZone)
-                    ((UIEClickZone) uie).click(mouseX, mouseY, MouseButton.values()[mouseButton], this);
+                    ((UIEClickZone) uie).click(mouseX, mouseY, mouseButton > 2 ? MouseButton.UNKNOWN : MouseButton.values()[mouseButton], this);
         } catch (ConcurrentModificationException ignored) {}
     }
 
@@ -83,7 +83,7 @@ public abstract class UI extends GuiScreen {
                 mouseReleased(mouseX, mouseY, state);
                 this.UIElements = UIElements_old;
             } else if (uie instanceof UIEClickZone)
-                ((UIEClickZone) uie).release(mouseX, mouseY, MouseButton.values()[state], this);
+                ((UIEClickZone) uie).release(mouseX, mouseY, state > 2 ? MouseButton.UNKNOWN : MouseButton.values()[state], this);
         }
     }
 
@@ -96,7 +96,7 @@ public abstract class UI extends GuiScreen {
                 mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
                 this.UIElements = UIElements_old;
             } else if (uie instanceof UIEClickZone)
-                ((UIEClickZone) uie).clickMove(mouseX, mouseY, MouseButton.values()[clickedMouseButton], timeSinceLastClick, this);
+                ((UIEClickZone) uie).clickMove(mouseX, mouseY, clickedMouseButton > 2 ? MouseButton.UNKNOWN : MouseButton.values()[clickedMouseButton], timeSinceLastClick, this);
         }
     }
 
