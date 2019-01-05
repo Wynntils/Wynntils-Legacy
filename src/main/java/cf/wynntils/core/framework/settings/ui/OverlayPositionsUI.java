@@ -1,6 +1,5 @@
 package cf.wynntils.core.framework.settings.ui;
 
-import cf.wynntils.ModCore;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.MouseButton;
 import cf.wynntils.core.framework.instances.ModuleContainer;
@@ -30,6 +29,12 @@ public class OverlayPositionsUI extends UI {
 
     private OverlayButton toClick;
 
+    private OverlayButton selected = null;
+
+    private long clickTime = 0;
+
+    private boolean reloadButtons;
+
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a,0.5f,0.5f,13,0,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
             try {
@@ -52,12 +57,24 @@ public class OverlayPositionsUI extends UI {
         onClose();
     });
 
+    public UIEButton resetButton = new UIEButton("Default", Textures.UIs.button_a,0.5f,0.5f,-22,15,-10,true,(ui, mouseButton) -> {
+        for(OverlayButton settingsContainer : registeredOverlaySettings) {
+            try {
+                settingsContainer.getOverlaySettings().resetValues();
+                reloadButtons = true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    });
+
     public OverlayPositionsUI(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;
     }
 
     @Override
     public void onInit() {
+        registeredOverlaySettings.clear();
         for (String moduleName : FrameworkManager.availableModules.keySet()) {
             ModuleContainer moduleContainer = FrameworkManager.availableModules.get(moduleName);
             for (String settingsName : moduleContainer.getRegisteredSettings().keySet()) {
@@ -65,10 +82,12 @@ public class OverlayPositionsUI extends UI {
                 if (settingsContainer.getHolder() instanceof Overlay) {
                     if (((Overlay) settingsContainer.getHolder()).configurable) {
                         registeredOverlaySettings.add(new OverlayButton(settingsContainer));
+                        System.out.println(((Overlay) settingsContainer.getHolder()).displayName);
                     }
                 }
             }
         }
+        reloadButtons = false;
     }
 
     @Override
@@ -108,7 +127,8 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
-
+        if(reloadButtons)
+            onInit();
     }
 
     @Override
@@ -120,7 +140,11 @@ public class OverlayPositionsUI extends UI {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         if (toClick != null) {
+            clickTime = System.currentTimeMillis();
+            selected = null;
             toClick.click(mouseX, mouseY, MouseButton.values()[mouseButton], this);
+        } else {
+            selected = null;
         }
     }
 
@@ -130,6 +154,9 @@ public class OverlayPositionsUI extends UI {
         for (OverlayButton button : registeredOverlaySettings) {
             if (button.isMouseButtonHeld()) {
                 button.release(mouseX, mouseY, MouseButton.values()[state], this);
+                if (System.currentTimeMillis() - clickTime < 200) {
+                    selected = button;
+                }
                 break;
             }
         }
@@ -142,6 +169,26 @@ public class OverlayPositionsUI extends UI {
             if (button.isMouseButtonHeld()) {
                 button.clickMove(mouseX, mouseY, MouseButton.values()[clickedMouseButton], timeSinceLastClick, this);
             }
+        }
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        if (selected == null)
+            return;
+        if (keyCode == 200) {
+            selected.position.offsetY -= 1;
+            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY -= 1;
+        } else if (keyCode == 208) {
+            selected.position.offsetY += 1;
+            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY += 1;
+        } else if (keyCode == 203) {
+            selected.position.offsetX -= 1;
+            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX -= 1;
+        } else if (keyCode == 205) {
+            selected.position.offsetX += 1;
+            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX += 1;
         }
     }
 
@@ -194,7 +241,9 @@ public class OverlayPositionsUI extends UI {
             // Clickable box
             CustomColor color;
             Overlay overlay = (Overlay) overlaySettings.getHolder();
-            if (hovering && !mouseButtonHeld) {
+            if (selected != null && selected.equals(this)) {
+                color = CommonColors.BLUE;
+            } else if (hovering && !mouseButtonHeld) {
                 color = CommonColors.YELLOW;
             } else if (hovering) {
                 color = CommonColors.ORANGE;
