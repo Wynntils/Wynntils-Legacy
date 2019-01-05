@@ -87,7 +87,7 @@ public class FrameworkManager {
 
         overlay.module = mc;
 
-        mc.registerSettings("overlay" + overlay.displayName,overlay);
+        mc.registerSettings("overlay" + overlay.displayName, overlay);
 
         registeredOverlays.get(priority).add(overlay);
     }

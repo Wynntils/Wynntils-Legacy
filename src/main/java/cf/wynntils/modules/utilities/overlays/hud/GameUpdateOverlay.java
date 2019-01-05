@@ -17,7 +17,7 @@ import java.util.List;
 public class GameUpdateOverlay extends Overlay {
 
     public GameUpdateOverlay() {
-        super("Game Update Ticker Overlay", 20, 20, true, 1f, 1f, -3, -10);
+        super("Game Update Ticker", 100, 20, true, 1f, 1f, -3, -80, true, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
     @Setting(displayName = "Message Limit", description = "The maximum amount of messages to display in the game update list")
@@ -68,6 +68,7 @@ public class GameUpdateOverlay extends Overlay {
             updatedList.add(message);
         }
         messageQueue = updatedList;
+        staticSize.y = LINE_HEIGHT * OverlayConfig.GameUpdate.INSTANCE.messageLimit;
     }
 
     @Override

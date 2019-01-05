@@ -26,13 +26,16 @@ public class SettingsContainer {
         this.m = m;
         this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
-        for(Field f : holder.getClass().getDeclaredFields())
-            if(!Modifier.isStatic(f.getModifiers()))
-                fields.add(f);
 
-        try{
+        for(Field f : holder.getClass().getDeclaredFields()) {
+            if (!Modifier.isStatic(f.getModifiers())) {
+                fields.add(f);
+            }
+        }
+
+        try {
             tryToLoad();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -80,7 +83,7 @@ public class SettingsContainer {
                 save = true;
                 continue;
             }
-
+            System.out.println("Load " + newH.getClass().toString() + ", " + f.getName());
             setValue(f, f.get(newH), false);
         }
 

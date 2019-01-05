@@ -32,7 +32,7 @@ public class DownloadOverlay extends Overlay {
     public static int size = 53;
 
     public DownloadOverlay() {
-        super("Downloading",20,20,true,1.0f,0.0f,0,0);
+        super("Downloading",20,20,true,1.0f,0.0f,0,0, false, null);
     }
 
     @Override

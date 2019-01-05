@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class BubblesOverlay extends Overlay {
 
     public BubblesOverlay() {
-        super("Bubbles Overlay", 20, 20, true, 0.5f, 1.0f, 0, -29);
+        super("Bubbles Overlay", 20, 10, true, 0.5f, 1.0f, 0, -29, false, OverlayGrowFrom.MIDDLE_CENTRE);
     }
 
     private static float animation = 300.0f;

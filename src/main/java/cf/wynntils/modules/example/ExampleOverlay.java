@@ -20,7 +20,9 @@ public class ExampleOverlay extends Overlay {
                 0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
                 0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
                 0, //Origin offset from the anchor in pixels
-                0); //Origin offset from the anchor in pixels
+                0, //Origin offset from the anchor in pixels
+                false, // Whether this overlay should be configurable using the Overlay Positions UI
+                null); // What the origin point of this overlay is
     }
 
     @Setting.Limitations.FloatLimit(min = 0.0f, max = 69.420f) //Optional, Will set a limit on the float

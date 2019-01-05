@@ -181,7 +181,7 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Offset Y", description = "How far should the ticker be offset on the y-axis?")
         @Setting.Limitations.IntLimit(min = -300, max = 10)
-        public int offsetY = -70;
+        public int offsetY = 0;
 
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
         @Setting.Limitations.IntLimit(min = 0, max = 100)

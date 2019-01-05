@@ -11,7 +11,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class TrackedQuestOverlay extends Overlay {
 
     public TrackedQuestOverlay() {
-        super("Tracked Quest", 20, 20, true, 0.0f, 0.0f, 10, 10);
+        super("Tracked Quest", 215, 70, true, 0.0f, 0.0f, 10, 10, true, OverlayGrowFrom.TOP_LEFT);
     }
 
 
