@@ -14,6 +14,7 @@ import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.core.framework.ui.elements.UIEButton;
 import cf.wynntils.core.framework.ui.elements.UIEClickZone;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -200,6 +201,8 @@ public class OverlayPositionsUI extends UI {
 
         int mouseXPrevious, mouseYPrevious;
 
+        public static final int GRID_SIZE = 10;
+
         public OverlayButton(SettingsContainer overlaySettings) {
             super(((Overlay) overlaySettings.getHolder()).position.anchorX,
                     ((Overlay) overlaySettings.getHolder()).position.anchorY,
@@ -301,33 +304,64 @@ public class OverlayPositionsUI extends UI {
             mouseXPrevious = mouseX;
             mouseYPrevious = mouseY;
             Overlay overlay = (Overlay) overlaySettings.getHolder();
-            if (overlay.growth == Overlay.OverlayGrowFrom.TOP_LEFT) {
-                overlay.position.offsetX = position.offsetX;
-                overlay.position.offsetY = position.offsetY;
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_CENTRE) {
-                overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
-                overlay.position.offsetY = position.offsetY;
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_RIGHT) {
-                overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
-                overlay.position.offsetY = position.offsetY;
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_LEFT) {
-                overlay.position.offsetX = position.offsetX;
-                overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_CENTRE) {
-                overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
-                overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_RIGHT) {
-                overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
-                overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_LEFT) {
-                overlay.position.offsetX = position.offsetX;
-                overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_CENTRE) {
-                overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
-                overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
-            } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_RIGHT) {
-                overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
-                overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
+            if (!Keyboard.isKeyDown(42)) {
+                if (overlay.growth == Overlay.OverlayGrowFrom.TOP_LEFT) {
+                    overlay.position.offsetX = position.offsetX;
+                    overlay.position.offsetY = position.offsetY;
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_CENTRE) {
+                    overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
+                    overlay.position.offsetY = position.offsetY;
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_RIGHT) {
+                    overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
+                    overlay.position.offsetY = position.offsetY;
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_LEFT) {
+                    overlay.position.offsetX = position.offsetX;
+                    overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_CENTRE) {
+                    overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
+                    overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_RIGHT) {
+                    overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
+                    overlay.position.offsetY = position.offsetY + (overlay.staticSize.y / 2);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_LEFT) {
+                    overlay.position.offsetX = position.offsetX;
+                    overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_CENTRE) {
+                    overlay.position.offsetX = position.offsetX + (overlay.staticSize.x / 2);
+                    overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_RIGHT) {
+                    overlay.position.offsetX = position.offsetX + overlay.staticSize.x;
+                    overlay.position.offsetY = position.offsetY + overlay.staticSize.y;
+                }
+            } else {
+                if (overlay.growth == Overlay.OverlayGrowFrom.TOP_LEFT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_CENTRE) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_RIGHT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_LEFT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_CENTRE) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_RIGHT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_LEFT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_CENTRE) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_RIGHT) {
+                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                }
             }
         }
 
@@ -337,6 +371,10 @@ public class OverlayPositionsUI extends UI {
 
         public boolean isMouseButtonHeld() {
             return mouseButtonHeld;
+        }
+
+        public int roundToGridPos(float toRound) {
+            return GRID_SIZE * (Math.round(toRound / GRID_SIZE));
         }
     }
 

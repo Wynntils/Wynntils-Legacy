@@ -156,8 +156,8 @@ public class ActionBarOverlay extends Overlay {
                     s = TextFormatting.ITALIC + s;
                 }
 
-                int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2;
-                int j = scaledRes.getScaledHeight() - 70 + y;
+                int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2 + position.offsetX;
+                int j = scaledRes.getScaledHeight() + position.offsetY;
 
                 if (!mc.playerController.shouldDrawHUD()) {
                     j += 14;
