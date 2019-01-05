@@ -7,6 +7,7 @@ package cf.wynntils.modules.utilities.overlays.hud;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.overlays.Overlay;
+import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.settings.annotations.Setting;
@@ -156,8 +157,8 @@ public class ActionBarOverlay extends Overlay {
                     s = TextFormatting.ITALIC + s;
                 }
 
-                int i = (scaledRes.getScaledWidth() - mc.fontRenderer.getStringWidth(s)) / 2 + position.offsetX;
-                int j = scaledRes.getScaledHeight() + position.offsetY;
+                int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - mc.fontRenderer.getStringWidth(s) / 2) + position.offsetX;
+                int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY;
 
                 if (!mc.playerController.shouldDrawHUD()) {
                     j += 14;

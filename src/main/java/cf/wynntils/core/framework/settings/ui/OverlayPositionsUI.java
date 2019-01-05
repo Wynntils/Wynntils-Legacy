@@ -34,7 +34,9 @@ public class OverlayPositionsUI extends UI {
 
     private long clickTime = 0;
 
-    private boolean reloadButtons;
+    private boolean reloadButtons, shiftDown;
+
+    public int GRID_SIZE_VERTICAL, GRID_SIZE_HORIZONTAL;
 
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a,0.5f,0.5f,13,0,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
@@ -49,6 +51,12 @@ public class OverlayPositionsUI extends UI {
 
     public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a,0.5f,0.5f,-48,0,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
+            // Convert offset -> anchor, then save
+            Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
+            overlay.position.anchorX = (float) (((overlay.position.anchorX * ScreenRenderer.screen.getScaledWidth_double()) + (double) overlay.position.offsetX) / ScreenRenderer.screen.getScaledWidth_double());
+            overlay.position.anchorY = (float) (((overlay.position.anchorY * ScreenRenderer.screen.getScaledHeight_double()) + (double) overlay.position.offsetY) / ScreenRenderer.screen.getScaledHeight_double());
+            overlay.position.offsetX = 0;
+            overlay.position.offsetY = 0;
             try {
                 settingsContainer.getOverlaySettings().saveSettings();
             } catch (Exception ex) {
@@ -83,12 +91,14 @@ public class OverlayPositionsUI extends UI {
                 if (settingsContainer.getHolder() instanceof Overlay) {
                     if (((Overlay) settingsContainer.getHolder()).configurable) {
                         registeredOverlaySettings.add(new OverlayButton(settingsContainer));
-                        System.out.println(((Overlay) settingsContainer.getHolder()).displayName);
                     }
                 }
             }
         }
         reloadButtons = false;
+        shiftDown = false;
+        GRID_SIZE_VERTICAL = ScreenRenderer.screen.getScaledHeight() / 50;
+        GRID_SIZE_HORIZONTAL = ScreenRenderer.screen.getScaledWidth() / 50;
     }
 
     @Override
@@ -128,7 +138,7 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
-        if(reloadButtons)
+        if(reloadButtons || (shiftDown && !Keyboard.isKeyDown(42)))
             onInit();
     }
 
@@ -176,20 +186,23 @@ public class OverlayPositionsUI extends UI {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        if (selected == null)
-            return;
-        if (keyCode == 200) {
-            selected.position.offsetY -= 1;
-            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY -= 1;
-        } else if (keyCode == 208) {
-            selected.position.offsetY += 1;
-            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY += 1;
-        } else if (keyCode == 203) {
-            selected.position.offsetX -= 1;
-            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX -= 1;
-        } else if (keyCode == 205) {
-            selected.position.offsetX += 1;
-            ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX += 1;
+        if (selected != null) {
+            if (keyCode == 200) {
+                selected.position.offsetY -= 1;
+                ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY -= 1;
+            } else if (keyCode == 208) {
+                selected.position.offsetY += 1;
+                ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetY += 1;
+            } else if (keyCode == 203) {
+                selected.position.offsetX -= 1;
+                ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX -= 1;
+            } else if (keyCode == 205) {
+                selected.position.offsetX += 1;
+                ((Overlay) selected.getOverlaySettings().getHolder()).position.offsetX += 1;
+            }
+        }
+        if (keyCode == 42) {
+            shiftDown = true;
         }
     }
 
@@ -200,8 +213,6 @@ public class OverlayPositionsUI extends UI {
         boolean mouseButtonHeld = false;
 
         int mouseXPrevious, mouseYPrevious;
-
-        public static final int GRID_SIZE = 10;
 
         public OverlayButton(SettingsContainer overlaySettings) {
             super(((Overlay) overlaySettings.getHolder()).position.anchorX,
@@ -335,32 +346,32 @@ public class OverlayPositionsUI extends UI {
                 }
             } else {
                 if (overlay.growth == Overlay.OverlayGrowFrom.TOP_LEFT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_CENTRE) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
-                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_RIGHT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_LEFT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_CENTRE) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_RIGHT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_LEFT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + overlay.staticSize.y);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_CENTRE) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + (overlay.staticSize.x / 2));
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + overlay.staticSize.y);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_RIGHT) {
-                    overlay.position.offsetX = roundToGridPos(position.offsetX + overlay.staticSize.x);
-                    overlay.position.offsetY = roundToGridPos(position.offsetY + overlay.staticSize.y);
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + overlay.staticSize.y);
                 }
             }
         }
@@ -373,8 +384,12 @@ public class OverlayPositionsUI extends UI {
             return mouseButtonHeld;
         }
 
-        public int roundToGridPos(float toRound) {
-            return GRID_SIZE * (Math.round(toRound / GRID_SIZE));
+        public int roundToGridPosHorizontal(float toRound) {
+            return GRID_SIZE_HORIZONTAL * (Math.round(toRound / GRID_SIZE_HORIZONTAL));
+        }
+
+        public int roundToGridPosVertical(float toRound) {
+            return GRID_SIZE_VERTICAL * (Math.round(toRound / GRID_SIZE_VERTICAL));
         }
     }
 
