@@ -353,7 +353,6 @@ public class ItemIdentificationOverlay implements Listener {
                             totalSP += amount;
                             break;
                         default:
-                            System.out.println(fieldName + " - " + amount);
                             break;
                     }
                     identifications++;
