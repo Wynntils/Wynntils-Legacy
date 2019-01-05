@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.questbook.events;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.PreChatEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Utils;
@@ -29,7 +30,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClickOnQuestBookItem(PlayerInteractEvent.RightClickItem e) {
         if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
-            if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+            if(QuestBookConfig.INSTANCE.allowCustomQuestbook && !Reference.onWars && !Reference.onNether) {
                 QuestManager.requestLessIntrusiveQuestBookReading();
                 QuestBookModule.gui.open();
             }
@@ -39,7 +40,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClickOnQuestBookBlock(PlayerInteractEvent.RightClickBlock e) {
         if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
-            if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+            if(QuestBookConfig.INSTANCE.allowCustomQuestbook && !Reference.onWars && !Reference.onNether) {
                 QuestManager.requestLessIntrusiveQuestBookReading();
                 QuestBookModule.gui.open();
             }
@@ -49,7 +50,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClickOnQuestBookEntity(PlayerInteractEvent.EntityInteract e) {
         if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
-            if(QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+            if(QuestBookConfig.INSTANCE.allowCustomQuestbook && !Reference.onWars && !Reference.onNether) {
                 QuestManager.requestLessIntrusiveQuestBookReading();
                 QuestBookModule.gui.open();
             }
