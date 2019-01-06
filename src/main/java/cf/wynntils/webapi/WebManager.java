@@ -12,6 +12,7 @@ import cf.wynntils.webapi.profiles.item.ItemProfile;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
+import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -74,26 +75,35 @@ public class WebManager {
             apiUrls = new WebReader("http://api.wynntils.cf/webapi");
         }catch (Exception ex) { ex.printStackTrace(); return; }
 
+        ProgressManager.ProgressBar progressBar = ProgressManager.push("Loading data from APIs", 6);
+
+        progressBar.step("Territories");
         long ms = System.currentTimeMillis();
         updateTerritories();
         Reference.LOGGER.info("Territory list loaded in " + (System.currentTimeMillis() - ms) + "ms");
 
         try{
+            progressBar.step("User roles");
             updateUsersRoles();
+            progressBar.step("User models");
             updateUsersModels();
 
+            progressBar.step("Items");
             ms = System.currentTimeMillis();
             updateItemList();
             Reference.LOGGER.info("Loaded " + items.size() + " items in " + (System.currentTimeMillis() - ms) + "ms");
 
+            progressBar.step("Map Markers");
             ms = System.currentTimeMillis();
             updateMapMarkers();
             Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers in " + (System.currentTimeMillis() - ms) + "ms");
 
+            progressBar.step("Item Guesses");
             ms = System.currentTimeMillis();
             updateItemGuesses();
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses in " + (System.currentTimeMillis() - ms) + "ms");
         }catch (Exception ex) { ex.printStackTrace(); }
+        ProgressManager.pop(progressBar);
     }
 
     public static void checkForUpdates() {
