@@ -17,9 +17,9 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public transient String displayName;
     public transient Point staticSize;
     public transient boolean visible, configurable;
-    public boolean active = true;
-    public OverlayGrowFrom growth;
+    public transient OverlayGrowFrom growth;
 
+    public boolean active = true;
     public Position position = new Position();
 
     public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, boolean configurable, OverlayGrowFrom growth) {
