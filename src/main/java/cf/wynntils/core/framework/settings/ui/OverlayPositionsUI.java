@@ -185,6 +185,15 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == 1) {
+            for (OverlayButton settingsContainer : registeredOverlaySettings) {
+                try {
+                    settingsContainer.getOverlaySettings().tryToLoad();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         super.keyTyped(typedChar, keyCode);
         if (selected != null) {
             if (keyCode == 200) {
@@ -257,10 +266,12 @@ public class OverlayPositionsUI extends UI {
             Overlay overlay = (Overlay) overlaySettings.getHolder();
             if (selected != null && selected.equals(this)) {
                 color = CommonColors.BLUE;
-            } else if (hovering && !mouseButtonHeld) {
-                color = CommonColors.YELLOW;
-            } else if (hovering) {
+            } else if (mouseButtonHeld && shiftDown) {
+                color = CommonColors.PURPLE;
+            } else if (mouseButtonHeld) {
                 color = CommonColors.ORANGE;
+            } else if (hovering) {
+                color = CommonColors.YELLOW;
             } else if (overlay.active) {
                 color = CommonColors.GREEN;
             } else {
