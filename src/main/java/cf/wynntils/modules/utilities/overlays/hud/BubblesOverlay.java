@@ -52,20 +52,16 @@ public class BubblesOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre e) {
         if(!Reference.onWorld) return;
 
-        if ((e.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (e.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && OverlayConfig.Bubbles.INSTANCE.enabled) {
-            e.setCanceled(true);
-
-            switch (OverlayConfig.Bubbles.INSTANCE.bubblesTexture) {
-                case Wynn:
-                    drawDefaultBar(0, 5, 0, 9);
-                    break;
-                case a: drawDefaultBar(0,5,10,19);
-                    break;
-                case b: drawDefaultBar(0,5,20,29);
-                    break;
-                case c: drawDefaultBar(0,5,30,39);
-                    break;
-            }
+        switch (OverlayConfig.Bubbles.INSTANCE.bubblesTexture) {
+            case Wynn:
+                drawDefaultBar(0, 5, 0, 9);
+                break;
+            case a: drawDefaultBar(0,5,10,19);
+                break;
+            case b: drawDefaultBar(0,5,20,29);
+                break;
+            case c: drawDefaultBar(0,5,30,39);
+                break;
         }
     }
 
@@ -74,7 +70,6 @@ public class BubblesOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.Bubbles.INSTANCE.drowningVignette || e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
-
 
         if(mc.player.getAir() == 300 && animation >= 300) return;
 

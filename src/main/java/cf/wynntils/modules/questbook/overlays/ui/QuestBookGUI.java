@@ -260,11 +260,7 @@ public class QuestBookGUI extends GuiScreen {
                         StringSelection selection = new StringSelection(url);
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(selection, null);
-                        if (OverlayConfig.GameUpdate.INSTANCE.enabled) {
-                            GameUpdateOverlay.queueMessage("§4Error opening link, it has been copied to your clipboard");
-                        } else {
-                            ModCore.mc().player.sendMessage(new TextComponentString("§4Error opening link, it has been copied to your clipboard"));
-                        }
+                        ModCore.mc().player.sendMessage(new TextComponentString("§4Error opening link, it has been copied to your clipboard"));
                     }
                 }
             }

@@ -55,7 +55,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
-        if (OverlayConfig.GameUpdate.INSTANCE.enabled && Reference.onWorld) {
+        if (Reference.onWorld) {
             /* XP Gain Messages */
             if (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expUpdateRate * 20f) == 0) {
@@ -94,7 +94,7 @@ public class OverlayEvents implements Listener {
                 break;
             }
         }
-        if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled || e.getType() == ChatType.GAME_INFO)
+        if (!Reference.onWorld || e.getType() == ChatType.GAME_INFO)
             return;
         if (Utils.stripColor(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {

@@ -51,7 +51,7 @@ public class WarTimerOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) || !OverlayConfig.WarTimer.INSTANCE.enabled) return;
+        if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR))) return;
         if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
             if (lastTerritory != null) {
                 drawString((int) (Math.floor(((double) lastTimer) / 60)) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
@@ -82,7 +82,7 @@ public class WarTimerOverlay extends Overlay {
     }
     
     public static void warMessage(ClientChatReceivedEvent event) {
-        if (!OverlayConfig.WarTimer.INSTANCE.enabled || !Reference.onWorld || Reference.onNether) return;
+        if (!Reference.onWorld || Reference.onNether) return;
         
         String message = event.getMessage().getUnformattedText();
         if (message.startsWith("[WAR] ")) {

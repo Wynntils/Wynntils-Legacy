@@ -24,9 +24,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Health Texture", description = "What texture should be used for the health bar?")
         public HealthTextures healthTexture = HealthTextures.a;
 
-        @Setting(displayName = "Enabled", description = "Should the health bar be displayed?")
-        public boolean enabled = true;
-
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
@@ -54,9 +51,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Mana Texture", description = "What texture should be used for the mana bar?")
         public ManaTextures manaTexture = ManaTextures.a;
 
-        @Setting(displayName = "Enabled", description = "Should the mana bar be displayed?")
-        public boolean enabled = true;
-
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
@@ -83,9 +77,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "EXP Texture", description = "What texture should be used for the EXP bar?")
         public expTextures expTexture = expTextures.a;
 
-        @Setting(displayName = "Enabled", description = "Should the EXP bar be displayed?")
-        public boolean enabled = true;
-
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
@@ -110,9 +101,6 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Bubbles Texture", description = "What texture should be used for the EXP bar when it acts as the air meter?")
         public BubbleTexture bubblesTexture = BubbleTexture.a;
-
-        @Setting(displayName = "Enabled", description = "Should the EXP bar act as the air meter when underwater?")
-        public boolean enabled = true;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
@@ -141,9 +129,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Current Text", description = "How should the leveling text be displayed?")
         public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
-        @Setting(displayName = "Enabled", description = "Should the level bar be displayed?")
-        public boolean enabled = true;
-
         @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
@@ -171,17 +156,6 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Invert Growth", description = "Should the way ticker messages grow be inverted?")
         public boolean invertGrowth = true;
-
-        @Setting(displayName = "Enabled", description = "Should the game-update-ticker be displayed?")
-        public boolean enabled = true;
-
-        @Setting(displayName = "Offset X", description = "How far should the ticker be offset on the x-axis?")
-        @Setting.Limitations.IntLimit(min = -300, max = 10)
-        public int offsetX = 0;
-
-        @Setting(displayName = "Offset Y", description = "How far should the ticker be offset on the y-axis?")
-        @Setting.Limitations.IntLimit(min = -300, max = 10)
-        public int offsetY = 0;
 
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
@@ -278,9 +252,6 @@ public class OverlayConfig extends SettingsClass {
     @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
-        
-        @Setting(displayName = "Enabled", description = "Should a timer of when a war will start be displayed?")
-        public boolean enabled = true;
         
         @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
