@@ -5,8 +5,11 @@ import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.events.custom.WynnTerritoryChangeEvent;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
@@ -81,6 +84,16 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ClientChatReceivedEvent e) {
+        // This doesn't seem like the best way to do it - but I couldn't come up with much better -Bedo
+        for (Overlay overlay : FrameworkManager.registeredOverlays.get(Priority.LOW)) {
+            if (overlay instanceof GameUpdateOverlay) {
+                if (!overlay.active) {
+                    GameUpdateOverlay.resetMessages();
+                    return;
+                }
+                break;
+            }
+        }
         if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled || e.getType() == ChatType.GAME_INFO)
             return;
         if (Utils.stripColor(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
