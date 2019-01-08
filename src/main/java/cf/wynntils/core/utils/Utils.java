@@ -332,4 +332,12 @@ public class Utils {
         return msg;
     }
 
+    public static float easeOut(float current, float goal, float jump, float speed) {
+        if (Math.floor(Math.abs(goal - current) / jump) > 0) {
+            return current + (goal - current) / speed;
+        } else {
+            return goal;
+        }
+    }
+
 }

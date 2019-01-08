@@ -6,6 +6,7 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.settings.annotations.Setting;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -128,7 +129,7 @@ public class GameUpdateOverlay extends Overlay {
         }
 
         public void updateTime() {
-            time = BubblesOverlay.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
+            time = Utils.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
         }
     }
 }
