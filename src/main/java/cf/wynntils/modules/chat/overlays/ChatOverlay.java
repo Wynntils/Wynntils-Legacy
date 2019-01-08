@@ -6,11 +6,13 @@ import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
+import cf.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.chat.configs.ChatConfig;
-import cf.wynntils.modules.chat.enums.ChatTab;
+import cf.wynntils.modules.chat.instances.ChatTab;
 import cf.wynntils.modules.chat.managers.ChatManager;
+import cf.wynntils.modules.chat.managers.TabManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ChatOverlay extends GuiNewChat {
@@ -37,30 +37,13 @@ public class ChatOverlay extends GuiNewChat {
 
     private int scrollPos;
     private boolean isScrolled;
-    private int mouseOver = 0;
 
-    private final HashMap<ChatTab, List<ChatLine>> chatMessages = new HashMap<>();
-    private final HashMap<ChatTab, List<String>> sentMessages = new HashMap<>();
-    private ChatTab currentTab = ChatTab.GLOBAL;
 
-    private boolean globalNewMessages = false;
-    private boolean guildNewMessages = false;
-    private boolean partyNewMessages = false;
-
-    private boolean globalMention = false;
-    private boolean guildMention = false;
-    private boolean partyMention = false;
+    private int overTabId = -1;
+    private int currentTab = 0;
 
     public ChatOverlay() {
         super(Minecraft.getMinecraft());
-
-        chatMessages.put(ChatTab.GLOBAL, new ArrayList<>());
-        chatMessages.put(ChatTab.GUILD, new ArrayList<>());
-        chatMessages.put(ChatTab.PARTY, new ArrayList<>());
-
-        sentMessages.put(ChatTab.GLOBAL, new ArrayList<>());
-        sentMessages.put(ChatTab.GUILD, new ArrayList<>());
-        sentMessages.put(ChatTab.PARTY, new ArrayList<>());
 
         clearChatMessages(true);
 
@@ -69,103 +52,100 @@ public class ChatOverlay extends GuiNewChat {
 
     public void drawChat(int updateCounter) {
         if (mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
-            int chatSize = chatMessages.get(currentTab).size();
+            int chatSize = getCurrentTab().getCurrentMessages().size();
 
-            if (chatSize > 0) {
-                boolean flag = false;
+            getCurrentTab().checkNotifications();
 
-                if (getChatOpen()) flag = true;
+            boolean flag = false;
 
-                float chatScale = getChatScale();
-                int extraY = MathHelper.ceil((float)getChatWidth() / chatScale);
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(2.0F, 0.0F, 0.0F);
-                GlStateManager.scale(chatScale, chatScale, 1.0F);
-                int l = 0;
+            if (getChatOpen()) flag = true;
 
-                for (int i1 = 0; i1 + scrollPos < chatSize && i1 < getLineCount(); ++i1) {
-                    ChatLine chatline = chatMessages.get(currentTab).get(i1 + scrollPos);
+            float chatScale = getChatScale();
+            int extraY = MathHelper.ceil((float)getChatWidth() / chatScale);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(2.0F, 0.0F, 0.0F);
+            GlStateManager.scale(chatScale, chatScale, 1.0F);
+            int l = 0;
 
-                    if (chatline != null) {
-                        int j1 = updateCounter - chatline.getUpdatedCounter();
+            for (int i1 = 0; i1 + scrollPos < chatSize && i1 < getLineCount(); ++i1) {
+                ChatLine chatline = getCurrentTab().getCurrentMessages().get(i1 + scrollPos);
 
-                        if (j1 < 200 || flag) {
-                            double d0 = (double)j1 / 200.0D;
-                            d0 = 1.0D - d0;
-                            d0 = d0 * 10.0D;
-                            d0 = MathHelper.clamp(d0, 0.0D, 1.0D);
-                            d0 = d0 * d0;
-                            int l1 = (int)(255.0D * d0);
+                if (chatline != null) {
+                    int j1 = updateCounter - chatline.getUpdatedCounter();
 
-                            if (flag) {
-                                l1 = 255;
-                            }
+                    if (j1 < 200 || flag) {
+                        double d0 = (double)j1 / 200.0D;
+                        d0 = 1.0D - d0;
+                        d0 = d0 * 10.0D;
+                        d0 = MathHelper.clamp(d0, 0.0D, 1.0D);
+                        d0 = d0 * d0;
+                        int l1 = (int)(255.0D * d0);
 
-                            l1 = (int)((float)l1 * (mc.gameSettings.chatOpacity * 0.9F + 0.1F));
-                            ++l;
+                        if (flag) {
+                            l1 = 255;
+                        }
 
-                            if (l1 > 3) {
-                                int j2 = -i1 * 9;
-                                drawRect(-2, j2 - 9, extraY + 4, j2, l1 / 2 << 24);
-                                String s = ChatManager.renderMessage(chatline.getChatComponent()).getFormattedText();
-                                GlStateManager.enableBlend();
-                                mc.fontRenderer.drawStringWithShadow(s, 0.0F, (float)(j2 - 8), 16777215 + (l1 << 24));
-                                GlStateManager.disableAlpha();
-                                GlStateManager.disableBlend();
-                            }
+                        l1 = (int)((float)l1 * (mc.gameSettings.chatOpacity * 0.9F + 0.1F));
+                        ++l;
+
+                        if (l1 > 3) {
+                            int j2 = -i1 * 9;
+                            drawRect(-2, j2 - 9, extraY + 4, j2, l1 / 2 << 24);
+                            String s = ChatManager.renderMessage(chatline.getChatComponent()).getFormattedText();
+                            GlStateManager.enableBlend();
+                            mc.fontRenderer.drawStringWithShadow(s, 0.0F, (float)(j2 - 8), 16777215 + (l1 << 24));
+                            GlStateManager.disableAlpha();
+                            GlStateManager.disableBlend();
                         }
                     }
                 }
+            }
 
-                if (flag) {
+            if (flag) {
+                //render all buttons
 
-                    if(ChatConfig.INSTANCE.enableChatTabs) {
-                        //rendering the buttons
-                        ScreenRenderer.beginGL(2, 0);
-                        if (mouseOver == 1)
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), -2, 3, 31, 16);
-                        else
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 31, 16);
+                ScreenRenderer.beginGL(2, 0);
+                int offsetX = 0;
+                for(int i = 0; i < TabManager.getAvailableTabs().size(); i ++) {
+                    ChatTab tab = TabManager.getAvailableTabs().get(i);
 
-                        if (currentTab == ChatTab.GLOBAL)
-                            renderer.drawString("Global", 15, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (globalMention)
-                            renderer.drawString("Global", 15, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (globalNewMessages)
-                            renderer.drawString("Global", 15, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else
-                            renderer.drawString("Global", 15, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    //drawsTheBox
+                    int x1 = 16 + offsetX; int x2 = 49 + offsetX + 4;
 
-                        if (mouseOver == 2)
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 34, 3, 67, 16);
-                        else
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 34, 3, 67, 16);
+                    if(overTabId == i)
+                        renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), x1, 3, x2, 16);
+                    else
+                        renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), x1, 3, x2, 16);
 
-                        if (currentTab == ChatTab.GUILD)
-                            renderer.drawString("Guild", 51, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (guildMention)
-                            renderer.drawString("Guild", 51, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (guildNewMessages)
-                            renderer.drawString("Guild", 51, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else
-                            renderer.drawString("Guild", 51, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    tab.setCurrentXAxis(x1, x2);
 
-                        if (mouseOver == 3)
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), 70, 3, 103, 16);
-                        else
-                            renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), 70, 3, 103, 16);
+                    //draws the text
+                    if(currentTab == i)
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    else if(tab.hasMentions())
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    else if(tab.hasNewMessages())
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    else
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-                        if (currentTab == ChatTab.PARTY)
-                            renderer.drawString("Party", 87, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (partyMention)
-                            renderer.drawString("Party", 87, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else if (partyNewMessages)
-                            renderer.drawString("Party", 87, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                        else
-                            renderer.drawString("Party", 87, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    }
+                    //updates the offset
+                    offsetX+=40;
+                }
 
-                    //continuing chat render
+                //draw the + button
+                if(overTabId == -2)
+                    renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), -2, 3, 13, 16);
+                else
+                    renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 13, 16);
+
+                renderer.drawString("+", 6, 6, MinecraftChatColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+                ScreenRenderer.endGL();
+
+
+                //continuing chat render
+                if(chatSize > 0) {
                     int k2 = mc.fontRenderer.FONT_HEIGHT;
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
                     int l2 = chatSize * k2 + chatSize;
@@ -179,29 +159,15 @@ public class ChatOverlay extends GuiNewChat {
                         drawRect(0, -j3, 2, -j3 - k1, l3 + (k3 << 24));
                         drawRect(2, -j3, 1, -j3 - k1, 13421772 + (k3 << 24));
                     }
-
-
                 }
-
-                GlStateManager.popMatrix();
             }
+
+            GlStateManager.popMatrix();
         }
     }
 
     public void clearChatMessages(boolean clearSent) {
-        chatMessages.get(ChatTab.GLOBAL).clear();
-        chatMessages.get(ChatTab.PARTY).clear();
-        chatMessages.get(ChatTab.GUILD).clear();
-
-        if(clearSent) {
-            sentMessages.get(ChatTab.GLOBAL).clear();
-            sentMessages.get(ChatTab.PARTY).clear();
-            sentMessages.get(ChatTab.GUILD).clear();
-        }
-
-        chatMessages.get(ChatTab.GLOBAL).add(new ChatLine(mc.ingameGUI.getUpdateCounter(), new TextComponentString(" "), 0));
-        chatMessages.get(ChatTab.PARTY).add(new ChatLine(mc.ingameGUI.getUpdateCounter(), new TextComponentString(" "), 0));
-        chatMessages.get(ChatTab.GUILD).add(new ChatLine(mc.ingameGUI.getUpdateCounter(), new TextComponentString(" "), 0));
+        TabManager.getAvailableTabs().forEach(c -> c.clearMessages(clearSent));
     }
 
     public void printChatMessage(ITextComponent chatComponent) {
@@ -209,46 +175,35 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void printChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId) {
-        ChatTab c = setChatLine(chatComponent, chatLineId, mc.ingameGUI.getUpdateCounter(), false);
-        LOGGER.info("[CHAT/" + c.toString().toUpperCase() + "] " + chatComponent.getUnformattedText().replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
+        setChatLine(chatComponent, chatLineId, mc.ingameGUI.getUpdateCounter(), false);
+        LOGGER.info("[CHAT] " + chatComponent.getUnformattedText().replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
     }
 
-    private static ITextComponent lastMessage = null;
-    private  static int lastAmount = 2;
-
-    private ChatTab setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly) {
+    private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly) {
         if (chatLineId != 0) {
             deleteChatLine(chatLineId);
         }
 
-        ChatTab selectedTab = ChatTab.GLOBAL;
+        if(FrameworkManager.getEventBus().post(new PreChatEvent(chatComponent))) return;
 
-        if(chatComponent.getFormattedText().startsWith("§3[§r") && !chatComponent.getUnformattedText().endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
-        else if(chatComponent.getFormattedText().startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
+        boolean found = false;
+        for(ChatTab tab : TabManager.getAvailableTabs()) {
+            if(!tab.regexMatches(chatComponent) || tab.isLowPriority()) continue;
 
-        if(!ChatConfig.INSTANCE.enableChatTabs) selectedTab = ChatTab.GLOBAL;
-
-        if(selectedTab != currentTab) {
-            boolean m = ChatManager.proccessUserMention(chatComponent);
-            if(selectedTab == ChatTab.PARTY) {
-                if(m) partyMention = true;
-                else partyNewMessages = true;
-            }
-            if(selectedTab == ChatTab.GLOBAL) {
-                if(m) globalMention = true;
-                else globalNewMessages = true;
-            }
-            if(selectedTab == ChatTab.GUILD) {
-                if(m) guildMention = true;
-                else guildNewMessages = true;
-            }
+            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId);
+            found = true;
         }
 
+        if(!found)
+            TabManager.getAvailableTabs().stream().filter(tab -> tab.isLowPriority() && tab.regexMatches(chatComponent)).forEach(tab -> updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId));
+    }
+
+    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId) {
         //spam filter
-        if(lastMessage != null) {
-            if (ChatConfig.INSTANCE.blockChatSpamFilter && lastMessage.getFormattedText().equals(chatComponent.getFormattedText())) {
+        if(tab.getLastMessage() != null) {
+            if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(chatComponent.getFormattedText())) {
                 try {
-                    List<ChatLine> oldLines = chatMessages.get(selectedTab);
+                    List<ChatLine> oldLines = tab.getCurrentMessages();
 
                     if (oldLines != null && oldLines.size() > 0) {
                         ChatLine line = oldLines.get(0);
@@ -257,26 +212,25 @@ public class ChatOverlay extends GuiNewChat {
                         if (lastComponent.getUnformattedComponentText().matches(" \\[\\d*x]")) {
                             chatLine.getSiblings().remove(lastComponent);
                         }
-                        ITextComponent counter = new TextComponentString(" [" + lastAmount++ + "x]");
+                        ITextComponent counter = new TextComponentString(" [" + (tab.getLastAmount()) + "x]");
                         counter.getStyle().setColor(TextFormatting.GRAY);
                         ((ITextComponent) ReflectionFields.ChatLine_lineString.getValue(line)).appendSibling(counter);
 
+                        tab.updateLastMessageAndAmount(chatComponent.createCopy(), tab.getLastAmount()+1);
                         refreshChat();
-                        return selectedTab;
+                        return;
                     }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                } catch (Exception ex) { ex.printStackTrace(); }
             } else {
-                lastAmount = 2;
+                tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
             }
+        }else{
+            tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
         }
-        lastMessage = chatComponent.createCopy();
 
+
+        //message processor
         Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
-        if(c.b) return selectedTab;
-
-        if(FrameworkManager.getEventBus().post(new PreChatEvent(chatComponent))) return selectedTab;
 
         chatComponent = c.a;
         //continue mc code
@@ -291,14 +245,15 @@ public class ChatOverlay extends GuiNewChat {
                 scroll(1);
             }
 
-            chatMessages.get(selectedTab).add(0, new ChatLine(updateCounter, itextcomponent, chatLineId));
+            tab.addMessage(new ChatLine(updateCounter, itextcomponent, chatLineId));
         }
 
-        while (chatMessages.get(selectedTab).size() > 100) {
-            chatMessages.get(selectedTab).remove(chatMessages.get(selectedTab).size() - 1);
-        }
+        //push mention
+        if(ChatManager.proccessUserMention(chatComponent)) tab.pushMention();
 
-        return selectedTab;
+        while (tab.getCurrentMessages().size() > 100) {
+            tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
+        }
     }
 
     public void refreshChat() {
@@ -306,18 +261,16 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public List<String> getSentMessages() {
-        return sentMessages.get(currentTab);
+        return getCurrentTab().getSentMessages();
     }
 
     public void addToSentMessages(String message) {
-        ChatTab selectedTab = ChatTab.GLOBAL;
+        getCurrentTab().addSentMessage(message);
+    }
 
-        if(message.startsWith("§3§3[§r") && !message.endsWith("has just logged in!")) selectedTab = ChatTab.GUILD;
-        else if(message.startsWith("§7[§r§e")) selectedTab = ChatTab.PARTY;
-
-        if(!ChatConfig.INSTANCE.enableChatTabs) selectedTab = ChatTab.GLOBAL;
-
-        sentMessages.get(selectedTab).add(message);
+    public void switchTabs() {
+        if(currentTab+1 >= TabManager.getAvailableTabs().size()) currentTab = 0;
+        else currentTab+=1;
     }
 
     public void resetScroll() {
@@ -327,7 +280,7 @@ public class ChatOverlay extends GuiNewChat {
 
     public void scroll(int amount) {
         scrollPos += amount;
-        int i = chatMessages.get(currentTab).size();
+        int i = getCurrentTab().getCurrentMessages().size();
 
         if (scrollPos > i - getLineCount()) {
             scrollPos = i - getLineCount();
@@ -353,21 +306,30 @@ public class ChatOverlay extends GuiNewChat {
             j = MathHelper.floor((float)j / f);
             k = MathHelper.floor((float)k / f);
 
-            if(ChatConfig.INSTANCE.enableChatTabs) {
-                if (j >= -2 && j <= 31 && k >= -18 && k <= -5) mouseOver = 1;
-                else if (j >= 34 && j <= 67 && k >= -18 && k <= -5) mouseOver = 2;
-                else if (j >= 70 && j <= 103 && k >= -18 && k <= -5) mouseOver = 3;
-                else mouseOver = 0;
+            if(j >= -2 && j <= 13 && k >= -18 && k <= -5) {
+                overTabId = -2;
+                return null;
+            }else{
+                for(int c = 0; c < TabManager.getAvailableTabs().size(); c++) {
+                    Pair<Integer, Integer> axis = TabManager.getAvailableTabs().get(c).getCurrentXAxis();
+                    if(j >= axis.a && j <= axis.b && k >= -18 && k <= -5) {
+                        overTabId = c;
+                        return null;
+                    }
+                    overTabId = -1;
+                }
             }
 
+
+
             if (j >= 0 && k >= 0) {
-                int l = Math.min(getLineCount(), chatMessages.get(currentTab).size());
+                int l = Math.min(getLineCount(), getCurrentTab().getCurrentMessages().size());
 
                 if (j <= MathHelper.floor((float)getChatWidth() / getChatScale()) && k < mc.fontRenderer.FONT_HEIGHT * l + l) {
                     int i1 = k / mc.fontRenderer.FONT_HEIGHT + scrollPos;
 
-                    if (i1 >= 0 && i1 < chatMessages.get(currentTab).size()) {
-                        ChatLine chatline = chatMessages.get(currentTab).get(i1);
+                    if (i1 >= 0 && i1 < getCurrentTab().getCurrentMessages().size()) {
+                        ChatLine chatline = getCurrentTab().getCurrentMessages().get(i1);
                         int j1 = 0;
 
                         for (ITextComponent itextcomponent : chatline.getChatComponent()) {
@@ -397,7 +359,7 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void deleteChatLine(int id) {
-        chatMessages.get(currentTab).removeIf(chatline -> chatline.getChatLineID() == id);
+        getCurrentTab().getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id);
     }
 
     public int getChatWidth() {
@@ -428,22 +390,17 @@ public class ChatOverlay extends GuiNewChat {
         return chat;
     }
 
-    public void setCurrentTab(ChatTab tab) {
-        currentTab = tab;
-
-        if(tab == ChatTab.GLOBAL) { globalNewMessages = false; globalMention = false; }
-        else if(tab == ChatTab.PARTY) { partyNewMessages = false; partyMention = false; }
-        else if(tab == ChatTab.GUILD) { guildNewMessages = false; guildMention = false; }
-
+    public void setCurrentTab(int tabId) {
+        currentTab = tabId;
         scroll(0);
     }
 
     public ChatTab getCurrentTab() {
-        return currentTab;
+        return TabManager.getTabById(currentTab);
     }
 
-    public int getMouseOver() {
-        return mouseOver;
+    public int getOverTabId() {
+        return overTabId;
     }
 
 

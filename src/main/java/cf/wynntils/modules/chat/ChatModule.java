@@ -8,10 +8,18 @@ import cf.wynntils.modules.chat.events.ClientEvents;
 @ModuleInfo(name = "chat", displayName = "Chat")
 public class ChatModule extends Module {
 
+    private static ChatModule module;
+
     public void onEnable() {
+        module = this;
+
         registerSettings(ChatConfig.class);
 
         registerEvents(new ClientEvents());
+    }
+
+    public static ChatModule getModule() {
+        return module;
     }
 
 }

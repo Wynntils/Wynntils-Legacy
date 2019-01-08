@@ -3,8 +3,9 @@ package cf.wynntils.modules.chat.configs;
 import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
-import cf.wynntils.modules.chat.enums.ChatTab;
-import cf.wynntils.modules.chat.overlays.ChatOverlay;
+import cf.wynntils.modules.chat.instances.ChatTab;
+
+import java.util.ArrayList;
 
 @SettingsInfo(name = "chat", displayPath = "Chat")
 public class ChatConfig extends SettingsClass {
@@ -19,15 +20,16 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Chat Tabs", description = "Should the chat be separated into three chat tabs/channels? (global, guild, party)")
-    public boolean enableChatTabs = true;
-
     @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft info messages be filtered. (Messages starting with §4[Info]§f will no longer appear)")
     public boolean filterWynncraftInfo = true;
 
+    public boolean registeredDefaultTabs = false;
+
+    public ArrayList<ChatTab> available_tabs = new ArrayList<>();
+
     @Override
     public void onSettingChanged(String name) {
-        if(!enableChatTabs) ChatOverlay.getChat().setCurrentTab(ChatTab.GLOBAL);
+
     }
 
 }

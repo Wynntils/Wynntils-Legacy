@@ -5,7 +5,6 @@ import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Pair;
 import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.chat.configs.ChatConfig;
-import cf.wynntils.modules.chat.enums.ChatTab;
 import cf.wynntils.modules.chat.managers.ChatManager;
 import cf.wynntils.modules.chat.overlays.ChatGUI;
 import cf.wynntils.modules.chat.overlays.ChatOverlay;
@@ -50,8 +49,7 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         }
 
-        if(ChatOverlay.getChat().getCurrentTab() == ChatTab.GUILD) e.setMessage("/g " + e.getMessage());
-        else if(ChatOverlay.getChat().getCurrentTab() == ChatTab.PARTY) e.setMessage("/p " + e.getMessage());
+        if(!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty()) e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());
     }
 
 }
