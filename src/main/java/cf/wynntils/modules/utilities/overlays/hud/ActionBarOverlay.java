@@ -10,7 +10,6 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
-import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
@@ -28,9 +27,6 @@ public class ActionBarOverlay extends Overlay {
 
 //    @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
-
-    @Setting(displayName = "Coords", description = "Should coords display in action bar")
-    public boolean actionBarCoords = true;
 
     public ActionBarOverlay() {
         super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
@@ -59,61 +55,30 @@ public class ActionBarOverlay extends Overlay {
 
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
-            if (OverlayConfig.INSTANCE.overwrite) {
-                if (lastActionBar.contains("%")) {
-                    String[] spaces = lastActionBar.split(" ");
-                    middle = spaces[7] + " " + spaces[8];
-                } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
-                    String[] spaces = lastActionBar.split(" ");
-                    middle = spaces[5].replace("§n", "").replace("§r", "");
-                    preference = true;
-                } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
-                    String[] spaces = lastActionBar.split(" ");
-                    middle = spaces[5];
-                } else if (actionBarCoords) {
-                    l = "§7" + (int) mc.player.posX;
-                    middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
-                    r = "§7" + (int) mc.player.posZ;
-                } else {
-                    middle = "";
-                }
-                if (preference || !renderItemName(new ScaledResolution(mc))) {
-//                drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
-                    drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                    drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                    drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                }
+            if (lastActionBar.contains("%")) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[7] + " " + spaces[8];
+            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[5].replace("§n", "").replace("§r", "");
+                preference = true;
+            } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
+                String[] spaces = lastActionBar.split(" ");
+                middle = spaces[5];
+            } else if (OverlayConfig.INSTANCE.actionBarCoordinates) {
+                l = "§7" + (int) mc.player.posX;
+                middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
+                r = "§7" + (int) mc.player.posZ;
             } else {
-                y = -10;
-                if (lastActionBar.contains("%")) {
-                    String[] spaces = lastActionBar.split(" ");
-                    extra = spaces[7] + " " + spaces[8];
-                } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
-                    String[] spaces = lastActionBar.split(" ");
-                    extra = spaces[5].replace("§n", "").replace("§r", "");
-                    preference = true;
-                } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
-                    String[] spaces = lastActionBar.split(" ");
-                    extra = spaces[5];
-                } else {
-                    extra = "";
-                }
-                if (actionBarCoords) {
-                    l = "§7" + (int) mc.player.posX;
-                    middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
-                    r = "§7" + (int) mc.player.posZ;
-                } else {
-                    middle = "";
-                }
+                middle = "";
+            }
+            if (preference || !renderItemName(new ScaledResolution(mc))) {
+//            drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
                 drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
                 drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
                 drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                if (preference || !renderItemName(new ScaledResolution(mc))) {
-                    drawString(extra, 0, -10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                }
             }
         }
-
     }
 
     private static String getPlayerDirection(float yaw) {
@@ -185,6 +150,4 @@ public class ActionBarOverlay extends Overlay {
         }
         return false;
     }
-
-
 }

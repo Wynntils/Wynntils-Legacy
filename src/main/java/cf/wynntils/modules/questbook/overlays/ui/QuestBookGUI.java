@@ -20,8 +20,6 @@ import cf.wynntils.modules.questbook.enums.QuestBookPage;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
-import cf.wynntils.modules.utilities.configs.OverlayConfig;
-import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
