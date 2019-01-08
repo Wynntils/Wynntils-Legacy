@@ -18,9 +18,8 @@ public class TabManager {
             availableTabs.add(new ChatTab("Guild", "(&3\\[(.*?)\\])|(&3You were not in the territory)", "/g", false));
             availableTabs.add(new ChatTab("Party", "(&7\\[&r&e(.*?)\\])|(&eYou are not in a party!)", "/p", false));
 
-            //todo this thing need to work
-            //ChatConfig.INSTANCE.registeredDefaultTabs = true;
-            //ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+            ChatConfig.INSTANCE.registeredDefaultTabs = true;
+            ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
         }
     }
 

@@ -5,14 +5,11 @@ import cf.wynntils.core.framework.instances.ModuleContainer;
 import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
-import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -26,7 +23,6 @@ public class SettingsManager {
     static {
         gson = new GsonBuilder()
             .setPrettyPrinting()
-            .addSerializationExclusionStrategy(new Exclude())
             .create();
     }
 
@@ -69,20 +65,6 @@ public class SettingsManager {
 
         InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8);
         return gson.fromJson(new JsonReader(reader), obj.getClass());
-    }
-    
-    private static class Exclude implements ExclusionStrategy {
-
-        @Override
-        public boolean shouldSkipField(FieldAttributes f) {
-            return !f.hasModifier(Modifier.PUBLIC);
-        }
-
-        @Override
-        public boolean shouldSkipClass(Class<?> clazz) {
-            return false;
-        }
-        
     }
 
 }
