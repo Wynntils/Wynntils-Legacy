@@ -33,7 +33,7 @@ public class ActionBarOverlay extends Overlay {
     public boolean actionBarCoords = true;
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, true, OverlayGrowFrom.TOP_CENTRE);
+        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Override

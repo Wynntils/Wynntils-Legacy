@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class LevelingOverlay extends Overlay {
 
     public LevelingOverlay() {
-        super("Leveling Helper", 80, 10, true, 0.5f, 1.0f, 0, -58, true, OverlayGrowFrom.TOP_CENTRE);
+        super("Leveling Helper", 80, 10, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})

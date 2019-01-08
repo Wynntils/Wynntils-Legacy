@@ -32,7 +32,7 @@ public class UpdateOverlay extends Overlay {
     private static CustomColor no = CustomColor.fromString("fd8080",1);
 
     public UpdateOverlay() {
-        super("Update", 20, 20, true, 1f, 0f, 0, 0, false, null);
+        super("Update", 20, 20, true, 1f, 0f, 0, 0, null);
     }
 
     static boolean disappear = false;

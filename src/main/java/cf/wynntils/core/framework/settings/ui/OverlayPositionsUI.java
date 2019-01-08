@@ -89,7 +89,7 @@ public class OverlayPositionsUI extends UI {
             for (String settingsName : moduleContainer.getRegisteredSettings().keySet()) {
                 SettingsContainer settingsContainer = moduleContainer.getRegisteredSettings().get(settingsName);
                 if (settingsContainer.getHolder() instanceof Overlay) {
-                    if (((Overlay) settingsContainer.getHolder()).configurable) {
+                    if (((Overlay) settingsContainer.getHolder()).growth != null) {
                         registeredOverlaySettings.add(new OverlayButton(settingsContainer));
                     }
                 }

@@ -138,6 +138,19 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if (overlay.overrideElements.length != 0) {
+                        boolean contained = false;
+                        for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {
+                            if (e.getType() == type) {
+                                contained = true;
+                                break;
+                            }
+                        }
+                        if (contained)
+                            e.setCanceled(true);
+                        else
+                            continue;
+                    }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
@@ -156,6 +169,19 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if (overlay.overrideElements.length != 0) {
+                        boolean contained = false;
+                        for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {
+                            if (e.getType() == type) {
+                                contained = true;
+                                break;
+                            }
+                        }
+                        if (contained)
+                            e.setCanceled(true);
+                        else
+                            continue;
+                    }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());

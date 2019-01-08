@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ExpBarOverlay extends Overlay{
     public ExpBarOverlay() {
-        super("Experience Bar", 182, 7, true, 0.5f, 1.0f, 0, -29, true, OverlayGrowFrom.MIDDLE_CENTRE);
+        super("Experience Bar", 182, 7, true, 0.5f, 1.0f, 0, -29, OverlayGrowFrom.MIDDLE_CENTRE, RenderGameOverlayEvent.ElementType.JUMPBAR, RenderGameOverlayEvent.ElementType.EXPERIENCE);
     }
 
 
@@ -50,21 +50,16 @@ public class ExpBarOverlay extends Overlay{
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-
-        if ((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) && OverlayConfig.Exp.INSTANCE.enabled) {
-            event.setCanceled(true);
-
-            switch (OverlayConfig.Exp.INSTANCE.expTexture) {
-                case Wynn:
-                    drawDefaultBar(0, 5, 0, 9);
-                    break;
-                case a: drawDefaultBar(0,5,10,19);
-                    break;
-                case b: drawDefaultBar(0,5,20,29);
-                    break;
-                case c: drawDefaultBar(0,5,30,39);
-                    break;
-            }
+        switch (OverlayConfig.Exp.INSTANCE.expTexture) {
+            case Wynn:
+                drawDefaultBar(0, 5, 0, 9);
+                break;
+            case a: drawDefaultBar(0,5,10,19);
+                break;
+            case b: drawDefaultBar(0,5,20,29);
+                break;
+            case c: drawDefaultBar(0,5,30,39);
+                break;
         }
     }
 
