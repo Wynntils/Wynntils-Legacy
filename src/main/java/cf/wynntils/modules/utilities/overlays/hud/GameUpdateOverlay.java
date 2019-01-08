@@ -6,6 +6,7 @@ import cf.wynntils.core.framework.overlays.Overlay;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.framework.settings.annotations.Setting;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -17,7 +18,7 @@ import java.util.List;
 public class GameUpdateOverlay extends Overlay {
 
     public GameUpdateOverlay() {
-        super("Game Update Ticker Overlay", 20, 20, true, 1f, 1f, -3, -10);
+        super("Game Update Ticker", 100, 20, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
     @Setting(displayName = "Message Limit", description = "The maximum amount of messages to display in the game update list")
@@ -58,7 +59,7 @@ public class GameUpdateOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled)
+        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE)
             return;
         List<MessageContainer> updatedList = new LinkedList<>();
         for (MessageContainer message : messageQueue) {
@@ -68,20 +69,21 @@ public class GameUpdateOverlay extends Overlay {
             updatedList.add(message);
         }
         messageQueue = updatedList;
+        staticSize.y = LINE_HEIGHT * OverlayConfig.GameUpdate.INSTANCE.messageLimit;
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || !OverlayConfig.GameUpdate.INSTANCE.enabled || !(event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR))
+        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE)
             return;
 
         int lines = 0;
         for (MessageContainer message : new LinkedList<>(messageQueue)) {
             if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
                 if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.getMessage(), OverlayConfig.GameUpdate.INSTANCE.offsetX, (OverlayConfig.GameUpdate.INSTANCE.offsetY - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), 0, (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 } else {
-                    drawString(message.getMessage(), OverlayConfig.GameUpdate.INSTANCE.offsetX, OverlayConfig.GameUpdate.INSTANCE.offsetY - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), 0, 0 - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 }
                 lines++;
             } else
@@ -90,7 +92,7 @@ public class GameUpdateOverlay extends Overlay {
     }
 
     public static boolean queueMessage(String message) {
-        if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
+        if (!Reference.onWorld)
             return false;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
@@ -107,8 +109,6 @@ public class GameUpdateOverlay extends Overlay {
     }
 
     public static void resetMessages() {
-        if (!Reference.onWorld || !OverlayConfig.GameUpdate.INSTANCE.enabled)
-            return;
         messageQueue.clear();
     }
 
@@ -129,7 +129,7 @@ public class GameUpdateOverlay extends Overlay {
         }
 
         public void updateTime() {
-            time = BubblesOverlay.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
+            time = Utils.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
         }
     }
 }

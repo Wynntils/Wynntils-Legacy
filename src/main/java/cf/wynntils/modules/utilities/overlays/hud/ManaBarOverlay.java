@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ManaBarOverlay extends Overlay {
     public ManaBarOverlay() {
-        super("Mana Bar", 20, 20, true, 0.5f, 1.0f, 10, -38);
+        super("Mana Bar", 81, 21, true, 0.5f, 1.0f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT, RenderGameOverlayEvent.ElementType.FOOD, RenderGameOverlayEvent.ElementType.HEALTHMOUNT);
     }
 
 //    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
@@ -60,22 +60,18 @@ public class ManaBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if ((event.getType() == RenderGameOverlayEvent.ElementType.FOOD) || (event.getType() == RenderGameOverlayEvent.ElementType.HEALTHMOUNT) && OverlayConfig.Mana.INSTANCE.enabled) {
-            event.setCanceled(true);
-
-            switch (OverlayConfig.Mana.INSTANCE.manaTexture) {
-                case Wynn:
-                    drawDefaultBar(-1, 8, 0, 17);
-                    break;
-                case a: drawDefaultBar(-1,7,18,33);
-                    break;
-                case b: drawDefaultBar(-1,8,34,51);
-                    break;
-                case c: drawDefaultBar(-1,7,52,67);
-                    break;
-                case d: drawDefaultBar(-1,7,68,83);
-                    break;
-            }
+        switch (OverlayConfig.Mana.INSTANCE.manaTexture) {
+            case Wynn:
+                drawDefaultBar(-1, 8, 0, 17);
+                break;
+            case a: drawDefaultBar(-1,7,18,33);
+                break;
+            case b: drawDefaultBar(-1,8,34,51);
+                break;
+            case c: drawDefaultBar(-1,7,52,67);
+                break;
+            case d: drawDefaultBar(-1,7,68,83);
+                break;
         }
     }
 

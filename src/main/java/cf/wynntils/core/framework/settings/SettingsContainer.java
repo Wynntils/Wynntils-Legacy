@@ -26,13 +26,22 @@ public class SettingsContainer {
         this.m = m;
         this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
-        for(Field f : holder.getClass().getDeclaredFields())
-            if(!Modifier.isStatic(f.getModifiers()))
+        for(Field f : holder.getClass().getDeclaredFields()) {
+            if (!Modifier.isStatic(f.getModifiers())) {
                 fields.add(f);
+            }
+        }
+        if (holder instanceof Overlay) {
+            for(Field f : holder.getClass().getSuperclass().getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers())) {
+                    fields.add(f);
+                }
+            }
+        }
 
-        try{
+        try {
             tryToLoad();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -80,8 +89,16 @@ public class SettingsContainer {
                 save = true;
                 continue;
             }
-
             setValue(f, f.get(newH), false);
+        }
+        if (holder instanceof Overlay) {
+            for(Field f : newH.getClass().getSuperclass().getDeclaredFields()) {
+                if(!fieldsName.contains(f.getName())) {
+                    save = true;
+                    continue;
+                }
+                setValue(f, f.get(newH), false);
+            }
         }
 
         if(save)

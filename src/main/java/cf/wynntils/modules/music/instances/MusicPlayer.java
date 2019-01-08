@@ -35,7 +35,7 @@ public class MusicPlayer {
         if(currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
 
         // Queue the music change to the game update ticker
-        if (OverlayConfig.GameUpdate.INSTANCE.enabled && OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange) {
+        if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange) {
             GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
                     .replace("%np%", f.getName().replace(".mp3", "")));
         }

@@ -134,7 +134,7 @@ public abstract class UI extends GuiScreen {
                 UIElement uie = (UIElement) f.get(ui);
                 if (uie != null)
                     ui.UIElements.add(uie);
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
     }
 

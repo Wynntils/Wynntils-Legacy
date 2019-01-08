@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class HealthBarOverlay extends Overlay {
 
     public HealthBarOverlay() {
-        super("Health Bar", 20, 20, true, 0.5f, 1.0f, -10, -38);
+        super("Health Bar", 81, 21, true, 0.5f, 1.0f, -10, -38, OverlayGrowFrom.MIDDLE_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
 //    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
@@ -52,22 +52,18 @@ public class HealthBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && OverlayConfig.Health.INSTANCE.enabled) {
-            event.setCanceled(true);
-
-            switch (OverlayConfig.Health.INSTANCE.healthTexture) {
-                case Wynn:
-                    drawDefaultBar(-1, 8, 0, 17);
-                    break;
-                case a: drawDefaultBar(-1,7,18,33);
-                    break;
-                case b: drawDefaultBar(-1,8,34,51);
-                    break;
-                case c: drawDefaultBar(-1,7,52,67);
-                    break;
-                case d: drawDefaultBar(-1,7,68,83);
-                    break;
-            }
+        switch (OverlayConfig.Health.INSTANCE.healthTexture) {
+            case Wynn:
+                drawDefaultBar(-1, 8, 0, 17);
+                break;
+            case a: drawDefaultBar(-1,7,18,33);
+                break;
+            case b: drawDefaultBar(-1,8,34,51);
+                break;
+            case c: drawDefaultBar(-1,7,52,67);
+                break;
+            case d: drawDefaultBar(-1,7,68,83);
+                break;
         }
     }
 

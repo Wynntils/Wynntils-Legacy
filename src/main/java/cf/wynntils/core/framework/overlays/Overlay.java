@@ -17,17 +17,22 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public transient String displayName;
     public transient Point staticSize;
     public transient boolean visible;
+    public transient OverlayGrowFrom growth;
+    public transient RenderGameOverlayEvent.ElementType[] overrideElements;
+
     public boolean active = true;
     public Position position = new Position();
 
-    public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY) {
+    public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, OverlayGrowFrom growth, RenderGameOverlayEvent.ElementType... overrideElements) {
         this.displayName = displayName;
         this.staticSize = new Point(sizeX,sizeY);
         this.visible = visible;
+        this.overrideElements = overrideElements;
         this.position.anchorX = anchorX;
         this.position.anchorY = anchorY;
         this.position.offsetX = offsetX;
         this.position.offsetY = offsetY;
+        this.growth = growth;
         this.position.refresh(screen);
     }
 
@@ -49,5 +54,11 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     @Override
     public void onSettingChanged(String name) {
 
+    }
+
+    public enum OverlayGrowFrom {
+        TOP_LEFT,    TOP_CENTRE,    TOP_RIGHT,
+        MIDDLE_LEFT, MIDDLE_CENTRE, MIDDLE_RIGHT,
+        BOTTOM_LEFT, BOTTOM_CENTRE, BOTTOM_RIGHT
     }
 }

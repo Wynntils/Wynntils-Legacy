@@ -9,7 +9,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class GammaOverlay extends Overlay {
 
     public GammaOverlay() {
-        super("Gamma",20,20,true,1.0f,0.0f,-40,-5);
+        super("Gamma",40,11,true,1.0f,0.0f,-40,0, OverlayGrowFrom.MIDDLE_CENTRE);
     }
 
     @Override

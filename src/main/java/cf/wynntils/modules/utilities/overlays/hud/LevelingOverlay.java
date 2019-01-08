@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class LevelingOverlay extends Overlay {
 
     public LevelingOverlay() {
-        super("Leveling Helper", 20, 20, true, 0.5f, 1.0f, 0, -58);
+        super("Leveling Helper", 80, 10, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})
@@ -34,9 +34,10 @@ public class LevelingOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && getPlayerInfo().getCurrentClass() != ClassType.NONE && OverlayConfig.Leveling.INSTANCE.enabled) {
+        if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && getPlayerInfo().getCurrentClass() != ClassType.NONE) {
             String text = OverlayConfig.Leveling.INSTANCE.levelingText.replace("%actual%", "" + getPlayerInfo().getCurrentXP()).replace("%max%", "" + getPlayerInfo().getXpNeededToLevelUp()).replace("%percent%", getPlayerInfo().getCurrentXPAsPercentage());
             drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Leveling.INSTANCE.textShadow);
+            staticSize.x = (int) getStringWidth(text);
         }
     }
 
