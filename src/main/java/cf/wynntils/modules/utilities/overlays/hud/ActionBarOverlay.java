@@ -55,6 +55,15 @@ public class ActionBarOverlay extends Overlay {
 
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
+            if (OverlayConfig.INSTANCE.prioritizeCoordinates) {
+                l = "§7" + (int) mc.player.posX;
+                middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
+                r = "§7" + (int) mc.player.posZ;
+                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
+                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                return;
+            }
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[7] + " " + spaces[8];

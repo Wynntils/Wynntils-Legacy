@@ -16,6 +16,9 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display the current coordinates when there is nothing else to show")
     public boolean actionBarCoordinates = true;
 
+    @Setting(displayName = "Force Coordinates", description = "Should the coordinates in the action bar always be shown")
+    public boolean prioritizeCoordinates = false;
+
     @SettingsInfo(name = "health_settings", displayPath = "Overlays/Health")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
