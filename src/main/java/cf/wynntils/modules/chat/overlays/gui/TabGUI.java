@@ -79,9 +79,9 @@ public class TabGUI extends GuiScreen {
         }
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 90, y - 85, 10, 10, 0xFFFFFF));
-        nameLabel.addLine("Name");
+        nameLabel.addLine("Name §c*");
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 90, y - 40, 10, 10, 0xFFFFFF));
-        regexLabel.addLine("Regex");
+        regexLabel.addLine("Regex §c*");
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x + 10, y - 85, 10, 10, 0xFFFFFF));
         autoCommand.addLine("Auto Command");
     }
