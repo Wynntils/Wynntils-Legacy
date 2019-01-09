@@ -41,6 +41,7 @@ public class TabManager {
     }
 
     public static ChatTab getTabById(int id) {
+        if(availableTabs.get(id) == null) return getTabById(id-1);
         return availableTabs.get(id);
     }
 
