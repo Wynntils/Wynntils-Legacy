@@ -7,6 +7,7 @@ import net.minecraft.client.gui.*;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 
 public class TabGUI extends GuiScreen {
@@ -72,6 +73,8 @@ public class TabGUI extends GuiScreen {
             regexTextField.setText(tab.getRegex().replace("§", "&"));
             lowPriority.setIsChecked(tab.isLowPriority());
             autoCommandField.setText(tab.getAutoCommand());
+
+            checkIfRegexIsValid();
         }
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 90, y - 85, 10, 10, 0xFFFFFF));
@@ -89,9 +92,9 @@ public class TabGUI extends GuiScreen {
         if(button == closeButton) mc.displayGuiScreen(new ChatGUI());
         else if(button == saveButton) {
             if (id == -2)
-                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText().substring(2), autoCommandField.getText(), lowPriority.isChecked()));
+                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked()));
             else
-                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText().replace("§a", "").replace("§c", ""), autoCommandField.getText(), lowPriority.isChecked());
+                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked());
             mc.displayGuiScreen(new ChatGUI());
         }else if(button == deleteButton) {
             mc.displayGuiScreen(new GuiYesNo((result, cc) -> {
@@ -132,6 +135,17 @@ public class TabGUI extends GuiScreen {
 
         nameTextField.textboxKeyTyped(typedChar, keyCode);
         autoCommandField.textboxKeyTyped(typedChar, keyCode);
-        regexTextField.textboxKeyTyped(typedChar, keyCode);
+        if(regexTextField.textboxKeyTyped(typedChar, keyCode)) checkIfRegexIsValid();
+    }
+
+    boolean validRegex = false;
+
+    public void checkIfRegexIsValid() {
+        try{
+            Pattern.compile(regexTextField.getText());
+            validRegex = true;
+        }catch (Exception ignored) { }
+
+        saveButton.enabled = validRegex;
     }
 }
