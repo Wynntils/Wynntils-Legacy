@@ -10,7 +10,7 @@ public class TabManager {
 
     private static ArrayList<ChatTab> availableTabs;
 
-    static {
+    public static void startTabs() {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
 
         if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
@@ -28,8 +28,8 @@ public class TabManager {
         saveConfigs();
     }
 
-    public int deleteTab(int id) {
-        if(availableTabs.size() > id) return 0;
+    public static int deleteTab(int id) {
+        if(id > availableTabs.size()) return 0;
 
         availableTabs.remove(id);
         saveConfigs();
@@ -42,6 +42,11 @@ public class TabManager {
 
     public static ChatTab getTabById(int id) {
         return availableTabs.get(id);
+    }
+
+    public static void updateTab(int id, String name, String regex, String autoCommand, boolean lowPriority) {
+        availableTabs.get(id).update(name, regex.replace("&", "§"), autoCommand, lowPriority);
+        saveConfigs();
     }
 
     private static void saveConfigs() {

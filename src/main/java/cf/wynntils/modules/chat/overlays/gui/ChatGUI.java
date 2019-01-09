@@ -1,5 +1,6 @@
-package cf.wynntils.modules.chat.overlays;
+package cf.wynntils.modules.chat.overlays.gui;
 
+import cf.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.GuiChat;
 import org.lwjgl.input.Keyboard;
 
@@ -16,8 +17,11 @@ public class ChatGUI extends GuiChat {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if(ChatOverlay.getChat().getOverTabId() > -1) ChatOverlay.getChat().setCurrentTab(ChatOverlay.getChat().getOverTabId());
-        else if(ChatOverlay.getChat().getOverTabId() == -2) //todo open the gui for creating a new chat
+        if(ChatOverlay.getChat().getOverTabId() > -1) {
+            if(mouseButton == 1) mc.displayGuiScreen(new TabGUI(ChatOverlay.getChat().getOverTabId()));
+            else ChatOverlay.getChat().setCurrentTab(ChatOverlay.getChat().getOverTabId());
+        }
+        else if(ChatOverlay.getChat().getOverTabId() == -2) mc.displayGuiScreen(new TabGUI(-2));
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }

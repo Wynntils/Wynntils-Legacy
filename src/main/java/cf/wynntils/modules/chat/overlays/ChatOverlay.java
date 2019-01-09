@@ -403,5 +403,9 @@ public class ChatOverlay extends GuiNewChat {
         return overTabId;
     }
 
+    public int getCurrentTabId() {
+        return currentTab;
+    }
+
 
 }
