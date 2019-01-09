@@ -21,6 +21,11 @@ public class TabManager {
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
             ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
         }
+
+        if(availableTabs.size() >= 2 && availableTabs.get(1).getRegex().equals("(&3\\[(.*?)\\])|(&3You were not in the territory)")) {
+            ChatTab tab = availableTabs.get(1);
+            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", "/g", false);
+        }
     }
 
     public static void registerNewTab(ChatTab tab) {
