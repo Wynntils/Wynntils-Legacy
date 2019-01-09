@@ -7,6 +7,7 @@ import net.minecraft.client.gui.*;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 
@@ -118,6 +119,26 @@ public class TabGUI extends GuiScreen {
         if(nameTextField != null) nameTextField.drawTextBox();
         if(regexTextField != null) regexTextField.drawTextBox();
         if(autoCommandField != null) autoCommandField.drawTextBox();
+
+        if(mouseX >= nameTextField.x && mouseX < nameTextField.x + nameTextField.width && mouseY >= nameTextField.y && mouseY < nameTextField.y + nameTextField.height)
+            drawHoveringText(Arrays.asList("§a§lName", "§7This is how your tab", "§7will be named", "", "§cRequired"), mouseX, mouseY);
+
+        if(mouseX >= regexTextField.x && mouseX < regexTextField.x + regexTextField.width && mouseY >= regexTextField.y && mouseY < regexTextField.y + regexTextField.height)
+            drawHoveringText(Arrays.asList("§a§lRegEx", "§7This will parse the chat", " ", "§aYou can learn RegEx at", "§6https://regexr.com/", "", "§cRequired"), mouseX, mouseY);
+
+        if(mouseX >= autoCommandField.x && mouseX < autoCommandField.x + autoCommandField.width && mouseY >= autoCommandField.y && mouseY < autoCommandField.y + autoCommandField.height)
+            drawHoveringText(Arrays.asList("§a§lAuto Command", "§7This will automatically", "§7put this command before", "§7any message.", "", "§cOptional"), mouseX, mouseY);
+
+        if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
+            drawHoveringText(Arrays.asList("§a§lLow priority", "§7If marked, if any other", "§7tab matches a message", "§7it will not be added to", "§7this one.", "", "§cOptional"), mouseX, mouseY);
+
+        if(saveButton.enabled && mouseX >= saveButton.x && mouseX < saveButton.x + saveButton.width && mouseY >= saveButton.y && mouseY < saveButton.y + saveButton.height)
+            drawHoveringText(Arrays.asList("§a§lSave", "§7Click here to save", "§7this chat tab."), mouseX, mouseY);
+
+        if(deleteButton.enabled && mouseX >= deleteButton.x && mouseX < deleteButton.x + deleteButton.width && mouseY >= deleteButton.y && mouseY < deleteButton.y + deleteButton.height)
+            drawHoveringText(Arrays.asList("§4§lDelete", "§7Click here to delete", "§7this chat tab.", "", "§cIrreversible action"), mouseX, mouseY);
+
+        saveButton.enabled = !regexTextField.getText().isEmpty() && regexValid && !nameTextField.getText().isEmpty();
     }
 
     @Override
@@ -138,16 +159,17 @@ public class TabGUI extends GuiScreen {
         if(regexTextField.textboxKeyTyped(typedChar, keyCode)) checkIfRegexIsValid();
     }
 
+    boolean regexValid = false;
 
     private void checkIfRegexIsValid() {
         try{
             Pattern.compile(regexTextField.getText());
             regexTextField.setTextColor(0x55FF55);
-            saveButton.enabled = true;
+            regexValid = true;
             return;
         }catch (Exception ignored) { }
 
         regexTextField.setTextColor(0xFF5555);
-        saveButton.enabled = false;
+        regexValid = false;
     }
 }
