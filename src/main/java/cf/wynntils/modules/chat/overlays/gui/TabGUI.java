@@ -105,7 +105,7 @@ public class TabGUI extends GuiScreen {
                 }else{
                     mc.displayGuiScreen(this);
                 }
-            }, "§f§lDo you really wants to delete this chat tab?", "§cThis action is irreversible!", 0));
+            }, "§f§lDo you really want to delete this chat tab?", "§cThis action is irreversible!", 0));
         }
     }
 
