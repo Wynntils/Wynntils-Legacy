@@ -38,7 +38,7 @@ public class TabGUI extends GuiScreen {
 
     @Override
     public void initGui() {
-        super.initGui();
+        labelList.clear();
 
         int x = width / 2; int y = height / 2;
 
@@ -138,14 +138,16 @@ public class TabGUI extends GuiScreen {
         if(regexTextField.textboxKeyTyped(typedChar, keyCode)) checkIfRegexIsValid();
     }
 
-    boolean validRegex = false;
 
-    public void checkIfRegexIsValid() {
+    private void checkIfRegexIsValid() {
         try{
             Pattern.compile(regexTextField.getText());
-            validRegex = true;
+            regexTextField.setTextColor(0x55FF55);
+            saveButton.enabled = true;
+            return;
         }catch (Exception ignored) { }
 
-        saveButton.enabled = validRegex;
+        regexTextField.setTextColor(0xFF5555);
+        saveButton.enabled = false;
     }
 }

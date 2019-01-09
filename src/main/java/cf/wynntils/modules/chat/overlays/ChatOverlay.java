@@ -14,9 +14,11 @@ import cf.wynntils.modules.chat.instances.ChatTab;
 import cf.wynntils.modules.chat.managers.ChatManager;
 import cf.wynntils.modules.chat.managers.TabManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -271,6 +273,8 @@ public class ChatOverlay extends GuiNewChat {
     public void switchTabs() {
         if(currentTab+1 >= TabManager.getAvailableTabs().size()) currentTab = 0;
         else currentTab+=1;
+
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
     }
 
     public void resetScroll() {
