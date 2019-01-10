@@ -1,10 +1,7 @@
 package cf.wynntils.modules.utilities.overlays;
 
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.PacketEvent;
-import cf.wynntils.core.events.custom.WynnClassChangeEvent;
-import cf.wynntils.core.events.custom.WynnTerritoryChangeEvent;
-import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.events.custom.*;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.Priority;
 import cf.wynntils.core.framework.instances.PlayerInfo;
@@ -15,7 +12,6 @@ import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -53,7 +49,7 @@ public class OverlayEvents implements Listener {
     public static int oldxp = 0;
     public static String oldxppercent = "0.0";
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (Reference.onWorld) {
             /* XP Gain Messages */
@@ -83,7 +79,7 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void onChatToRedirect(ClientChatReceivedEvent e) {
+    public void onChatToRedirect(ChatEvent.Pre e) {
         // This doesn't seem like the best way to do it - but I couldn't come up with much better -Bedo
         for (Overlay overlay : FrameworkManager.registeredOverlays.get(Priority.LOW)) {
             if (overlay instanceof GameUpdateOverlay) {
@@ -94,8 +90,7 @@ public class OverlayEvents implements Listener {
                 break;
             }
         }
-        if (!Reference.onWorld || e.getType() == ChatType.GAME_INFO)
-            return;
+        if (!Reference.onWorld) return;
         if (Utils.stripColor(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§4[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility."));

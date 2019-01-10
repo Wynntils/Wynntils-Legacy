@@ -1,6 +1,6 @@
 package cf.wynntils.modules.chat.overlays;
 
-import cf.wynntils.core.events.custom.PreChatEvent;
+import cf.wynntils.core.events.custom.ChatEvent;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -186,7 +186,7 @@ public class ChatOverlay extends GuiNewChat {
             deleteChatLine(chatLineId);
         }
 
-        if(FrameworkManager.getEventBus().post(new PreChatEvent(chatComponent))) return;
+        if(FrameworkManager.getEventBus().post(new ChatEvent.Pre(chatComponent))) return;
 
         boolean found = false;
         for(ChatTab tab : TabManager.getAvailableTabs()) {
@@ -229,7 +229,6 @@ public class ChatOverlay extends GuiNewChat {
         }else{
             tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
         }
-
 
         //message processor
         Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
@@ -298,7 +297,6 @@ public class ChatOverlay extends GuiNewChat {
 
     @Nullable
     public ITextComponent getChatComponent(int mouseX, int mouseY) {
-        //System.out.println(mouseX + " " + mouseY);
         if (!getChatOpen()) {
             return null;
         } else {

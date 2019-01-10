@@ -5,7 +5,7 @@
 package cf.wynntils.modules.questbook.events;
 
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.PreChatEvent;
+import cf.wynntils.core.events.custom.ChatEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.questbook.QuestBookModule;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onChat(PreChatEvent e)  {
+    public void onChat(ChatEvent.Pre e)  {
         if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[New Quest Started:"))
             QuestManager.requestQuestBookReading();
         else if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[Quest Book Updated]"))
