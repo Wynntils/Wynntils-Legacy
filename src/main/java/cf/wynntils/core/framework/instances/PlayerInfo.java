@@ -132,23 +132,24 @@ public class PlayerInfo {
     public int getXpNeededToLevelUp() {
         // Quick fix for crash bug - more investigation to be done.
         try {
-            if (mc.player.experienceLevel != 0
+            if (mc.player != null
+                    && mc.player.experienceLevel != 0
                     && currentClass != ClassType.NONE
                     && mc.player.experienceLevel <= xpNeeded.length
                     && lastLevel != mc.player.experienceLevel) {
                 lastLevel = mc.player.experienceLevel;
                 lastXp = xpNeeded[mc.player.experienceLevel - 1];
             }
-            return currentClass == ClassType.NONE || mc.player.experienceLevel == 0 || mc.player.experienceLevel > xpNeeded.length ? -1 : lastXp;
+            return currentClass == ClassType.NONE || (mc.player != null && (mc.player.experienceLevel == 0 || mc.player.experienceLevel > xpNeeded.length)) ? -1 : lastXp;
         } catch (NullPointerException ex) {
             ex.printStackTrace();
             return -1;
         }
     }
 
-    public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE ? "" : perFormat.format(mc.player.experience * 100); }
+    public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE || mc.player == null ? "" : perFormat.format(mc.player.experience * 100); }
 
-    public int getCurrentXP() { return currentClass == ClassType.NONE ? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
+    public int getCurrentXP() { return currentClass == ClassType.NONE  || mc.player == null? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
 
     public int getLevel() { return currentClass == ClassType.NONE ? -1 : level; }
 
