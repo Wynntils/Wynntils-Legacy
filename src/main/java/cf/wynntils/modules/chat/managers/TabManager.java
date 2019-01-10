@@ -15,7 +15,7 @@ public class TabManager {
 
         if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
             availableTabs.add(new ChatTab("Global", ".*", "", true));
-            availableTabs.add(new ChatTab("Guild", "(&3\\[(.*?)\\])|(&3You were not in the territory)", "/g", false));
+            availableTabs.add(new ChatTab("Guild", "($&3\\[(.*?)\\])|($&3You were not in the territory)", "/g", false));
             availableTabs.add(new ChatTab("Party", "(&7\\[&r&e(.*?)\\])|(&eYou are not in a party!)", "/p", false));
 
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
