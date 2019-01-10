@@ -34,8 +34,7 @@ public class ChatGUI extends GuiChat {
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(keyCode == Keyboard.KEY_TAB) ChatOverlay.getChat().switchTabs();
-
+        if(inputField.getText().isEmpty() && keyCode == Keyboard.KEY_TAB) ChatOverlay.getChat().switchTabs();
         super.keyTyped(typedChar, keyCode);
     }
 
