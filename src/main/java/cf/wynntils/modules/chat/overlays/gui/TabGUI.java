@@ -130,7 +130,7 @@ public class TabGUI extends GuiScreen {
             drawHoveringText(Arrays.asList("§a§lAuto Command", "§7This will automatically", "§7put this command before", "§7any message.", "", "§cOptional"), mouseX, mouseY);
 
         if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
-            drawHoveringText(Arrays.asList("§a§lLow priority", "§7If marked, if any other", "§7tab matches a message", "§7it will not be added to", "§7this one.", "", "§cOptional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList("§a§lLow priority", "§7If selected, messages", "§7will attempt to match", "§7with other tabs first.", "", "§cOptional"), mouseX, mouseY);
 
         if(saveButton.enabled && mouseX >= saveButton.x && mouseX < saveButton.x + saveButton.width && mouseY >= saveButton.y && mouseY < saveButton.y + saveButton.height)
             drawHoveringText(Arrays.asList("§a§lSave", "§7Click here to save", "§7this chat tab."), mouseX, mouseY);
