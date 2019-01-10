@@ -307,18 +307,18 @@ public class SettingsUI extends UI {
             try {
                 Object value = registeredSettings.get(currentSettingsPath).getValues().get(field);
                 if (value instanceof String) {
-                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, (String) value, false, (ui, oldString) -> {
+                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, ((String) value).replace("§", "&"), false, (ui, oldString) -> {
                         try {
-                            registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText(), false);
+                            registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText().replace("&", "§"), false);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
                     //((UIETextBox) valueElement).textField.setEnableBackgroundDrawing(false);
                     Setting.Limitations.StringLimit limit = field.getAnnotation(Setting.Limitations.StringLimit.class);
-                    if(limit != null) {
+                    if(limit != null)
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
-                    }
+                    else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
                 } else if (field.getType().isAssignableFrom(boolean.class)) {
                     valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
