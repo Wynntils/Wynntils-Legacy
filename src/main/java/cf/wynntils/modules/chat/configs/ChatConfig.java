@@ -20,7 +20,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft info messages be filtered. (Messages starting with §4[Info]§f will no longer appear)")
+    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered? (Messages starting with §4[Info]§f will no longer appear in chat.)")
     public boolean filterWynncraftInfo = true;
 
     public boolean registeredDefaultTabs = false;
