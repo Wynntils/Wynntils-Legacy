@@ -25,11 +25,12 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
+        String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "").replaceAll("§.", "");
         switch (alignment) {
             case MIDDLE:
-                return drawString(text,x - getStringWidth(text)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
+                return drawString(text,x - getStringWidth(drawnText)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
             case RIGHT_LEFT:
-                return drawString(text,x - getStringWidth(text),y,customColor,TextAlignment.LEFT_RIGHT,shadow);
+                return drawString(text,x - getStringWidth(drawnText),y,customColor,TextAlignment.LEFT_RIGHT,shadow);
             default:
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableAlpha();
@@ -93,13 +94,15 @@ public class SmartFontRenderer extends FontRenderer {
         if(text.startsWith("[")) {
             String[] s1 = text.substring(1).split("]");
             String[] s2 = s1[0].split(",");
-            return new Pair<>(
-                    s1[1],
-                    new CustomColor(
-                            Float.parseFloat(s2[0]),
-                            Float.parseFloat(s2[1]),
-                            Float.parseFloat(s2[2]),
-                            (s2.length == 4) ? Float.parseFloat(s2[3]) : 1f).setA(baseColor.a));
+            try {
+                return new Pair<>(
+                        s1[1],
+                        new CustomColor(
+                                Float.parseFloat(s2[0]),
+                                Float.parseFloat(s2[1]),
+                                Float.parseFloat(s2[2]),
+                                (s2.length == 4) ? Float.parseFloat(s2[3]) : 1f).setA(baseColor.a));
+            } catch (NumberFormatException | IndexOutOfBoundsException ex) {/* Not valid custom colour formatting, return default white*/}
         } else
             for (ChatCommonColorCodes cccc : ChatCommonColorCodes.values())
                 if(cccc.name().charAt(6) == Character.toLowerCase(text.charAt(0)))
