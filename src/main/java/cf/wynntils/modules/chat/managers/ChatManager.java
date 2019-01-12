@@ -136,7 +136,7 @@ public class ChatManager {
             ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
             preText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
             partyInvite.add(preText);
-            String command = inviteText.substring(inviteText.indexOf("/"), inviteText.indexOf(" to"));
+            String command = inviteText.substring(inviteText.indexOf("/"), inviteText.indexOf(" to "));
             ITextComponent clickableText = new TextComponentString(command);
             clickableText.getStyle()
                     .setColor(inviteText.contains("party") ? TextFormatting.GOLD : TextFormatting.AQUA)
@@ -144,7 +144,7 @@ public class ChatManager {
                     .setUnderlined(true)
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
             partyInvite.add(clickableText);
-            ITextComponent endText = new TextComponentString(inviteText.substring(inviteText.indexOf(" to")));
+            ITextComponent endText = new TextComponentString(inviteText.substring(inviteText.indexOf(" to ")));
             endText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
             partyInvite.add(endText);
             in.getSiblings().clear();
