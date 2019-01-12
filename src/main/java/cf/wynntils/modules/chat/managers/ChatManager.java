@@ -10,6 +10,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import java.text.DateFormat;
@@ -125,6 +126,25 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
+        if (in.getUnformattedText().contains("Type the command") && in.getUnformattedText().contains("to join!")) {
+            List<ITextComponent> partyInvite = new ArrayList<>();
+            ITextComponent preText = new TextComponentString("Type or click the command ");
+            preText.getStyle().setColor(TextFormatting.YELLOW);
+            partyInvite.add(preText);
+            String command = getJoinCommand(in.getUnformattedText());
+            ITextComponent clickableText = new TextComponentString(command);
+            clickableText.getStyle().setColor(TextFormatting.GOLD)
+                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                    .setUnderlined(true)
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join the party!")));
+            partyInvite.add(clickableText);
+            ITextComponent endText = new TextComponentString(" to join!");
+            endText.getStyle().setColor(TextFormatting.YELLOW);
+            partyInvite.add(endText);
+            in.getSiblings().clear();
+            in.getSiblings().addAll(partyInvite);
+        }
+
         return new Pair<>(in, cancel);
     }
 
@@ -219,6 +239,13 @@ public class ChatManager {
         }
 
         return new Pair<>(after, cancel);
+    }
+
+    private static String getJoinCommand(String text) {
+        int start = text.indexOf("/party join ");
+        int end = text.indexOf(" to join!");
+        String inviter = text.substring(start, end);
+        return inviter;
     }
 
     private static boolean hasWynnic(String text) {
