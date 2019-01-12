@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatManager {
 
@@ -126,20 +128,24 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
-        if (in.getUnformattedText().contains("Type the command") && in.getUnformattedText().contains("to join!")) {
+        Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
+        if (inviteReg.matcher(in.getFormattedText()).find()) {
+            System.out.println("Regex true");
+            String inviteText = in.getUnformattedText();
             List<ITextComponent> partyInvite = new ArrayList<>();
-            ITextComponent preText = new TextComponentString("Type or click the command ");
-            preText.getStyle().setColor(TextFormatting.YELLOW);
+            ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
+            preText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
             partyInvite.add(preText);
-            String command = getJoinCommand(in.getUnformattedText());
+            String command = inviteText.substring(inviteText.indexOf("/"), inviteText.indexOf(" to"));
             ITextComponent clickableText = new TextComponentString(command);
-            clickableText.getStyle().setColor(TextFormatting.GOLD)
+            clickableText.getStyle()
+                    .setColor(inviteText.contains("party") ? TextFormatting.GOLD : TextFormatting.AQUA)
                     .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                     .setUnderlined(true)
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join the party!")));
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
             partyInvite.add(clickableText);
-            ITextComponent endText = new TextComponentString(" to join!");
-            endText.getStyle().setColor(TextFormatting.YELLOW);
+            ITextComponent endText = new TextComponentString(inviteText.substring(inviteText.indexOf(" to")));
+            endText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
             partyInvite.add(endText);
             in.getSiblings().clear();
             in.getSiblings().addAll(partyInvite);
@@ -239,13 +245,6 @@ public class ChatManager {
         }
 
         return new Pair<>(after, cancel);
-    }
-
-    private static String getJoinCommand(String text) {
-        int start = text.indexOf("/party join ");
-        int end = text.indexOf(" to join!");
-        String inviter = text.substring(start, end);
-        return inviter;
     }
 
     private static boolean hasWynnic(String text) {
