@@ -142,7 +142,7 @@ public class SmartFontRenderer extends FontRenderer {
         color_9("5555FF"),
         color_a("55FF55"),
         color_b("55FFFF"),
-        color_c("3F1515"),
+        color_c("FF5555"),
         color_d("FF55FF"),
         color_e("FFFF55"),
         color_f("FFFFFF");
