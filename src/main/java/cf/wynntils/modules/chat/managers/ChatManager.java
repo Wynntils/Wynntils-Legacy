@@ -28,6 +28,8 @@ public class ChatManager {
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
+    
+    private static final Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
 
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
@@ -127,10 +129,8 @@ public class ChatManager {
             in.getSiblings().clear();
             in.getSiblings().addAll(newTextComponents);
         }
-
-        Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
+        
         if (inviteReg.matcher(in.getFormattedText()).find()) {
-            System.out.println("Regex true");
             String inviteText = in.getUnformattedText();
             List<ITextComponent> partyInvite = new ArrayList<>();
             ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
