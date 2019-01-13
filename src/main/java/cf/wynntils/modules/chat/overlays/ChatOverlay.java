@@ -192,15 +192,21 @@ public class ChatOverlay extends GuiNewChat {
         for(ChatTab tab : TabManager.getAvailableTabs()) {
             if(!tab.regexMatches(chatComponent) || tab.isLowPriority()) continue;
 
-            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId);
+            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, found);
             found = true;
         }
 
-        if(!found)
-            TabManager.getAvailableTabs().stream().filter(tab -> tab.isLowPriority() && tab.regexMatches(chatComponent)).forEach(tab -> updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId));
+        if(!found) {
+            for (ChatTab tab : TabManager.getAvailableTabs()) {
+                if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
+                    continue;
+                updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, found);
+                found = true;
+            }
+        }
     }
 
-    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId) {
+    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean alreadyFound) {
         //spam filter
         if(tab.getLastMessage() != null) {
             if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(chatComponent.getFormattedText())) {
@@ -231,9 +237,11 @@ public class ChatOverlay extends GuiNewChat {
         }
 
         //message processor
-        Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
+        if (!alreadyFound) {
+            Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
 
-        chatComponent = c.a;
+            chatComponent = c.a;
+        }
         //continue mc code
 
         int i = MathHelper.floor((float)getChatWidth() / getChatScale());
