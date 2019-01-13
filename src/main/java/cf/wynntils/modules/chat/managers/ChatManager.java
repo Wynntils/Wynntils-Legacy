@@ -10,6 +10,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
 import java.text.DateFormat;
@@ -17,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatManager {
 
@@ -25,6 +28,8 @@ public class ChatManager {
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
+    
+    private static final Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
 
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
@@ -123,6 +128,27 @@ public class ChatManager {
             }
             in.getSiblings().clear();
             in.getSiblings().addAll(newTextComponents);
+        }
+        
+        if (inviteReg.matcher(in.getFormattedText()).find()) {
+            String inviteText = in.getUnformattedText();
+            List<ITextComponent> partyInvite = new ArrayList<>();
+            ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
+            preText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
+            partyInvite.add(preText);
+            String command = inviteText.substring(inviteText.indexOf("/"), inviteText.indexOf(" to "));
+            ITextComponent clickableText = new TextComponentString(command);
+            clickableText.getStyle()
+                    .setColor(inviteText.contains("party") ? TextFormatting.GOLD : TextFormatting.AQUA)
+                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                    .setUnderlined(true)
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
+            partyInvite.add(clickableText);
+            ITextComponent endText = new TextComponentString(inviteText.substring(inviteText.indexOf(" to ")));
+            endText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
+            partyInvite.add(endText);
+            in.getSiblings().clear();
+            in.getSiblings().addAll(partyInvite);
         }
 
         return new Pair<>(in, cancel);
