@@ -25,7 +25,7 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
-        String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "").replaceAll("§.", "");
+        String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "");
         switch (alignment) {
             case MIDDLE:
                 return drawString(text,x - getStringWidth(drawnText)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
