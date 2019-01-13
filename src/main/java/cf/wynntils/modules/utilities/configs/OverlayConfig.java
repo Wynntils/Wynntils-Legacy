@@ -127,8 +127,9 @@ public class OverlayConfig extends SettingsClass {
     public static class Leveling extends SettingsClass {
         public static Leveling INSTANCE;
 
-        @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})
+        @Setting.Features.StringParameters(parameters = {"actual", "max", "percent", "needed", "actualg", "maxg", "neededg", "curlvl", "nextlvl"})
         @Setting(displayName = "Current Text", description = "How should the leveling text be displayed?")
+        @Setting.Limitations.StringLimit(maxLength = 200)
         public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
         @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
