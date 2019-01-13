@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class NametagManager {
 
-    public static final Pattern MOB_LEVEL = Pattern.compile("(\u00A7\\d \\[Lv\\. (.*?)\\])");
+    public static final Pattern MOB_LEVEL = Pattern.compile("(\u00A76 \\[Lv\\. (.*?)\\])");
 
     public static boolean checkForNametag(RenderLivingEvent.Specials.Pre e) {
         Entity entity =  e.getEntity();
@@ -166,20 +166,18 @@ public class NametagManager {
                         i = (int) (i / 1.2);
                     }
                 } else {
-                    if(!(entityIn instanceof EntityArmorStand)) {
-                        i = 0;
-                        Matcher m = MOB_LEVEL.matcher(str);
-                        while (m.find()) {
-                            String s = m.group(1);
-                            str = str.replace(s, "");
-                            drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
-                            i -= 10;
-                        }
-                        if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
-                            drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
-                            i -= 10;
-                            str = str.replace("\u00A77 [Disguised]\u00A7r", "");
-                        }
+                    i = 0;
+                    Matcher m = MOB_LEVEL.matcher(str);
+                    while (m.find()) {
+                        String s = m.group(1);
+                        str = str.replace(s, "");
+                        drawNameplate(renderManager.getFontRenderer(), s, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
+                        i -= 10;
+                    }
+                    if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
+                        i -= 10;
+                        str = str.replace("\u00A77 [Disguised]\u00A7r", "");
                     }
                 }
                 drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
