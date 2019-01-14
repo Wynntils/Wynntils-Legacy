@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 
 public class ChatManager {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    public static DateFormat dateFormat;
+    public static boolean validDateFormat;
+
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
@@ -36,6 +38,14 @@ public class ChatManager {
         boolean cancel = false;
 
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
+            if (dateFormat == null || !validDateFormat) {
+                try {
+                    dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
+                    validDateFormat = true;
+                } catch (IllegalArgumentException ex) {
+                    validDateFormat = false;
+                }
+            }
             if (!in.getUnformattedComponentText().isEmpty() && in instanceof TextComponentString) {
                 ITextComponent newMessage = new TextComponentString("");
                 newMessage.setStyle(in.getStyle().createDeepCopy());
@@ -49,8 +59,14 @@ public class ChatManager {
             ITextComponent startBracket = new TextComponentString("[");
             startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             timeStamp.add(startBracket);
-            ITextComponent time = new TextComponentString(dateFormat.format(new Date()));
-            time.getStyle().setColor(TextFormatting.GRAY);
+            ITextComponent time;
+            if (validDateFormat) {
+                time = new TextComponentString(dateFormat.format(new Date()));
+                time.getStyle().setColor(TextFormatting.GRAY);
+            } else {
+                time = new TextComponentString("Invalid Format");
+                time.getStyle().setColor(TextFormatting.RED);
+            }
             timeStamp.add(time);
             ITextComponent endBracket = new TextComponentString("] ");
             endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
