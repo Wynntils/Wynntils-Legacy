@@ -1027,7 +1027,7 @@ public class QuestBookGUI extends GuiScreen {
                     selected = 1;
                     render.drawRect(selected_cube, x - 150, y - 15, x - 120, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 239, 26, 17);
-                    hoveredText = Arrays.asList("§6[>] §6§lQuestBook", "§7See and pin all your", "§7current available", "§7quests.",  "", "§aLeft click to select");
+                    hoveredText = Arrays.asList("§6[>] §6§lQuest Book", "§7See and pin all your", "§7current available", "§7quests.",  "", "§aLeft click to select");
                 }else{
                     if(selected == 1) selected = 0;
                     render.drawRect(unselected_cube, x - 150, y - 15, x - 120, y + 15);
@@ -1039,7 +1039,7 @@ public class QuestBookGUI extends GuiScreen {
                     render.drawRect(selected_cube, x - 115, y - 15, x - 85, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 243, 21, 21);
 
-                    hoveredText = Arrays.asList("§6[>] §6§lConfiguration", "§7Change Wynntils settings", "§7the way you want",  "", "§cBETA VERSION", "§aLeft click to select");
+                    hoveredText = Arrays.asList("§6[>] §6§lConfiguration", "§7Change the settings", "§7to the way you want.",  "", "§cBETA VERSION", "§aLeft click to select");
                 }else {
                     if(selected == 2) selected = 0;
                     render.drawRect(unselected_cube, x - 115, y - 15, x - 85, y + 15);
@@ -1070,8 +1070,8 @@ public class QuestBookGUI extends GuiScreen {
                 }
 
                 render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("Welcome to Wynntils, you can", x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("see your user stats at right", x - 155, y + 35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Welcome to Wynntils. You can", x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("see your statistics at right", x - 155, y + 35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("or select some of the options", x - 155, y + 45, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("above for more features.", x - 155, y + 55, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
