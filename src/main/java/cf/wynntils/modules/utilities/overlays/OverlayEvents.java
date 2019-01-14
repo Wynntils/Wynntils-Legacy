@@ -12,6 +12,7 @@ import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import cf.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -72,6 +73,23 @@ public class OverlayEvents implements Listener {
                             oldxppercent = PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage();
                         }
                     }
+                }
+            }
+            /*Inventory full message*/
+            if (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.enabled) {
+                if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.inventoryUpdateRate * 20f) == 0) {
+                    IInventory inv = Minecraft.getMinecraft().player.inventory;
+                    int itemCounter = 0;
+                    for (int i = 0; i < inv.getSizeInventory(); i++) {
+                        if (!inv.getStackInSlot(i).isEmpty()) {
+                            itemCounter++;
+                        }
+                    }
+
+                    if (itemCounter == inv.getSizeInventory() - 1) {
+                        GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.inventoryMessageFormat);
+                    }
+
                 }
             }
         }

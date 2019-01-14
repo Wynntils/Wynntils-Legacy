@@ -187,6 +187,22 @@ public class OverlayConfig extends SettingsClass {
             public String expMessageFormat = "§2+%xc%XP (§6+%pc%%§2)";
         }
 
+        @SettingsInfo(name = "game_update_inventory_settings", displayPath = "Overlays/Update Ticker/Inventory")
+        public static class GameUpdateInventoryMessages extends SettingsClass {
+            public static GameUpdateInventoryMessages INSTANCE;
+
+            @Setting(displayName = "Enable full inventory Messages", description = "Should messages be displayed in the game-update-ticker when your inventory is full?")
+            public boolean enabled = false;
+
+            @Setting(displayName = "Full Inventory UpdateRate", description = "How often should the inventory full message (in seconds) be added to the game update ticker?")
+            @Setting.Limitations.FloatLimit(min = 5f, max = 60f, precision = 5f)
+            public float inventoryUpdateRate = 10f;
+
+            @Setting(displayName = "Inventory full Message Format", description = "What message should be displayed?")
+            @Setting.Limitations.StringLimit(maxLength = 100)
+            public String inventoryMessageFormat = "§4Your inventory is currently full";
+        }
+
         @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
         public static class RedirectSystemMessages extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
