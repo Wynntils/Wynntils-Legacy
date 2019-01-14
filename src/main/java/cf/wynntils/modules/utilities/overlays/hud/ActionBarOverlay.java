@@ -65,6 +65,7 @@ public class ActionBarOverlay extends Overlay {
                 drawString(rCoord, (mc.fontRenderer.getStringWidth(middleCoord) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
                 y -= 11;
                 staticSize.y = 21;
+                growth = OverlayGrowFrom.MIDDLE_CENTRE;
             }
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
@@ -81,6 +82,7 @@ public class ActionBarOverlay extends Overlay {
                 middle = middleCoord;
                 r = rCoord;
                 staticSize.y = 10;
+                growth = OverlayGrowFrom.TOP_CENTRE;
             } else {
                 middle = "";
             }
