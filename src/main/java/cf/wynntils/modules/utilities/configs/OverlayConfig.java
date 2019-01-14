@@ -200,7 +200,7 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Inventory full Message Format", description = "What message should be displayed?")
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String inventoryMessageFormat = "§4Your inventory is currently full";
+            public String inventoryMessageFormat = "§4Your inventory is full";
         }
 
         @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
