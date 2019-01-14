@@ -52,17 +52,19 @@ public class ActionBarOverlay extends Overlay {
             boolean preference = false;
 
             int padding = 3;
+            int y = 0;
 
+            String lCoord = "§7" + (int) mc.player.posX;
+            String middleCoord = "§a" + getPlayerDirection(mc.player.rotationYaw);
+            String rCoord = "§7" + (int) mc.player.posZ;
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
-            if (OverlayConfig.INSTANCE.prioritizeCoordinates) {
-                l = "§7" + (int) mc.player.posX;
-                middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
-                r = "§7" + (int) mc.player.posZ;
-                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                return;
+            if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
+                drawString(lCoord, (0 - mc.fontRenderer.getStringWidth(lCoord) - mc.fontRenderer.getStringWidth(middleCoord) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
+                drawString(rCoord, (mc.fontRenderer.getStringWidth(middleCoord) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                y -= 11;
+                staticSize.y = 21;
             }
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
@@ -74,18 +76,19 @@ public class ActionBarOverlay extends Overlay {
             } else if (Utils.stripColor(lastActionBar).contains("Sprint") && mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
-            } else if (OverlayConfig.INSTANCE.actionBarCoordinates) {
-                l = "§7" + (int) mc.player.posX;
-                middle = "§a" + getPlayerDirection(mc.player.rotationYaw);
-                r = "§7" + (int) mc.player.posZ;
+            } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
+                l = lCoord;
+                middle = middleCoord;
+                r = rCoord;
+                staticSize.y = 10;
             } else {
                 middle = "";
             }
             if (preference || !renderItemName(new ScaledResolution(mc))) {
 //            drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
-                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                drawString(middle, 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                drawString(l, (0 - mc.fontRenderer.getStringWidth(l) - mc.fontRenderer.getStringWidth(middle) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+                drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
+                drawString(r, (mc.fontRenderer.getStringWidth(middle) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             }
         }
     }
@@ -132,7 +135,7 @@ public class ActionBarOverlay extends Overlay {
                 }
 
                 int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - mc.fontRenderer.getStringWidth(s) / 2) + position.offsetX;
-                int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY;
+                int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY + (OverlayConfig.INSTANCE.splitCoordinates ? -11 : 0);
 
                 if (!mc.playerController.shouldDrawHUD()) {
                     j += 14;
