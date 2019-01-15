@@ -31,11 +31,13 @@ public class TabGUI extends GuiScreen {
     GuiTextField nameTextField;
     GuiTextField regexTextField;
     GuiTextField autoCommandField;
+    GuiTextField orderNbField;
 
     //labels
     GuiLabel nameLabel;
     GuiLabel regexLabel;
     GuiLabel autoCommand;
+    GuiLabel orderNb;
 
     @Override
     public void initGui() {
@@ -43,13 +45,13 @@ public class TabGUI extends GuiScreen {
 
         int x = width / 2; int y = height / 2;
 
-        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 15, 40, 20, "§aSave"));
-        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 15, 40, 20, "§4Delete"));
-        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 15, 40, 20, "§fClose"));
+        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 30, 40, 20, "§aSave"));
+        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 30, 40, 20, "§4Delete"));
+        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 30, 40, 20, "§fClose"));
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
 
-        buttonList.add(lowPriority = new GuiCheckBox(3, x - 90, y, "Low Priority", false));
+        buttonList.add(lowPriority = new GuiCheckBox(3, x - 90, y + 7, "Low Priority", false));
 
         nameTextField = new GuiTextField(3, mc.fontRenderer, x - 90, y - 70, 80, 20);
         nameTextField.setVisible(true);
@@ -63,6 +65,12 @@ public class TabGUI extends GuiScreen {
         autoCommandField.setEnableBackgroundDrawing(true);
         autoCommandField.setMaxStringLength(10);
 
+        orderNbField = new GuiTextField(3, mc.fontRenderer, x + 65, y + 5, 25, 16);
+        orderNbField.setVisible(true);
+        orderNbField.setEnabled(true);
+        orderNbField.setEnableBackgroundDrawing(true);
+        orderNbField.setMaxStringLength(2);
+
         regexTextField = new GuiTextField(3, mc.fontRenderer, x - 90, y - 25, 180, 20);
         regexTextField.setVisible(true);
         regexTextField.setEnabled(true);
@@ -74,7 +82,7 @@ public class TabGUI extends GuiScreen {
             regexTextField.setText(tab.getRegex().replace("§", "&"));
             lowPriority.setIsChecked(tab.isLowPriority());
             autoCommandField.setText(tab.getAutoCommand());
-
+            orderNbField.setText(Integer.toString(tab.getOrderNb()));
             checkIfRegexIsValid();
         }
 
@@ -84,6 +92,8 @@ public class TabGUI extends GuiScreen {
         regexLabel.addLine("Regex §c*");
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x + 10, y - 85, 10, 10, 0xFFFFFF));
         autoCommand.addLine("Auto Command");
+        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 22, y + 9, 10, 10, 0xFFFFFF));
+        orderNb.addLine("Order #");
     }
 
     @Override
@@ -92,10 +102,11 @@ public class TabGUI extends GuiScreen {
 
         if(button == closeButton) mc.displayGuiScreen(new ChatGUI());
         else if(button == saveButton) {
-            if (id == -2)
-                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked()));
-            else
-                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked());
+            if (id == -2) {
+                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0));
+            } else {
+                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0);
+            }
             mc.displayGuiScreen(new ChatGUI());
         }else if(button == deleteButton) {
             mc.displayGuiScreen(new GuiYesNo((result, cc) -> {
@@ -119,6 +130,7 @@ public class TabGUI extends GuiScreen {
         if(nameTextField != null) nameTextField.drawTextBox();
         if(regexTextField != null) regexTextField.drawTextBox();
         if(autoCommandField != null) autoCommandField.drawTextBox();
+        if(orderNbField != null) orderNbField.drawTextBox();
 
         if(mouseX >= nameTextField.x && mouseX < nameTextField.x + nameTextField.width && mouseY >= nameTextField.y && mouseY < nameTextField.y + nameTextField.height)
             drawHoveringText(Arrays.asList("§a§lName", "§7This is how your tab", "§7will be named", "", "§cRequired"), mouseX, mouseY);
@@ -128,6 +140,9 @@ public class TabGUI extends GuiScreen {
 
         if(mouseX >= autoCommandField.x && mouseX < autoCommandField.x + autoCommandField.width && mouseY >= autoCommandField.y && mouseY < autoCommandField.y + autoCommandField.height)
             drawHoveringText(Arrays.asList("§a§lAuto Command", "§7This will automatically", "§7put this command before", "§7any message.", "", "§cOptional"), mouseX, mouseY);
+
+        if(mouseX >= orderNbField.x && mouseX < orderNbField.x + orderNbField.width && mouseY >= orderNbField.y && mouseY < orderNbField.y + orderNbField.height)
+            drawHoveringText(Arrays.asList("§a§lOrder number", "§7This determines the", "§7arrangement of the", "§7tabs.", "§8(lowest to highest)", "§cOptional"), mouseX, mouseY);
 
         if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
             drawHoveringText(Arrays.asList("§a§lLow priority", "§7If selected, messages", "§7will attempt to match", "§7with other tabs first.", "", "§cOptional"), mouseX, mouseY);
@@ -148,6 +163,7 @@ public class TabGUI extends GuiScreen {
         regexTextField.mouseClicked(mouseX, mouseY, mouseButton);
         nameTextField.mouseClicked(mouseX, mouseY, mouseButton);
         autoCommandField.mouseClicked(mouseX, mouseY, mouseButton);
+        orderNbField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -156,6 +172,7 @@ public class TabGUI extends GuiScreen {
 
         nameTextField.textboxKeyTyped(typedChar, keyCode);
         autoCommandField.textboxKeyTyped(typedChar, keyCode);
+        orderNbField.textboxKeyTyped(typedChar, keyCode);
         if(regexTextField.textboxKeyTyped(typedChar, keyCode)) checkIfRegexIsValid();
     }
 

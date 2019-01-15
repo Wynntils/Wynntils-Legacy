@@ -5,6 +5,7 @@ import cf.wynntils.modules.chat.configs.ChatConfig;
 import cf.wynntils.modules.chat.instances.ChatTab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TabManager {
 
@@ -14,22 +15,24 @@ public class TabManager {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
 
         if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
-            availableTabs.add(new ChatTab("Global", ".*", "", true));
-            availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])|(^&3You were not in the territory)", "/g", false));
-            availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false));
+            availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
+            availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])|(^&3You were not in the territory)", "/g", false, 1));
+            availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false, 2));
 
+            Collections.sort(availableTabs);
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
             ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
         }
 
         if(availableTabs.size() >= 2 && availableTabs.get(1).getRegex().equals("(&3\\[(.*?)\\])|(&3You were not in the territory)")) {
             ChatTab tab = availableTabs.get(1);
-            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", "/g", false);
+            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", "/g", false, 1);
         }
     }
 
     public static void registerNewTab(ChatTab tab) {
         availableTabs.add(tab);
+        Collections.sort(availableTabs);
         saveConfigs();
     }
 
@@ -50,8 +53,9 @@ public class TabManager {
         return availableTabs.get(id);
     }
 
-    public static void updateTab(int id, String name, String regex, String autoCommand, boolean lowPriority) {
-        availableTabs.get(id).update(name, regex.replace("&", "§"), autoCommand, lowPriority);
+    public static void updateTab(int id, String name, String regex, String autoCommand, boolean lowPriority, int orderNb) {
+        availableTabs.get(id).update(name, regex.replace("&", "§"), autoCommand, lowPriority, orderNb);
+        Collections.sort(availableTabs);
         saveConfigs();
     }
 
@@ -59,5 +63,4 @@ public class TabManager {
         ChatConfig.INSTANCE.available_tabs = availableTabs;
         ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
     }
-
 }
