@@ -142,7 +142,7 @@ public class TabGUI extends GuiScreen {
             drawHoveringText(Arrays.asList("§a§lAuto Command", "§7This will automatically", "§7put this command before", "§7any message.", "", "§cOptional"), mouseX, mouseY);
 
         if(mouseX >= orderNbField.x && mouseX < orderNbField.x + orderNbField.width && mouseY >= orderNbField.y && mouseY < orderNbField.y + orderNbField.height)
-            drawHoveringText(Arrays.asList("§a§lOrder number", "§7This determines the", "§7arrangement of the", "§7tabs.", "§8(lowest to highest)", "§cOptional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList("§a§lOrder number", "§7This determines the", "§7arrangement of the", "§7chat tabs.", "§8(lowest to highest)", "§cOptional"), mouseX, mouseY);
 
         if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
             drawHoveringText(Arrays.asList("§a§lLow priority", "§7If selected, messages", "§7will attempt to match", "§7with other tabs first.", "", "§cOptional"), mouseX, mouseY);
