@@ -137,8 +137,8 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void clickOnIventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
-        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGuiInventory().getSlotUnderMouse() != null) {
+    public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
+        if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().inventory == Minecraft.getMinecraft().player.inventory) {
             e.setCanceled(checkDropState(e.getGuiInventory().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
         }
     }
