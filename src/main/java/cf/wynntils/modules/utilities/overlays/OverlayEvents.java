@@ -51,7 +51,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onClientTick(TickEvent.ClientTickEvent e) {
-        if (Reference.onWorld) {
+        if (Reference.onWorld && e.phase == TickEvent.Phase.END) {
             /* XP Gain Messages */
             if (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expUpdateRate * 20f) == 0) {
