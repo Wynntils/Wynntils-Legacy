@@ -194,11 +194,11 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Enable full inventory Messages", description = "Should messages be displayed in the game-update-ticker when your inventory is full?")
             public boolean enabled = false;
 
-            @Setting(displayName = "Full Inventory UpdateRate", description = "How often should the inventory full message (in seconds) be added to the game update ticker?")
+            @Setting(displayName = "Full Inventory UpdateRate", description = "How often should the inventory full message (in seconds) be displayed in the game update ticker?")
             @Setting.Limitations.FloatLimit(min = 5f, max = 60f, precision = 5f)
             public float inventoryUpdateRate = 10f;
 
-            @Setting(displayName = "Inventory full Message Format", description = "What message should be displayed?")
+            @Setting(displayName = "Inventory full Message Format", description = "What message should be displayed when your inventory is full?")
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String inventoryMessageFormat = "§4Your inventory is full";
         }
