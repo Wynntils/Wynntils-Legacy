@@ -92,8 +92,8 @@ public class OverlayEvents implements Listener {
 
                 }
             }
+            tickcounter++;
         }
-        tickcounter++;
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
