@@ -66,27 +66,29 @@ public class ItemIdentificationOverlay implements Listener {
 
         if (stack.getDisplayName().contains("Soul Point")) {
             List<String> lore = Utils.getLore(stack);
-            if (lore.get(lore.size() - 1).contains("Time until next soul point: ")) {
-                lore.remove(lore.size() - 1);
-                lore.remove(lore.size() - 1);
+            if (lore != null && !lore.isEmpty()) {
+                if (lore.get(lore.size() - 1).contains("Time until next soul point: ")) {
+                    lore.remove(lore.size() - 1);
+                    lore.remove(lore.size() - 1);
+                }
+                long worldTimeTicks = ModCore.mc().world.getWorldTime();
+                long currentTime = worldTimeTicks % 24000;
+                long minutesUntilSoulPoint = Math.floorDiv(currentTime, 1200);
+                currentTime -= (minutesUntilSoulPoint * 1200);
+                long secondsUntilSoulPoint = Math.floorDiv(currentTime, 20);
+                minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
+                secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
+                lore.add("");
+                lore.add("§bTime until next soul point: §f" + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
+                NBTTagCompound nbt = stack.getTagCompound();
+                NBTTagCompound display = nbt.getCompoundTag("display");
+                NBTTagList tag = new NBTTagList();
+                lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+                display.setTag("Lore", tag);
+                nbt.setTag("display", display);
+                stack.setTagCompound(nbt);
+                return;
             }
-            long worldTimeTicks = ModCore.mc().world.getWorldTime();
-            long currentTime = worldTimeTicks % 24000;
-            long minutesUntilSoulPoint = Math.floorDiv(currentTime, 1200);
-            currentTime -= (minutesUntilSoulPoint * 1200);
-            long secondsUntilSoulPoint = Math.floorDiv(currentTime, 20);
-            minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
-            secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
-            lore.add("");
-            lore.add("§bTime until next soul point: §f" + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
-            NBTTagCompound nbt = stack.getTagCompound();
-            NBTTagCompound display = nbt.getCompoundTag("display");
-            NBTTagList tag = new NBTTagList();
-            lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-            display.setTag("Lore", tag);
-            nbt.setTag("display", display);
-            stack.setTagCompound(nbt);
-            return;
         }
 
         if (!stack.getDisplayName().contains("Unidentified")) {
