@@ -20,7 +20,7 @@ public class TrackedQuestOverlay extends Overlay {
         if (e.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE && e.getType() != RenderGameOverlayEvent.ElementType.JUMPBAR) {
             return;
         }
-        if(QuestManager.getTrackedQuest() == null) return;
+        if(QuestManager.getTrackedQuest() == null || QuestManager.getTrackedQuest().getSplittedDescription() == null || QuestManager.getTrackedQuest().getSplittedDescription().size() == 0) return;
 
         drawString("Tracked Quest Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
 
