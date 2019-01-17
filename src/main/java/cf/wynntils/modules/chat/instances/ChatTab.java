@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ChatTab {
+public class ChatTab implements  Comparable<ChatTab> {
 
     //stored variables
     String name, autoCommand;
+    int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
 
@@ -26,10 +27,11 @@ public class ChatTab {
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
 
-    public ChatTab(String name, String regexFinder, String autoCommand, boolean lowPriority) {
+    public ChatTab(String name, String regexFinder, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
         this.autoCommand = autoCommand;
         this.lowPriority = lowPriority;
+        this.orderNb = orderNb;
     }
 
     public String getName() { return name; }
@@ -60,6 +62,10 @@ public class ChatTab {
 
     public ITextComponent getLastMessage() {
         return lastMessage;
+    }
+
+    public int getOrderNb() {
+        return orderNb;
     }
 
     public void updateLastMessageAndAmount(ITextComponent lastMessage, int lastAmount) {
@@ -118,7 +124,11 @@ public class ChatTab {
         hasNewMessages = false; hasMentions = false;
     }
 
-    public void update(String name, String regex, String autoCommand, boolean lowPriority) {
-        this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.autoCommand = autoCommand;
+    public void update(String name, String regex, String autoCommand, boolean lowPriority, int orderNb) {
+        this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.autoCommand = autoCommand; this.orderNb = orderNb;
+    }
+
+    public int compareTo(ChatTab ct) {
+        return(getOrderNb() - ct.getOrderNb());
     }
 }

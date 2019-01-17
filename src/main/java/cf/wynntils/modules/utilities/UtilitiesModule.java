@@ -68,6 +68,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Bubbles.class);
         registerSettings(OverlayConfig.GameUpdate.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
+        registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
         registerSettings(OverlayConfig.GameUpdate.TerritoryChangeMessages.class);
     }
