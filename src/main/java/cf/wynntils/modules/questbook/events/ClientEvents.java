@@ -29,7 +29,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onClickOnQuestBookItem(PlayerInteractEvent.RightClickItem e) {
-        if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book")) {
+        if(e.getItemStack().hasDisplayName() && e.getItemStack().getDisplayName().contains("Quest Book") && !e.getItemStack().getDisplayName().endsWith("À")) {
             if(QuestBookConfig.INSTANCE.allowCustomQuestbook && !Reference.onWars && !Reference.onNether) {
                 QuestManager.requestLessIntrusiveQuestBookReading();
                 QuestBookModule.gui.open();
