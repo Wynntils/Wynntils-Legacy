@@ -272,6 +272,16 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectSoulPoint) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).equals("As the sun rises, you feel a little bit safer...")) {
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ Soul Points?\\]")) {
+                e.setCanceled(true);
+                GameUpdateOverlay.queueMessage("§d" + e.getMessage().getUnformattedText().substring(1, 14));
+                return;
+            }
+        }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
             if (e.getMessage().getUnformattedText().contains("The server is restarting in ")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");

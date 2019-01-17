@@ -233,6 +233,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
             public boolean redirectQuest = true;
+
+            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game update ticker")
+            public boolean redirectSoulPoint = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Overlays/Update Ticker/Territory Change")
