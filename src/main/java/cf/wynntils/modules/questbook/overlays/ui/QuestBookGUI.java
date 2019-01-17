@@ -500,6 +500,9 @@ public class QuestBookGUI extends GuiScreen {
         }
         ScreenRenderer.endGL();
 
+        x = width / 2;
+        y = height / 2;
+
         int posX = (x - mouseX); int posY = (y - mouseY);
 
         List<String> hoveredText = new ArrayList<>();
