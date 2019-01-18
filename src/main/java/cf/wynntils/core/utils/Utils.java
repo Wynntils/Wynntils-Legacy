@@ -170,10 +170,7 @@ public class Utils {
             getItemFieldName.put("Dexterity", "dexterityPoints");
             getItemFieldName.put("Intelligence", "intelligencePoints");
             getItemFieldName.put("Agility", "agilityPoints");
-            
-            getItemFieldName.put("Defense", "defensePoints"); //Normal
-            getItemFieldName.put("Defence", "defensePoints"); //Beta
-            
+            getItemFieldName.put("Defence", "defensePoints");
             getItemFieldName.put("Thorns", "thorns");
             getItemFieldName.put("Exploding", "exploding");
             getItemFieldName.put("Walk Speed", "speed");
