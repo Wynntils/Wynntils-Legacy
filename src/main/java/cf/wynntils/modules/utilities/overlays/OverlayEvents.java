@@ -310,7 +310,8 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§dItem(s) Identified!");
                 e.setCanceled(true);
                 return;
-            } else if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("Item Buyer: You sold me: ")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("Blacksmith: You ")) {
+                boolean sold = e.getMessage().getFormattedText().split(" ")[2].equals("sold");
                 String[] res = e.getMessage().getFormattedText().split("§");
                 int countCommon = 0;
                 int countUnique = 0;
@@ -318,6 +319,7 @@ public class OverlayEvents implements Listener {
                 int countSet = 0;
                 int countLegendary = 0;
                 int countMythic = 0;
+                int countCrafted = 0;
                 int total = 0;
                 for (String s : res) {
                     if (s.startsWith("f")) {
@@ -326,18 +328,27 @@ public class OverlayEvents implements Listener {
                     } else if (s.startsWith("b")) {
                         countLegendary++;
                         total++;
-                    } else if (s.startsWith("5") && !s.equals("5Item Buyer: ")) {
+                    } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
                         countMythic++;
                         total++;
-                    } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
+                    } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
                         countRare++;
                         total++;
                     } else if (s.startsWith("a")) {
                         countSet++;
                         total++;
+                    } else if (s.startsWith("3")) {
+                        countCrafted++;
+                        total++;
                     } else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
-                            GameUpdateOverlay.queueMessage("§dSold " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d) item(s) for §a" + s.replace("e", "") + (char) 0xB2 + "§d.");
+                            String message;
+                            if (sold) {
+                                message = "§dSold " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d/§3" + countCrafted + "§d) item(s) for §a" + s.replace("e", "") + (char) 0xB2 + "§d.";
+                            } else {
+                                message = "§dScrapped " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d/§3" + countCrafted + "§d) item(s) for §e" + s.replace("e", "") + " scrap§d.";
+                            }
+                            GameUpdateOverlay.queueMessage(message);
                             e.setCanceled(true);
                         } else {
                             countUnique++;
@@ -346,8 +357,12 @@ public class OverlayEvents implements Listener {
                     }
                 }
                 return;
-            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Item Buyer: I can't buy that item! I only accept weapons, accessories, and armour.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, and armour.")) {
                 GameUpdateOverlay.queueMessage("§dYou can only sell weapons, accessories, and armour here.");
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You can't scrap this item!")) {
+                GameUpdateOverlay.queueMessage("§4This item cannot be scrapped.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).endsWith(" Merchant: Thank you for your business. Come again!")) {
