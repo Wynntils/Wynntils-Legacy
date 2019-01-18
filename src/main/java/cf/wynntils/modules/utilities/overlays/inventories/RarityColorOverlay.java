@@ -107,11 +107,13 @@ public class RarityColorOverlay implements Listener {
                 r = 1; g = 1; b = 1;
             } else if (name.contains("\u272B") && !name.endsWith("À") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                 if (name.endsWith("§6 [§e✫§8✫✫§6]")) {
-                    r = 1; g = 1; b = 0;
+                    r = 1; g = 0.97f; b = 0.6f;
                 } else if (name.endsWith("§6 [§e✫✫§8✫§6]")) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]")) {
                     r = 0.9f; g = 0.3f; b = 0;
                 } else {
-                    r = 1; g = 0; b = 0;
+                    return;
                 }
             } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                 if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
@@ -295,11 +297,13 @@ public class RarityColorOverlay implements Listener {
                     r = 0; g = 0; b = 0;
                 } else if (name.contains("\u272B") && !name.endsWith("À") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                     if (name.endsWith("§6 [§e✫§8✫✫§6]")) {
-                        r = 1; g = 1; b = 0;
+                        r = 1; g = 0.97f; b = 0.6f;
                     } else if (name.endsWith("§6 [§e✫✫§8✫§6]")) {
+                        r = 1; g = 1; b = 0;
+                    } else if (name.endsWith("§6 [§e✫✫✫§6]")) {
                         r = 0.9f; g = 0.3f; b = 0;
                     } else {
-                        r = 1; g = 0; b = 0;
+                        return;
                     }
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
@@ -397,11 +401,13 @@ public class RarityColorOverlay implements Listener {
                     r = 1; g = 1; b = 1;
                 } else if (name.contains("\u272B") && !name.endsWith("À") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                     if (name.endsWith("§6 [§e✫§8✫✫§6]")) {
-                        r = 1; g = 1; b = 0;
+                        r = 1; g = 0.97f; b = 0.6f;
                     } else if (name.endsWith("§6 [§e✫✫§8✫§6]")) {
+                        r = 1; g = 1; b = 0;
+                    } else if (name.endsWith("§6 [§e✫✫✫§6]")) {
                         r = 0.9f; g = 0.3f; b = 0;
                     } else {
-                        r = 1; g = 0; b = 0;
+                        return;
                     }
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
