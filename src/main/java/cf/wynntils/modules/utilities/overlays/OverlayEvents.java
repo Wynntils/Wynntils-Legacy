@@ -311,7 +311,6 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("Blacksmith: You ")) {
-                System.out.println(e.getMessage().getFormattedText().replace("§", "&"));
                 boolean sold = e.getMessage().getFormattedText().split(" ")[2].equals("sold");
                 String[] res = e.getMessage().getFormattedText().split("§");
                 int countCommon = 0;
