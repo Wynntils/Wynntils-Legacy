@@ -113,7 +113,7 @@ public class RarityColorOverlay implements Listener {
                 } else if (name.endsWith("§6 [§e✫✫✫§6]")) {
                     r = 0.9f; g = 0.3f; b = 0;
                 } else {
-                    return;
+                    continue;
                 }
             } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                 if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
