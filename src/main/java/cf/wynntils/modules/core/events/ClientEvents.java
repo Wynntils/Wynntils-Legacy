@@ -72,7 +72,7 @@ public class ClientEvents implements Listener {
                         case "Knight":
                             selectedClass = ClassType.WARRIOR;
                             break;
-                        case "Dark Mage":
+                        case "Dark Wizard":
                             selectedClass = ClassType.MAGE;
                             break;
                         case "Ninja":
