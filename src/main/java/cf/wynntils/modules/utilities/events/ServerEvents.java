@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ServerEvents implements Listener {
 
     private static boolean loadedResourcePack = false;
-    private static long lastResourcePack = 0;
 
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
@@ -40,17 +39,13 @@ public class ServerEvents implements Listener {
         if(!Reference.onServer) return;
 
         if(loadedResourcePack) {
-            if(System.currentTimeMillis() - lastResourcePack >= 2500) {
-                e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
-                e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
-            }
+            e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
+            e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
 
-            lastResourcePack = System.currentTimeMillis();
             e.setCanceled(true);
             return;
         }
 
-        lastResourcePack = System.currentTimeMillis();
         loadedResourcePack = true;
     }
 

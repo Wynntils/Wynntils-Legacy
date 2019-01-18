@@ -6,8 +6,10 @@ package cf.wynntils.modules.core.events;
 
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.modules.core.config.CoreDBConfig;
 import cf.wynntils.modules.core.instances.OutgoingFilter;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
@@ -36,7 +38,9 @@ public class ServerEvents implements Listener {
     public void joinWorldEvent(WynnWorldJoinEvent e) {
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
-        if(PlayerInfo.getPlayerInfo().getClassId() == -1) Minecraft.getMinecraft().player.sendChatMessage("/class");
+        if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
+
+        if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
         waitingForFriendList = true;
     }

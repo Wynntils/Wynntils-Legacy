@@ -2,7 +2,10 @@ package cf.wynntils.core.events;
 
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
-import cf.wynntils.core.events.custom.*;
+import cf.wynntils.core.events.custom.PacketEvent;
+import cf.wynntils.core.events.custom.WynnWorldJoinEvent;
+import cf.wynntils.core.events.custom.WynnWorldLeftEvent;
+import cf.wynntils.core.events.custom.WynncraftServerEvent;
 import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.instances.PlayerInfo;
@@ -10,9 +13,7 @@ import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.EnumTypeAdapterFactory;
 import net.minecraft.util.text.ChatType;
@@ -85,14 +86,11 @@ public class ClientEvents {
     public void receiveTp(GuiScreenEvent.DrawScreenEvent.Post e) {
         if(inClassSelection) {
             PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-            MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
             inClassSelection = false;
-            acceptClass = true;
         }
     }
 
     private static String lastWorld = "";
-    private static boolean acceptClass = true;
     private static boolean acceptLeft = false;
 
     @SubscribeEvent
@@ -122,7 +120,6 @@ public class ClientEvents {
                         String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
                         if (!world.equals(lastWorld)) {
                             Reference.setUserWorld(world);
-                            acceptClass = true;
                             MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
                             lastWorld = world;
                             acceptLeft = true;
@@ -133,38 +130,6 @@ public class ClientEvents {
                         Reference.setUserWorld(null);
                         MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
                         PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-                        MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), ClassType.NONE));
-                    }
-
-                    Minecraft mc = Minecraft.getMinecraft();
-                    if (acceptClass) {
-                        if (mc.player.experienceLevel > 0) {
-                            try {
-                                ItemStack book = mc.player.inventory.getStackInSlot(7);
-                                if (book.hasDisplayName() && book.getDisplayName().contains("Quest Book")) {
-                                    for (int i = 0; i < 36; i++) {
-
-                                        try {
-                                            ItemStack ItemTest = mc.player.inventory.getStackInSlot(i);
-
-                                            NBTTagList Lore = ItemTest.getTagCompound().getCompoundTag("display").getTagList("Lore", 8);
-                                            for (int j = 1; j < Lore.tagCount(); j++) {
-                                                String ClassTest = Lore.get(j).toString();
-                                                if (ClassTest.contains("Class Req:") && ClassTest.charAt(2) == 'a') {
-                                                    ClassType newClass = ClassType.valueOf(ClassTest.substring(18, ClassTest.lastIndexOf('/')).toUpperCase());
-
-                                                    PlayerInfo.getPlayerInfo().updatePlayerClass(newClass);
-                                                    MinecraftForge.EVENT_BUS.post(new WynnClassChangeEvent(PlayerInfo.getPlayerInfo().getCurrentClass(), newClass));
-
-                                                    acceptClass = false;
-                                                }
-                                            }
-                                        } catch (Exception ignored) { }
-                                    }
-                                }
-                            } catch (Exception ignored) {
-                            }
-                        }
                     }
                 }
             }

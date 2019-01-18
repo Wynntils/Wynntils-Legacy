@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.core.config;
 
+import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
 
@@ -14,6 +15,7 @@ public class CoreDBConfig extends SettingsClass {
 
     public String lastToken = "";
     public int lastSelectedClass = -1;
+    public ClassType lastClass = ClassType.NONE;
 
     @Override
     public void onSettingChanged(String name) {

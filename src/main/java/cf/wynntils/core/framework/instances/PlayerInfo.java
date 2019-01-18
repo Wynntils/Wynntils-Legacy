@@ -1,5 +1,7 @@
 package cf.wynntils.core.framework.instances;
 
+import cf.wynntils.core.events.custom.WynnClassChangeEvent;
+import cf.wynntils.core.framework.FrameworkManager;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.core.CoreModule;
@@ -102,6 +104,12 @@ public class PlayerInfo {
     }
 
     public void updatePlayerClass(ClassType currentClass) {
+        if(currentClass != ClassType.NONE) {
+            CoreDBConfig.INSTANCE.lastClass = currentClass;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+        }
+
+        FrameworkManager.getEventBus().post(new WynnClassChangeEvent(this.currentClass, currentClass));
         this.currentClass = currentClass;
     }
 
