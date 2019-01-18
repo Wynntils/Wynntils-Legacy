@@ -124,6 +124,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
         public boolean powderHighlight = true;
 
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?")
+        public boolean ingredientHighlight = true;
+
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.")
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
