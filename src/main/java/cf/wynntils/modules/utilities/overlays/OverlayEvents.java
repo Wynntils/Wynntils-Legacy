@@ -432,7 +432,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as a (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§b")) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§b")) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
                     GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + "§3]");
