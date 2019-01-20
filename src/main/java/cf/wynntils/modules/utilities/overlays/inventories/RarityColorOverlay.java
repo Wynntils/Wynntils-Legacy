@@ -89,8 +89,11 @@ public class RarityColorOverlay implements Listener {
             float r, g, b;
 
             String lore = Utils.getStringLore(is);
+            String name = is.getDisplayName();
 
-            if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+            if (is.getCount() == 0) {
+                continue;
+            } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
             } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = 0; g = 1; b = 1;
@@ -104,6 +107,12 @@ public class RarityColorOverlay implements Listener {
                 r = 0; g = 1; b = 0;
             } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                 r = 1; g = 1; b = 1;
+            } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                r = 1; g = 0.97f; b = 0.6f;
+            } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                r = 1; g = 1; b = 0;
+            } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                r = 0.9f; g = 0.3f; b = 0;
             } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                 if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                     continue;
@@ -258,10 +267,13 @@ public class RarityColorOverlay implements Listener {
                 }
 
                 String lore = Utils.getStringLore(is);
+                String name = is.getDisplayName();
 
                 float r, g, b;
 
-                if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+                if (is.getCount() == 0) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0; g = 1; b = 1;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                     r = 0.3f; g = 0; b = 0.3f;
@@ -283,6 +295,12 @@ public class RarityColorOverlay implements Listener {
                     r = 1; g = 1; b = 1;
                 } else if (lore.contains("§4 Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
                     r = 0; g = 0; b = 0;
+                } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 0.97f; b = 0.6f;
+                } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 0.9f; g = 0.3f; b = 0;
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                         continue;
@@ -361,8 +379,11 @@ public class RarityColorOverlay implements Listener {
                 float r, g, b;
 
                 String lore = Utils.getStringLore(is);
+                String name = is.getDisplayName();
 
-                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+                if (is.getCount() == 0) {
+                    continue;
+                } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
                 } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0; g = 1; b = 1;
@@ -376,6 +397,12 @@ public class RarityColorOverlay implements Listener {
                     r = 0; g = 1; b = 0;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                     r = 1; g = 1; b = 1;
+                } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 0.97f; b = 0.6f;
+                } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 0.9f; g = 0.3f; b = 0;
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                         continue;
