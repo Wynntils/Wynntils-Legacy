@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
@@ -111,8 +110,15 @@ public class NametagManager {
             int i = "deadmau5".equals(str) ? -10 : 0;
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
-                    if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                    if(PlayerInfo.getPlayerInfo().getPartyList().contains(entityIn.getName())) {
+                        if (UtilitiesConfig.INSTANCE.partyMemHP) {
+                            drawNameplate(renderManager.getFontRenderer(), getPartyMemHP((EntityPlayer) entityIn), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                            i -= 10;
+                        }
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lParty", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    } else if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A72\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (PlayerInfo.getPlayerInfo().getGuildList().contains(entityIn.getName())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A7b\u00A7lGuild Member", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
@@ -231,4 +237,11 @@ public class NametagManager {
         GlStateManager.popMatrix();
     }
 
+    private static String getPartyMemHP(EntityPlayer entityPlayer) {
+        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 20 ); //0.3f for better experience rounding off near full hp
+        String healthBar = "§4[§c||||||||||||||||||||§4]";
+        healthBar = healthBar.substring(0, 5 + health) + "§8" + healthBar.substring(5 + health);
+        if (health < 10) { healthBar = healthBar.replace('c', '6'); }
+        return healthBar;
+    }
 }

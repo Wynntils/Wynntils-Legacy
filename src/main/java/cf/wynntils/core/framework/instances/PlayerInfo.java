@@ -36,6 +36,7 @@ public class PlayerInfo {
     private String specialActionBar = null;
 
     private HashSet<String> friendList = new HashSet<>();
+    private HashSet<String> partyList = new HashSet<>();
     private HashSet<String> guildList = new HashSet<>();
 
     int lastLevel = 0;
@@ -83,6 +84,8 @@ public class PlayerInfo {
         return friendList;
     }
 
+    public HashSet<String> getPartyList() { return partyList; }
+
     public HashSet<String> getGuildList() {
         return guildList;
     }
@@ -90,6 +93,8 @@ public class PlayerInfo {
     public void setFriendList(HashSet<String> value) {
         friendList = value;
     }
+
+    public void setPartyList(HashSet<String> value) { partyList = value; }
 
     public void setGuildList(HashSet<String> value) {
         guildList = value;
