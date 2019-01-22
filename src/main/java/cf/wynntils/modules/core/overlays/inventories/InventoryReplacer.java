@@ -59,7 +59,7 @@ public class InventoryReplacer extends GuiInventory {
     @Override
     public void actionPerformed(GuiButton guiButton) {
         if (guiButton.id == 10) {
-            QuestBookModule.gui.openAtDefault();
+            QuestBookModule.gui.open();
             return;
         }
         
