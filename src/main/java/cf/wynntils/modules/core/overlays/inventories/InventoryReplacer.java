@@ -57,7 +57,7 @@ public class InventoryReplacer extends GuiInventory {
     }
 
     @Override
-    public void actionPerformed(GuiButton guiButton) {
+    public void actionPerformed(GuiButton guiButton) throws IOException {
         if (guiButton.id == 10) {
             QuestBookModule.gui.open();
             return;
