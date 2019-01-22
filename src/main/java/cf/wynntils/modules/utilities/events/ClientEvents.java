@@ -6,7 +6,9 @@ import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.events.custom.PacketEvent;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.framework.interfaces.Listener;
+import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.UtilitiesModule;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.modules.utilities.managers.DailyReminderManager;
 import cf.wynntils.modules.utilities.managers.KeyManager;
@@ -32,6 +34,8 @@ import java.util.HashSet;
  * Copyright © HeyZeer0 - 2016
  */
 public class ClientEvents implements Listener {
+
+    private static long tickcounter = 0;
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
@@ -169,6 +173,27 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
     }
 
+    @SubscribeEvent
+    public void partyList(TickEvent.ClientTickEvent e) {
+        if (Reference.onWorld && e.phase == TickEvent.Phase.END) {
+            if (OverlayConfig.Party.INSTANCE.enabled && tickcounter % 1200 == 0) { //Update party list every minute, since Wynncraft doesn't update often.
+                HashSet partyList = new HashSet();
+
+                ModCore.mc().getConnection().getPlayerInfoMap().forEach(networkPlayerInfo -> {
+                    String playerName = ModCore.mc().ingameGUI.getTabList().getPlayerName(networkPlayerInfo);
+                    if (!playerName.equals("")) {
+                        if (playerName.matches("§(c|e)[A-Za-z0-9_ ]+§r") && !PlayerInfo.getPlayerInfo().getName().equals(Utils.stripColor(playerName))) {
+                            partyList.add(Utils.stripColor(playerName));
+                        }
+                    }
+                });
+
+                PlayerInfo.getPlayerInfo().setPartyList(partyList);
+            }
+            tickcounter++;
+        }
+    }
+
     private boolean checkDropState(int slot, int key) {
         if(!Reference.onWorld) return false;
 
@@ -195,5 +220,4 @@ public class ClientEvents implements Listener {
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
-
 }

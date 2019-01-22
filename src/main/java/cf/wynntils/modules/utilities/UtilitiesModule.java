@@ -62,6 +62,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);
         registerSettings(OverlayConfig.Leveling.class);
+        registerSettings(OverlayConfig.Party.class);
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
         registerSettings(OverlayConfig.WarTimer.class);

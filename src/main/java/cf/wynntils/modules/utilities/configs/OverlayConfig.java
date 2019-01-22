@@ -72,6 +72,14 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "party_settings", displayPath = "Overlays/Party")
+    public static class Party extends SettingsClass {
+        public static Party INSTANCE;
+
+        @Setting(displayName = "Party member health bars", description = "Should the health bars of party members be displayed?")
+        public boolean enabled = true; //TODO create actual overlay, health bar over heads for now.
+    }
+
     @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;

@@ -6,6 +6,7 @@ package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.item.ItemProfile;
@@ -111,7 +112,7 @@ public class NametagManager {
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
                     if(PlayerInfo.getPlayerInfo().getPartyList().contains(entityIn.getName())) {
-                        if (UtilitiesConfig.INSTANCE.partyMemHP) {
+                        if (OverlayConfig.Party.INSTANCE.enabled) {
                             drawNameplate(renderManager.getFontRenderer(), getPartyMemHP((EntityPlayer) entityIn), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                             i -= 10;
                         }
@@ -238,10 +239,10 @@ public class NametagManager {
     }
 
     private static String getPartyMemHP(EntityPlayer entityPlayer) {
-        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 20 ); //0.3f for better experience rounding off near full hp
-        String healthBar = "§4[§c||||||||||||||||||||§4]";
+        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 15 ); //0.3f for better experience rounding off near full hp
+        String healthBar = "§4[§c|||||||||||||||§4]";
         healthBar = healthBar.substring(0, 5 + health) + "§8" + healthBar.substring(5 + health);
-        if (health < 10) { healthBar = healthBar.replace('c', '6'); }
+        if (health < 8) { healthBar = healthBar.replace('c', '6'); }
         return healthBar;
     }
 }
