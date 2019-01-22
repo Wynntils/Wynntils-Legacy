@@ -6,6 +6,8 @@ package cf.wynntils.modules.core.overlays.inventories;
 
 import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.modules.questbook.QuestBookModule;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -52,6 +54,13 @@ public class InventoryReplacer extends GuiInventory {
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public void actionPerformed(GuiButton guiButton) {
+        if (guiButton.id == 10) {
+            QuestBookModule.gui.openAtDefault();
+        }
     }
 
     @Override

@@ -96,6 +96,15 @@ public class QuestBookGUI extends GuiScreen {
         open();
     }
 
+    public void openAtDefault() {
+        page = QuestBookPage.DEFAULT;
+        searchBarText = "";
+        currentPage = 1;
+        selected = 0;
+        searchBarFocused = false;
+        open();
+    }
+
     //cache
     QuestBookPage page = QuestBookPage.DEFAULT;
     int currentPage = 1;
