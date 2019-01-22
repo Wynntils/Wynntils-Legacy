@@ -15,6 +15,7 @@ import cf.wynntils.core.framework.settings.SettingsContainer;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsHolder;
 import cf.wynntils.core.utils.ReflectionFields;
+import cf.wynntils.modules.core.commands.CommandCompass;
 import cf.wynntils.modules.core.commands.CommandForceUpdate;
 import cf.wynntils.modules.core.commands.CommandToken;
 import net.minecraft.client.Minecraft;
@@ -113,6 +114,7 @@ public class FrameworkManager {
     public static void registerCommands() {
         ClientCommandHandler.instance.registerCommand(new CommandToken());
         ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
+        ClientCommandHandler.instance.registerCommand(new CommandCompass());
     }
 
     public static void disableModules() {
