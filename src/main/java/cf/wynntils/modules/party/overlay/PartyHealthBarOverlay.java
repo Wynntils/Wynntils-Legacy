@@ -26,9 +26,6 @@ public class PartyHealthBarOverlay extends Overlay {
     private static TreeMap<String, Float> partyHealthMap = new TreeMap<>();
     private static HashSet partyList = new HashSet();
 
-    @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
-    public boolean flip = false;
-
     @Setting(displayName = "Text Position", description = "The position offset of the text")
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-10);
 
@@ -47,14 +44,9 @@ public class PartyHealthBarOverlay extends Overlay {
                 try {
                     partyHealthMap.put(o.toString(), (ModCore.mc().world.getPlayerEntityByName(o.toString()).getHealth() / ModCore.mc().world.getPlayerEntityByName(o.toString()).getMaxHealth()));
                 } catch (Exception e) {
-                    System.out.println("Player left vicinity");
-                    partyList.remove(o);
+                    //Player left vicinity, We could remove o from the list though after each teleport we'll have to wait a minute.
                 }
             }
-        }
-
-        for (Map.Entry<String, Float> entry : partyHealthMap.entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue());
         }
     }
 
@@ -63,7 +55,7 @@ public class PartyHealthBarOverlay extends Overlay {
        if (partyHealthMap != null) {
            int i = 0;
            for (Map.Entry<String, Float> entry : partyHealthMap.entrySet()) {
-               drawDefaultBar(-1, 8, 0, 17, entry.getValue(), entry.getKey());
+               drawDefaultBar(-1, 8, 0, 17, i, entry.getValue(), entry.getKey());
                if (i >= 5) {
                    break;
                } else {
@@ -73,8 +65,8 @@ public class PartyHealthBarOverlay extends Overlay {
        }
     }
 
-    private void drawDefaultBar(int y1, int y2, int ty1, int ty2, float healthPer, String name) {
-        drawProgressBar(Textures.Overlays.bars_health, -81, y1, 0, y2, ty1, ty2, (flip ? -healthPer : healthPer));
-        drawString(name, textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+    private void drawDefaultBar(int y1, int y2, int ty1, int ty2, int i, float healthPer, String name) {
+        drawProgressBar(Textures.Overlays.bars_health, -81, y1 + (i * 18), 0, y2 + (i * 18), ty1, ty2, healthPer);
+        drawString(name, textPositionOffset.a, textPositionOffset.b + i*18, textColor, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
     }
 }
