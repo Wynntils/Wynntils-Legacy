@@ -113,7 +113,7 @@ public class NametagManager {
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
                     if(PlayerInfo.getPlayerInfo().getPartyList().contains(entityIn.getName())) {
-                        if (PartyConfig.INSTANCE.charachterBar) {
+                        if (PartyConfig.INSTANCE.characterBar) {
                             drawNameplate(renderManager.getFontRenderer(), getPartyMemHP((EntityPlayer) entityIn), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                             i -= 10;
                         }

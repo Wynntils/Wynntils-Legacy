@@ -23,7 +23,7 @@ public class ClientEvents implements Listener {
 
             }
 
-            if ((PartyConfig.INSTANCE.charachterBar || PartyConfig.INSTANCE.partyOverlay) && tickcounter % 300 == 0) { //Update party list every minute, since Wynncraft doesn't update often.
+            if ((PartyConfig.INSTANCE.characterBar || PartyConfig.INSTANCE.partyOverlay) && tickcounter % (PartyConfig.INSTANCE.partyListUpdateRate * 20) == 0) { //Update party list every minute, since Wynncraft doesn't update often.
                 HashSet partyList = new HashSet();
 
                 ModCore.mc().getConnection().getPlayerInfoMap().forEach(networkPlayerInfo -> {

@@ -17,20 +17,25 @@ public class PartyConfig extends SettingsClass {
 
     public static PartyConfig INSTANCE;
 
-    @Setting(displayName = "Party member health bars", description = "Should the health bars of party members be displayed?")
-    public boolean charachterBar = true;
+    @Setting(displayName = "Update rate of party list", description = "How often should Wynntils check for party members (in seconds)")
+    @Setting.Limitations.IntLimit(min = 30, max = 120, precision = 10)
+    public int partyListUpdateRate = 60;
 
-    @Setting(displayName = "Party Overlay", description = "Should there be a party overlay displayed?")
+    @Setting(displayName = "Party member health bars (Character)", description = "Should the health bars of party members be displayed above their head?")
+    public boolean characterBar = true;
+
+    @Setting(displayName = "Party member health bars (Overlay)", description = "Should there be a party overlay displayed?")
     public boolean partyOverlay = true; //TODO create actual overlay
 
     @Setting(displayName = "Update rate", description = "How fast should the health bar overlay update? (per ticks; 0= instant)")
     @Setting.Limitations.IntLimit(min = 0, max = 10)
     public int updateRate = 2;
 
-    @Setting(displayName = "Health Bar Texture", description = "What texture should be used for the health bar?")
-    public CustomColor colour = CommonColors.YELLOW;
+    @Setting(displayName = "Amount of party members shown", description = "How many party members should be displayed on your screen?")
+    @Setting.Limitations.IntLimit(min = 1, max = 10)
+    public int shownAmnt = 4;
 
-    @Setting(displayName = "Health Bar Texture", description = "What texture should be used for the health bar?")
+    @Setting(displayName = "Overlay Health Bar Texture", description = "What texture should be used for the health bar?")
     public HealthTextures healthTexture = HealthTextures.c;
 
     @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
