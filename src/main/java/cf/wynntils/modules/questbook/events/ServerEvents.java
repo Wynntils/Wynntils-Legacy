@@ -240,15 +240,21 @@ public class ServerEvents implements Listener {
         }
         
         List<String> lore = Utils.getLore(item);
+        int minLevel = -1;
+        boolean completed = false;
 
-        int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+        if (Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", "").matches("[0-9]+")) {
+            minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+        } else {
+            completed = true;
+        }
 
         String description = "";
         for(int i = 2; i < lore.size(); i ++) {
             description = description + Utils.stripColor(lore.get(i));
         }
 
-        QuestManager.addDiscoveryInfo(new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
+        QuestManager.addDiscoveryInfo(new DiscoveryInfo(displayName, completed, minLevel, description, lore, discoveryType));
     }
 
 }

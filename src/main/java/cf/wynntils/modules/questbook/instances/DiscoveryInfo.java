@@ -7,6 +7,7 @@ import java.util.List;
 
 public class DiscoveryInfo {
     private String name;
+    private boolean completed;
     private String questbookFriendlyName;
     private final int minLevel;
     private final List<String> lore;
@@ -14,8 +15,8 @@ public class DiscoveryInfo {
     private final String description;
     private final DiscoveryType type;
 
-    public DiscoveryInfo(String name, int minLevel, String description, List<String> lore, DiscoveryType type) {
-        this.name = name; this.minLevel = minLevel; this.description = description; this.lore = lore; this.type = type;
+    public DiscoveryInfo(String name, boolean completed, int minLevel, String description, List<String> lore, DiscoveryType type) {
+        this.name = name; this.completed = completed; this.minLevel = minLevel; this.description = description; this.lore = lore; this.type = type;
 
         ArrayList<String> splittedDescription = new ArrayList<>();
         StringBuilder currentMessage = new StringBuilder();
@@ -72,7 +73,7 @@ public class DiscoveryInfo {
     }
 
     public String toString() {
-        return name + ":" + minLevel + ":" + description;
+        return name + ":" + (completed ? minLevel : "Completed!") + ":" + description;
     }
 
 }
