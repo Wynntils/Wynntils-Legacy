@@ -6,6 +6,7 @@ import cf.wynntils.modules.capes.CapesModule;
 import cf.wynntils.modules.chat.ChatModule;
 import cf.wynntils.modules.core.CoreModule;
 import cf.wynntils.modules.music.MusicModule;
+import cf.wynntils.modules.party.PartyModule;
 import cf.wynntils.modules.questbook.QuestBookModule;
 import cf.wynntils.modules.richpresence.RichPresenceModule;
 import cf.wynntils.modules.utilities.UtilitiesModule;
@@ -24,6 +25,7 @@ public class ModuleManager {
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
         FrameworkManager.registerModule(new RichPresenceModule());
+        FrameworkManager.registerModule(new PartyModule());
         FrameworkManager.registerModule(new CapesModule());
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());

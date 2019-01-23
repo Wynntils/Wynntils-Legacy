@@ -6,6 +6,7 @@ package cf.wynntils.modules.utilities.managers;
 
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.party.configs.PartyConfig;
 import cf.wynntils.modules.utilities.configs.OverlayConfig;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import cf.wynntils.webapi.WebManager;
@@ -112,7 +113,7 @@ public class NametagManager {
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
                     if(PlayerInfo.getPlayerInfo().getPartyList().contains(entityIn.getName())) {
-                        if (OverlayConfig.Party.INSTANCE.enabled) {
+                        if (PartyConfig.INSTANCE.charachterBar) {
                             drawNameplate(renderManager.getFontRenderer(), getPartyMemHP((EntityPlayer) entityIn), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                             i -= 10;
                         }

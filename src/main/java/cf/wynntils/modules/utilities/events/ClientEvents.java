@@ -35,8 +35,6 @@ import java.util.HashSet;
  */
 public class ClientEvents implements Listener {
 
-    private static long tickcounter = 0;
-
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld)
@@ -171,27 +169,6 @@ public class ClientEvents implements Listener {
 
         if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
             e.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public void partyList(TickEvent.ClientTickEvent e) {
-        if (Reference.onWorld && e.phase == TickEvent.Phase.END) {
-            if (OverlayConfig.Party.INSTANCE.enabled && tickcounter % 1200 == 0) { //Update party list every minute, since Wynncraft doesn't update often.
-                HashSet partyList = new HashSet();
-
-                ModCore.mc().getConnection().getPlayerInfoMap().forEach(networkPlayerInfo -> {
-                    String playerName = ModCore.mc().ingameGUI.getTabList().getPlayerName(networkPlayerInfo);
-                    if (!playerName.equals("")) {
-                        if (playerName.matches("§(c|e)[A-Za-z0-9_ ]+§r") && !PlayerInfo.getPlayerInfo().getName().equals(Utils.stripColor(playerName))) {
-                            partyList.add(Utils.stripColor(playerName));
-                        }
-                    }
-                });
-
-                PlayerInfo.getPlayerInfo().setPartyList(partyList);
-            }
-            tickcounter++;
-        }
     }
 
     private boolean checkDropState(int slot, int key) {
