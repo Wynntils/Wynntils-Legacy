@@ -49,6 +49,7 @@ public class Textures {
     public static class Map {
         public static AssetsTexture circle_map;
         public static AssetsTexture square_map;
+        public static AssetsTexture sh_map_textures;
         public static AssetsTexture pointer;
     }
 

@@ -54,7 +54,6 @@ public class MiniMapOverlay extends Overlay {
 
             //textures & masks
             if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                //drawRect(Textures.Map.circle_map, -5, -5, mapSize+5, mapSize+5, 0, 0, 110, 110);
                 createMask(Textures.Masks.circle, 0, 0, mapSize, mapSize);
             }else{
                 drawRect(Textures.Map.square_map, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
@@ -72,7 +71,7 @@ public class MiniMapOverlay extends Overlay {
 
             //map quad
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             GlStateManager.glBegin(GL11.GL_QUADS);
             {
                 GlStateManager.glTexCoord2f(maxX,maxZ);
@@ -85,10 +84,25 @@ public class MiniMapOverlay extends Overlay {
                 GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2 ,position.getDrawingY() + mapSize + extraSize/2, 0);
             }
             GlStateManager.glEnd();
+            clearMask();
 
             //cursor & cursor rotation
             rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
+            resetRotation();
             drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
+
+            if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
+                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.SHSuperCM)
+                    drawRect(Textures.Map.sh_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 217, 217);
+                else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn)
+                    drawRect(Textures.Map.square_map, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
+            }else if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
+                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.SHSuperCM)
+                    drawRect(Textures.Map.sh_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
+                else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
+                    //todo texture
+                }
+            }
 
         }catch (Exception ex) { ex.printStackTrace(); }
     }

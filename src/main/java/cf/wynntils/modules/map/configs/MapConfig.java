@@ -18,8 +18,15 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 100, max = 200, precision = 1)
     public int mapSize = 100;
 
+    @Setting(displayName = "Texture Style", description = "What shoul be the map texture")
+    public TextureType textureType = TextureType.SHSuperCM;
+
     public enum MapFormat {
         SQUARE, CIRCLE
+    }
+
+    public enum TextureType {
+        SHSuperCM, Wynn
     }
 
     @Override
