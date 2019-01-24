@@ -536,5 +536,10 @@ public class WebManager {
         return new FileInputStream(apiCacheFile);
     }
 
-
+    /**
+     * @return all api locations
+     */
+    public static WebReader getApiUrls() {
+        return apiUrls;
+    }
 }

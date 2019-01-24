@@ -58,9 +58,8 @@ public class DownloaderManager {
         return futureDownloads.size();
     }
 
-    private static void startDownloading() {
+    public static void startDownloading() {
         if(!Reference.onServer) {
-            startDownloading();
             return;
         }
         if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {

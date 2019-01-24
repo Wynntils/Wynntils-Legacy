@@ -13,6 +13,7 @@ import cf.wynntils.modules.core.config.CoreDBConfig;
 import cf.wynntils.modules.core.instances.OutgoingFilter;
 import cf.wynntils.modules.core.instances.PacketFilter;
 import cf.wynntils.webapi.WebManager;
+import cf.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -31,6 +32,7 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new OutgoingFilter());
 
         WebManager.checkForUpdates();
+        DownloaderManager.startDownloading();
     }
 
     boolean waitingForFriendList = false;

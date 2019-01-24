@@ -15,6 +15,7 @@ public class Textures {
         textureClasses.add(Masks.class);
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
+        textureClasses.add(Map.class);
 
 
         for(Class<?> clazz : textureClasses) {
@@ -43,6 +44,12 @@ public class Textures {
         public static AssetsTexture bars_mana;
         public static AssetsTexture bars_exp;
         public static AssetsTexture bars_bubbles;
+    }
+
+    public static class Map {
+        public static AssetsTexture circle_map;
+        public static AssetsTexture square_map;
+        public static AssetsTexture pointer;
     }
 
     public static class UIs {

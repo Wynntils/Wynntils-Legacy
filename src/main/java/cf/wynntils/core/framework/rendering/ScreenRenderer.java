@@ -124,9 +124,9 @@ public class ScreenRenderer {
      */
     public static void rotate(float degrees) {
         if(!rendering) return;
-        GlStateManager.translate(drawingOrigin.x+transformationOrigin.x,drawingOrigin.y+transformationOrigin.y,0);
+        GlStateManager.translate((drawingOrigin.x+transformationOrigin.x), (drawingOrigin.y+transformationOrigin.y), 0);
         GlStateManager.rotate(degrees,0,0,1);
-        GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x,-drawingOrigin.y-transformationOrigin.y,0);
+        GlStateManager.translate((-drawingOrigin.x-transformationOrigin.x), (-drawingOrigin.y-transformationOrigin.y), 0);
         rotation += degrees;
     }
 
