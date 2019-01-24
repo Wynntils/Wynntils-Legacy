@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.*;
 import cf.wynntils.core.framework.FrameworkManager;
@@ -443,6 +444,11 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onServerLeave(WynncraftServerEvent.Leave e) {
+        ModCore.mc().gameSettings.heldItemTooltips = true;
     }
 
     @SubscribeEvent
