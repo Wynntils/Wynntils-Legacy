@@ -19,14 +19,14 @@ public class MapConfig extends SettingsClass {
     public int mapSize = 100;
 
     @Setting(displayName = "Texture Style", description = "What shoul be the map texture")
-    public TextureType textureType = TextureType.SHSuperCM;
+    public TextureType textureType = TextureType.Paper;
 
     public enum MapFormat {
         SQUARE, CIRCLE
     }
 
     public enum TextureType {
-        SHSuperCM, Wynn
+        Paper, Wynn
     }
 
     @Override

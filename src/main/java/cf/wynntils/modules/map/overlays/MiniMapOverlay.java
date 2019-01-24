@@ -56,7 +56,6 @@ public class MiniMapOverlay extends Overlay {
             if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 createMask(Textures.Masks.circle, 0, 0, mapSize, mapSize);
             }else{
-                drawRect(Textures.Map.square_map, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
                 createMask(Textures.Masks.full, 0, 0, mapSize, mapSize);
             }
 
@@ -92,13 +91,13 @@ public class MiniMapOverlay extends Overlay {
             drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
 
             if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
-                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.SHSuperCM)
-                    drawRect(Textures.Map.sh_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 217, 217);
+                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
+                    drawRect(Textures.Map.paper_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 217, 217);
                 else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn)
-                    drawRect(Textures.Map.square_map, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
+                    drawRect(Textures.Map.wynn_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
             }else if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.SHSuperCM)
-                    drawRect(Textures.Map.sh_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
+                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
+                    drawRect(Textures.Map.wynn_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
                 else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     //todo texture
                 }
