@@ -21,7 +21,7 @@ public class MiniMapOverlay extends Overlay {
     private static int zoom = 100;
 
     @Override
-    public void render(RenderGameOverlayEvent.Post e) {
+    public void render(RenderGameOverlayEvent.Pre e) {
         if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
         if(!MapModule.getModule().getMainMap().isReadyToUse()) return;
 
@@ -62,6 +62,8 @@ public class MiniMapOverlay extends Overlay {
                 rotate(-MathHelper.fastFloor(mc.player.rotationYaw));
 
             //map quad
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.glBegin(GL11.GL_QUADS);
             {
                 GlStateManager.glTexCoord2f(maxX,maxZ);
