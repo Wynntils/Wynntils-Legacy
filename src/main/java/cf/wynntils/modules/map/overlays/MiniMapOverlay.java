@@ -97,7 +97,7 @@ public class MiniMapOverlay extends Overlay {
                     drawRect(Textures.Map.wynn_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
             }else if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
-                    drawRect(Textures.Map.wynn_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
+                    drawRect(Textures.Map.paper_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
                 else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     //todo texture
                 }
