@@ -433,6 +433,7 @@ public class RarityColorOverlay implements Listener {
                 }
                 GL11.glPopMatrix();
             }
+            GL11.glDisable(GL11.GL_BLEND);
         }
         GL11.glPopMatrix();
 
