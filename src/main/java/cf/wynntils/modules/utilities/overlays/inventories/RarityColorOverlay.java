@@ -46,132 +46,143 @@ public class RarityColorOverlay implements Listener {
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
         GL11.glPushMatrix();
-        GL11.glTranslatef(0, 10, 0F);
-        GL11.glEnable(GL11.GL_BLEND);
+        {
+            GL11.glTranslatef(0, 10, 0F);
+            GL11.glEnable(GL11.GL_BLEND);
 
-        int amount = -1;
-        int extra = 0;
-        int floor = 0;
-        int armorfloor = 0;
-        boolean armorcheck = false;
+            int amount = -1;
+            int extra = 0;
+            int floor = 0;
+            int armorfloor = 0;
+            boolean armorcheck = false;
 
-        boolean accessories = UtilitiesConfig.Items.INSTANCE.accesoryHighlight;
-        boolean hotbar = UtilitiesConfig.Items.INSTANCE.hotbarHighlight;
-        boolean armor = UtilitiesConfig.Items.INSTANCE.armorHighlight;
-        boolean main = UtilitiesConfig.Items.INSTANCE.mainHighlightInventory;
-
-
-        for (int i = 0; i <= e.getGuiInventory().getPlayer().inventory.getSizeInventory(); i++) {
-            ItemStack is = e.getGuiInventory().getPlayer().inventory.getStackInSlot(i);
-
-            amount++;
-            if (amount > 8) {
-                amount = 0;
-                floor++;
-            }
+            boolean accessories = UtilitiesConfig.Items.INSTANCE.accesoryHighlight;
+            boolean hotbar = UtilitiesConfig.Items.INSTANCE.hotbarHighlight;
+            boolean armor = UtilitiesConfig.Items.INSTANCE.armorHighlight;
+            boolean main = UtilitiesConfig.Items.INSTANCE.mainHighlightInventory;
 
 
-            if (!accessories && floor == 1 && amount < 4) {
-                continue;
-            }
-            if (!hotbar && floor == 0) {
-                continue;
-            }
-            if (!main) {
-                if (floor == 1 && amount > 3) {
-                    continue;
-                } else if (floor != 1 && floor < 4 && floor != 0) {
+            for (int i = 0; i <= e.getGuiInventory().getPlayer().inventory.getSizeInventory(); i++) {
+                ItemStack is = e.getGuiInventory().getPlayer().inventory.getStackInSlot(i);
+
+                amount++;
+                if (amount > 8) {
+                    amount = 0;
+                    floor++;
+                }
+
+
+                if (!accessories && floor == 1 && amount < 4) {
                     continue;
                 }
-            }
-
-
-            float r, g, b;
-
-            String lore = Utils.getStringLore(is);
-
-            if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
-                continue;
-            } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-                r = 0; g = 1; b = 1;
-            } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-                r = 0.3f; g = 0; b = 0.3f;
-            } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
-                r = 1; g = 0; b = 1;
-            } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
-                r = 1; g = 1; b = 0;
-            } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
-                r = 0; g = 1; b = 0;
-            } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
-                r = 1; g = 1; b = 1;
-            } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
-                if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
+                if (!hotbar && floor == 0) {
                     continue;
-                r = getPowderColor(is)[0];
-                g = getPowderColor(is)[1];
-                b = getPowderColor(is)[2];
-            } else if (floor >= 4) {
-                armorfloor++;
-                continue;
-            } else {
-                continue;
-            }
-            int offset = floor == 0 ? 124 : 48;
-
-            if (floor >= 4 && amount < 4 && armor) {
-                armorcheck = true;
-                offset = 62;
-                floor++;
-                armorfloor++;
-            } else if (floor >= 4 && amount == 4 && armor) {
-                armorcheck = true;
-                extra = 69;
-                offset = 116;
-                floor++;
-            } else if ((floor >= 4 && amount == 4) || (floor >= 4 && amount < 4) || (floor >= 4 && amount > 4) && !armor) {
-                continue;
-            }
-
-            if (!armorcheck) {
-                int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
-                GL11.glPushMatrix();
-                {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(RESOURCE);
-                    GlStateManager.color(r, g, b, 1.0f);
-                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                    float zoom = 2.0f;
-                    float factor = (16.0f + zoom * 2) / 16.0f;
-                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                    GL11.glScalef(factor, factor, 0);
-                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
-                GL11.glPopMatrix();
-                //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
-            } else {
-                int x = 8 + extra, y = offset + 8 - (18 * armorfloor);
-                GL11.glPushMatrix();
-                {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(RESOURCE);
-                    GlStateManager.color(r, g, b, 1.0f);
-                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                    float zoom = 2.0f;
-                    float factor = (16.0f + zoom * 2) / 16.0f;
-                    GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
-                    GL11.glScalef(factor, factor, 0);
-                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                    Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                    GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                if (!main) {
+                    if (floor == 1 && amount > 3) {
+                        continue;
+                    } else if (floor != 1 && floor < 4 && floor != 0) {
+                        continue;
+                    }
                 }
-                GL11.glPopMatrix();
-                //XY: 8 + extra, offset + 8 - (18 * armorfloor)
+
+
+                float r, g, b;
+
+                String lore = Utils.getStringLore(is);
+                String name = is.getDisplayName();
+
+                if (is.getCount() == 0) {
+                    continue;
+                } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+                    r = 0; g = 1; b = 1;
+                } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
+                    r = 0.3f; g = 0; b = 0.3f;
+                } else if (lore.contains("§dRare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
+                    r = 1; g = 0; b = 1;
+                } else if (lore.contains("§eUnique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
+                    r = 1; g = 1; b = 0;
+                } else if (lore.contains("§aSet") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
+                    r = 0; g = 1; b = 0;
+                } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
+                    r = 1; g = 1; b = 1;
+                } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                    r = 1; g = 0.97f; b = 0.6f;
+                } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+                    r = 0.9f; g = 0.3f; b = 0;
+                } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
+                    if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
+                        continue;
+                    r = getPowderColor(is)[0];
+                    g = getPowderColor(is)[1];
+                    b = getPowderColor(is)[2];
+                } else if (floor >= 4) {
+                    armorfloor++;
+                    continue;
+                } else {
+                    continue;
+                }
+                int offset = floor == 0 ? 124 : 48;
+
+                if (floor >= 4 && amount < 4 && armor) {
+                    armorcheck = true;
+                    offset = 62;
+                    floor++;
+                    armorfloor++;
+                } else if (floor >= 4 && amount == 4 && armor) {
+                    armorcheck = true;
+                    extra = 69;
+                    offset = 116;
+                    floor++;
+                } else if ((floor >= 4 && amount == 4) || (floor >= 4 && amount < 4) || (floor >= 4 && amount > 4) && !armor) {
+                    continue;
+                }
+
+                if (!armorcheck) {
+                    int x = 8 + (18 * amount), y = offset + 8 + (18 * floor);
+                    GL11.glPushMatrix();
+                    {
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                    //XY: 8 + (18 * amount), offset + 8 + (18 * floor)
+                } else {
+                    int x = 8 + extra, y = offset + 8 - (18 * armorfloor);
+                    GL11.glPushMatrix();
+                    {
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(RESOURCE);
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        float zoom = 2.0f;
+                        float factor = (16.0f + zoom * 2) / 16.0f;
+                        GL11.glTranslatef(x - zoom, y - zoom, 0.0f);
+                        GL11.glScalef(factor, factor, 0);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
+                        GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                    }
+                    GL11.glPopMatrix();
+                    //XY: 8 + extra, offset + 8 - (18 * armorfloor)
+                }
             }
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_BLEND);
         }
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
 
 
@@ -258,10 +269,13 @@ public class RarityColorOverlay implements Listener {
                 }
 
                 String lore = Utils.getStringLore(is);
+                String name = is.getDisplayName();
 
                 float r, g, b;
 
-                if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+                if (is.getCount() == 0) {
+                    continue;
+                } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0; g = 1; b = 1;
                 } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
                     r = 0.3f; g = 0; b = 0.3f;
@@ -283,6 +297,12 @@ public class RarityColorOverlay implements Listener {
                     r = 1; g = 1; b = 1;
                 } else if (lore.contains("§4 Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
                     r = 0; g = 0; b = 0;
+                } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 0.97f; b = 0.6f;
+                } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 0.9f; g = 0.3f; b = 0;
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                         continue;
@@ -361,8 +381,11 @@ public class RarityColorOverlay implements Listener {
                 float r, g, b;
 
                 String lore = Utils.getStringLore(is);
+                String name = is.getDisplayName();
 
-                if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
+                if (is.getCount() == 0) {
+                    continue;
+                } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
                 } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                     r = 0; g = 1; b = 1;
@@ -376,6 +399,12 @@ public class RarityColorOverlay implements Listener {
                     r = 0; g = 1; b = 0;
                 } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                     r = 1; g = 1; b = 1;
+                } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 0.97f; b = 0.6f;
+                } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 1; g = 1; b = 0;
+                } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
+                    r = 0.9f; g = 0.3f; b = 0;
                 } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                     if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                         continue;
@@ -406,6 +435,7 @@ public class RarityColorOverlay implements Listener {
                 }
                 GL11.glPopMatrix();
             }
+            GL11.glDisable(GL11.GL_BLEND);
         }
         GL11.glPopMatrix();
 

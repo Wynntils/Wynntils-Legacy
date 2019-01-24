@@ -1,5 +1,6 @@
 package cf.wynntils.modules.utilities.overlays;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.*;
 import cf.wynntils.core.framework.FrameworkManager;
@@ -44,11 +45,25 @@ public class OverlayEvents implements Listener {
         WarTimerOverlay.onTitle(e);
     }
 
-    public static long tickcounter = 0;
+    private static long tickcounter = 0;
 
     /* XP Gain Messages */
-    public static int oldxp = 0;
-    public static String oldxppercent = "0.0";
+    private static int oldxp = 0;
+    private static String oldxppercent = "0.0";
+
+    /* Update overlay consts */
+    private static final char PROF_COOKING = 'Ⓐ';
+    private static final char PROF_MINING = 'Ⓑ';
+    private static final char PROF_WOODCUTTING = 'Ⓒ';
+    private static final char PROF_JEWELING = 'Ⓓ';
+    private static final char PROF_SCRIBING = 'Ⓔ';
+    private static final char PROF_TAILORING = 'Ⓕ';
+    private static final char PROF_WEAPONSMITHING = 'Ⓖ';
+    private static final char PROF_ARMOURING = 'Ⓗ';
+    private static final char PROF_WOODWORKING = 'Ⓘ';
+    private static final char PROF_FARMING = 'Ⓙ';
+    private static final char PROF_FISHING = 'Ⓚ';
+    private static final char PROF_ALCHEMISM = 'Ⓛ';
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onClientTick(TickEvent.ClientTickEvent e) {
@@ -116,11 +131,11 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
-            if (e.getMessage().getUnformattedText().contains("There is no room for a horse.")) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).equals("There is no room for a horse.")) {
                 GameUpdateOverlay.queueMessage("§4There is no room for a horse.");
                 e.setCanceled(true);
                 return;
-            } else if (e.getMessage().getUnformattedText().contains("Since you interacted with your inventory, your horse has despawned.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Since you interacted with your inventory, your horse has despawned.")) {
                 GameUpdateOverlay.queueMessage("§dHorse despawned.");
                 e.setCanceled(true);
                 return;
@@ -128,7 +143,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCombat) {
             // GENERAL
-            if (e.getMessage().getUnformattedText().contains("You don't have enough mana to do that spell!")) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You don't have enough mana to do that spell!")) {
                 GameUpdateOverlay.queueMessage("§4Not enough mana.");
                 e.setCanceled(true);
                 return;
@@ -170,7 +185,7 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // MAGE
-            } else if (e.getMessage().getUnformattedText().contains("Sorry, you can't teleport... Try moving away from blocks.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Sorry, you can't teleport... Try moving away from blocks.")) {
                 GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
                 e.setCanceled(true);
                 return;
@@ -231,17 +246,22 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (e.getMessage().getUnformattedText().contains(" unused skill points! Click with your compass to use them!")) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).matches("You still have \\d+ usused skill points! Click with your compass to use them!")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§e" + res[3] + " §6skill points available.");
                 e.setCanceled(true);
                 return;
-            } else if (e.getMessage().getUnformattedText().contains(" is now level ")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is now level \\d+")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§e" + res[0] + " §6is now level §e" + res[4]);
                 e.setCanceled(true);
                 return;
-            } else if (e.getMessage().getUnformattedText().contains("You must identify this item before using it.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is now level \\d+ in [" + PROF_COOKING + "-" + PROF_ALCHEMISM +  "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
+                String[] res = e.getMessage().getUnformattedText().split(" ");
+                GameUpdateOverlay.queueMessage("§e" + res[0] + " §6is now §e" + res[6] + " " + res[7] + "§6 level §e" + res[4]);
+                e.setCanceled(true);
+                return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You must identify this item before using it.")) {
                 GameUpdateOverlay.queueMessage("§4Item not identified.");
                 e.setCanceled(true);
                 return;
@@ -283,7 +303,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
-            if (e.getMessage().getUnformattedText().contains("The server is restarting in ")) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§4" + res[5] + " " + res[6].replace(".", "") + " until server restart");
                 e.setCanceled(true);
@@ -365,11 +385,11 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§4This item cannot be scrapped.");
                 e.setCanceled(true);
                 return;
-            } else if (Utils.stripColor(e.getMessage().getFormattedText()).endsWith(" Merchant: Thank you for your business. Come again!")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("^.+ Merchant: Thank you for your business. Come again!")) {
                 GameUpdateOverlay.queueMessage("§dPurchase complete.");
                 e.setCanceled(true);
                 return;
-            } else if (Utils.stripColor(e.getMessage().getFormattedText()).endsWith(" Merchant: I'm afraid you cannot afford that item.")) {
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("^.+ Merchant: I'm afraid you cannot afford that item.")) {
                 GameUpdateOverlay.queueMessage("§dYou cannot afford that item.");
                 e.setCanceled(true);
                 return;
@@ -377,7 +397,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginLocal) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.endsWith(" has just logged in!")) {
+            if (colorStrippedMessage.matches("^\\[.+\\] .+ has just logged in!")) {
                 if (colorStrippedMessage.startsWith("[HERO]")) {
                     GameUpdateOverlay.queueMessage("§a→ §5[§dHERO§5] §d" + colorStrippedMessage.split(" ")[1]);
                     e.setCanceled(true);
@@ -395,7 +415,8 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.contains(" has logged into server ") && colorStrippedMessage.contains(" as a") && e.getMessage().getFormattedText().startsWith("§a")) {
+            // Not sure on the nether server format -Bedo
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§a")) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
                     GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + "§2]");
@@ -412,7 +433,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.contains(" has logged into server ") && colorStrippedMessage.contains(" as a") && e.getMessage().getFormattedText().startsWith("§b")) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§b")) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
                     GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + "§3]");
@@ -423,6 +444,11 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onServerLeave(WynncraftServerEvent.Leave e) {
+        ModCore.mc().gameSettings.heldItemTooltips = true;
     }
 
     @SubscribeEvent

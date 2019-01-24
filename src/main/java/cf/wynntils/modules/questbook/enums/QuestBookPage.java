@@ -6,6 +6,6 @@ package cf.wynntils.modules.questbook.enums;
 
 public enum QuestBookPage {
 
-    DEFAULT, QUESTS, CONFIGS, ITEM_GUIDE
+    DEFAULT, QUESTS, CONFIGS, ITEM_GUIDE, DISCOVERIES
 
 }

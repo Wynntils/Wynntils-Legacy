@@ -7,6 +7,7 @@ package cf.wynntils.modules.questbook.managers;
 import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
+import cf.wynntils.modules.questbook.instances.DiscoveryInfo;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -25,6 +26,7 @@ public class QuestManager {
     private static long readRequestTime = 0;
 
     private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
+    public static ArrayList<DiscoveryInfo> currentDiscoveryData = new ArrayList<>();
     public static QuestInfo trackedQuest = null;
     public static List<String> discoveryLore = new ArrayList<>();
     public static List<String> secretdiscoveryLore = new ArrayList<>();
@@ -36,6 +38,7 @@ public class QuestManager {
         readRequestTime = System.currentTimeMillis();
         readingQuestBook = true;
         currentQuestsData.clear();
+        currentDiscoveryData.clear();
 
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
@@ -57,6 +60,7 @@ public class QuestManager {
         readRequestTime = System.currentTimeMillis();
         readingQuestBook = true;
         currentQuestsData.clear();
+        currentDiscoveryData.clear();
     }
 
     /**
@@ -111,6 +115,11 @@ public class QuestManager {
         readRequestTime = System.currentTimeMillis();
         QuestManager.readingQuestBook = readingQuestBook;
     }
+    
+    
+    public static void updateRequestTime() {
+        readRequestTime = System.currentTimeMillis();
+    }
 
     /**
      * Called when the questbook updates to update the current tracked quest
@@ -138,6 +147,17 @@ public class QuestManager {
     public static void addQuestInfo(QuestInfo quest) {
         currentQuestsData.add(quest);
     }
+    
+    /**
+     * Registers a new {@link cf.wynntils.modules.questbook.instances.DiscoveryInfo} into the cache
+     * Called when the questbook is reading for new discoveries
+     * @see cf.wynntils.modules.questbook.events.ServerEvents#parseDiscovery(ItemStack) line 227
+     *
+     * @param discovery the quest that will be registered
+     */
+    public static void addDiscoveryInfo(DiscoveryInfo discovery) {
+        currentDiscoveryData.add(discovery);
+    }
 
     /**
      * Update the current discovery lore
@@ -159,6 +179,15 @@ public class QuestManager {
         List<String> list = new ArrayList<>();
         list.add(name); list.addAll(lore);
         secretdiscoveryLore = list;
+    }
+    
+    /**
+     * Returns the current discoveries data
+     *
+     * @return the current discovery data in a {@link java.util.ArrayList}
+     */
+    public static ArrayList<DiscoveryInfo> getCurrentDiscoveriesData() {
+        return currentDiscoveryData;
     }
 
 }

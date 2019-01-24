@@ -16,8 +16,10 @@ import cf.wynntils.core.framework.settings.ui.OverlayPositionsUI;
 import cf.wynntils.core.framework.settings.ui.SettingsUI;
 import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.questbook.configs.QuestBookConfig;
+import cf.wynntils.modules.questbook.enums.DiscoveryType;
 import cf.wynntils.modules.questbook.enums.QuestBookPage;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
+import cf.wynntils.modules.questbook.instances.DiscoveryInfo;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
 import cf.wynntils.webapi.WebManager;
@@ -40,7 +42,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
@@ -74,6 +77,7 @@ public class QuestBookGUI extends GuiScreen {
 
         if(page == QuestBookPage.ITEM_GUIDE) updateItemListSearch();
         if(page == QuestBookPage.QUESTS) updateQuestSearch();
+        //if(page == QuestBookPage.DISCOVERIES) updateDiscoverySearch();
 
         getMinecraft().displayGuiScreen(this);
     }
@@ -103,6 +107,7 @@ public class QuestBookGUI extends GuiScreen {
     boolean acceptBack = false;
     QuestInfo overQuest = null;
     ItemProfile overItem = null;
+    DiscoveryInfo overDiscovery = null;
 
     boolean animationCompleted = false;
     int selected = 0;
@@ -116,6 +121,12 @@ public class QuestBookGUI extends GuiScreen {
 
     //quest search
     ArrayList<QuestInfo> questSearch;
+    
+    //discovery search
+    ArrayList<DiscoveryInfo> discoverySearch;
+    boolean territory = true;
+    boolean world = true;
+    boolean secret = true;
 
     //itemguide search
     ArrayList<ItemProfile> itemSearch;
@@ -184,6 +195,11 @@ public class QuestBookGUI extends GuiScreen {
             //updating itemguide search
             if (page == QuestBookPage.ITEM_GUIDE) {
                 updateItemListSearch();
+                overItem = null;
+                currentPage = 1;
+            }
+            if (page == QuestBookPage.DISCOVERIES) {
+                updateDiscoverySearch();
                 overItem = null;
                 currentPage = 1;
             }
@@ -295,6 +311,16 @@ public class QuestBookGUI extends GuiScreen {
                 searchBarText = "";
                 searchBarFocused = false;
                 acceptNext = false; acceptBack = false;
+                return;
+            }
+            if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                searchBarText = "";
+                searchBarFocused = false;
+                currentPage = 1;
+                selected = 0;
+                updateDiscoverySearch();
+                page = QuestBookPage.DISCOVERIES;
                 return;
             }
         }
@@ -442,6 +468,54 @@ public class QuestBookGUI extends GuiScreen {
             }
             return;
         }
+        if (page == QuestBookPage.DISCOVERIES) {
+            if (posX >= -145 && posX <= -13 && posY >= 86 && posY <= 100) {
+                searchBarFocused = true;
+                if (mouseButton == 1) {
+                    searchBarText = "";
+                    updateDiscoverySearch();
+                }
+            } else {
+                searchBarFocused = false;
+            }
+            if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage++;
+                return;
+            }
+            if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage--;
+                return;
+            }
+            if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                page = QuestBookPage.QUESTS;
+                currentPage = 1;
+                searchBarText = "";
+                searchBarFocused = false;
+                acceptNext = false; acceptBack = false;
+                return;
+            }
+            if (posX >= 105 && posX <= 135 && posY >= -65 && posY <= -35) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                territory = !territory;
+                updateDiscoverySearch();
+                return;
+            }
+            if (posX >= 65 && posX <= 95 && posY >= -65 && posY <= -35) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                world = !world;
+                updateDiscoverySearch();
+                return;
+            }
+            if (posX >= 25 && posX <= 55 && posY >= -65 && posY <= -35) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                secret = !secret;
+                updateDiscoverySearch();
+                return;
+            }
+        }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -470,6 +544,23 @@ public class QuestBookGUI extends GuiScreen {
         ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
 
         questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+    }
+    
+    private void updateDiscoverySearch() {
+        ArrayList<DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
+        
+        discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : discoveries;
+        
+        discoverySearch.sort((firstDiscovery, secondDiscovery) -> {
+            return firstDiscovery.getMinLevel() - secondDiscovery.getMinLevel();
+        });
+        
+        discoverySearch = (ArrayList<DiscoveryInfo>) discoverySearch.stream().filter(c -> {
+            if (territory && c.getType() == DiscoveryType.TERRITORY) return true;
+            if (world && c.getType() == DiscoveryType.WORLD) return true;
+            if (secret && c.getType() == DiscoveryType.SECRET) return true;
+            return false;
+        }).collect(Collectors.toList());
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -830,6 +921,7 @@ public class QuestBookGUI extends GuiScreen {
                         hoveredText = new ArrayList<>(QuestManager.discoveryLore);
                         hoveredText.add(" ");
                         hoveredText.add("§aHold shift to see Secret Discoveries!");
+                        hoveredText.add("§aClick to see all of your Discoveries!");
                     }
                 }
 
@@ -1086,6 +1178,177 @@ public class QuestBookGUI extends GuiScreen {
 
                 ScreenRenderer.scale(2f);
                 render.drawString("User Profile", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            }
+            ScreenRenderer.endGL();
+        }
+        //Discoveries
+        else if (page == QuestBookPage.DISCOVERIES) {
+            ScreenRenderer.beginGL(0, 0);
+            {
+                render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
+                render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
+
+                render.drawString("Here you can see all of the", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("discoveries you have already", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("found.", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("You can also use the filters", x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("below.", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+                    hoveredText = Arrays.asList("§6[>] §6§lBack to Quests", "§7Click here to go", "§7back to the quests", "", "§aLeft click to select");
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
+                } else {
+                    render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
+                }
+
+                if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
+                    render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else if (searchBarText.length() <= 0 && !searchBarFocused) {
+                    render.drawString("Click to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else {
+
+                    String text = searchBarText;
+
+                    if (render.getStringWidth(text) >= 110) {
+                        int remove = searchBarText.length();
+                        while (render.getStringWidth((text = searchBarText.substring(searchBarText.length() - remove))) >= 110) {
+                            remove -= 1;
+                        }
+                    }
+
+                    if (System.currentTimeMillis() - text_flicker >= 500) {
+                        keepForTime = !keepForTime;
+                        text_flicker = System.currentTimeMillis();
+                    }
+
+                    if (keepForTime && (searchBarFocused || !QuestBookConfig.INSTANCE.searchBoxClickRequired)) {
+                        render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    } else {
+                        render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    }
+                }
+
+                int pages = discoverySearch.size() <= 13 ? 1 : (int) Math.ceil(discoverySearch.size() / 13d);
+                if (pages < currentPage) {
+                    currentPage = pages;
+                }
+
+                if (currentPage == pages) {
+                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+                    acceptNext = false;
+                } else {
+                    acceptNext = true;
+                    if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+                        render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+                    } else {
+                        render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
+                    }
+                }
+
+                if (currentPage == 1) {
+                    acceptBack = false;
+                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+                } else {
+                    acceptBack = true;
+                    if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+                        render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+                    } else {
+                        render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
+                    }
+                }
+                
+                if (territory) {
+                    render.drawRect(selected_cube, x - 135, y + 35, x - 105, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 283, 24, 20);
+                } else {
+                    render.drawRect(unselected_cube, x - 135, y + 35, x - 105, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 263, 24, 20);
+                }
+                
+                if (world) {
+                    render.drawRect(selected_cube, x - 95, y + 35, x - 65, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 242, 18, 20);
+                } else {
+                    render.drawRect(unselected_cube, x - 95, y + 35, x - 65, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 221, 18, 20);
+                }
+                
+                if (secret) {
+                    render.drawRect(selected_cube, x - 55, y + 35, x - 25, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 284, 20, 18);
+                } else {
+                    render.drawRect(unselected_cube, x - 55, y + 35, x - 25, y + 65);
+                    render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 265, 20, 18);
+                }
+
+                render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+                int currentY = 12;
+                if (discoverySearch.size() > 0) {
+                    for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
+                        if (discoverySearch.size() <= i) {
+                            break;
+                        }
+
+                        DiscoveryInfo selected = discoverySearch.get(i);
+
+                        List<String> lore = new ArrayList<>(selected.getLore());
+
+                        if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
+                            if (lastTick == 0 && !animationCompleted) {
+                                lastTick = getMinecraft().world.getTotalWorldTime();
+                            }
+
+                            this.selected = i;
+
+                            int animationTick;
+                            if (!animationCompleted) {
+                                animationTick = (int) ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 30;
+                                if (animationTick >= 133) {
+                                    animationCompleted = true;
+                                    animationTick = 133;
+                                }
+                            } else {
+                                animationTick = 133;
+                            }
+                            
+                            render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
+                            render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+
+                            overDiscovery = selected;
+                            hoveredText = lore;
+                            GlStateManager.disableLighting();
+                        } else {
+                            if (this.selected == i) {
+                                animationCompleted = false;
+
+                                if (!requestOpening) lastTick = 0;
+                                overDiscovery = null;
+                            }
+                            
+                            render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        }
+
+                        render.color(1, 1, 1, 1);
+                        
+                        if (selected.getType() == DiscoveryType.TERRITORY) {
+                            render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 264, 235, 11, 7);
+                        }
+                        if (selected.getType() == DiscoveryType.WORLD) {
+                            render.drawRect(Textures.UIs.quest_book, x + 16, y - 95 + currentY, 276, 235, 7, 7);
+                        }
+                        if (selected.getType() == DiscoveryType.SECRET) {
+                            render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 255, 235, 8, 7);
+                        }
+
+                        render.drawString(selected.getQuestbookFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                        currentY += 13;
+                    }
+                }
+
+                ScreenRenderer.scale(2f);
+                render.drawString("Discoveries", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }

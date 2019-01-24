@@ -47,7 +47,7 @@ public class LevelingOverlay extends Overlay {
                     .replace("%maxg%", GROUPED_FORMAT.format(getPlayerInfo().getXpNeededToLevelUp()))
                     .replace("%neededg%", GROUPED_FORMAT.format(getPlayerInfo().getXpNeededToLevelUp() - getPlayerInfo().getCurrentXP()))
                     .replace("%curlvl%", "" + getPlayerInfo().getLevel())
-                    .replace("%nextlvl%", getPlayerInfo().getLevel() == 101 ? "" : "" + (getPlayerInfo().getLevel() + 1));
+                    .replace("%nextlvl%", getPlayerInfo().getLevel() == 104 ? "" : "" + (getPlayerInfo().getLevel() + 1));
             drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Leveling.INSTANCE.textShadow);
             staticSize.x = (int) getStringWidth(text);
         }

@@ -10,8 +10,10 @@ import cf.wynntils.core.events.custom.WynnClassChangeEvent;
 import cf.wynntils.core.framework.enums.ClassType;
 import cf.wynntils.core.framework.interfaces.Listener;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.questbook.enums.DiscoveryType;
 import cf.wynntils.modules.questbook.enums.QuestSize;
 import cf.wynntils.modules.questbook.enums.QuestStatus;
+import cf.wynntils.modules.questbook.instances.DiscoveryInfo;
 import cf.wynntils.modules.questbook.instances.QuestInfo;
 import cf.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -47,8 +49,14 @@ public class ServerEvents implements Listener {
     private boolean acceptItems = false;
     private short transactionId = 0;
     private InventoryBasic currentInventory = null;
+    private boolean quests = true;
+    private boolean discoveries = false;
+    private boolean secretDiscoveries = false;
+    private boolean skip = false;
 
     private ArrayList<String> readedQuests = new ArrayList<>();
+    private ArrayList<String> readedDiscoveries = new ArrayList<>();
+    private ArrayList<String> readedSecretDiscoveries = new ArrayList<>();
 
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
@@ -58,12 +66,17 @@ public class ServerEvents implements Listener {
             if ("minecraft:container".equals(e.getPacket().getGuiId())) {
                 InventoryBasic base = new InventoryBasic(e.getPacket().getWindowTitle(), e.getPacket().getSlotCount());
 
-                if(e.getPacket().getSlotCount() >= 54 && base.hasCustomName() && base.getDisplayName().getFormattedText().contains("Quests") && base.getDisplayName().getFormattedText().contains("[Pg.")) {
+                if(e.getPacket().getSlotCount() >= 54 && base.hasCustomName() && (base.getDisplayName().getFormattedText().contains("Quests") || base.getDisplayName().getFormattedText().contains("Discoveries")) && base.getDisplayName().getFormattedText().contains("[Pg.")) {
                     if(!acceptItems) {
                         readedQuests.clear();
+                        readedDiscoveries.clear();
+                        readedSecretDiscoveries.clear();
                         transactionId = 0;
                         acceptItems = true;
                         currentInventory = base;
+                        quests = true;
+                        discoveries = false;
+                        secretDiscoveries = false;
                     }
 
                     e.setCanceled(true);
@@ -82,17 +95,29 @@ public class ServerEvents implements Listener {
             return;
         }
         if(acceptItems) {
+            if (skip) {
+                skip = false;
+                return;
+            }
             e.setCanceled(true);
 
             int inventory = -1;
             ItemStack next = null;
+            ItemStack discoveriesItem = null;
+            ItemStack secretDiscoveriesItem = null;
             int nextId = 0;
 
             for(ItemStack i : e.getPacket().getItemStacks()) {
                 inventory++;
 
-                if(inventory == 35) QuestManager.updateDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
-                if(inventory == 44) QuestManager.updateSecretDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
+                if(inventory == 35) {
+                    QuestManager.updateDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
+                    discoveriesItem = i;
+                }
+                if(inventory == 44) {
+                    QuestManager.updateSecretDiscoveryLore(i.getDisplayName(), Utils.getLore(i));
+                    secretDiscoveriesItem = i;
+                }
                 if(inventory == 54) break;
 
                 if(inventory == 8) {
@@ -102,23 +127,50 @@ public class ServerEvents implements Listener {
                     }
                     continue;
                 }
+                
+                if(i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ") || (inventory+1)%9 == 0 || (inventory+1)%9 == 8) continue;
 
-                if(!(i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ")) && !readedQuests.contains(i.getDisplayName())) {
-                    if((inventory+1)%9 == 0 || (inventory+1)%9 == 8) {
-                        continue;
+                if (quests) {
+                    if(!readedQuests.contains(i.getDisplayName())) {
+                        readedQuests.add(i.getDisplayName());
+                        parseQuest(i);
                     }
-                    readedQuests.add(i.getDisplayName());
-                    parseQuest(i);
+                } else if (discoveries) {
+                    if (!readedDiscoveries.contains(i.getDisplayName())) {
+                        readedDiscoveries.add(i.getDisplayName());
+                        parseDiscovery(i);
+                    }
+                } else if (secretDiscoveries) {
+                    if (!readedSecretDiscoveries.contains(i.getDisplayName())) {
+                        readedSecretDiscoveries.add(i.getDisplayName());
+                        parseDiscovery(i);
+                    }
                 }
             }
-
             if(next != null) {
                 windowClick(next, nextId, e.getPacket().getWindowId(), 0, ClickType.PICKUP, e.getPlayClient());
+                QuestManager.updateRequestTime();
             }else{
-                acceptItems = false;
-                e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
-                QuestManager.updateTrackedQuest();
-                QuestManager.setReadingQuestBook(false);
+                if (quests) {
+                    quests = false;
+                    discoveries = true;
+                    windowClick(discoveriesItem, 35, e.getPacket().getWindowId(), 0, ClickType.PICKUP, e.getPlayClient());
+                    skip = true;
+                    QuestManager.updateTrackedQuest();
+                    QuestManager.updateRequestTime();
+                } else if (discoveries) {
+                    discoveries = false;
+                    secretDiscoveries = true;
+                    windowClick(secretDiscoveriesItem, 44, e.getPacket().getWindowId(), 0, ClickType.PICKUP, e.getPlayClient());
+                    skip = true;
+                    QuestManager.updateRequestTime();
+                } else if (secretDiscoveries) {
+                    secretDiscoveries = false;
+                    quests = true;
+                    acceptItems = false;
+                    e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
+                    QuestManager.setReadingQuestBook(false);
+                }
             }
         }
     }
@@ -170,6 +222,33 @@ public class ServerEvents implements Listener {
         }
 
         QuestManager.addQuestInfo(new QuestInfo(displayName, status, minLevel, size, description, lore));
+    }
+    
+    public void parseDiscovery(ItemStack item) {
+        if(!item.hasDisplayName()) return;
+
+        String displayName = item.getDisplayName();
+        displayName = displayName.substring(0, displayName.length() - 1);
+        
+        DiscoveryType discoveryType = null;
+        if (displayName.charAt(1) == 'e') {
+            discoveryType = DiscoveryType.WORLD;
+        } else if (displayName.charAt(1) == 'f') {
+            discoveryType = DiscoveryType.TERRITORY;
+        } else if (displayName.charAt(1) == 'b') {
+            discoveryType = DiscoveryType.SECRET;
+        }
+        
+        List<String> lore = Utils.getLore(item);
+
+        int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+
+        String description = "";
+        for(int i = 2; i < lore.size(); i ++) {
+            description = description + Utils.stripColor(lore.get(i));
+        }
+
+        QuestManager.addDiscoveryInfo(new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
     }
 
 }
