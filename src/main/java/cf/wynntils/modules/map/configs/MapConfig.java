@@ -14,6 +14,10 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Follow Player Rotation", description = "Should the map follow the player rotation")
     public boolean followPlayerRotation = true;
 
+    @Setting(displayName = "Map Size", description = "What should be the map size")
+    @Setting.Limitations.IntLimit(min = 100, max = 200, precision = 1)
+    public int mapSize = 100;
+
     public enum MapFormat {
         SQUARE, CIRCLE
     }

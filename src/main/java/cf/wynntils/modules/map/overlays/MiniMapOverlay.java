@@ -11,13 +11,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+
 public class MiniMapOverlay extends Overlay {
 
     public MiniMapOverlay() {
         super("Mini Map", 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
-    private static int mapSize = 100;
     private static int zoom = 100;
 
     @Override
@@ -31,10 +32,18 @@ public class MiniMapOverlay extends Overlay {
         int extraSize = 0;
         if(MapConfig.INSTANCE.followPlayerRotation && MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) extraSize = 100;
 
-        zoom = 100 + extraSize;
+        //updates the map size
+        int mapSize = MapConfig.INSTANCE.mapSize;
+        staticSize = new Point(mapSize, mapSize);
 
-        float minX = (float)(mc.player.posX-(map.getCenterX() - extraSize/4)-(mapSize + extraSize)/2 + zoom);  float maxX = minX+(mapSize + extraSize)/2 - 2 * zoom;
-        float minZ = (float)(mc.player.posZ-(map.getCenterZ() - extraSize/4)-(mapSize + extraSize)/2 + zoom);  float maxZ = minZ+(mapSize + extraSize)/2 - 2 * zoom;
+        zoom = 30;
+
+        //texture position
+        float minX = (float)((mc.player.posX - map.getCenterX()) - (mapSize + extraSize)/2) - zoom;
+        float minZ = (float)((mc.player.posZ - map.getCenterZ()) - (mapSize + extraSize)/2) - zoom;
+
+        float maxX = (float)((mc.player.posX - map.getCenterX()) + (mapSize + extraSize)/2) + zoom;
+        float maxZ = (float)((mc.player.posZ - map.getCenterZ()) + (mapSize + extraSize)/2) + zoom;
 
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
         minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
@@ -59,7 +68,7 @@ public class MiniMapOverlay extends Overlay {
             //rotation axis
             transformationOrigin(mapSize/2, mapSize/2);
             if(MapConfig.INSTANCE.followPlayerRotation)
-                rotate(-MathHelper.fastFloor(mc.player.rotationYaw));
+                rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
             //map quad
             GlStateManager.enableBlend();
@@ -78,7 +87,7 @@ public class MiniMapOverlay extends Overlay {
             GlStateManager.glEnd();
 
             //cursor & cursor rotation
-            rotate(MathHelper.fastFloor(mc.player.rotationYaw));
+            rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
             drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
 
         }catch (Exception ex) { ex.printStackTrace(); }
