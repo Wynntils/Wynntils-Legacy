@@ -8,17 +8,17 @@ import cf.wynntils.core.framework.settings.instances.SettingsClass;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Map Format", description = "Should the map be a square or a circle")
+    @Setting(displayName = "Map Format", description = "Should the Map be a Square or a Circle?")
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Follow Player Rotation", description = "Should the map follow the player rotation")
+    @Setting(displayName = "Follow Player Rotation", description = "Should the Map Follow the Player's Rotation?")
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Map Size", description = "What should be the map size")
+    @Setting(displayName = "Map Size", description = "How Large Should the Map be?")
     @Setting.Limitations.IntLimit(min = 100, max = 200, precision = 1)
     public int mapSize = 100;
 
-    @Setting(displayName = "Texture Style", description = "What shoul be the map texture")
+    @Setting(displayName = "Texture Style", description = "What Should the Map Texture be?")
     public TextureType textureType = TextureType.Paper;
 
     public enum MapFormat {
