@@ -100,7 +100,6 @@ public class ScreenRenderer {
         resetScale();
         resetRotation();
         if(mask) {
-            GL11.glDisable(GL_DEPTH_TEST);
             GlStateManager.depthMask(true);
             GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
             GlStateManager.enableDepth();
