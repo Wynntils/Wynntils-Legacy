@@ -23,7 +23,7 @@ public class TabGUI extends GuiScreen {
             tab = TabManager.getTabById(id);
     }
 
-    //gui things
+    //ui things
     GuiButton saveButton;
     GuiButton deleteButton;
     GuiButton closeButton;

@@ -39,11 +39,11 @@ public class MiniMapOverlay extends Overlay {
         zoom = MapConfig.INSTANCE.mapZoom;
 
         //texture position
-        float minX = (float)((mc.player.posX - map.getCenterX()) - (mapSize + extraSize)/2) - zoom;
-        float minZ = (float)((mc.player.posZ - map.getCenterZ()) - (mapSize + extraSize)/2) - zoom;
+        float minX = map.getTextureXPosition(mc.player.posX) - ((mapSize + extraSize)/2) - zoom; // <--- min texture x point
+        float minZ = map.getTextureZPosition(mc.player.posZ) - ((mapSize + extraSize)/2) - zoom; // <--- min texture z point
 
-        float maxX = (float)((mc.player.posX - map.getCenterX()) + (mapSize + extraSize)/2) + zoom;
-        float maxZ = (float)((mc.player.posZ - map.getCenterZ()) + (mapSize + extraSize)/2) + zoom;
+        float maxX = map.getTextureXPosition(mc.player.posX) + ((mapSize + extraSize)/2) + zoom; // <--- max texture x point
+        float maxZ = map.getTextureZPosition(mc.player.posZ) + ((mapSize + extraSize)/2) + zoom; // <--- max texture z point
 
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
         minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
@@ -69,7 +69,6 @@ public class MiniMapOverlay extends Overlay {
                 rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
             //map quad
-            GlStateManager.enableBlend();
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             GlStateManager.glBegin(GL11.GL_QUADS);
             {
@@ -102,6 +101,8 @@ public class MiniMapOverlay extends Overlay {
                     //todo texture
                 }
             }
+
+            //GlStateManager.disableTexture2D();
 
         }catch (Exception ex) { ex.printStackTrace(); }
     }

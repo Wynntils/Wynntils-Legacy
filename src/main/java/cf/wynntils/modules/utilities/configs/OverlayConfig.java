@@ -142,8 +142,8 @@ public class OverlayConfig extends SettingsClass {
     public static class GameUpdate extends SettingsClass {
         public static GameUpdate INSTANCE;
 
-        // Default settings designed for large gui scale @ 1080p
-        // I personally use gui scale normal - but this works fine with that too
+        // Default settings designed for large ui scale @ 1080p
+        // I personally use ui scale normal - but this works fine with that too
 
         @Setting(displayName = "Message Limit", description = "What should the maximum amount of ticker messages displayed in the game-update-list be?")
         @Setting.Limitations.IntLimit(min = 1, max = 20)

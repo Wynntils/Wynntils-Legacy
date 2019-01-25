@@ -64,6 +64,14 @@ public class MapProfile {
         GlStateManager.bindTexture(textureId);
     }
 
+    public float getTextureXPosition(double posX) {
+        return (float)(posX - centerX);
+    }
+
+    public float getTextureZPosition(double posZ) {
+        return (float)(posZ - centerZ);
+    }
+
     public boolean isReadyToUse() {
         return readyToUse;
     }
