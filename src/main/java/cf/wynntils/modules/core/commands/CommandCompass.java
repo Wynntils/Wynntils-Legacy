@@ -96,12 +96,50 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     newPos[0] = -9999999;
                     break;
                 default:
-                    sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
+                    if (newPos[1] == 0) {
+                        sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
+                    }
                     break;
             }
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(newPos[0]), 0, Integer.valueOf(newPos[1])));
+            String dir = args[0];
+            if (dir.length() <= 2) {
+                //dir = dir.toUpperCase();
+                switch (dir.toLowerCase()) {
+                    case "n":
+                        dir = "North";
+                        break;
+                    case "ne":
+                        dir = "Northeast";
+                        break;
+                    case "nw":
+                        dir = "Northwest";
+                        break;
+                    case "s":
+                        dir = "South";
+                        break;
+                    case "se":
+                        dir = "Southeast";
+                        break;
+                    case "sw":
+                        dir = "Southwest";
+                        break;
+                    case "e":
+                        dir = "East";
+                        break;
+                    case "w":
+                        dir = "West";
+                        break;
+                    default:
+                        dir = "Somewhere";
+                        break;
+                }
+            }
+            dir = dir.substring(0,1).toUpperCase() + dir.substring(1);
+            sender.sendMessage(new TextComponentString("§aCompass is now pointing towards §2" + dir + "§a." ));
         } else if (args.length == 2 && args[0].matches("[0-9-]+") && args[1].matches("[0-9-]+")) {
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
+            sender.sendMessage(new TextComponentString("§aCompass is now pointing towards (§2" + args[0] + "§a, §2" + args[1] + "§a)." ));
         } else {
             sender.sendMessage(new TextComponentString("§4Invalid arguments: /compass [<x> <z> | <direction>]"));
         }
