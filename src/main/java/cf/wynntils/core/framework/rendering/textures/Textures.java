@@ -64,6 +64,8 @@ public class Textures {
 
         public static AssetsTexture hud_overlays;
 
+        public static AssetsTexture rarity;
+
         public static AssetsTexture quest_book;
     }
 }
