@@ -93,6 +93,8 @@ public class RarityColorOverlay implements Listener {
                 String name = is.getDisplayName();
 
                 if (is.getCount() == 0) {
+                    if (floor >= 4)
+                        armorfloor++;
                     continue;
                 } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                     continue;
@@ -120,9 +122,6 @@ public class RarityColorOverlay implements Listener {
                     r = getPowderColor(is)[0];
                     g = getPowderColor(is)[1];
                     b = getPowderColor(is)[2];
-                } else if (floor >= 4) {
-                    armorfloor++;
-                    continue;
                 } else {
                     continue;
                 }
