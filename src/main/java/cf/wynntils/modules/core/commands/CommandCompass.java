@@ -15,7 +15,24 @@ import java.util.Arrays;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
-    private String[] directions = {"north", "south", "east", "west", "n", "s", "e", "w"};
+    private String[] directions = {
+        "north",
+        "northeast",
+        "northwest",
+        "south",
+        "southeast",
+        "southwest",
+        "east",
+        "west",
+        "n",
+        "ne",
+        "nw",
+        "s",
+        "se",
+        "sw",
+        "e",
+        "w"
+    };
 
     @Override
     public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) {
@@ -37,26 +54,52 @@ public class CommandCompass extends CommandBase implements IClientCommand {
         if (args.length == 0) {
             sender.sendMessage(new TextComponentString("§4Missing arguments: /compass [<x> <z> | <direction>]"));
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
+            int[] newPos = { 0, 0 };
+            //check for north/south
             switch (args[0].toLowerCase()) {
                 case "north":
+                case "northeast":
+                case "northwest":
                 case "n":
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(0, 0, -9999999));
+                case "ne":
+                case "nw":
+                    newPos[1] = -9999999;
                     break;
                 case "south":
+                case "southeast":
+                case "southwest":
                 case "s":
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(0, 0, 9999999));
-                    break;
-                case "east":
-                case "e":
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(9999999, 0, 0));
-                    break;
-                case "west":
-                case "w":
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(-9999999, 0, 0));
+                case "se":
+                case "sw":
+                    newPos[1] = 9999999;
                     break;
                 default:
                     sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
+                    break;
             }
+            //check for east/west
+            switch (args[0].toLowerCase()) {
+                case "east":
+                case "northeast":
+                case "southeast":
+                case "e":
+                case "ne":
+                case "se":
+                    newPos[0] = 9999999;
+                    break;
+                case "west":
+                case "northwest":
+                case "southwest":
+                case "w":
+                case "nw":
+                case "sw":
+                    newPos[0] = -9999999;
+                    break;
+                default:
+                    sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
+                    break;
+            }
+            ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(newPos[0]), 0, Integer.valueOf(newPos[1])));
         } else if (args.length == 2 && args[0].matches("[0-9-]+") && args[1].matches("[0-9-]+")) {
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
         } else {
