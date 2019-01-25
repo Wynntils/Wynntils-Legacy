@@ -5,6 +5,7 @@ import cf.wynntils.core.framework.instances.KeyHolder;
 import cf.wynntils.core.framework.settings.ui.SettingsUI;
 import cf.wynntils.core.framework.ui.UI;
 import cf.wynntils.modules.core.CoreModule;
+import cf.wynntils.modules.map.configs.MapConfig;
 import cf.wynntils.modules.utilities.UtilitiesModule;
 import cf.wynntils.webapi.WebManager;
 import org.lwjgl.input.Keyboard;
@@ -38,7 +39,7 @@ public class KeyManager {
             ModCore.mc().displayGuiScreen(ui);
         });
 
-        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_EQUALS, "Debug", true, () -> {
+        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_PERIOD, "Debug", true, () -> {
             WebManager.reset();
             WebManager.setupWebApi();
         });
@@ -46,6 +47,18 @@ public class KeyManager {
         UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> { });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
+
+        CoreModule.getModule().registerKeyBinding("Zoom in", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
+            if (MapConfig.INSTANCE.mapZoom <= 95) {
+                MapConfig.INSTANCE.mapZoom += 5;
+            }
+        });
+
+        CoreModule.getModule().registerKeyBinding("Zoom out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
+            if (MapConfig.INSTANCE.mapZoom >= 5) {
+                MapConfig.INSTANCE.mapZoom -= 5;
+            }
+        });
     }
 
     public static KeyHolder getLockInventoryKey() {

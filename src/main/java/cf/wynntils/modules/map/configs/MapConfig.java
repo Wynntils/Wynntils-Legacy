@@ -8,6 +8,9 @@ import cf.wynntils.core.framework.settings.instances.SettingsClass;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
+    @Setting(displayName = "Enable minimap", description = "Should a minimap be displayed?")
+    public boolean enabled = true;
+
     @Setting(displayName = "Map Format", description = "Should the Map be a Square or a Circle?")
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
@@ -15,8 +18,12 @@ public class MapConfig extends SettingsClass {
     public boolean followPlayerRotation = true;
 
     @Setting(displayName = "Map Size", description = "How large should the Map be?")
-    @Setting.Limitations.IntLimit(min = 100, max = 200, precision = 1)
+    @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
+
+    @Setting(displayName = "Map Zoom", description = "How far zoomed in should the map be?")
+    @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
+    public int mapZoom = 30;
 
     @Setting(displayName = "Texture Style", description = "What should the Map Texture be?")
     public TextureType textureType = TextureType.Paper;

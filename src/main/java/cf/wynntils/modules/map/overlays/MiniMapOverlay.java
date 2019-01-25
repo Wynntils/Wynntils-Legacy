@@ -23,7 +23,7 @@ public class MiniMapOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre e) {
-        if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
+        if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL || !MapConfig.INSTANCE.enabled) return;
         if(!MapModule.getModule().getMainMap().isReadyToUse()) return;
 
         MapProfile map = MapModule.getModule().getMainMap();
@@ -36,7 +36,7 @@ public class MiniMapOverlay extends Overlay {
         int mapSize = MapConfig.INSTANCE.mapSize;
         staticSize = new Point(mapSize, mapSize);
 
-        zoom = 30;
+        zoom = MapConfig.INSTANCE.mapZoom;
 
         //texture position
         float minX = (float)((mc.player.posX - map.getCenterX()) - (mapSize + extraSize)/2) - zoom;
@@ -92,12 +92,12 @@ public class MiniMapOverlay extends Overlay {
 
             if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
                 if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
-                    drawRect(Textures.Map.paper_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 217, 217);
+                    drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 217, 217);
                 else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn)
-                    drawRect(Textures.Map.wynn_map_textures, -6, -6, mapSize+6, mapSize+6, 0, 0, 112, 112);
+                    drawRect(Textures.Map.wynn_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 112, 112);
             }else if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
-                    drawRect(Textures.Map.paper_map_textures, -6, -6, mapSize+6, mapSize+6, 217, 217, 434, 438);
+                    drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 217, 217, 434, 438);
                 else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     //todo texture
                 }
