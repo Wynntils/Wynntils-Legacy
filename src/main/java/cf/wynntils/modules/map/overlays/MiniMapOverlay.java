@@ -87,8 +87,8 @@ public class MiniMapOverlay extends Overlay {
 
             //cursor & cursor rotation
             rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
-            resetRotation();
             drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
+            resetRotation();
 
             if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
                 if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
