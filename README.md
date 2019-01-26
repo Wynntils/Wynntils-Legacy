@@ -23,7 +23,7 @@ All pull requests are welcome. We'll analyse it and if we determine it should a 
 
 We welcome all forms of assistance. =)
 
-<strong>If you would like to make a pull request, please compare and merge it with Wynntils:development rather than Wynntis:master.</strong>
+<strong>If you would like to make a pull request, please compare and merge it with Wynntils:development rather than Wynntils:master.</strong>
 
 License
 ========
