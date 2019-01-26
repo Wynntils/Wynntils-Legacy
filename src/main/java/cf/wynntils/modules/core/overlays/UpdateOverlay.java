@@ -7,6 +7,8 @@ import cf.wynntils.core.framework.rendering.SmartFontRenderer;
 import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.colors.CustomColor;
 import cf.wynntils.core.utils.Utils;
+import cf.wynntils.modules.core.config.CoreDBConfig;
+import cf.wynntils.modules.core.enums.UpdateStream;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
@@ -65,7 +67,12 @@ public class UpdateOverlay extends Overlay {
         drawRect(box, -170,0 - size, 0, 60 - size);
 
         drawString("Wynntils §av" + Reference.VERSION + " - §f" + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
-        drawString("A new update is available §ev" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
+        if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
+            drawString("§eBuild " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + " §fis available.", -165, 15 - size, CommonColors.WHITE);
+        } else {
+            drawString("A new update is available §ev" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
+        }
+
         drawString("Download automagically? §a(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
         drawRect(yes, -155,40 - size, -95, 55 - size);
@@ -111,7 +118,12 @@ public class UpdateOverlay extends Overlay {
             try{
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
 
-                String url = WebManager.getLatestJarFileUrl();
+                String url;
+                if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
+                    url = WebManager.getCuttingEdgeJarFileUrl();
+                } else {
+                    url = WebManager.getStableJarFileUrl();
+                }
                 String[] sUrl = url.split("/");
                 String jar_name = sUrl[sUrl.length - 1];
 

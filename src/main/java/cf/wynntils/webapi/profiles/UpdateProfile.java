@@ -1,7 +1,12 @@
 package cf.wynntils.webapi.profiles;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
+import cf.wynntils.core.utils.MD5Verification;
+import cf.wynntils.modules.core.config.CoreDBConfig;
+import cf.wynntils.modules.core.enums.UpdateStream;
 import cf.wynntils.modules.core.overlays.UpdateOverlay;
+import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.WebReader;
 
 public class UpdateProfile {
@@ -15,25 +20,22 @@ public class UpdateProfile {
     public UpdateProfile() {
         new Thread(() -> {
             try{
-
-                versions = new WebReader("http://api.wynntils.cf/versions");
-
-                try{
-                    Integer latest = Integer.valueOf(versions.get(Reference.MINECRAFT_VERSIONS).replace(".", "").replace("\n", "").replace("!", ""));
-                    Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
-
-                    if (!latest.equals(actual) && versions.get(Reference.MINECRAFT_VERSIONS).contains("!")) {
-                        UpdateOverlay.forceDownload();
+                MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
+                if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
+                    String cuttingEdgeMd5 = WebManager.getCuttingEdgeJarFileMD5();
+                    if (!md5Installed.getMd5().equals(cuttingEdgeMd5)) {
                         hasUpdate = true;
-                    }
-
-                    if (latest > actual) {
+                        latestUpdate = "B" + WebManager.getCuttingEdgeBuildNumber();
                         UpdateOverlay.reset();
-                        hasUpdate = true;
-                        latestUpdate = versions.get(Reference.MINECRAFT_VERSIONS);
                     }
-
-                }catch (Exception ex) { ex.printStackTrace(); }
+                } else {
+                    String stableMd5 = WebManager.getStableJarFileMD5();
+                    if (!md5Installed.getMd5().equals(stableMd5)) {
+                        hasUpdate = true;
+                        latestUpdate = WebManager.getStableJarVersion();
+                        UpdateOverlay.forceDownload();
+                    }
+                }
 
             }catch(Exception ex) { ex.printStackTrace(); }
         }).start();
