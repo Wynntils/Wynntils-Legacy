@@ -18,6 +18,7 @@ import cf.wynntils.core.utils.ReflectionFields;
 import cf.wynntils.modules.core.commands.CommandCompass;
 import cf.wynntils.modules.core.commands.CommandForceUpdate;
 import cf.wynntils.modules.core.commands.CommandToken;
+import cf.wynntils.modules.core.commands.CommandWynntils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -112,6 +113,7 @@ public class FrameworkManager {
     }
 
     public static void registerCommands() {
+        ClientCommandHandler.instance.registerCommand(new CommandWynntils());
         ClientCommandHandler.instance.registerCommand(new CommandToken());
         ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
         ClientCommandHandler.instance.registerCommand(new CommandCompass());
