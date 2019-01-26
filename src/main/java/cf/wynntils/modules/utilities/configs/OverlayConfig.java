@@ -13,10 +13,10 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-    @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display the current coordinates when there is nothing else to show")
+    @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display your coordinates when there is nothing else to show?")
     public boolean actionBarCoordinates = true;
 
-    @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar")
+    @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
 
     @SettingsInfo(name = "health_settings", displayPath = "Overlays/Health")
