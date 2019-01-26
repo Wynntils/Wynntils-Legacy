@@ -48,6 +48,7 @@ public class TabManager {
                     break;
                 case vanilla:
                     availableTabs.add(new ChatTab("All", ".*", "", false, 0));
+                    break;
             }
 
             for (int i = 0; i < oldTabs; i++) {
