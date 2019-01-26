@@ -36,6 +36,7 @@ public class OverlayConfig extends SettingsClass {
 
         public enum HealthTextures {
             Wynn,
+            Grune,
             a,
             b,
             c,

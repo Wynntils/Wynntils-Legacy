@@ -53,23 +53,24 @@ public class HealthBarOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         switch (OverlayConfig.Health.INSTANCE.healthTexture) {
-            case Wynn:
-                drawDefaultBar(-1, 8, 0, 17);
+            case Wynn: drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
-            case a: drawDefaultBar(-1,7,18,33);
+            case a: drawDefaultBar(-1,7,18,33, textColor);
                 break;
-            case b: drawDefaultBar(-1,8,34,51);
+            case b: drawDefaultBar(-1,8,34,51, textColor);
                 break;
-            case c: drawDefaultBar(-1,7,52,67);
+            case c: drawDefaultBar(-1,7,52,67, textColor);
                 break;
-            case d: drawDefaultBar(-1,7,68,83);
+            case d: drawDefaultBar(-1,7,68,83, textColor);
+                break;
+            case Grune: drawDefaultBar(-1, 8, 84, 99, CommonColors.GREEN);
                 break;
         }
     }
 
-    private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
+    private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         drawProgressBar(Textures.Overlays.bars_health, -81, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
-        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
+        drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
     }
 }
 
