@@ -16,7 +16,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?")
     public boolean addTimestampsToChat = false;
 
-    @Setting(displayName = "Chat Timestamp Format", description = "The format that should be used for chat timestamps. No effect if chat timestamps are disabled")
+    @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed? (This has no effect if chat timestamps are disabled.)")
     public String timestampFormat = "HH:mm:ss";
 
     @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?")
