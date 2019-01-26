@@ -839,21 +839,21 @@ public class QuestBookGUI extends GuiScreen {
 
                     if(mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
 //                        render.drawRect(new CustomColor(r, g, b, a-0.1f), maxX, maxY, minX, minY);
-                        GL11.glPushMatrix();
+                        GlStateManager.pushMatrix();
                         {
                             mc.getTextureManager().bindTexture(RESOURCE);
                             GlStateManager.color(r, g, b, 0.5f);
-                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                             float zoom = 2.0f;
                             float factor = (16.0f + zoom * 2) / 16.0f;
-                            GL11.glTranslatef(maxX - zoom, maxY - zoom, 0.0f);
-                            GL11.glScalef(factor, factor, 0);
+                            GlStateManager.translate(maxX - zoom, maxY - zoom, 0.0f);
+                            GlStateManager.scale(factor, factor, 0);
                             Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
                             Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                         }
-                        GL11.glPopMatrix();
+                        GlStateManager.popMatrix();
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }
@@ -861,21 +861,21 @@ public class QuestBookGUI extends GuiScreen {
                         hoveredText = pf.asStack().b;
                     }else{
 //                        render.drawRect(new CustomColor(r, g, b, a), maxX, maxY, minX, minY);
-                        GL11.glPushMatrix();
+                        GlStateManager.pushMatrix();
                         {
                             mc.getTextureManager().bindTexture(RESOURCE);
                             GlStateManager.color(r, g, b, 1.0f);
-                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                             float zoom = 2.0f;
                             float factor = (16.0f + zoom * 2) / 16.0f;
-                            GL11.glTranslatef(maxX - zoom, maxY - zoom, 0.0f);
-                            GL11.glScalef(factor, factor, 0);
+                            GlStateManager.translate(maxX - zoom, maxY - zoom, 0.0f);
+                            GlStateManager.scale(factor, factor, 0);
                             Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
                             Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                         }
-                        GL11.glPopMatrix();
+                        GlStateManager.popMatrix();
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }

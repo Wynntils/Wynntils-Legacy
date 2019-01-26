@@ -192,7 +192,7 @@ public class ScreenRenderer {
         float prevScale = scale;
         resetScale();
 
-        GL11.glEnable(GL_DEPTH_TEST);
+        GlStateManager.enableDepth();
         GlStateManager.colorMask(false, false, false, true);
         texture.bind();
         GlStateManager.glBegin(GL_QUADS);
