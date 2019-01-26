@@ -17,6 +17,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?")
     public boolean addTimestampsToChat = false;
 
+    @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?")
+    public boolean transparent = false;
+
     @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed? (This has no effect if chat timestamps are disabled.)")
     public String timestampFormat = "HH:mm:ss";
 
