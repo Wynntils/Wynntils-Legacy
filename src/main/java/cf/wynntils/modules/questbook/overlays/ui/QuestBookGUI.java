@@ -60,8 +60,6 @@ public class QuestBookGUI extends GuiScreen {
     boolean requestOpening = true;
     final ScreenRenderer render = new ScreenRenderer();
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
-
     long lastTick = 0;
 
     public QuestBookGUI() { }
@@ -838,44 +836,22 @@ public class QuestBookGUI extends GuiScreen {
 
 
                     if(mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
-//                        render.drawRect(new CustomColor(r, g, b, a-0.1f), maxX, maxY, minX, minY);
-                        GlStateManager.pushMatrix();
-                        {
-                            mc.getTextureManager().bindTexture(RESOURCE);
-                            GlStateManager.color(r, g, b, 0.5f);
-                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                            float zoom = 2.0f;
-                            float factor = (16.0f + zoom * 2) / 16.0f;
-                            GlStateManager.translate(maxX - zoom, maxY - zoom, 0.0f);
-                            GlStateManager.scale(factor, factor, 0);
-                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                        }
-                        GlStateManager.popMatrix();
+                        GlStateManager.color(r, g, b, 0.5f);
+                        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
+                        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }
 
                         hoveredText = pf.asStack().b;
                     }else{
-//                        render.drawRect(new CustomColor(r, g, b, a), maxX, maxY, minX, minY);
-                        GlStateManager.pushMatrix();
-                        {
-                            mc.getTextureManager().bindTexture(RESOURCE);
-                            GlStateManager.color(r, g, b, 1.0f);
-                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                            float zoom = 2.0f;
-                            float factor = (16.0f + zoom * 2) / 16.0f;
-                            GlStateManager.translate(maxX - zoom, maxY - zoom, 0.0f);
-                            GlStateManager.scale(factor, factor, 0);
-                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 16, 16, 16, 16);
-                            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                        }
-                        GlStateManager.popMatrix();
+                        GlStateManager.color(r, g, b, 1.0f);
+                        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                        render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
+                        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                         if(pf.asStack() != null) {
                             render.drawItemStack(pf.asStack().a, maxX, maxY, false);
                         }else { continue; }
