@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatManager {
@@ -46,7 +45,7 @@ public class ChatManager {
                     validDateFormat = false;
                 }
             }
-            if (!in.getUnformattedComponentText().isEmpty() && in instanceof TextComponentString) {
+            if (!in.getUnformattedComponentText().isEmpty()) {
                 ITextComponent newMessage = new TextComponentString("");
                 newMessage.setStyle(in.getStyle().createDeepCopy());
                 newMessage.appendSibling(in);
