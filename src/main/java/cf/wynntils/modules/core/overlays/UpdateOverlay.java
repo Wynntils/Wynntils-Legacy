@@ -122,8 +122,7 @@ public class UpdateOverlay extends Overlay {
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
                     url = WebManager.getCuttingEdgeJarFileUrl();
                 } else {
-                    return;
-//                    url = WebManager.getStableJarFileUrl();
+                    url = WebManager.getStableJarFileUrl();
                 }
                 String[] sUrl = url.split("/");
                 String jar_name = sUrl[sUrl.length - 1];

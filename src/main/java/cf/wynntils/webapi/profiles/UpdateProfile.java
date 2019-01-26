@@ -20,34 +20,20 @@ public class UpdateProfile {
     public UpdateProfile() {
         new Thread(() -> {
             try{
+                MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
-                    MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                     String cuttingEdgeMd5 = WebManager.getCuttingEdgeJarFileMD5();
                     if (!md5Installed.getMd5().equals(cuttingEdgeMd5)) {
-                        UpdateOverlay.reset();
                         hasUpdate = true;
                         latestUpdate = "B" + WebManager.getCuttingEdgeBuildNumber();
+                        UpdateOverlay.reset();
                     }
                 } else {
-                    versions = new WebReader("http://api.wynntils.cf/versions");
-
-                    try {
-                        Integer latest = Integer.valueOf(versions.get(Reference.MINECRAFT_VERSIONS).replace(".", "").replace("\n", "").replace("!", ""));
-                        Integer actual = Integer.valueOf(latestUpdate.replace(".", ""));
-
-                        if (!latest.equals(actual) && versions.get(Reference.MINECRAFT_VERSIONS).contains("!")) {
-                            UpdateOverlay.forceDownload();
-                            hasUpdate = true;
-                        }
-
-                        if (latest > actual) {
-                            UpdateOverlay.reset();
-                            hasUpdate = true;
-                            latestUpdate = versions.get(Reference.MINECRAFT_VERSIONS);
-                        }
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    String stableMd5 = WebManager.getStableJarFileMD5();
+                    if (!md5Installed.getMd5().equals(stableMd5)) {
+                        hasUpdate = true;
+                        latestUpdate = WebManager.getStableJarVersion();
+                        UpdateOverlay.forceDownload();
                     }
                 }
 

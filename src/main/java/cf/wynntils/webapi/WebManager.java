@@ -476,7 +476,7 @@ public class WebManager {
         capes = gson.fromJson(cape, type);
     }
 
-    public static String getCuttingEdgeJarFileUrl() throws Exception {
+    public static String getStableJarFileUrl() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
@@ -484,7 +484,7 @@ public class WebManager {
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
-    public static String getCuttingEdgeJarFileMD5() throws Exception {
+    public static String getStableJarFileMD5() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
@@ -492,8 +492,32 @@ public class WebManager {
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
     }
 
+    public static String getStableJarVersion() throws Exception {
+        URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=artifacts[fileName]").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        return main.getAsJsonObject().get("artifacts").getAsJsonObject().get("fileName").getAsString();
+    }
+
+    public static String getCuttingEdgeJarFileUrl() throws Exception {
+        URLConnection st = new URL(apiUrls.get("DevJars") + "api/json").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        return apiUrls.get("DevJars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
+    }
+
+    public static String getCuttingEdgeJarFileMD5() throws Exception {
+        URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
+        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
+    }
+
     public static int getCuttingEdgeBuildNumber() throws Exception {
-        URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=number").openConnection();
+        URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=number").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
