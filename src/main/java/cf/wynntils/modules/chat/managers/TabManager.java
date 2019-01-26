@@ -19,14 +19,43 @@ public class TabManager {
             availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "/g", false, 1));
             availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false, 2));
 
-            Collections.sort(availableTabs);
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
+            Collections.sort(availableTabs);
             ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
         }
 
         if(availableTabs.size() >= 2 && availableTabs.get(1).getRegex().equals("(&3\\[(.*?)\\])|(&3You were not in the territory)")) {
             ChatTab tab = availableTabs.get(1);
             tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", "/g", false, 1);
+        }
+    }
+
+    public static void registerPresets() {
+        if (availableTabs != null) {
+            int oldTabs = availableTabs.size();
+
+            switch (ChatConfig.INSTANCE.preset) {
+                case a:
+                    availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
+                    availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "/g", false, 1));
+                    availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false, 2));
+                    break;
+                case b:
+                    availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
+                    availableTabs.add(new ChatTab("Shouts", "((^&3&3.*)(shouts)*)", "", false, 1));
+                    availableTabs.add(new ChatTab("G/P", "((^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))", "/g", false, 2));
+                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", "/r", false, 3));
+                    break;
+                case vanilla:
+                    availableTabs.add(new ChatTab("All", ".*", "", false, 0));
+            }
+
+            for (int i = 0; i < oldTabs; i++) {
+                deleteTab(0);
+            }
+
+            Collections.sort(availableTabs);
+            saveConfigs();
         }
     }
 
