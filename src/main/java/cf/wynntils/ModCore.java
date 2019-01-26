@@ -6,6 +6,7 @@ import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.modules.ModuleManager;
 import cf.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -41,6 +42,11 @@ public class ModCore {
         WebManager.setupUserAccount();
 
         jarFile = e.getSourceFile();
+
+        Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+        if (Reference.developmentEnvironment)
+            Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
     }
 
     @Mod.EventHandler

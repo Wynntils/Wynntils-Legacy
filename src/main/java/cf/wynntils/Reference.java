@@ -42,5 +42,6 @@ public class Reference {
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
+    public static boolean developmentEnvironment = false;
 
 }
