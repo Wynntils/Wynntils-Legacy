@@ -5,6 +5,7 @@ import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
 import cf.wynntils.modules.chat.instances.ChatTab;
 import cf.wynntils.modules.chat.managers.ChatManager;
+import cf.wynntils.modules.chat.managers.TabManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +33,15 @@ public class ChatConfig extends SettingsClass {
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
+    @Setting(displayName = "Alter chat tab by presets", description = "Select a pre-made selection of tabs to be set.")
+    public Presets preset = Presets.a;
+
+    public enum Presets {
+        a,
+        b,
+        vanilla
+    }
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("timestampFormat")) {
@@ -41,6 +51,8 @@ public class ChatConfig extends SettingsClass {
             } catch (IllegalArgumentException ex) {
                 ChatManager.validDateFormat = false;
             }
+        } else if (name.equals("preset")) {
+            TabManager.registerPresets();
         }
     }
 
