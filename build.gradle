@@ -7,13 +7,11 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
-        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.1.1'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'java'
 
 def versionObj = new Version(major: 0, minor: 1, revision: 8)
@@ -82,21 +80,6 @@ shadowJar {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
-}
-
-curseforge {
-    apiKey = curseApiKey
-    project {
-        id = '303451'
-        changelog = 'check http://api.wynntils.cf/changelog.html'
-        releaseType = 'release'
-    }
-}
-
-task buildAndUpload {
-    dependsOn 'build'
-    dependsOn 'curseforge'
-    tasks.findByName('curseforge').mustRunAfter 'build'
 }
 
 class Version {
