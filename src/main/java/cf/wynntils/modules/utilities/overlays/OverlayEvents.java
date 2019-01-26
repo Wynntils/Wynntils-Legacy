@@ -139,6 +139,10 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("§dHorse despawned.");
                 e.setCanceled(true);
                 return;
+            } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Your horse is scared to come out right now, too many mobs are nearby.")) {
+                GameUpdateOverlay.queueMessage("§4Too many mobs nearby to spawn your horse");
+                e.setCanceled(true);
+                return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCombat) {
@@ -246,7 +250,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (Utils.stripColor(e.getMessage().getFormattedText()).matches("You still have \\d+ usused skill points! Click with your compass to use them!")) {
+            if (Utils.stripColor(e.getMessage().getFormattedText()).matches("You still have \\d+ unused skill points! Click with your compass to use them!")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage("§e" + res[3] + " §6skill points available.");
                 e.setCanceled(true);
