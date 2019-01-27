@@ -211,7 +211,7 @@ public class ChatOverlay extends GuiNewChat {
     private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean alreadyFound) {
         //spam filter
         if(tab.getLastMessage() != null) {
-            if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(chatComponent.getFormattedText())) {
+            if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(chatComponent.getFormattedText()) && chatLineId == 0) {
                 try {
                     List<ChatLine> oldLines = tab.getCurrentMessages();
 
