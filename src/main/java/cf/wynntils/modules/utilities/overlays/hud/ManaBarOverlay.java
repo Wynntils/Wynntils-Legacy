@@ -62,21 +62,27 @@ public class ManaBarOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         switch (OverlayConfig.Mana.INSTANCE.manaTexture) {
             case Wynn:
-                drawDefaultBar(-1, 8, 0, 17);
+                drawDefaultBar(-1, 8, 0, 17,textColor);
                 break;
-            case a: drawDefaultBar(-1,7,18,33);
+            case a: drawDefaultBar(-1,7,18,33,textColor);
                 break;
-            case b: drawDefaultBar(-1,8,34,51);
+            case b: drawDefaultBar(-1,8,34,51,textColor);
                 break;
-            case c: drawDefaultBar(-1,7,52,67);
+            case c: drawDefaultBar(-1,7,52,67,textColor);
                 break;
-            case d: drawDefaultBar(-1,7,68,83);
+            case d: drawDefaultBar(-1,7,68,83,textColor);
+                break;
+            case Brune:
+                drawDefaultBar(-1, 8, 83, 100,textColor);
+                break;
+            case Inverse:
+                drawDefaultBar(-1, 8, 100, 116,CommonColors.MAGENTA);
                 break;
         }
     }
 
-    private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
+    private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         drawProgressBar(Textures.Overlays.bars_mana, 81, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
-        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
+        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
     }
 }

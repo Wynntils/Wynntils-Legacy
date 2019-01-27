@@ -64,6 +64,8 @@ public class OverlayConfig extends SettingsClass {
 
         public enum ManaTextures {
             Wynn,
+            Brune,
+            Inverse,
             a,
             b,
             c,
