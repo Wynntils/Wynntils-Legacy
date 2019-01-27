@@ -34,6 +34,11 @@ public class ModCore {
     public void preInit(FMLPreInitializationEvent e) {
         Reference.VERSION = e.getModMetadata().version;
 
+        Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+        if (Reference.developmentEnvironment)
+            Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
+
         CoreManager.setupCore();
         WebManager.setupWebApi();
         ModuleManager.initModules();
@@ -42,11 +47,6 @@ public class ModCore {
         WebManager.setupUserAccount();
 
         jarFile = e.getSourceFile();
-
-        Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-
-        if (Reference.developmentEnvironment)
-            Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
     }
 
     @Mod.EventHandler
