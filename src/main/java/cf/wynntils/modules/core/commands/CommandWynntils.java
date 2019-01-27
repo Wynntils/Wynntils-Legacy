@@ -33,7 +33,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length >= 1) {
-            switch (String.join("", args)) {
+            switch (String.join("", args).toLowerCase()) {
                 case "help":
                     sender.sendMessage(new TextComponentString(
                             "§6Wynntils' command list: " +
