@@ -47,10 +47,10 @@ public class Textures {
     }
 
     public static class Map {
-        public static AssetsTexture circle_map;
         public static AssetsTexture wynn_map_textures;
         public static AssetsTexture paper_map_textures;
         public static AssetsTexture pointer;
+        public static AssetsTexture map_icons;
     }
 
     public static class UIs {
