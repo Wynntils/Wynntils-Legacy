@@ -19,10 +19,11 @@ You can also setup a test environment. Using IntelliJ, execute the ``genIntellij
  
 Pull Request
 ========
-
 All pull requests are welcome. We'll analyse it and if we determine it should a part of the mod, we'll implement it.
 
 We welcome all forms of assistance. =)
+
+<strong>If you would like to make a pull request, please compare and merge it with Wynntils:development rather than Wynntils:master.</strong>
 
 License
 ========
