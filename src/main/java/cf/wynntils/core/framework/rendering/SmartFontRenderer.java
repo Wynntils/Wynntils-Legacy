@@ -79,7 +79,7 @@ public class SmartFontRenderer extends FontRenderer {
 
     private float drawChars(String text, CustomColor color, boolean forceColor) {
         if(text.isEmpty()) return -CHAR_SPACING;
-        if(text.startsWith("§")) {
+        if(text.startsWith("§") && text.length() > 1) {
             Pair<String,CustomColor> sc = decodeColor(text.substring(1), color);
             return drawChars(sc.a,forceColor ? color : sc.b,forceColor);
         }

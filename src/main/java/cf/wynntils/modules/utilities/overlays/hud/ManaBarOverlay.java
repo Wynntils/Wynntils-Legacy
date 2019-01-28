@@ -79,7 +79,7 @@ public class ManaBarOverlay extends Overlay {
                 drawDefaultBar(-1, 7, 100, 115,CommonColors.MAGENTA);
                 break;
             case Aether:
-                drawDefaultBar(-1, 7, 117, 132,textColor);
+                drawDefaultBar(-1, 7, 116, 131,textColor);
                 break;
         }
     }
