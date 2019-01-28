@@ -37,6 +37,7 @@ public class OverlayConfig extends SettingsClass {
         public enum HealthTextures {
             Wynn,
             Grune,
+            Aether,
             a,
             b,
             c,
@@ -65,6 +66,7 @@ public class OverlayConfig extends SettingsClass {
         public enum ManaTextures {
             Wynn,
             Brune,
+            Aether,
             Inverse,
             a,
             b,

@@ -63,7 +63,10 @@ public class HealthBarOverlay extends Overlay {
                 break;
             case d: drawDefaultBar(-1,7,68,83, textColor);
                 break;
-            case Grune: drawDefaultBar(-1, 8, 84, 99, CommonColors.GREEN);
+            case Grune: drawDefaultBar(-1, 7, 84, 99, CommonColors.GREEN);
+                break;
+            case Aether:
+                drawDefaultBar(-1, 7, 101, 116, textColor);
                 break;
         }
     }
