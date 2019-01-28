@@ -9,6 +9,7 @@ import cf.wynntils.core.framework.settings.annotations.Setting;
 import cf.wynntils.core.framework.settings.annotations.SettingsInfo;
 import cf.wynntils.core.framework.settings.instances.SettingsClass;
 import cf.wynntils.modules.core.enums.UpdateStream;
+import cf.wynntils.webapi.WebManager;
 
 @SettingsInfo(name = "main", displayPath = "Core")
 public class CoreDBConfig extends SettingsClass {
@@ -26,6 +27,7 @@ public class CoreDBConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-
+        if (name.equals("updateStream"))
+            WebManager.checkForUpdates();
     }
 }

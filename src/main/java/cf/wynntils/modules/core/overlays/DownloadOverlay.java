@@ -44,7 +44,7 @@ public class DownloadOverlay extends Overlay {
         if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
             if(DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
                 if(timeToRestart == 0) {
-                    timeToRestart = System.currentTimeMillis() + 35000;
+                    timeToRestart = System.currentTimeMillis() + 10000;
                 }
                 if(timeToRestart - System.currentTimeMillis() <= 0) {
                     mc.shutdown();

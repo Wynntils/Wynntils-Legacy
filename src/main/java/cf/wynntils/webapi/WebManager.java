@@ -71,12 +71,6 @@ public class WebManager {
     }
 
     public static void setupWebApi() {
-        if (Reference.developmentEnvironment) {
-            Reference.LOGGER.info("An update check would have occurred, but you are in a development environment.");
-        } else {
-            updateProfile = new UpdateProfile();
-        }
-
         try{
             apiUrls = new WebReader("http://api.wynntils.cf/webapi");
         }catch (Exception ex) { ex.printStackTrace(); return; }
