@@ -164,10 +164,10 @@ public class ItemIdentificationOverlay implements Listener {
         boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
         boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
-        if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName())))) {
+        if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))))) {
             return;
         }
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(cleanse(stack.getDisplayName())));
+        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))));
 
         if (wItem.isIdentified()) {
             return;

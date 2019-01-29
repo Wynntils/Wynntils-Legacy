@@ -33,7 +33,7 @@ public class MapConfig extends SettingsClass {
     }
 
     public enum TextureType {
-        Paper, Wynn
+        Paper, Wynn, Gilded
     }
 
     @Override

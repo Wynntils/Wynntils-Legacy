@@ -89,16 +89,21 @@ public class MiniMapOverlay extends Overlay {
             drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
             resetRotation();
 
-            if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
-                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
+            if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
+                if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper) {
                     drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 217, 217);
-                else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn)
+                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     drawRect(Textures.Map.wynn_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 112, 112);
-            }else if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper)
+                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
+                    drawRect(Textures.Map.gilded_map_textures, -1, -1, mapSize+1, mapSize+1, 0, 263, 262, 524);
+                }
+            } else if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
+                if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper) {
                     drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 217, 217, 434, 438);
-                else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
+                } else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     //todo texture
+                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
+                    drawRect(Textures.Map.gilded_map_textures, -1, -1, mapSize+1, mapSize+1, 0, 0, 262, 262);
                 }
             }
 

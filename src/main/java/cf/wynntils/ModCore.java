@@ -34,6 +34,8 @@ public class ModCore {
     public void preInit(FMLPreInitializationEvent e) {
         Reference.VERSION = e.getModMetadata().version;
 
+        jarFile = e.getSourceFile();
+
         Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
         if (Reference.developmentEnvironment)
@@ -45,8 +47,6 @@ public class ModCore {
 
         FrameworkManager.startModules();
         WebManager.setupUserAccount();
-
-        jarFile = e.getSourceFile();
     }
 
     @Mod.EventHandler

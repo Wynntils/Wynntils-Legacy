@@ -13,14 +13,12 @@ import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.downloader.DownloaderManager;
 import cf.wynntils.webapi.downloader.enums.DownloadAction;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by HeyZeer0 on 03/02/2018.
@@ -44,14 +42,13 @@ public class UpdateOverlay extends Overlay {
     public static int size = 63;
     public static long timeout = 0;
 
-
     @Override
     public void render(RenderGameOverlayEvent.Post e) {
         if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
 
-        if(!WebManager.getUpdate().hasUpdate()) {
+        if(Reference.developmentEnvironment || !WebManager.getUpdate().hasUpdate()) {
             return;
         }
 
@@ -115,7 +112,7 @@ public class UpdateOverlay extends Overlay {
         if(download && disappear) {
             download = false;
 
-            try{
+            try {
                 File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
 
                 String url;
@@ -131,15 +128,19 @@ public class UpdateOverlay extends Overlay {
                 DownloaderManager.restartGameOnNextQueue();
                 DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
                     if(x) {
-                        try{
+                        try {
+                            String message = "§3An update to Wynntils (";
+                            message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jar_name.split("_")[0].split("-")[1] : "Build " + jar_name.split("_")[1].replace(".jar", "");
+                            message += ") has been downloaded, and will be applied when the game is restarted.";
+                            ModCore.mc().player.sendMessage(new TextComponentString(message));
                             copyUpdate(jar_name);
-                        }catch (Exception ex) {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                 });
 
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -156,29 +157,25 @@ public class UpdateOverlay extends Overlay {
         }
     }
 
-    public void copyUpdate(String jarName) throws Exception {
-        File oldJar = ModCore.jarFile;
+    public void copyUpdate(String jarName) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                Reference.LOGGER.info("Attempting to apply Wynntils update.");
+                File oldJar = ModCore.jarFile;
 
-        if (oldJar == null || !oldJar.exists() || oldJar.isDirectory()) {
-            TextComponentString message = new TextComponentString("The jar Forge provided Wynntils either no longer exists or is a directory, perhaps you renamed the file or you are a developer. ");
-            TextComponentString uwu = new TextComponentString("^_^");
-            uwu.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("You probably need to update the project")));
-            message.getStyle().setColor(TextFormatting.AQUA);
-            ModCore.mc().player.sendMessage(message.appendSibling(uwu));
-            return;
-        }
+                if (oldJar == null || !oldJar.exists() || oldJar.isDirectory()) {
+                    Reference.LOGGER.warn("Old jar file not found.");
+                    return;
+                }
 
-        File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
-        Utils.copyFile(newJar, oldJar);
-        TextComponentString message = new TextComponentString("Update (" + newJar.toString().replace("wynntils\\updates\\", "") + ") has been downloaded to: ");
-        TextComponentString file = new TextComponentString(oldJar.toString());
-        message.getStyle().setColor(TextFormatting.AQUA);
-        file.getStyle().setColor(TextFormatting.DARK_AQUA);
-        file.getStyle().setUnderlined(true);
-        file.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to open folder")));
-        file.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, oldJar.getParent()));
-        ModCore.mc().player.sendMessage(message.appendSibling(file));
-        newJar.delete();
+                File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
+                Utils.copyFile(newJar, oldJar);
+                newJar.delete();
+                Reference.LOGGER.info("Successfully applied Wynntils update.");
+            } catch (IOException ex) {
+                Reference.LOGGER.error("Unable to apply Wynntils update.", ex);
+            }
+        }));
     }
 
 }
