@@ -47,7 +47,7 @@ public class CurrentMusicDisplayer implements Listener {
     }
 
     @SubscribeEvent
-    public void onCLickInGameGui(GuiOverlapEvent.IngameMenuOverlap.MouseClicked e) {
+    public void onClickInGameGui(GuiOverlapEvent.IngameMenuOverlap.MouseClicked e) {
         if(!Reference.onWorld || !MusicConfig.INSTANCE.allowMusicModule) return;
 
         int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();

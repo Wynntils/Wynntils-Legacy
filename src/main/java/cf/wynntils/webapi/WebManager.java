@@ -47,6 +47,8 @@ public class WebManager {
 
     private static Gson gson = new Gson();
 
+    private static final int REQUEST_TIMEOUT_MILLIS = 5000;
+
     public static void reset() {
         apiUrls = null;
 
@@ -69,8 +71,6 @@ public class WebManager {
     }
 
     public static void setupWebApi() {
-        updateProfile = new UpdateProfile();
-
         try{
             apiUrls = new WebReader("http://api.wynntils.com/webapi");
         }catch (Exception ex) { ex.printStackTrace(); return; }
@@ -182,6 +182,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "territories.json"))).getAsJsonObject();
             } else {
@@ -224,6 +226,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "guilds.json"))).getAsJsonObject();
             } else {
@@ -258,6 +262,8 @@ public class WebManager {
     public static GuildProfile getGuildProfile(String guild) throws Exception {
         URLConnection st = new URL(apiUrls.get("GuildInfo") + guild).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
@@ -277,6 +283,8 @@ public class WebManager {
     public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         main.remove("request");
@@ -298,6 +306,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "items.json"))).getAsJsonObject().getAsJsonArray("items");
             } else {
@@ -335,6 +345,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_markers.json"))).getAsJsonObject().getAsJsonArray("locations");
             } else {
@@ -370,6 +382,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 json = IOUtils.toString(cacheApiResult(st.getInputStream(), "item_guesses.json"));
             } else {
@@ -403,6 +417,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_roles.json"))).getAsJsonObject();
             } else {
@@ -444,6 +460,8 @@ public class WebManager {
         try {
             URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
                 main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_models.json"))).getAsJsonObject();
             } else {
@@ -479,6 +497,8 @@ public class WebManager {
     public static String getStableJarFileUrl() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
@@ -487,6 +507,8 @@ public class WebManager {
     public static String getStableJarFileMD5() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
@@ -495,14 +517,18 @@ public class WebManager {
     public static String getStableJarVersion() throws Exception {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=artifacts[fileName]").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
-        return main.getAsJsonObject().get("artifacts").getAsJsonObject().get("fileName").getAsString();
+        return main.getAsJsonObject().get("artifacts").getAsJsonArray().get(0).getAsJsonObject().get("fileName").getAsString().split("_")[0].split("-")[1];
     }
 
     public static String getCuttingEdgeJarFileUrl() throws Exception {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return apiUrls.get("DevJars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
@@ -511,6 +537,8 @@ public class WebManager {
     public static String getCuttingEdgeJarFileMD5() throws Exception {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
@@ -519,6 +547,8 @@ public class WebManager {
     public static int getCuttingEdgeBuildNumber() throws Exception {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=number").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
         return main.getAsJsonObject().get("number").getAsInt();
@@ -527,6 +557,8 @@ public class WebManager {
     public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws Exception {
         URLConnection st = new URL(apiUrls.get("WynnSounds")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+        st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         ArrayList<MusicProfile> result = new ArrayList<>();
         JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonArray();
