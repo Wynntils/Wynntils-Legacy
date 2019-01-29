@@ -32,7 +32,7 @@ public class CommandToken extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         ITextComponent token = new TextComponentString(WynntilsAccount.getToken());
-        token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.cf/register.php?token=" + WynntilsAccount.getToken()));
+        token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.com/register.php?token=" + WynntilsAccount.getToken()));
         token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register account")));
         token.getStyle().setColor(TextFormatting.DARK_AQUA);
         token.getStyle().setUnderlined(true);
