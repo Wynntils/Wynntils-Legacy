@@ -42,7 +42,7 @@ public class TabManager {
                     break;
                 case b:
                     availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
-                    availableTabs.add(new ChatTab("Shouts", "((^&3&3.*)(shouts)*)", "", false, 1));
+                    availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", "", false, 1));
                     availableTabs.add(new ChatTab("G/P", "((^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))", "/g", false, 2));
                     availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", "/r", false, 3));
                     break;
