@@ -142,6 +142,12 @@ public class WorldMapOverlay extends GuiScreen {
                 case "Content_UltimateDiscovery":
                     texPosX = -100;
                     break;
+                case "Content_Cave":
+                    texPosX = -100;
+                    break;
+                case "Content_GrindSpot":
+                    texPosX = -100;
+                    break;
             }
 
             if(texPosX == -100) continue;
