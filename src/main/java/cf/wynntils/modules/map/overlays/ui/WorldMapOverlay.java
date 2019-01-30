@@ -123,7 +123,6 @@ public class WorldMapOverlay extends GuiScreen {
                 case "NPC_ItemIdentifier":
                     texPosX = 82; texPosZ = 20;
                     texSizeX = 96; texSizeZ = 27;
-                    zoomNeeded = 0;
                     break;
                 case "NPC_PowderMaster":
                     texPosX = 102; texPosZ = 0;
@@ -169,7 +168,7 @@ public class WorldMapOverlay extends GuiScreen {
                     texSizeX = 157; texSizeZ = 46;
                     zoomNeeded = 0;
                     break;
-                case "Crop Refinery":
+                case "Crop_Refinery":
                     texPosX = 149; texPosZ = 26;
                     texSizeX = 160; texSizeZ = 35;
                     zoomNeeded = 0;
