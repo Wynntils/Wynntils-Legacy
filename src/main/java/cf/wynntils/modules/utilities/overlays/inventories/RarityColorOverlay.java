@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.overlays.inventories;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
@@ -163,7 +164,21 @@ public class RarityColorOverlay implements Listener {
     }
 
     public void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
+        int playerInvSlotNumber = 0;
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
+            if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
+                playerInvSlotNumber++;
+                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
+                    continue;
+                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
+                    continue;
+                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !UtilitiesConfig.Items.INSTANCE.hotbarHighlight)
+                    continue;
+            } else {
+                if (!UtilitiesConfig.Items.INSTANCE.mainHighlightChest)
+                    continue;
+            }
+
             ItemStack is = s.getStack();
             String lore = Utils.getStringLore(is);
             String name = is.getDisplayName();
@@ -183,6 +198,8 @@ public class RarityColorOverlay implements Listener {
                 r = 0; g = 1; b = 0;
             } else if (lore.contains("§fNormal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
                 r = 1; g = 1; b = 1;
+            } else if (UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && guiContainer.getSlotUnderMouse() != null && lore.contains("Reward") && guiContainer.getSlotUnderMouse().slotNumber != s.slotNumber && guiContainer.getSlotUnderMouse().getStack().getDisplayName().equals(is.getDisplayName())) {
+                r = 0f; g = 1f; b = 0f;
             } else if (lore.contains("§6Epic") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.epicEffectsHighlight) {
                 r = 1; g = 0.666f; b = 0;
             } else if (lore.contains("§cGodly") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.godlyEffectsHighlight) {
