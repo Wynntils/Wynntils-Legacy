@@ -15,6 +15,8 @@ import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.framework.settings.ui.OverlayPositionsUI;
 import cf.wynntils.core.framework.settings.ui.SettingsUI;
 import cf.wynntils.core.framework.ui.UI;
+import cf.wynntils.modules.core.config.CoreDBConfig;
+import cf.wynntils.modules.core.enums.UpdateStream;
 import cf.wynntils.modules.questbook.configs.QuestBookConfig;
 import cf.wynntils.modules.questbook.enums.DiscoveryType;
 import cf.wynntils.modules.questbook.enums.QuestBookPage;
@@ -1333,7 +1335,7 @@ public class QuestBookGUI extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
         {
             ScreenRenderer.scale(0.7f);
-            render.drawString("v" + Reference.VERSION, (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            render.drawString(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Stable v" + Reference.VERSION : "CE Build " + (Reference.BUILD_NUMBER == -1 ? "?" : Reference.BUILD_NUMBER), (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             ScreenRenderer.resetScale();
         }
         ScreenRenderer.endGL();

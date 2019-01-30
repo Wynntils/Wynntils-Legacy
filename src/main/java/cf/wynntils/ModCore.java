@@ -33,6 +33,10 @@ public class ModCore {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         Reference.VERSION = e.getModMetadata().version;
+        String[] splitDescription = e.getModMetadata().description.split(" ");
+        try {
+            Reference.BUILD_NUMBER = Integer.valueOf(splitDescription[splitDescription.length - 1]);
+        } catch (NumberFormatException ignored) {}
 
         jarFile = e.getSourceFile();
 
