@@ -36,7 +36,7 @@ public class ChatConfig extends SettingsClass {
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter chat tab by presets", description = "Select a pre-made selection of tabs to be set.")
+    @Setting(displayName = "Alter chat tab by presets", description = "Select a pre-made selection of tabs to be set.\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
     public Presets preset = Presets.a;
 
     public enum Presets {
