@@ -12,10 +12,14 @@ import cf.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CommandWynntils extends CommandBase implements IClientCommand {
 
@@ -89,6 +93,14 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         } else {
             sender.sendMessage(new TextComponentString("§2Wynntils was up to date when last checked - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates now."));
         }
+    }
+    
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, "help", "discord", "version");
+        }
+        return Collections.emptyList();
     }
 
     @Override
