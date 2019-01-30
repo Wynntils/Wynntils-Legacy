@@ -3,32 +3,39 @@ package cf.wynntils.modules.map.overlays.objects;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.textures.AssetsTexture;
 import cf.wynntils.modules.map.instances.MapProfile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.function.Consumer;
 
-public class MapIcon extends GuiScreen {
+public class MapIcon {
 
     ScreenRenderer renderer;
 
     AssetsTexture texture;
-    int posX, posZ, size;
+    int posX, posZ;
     String name;
     int texPosX, texPosZ, texSizeX, texSizeZ;
+
+    float sizeX, sizeZ;
 
     float axisX = 0; float axisZ = 0;
     boolean shouldRender = false;
 
     Consumer<Integer> onClick;
 
-    public MapIcon(AssetsTexture texture, String name, int posX, int posZ, int size, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
+    int zoomNeded = -1000;
+
+    public MapIcon(AssetsTexture texture, String name, int posX, int posZ, float size, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
         this.texture = texture; this.name = name;
         this.posX = posX; this.posZ = posZ; this.texPosX = texPosX; this.texPosZ = texPosZ; this.texSizeX = texSizeX; this.texSizeZ = texSizeZ;
-        this.size = size;
+        this.sizeX = (texSizeX - texPosX) / size;
+        this.sizeZ = (texSizeZ - texPosZ) / size;
+    }
 
-        mc = Minecraft.getMinecraft();
-        fontRenderer = mc.fontRenderer;
+    public MapIcon setZoomNeded(int zoomNeded) {
+        this.zoomNeded = zoomNeded;
+
+        return this;
     }
 
     public MapIcon setRenderer(ScreenRenderer renderer) {
@@ -55,21 +62,32 @@ public class MapIcon extends GuiScreen {
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
-        return mouseX >= (axisX - size) && mouseX <= (axisX + size) && mouseY >= (axisZ - size) && mouseY <= (axisZ + size);
+        return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
     }
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, int zoom) {
         if(!shouldRender || renderer == null) return;
 
-        renderer.drawRectF(texture, axisX - size, axisZ - size, axisX + size, axisZ + size, texPosX, texPosZ, texSizeX, texSizeZ);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        float alpha = 1;
+        if(zoomNeded != -1000) {
+            alpha = 1 - ((zoom - zoomNeded) / 40.0f);
+
+            if(alpha <= 0) {
+                GlStateManager.popMatrix();
+                return;
+            }
+        }
+        GlStateManager.color(1, 1, 1, alpha);
+        renderer.drawRectF(texture, axisX - sizeX, axisZ - sizeZ, axisX + sizeX, axisZ + sizeZ, texPosX, texPosZ, texSizeX, texSizeZ);
+        GlStateManager.color(1,1,1,1);
+        GlStateManager.popMatrix();
     }
 
-    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(onClick != null && mouseOver(mouseX, mouseY))
             onClick.accept(mouseButton);
     }
-
 
 }

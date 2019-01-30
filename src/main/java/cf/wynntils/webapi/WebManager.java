@@ -96,6 +96,7 @@ public class WebManager {
             progressBar.step("Map Markers");
             ms = System.currentTimeMillis();
             updateMapMarkers();
+            updateMapRefineries();
             Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers in " + (System.currentTimeMillis() - ms) + "ms");
 
             progressBar.step("Item Guesses");
@@ -358,7 +359,7 @@ public class WebManager {
         
         if (useCache) {
             Reference.LOGGER.warn("Error downloading map marker data - attempting to use cached data");
-            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("items.json"))).getAsJsonObject().getAsJsonArray("items");
+            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("map_markers.json"))).getAsJsonObject().getAsJsonArray("locations");
             Reference.LOGGER.info("Successfully loaded cached map marker data!");
         }
 
@@ -368,6 +369,36 @@ public class WebManager {
         markers.addAll(gson.fromJson(jsonArray, type));
 
         mapMarkers = markers;
+    }
+
+    /**
+     * Update all Refineries MapMarkers on the {@link HashMap} mapMarkers
+     *
+     * @throws Exception
+     */
+    public static void updateMapRefineries() throws Exception {
+        JsonArray jsonArray = null;
+        boolean useCache = false;
+
+        try {
+            URLConnection st = new URL(apiUrls.get("RefineryLocations")).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+            jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_refineries.json"))).getAsJsonArray();
+        } catch (IOException ex) {
+            useCache = true;
+        }
+
+        if (useCache) {
+            Reference.LOGGER.warn("Error downloading map marker data - attempting to use cached data");
+            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("map_refineries.json"))).getAsJsonArray();
+            Reference.LOGGER.info("Successfully loaded cached map marker data!");
+        }
+
+        Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
+
+        mapMarkers.addAll(gson.fromJson(jsonArray, type));
     }
 
     /**

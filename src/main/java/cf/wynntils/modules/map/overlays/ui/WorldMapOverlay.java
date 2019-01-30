@@ -36,6 +36,8 @@ public class WorldMapOverlay extends GuiScreen {
             int texPosX = 0; int texPosZ = 0;
             int texSizeX = 16; int texSizeZ = 16;
 
+            int zoomNeeded = -1000;
+
             switch (mmp.getIcon()) {
                 case "Content_CorruptedDungeon":
                     texPosX = 0; texPosZ = 0;
@@ -48,18 +50,22 @@ public class WorldMapOverlay extends GuiScreen {
                 case "Merchant_Accessory":
                     texPosX = 48; texPosZ = 0;
                     texSizeX = 60; texSizeZ = 12;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Armour":
                     texPosX = 48; texPosZ = 13;
                     texSizeX = 62; texSizeZ = 26;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Dungeon":
                     texPosX = 61; texPosZ = 0;
                     texSizeX = 75; texSizeZ = 12;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Emerald":
                     texPosX = 63; texPosZ = 13;
                     texSizeX = 76; texSizeZ = 26;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Horse":
                     texPosX = 48; texPosZ = 27;
@@ -68,26 +74,32 @@ public class WorldMapOverlay extends GuiScreen {
                 case "Merchant_KeyForge":
                     texPosX = 0; texPosZ = 17;
                     texSizeX = 14; texSizeZ = 32;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Liquid":
                     texPosX = 15; texPosZ = 17;
                     texSizeX = 23; texSizeZ = 31;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Other":
                     texPosX = 0; texPosZ = 33;
                     texSizeX = 10; texSizeZ = 44;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Potion":
                     texPosX = 67; texPosZ = 27;
                     texSizeX = 81; texSizeZ = 44;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Powder":
                     texPosX = 35; texPosZ = 34;
                     texSizeX = 47; texSizeZ = 48;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Scroll":
                     texPosX = 11; texPosZ = 33;
                     texSizeX = 25; texSizeZ = 44;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Seasail":
                     texPosX = 82; texPosZ = 28;
@@ -96,14 +108,17 @@ public class WorldMapOverlay extends GuiScreen {
                 case "Merchant_Weapon":
                     texPosX = 76; texPosZ = 0;
                     texSizeX = 88; texSizeZ = 12;
+                    zoomNeeded = 0;
                     break;
                 case "NPC_Blacksmith":
                     texPosX = 63; texPosZ = 13;
                     texSizeX = 76; texSizeZ = 26;
+                    zoomNeeded = 0;
                     break;
                 case "NPC_GuildMaster":
                     texPosX = 89; texPosZ = 0;
                     texSizeX = 101; texSizeZ = 19;
+                    zoomNeeded = 0;
                     break;
                 case "NPC_ItemIdentifier":
                     texPosX = 82; texPosZ = 20;
@@ -112,14 +127,17 @@ public class WorldMapOverlay extends GuiScreen {
                 case "NPC_PowderMaster":
                     texPosX = 102; texPosZ = 0;
                     texSizeX = 114; texSizeZ = 14;
+                    zoomNeeded = 0;
                     break;
                 case "Special_FastTravel":
                     texPosX = 108; texPosZ = 16;
                     texSizeX = 126; texSizeZ = 28;
+                    zoomNeeded = 0;
                     break;
                 case "Special_LightRealm":
                     texPosX = 108; texPosZ = 29;
                     texSizeX = 120; texSizeZ = 45;
+                    zoomNeeded = 0;
                     break;
                 case "Special_RootsOfCorruption":
                     texPosX = 121; texPosZ = 29;
@@ -128,10 +146,32 @@ public class WorldMapOverlay extends GuiScreen {
                 case "painting":
                     texPosX = 115; texPosZ = 0;
                     texSizeX = 129; texSizeZ = 15;
+                    zoomNeeded = 0;
                     break;
                 case "tnt":
                     texPosX = 134; texPosZ = 17;
                     texSizeX = 148; texSizeZ = 34;
+                    zoomNeeded = 0;
+                    break;
+                case "Ore_Refinery":
+                    texPosX = 134; texPosZ = 35;
+                    texSizeX = 145; texSizeZ = 47;
+                    zoomNeeded = 0;
+                    break;
+                case "Fish_Refinery":
+                    texPosX = 149; texPosZ = 13;
+                    texSizeX = 160; texSizeZ = 25;
+                    zoomNeeded = 0;
+                    break;
+                case "Wood_Refinery":
+                    texPosX = 146; texPosZ = 36;
+                    texSizeX = 157; texSizeZ = 46;
+                    zoomNeeded = 0;
+                    break;
+                case "Crop_Refinery":
+                    texPosX = 149; texPosZ = 26;
+                    texSizeX = 160; texSizeZ = 35;
+                    zoomNeeded = 0;
                     break;
                 case "Content_Quest":
                     texPosX = -100;
@@ -152,7 +192,7 @@ public class WorldMapOverlay extends GuiScreen {
 
             if(texPosX == -100) continue;
 
-            mapIcons.add(new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(), 7, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer));
+            mapIcons.add(new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(), 2, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(zoomNeeded));
         }
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
@@ -204,7 +244,7 @@ public class WorldMapOverlay extends GuiScreen {
             GlStateManager.enableTexture2D();
 
             map.bindTexture(); // <--- binds the texture
-            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+            GlStateManager.color(1, 1, 1, 1f);
 
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             GlStateManager.glBegin(GL11.GL_QUADS); // <--- starts gl_quads
@@ -222,7 +262,7 @@ public class WorldMapOverlay extends GuiScreen {
         }catch (Exception ignored) {}
 
         //draw map icons
-        for(MapIcon c : mapIcons) c.drawScreen(mouseX, mouseY, partialTicks);
+        for(MapIcon c : mapIcons) c.drawScreen(mouseX, mouseY, partialTicks, zoom);
 
         minX = minX*map.getImageWidth(); maxX = maxX*map.getImageWidth();
         minZ = minZ*map.getImageHeight(); maxZ = maxZ*map.getImageHeight();
@@ -251,7 +291,7 @@ public class WorldMapOverlay extends GuiScreen {
 
         int mDwehll = Mouse.getEventDWheel();
         if(mDwehll >= 1) {
-            if(zoom -5 <= 0) return;
+            if(zoom -5 < 0) return;
             else {
                 zoom-=5;
                 updateCenterPosition(centerPositionX, centerPositionZ);
