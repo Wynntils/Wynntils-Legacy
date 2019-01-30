@@ -70,7 +70,7 @@ public class MapIcon {
 
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
-        float alpha = 0;
+        float alpha = 1;
         if(zoomNeded != -1000) {
             alpha = 1 - ((zoom - zoomNeded) / 40.0f);
 
