@@ -48,11 +48,12 @@ dependencies {
 
 processResources {
     inputs.property "description", "The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild()
+    inputs.property "version", versionObj.toVersion()
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
-        expand 'description':"The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild()
+        expand 'description':"The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild(), 'version':versionObj.toVersion()
     }
 }
 
@@ -78,10 +79,14 @@ task wrapper(type: Wrapper) {
 }
 
 class Version {
-    String major, minor, revision
+    static String major, minor, revision
 
     static String getBuild() {
         System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER") ?: "DEV"
+    }
+
+    String toVersion() {
+        "${major}.${minor}.${revision}"
     }
 
     String toString() {
