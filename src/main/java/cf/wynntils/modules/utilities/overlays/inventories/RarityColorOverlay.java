@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.overlays.inventories;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.framework.interfaces.Listener;
@@ -163,7 +164,21 @@ public class RarityColorOverlay implements Listener {
     }
 
     public void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
+        int playerInvSlotNumber = 0;
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
+            if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
+                playerInvSlotNumber++;
+                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
+                    continue;
+                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
+                    continue;
+                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !UtilitiesConfig.Items.INSTANCE.hotbarHighlight)
+                    continue;
+            } else {
+                if (!UtilitiesConfig.Items.INSTANCE.mainHighlightChest)
+                    continue;
+            }
+
             ItemStack is = s.getStack();
             String lore = Utils.getStringLore(is);
             String name = is.getDisplayName();
