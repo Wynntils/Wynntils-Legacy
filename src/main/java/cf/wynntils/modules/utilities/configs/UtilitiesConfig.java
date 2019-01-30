@@ -47,6 +47,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
 
+        @Setting(displayName = "Show player health bar", description = "Should the health bar of other warrers be displayed above their heads?")
+        public boolean warrerHealthBar = true;
+
     }
 
     @SettingsInfo(name = "data", displayPath = "")
