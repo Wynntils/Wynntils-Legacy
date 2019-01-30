@@ -19,6 +19,7 @@ public class KeyManager {
     private static float lastGamma = 1f;
 
     private static KeyHolder lockInventoryKey;
+    private static KeyHolder checkForUpdatesKey;
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
@@ -30,8 +31,7 @@ public class KeyManager {
             }
         });
 
-        CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
-
+        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", true, () -> {
             SettingsUI ui = new SettingsUI(ModCore.mc().currentScreen);
@@ -65,5 +65,7 @@ public class KeyManager {
         return lockInventoryKey;
     }
 
-
+    public static KeyHolder getCheckForUpdatesKey() {
+        return checkForUpdatesKey;
+    }
 }
