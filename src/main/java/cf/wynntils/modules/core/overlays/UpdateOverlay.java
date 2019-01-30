@@ -48,7 +48,7 @@ public class UpdateOverlay extends Overlay {
             return;
         }
 
-        if(Reference.developmentEnvironment || !WebManager.getUpdate().hasUpdate()) {
+        if(Reference.developmentEnvironment || WebManager.getUpdate() == null || !WebManager.getUpdate().hasUpdate()) {
             return;
         }
 
