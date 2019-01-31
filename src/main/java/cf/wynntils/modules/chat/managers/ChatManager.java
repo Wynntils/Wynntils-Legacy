@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatManager {
@@ -31,7 +32,7 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
     
     private static final Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
-
+    private static final Pattern coordinateReg = Pattern.compile("(-?\d{1,5}[ ,]{1,2})(\d{1,3}[ ,]{1,2})?(-?\d{1,5})");
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
         boolean cancel = false;
@@ -145,7 +146,7 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
         
-        if (inviteReg.matcher(in.getFormattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             String inviteText = in.getUnformattedText();
             List<ITextComponent> partyInvite = new ArrayList<>();
             ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
@@ -164,6 +165,31 @@ public class ChatManager {
             partyInvite.add(endText);
             in.getSiblings().clear();
             in.getSiblings().addAll(partyInvite);
+        }
+
+        if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
+            String crdText = in.getFormattedText();
+            Matcher m = coordinateReg.matcher(crdText); m.find();
+            String color = crdText.substring(crdText.substring(0, m.start()).lastIndexOf("§"), crdText.substring(0, m.start()).lastIndexOf("§") + 2);
+            String command = "/compass ";
+            List<ITextComponent> crdMsg = new ArrayList<>();
+            ITextComponent preText = new TextComponentString(crdText.substring(0, m.start()));
+
+            crdMsg.add(preText);
+            command += crdText.substring(m.start(1), m.end(1)).replaceAll("[ ,]", "") + " ";
+            command += crdText.substring(m.start(3), m.end(3)).replaceAll("[ ,]", "");
+
+            ITextComponent clickableText = new TextComponentString(crdText.substring(m.start(), m.end()));
+            clickableText.getStyle()
+                    .setColor(TextFormatting.DARK_AQUA)
+                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command)));
+            crdMsg.add(clickableText);
+            ITextComponent endText = new TextComponentString(color + crdText.substring(m.end()));
+            crdMsg.add(endText);
+
+            in.getSiblings().clear();
+            in.getSiblings().addAll(crdMsg);
         }
 
         return new Pair<>(in, cancel);

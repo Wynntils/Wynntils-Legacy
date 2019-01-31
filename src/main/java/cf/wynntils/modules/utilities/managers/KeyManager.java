@@ -39,7 +39,7 @@ public class KeyManager {
             ModCore.mc().displayGuiScreen(ui);
         });
 
-        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_PERIOD, "Debug", true, () -> {
+        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_GRAVE, "Debug", true, () -> {
             WebManager.reset();
             WebManager.setupWebApi();
         });
@@ -49,14 +49,14 @@ public class KeyManager {
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
 
         CoreModule.getModule().registerKeyBinding("Zoom in", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
-            if (MapConfig.INSTANCE.mapZoom <= 95) {
-                MapConfig.INSTANCE.mapZoom += 5;
+            if (MapConfig.INSTANCE.mapZoom >= 5) {
+                MapConfig.INSTANCE.mapZoom -= 5;
             }
         });
 
         CoreModule.getModule().registerKeyBinding("Zoom out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
-            if (MapConfig.INSTANCE.mapZoom >= 5) {
-                MapConfig.INSTANCE.mapZoom -= 5;
+            if (MapConfig.INSTANCE.mapZoom <= 95) {
+                MapConfig.INSTANCE.mapZoom += 5;
             }
         });
     }

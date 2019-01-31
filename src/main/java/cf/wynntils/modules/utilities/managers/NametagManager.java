@@ -4,6 +4,7 @@
 
 package cf.wynntils.modules.utilities.managers;
 
+import cf.wynntils.Reference;
 import cf.wynntils.core.framework.instances.PlayerInfo;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -18,7 +19,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
@@ -133,6 +133,10 @@ public class NametagManager {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
+                    if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) {
+                        drawNameplate(renderManager.getFontRenderer(), getPlayerHPBar((EntityPlayer) entityIn), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    }
                     if (UtilitiesConfig.INSTANCE.showArmors) {
                         for (ItemStack is : entityIn.getEquipmentAndArmor()) {
                             if(!is.hasDisplayName() || !WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
@@ -231,4 +235,11 @@ public class NametagManager {
         GlStateManager.popMatrix();
     }
 
+    private static String getPlayerHPBar(EntityPlayer entityPlayer) {
+        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 15 ); //0.3f for better experience rounding off near full hp
+        String healthBar = "§4[§c|||||||||||||||§4]";
+        healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + "§8" + healthBar.substring(5 + Math.min(health, 15));
+        if (health < 8) { healthBar = healthBar.replace('c', '6'); }
+        return healthBar;
+    }
 }

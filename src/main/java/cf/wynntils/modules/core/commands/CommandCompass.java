@@ -12,6 +12,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
@@ -143,6 +145,22 @@ public class CommandCompass extends CommandBase implements IClientCommand {
         } else {
             sender.sendMessage(new TextComponentString("§4Invalid arguments: /compass [<x> <z> | <direction>]"));
         }
+    }
+    
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args,
+                    "north",
+                    "northeast",
+                    "northwest",
+                    "south",
+                    "southeast",
+                    "southwest",
+                    "east",
+                    "west");
+        }
+        return Collections.emptyList();
     }
 
     @Override

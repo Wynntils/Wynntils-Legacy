@@ -19,8 +19,8 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Show Server TPS in the Tab Menu", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
-    public boolean showTPSCount = true;
+    /*@Setting(displayName = "Show Server TPS in the Tab Menu", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
+    public boolean showTPSCount = true;*/ //Just hid this option - perhaps for future optimizations.
 
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
     public boolean hideNametags = true;
@@ -46,6 +46,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
+
+        @Setting(displayName = "Show player health bar", description = "Should the health bar of other warrers be displayed above their heads?")
+        public boolean warrerHealthBar = true;
 
     }
 
