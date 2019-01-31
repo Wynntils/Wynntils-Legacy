@@ -47,10 +47,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                             "§6Wynntils' command list: " +
                             "\n§8-wynntils§c help§7 Shows a list of all Wynntils' commands." +
                             "\n§8-wynntils§c discord§7 Provides you with an invite to our Discord." +
+                            "\n§8-wynntils§c version§7 Show Wynntils' version." +
                             "\n§8-§ctoken§7 Provides you with a clickable token to create a Wynntils account for capes." +
                             "\n§8-§cforceupdate§7 Downloads & installs the latest successful build." +
-                            "\n§8-§ccompass§7 Makes your compass point towards an x & z or a direction (e.g. north, se)." +
-                            "\n§8-§cversion§7 Show Wynntils' version."
+                            "\n§8-§ccompass§7 Makes your compass point towards an x & z or a direction (e.g. north, se)."
                     ));
                     break;
                     /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
@@ -88,7 +88,9 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString("§6Using cutting edge release stream: §eBuild " + Reference.BUILD_NUMBER));
             }
         }
-        if (WebManager.getUpdate().hasUpdate()) {
+        if (WebManager.getUpdate().updateCheckFailed()) {
+            sender.sendMessage(new TextComponentString("§4Wynntils failed the update check - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to try again."));
+        } else if (WebManager.getUpdate().hasUpdate()) {
             sender.sendMessage(new TextComponentString("§4Wynntils is not up to date - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to update now."));
         } else {
             sender.sendMessage(new TextComponentString("§2Wynntils was up to date when last checked - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates now."));

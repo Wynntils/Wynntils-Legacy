@@ -12,7 +12,7 @@ import cf.wynntils.webapi.WebReader;
 public class UpdateProfile {
 
     boolean hasUpdate = false;
-    boolean emergencyUpdate = false;
+    boolean updateCheckFailed = false;
     String latestUpdate = Reference.VERSION;
 
     private WebReader versions;
@@ -37,7 +37,10 @@ public class UpdateProfile {
                     }
                 }
 
-            }catch(Exception ex) { ex.printStackTrace(); }
+            }catch(Exception ex) {
+                ex.printStackTrace();
+                updateCheckFailed = true;
+            }
         }).start();
     }
 
@@ -54,4 +57,7 @@ public class UpdateProfile {
         return latestUpdate;
     }
 
+    public boolean updateCheckFailed() {
+        return updateCheckFailed;
+    }
 }
