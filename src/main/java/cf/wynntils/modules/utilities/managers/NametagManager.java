@@ -202,7 +202,8 @@ public class NametagManager {
         GlStateManager.depthMask(false);
 
         if (!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
-            GlStateManager.disableDepth();
+            if (Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f)
+                GlStateManager.disableDepth();
         }
 
         if (!UtilitiesConfig.INSTANCE.hideNametagBox) {
