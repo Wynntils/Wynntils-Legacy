@@ -51,14 +51,16 @@ public class MapIcon {
     }
 
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ) {
-        axisX = ((mp.getTextureXPosition(posX) - minX) / (maxX - minX));
-        axisZ = ((mp.getTextureZPosition(posZ) - minZ) / (maxZ - minZ));
+        float axisX = ((mp.getTextureXPosition(posX) - minX) / (maxX - minX));
+        float axisZ = ((mp.getTextureZPosition(posZ) - minZ) / (maxZ - minZ));
 
         if(axisX > 0 && axisX < 1 && axisZ > 0 && axisZ < 1) {
             shouldRender = true;
             axisX = width * axisX;
             axisZ = height * axisZ;
-        }
+
+            this.axisX = axisX; this.axisZ = axisZ;
+        }else shouldRender = false;
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
