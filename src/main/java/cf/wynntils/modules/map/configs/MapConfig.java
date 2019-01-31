@@ -21,7 +21,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Map Zoom", description = "How far zoomed in should the map be?")
+    @Setting(displayName = "Map Zoom", description = "How far zoomed out should the map be?")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
