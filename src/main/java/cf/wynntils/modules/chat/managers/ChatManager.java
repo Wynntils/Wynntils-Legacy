@@ -32,7 +32,7 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
     
     private static final Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
-    private static final Pattern coordinateReg = Pattern.compile("([0-9-]{1,5}[ ,]{1,2})([0-9]{1,3}[ ,]{1,2})?([0-9-]{1,5})");
+    private static final Pattern coordinateReg = Pattern.compile("(-?\d{1,5}[ ,]{1,2})(\d{1,3}[ ,]{1,2})?(-?\d{1,5})");
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
         boolean cancel = false;
