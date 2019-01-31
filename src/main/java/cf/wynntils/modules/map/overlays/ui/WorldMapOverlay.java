@@ -216,7 +216,7 @@ public class WorldMapOverlay extends GuiScreen {
         maxX = map.getTextureXPosition(centerPositionX) + ((width)/2) + (width*zoom/100); // <--- max texture x point
         maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2) + (height*zoom/100); // <--- max texture z point
 
-        mapIcons.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ));
+        mapIcons.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
     }
 
     int lastMouseX = -Integer.MAX_VALUE;
@@ -262,7 +262,7 @@ public class WorldMapOverlay extends GuiScreen {
         }catch (Exception ignored) {}
 
         //draw map icons
-        for(MapIcon c : mapIcons) c.drawScreen(mouseX, mouseY, partialTicks, zoom);
+        mapIcons.forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks));
 
         minX = minX*map.getImageWidth(); maxX = maxX*map.getImageWidth();
         minZ = minZ*map.getImageHeight(); maxZ = maxZ*map.getImageHeight();
@@ -279,6 +279,8 @@ public class WorldMapOverlay extends GuiScreen {
             renderer.drawRectF(Textures.Map.pointer, playerPostionX - 5f, playerPostionZ - 5f, playerPostionX + 5f, playerPostionZ + 5f, 0f, 0f, 5f, 5f);
             ScreenRenderer.resetRotation();
         }
+
+        mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
 
         ScreenRenderer.endGL();
     }

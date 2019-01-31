@@ -1,6 +1,8 @@
 package cf.wynntils.modules.map.overlays.objects;
 
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
+import cf.wynntils.core.framework.rendering.SmartFontRenderer;
+import cf.wynntils.core.framework.rendering.colors.CommonColors;
 import cf.wynntils.core.framework.rendering.textures.AssetsTexture;
 import cf.wynntils.modules.map.instances.MapProfile;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,6 +26,7 @@ public class MapIcon {
     Consumer<Integer> onClick;
 
     int zoomNeded = -1000;
+    float alpha = 1;
 
     public MapIcon(AssetsTexture texture, String name, int posX, int posZ, float size, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
         this.texture = texture; this.name = name;
@@ -50,7 +53,16 @@ public class MapIcon {
         return this;
     }
 
-    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ) {
+    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
+        if(zoomNeded != -1000) {
+            alpha = 1 - ((zoom - zoomNeded) / 40.0f);
+
+            if(alpha <= 0) {
+                shouldRender = false;
+                return;
+            }
+        }
+
         float axisX = ((mp.getTextureXPosition(posX) - minX) / (maxX - minX));
         float axisZ = ((mp.getTextureZPosition(posZ) - minZ) / (maxZ - minZ));
 
@@ -67,24 +79,23 @@ public class MapIcon {
         return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, int zoom) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if(!shouldRender || renderer == null) return;
 
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
-        float alpha = 1;
-        if(zoomNeded != -1000) {
-            alpha = 1 - ((zoom - zoomNeded) / 40.0f);
-
-            if(alpha <= 0) {
-                GlStateManager.popMatrix();
-                return;
-            }
-        }
         GlStateManager.color(1, 1, 1, alpha);
         renderer.drawRectF(texture, axisX - sizeX, axisZ - sizeZ, axisX + sizeX, axisZ + sizeZ, texPosX, texPosZ, texSizeX, texSizeZ);
         GlStateManager.color(1,1,1,1);
+
         GlStateManager.popMatrix();
+    }
+
+    public void drawHovering(int mouseX, int mouseY, float partialTicks) {
+        if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
+
+        GlStateManager.color(1, 1, 1, 1);
+        renderer.drawString(name, (int)(axisX), (int)(axisZ)-13, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
