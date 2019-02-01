@@ -77,6 +77,18 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "hotbar_settings", displayPath = "Overlays/Hotbar")
+    public static class Hotbar extends SettingsClass {
+        public static Hotbar INSTANCE;
+
+        @Setting(displayName = "Hotbar Texture", description = "What texture should be used for the hotbar?")
+        public HotbarTextures hotbarTexture = HotbarTextures.Wynn;
+
+        public enum HotbarTextures {
+            Wynn
+        }
+    }
+
     @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
