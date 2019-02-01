@@ -63,8 +63,8 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Emerald":
-                    texPosX = 63; texPosZ = 13;
-                    texSizeX = 76; texSizeZ = 26;
+                    texPosX = 121; texPosZ = 41;
+                    texSizeX = 132; texSizeZ = 52;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Horse":

@@ -22,6 +22,9 @@ public class UtilitiesConfig extends SettingsClass {
     /*@Setting(displayName = "Show Server TPS in the Tab Menu", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
     public boolean showTPSCount = true;*/ //Just hid this option - perhaps for future optimizations.
 
+    @Setting(displayName = "Hide Potion Gui", description = "Should the potion effect (black squares) be hidden?")
+    public boolean hidePotionGui = true;
+
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
     public boolean hideNametags = true;
 
