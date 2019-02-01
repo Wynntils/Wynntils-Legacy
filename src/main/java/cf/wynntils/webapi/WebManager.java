@@ -38,6 +38,7 @@ public class WebManager {
     private static ArrayList<UUID> moderators = new ArrayList<>();
     private static ArrayList<UUID> premiums = new ArrayList<>();
     private static ArrayList<UUID> users = new ArrayList<>();
+    private static ArrayList<UUID> donators = new ArrayList<>();
 
     private static ArrayList<UUID> ears = new ArrayList<>();
     private static ArrayList<UUID> elytras = new ArrayList<>();
@@ -155,6 +156,10 @@ public class WebManager {
 
     public static boolean isPremium(UUID uuid) {
         return premiums.contains(uuid);
+    }
+
+    public static boolean isDonator(UUID uuid) {
+        return donators.contains(uuid);
     }
 
     public static boolean hasElytra(UUID uuid) {
@@ -483,6 +488,9 @@ public class WebManager {
 
         JsonArray user = main.getAsJsonArray("normalUsers");
         users = gson.fromJson(user, type);
+
+        JsonArray donator = main.getAsJsonArray("donatorUsers");
+        donators = gson.fromJson(donator, type);
     }
 
     public static void updateUsersModels() throws Exception {

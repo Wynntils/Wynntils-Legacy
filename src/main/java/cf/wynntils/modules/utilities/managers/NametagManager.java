@@ -42,6 +42,8 @@ public class NametagManager {
                 r = 0.75f; g = 0; b = 0.75f;
             }else if(WebManager.isHelper(entity.getUniqueID())) {
                 r = 1f; g = 1; b = 0.25f;
+            } else if (WebManager.isDonator(entity.getUniqueID())) {
+                r = 0.29f; g = 0; b = 0.51f;
             }
         }else if(!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) {
             return false;
@@ -131,6 +133,9 @@ public class NametagManager {
                         i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
+                    } else if (WebManager.isDonator(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), "\u00A7dWynntils Donator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) {
