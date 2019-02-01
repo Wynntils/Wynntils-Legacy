@@ -176,7 +176,6 @@ public class WorldMapOverlay extends GuiScreen {
                 case "MarketPlace":
                     texPosX = 147; texPosZ = 0;
                     texSizeX = 159; texSizeZ = 12;
-                    zoomNeeded = 0;
                     break;
                 case "Content_Quest":
                     texPosX = -100;
