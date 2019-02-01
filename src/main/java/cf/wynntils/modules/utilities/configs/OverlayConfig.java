@@ -82,9 +82,10 @@ public class OverlayConfig extends SettingsClass {
         public static Hotbar INSTANCE;
 
         @Setting(displayName = "Hotbar Texture", description = "What texture should be used for the hotbar?")
-        public HotbarTextures hotbarTexture = HotbarTextures.Wynn;
+        public HotbarTextures hotbarTexture = HotbarTextures.Resource_Pack;
 
         public enum HotbarTextures {
+            Resource_Pack,
             Wynn
         }
     }
