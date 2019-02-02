@@ -17,6 +17,9 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Follow Player Rotation", description = "Should the Map follow the Player's Rotation?")
     public boolean followPlayerRotation = true;
 
+    @Setting(displayName = "Show Compass Directions", description = "Should compass directions (N, S, E, W) been shown on the map")
+    public boolean showCompass = true;
+
     @Setting(displayName = "Map Size", description = "How large should the Map be?")
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
