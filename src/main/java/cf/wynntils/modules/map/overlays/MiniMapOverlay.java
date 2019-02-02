@@ -113,7 +113,7 @@ public class MiniMapOverlay extends Overlay {
             if (MapConfig.INSTANCE.showCompass) {
                 if (MapConfig.INSTANCE.followPlayerRotation) {
                     float mapCentre = (float) mapSize / 2f;
-                    float mapCentreSquare = mapCentre * (float) Math.sqrt(2);
+                    float mapCentreSquare = mapCentre * MathHelper.SQRT_2;
                     if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                         drawString("N", mapCentre - 2 + mapCentre * (float) Math.cos(Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) - (Math.PI / 2)), mapCentre - 3 + mapCentre * (float) Math.sin(Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) - (Math.PI / 2)), CommonColors.WHITE);
                         drawString("E", mapCentre - 2 + mapCentre * (float) Math.cos(Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw))), mapCentre - 3 + mapCentre * (float) Math.sin(Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw))), CommonColors.WHITE);
