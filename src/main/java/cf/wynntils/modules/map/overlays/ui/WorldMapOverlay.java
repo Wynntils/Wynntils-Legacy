@@ -97,13 +97,13 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Scroll":
-                    texPosX = 11; texPosZ = 33;
-                    texSizeX = 25; texSizeZ = 44;
+                    texPosX = 16; texPosZ = 32;
+                    texSizeX = 32; texSizeZ = 47;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Seasail":
                     texPosX = 82; texPosZ = 28;
-                    texSizeX = 107; texSizeZ = 44;
+                    texSizeX = 98; texSizeZ = 44;
                     break;
                 case "Merchant_Weapon":
                     texPosX = 76; texPosZ = 0;
@@ -125,13 +125,13 @@ public class WorldMapOverlay extends GuiScreen {
                     texSizeX = 96; texSizeZ = 27;
                     break;
                 case "NPC_PowderMaster":
-                    texPosX = 102; texPosZ = 0;
-                    texSizeX = 114; texSizeZ = 14;
+                    texPosX = 0; texPosZ = 45;
+                    texSizeX = 15; texSizeZ = 60;
                     zoomNeeded = 0;
                     break;
                 case "Special_FastTravel":
-                    texPosX = 108; texPosZ = 16;
-                    texSizeX = 126; texSizeZ = 28;
+                    texPosX = 212; texPosZ = 0;
+                    texSizeX = 228; texSizeZ = 16;
                     zoomNeeded = 0;
                     break;
                 case "Special_LightRealm":
@@ -174,23 +174,29 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "MarketPlace":
-                    texPosX = 147; texPosZ = 0;
-                    texSizeX = 159; texSizeZ = 12;
+                    texPosX = 206; texPosZ = 34;
+                    texSizeX = 222; texSizeZ = 50;
                     break;
                 case "Content_Quest":
-                    texPosX = -100;
+                    texPosX = 227; texPosZ = 17;
+                    texSizeX = 243; texSizeZ = 33;
                     break;
                 case "Special_Rune":
                     texPosX = -100;
                     break;
                 case "Content_UltimateDiscovery":
-                    texPosX = -100;
+                    texPosX = 229; texPosZ = 0;
+                    texSizeX = 245; texSizeZ = 16;
                     break;
                 case "Content_Cave":
-                    texPosX = -100;
+                    texPosX = 212; texPosZ = 17;
+                    texSizeX = 226; texSizeZ = 33;
+                    zoomNeeded = 0;
                     break;
                 case "Content_GrindSpot":
-                    texPosX = -100;
+                    texPosX = 190; texPosZ = 0;
+                    texSizeX = 200; texSizeZ = 10;
+                    zoomNeeded = 0;
                     break;
             }
 
