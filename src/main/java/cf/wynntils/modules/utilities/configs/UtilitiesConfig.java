@@ -72,6 +72,8 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
+        @Setting(displayName = "Filter for ingredients", description = "Should an ingredients or crafting items filter be available?")
+        public boolean filterEnabled = true;
 
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
         public boolean mainHighlightChest = true;

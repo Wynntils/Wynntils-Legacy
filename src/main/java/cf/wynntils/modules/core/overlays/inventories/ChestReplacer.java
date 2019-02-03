@@ -6,6 +6,9 @@ package cf.wynntils.modules.core.overlays.inventories;
 
 import cf.wynntils.core.events.custom.GuiOverlapEvent;
 import cf.wynntils.core.framework.FrameworkManager;
+import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
+import cf.wynntils.modules.utilities.overlays.inventories.RarityColorOverlay;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -18,6 +21,7 @@ public class ChestReplacer extends GuiChest {
 
     IInventory lowerInv;
     IInventory upperInv;
+    GuiButton professionsButton;
 
     public ChestReplacer(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
@@ -32,6 +36,16 @@ public class ChestReplacer extends GuiChest {
 
     public IInventory getUpperInv() {
         return upperInv;
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        if (UtilitiesConfig.Items.INSTANCE.filterEnabled) {
+            RarityColorOverlay.setProfessionFilter("-");
+            this.professionsButton = new GuiButton(11, this.guiLeft - 20, this.guiTop + 15, 18, 18, "-");
+            this.buttonList.add(this.professionsButton);
+        }
     }
 
     @Override
@@ -65,4 +79,25 @@ public class ChestReplacer extends GuiChest {
         super.renderToolTip(stack, x, y);
     }
 
+    @Override
+    public void actionPerformed(GuiButton btn) throws IOException {
+        if (btn.id == 11) {
+            char c = btn.displayString.charAt(0);
+            if (c == '-') {
+                c = 'Ⓐ';
+            } else if ((c == 'Ⓐ' || c == 'Ⓘ')) {
+                c += 3;
+            } else if ((c == 'Ⓒ' || c == 'Ⓙ')) {
+                c += 2;
+            } else if (c == 'Ⓛ'){
+                c = '-';
+            } else {
+                c += 1;
+            }
+            btn.displayString = Character.toString(c);
+            RarityColorOverlay.setProfessionFilter(btn.displayString);
+            return;
+        }
+        super.actionPerformed(btn);
+    }
 }
