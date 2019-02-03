@@ -15,6 +15,7 @@ import cf.wynntils.core.framework.rendering.textures.Textures;
 import cf.wynntils.core.utils.Utils;
 import cf.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -33,6 +34,7 @@ import org.lwjgl.opengl.GL11;
 public class RarityColorOverlay implements Listener {
 
     private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
+    private static String professionFilter = "-";
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
@@ -186,6 +188,8 @@ public class RarityColorOverlay implements Listener {
 
             if (is.getCount() == 0) {
                 continue;
+            } else if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
+                r = 0.078f; g = 0.35f; b = 0.8f;
             } else if (lore.contains("§bLegendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = 0; g = 1; b = 1;
             } else if (lore.contains("§5Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
@@ -210,11 +214,11 @@ public class RarityColorOverlay implements Listener {
                 r = 1; g = 1; b = 1;
             } else if (lore.contains("§4 Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
                 r = 0; g = 0; b = 0;
-            } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+            } else if (name.endsWith("§6 [§e✫§8✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                 r = 1; g = 0.97f; b = 0.6f;
-            } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+            } else if (name.endsWith("§6 [§e✫✫§8✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                 r = 1; g = 1; b = 0;
-            } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+            } else if (name.endsWith("§6 [§e✫✫✫§6]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) {
                 r = 0.9f; g = 0.3f; b = 0;
             } else if (isPowder(is) && UtilitiesConfig.Items.INSTANCE.powderHighlight) {
                 if (getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
@@ -390,5 +394,9 @@ public class RarityColorOverlay implements Listener {
             returnVal = new float[]{1f, 0.333f, 0.333f};
         }
         return returnVal;
+    }
+
+    public static void setProfessionFilter(String s) {
+        professionFilter = s;
     }
 }
