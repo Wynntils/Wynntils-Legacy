@@ -399,4 +399,7 @@ public class RarityColorOverlay implements Listener {
     public static void setProfessionFilter(String s) {
         professionFilter = s;
     }
+    public static String getProfessionFilter() {
+        return professionFilter;
+    }
 }

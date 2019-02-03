@@ -75,6 +75,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Filter for ingredients", description = "Should an ingredients or crafting items filter be available?")
         public boolean filterEnabled = true;
 
+        @Setting(displayName = "Filter persistency", description = "Should the filter remain the same through inventory updates?")
+        public boolean saveFilter = true;
+
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
         public boolean mainHighlightChest = true;
 

@@ -42,8 +42,10 @@ public class ChestReplacer extends GuiChest {
     public void initGui() {
         super.initGui();
         if (UtilitiesConfig.Items.INSTANCE.filterEnabled) {
-            RarityColorOverlay.setProfessionFilter("-");
-            this.professionsButton = new GuiButton(11, this.guiLeft - 20, this.guiTop + 15, 18, 18, "-");
+            if (!UtilitiesConfig.Items.INSTANCE.saveFilter) {
+                RarityColorOverlay.setProfessionFilter("-");
+            }
+            this.professionsButton = new GuiButton(11, this.guiLeft - 20, this.guiTop + 15, 18, 18, RarityColorOverlay.getProfessionFilter());
             this.buttonList.add(this.professionsButton);
         }
     }
