@@ -17,7 +17,7 @@ apply plugin: 'java'
 def versionObj = new Version(major: 0, minor: 1, revision: 9)
 
 version = versionObj.toString()
-group = "cf.wynntils"
+group = "com.wynntils"
 archivesBaseName = "Wynntils"
 
 sourceCompatibility = "1.8"
