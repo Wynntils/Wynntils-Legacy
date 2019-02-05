@@ -27,6 +27,8 @@ public class PacketFilter extends ChannelInboundHandlerAdapter {
 
         if (msg instanceof SPacketSpawnObject) {
             e = new PacketEvent.SpawnObject((SPacketSpawnObject) msg, ModCore.mc().getConnection());
+        } else if (msg instanceof  SPacketEntityMetadata) {
+            e = new PacketEvent.EntityMetadata((SPacketEntityMetadata)msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketOpenWindow) {
             e = new PacketEvent.InventoryReceived((SPacketOpenWindow) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketWindowItems) {

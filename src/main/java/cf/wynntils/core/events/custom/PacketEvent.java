@@ -270,4 +270,27 @@ public class PacketEvent extends Event {
 
     }
 
+    public static class EntityMetadata extends PacketEvent {
+
+        SPacketEntityMetadata packet;
+        NetHandlerPlayClient playClient;
+
+        public EntityMetadata(SPacketEntityMetadata packet, NetHandlerPlayClient playClient) {
+            this.packet = packet; this.playClient = playClient;
+        }
+
+        public SPacketEntityMetadata getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
+
 }

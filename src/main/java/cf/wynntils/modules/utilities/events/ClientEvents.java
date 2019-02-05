@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -49,6 +50,22 @@ public class ClientEvents implements Listener {
         }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
+        }
+    }
+
+    @SubscribeEvent
+    public void onArmorStandSpawn(PacketEvent.EntityMetadata e) {
+        for(EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            String value = entry.getValue().toString().toLowerCase();
+            if(value.contains("woodcutting")) {
+
+            }else if(value.contains("fishing")) {
+
+            }else if (value.contains("mining")) {
+
+            }else if(value.contains("farming")) {
+
+            }
         }
     }
 

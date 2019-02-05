@@ -1,5 +1,6 @@
 package cf.wynntils.modules.map.overlays.ui;
 
+import cf.wynntils.ModCore;
 import cf.wynntils.Reference;
 import cf.wynntils.core.framework.rendering.ScreenRenderer;
 import cf.wynntils.core.framework.rendering.textures.Textures;
@@ -9,8 +10,11 @@ import cf.wynntils.modules.map.overlays.objects.MapIcon;
 import cf.wynntils.webapi.WebManager;
 import cf.wynntils.webapi.profiles.MapMarkerProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -37,172 +41,170 @@ public class WorldMapOverlay extends GuiScreen {
             int texSizeX = 16; int texSizeZ = 16;
 
             int zoomNeeded = -1000;
+            int size = 2;
 
             switch (mmp.getIcon()) {
                 case "Content_CorruptedDungeon":
-                    texPosX = 0; texPosZ = 0;
-                    texSizeX = 15; texSizeZ = 16;
+                    texPosX = 12; texPosZ = 17;
+                    texSizeX = 24; texSizeZ = 29;
                     break;
                 case "Content_Dungeon":
-                    texPosX = 16; texPosZ = 0;
-                    texSizeX = 31; texSizeZ = 16;
+                    texPosX = 0; texPosZ = 17;
+                    texSizeX = 12; texSizeZ = 29;
                     break;
                 case "Merchant_Accessory":
-                    texPosX = 48; texPosZ = 0;
-                    texSizeX = 60; texSizeZ = 12;
+                    texPosX = 0; texPosZ = 0;
+                    texSizeX = 17; texSizeZ = 16;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Armour":
-                    texPosX = 48; texPosZ = 13;
-                    texSizeX = 62; texSizeZ = 26;
+                    texPosX = 17; texPosZ = 0;
+                    texSizeX = 34; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Dungeon":
-                    texPosX = 61; texPosZ = 0;
-                    texSizeX = 75; texSizeZ = 12;
-                    zoomNeeded = 0;
-                    break;
-                case "Merchant_Emerald":
-                    texPosX = 121; texPosZ = 41;
-                    texSizeX = 132; texSizeZ = 52;
+                    texPosX = 34; texPosZ = 0;
+                    texSizeX = 49; texSizeZ = 15;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Horse":
-                    texPosX = 48; texPosZ = 27;
-                    texSizeX = 66; texSizeZ = 46;
+                    texPosX = 49; texPosZ = 0;
+                    texSizeX = 65; texSizeZ = 17;
                     break;
                 case "Merchant_KeyForge":
-                    texPosX = 0; texPosZ = 17;
-                    texSizeX = 14; texSizeZ = 32;
+                    texPosX = 65; texPosZ = 0;
+                    texSizeX = 82; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Liquid":
-                    texPosX = 15; texPosZ = 17;
-                    texSizeX = 23; texSizeZ = 31;
-                    zoomNeeded = 0;
-                    break;
-                case "Merchant_Other":
-                    texPosX = 0; texPosZ = 33;
-                    texSizeX = 10; texSizeZ = 44;
+                    texPosX = 82; texPosZ = 0;
+                    texSizeX = 97; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Potion":
-                    texPosX = 67; texPosZ = 27;
-                    texSizeX = 81; texSizeZ = 44;
+                    texPosX = 97; texPosZ = 0;
+                    texSizeX = 113; texSizeZ = 18;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Powder":
-                    texPosX = 35; texPosZ = 34;
-                    texSizeX = 47; texSizeZ = 48;
+                    texPosX = 112; texPosZ = 0;
+                    texSizeX = 148; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Scroll":
-                    texPosX = 16; texPosZ = 32;
-                    texSizeX = 32; texSizeZ = 47;
+                    texPosX = 130; texPosZ = 0;
+                    texSizeX = 148; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Seasail":
-                    texPosX = 82; texPosZ = 28;
-                    texSizeX = 98; texSizeZ = 44;
+                    texPosX = 113; texPosZ = 18;
+                    texSizeX = 131; texSizeZ = 35;
                     break;
                 case "Merchant_Weapon":
-                    texPosX = 76; texPosZ = 0;
-                    texSizeX = 88; texSizeZ = 12;
+                    texPosX = 148; texPosZ = 0;
+                    texSizeX = 166; texSizeZ = 15;
                     zoomNeeded = 0;
                     break;
                 case "NPC_Blacksmith":
-                    texPosX = 63; texPosZ = 13;
-                    texSizeX = 76; texSizeZ = 26;
+                    texPosX = 147; texPosZ = 17;
+                    texSizeX = 165; texSizeZ = 35;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "NPC_GuildMaster":
-                    texPosX = 89; texPosZ = 0;
-                    texSizeX = 101; texSizeZ = 19;
+                    texPosX = 42; texPosZ = 17;
+                    texSizeX = 60; texSizeZ = 35;
                     zoomNeeded = 0;
                     break;
                 case "NPC_ItemIdentifier":
-                    texPosX = 82; texPosZ = 20;
-                    texSizeX = 96; texSizeZ = 27;
+                    texPosX = 60; texPosZ = 18;
+                    texSizeX = 78; texSizeZ = 35;
                     break;
                 case "NPC_PowderMaster":
-                    texPosX = 0; texPosZ = 45;
-                    texSizeX = 15; texSizeZ = 60;
+                    texPosX = 96; texPosZ = 18;
+                    texSizeX = 113; texSizeZ = 35;
                     zoomNeeded = 0;
                     break;
                 case "Special_FastTravel":
-                    texPosX = 212; texPosZ = 0;
-                    texSizeX = 228; texSizeZ = 16;
-                    zoomNeeded = 0;
-                    break;
-                case "Special_LightRealm":
-                    texPosX = 108; texPosZ = 29;
-                    texSizeX = 120; texSizeZ = 45;
-                    zoomNeeded = 0;
-                    break;
-                case "Special_RootsOfCorruption":
-                    texPosX = 121; texPosZ = 29;
-                    texSizeX = 133; texSizeZ = 40;
-                    break;
-                case "painting":
-                    texPosX = 115; texPosZ = 0;
-                    texSizeX = 129; texSizeZ = 15;
+                    texPosX = 24; texPosZ = 17;
+                    texSizeX = 42; texSizeZ = 35;
                     zoomNeeded = 0;
                     break;
                 case "tnt":
-                    texPosX = 134; texPosZ = 17;
-                    texSizeX = 148; texSizeZ = 34;
+                    texPosX = 131; texPosZ = 17;
+                    texSizeX = 147; texSizeZ = 35;
                     zoomNeeded = 0;
                     break;
                 case "Ore_Refinery":
-                    texPosX = 134; texPosZ = 35;
-                    texSizeX = 145; texSizeZ = 47;
+                    texPosX = 199; texPosZ = 0;
+                    texSizeX = 217; texSizeZ = 16;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Fish_Refinery":
-                    texPosX = 149; texPosZ = 13;
-                    texSizeX = 160; texSizeZ = 25;
+                    texPosX = 182; texPosZ = 0;
+                    texSizeX = 199; texSizeZ = 17;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Wood_Refinery":
-                    texPosX = 146; texPosZ = 36;
-                    texSizeX = 157; texSizeZ = 46;
+                    texPosX = 217; texPosZ = 0;
+                    texSizeX = 234; texSizeZ = 18;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Crop_Refinery":
-                    texPosX = 149; texPosZ = 26;
-                    texSizeX = 160; texSizeZ = 35;
+                    texPosX = 166; texPosZ = 0;
+                    texSizeX = 182; texSizeZ = 18;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "MarketPlace":
-                    texPosX = 206; texPosZ = 34;
-                    texSizeX = 222; texSizeZ = 50;
+                    texPosX = 78; texPosZ = 17;
+                    texSizeX = 96; texSizeZ = 35;
+                    zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Content_Quest":
-                    texPosX = 227; texPosZ = 17;
-                    texSizeX = 243; texSizeZ = 33;
+                    texPosX = -100;
                     break;
                 case "Special_Rune":
                     texPosX = -100;
                     break;
                 case "Content_UltimateDiscovery":
-                    texPosX = 229; texPosZ = 0;
-                    texSizeX = 245; texSizeZ = 16;
+                    texPosX = -100;
                     break;
                 case "Content_Cave":
-                    texPosX = 212; texPosZ = 17;
-                    texSizeX = 226; texSizeZ = 33;
-                    zoomNeeded = 0;
+                    texPosX = -100;
                     break;
                 case "Content_GrindSpot":
-                    texPosX = 190; texPosZ = 0;
-                    texSizeX = 200; texSizeZ = 10;
-                    zoomNeeded = 0;
+                    texPosX = -100;
+                    break;
+                case "Merchant_Other":
+                    texPosX = -100;
+                    break;
+                case "Special_LightRealm":
+                    texPosX = -100;
+                    break;
+                case "Special_RootsOfCorruption":
+                    texPosX = -100;
+                    break;
+                case "Merchant_Emerald":
+                    texPosX = -100;
                     break;
             }
 
             if(texPosX == -100) continue;
 
-            mapIcons.add(new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(), 2, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(zoomNeeded));
+            MapIcon mp = new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(), size, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(zoomNeeded);
+            mp.setOnClick(c -> {
+                if(c == 0) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
+                    ModCore.mc().world.setSpawnPoint(new BlockPos(mmp.getX(), 0, mmp.getZ()));
+                }
+            });
+
+            mapIcons.add(mp);
         }
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
