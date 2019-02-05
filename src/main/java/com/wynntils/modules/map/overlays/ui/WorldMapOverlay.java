@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.webapi.WebManager;
@@ -292,7 +293,11 @@ public class WorldMapOverlay extends GuiScreen {
 
             ScreenRenderer.transformationOrigin((int)playerPostionX, (int)playerPostionZ);
             ScreenRenderer.rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
-            renderer.drawRectF(Textures.Map.pointer, playerPostionX - 5f, playerPostionZ - 5f, playerPostionX + 5f, playerPostionZ + 5f, 0f, 0f, 5f, 5f);
+            MapConfig.PointerType type = MapConfig.INSTANCE.pointerStyle;
+            MapConfig.PointerColor color = MapConfig.INSTANCE.pointerColor;
+
+            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth, playerPostionZ - type.dHeight, playerPostionX + type.dWidth, playerPostionZ + type.dWidth, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
+
             ScreenRenderer.resetRotation();
         }
 

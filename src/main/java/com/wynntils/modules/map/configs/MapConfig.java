@@ -38,12 +38,39 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Texture Style", description = "What should the Map Texture be?")
     public TextureType textureType = TextureType.Paper;
 
+    @Setting(displayName = "Pointer Style", description = "What should the pointer texture style be?")
+    public PointerType pointerStyle = PointerType.ARROW;
+
+    @Setting(displayName = "Pointer Color", description = "What should the pointer color be?")
+    public PointerColor pointerColor = PointerColor.RED;
+
     public enum MapFormat {
         SQUARE, CIRCLE
     }
 
     public enum TextureType {
         Paper, Wynn, Gilded
+    }
+
+    public enum PointerType {
+
+        ARROW(10, 8, 5, 4, 0), PIN(8, 10, 4, 5, 32);
+
+        public int width, height, dWidth, dHeight, yStart;
+
+        PointerType(int width, int height, int dWidth, int dHeight, int yStart) {
+            this.width = width; this.height = height; this.dWidth = dWidth; this.dHeight = dHeight; this.yStart = yStart;
+        }
+    }
+
+    public enum PointerColor {
+        BLUE(0), RED(1), WHITE(2), YELLOW(3);
+
+        public int index;
+
+        PointerColor(int index) {
+            this.index = index;
+        }
     }
 
     @Override

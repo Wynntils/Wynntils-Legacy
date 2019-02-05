@@ -80,18 +80,21 @@ public class MiniMapOverlay extends Overlay {
                 GlStateManager.glTexCoord2f(maxX,maxZ);
                 GlStateManager.glVertex3f(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() + mapSize + extraSize/2, 0);
                 GlStateManager.glTexCoord2f(maxX,minZ);
-                GlStateManager.glVertex3f(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2, 0);
+                GlStateManager.glVertex3f(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2.0f, 0);
                 GlStateManager.glTexCoord2f(minX,minZ);
-                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2,position.getDrawingY() - extraSize/2, 0);
+                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2.0f,position.getDrawingY() - extraSize/2.0f, 0);
                 GlStateManager.glTexCoord2f(minX,maxZ);
-                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2 ,position.getDrawingY() + mapSize + extraSize/2, 0);
+                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2.0f ,position.getDrawingY() + mapSize + extraSize/2, 0);
             }
             GlStateManager.glEnd();
             clearMask();
 
             //cursor & cursor rotation
             rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
-            drawRectF(Textures.Map.pointer, mapSize/2 - 2.5f, mapSize/2 - 2.5f, mapSize/2 + 2.5f, mapSize/2 + 2.5f, 0f, 0f, 5f, 5f);
+
+            MapConfig.PointerType type = MapConfig.INSTANCE.pointerStyle;
+            MapConfig.PointerColor color = MapConfig.INSTANCE.pointerColor;
+            drawRectF(Textures.Map.map_pointers, mapSize/2.0f - type.dWidth, mapSize/2.0f - type.dHeight, mapSize/2.0f + type.dWidth, mapSize/2.0f + type.dWidth, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
             resetRotation();
 
             if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {

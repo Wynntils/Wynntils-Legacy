@@ -56,9 +56,9 @@ public class Textures {
     public static class Map {
         public static AssetsTexture wynn_map_textures;
         public static AssetsTexture paper_map_textures;
-        public static AssetsTexture pointer;
         public static AssetsTexture map_icons;
         public static AssetsTexture gilded_map_textures;
+        public static AssetsTexture map_pointers;
     }
 
     public static class UIs {
