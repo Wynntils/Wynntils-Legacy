@@ -68,6 +68,9 @@ public class HealthBarOverlay extends Overlay {
             case Aether:
                 drawDefaultBar(-1, 7, 100, 115, textColor);
                 break;
+            case Skull:
+                drawDefaultBar(-1, 8, 116, 131, textColor);
+                break;
         }
     }
 

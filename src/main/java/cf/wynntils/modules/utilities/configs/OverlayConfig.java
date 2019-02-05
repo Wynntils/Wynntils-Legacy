@@ -38,6 +38,7 @@ public class OverlayConfig extends SettingsClass {
             Wynn,
             Grune,
             Aether,
+            Skull,
             a,
             b,
             c,
@@ -67,6 +68,7 @@ public class OverlayConfig extends SettingsClass {
             Wynn,
             Brune,
             Aether,
+            Skull,
             Inverse,
             a,
             b,
@@ -107,6 +109,8 @@ public class OverlayConfig extends SettingsClass {
 
         public enum expTextures {
             Wynn,
+            Liquid,
+            Emerald,
             a,
             b,
             c
@@ -134,6 +138,8 @@ public class OverlayConfig extends SettingsClass {
 
         public enum BubbleTexture {
             Wynn,
+            Liquid,
+            Saphire,
             a,
             b,
             c

@@ -50,6 +50,12 @@ public class BubblesOverlay extends Overlay {
             case Wynn:
                 drawDefaultBar(0, 5, 0, 9);
                 break;
+            case Liquid:
+                drawDefaultBar(0, 5, 40, 49);
+                break;
+            case Saphire:
+                drawDefaultBar(0, 5, 50, 59);
+                break;
             case a: drawDefaultBar(0,5,10,19);
                 break;
             case b: drawDefaultBar(0,5,20,29);

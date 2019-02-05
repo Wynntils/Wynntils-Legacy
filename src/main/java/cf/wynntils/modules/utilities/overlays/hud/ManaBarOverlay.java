@@ -81,6 +81,9 @@ public class ManaBarOverlay extends Overlay {
             case Aether:
                 drawDefaultBar(-1, 7, 116, 131,textColor);
                 break;
+            case Skull:
+                drawDefaultBar(-1, 8, 132, 147, textColor);
+                break;
         }
     }
 
