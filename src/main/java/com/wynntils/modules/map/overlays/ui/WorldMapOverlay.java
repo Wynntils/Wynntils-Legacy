@@ -17,7 +17,10 @@ import com.wynntils.webapi.profiles.MapMarkerProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -227,11 +230,11 @@ public class WorldMapOverlay extends GuiScreen {
         this.centerPositionX = centerPositionX; this.centerPositionZ = centerPositionZ;
 
         MapProfile map = MapModule.getModule().getMainMap();
-        minX = map.getTextureXPosition(centerPositionX) - ((width)/2) - (width*zoom/100); // <--- min texture x point
-        minZ = map.getTextureZPosition(centerPositionZ) - ((height)/2) - (height*zoom/100); // <--- min texture z point
+        minX = map.getTextureXPosition(centerPositionX) - ((width)/2.0f) - (width*zoom/100.0f); // <--- min texture x point
+        minZ = map.getTextureZPosition(centerPositionZ) - ((height)/2.0f) - (height*zoom/100.0f); // <--- min texture z point
 
-        maxX = map.getTextureXPosition(centerPositionX) + ((width)/2) + (width*zoom/100); // <--- max texture x point
-        maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2) + (height*zoom/100); // <--- max texture z point
+        maxX = map.getTextureXPosition(centerPositionX) + ((width)/2.0f) + (width*zoom/100.0f); // <--- max texture x point
+        maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2.0f) + (height*zoom/100.0f); // <--- max texture z point
 
         mapIcons.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
     }
@@ -258,24 +261,23 @@ public class WorldMapOverlay extends GuiScreen {
 
         try{
             GlStateManager.enableAlpha();
-            GlStateManager.enableTexture2D();
+            GlStateManager.color(1, 1, 1, 1f);
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 
             map.bindTexture(); // <--- binds the texture
-            GlStateManager.color(1, 1, 1, 1f);
-
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GlStateManager.glBegin(GL11.GL_QUADS); // <--- starts gl_quads
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
-                GlStateManager.glTexCoord2f(maxX,maxZ);
-                GlStateManager.glVertex3f(width, height, 0);
-                GlStateManager.glTexCoord2f(maxX,minZ);
-                GlStateManager.glVertex3f(width, 0, 0);
-                GlStateManager.glTexCoord2f(minX,minZ);
-                GlStateManager.glVertex3f(0, 0, 0);
-                GlStateManager.glTexCoord2f(minX,maxZ);
-                GlStateManager.glVertex3f(0 , height, 0);
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+
+                bufferbuilder.pos(0, height, 0).tex(minX, maxZ).endVertex();
+                bufferbuilder.pos(width, height, 0).tex(maxX, maxZ).endVertex();
+                bufferbuilder.pos(width, 0, 0).tex(maxX, minZ).endVertex();
+                bufferbuilder.pos(0, 0, 0).tex(minX, minZ).endVertex();
+                tessellator.draw();
+
             }
-            GlStateManager.glEnd(); // <--- ends gl_quads
+
         }catch (Exception ignored) {}
 
         //draw map icons

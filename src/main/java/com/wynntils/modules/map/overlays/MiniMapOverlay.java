@@ -11,7 +11,10 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
@@ -75,18 +78,19 @@ public class MiniMapOverlay extends Overlay {
 
             //map quad
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GlStateManager.glBegin(GL11.GL_QUADS);
+
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
-                GlStateManager.glTexCoord2f(maxX,maxZ);
-                GlStateManager.glVertex3f(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() + mapSize + extraSize/2, 0);
-                GlStateManager.glTexCoord2f(maxX,minZ);
-                GlStateManager.glVertex3f(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2.0f, 0);
-                GlStateManager.glTexCoord2f(minX,minZ);
-                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2.0f,position.getDrawingY() - extraSize/2.0f, 0);
-                GlStateManager.glTexCoord2f(minX,maxZ);
-                GlStateManager.glVertex3f(position.getDrawingX() - extraSize/2.0f ,position.getDrawingY() + mapSize + extraSize/2, 0);
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+
+                bufferbuilder.pos(position.getDrawingX() - extraSize/2.0f, position.getDrawingY() + mapSize + extraSize/2, 0).tex(minX, maxZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() + mapSize + extraSize/2, 0).tex(maxX, maxZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2.0f, 0).tex(maxX, minZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() - extraSize/2.0f, position.getDrawingY() - extraSize/2.0f, 0).tex(minX, minZ).endVertex();
+                tessellator.draw();
+
             }
-            GlStateManager.glEnd();
             clearMask();
 
             //cursor & cursor rotation
