@@ -76,15 +76,13 @@ public class SettingsUI extends UI {
         this.holders.visible = false;
         this.settings.visible = false;
 
-        for(String mkey : FrameworkManager.availableModules.keySet()) {
-            ModuleContainer mcn = FrameworkManager.availableModules.get(mkey);
-
-            for(String skey : mcn.getRegisteredSettings().keySet()) {
-                SettingsContainer scn = mcn.getRegisteredSettings().get(skey);
-                if(!(scn.getHolder() instanceof Overlay))//DEBUG
-                if(!scn.getDisplayPath().equals("")) {
-                    registeredSettings.put(scn.getDisplayPath(), scn);
-                    sortedSettings.add(scn.getDisplayPath());
+        for(ModuleContainer mcn : FrameworkManager.availableModules.values()) {
+            for(SettingsContainer scn : mcn.getRegisteredSettings().values()) {
+                if(!(scn.getHolder() instanceof Overlay)) {
+                    if (!scn.getDisplayPath().equals("")) {
+                        registeredSettings.put(scn.getDisplayPath(), scn);
+                        sortedSettings.add(scn.getDisplayPath());
+                    }
                 }
             }
         }

@@ -88,10 +88,9 @@ public class OverlayPositionsUI extends UI {
     @Override
     public void onInit() {
         registeredOverlaySettings.clear();
-        for (String moduleName : FrameworkManager.availableModules.keySet()) {
-            ModuleContainer moduleContainer = FrameworkManager.availableModules.get(moduleName);
-            for (String settingsName : moduleContainer.getRegisteredSettings().keySet()) {
-                SettingsContainer settingsContainer = moduleContainer.getRegisteredSettings().get(settingsName);
+
+        for(ModuleContainer moduleContainer : FrameworkManager.availableModules.values()) {
+            for(SettingsContainer settingsContainer : moduleContainer.getRegisteredSettings().values()) {
                 if (settingsContainer.getHolder() instanceof Overlay) {
                     if (((Overlay) settingsContainer.getHolder()).growth != null) {
                         registeredOverlaySettings.add(new OverlayButton(settingsContainer));
@@ -99,6 +98,7 @@ public class OverlayPositionsUI extends UI {
                 }
             }
         }
+
         reloadButtons = false;
         shiftDown = false;
         GRID_SIZE_VERTICAL = ScreenRenderer.screen.getScaledHeight() / 50;
