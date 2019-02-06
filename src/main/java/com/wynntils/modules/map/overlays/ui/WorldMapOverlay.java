@@ -247,8 +247,10 @@ public class WorldMapOverlay extends GuiScreen {
         if(!Reference.onWorld || !MapModule.getModule().getMainMap().isReadyToUse()) return;
 
         //draging
-        if(clicking)
-            updateCenterPosition(centerPositionX+= (lastMouseX - mouseX), centerPositionZ+= (lastMouseY - mouseY));
+        if(clicking) {
+            float acceleration = (1f + zoom/100f); //<---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
+            updateCenterPosition(centerPositionX += (lastMouseX - mouseX) * acceleration, centerPositionZ += (lastMouseY - mouseY) * acceleration);
+        }
         lastMouseX = mouseX; lastMouseY = mouseY;
 
         //start rendering
