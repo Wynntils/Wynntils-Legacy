@@ -89,7 +89,8 @@ public class MapIcon {
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
-        renderer.drawRectF(texture, axisX - sizeX, axisZ - sizeZ, axisX + sizeX, axisZ + sizeZ, texPosX, texPosZ, texSizeX, texSizeZ);
+        float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
+        renderer.drawRectF(texture, axisX - sizeX * multi, axisZ - sizeZ * multi, axisX + sizeX * multi, axisZ + sizeZ * multi, texPosX, texPosZ, texSizeX, texSizeZ);
         GlStateManager.color(1,1,1,1);
 
         GlStateManager.popMatrix();
@@ -99,7 +100,7 @@ public class MapIcon {
         if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
-        renderer.drawString(name, (int)(axisX), (int)(axisZ)-13, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.drawString(name, (int)(axisX), (int)(axisZ)-20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {

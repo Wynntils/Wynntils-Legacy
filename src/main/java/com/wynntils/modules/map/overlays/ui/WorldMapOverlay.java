@@ -300,7 +300,7 @@ public class WorldMapOverlay extends GuiScreen {
             MapConfig.PointerType type = MapConfig.INSTANCE.pointerStyle;
             MapConfig.PointerColor color = MapConfig.INSTANCE.pointerColor;
 
-            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth, playerPostionZ - type.dHeight, playerPostionX + type.dWidth, playerPostionZ + type.dWidth, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
+            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth*1.5f, playerPostionZ - type.dHeight*1.5f, playerPostionX + type.dWidth*1.5f, playerPostionZ + type.dHeight*1.5f, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
 
             ScreenRenderer.resetRotation();
         }
