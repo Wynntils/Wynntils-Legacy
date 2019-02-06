@@ -88,6 +88,9 @@ public class ManaBarOverlay extends Overlay {
             case Skull:
                 drawDefaultBar(-1, 8, 132, 147, textColor);
                 break;
+            case Skyrim:
+                drawDefaultBar(-1, 8, 148, 163, textColor);
+                break;
         }
     }
 

@@ -230,6 +230,7 @@ public class WorldMapOverlay extends GuiScreen {
         this.centerPositionX = centerPositionX; this.centerPositionZ = centerPositionZ;
 
         MapProfile map = MapModule.getModule().getMainMap();
+
         minX = map.getTextureXPosition(centerPositionX) - ((width)/2.0f) - (width*zoom/100.0f); // <--- min texture x point
         minZ = map.getTextureZPosition(centerPositionZ) - ((height)/2.0f) - (height*zoom/100.0f); // <--- min texture z point
 
