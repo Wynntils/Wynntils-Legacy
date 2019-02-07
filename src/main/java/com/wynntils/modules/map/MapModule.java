@@ -5,6 +5,7 @@
 package com.wynntils.modules.map;
 
 import com.wynntils.core.framework.enums.Priority;
+import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -19,7 +20,7 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-
+    private static KeyHolder mapKey;
     private MapProfile mainMap;
 
     @Override
@@ -32,7 +33,7 @@ public class MapModule extends Module {
         registerSettings(MapConfig.class);
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay()));
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay()));
     }
 
     public static MapModule getModule() {
@@ -43,4 +44,5 @@ public class MapModule extends Module {
         return mainMap;
     }
 
+    public KeyHolder getMapKey() { return mapKey; }
 }

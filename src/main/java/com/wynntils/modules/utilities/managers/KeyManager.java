@@ -39,11 +39,6 @@ public class KeyManager {
             ModCore.mc().displayGuiScreen(ui);
         });
 
-        CoreModule.getModule().registerKeyBinding("Refresh API", Keyboard.KEY_GRAVE, "Debug", true, () -> {
-            WebManager.reset();
-            WebManager.setupWebApi();
-        });
-
         UtilitiesModule.getModule().registerKeyBinding("Debug Key", Keyboard.KEY_J, "Debug", true, () -> { });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});

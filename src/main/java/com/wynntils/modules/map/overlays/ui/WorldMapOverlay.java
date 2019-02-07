@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -16,6 +17,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -32,18 +34,21 @@ import java.util.ArrayList;
 
 public class WorldMapOverlay extends GuiScreen {
 
-    ScreenRenderer renderer = new ScreenRenderer();
+    private ScreenRenderer renderer = new ScreenRenderer();
 
-    float centerPositionX;
-    float centerPositionZ;
-    int zoom = 0;
+    private GuiButton settingsBtn = new GuiButton(1,5,6,60,18, "Settings...");
+    private GuiButton wayPointsBtn = new GuiButton(2,5,27,60,18, "Waypoints");
+    private float centerPositionX;
+    private float centerPositionZ;
+    private int zoom = 0;
 
-    ArrayList<MapIcon> mapIcons = new ArrayList<>();
+    private ArrayList<MapIcon> mapIcons = new ArrayList<>();
 
     public WorldMapOverlay() {
         mc = Minecraft.getMinecraft();
 
         for(MapMarkerProfile mmp : WebManager.getMapMarkers()) {
+            if (MapConfig.INSTANCE.enabledMapIcons.containsKey(mmp.getIcon()) && !MapConfig.INSTANCE.enabledMapIcons.get(mmp.getIcon())) { continue; }
 
             int texPosX = 0; int texPosZ = 0;
             int texSizeX = 16; int texSizeZ = 16;
@@ -220,6 +225,10 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     public void initGui() {
+        super.initGui();
+        wayPointsBtn.enabled = Reference.developmentEnvironment;
+        this.buttonList.add(settingsBtn);
+        this.buttonList.add(wayPointsBtn);
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
@@ -248,7 +257,7 @@ public class WorldMapOverlay extends GuiScreen {
         if(!Reference.onWorld || !MapModule.getModule().getMainMap().isReadyToUse()) return;
 
         //draging
-        if(clicking) {
+        if(clicking && !(wayPointsBtn.isMouseOver() || settingsBtn.isMouseOver())) {
             float acceleration = (1f + zoom/100f); //<---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
             updateCenterPosition(centerPositionX += (lastMouseX - mouseX) * acceleration, centerPositionZ += (lastMouseY - mouseY) * acceleration);
         }
@@ -309,6 +318,7 @@ public class WorldMapOverlay extends GuiScreen {
         mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
 
         ScreenRenderer.endGL();
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     boolean clicking = false;
@@ -336,8 +346,12 @@ public class WorldMapOverlay extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if(mouseButton == 1) {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (wayPointsBtn.isMouseOver() || settingsBtn.isMouseOver()) {
+            super.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+
+        if (mouseButton == 1) {
             updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
             return;
         }
@@ -347,7 +361,18 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
+            Minecraft.getMinecraft().player.closeScreen();
+        }
         super.keyTyped(typedChar, keyCode);
     }
 
+    @Override
+    public void actionPerformed(GuiButton btn) {
+        if (btn.id == 1) { //Settings...
+            Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI());
+        } else if (btn.id == 2) { //Waypoints
+            //TODO waypoints
+        }
+    }
 }

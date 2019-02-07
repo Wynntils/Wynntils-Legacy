@@ -8,6 +8,8 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 
+import java.util.HashMap;
+
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
@@ -43,6 +45,41 @@ public class MapConfig extends SettingsClass {
 
     @Setting(displayName = "Pointer Color", description = "What should the pointer color be?")
     public PointerColor pointerColor = PointerColor.RED;
+
+    public HashMap<String, Boolean> enabledMapIcons = new HashMap<String, Boolean>() {{
+        put("Content_Dungeon", true);
+        put("Merchant_Accessory", true);
+        put("Merchant_Armour", true);
+        put("Merchant_Dungeon", true);
+        put("Merchant_Horse", true);
+        put("Merchant_KeyForge", true);
+        put("Merchant_Liquid", true);
+        put("Merchant_Potion", true);
+        put("Merchant_Powder", true);
+        put("Merchant_Scroll", true);
+        put("Merchant_Seasail", true);
+        put("Merchant_Weapon", true);
+        put("NPC_Blacksmith", true);
+        put("NPC_GuildMaster", true);
+        put("NPC_ItemIdentifier", true);
+        put("NPC_PowderMaster", true);
+        put("Special_FastTravel", true);
+        put("tnt", true);
+        put("painting", true);
+        put("Ore_Refinery", true);
+        put("Fish_Refinery", true);
+        put("Wood_Refinery", true);
+        put("Crop_Refinery", true);
+        put("MarketPlace", true);
+        put("Content_Quest", true);
+        put("Special_Rune", true);
+        put("Content_UltimateDiscovery", true);
+        put("Content_Cave", true);
+        put("Content_GrindSpot", true);
+        put("Merchant_Other", true);
+        put("Special_LightRealm", true);
+        put("Merchant_Emerald", true);
+    }};
 
     public enum MapFormat {
         SQUARE, CIRCLE

@@ -48,6 +48,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                             "\n§8-wynntils§c help§7 Shows a list of all Wynntils' commands." +
                             "\n§8-wynntils§c discord§7 Provides you with an invite to our Discord." +
                             "\n§8-wynntils§c version§7 Show Wynntils' version." +
+                            "\n§8-wynntils§c reloadapi§7 Reloads all API data." +
                             "\n§8-§ctoken§7 Provides you with a clickable token to create a Wynntils account for capes." +
                             "\n§8-§cforceupdate§7 Downloads & installs the latest successful build." +
                             "\n§8-§ccompass§7 Makes your compass point towards an x & z or a direction (e.g. north, se)."
@@ -64,6 +65,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     break;
                 case "version":
                     handleModVersion(sender);
+                    break;
+                case "reloadapi":
+                    WebManager.reset();
+                    WebManager.setupWebApi();
                     break;
                 default:
                     sender.sendMessage(new TextComponentString("§4Invalid argument, use /wynntils help for more info"));
