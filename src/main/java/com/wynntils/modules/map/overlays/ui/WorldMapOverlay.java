@@ -179,19 +179,27 @@ public class WorldMapOverlay extends GuiScreen {
                     size = 3;
                     break;
                 case "Content_Quest":
-                    texPosX = -100;
+                    texPosX = 165; texPosZ = 18;
+                    texSizeX = 183; texSizeZ = 36;
+                    zoomNeeded = 0;
                     break;
                 case "Special_Rune":
                     texPosX = -100;
                     break;
                 case "Content_UltimateDiscovery":
-                    texPosX = -100;
+                    texPosX = 201; texPosZ = 18;
+                    texSizeX = 219; texSizeZ = 36;
+                    zoomNeeded = 0;
                     break;
                 case "Content_Cave":
-                    texPosX = -100;
+                    texPosX = 234; texPosZ = 0;
+                    texSizeX = 250; texSizeZ = 18;
+                    zoomNeeded = 0;
                     break;
                 case "Content_GrindSpot":
-                    texPosX = -100;
+                    texPosX = 221; texPosZ = 20;
+                    texSizeX = 233; texSizeZ = 32;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Other":
                     texPosX = -100;
