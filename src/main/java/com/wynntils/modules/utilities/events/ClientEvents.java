@@ -16,10 +16,8 @@ import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
 import com.wynntils.modules.utilities.managers.TPSManager;
-import com.wynntils.modules.utilities.overlays.ui.IngameMenuReplacer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -190,13 +188,6 @@ public class ClientEvents implements Listener {
     public void removePotionGui(RenderGameOverlayEvent.Pre e) {
         if (UtilitiesConfig.INSTANCE.hidePotionGui && e.getType() == RenderGameOverlayEvent.ElementType.POTION_ICONS) {
             e.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void changeGui(GuiOpenEvent e) {
-        if (e.getGui() instanceof GuiIngameMenu && UtilitiesConfig.INSTANCE.addClassServer && Reference.onServer) {
-            e.setGui(new IngameMenuReplacer());
         }
     }
 
