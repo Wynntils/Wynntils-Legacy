@@ -7,31 +7,30 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class WorldMapSettingsUI extends GuiScreen {
     private HashMap<String, Boolean> enabledMapIcons;
+    private HashMap<String, Boolean> availableMapIcons;
 
     public WorldMapSettingsUI() {
         enabledMapIcons = MapConfig.INSTANCE.enabledMapIcons;
+        availableMapIcons = MapConfig.INSTANCE.resetMapIcons();
     }
 
     @Override
     public void initGui() {
         int i = 0;
 
-        for (Map.Entry<String, Boolean> icon: enabledMapIcons.entrySet()) {
-            this.buttonList.add(new GuiCheckBox(i, 10 + (this.width-369)/2 + (i%3) * 122, 35 + (i/3) * 15, stripJargon(icon.getKey()), icon.getValue()));
+        for (Map.Entry<String, Boolean> icon: availableMapIcons.entrySet()) {
+            this.buttonList.add(new GuiCheckBox(i, 10 + (this.width-369)/2 + (i%3) * 122, 35 + (i/3) * 15, stripJargon(icon.getKey()), enabledMapIcons.containsKey(icon.getKey()) ? enabledMapIcons.get(icon.getKey()) : icon.getValue()));
             i++;
         }
-
-        GuiButton cancelBtn = new GuiButton(100, this.width/2 - 71, Math.max(this.height-50, (50 + (i/3) * 15)), 45, 18, "Cancel");
-        GuiButton resetBtn = new GuiButton(101, this.width/2 - 23, Math.max(this.height-50, (50 + (i/3) * 15)), 45, 18, "Reset");
-        resetBtn.enabled = false;
-        GuiButton saveBtn = new GuiButton(102, this.width/2 + 25, Math.max(this.height-50, (50 + (i/3) * 15)), 45, 18, "Save");
+        GuiButton cancelBtn = new GuiButton(100, this.width/2 - 71, Math.max(this.height-40, (55 + (i/3) * 15)), 45, 18, "Cancel");
+        GuiButton resetBtn = new GuiButton(101, this.width/2 - 23, Math.max(this.height-40, (55 + (i/3) * 15)), 45, 18, "Default");
+        GuiButton saveBtn = new GuiButton(102, this.width/2 + 25, Math.max(this.height-40, (55 + (i/3) * 15)), 45, 18, "Save");
         this.buttonList.add(cancelBtn);
         this.buttonList.add(resetBtn);
         this.buttonList.add(saveBtn);
@@ -40,6 +39,7 @@ public class WorldMapSettingsUI extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+        this.fontRenderer.drawString("§lEnable/Disable Map Icons:",(this.width-349)/2,20, 0xffFFFFFF);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -57,18 +57,21 @@ public class WorldMapSettingsUI extends GuiScreen {
         if (button.id == 100) {
             Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
         } else if (button.id == 102) {
-            HashMap<String, Boolean> tempEnabled = new HashMap<String, Boolean>();
+            MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton cb: this.buttonList) {
-                if (cb instanceof GuiCheckBox) {
-                    tempEnabled.put(addJargon(cb.displayString), ((GuiCheckBox) cb).isChecked());
+                if (cb instanceof GuiCheckBox && MapConfig.INSTANCE.enabledMapIcons.containsKey(addJargon(cb.displayString))) {
+                    MapConfig.INSTANCE.enabledMapIcons.replace(addJargon(cb.displayString), ((GuiCheckBox) cb).isChecked());
                 }
             }
-            MapConfig.INSTANCE.enabledMapIcons.clear();
-            MapConfig.INSTANCE.enabledMapIcons.putAll(tempEnabled);
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
             Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
         } else if (button.id == 101) {
-            //TODO resetbutton
+            this.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
+            for (GuiButton b: this.buttonList){
+                if (b instanceof GuiCheckBox && this.enabledMapIcons.containsKey(addJargon(b.displayString))) {
+                    ((GuiCheckBox) b).setIsChecked(this.enabledMapIcons.get(addJargon(b.displayString)));
+                }
+            }
         }
     }
 

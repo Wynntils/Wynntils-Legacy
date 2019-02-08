@@ -182,6 +182,7 @@ public class WorldMapOverlay extends GuiScreen {
                     texPosX = 165; texPosZ = 18;
                     texSizeX = 183; texSizeZ = 36;
                     zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Special_Rune":
                     texPosX = -100;
