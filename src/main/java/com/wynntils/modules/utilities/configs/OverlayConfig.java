@@ -308,4 +308,28 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
+
+    @SettingsInfo(name = "territory_feed_settings", displayPath = "Overlays/Territory Feed")
+    public static class TerritoryFeed extends SettingsClass {
+        public static TerritoryFeed INSTANCE;
+
+        @Setting(displayName = "Animation Length", description = "How long (in seconds) messages on the territory feed should remain")
+        @Setting.Limitations.IntLimit(min = 1, max = 60)
+        public int animationLength = 20;
+
+        @Setting(displayName = "Territory Messages Mode", description = "What messages should be displayed in the territory feed:\n" +
+                "NORMAL: Display all territory messages\n" +
+                "DISTINGUISH_OWN_GUILD: Display all territory messages, however messages affecting your guild will be displayed in a different colour\n" +
+                "ONLY_OWN_GUILD: Display only territory messages that affect your guild")
+        public TerritoryFeedDisplayMode displayMode = TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD;
+
+        @Setting(displayName = "Use short messages", description = "Should territory feed messages be shortened")
+        public boolean shortMessages = false;
+
+        public enum TerritoryFeedDisplayMode {
+            NORMAL,
+            DISTINGUISH_OWN_GUILD,
+            ONLY_OWN_GUILD
+        }
+    }
 }

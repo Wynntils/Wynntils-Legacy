@@ -15,7 +15,9 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextComponentString;
@@ -448,6 +450,62 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onTerritoryWar(WynnGuildwarEvent e) {
+        if (!Reference.onServer)
+            return;
+        if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.ONLY_OWN_GUILD && !e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName()) && !e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName()))
+            return;
+        String message = "§b";
+        if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD) {
+            if (e.getType() == WynnGuildwarEvent.WarUpdateType.ATTACKED) {
+                if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§c";
+                } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§a";
+                }
+            } else if (e.getType() == WynnGuildwarEvent.WarUpdateType.DEFENDED) {
+                if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§2";
+                } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§4";
+                }
+            } else {
+                if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§4";
+                } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
+                    message = "§2";
+                }
+            }
+        }
+        if (OverlayConfig.TerritoryFeed.INSTANCE.shortMessages) {
+            switch (e.getType()) {
+                case ATTACKED:
+                    message += e.getTerritoryName() + " | " + e.getAttackerName() + " ⚔ " + e.getDefenderName();
+                    break;
+                case DEFENDED:
+                    message += e.getTerritoryName() + " | " + e.getDefenderName() + " \uD83D\uDEE1 " + e.getAttackerName();
+                    break;
+                case CAPTURED:
+                    message += e.getTerritoryName() + " | " + e.getAttackerName() + " ⚑ " + e.getDefenderName();
+                    break;
+            }
+        } else {
+            switch (e.getType()) {
+                case ATTACKED:
+                    message += e.getDefenderName() + "'s territory " + e.getTerritoryName() + " is being attacked by " + e.getAttackerName() + "!";
+                    break;
+                case DEFENDED:
+                    message += e.getAttackerName() + "'s attack on " + e.getDefenderName() + "'s territory " + e.getTerritoryName() + " was defended!";
+                    break;
+                case CAPTURED:
+                    message += e.getAttackerName() + " has captured " + e.getTerritoryName() + " from " + e.getDefenderName() + "!";
+                    break;
+            }
+        }
+        TerritoryFeedOverlay.queueMessage(message);
     }
 
     @SubscribeEvent

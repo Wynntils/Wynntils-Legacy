@@ -4,18 +4,19 @@
 
 package com.wynntils.webapi;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.WynnGuildwarEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.webapi.account.WynntilsAccount;
-import com.wynntils.webapi.profiles.MapMarkerProfile;
-import com.wynntils.webapi.profiles.MusicProfile;
-import com.wynntils.webapi.profiles.TerritoryProfile;
-import com.wynntils.webapi.profiles.UpdateProfile;
+import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
 
@@ -26,6 +27,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class WebManager {
 
@@ -37,6 +39,7 @@ public class WebManager {
     private static ArrayList<ItemProfile> directItems = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+    private static PlayerStatsProfile playerProfile;
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
@@ -52,6 +55,8 @@ public class WebManager {
 
     private static Gson gson = new Gson();
 
+    private static Thread territoryUpdateThread;
+
     private static final int REQUEST_TIMEOUT_MILLIS = 5000;
 
     public static void reset() {
@@ -62,6 +67,7 @@ public class WebManager {
         items = new HashMap<>();
         mapMarkers = new ArrayList<>();
         itemGuesses = new HashMap<>();
+        playerProfile = null;
 
         helpers = new ArrayList<>();
         moderators = new ArrayList<>();
@@ -73,6 +79,8 @@ public class WebManager {
         capes = new ArrayList<>();
 
         account = null;
+
+        territoryUpdateThread.interrupt();
     }
 
     public static void setupWebApi() {
@@ -80,7 +88,7 @@ public class WebManager {
             apiUrls = new WebReader("http://api.wynntils.com/webapi");
         }catch (Exception ex) { ex.printStackTrace(); return; }
 
-        ProgressManager.ProgressBar progressBar = ProgressManager.push("Loading data from APIs", 6);
+        ProgressManager.ProgressBar progressBar = ProgressManager.push("Loading data from APIs", 7);
 
         progressBar.step("Territories");
         long ms = System.currentTimeMillis();
@@ -108,8 +116,16 @@ public class WebManager {
             ms = System.currentTimeMillis();
             updateItemGuesses();
             Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses in " + (System.currentTimeMillis() - ms) + "ms");
+
+            progressBar.step("Player Stats");
+            ms = System.currentTimeMillis();
+            updatePlayerProfile();
+            Reference.LOGGER.info("Loaded player stats in " + (System.currentTimeMillis() - ms) + "ms");
         }catch (Exception ex) { ex.printStackTrace(); }
         ProgressManager.pop(progressBar);
+
+        territoryUpdateThread = new TerritoryUpdateThread("Territory Update Thread");
+        territoryUpdateThread.start();
     }
 
     public static void checkForUpdates() {
@@ -180,6 +196,10 @@ public class WebManager {
 
     public static boolean isUser(UUID uuid) {
         return users.contains(uuid);
+    }
+
+    public static PlayerStatsProfile getPlayerProfile() {
+        return playerProfile;
     }
 
     /**
@@ -451,6 +471,39 @@ public class WebManager {
         itemGuesses = guessers;
     }
 
+    public static void updatePlayerProfile() throws Exception {
+        String json = null;
+        boolean useCache = false;
+        try {
+            URLConnection st = new URL(apiUrls.get("PlayerStats") + ModCore.mc().getSession().getUsername()).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+            if (st.getContentType().contains("application/json")) {
+                json = IOUtils.toString(cacheApiResult(st.getInputStream(), "player_stats.json"));
+            } else {
+                useCache = true;
+            }
+        } catch (IOException ex) {
+            useCache = true;
+        }
+
+        if (useCache) {
+            Reference.LOGGER.warn("Error downloading player stats - attempting to use cached data");
+            json = IOUtils.toString(recallApiResult("player_stats.json"));
+            Reference.LOGGER.info("Successfully loaded cached player stats data!");
+        }
+
+        Type type = new TypeToken<PlayerStatsProfile>() {
+        }.getType();
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerProfileDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        playerProfile = gson.fromJson(json, type);
+    }
+
     public static void updateUsersRoles() throws Exception {
         JsonObject main = null;
         boolean useCache = false;
@@ -653,6 +706,37 @@ public class WebManager {
         if (!apiCacheFile.exists() || apiCacheFile.isDirectory())
             return null;
         return new FileInputStream(apiCacheFile);
+    }
+
+    public static class TerritoryUpdateThread extends Thread {
+
+        public TerritoryUpdateThread(String name) {
+            super(name);
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!isInterrupted()) {
+                    Thread.sleep(30000);
+                    HashMap<String, TerritoryProfile> prevList = new HashMap<>(territories);
+                    updateTerritories();
+                    for (TerritoryProfile prevTerritory : prevList.values()) {
+                        TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
+                        if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.CAPTURED));
+                        } else if (prevTerritory.getAttacker() == null && currentTerritory.getAttacker() != null) {
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.ATTACKED));
+                        } else if (prevTerritory.getAttacker() != null && currentTerritory.getAttacker() == null) {
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.DEFENDED));
+                        }
+                    }
+                }
+                Reference.LOGGER.info("Terminating territory update thread.");
+            } catch (InterruptedException ignored) {
+                Reference.LOGGER.info("Terminating territory update thread.");
+            }
+        }
     }
 
     /**

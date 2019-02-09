@@ -49,6 +49,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
         registerOverlay(new GameUpdateOverlay(), Priority.LOW);
+        registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -68,6 +69,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.WarTimer.class);
         registerSettings(OverlayConfig.Bubbles.class);
         registerSettings(OverlayConfig.GameUpdate.class);
+        registerSettings(OverlayConfig.TerritoryFeed.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
