@@ -289,7 +289,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
@@ -369,7 +369,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
@@ -408,7 +408,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
@@ -441,7 +441,7 @@ public class WebManager {
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_refineries.json"))).getAsJsonArray();
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
 
@@ -475,7 +475,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
@@ -510,7 +510,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
 
@@ -543,7 +543,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
@@ -589,7 +589,7 @@ public class WebManager {
             } else {
                 useCache = true;
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             useCache = true;
         }
         
