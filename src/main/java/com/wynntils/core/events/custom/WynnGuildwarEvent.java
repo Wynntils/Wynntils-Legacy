@@ -7,12 +7,16 @@ public class WynnGuildwarEvent extends Event {
     String territoryName;
     String attackerName;
     String defenderName;
+    String attackerTag;
+    String defenderTag;
     WarUpdateType type;
 
-    public WynnGuildwarEvent(String territoryName, String attackerName, String defenderName, WarUpdateType type) {
+    public WynnGuildwarEvent(String territoryName, String attackerName, String defenderName, String attackerTag, String defenderTag, WarUpdateType type) {
         this.territoryName = territoryName;
         this.attackerName = attackerName;
         this.defenderName = defenderName;
+        this.attackerTag = attackerTag;
+        this.defenderTag = defenderTag;
         this.type = type;
     }
 
@@ -26,6 +30,14 @@ public class WynnGuildwarEvent extends Event {
 
     public String getDefenderName() {
         return defenderName;
+    }
+
+    public String getAttackerTag() {
+        return attackerTag;
+    }
+
+    public String getDefenderTag() {
+        return defenderTag;
     }
 
     public WarUpdateType getType() {

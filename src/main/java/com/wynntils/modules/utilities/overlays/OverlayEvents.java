@@ -480,28 +480,30 @@ public class OverlayEvents implements Listener {
                 }
             }
         }
+        String attackerName = OverlayConfig.TerritoryFeed.INSTANCE.useTag ? e.getAttackerTag() : e.getAttackerName();
+        String defenderName = OverlayConfig.TerritoryFeed.INSTANCE.useTag ? e.getDefenderTag() : e.getDefenderName();
         if (OverlayConfig.TerritoryFeed.INSTANCE.shortMessages) {
             switch (e.getType()) {
                 case ATTACKED:
-                    message += e.getTerritoryName() + " | " + e.getAttackerName() + " ⚔ " + e.getDefenderName();
+                    message += e.getTerritoryName() + " | " + attackerName + " ⚔ " + defenderName;
                     break;
                 case DEFENDED:
-                    message += e.getTerritoryName() + " | " + e.getDefenderName() + " \uD83D\uDEE1 " + e.getAttackerName();
+                    message += e.getTerritoryName() + " | " + defenderName + " \uD83D\uDEE1 " + attackerName;
                     break;
                 case CAPTURED:
-                    message += e.getTerritoryName() + " | " + e.getAttackerName() + " ⚑ " + e.getDefenderName();
+                    message += e.getTerritoryName() + " | " + attackerName + " ⚑ " + defenderName;
                     break;
             }
         } else {
             switch (e.getType()) {
                 case ATTACKED:
-                    message += e.getDefenderName() + "'s territory " + e.getTerritoryName() + " is being attacked by " + e.getAttackerName() + "!";
+                    message += "[" + defenderName + "]'s territory " + e.getTerritoryName() + " is being attacked by [" + attackerName + "]";
                     break;
                 case DEFENDED:
-                    message += e.getAttackerName() + "'s attack on " + e.getDefenderName() + "'s territory " + e.getTerritoryName() + " was defended!";
+                    message += "[" + attackerName + "]'s attack on [" + defenderName + "]'s territory " + e.getTerritoryName() + " was defended!";
                     break;
                 case CAPTURED:
-                    message += e.getAttackerName() + " has captured " + e.getTerritoryName() + " from " + e.getDefenderName() + "!";
+                    message += "[" + attackerName + "] has captured " + e.getTerritoryName() + " from [" + defenderName + "]";
                     break;
             }
         }

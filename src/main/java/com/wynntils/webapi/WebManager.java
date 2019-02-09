@@ -24,6 +24,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class WebManager {
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static PlayerStatsProfile playerProfile;
+    private static HashMap<String, GuildProfile> guilds = new HashMap<>();
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
@@ -68,6 +70,7 @@ public class WebManager {
         mapMarkers = new ArrayList<>();
         itemGuesses = new HashMap<>();
         playerProfile = null;
+        guilds = new HashMap<>();
 
         helpers = new ArrayList<>();
         moderators = new ArrayList<>();
@@ -198,6 +201,19 @@ public class WebManager {
         return users.contains(uuid);
     }
 
+    public static String getGuildTagFromName(String name) {
+        if (!guilds.containsKey(name)) {
+            try {
+                guilds.put(name, getGuildProfile(name));
+            } catch (Exception ex) {
+                guilds.put(name, null);
+            }
+        }
+        if (guilds.get(name) == null)
+            return "ERROR";
+        return guilds.get(name).getPrefix();
+    }
+
     public static PlayerStatsProfile getPlayerProfile() {
         return playerProfile;
     }
@@ -290,7 +306,7 @@ public class WebManager {
      * @throws Exception
      */
     public static GuildProfile getGuildProfile(String guild) throws Exception {
-        URLConnection st = new URL(apiUrls.get("GuildInfo") + guild).openConnection();
+        URLConnection st = new URL(apiUrls.get("GuildInfo") + URLEncoder.encode(guild, "UTF-8")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -724,11 +740,11 @@ public class WebManager {
                     for (TerritoryProfile prevTerritory : prevList.values()) {
                         TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
                         if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.CAPTURED));
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.CAPTURED));
                         } else if (prevTerritory.getAttacker() == null && currentTerritory.getAttacker() != null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.ATTACKED));
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.ATTACKED));
                         } else if (prevTerritory.getAttacker() != null && currentTerritory.getAttacker() == null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), WynnGuildwarEvent.WarUpdateType.DEFENDED));
+                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.DEFENDED));
                         }
                     }
                 }

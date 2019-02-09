@@ -326,6 +326,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Use short messages", description = "Should territory feed messages be shortened")
         public boolean shortMessages = false;
 
+        @Setting(displayName = "Use guild tags", description = "Should a guild's tag be used instead of its name")
+        public boolean useTag = false;
+
         public enum TerritoryFeedDisplayMode {
             NORMAL,
             DISTINGUISH_OWN_GUILD,
