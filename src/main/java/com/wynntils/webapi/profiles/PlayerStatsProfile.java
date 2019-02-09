@@ -296,10 +296,17 @@ public class PlayerStatsProfile {
             int global_logins = globalStats.get("logins").getAsInt();
             int global_deaths = globalStats.get("deaths").getAsInt();
             int global_total_levels = globalStats.get("total_level").getAsInt();
+
             JsonObject rankings = playerProfile.getAsJsonObject("rankings");
-            int ranking_pvp = rankings.get("pvp").getAsInt();
-            int ranking_player = rankings.get("player").getAsInt();
-            int ranking_guild = rankings.get("guild").getAsInt();
+
+            int ranking_pvp = 0;
+            if(!rankings.get("pvp").isJsonNull()) ranking_pvp = rankings.get("pvp").getAsInt();
+
+            int ranking_player = 0;
+            if(!rankings.get("player").isJsonNull()) ranking_player = rankings.get("player").getAsInt();
+
+            int ranking_guild = 0;
+            if(!rankings.get("guild").isJsonNull()) ranking_guild = rankings.get("guild").getAsInt();
 
             JsonObject guild = playerProfile.getAsJsonObject("guild");
             String guild_name = guild.get("name").getAsString();
