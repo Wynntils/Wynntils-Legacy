@@ -2,7 +2,7 @@ package com.wynntils.core.events.custom;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class WynnGuildwarEvent extends Event {
+public class WynnGuildWarEvent extends Event {
 
     String territoryName;
     String attackerName;
@@ -11,7 +11,7 @@ public class WynnGuildwarEvent extends Event {
     String defenderTag;
     WarUpdateType type;
 
-    public WynnGuildwarEvent(String territoryName, String attackerName, String defenderName, String attackerTag, String defenderTag, WarUpdateType type) {
+    public WynnGuildWarEvent(String territoryName, String attackerName, String defenderName, String attackerTag, String defenderTag, WarUpdateType type) {
         this.territoryName = territoryName;
         this.attackerName = attackerName;
         this.defenderName = defenderName;

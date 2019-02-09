@@ -453,20 +453,20 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTerritoryWar(WynnGuildwarEvent e) {
+    public void onTerritoryWar(WynnGuildWarEvent e) {
         if (!Reference.onServer)
             return;
         if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.ONLY_OWN_GUILD && !e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName()) && !e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName()))
             return;
         String message = "§b";
         if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD) {
-            if (e.getType() == WynnGuildwarEvent.WarUpdateType.ATTACKED) {
+            if (e.getType() == WynnGuildWarEvent.WarUpdateType.ATTACKED) {
                 if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
                     message = "§c";
                 } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
                     message = "§a";
                 }
-            } else if (e.getType() == WynnGuildwarEvent.WarUpdateType.DEFENDED) {
+            } else if (e.getType() == WynnGuildWarEvent.WarUpdateType.DEFENDED) {
                 if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
                     message = "§2";
                 } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {

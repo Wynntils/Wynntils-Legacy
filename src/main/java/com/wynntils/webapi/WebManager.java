@@ -6,7 +6,7 @@ package com.wynntils.webapi;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.WynnGuildwarEvent;
+import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
@@ -16,7 +16,6 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
 
@@ -28,7 +27,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class WebManager {
 
@@ -740,11 +738,11 @@ public class WebManager {
                     for (TerritoryProfile prevTerritory : prevList.values()) {
                         TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
                         if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.CAPTURED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.CAPTURED));
                         } else if (prevTerritory.getAttacker() == null && currentTerritory.getAttacker() != null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.ATTACKED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.ATTACKED));
                         } else if (prevTerritory.getAttacker() != null && currentTerritory.getAttacker() == null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildwarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildwarEvent.WarUpdateType.DEFENDED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.DEFENDED));
                         }
                     }
                 }

@@ -313,6 +313,9 @@ public class OverlayConfig extends SettingsClass {
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
+        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?")
+        public boolean enabled = true;
+
         @Setting(displayName = "Animation Length", description = "How long (in seconds) messages on the territory feed should remain")
         @Setting.Limitations.IntLimit(min = 1, max = 60)
         public int animationLength = 20;
