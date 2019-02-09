@@ -100,20 +100,21 @@ public class MapConfig extends SettingsClass {
             put("NPC_PowderMaster", true);
             put("Special_FastTravel", true);
             put("tnt", true);
-            //put("painting", true);
+            put("painting", true);
             put("Ore_Refinery", true);
             put("Fish_Refinery", true);
             put("Wood_Refinery", true);
             put("Crop_Refinery", true);
             put("MarketPlace", true);
             put("Content_Quest", false);
-            //put("Special_Rune", false);
+            put("Special_Rune", false);
+            put("Special_RootsOfCorruption", true);
             put("Content_UltimateDiscovery", false);
             put("Content_Cave", false);
             put("Content_GrindSpot", false);
-            //put("Merchant_Other", false);
-            //put("Special_LightRealm", true);
-            //put("Merchant_Emerald", true);
+            put("Merchant_Other", false);
+            put("Special_LightRealm", true);
+            put("Merchant_Emerald", true);
         }};
     }
 }

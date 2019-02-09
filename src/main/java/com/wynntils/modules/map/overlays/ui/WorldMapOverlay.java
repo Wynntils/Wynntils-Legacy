@@ -100,8 +100,8 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Powder":
-                    texPosX = 112; texPosZ = 0;
-                    texSizeX = 148; texSizeZ = 17;
+                    texPosX = 113; texPosZ = 0;
+                    texSizeX = 130; texSizeZ = 17;
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Scroll":
@@ -110,7 +110,7 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Seasail":
-                    texPosX = 113; texPosZ = 18;
+                    texPosX = 113; texPosZ = 17;
                     texSizeX = 131; texSizeZ = 35;
                     break;
                 case "Merchant_Weapon":
@@ -185,7 +185,9 @@ public class WorldMapOverlay extends GuiScreen {
                     size = 3;
                     break;
                 case "Special_Rune":
-                    texPosX = -100;
+                    texPosX = 64; texPosZ = 35;
+                    texSizeX = 82; texSizeZ = 53;
+                    zoomNeeded = 0;
                     break;
                 case "Content_UltimateDiscovery":
                     texPosX = 201; texPosZ = 18;
@@ -203,15 +205,33 @@ public class WorldMapOverlay extends GuiScreen {
                     zoomNeeded = 0;
                     break;
                 case "Merchant_Other":
-                    texPosX = -100;
+                    texPosX = 0; texPosZ = 29;
+                    texSizeX = 18; texSizeZ = 47;
+                    zoomNeeded = 0;
+                    size = 3;
                     break;
                 case "Special_LightRealm":
-                    texPosX = -100;
+                    texPosX = 52; texPosZ = 35;
+                    texSizeX = 64; texSizeZ = 53;
+                    zoomNeeded = 0;
                     break;
                 case "Special_RootsOfCorruption":
-                    texPosX = -100;
+                    texPosX = 38; texPosZ = 35;
+                    texSizeX = 50; texSizeZ = 53;
+                    zoomNeeded = 0;
                     break;
                 case "Merchant_Emerald":
+                    texPosX = 233; texPosZ = 18;
+                    texSizeX = 250; texSizeZ = 36;
+                    zoomNeeded = 0;
+                    size = 3;
+                    break;
+                case "painting":
+                    texPosX = 18; texPosZ = 35;
+                    texSizeX = 36; texSizeZ = 53;
+                    zoomNeeded = 0;
+                    break;
+                default:
                     texPosX = -100;
                     break;
             }
