@@ -244,11 +244,12 @@ public class PlayerStatsProfile {
     }
 
     public enum GuildRank {
-        Owner("★★★★"),
-        Chief("★★★"),
-        Captain("★★"),
-        Recruiter("★"),
-        Recruit("");
+        ONWER("★★★★"),
+        CHIEF("★★★"),
+        CAPTAIN("★★"),
+        RECRUITER("★"),
+        RECRUIT(""),
+        NONE("");
 
         private String stars;
 
@@ -267,7 +268,11 @@ public class PlayerStatsProfile {
         public PlayerStatsProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject playerProfile = json.getAsJsonObject();
             PlayerRank rank = PlayerRank.valueOf(playerProfile.get("rank").getAsString());
-            PlayerTag tag = PlayerTag.valueOf(playerProfile.get("tag").getAsString());
+
+            PlayerTag tag;
+            if(playerProfile.get("tag").getAsString().isEmpty()) tag = PlayerTag.NONE;
+            else tag = PlayerTag.valueOf(playerProfile.get("tag").getAsString());
+
             boolean displayTag = playerProfile.get("displayTag").getAsBoolean();
             boolean veteran = playerProfile.get("veteran").getAsBoolean();
             int playtime = playerProfile.get("playtime").getAsInt();
@@ -295,9 +300,14 @@ public class PlayerStatsProfile {
             int ranking_pvp = rankings.get("pvp").getAsInt();
             int ranking_player = rankings.get("player").getAsInt();
             int ranking_guild = rankings.get("guild").getAsInt();
+
             JsonObject guild = playerProfile.getAsJsonObject("guild");
             String guild_name = guild.get("name").getAsString();
-            GuildRank guild_rank = GuildRank.valueOf(guild.get("rank").getAsString());
+
+            GuildRank guild_rank;
+            if(guild.get("rank").getAsString().isEmpty()) guild_rank = GuildRank.NONE;
+            else guild_rank = GuildRank.valueOf(guild.get("rank").getAsString().toUpperCase());
+
             return new PlayerStatsProfile(rank, tag, displayTag, veteran, playtime, first_join, last_join, global_items_identified, global_mobs_killed, global_pvp_kills, global_pvp_deaths, global_chests_found, global_blocks_walked, global_logins, global_deaths, global_total_levels, ranking_pvp, ranking_player, ranking_guild, guild_name, guild_rank);
         }
     }
