@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.webapi.WebManager;
 
 @SettingsInfo(name = "overlays", displayPath = "Overlays")
 public class OverlayConfig extends SettingsClass {
@@ -331,6 +332,11 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Use guild tags", description = "Should a guild's tag be used instead of its name")
         public boolean useTag = false;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if(name.equals("enabled")) WebManager.updateTerritoryThreadStatus(enabled);
+        }
 
         public enum TerritoryFeedDisplayMode {
             NORMAL,

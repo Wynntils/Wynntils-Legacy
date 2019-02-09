@@ -81,7 +81,7 @@ public class WebManager {
 
         account = null;
 
-        territoryUpdateThread.interrupt();
+        updateTerritoryThreadStatus(false);
     }
 
     public static void setupWebApi() {
@@ -125,8 +125,7 @@ public class WebManager {
         }catch (Exception ex) { ex.printStackTrace(); }
         ProgressManager.pop(progressBar);
 
-        territoryUpdateThread = new TerritoryUpdateThread("Territory Update Thread");
-        territoryUpdateThread.start();
+        updateTerritoryThreadStatus(true);
     }
 
     public static void checkForUpdates() {
@@ -197,6 +196,19 @@ public class WebManager {
 
     public static boolean isUser(UUID uuid) {
         return users.contains(uuid);
+    }
+
+    public static void updateTerritoryThreadStatus(boolean start) {
+        if(start) {
+            if(territoryUpdateThread == null) {
+                territoryUpdateThread = new TerritoryUpdateThread("Territory Update Thread");
+                territoryUpdateThread.start();
+                return;
+            }
+            return;
+        }
+        territoryUpdateThread.interrupt();
+        territoryUpdateThread = null;
     }
 
     public static String getGuildTagFromName(String name) {
