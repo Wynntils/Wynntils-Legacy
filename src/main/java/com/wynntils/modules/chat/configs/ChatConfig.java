@@ -40,7 +40,7 @@ public class ChatConfig extends SettingsClass {
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter Chat Tab by Presets", description = "Select a pre-made selection of tabs to be set.\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
+    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
     public Presets preset = Presets.a;
 
     @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?")
