@@ -40,13 +40,13 @@ public class ChatConfig extends SettingsClass {
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter chat tab by presets", description = "Select a pre-made selection of tabs to be set.\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
+    @Setting(displayName = "Alter Chat Tab by Presets", description = "Select a pre-made selection of tabs to be set.\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
     public Presets preset = Presets.a;
 
-    @Setting(displayName = "Clickable party invites", description = "Should party invites provide a clickable command?")
+    @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?")
     public boolean clickablePartyInvites = true;
 
-    @Setting(displayName = "Clickable coordinates", description = "Should in chat coordinates be clickable as a '/compass'-command?")
+    @Setting(displayName = "Clickable Coordinates", description = "Should coordinates displayed in chat be clickable as a '/compass' command?")
     public boolean clickableCoordinates = true;
 
     public enum Presets {
