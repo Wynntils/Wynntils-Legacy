@@ -19,10 +19,10 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")
     public boolean compassFollowQuests = true;
 
-    @Setting(displayName = "Search Box Requires Click", description = "If enabled, you must click on the search box before typing to search. If disabled, you can type immediately after opening the page.")
+    @Setting(displayName = "Search Box Requires Click", description = "Should you be required to click on the search bar before typing or be able to type in the search bar immediately after opening the quest book?")
     public boolean searchBoxClickRequired = true;
 
-    @Setting(displayName = "Fuzzy Search", description = "If enabled, a different search algorithm is used that will allow matching of acronyms and abbreviations")
+    @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
 }
