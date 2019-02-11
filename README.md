@@ -9,6 +9,7 @@
 About Wynntils
 ========
 Wynntils is a Wynncraft mod that seeks to enhance the user's gameplay with a variety of customizable options and additions.
+If you find any bug please report at our <a href="https://discord.gg/SZuNem8">oficial discord</a>!
 
 Setup the Workspace
 ========
