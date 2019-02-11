@@ -23,7 +23,7 @@ public class ExpBarOverlay extends Overlay {
 
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen? (0 for instant)")
     public float animated = 2f;
 
     /*
@@ -37,7 +37,7 @@ public class ExpBarOverlay extends Overlay {
     @Setting(displayName = "Level Number Position", description = "The position offset of the level number")
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
 
-    @Setting(displayName = "Text Name", description = "The color of the text")
+    @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
     public CustomColor textColor = CustomColor.fromString("aaff00",1f);
 
     private static float exp = 0.0f;
