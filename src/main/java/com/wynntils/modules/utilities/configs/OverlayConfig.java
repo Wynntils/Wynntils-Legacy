@@ -15,7 +15,7 @@ public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
 
-    @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+    @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display your coordinates when there is nothing else to show?")
@@ -35,7 +35,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -66,7 +66,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -110,7 +110,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -137,7 +137,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
         @Setting(displayName = "Bubble Vignette", description = "Should the drowning vignette be displayed?")
@@ -163,7 +163,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -195,7 +195,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
-        @Setting(displayName = "Text Shadow", description = "The text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
         @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
@@ -222,14 +222,14 @@ public class OverlayConfig extends SettingsClass {
         public static class GameUpdateInventoryMessages extends SettingsClass {
             public static GameUpdateInventoryMessages INSTANCE;
 
-            @Setting(displayName = "Enable full inventory Messages", description = "Should messages be displayed in the game-update-ticker when your inventory is full?")
+            @Setting(displayName = "Enable Full Inventory Messages", description = "Should messages be displayed in the game-update-ticker when your inventory is full?")
             public boolean enabled = false;
 
-            @Setting(displayName = "Full Inventory UpdateRate", description = "How often should the inventory full message (in seconds) be displayed in the game update ticker?")
+            @Setting(displayName = "Full Inventory Update Rate", description = "How often should the inventory full message (in seconds) be displayed in the game update ticker?")
             @Setting.Limitations.FloatLimit(min = 5f, max = 60f, precision = 5f)
             public float inventoryUpdateRate = 10f;
 
-            @Setting(displayName = "Inventory full Message Format", description = "What message should be displayed when your inventory is full?")
+            @Setting(displayName = "Inventory Full Message Format", description = "What message should be displayed when your inventory is full?")
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String inventoryMessageFormat = "§4Your inventory is full";
         }
@@ -282,7 +282,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game update ticker?")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the music module is disabled)")
+            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the Music module is disabled.)")
             public boolean musicChange = true;
 
             @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
@@ -306,7 +306,7 @@ public class OverlayConfig extends SettingsClass {
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
         
-        @Setting(displayName = "Text Shadow", description = "The HUD text shadow type")
+        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
@@ -317,20 +317,20 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?")
         public boolean enabled = true;
 
-        @Setting(displayName = "Animation Length", description = "How long (in seconds) messages on the territory feed should remain")
+        @Setting(displayName = "Animation Length", description = "How long (in seconds) should messages on the territory feed be displayed?")
         @Setting.Limitations.IntLimit(min = 1, max = 60)
         public int animationLength = 20;
 
-        @Setting(displayName = "Territory Messages Mode", description = "What messages should be displayed in the territory feed:\n" +
-                "NORMAL: Display all territory messages\n" +
-                "DISTINGUISH_OWN_GUILD: Display all territory messages, however messages affecting your guild will be displayed in a different colour\n" +
-                "ONLY_OWN_GUILD: Display only territory messages that affect your guild")
+        @Setting(displayName = "Territory Messages Mode", description = "What messages should be displayed in the territory feed?\n\n" +
+                "Normal: Display all territory messages.\n\n" +
+                "Distinguish Own Guild: Display all territory messages, but messages relating to your guild will be displayed in different colors. (§2Gained territory §r& §4lost territory§r)\n\n" +
+                "Only Own Guild: Display only territory messages that relate to your guild.")
         public TerritoryFeedDisplayMode displayMode = TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD;
 
-        @Setting(displayName = "Use short messages", description = "Should territory feed messages be shortened")
+        @Setting(displayName = "Shorten Messages", description = "Should territory feed messages be shortened?")
         public boolean shortMessages = false;
 
-        @Setting(displayName = "Use guild tags", description = "Should a guild's tag be used instead of its name")
+        @Setting(displayName = "Use Guild Tags", description = "Should guild tags be displayed rather than names?")
         public boolean useTag = false;
 
         @Override
