@@ -1,26 +1,5 @@
----
-name: Bug report
-about: What the issue is about
+Please submit your bug and crash reports on our Discord server!
+========
+Hi there! We handle bug and crash reports on our Discord server rather than GitHub. To submit a report on the Discord server, go to the #bot-channel and type in either ``-new Bug Report`` or ``-new Crash Report``, depending on what you are reporting.
 
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Versions:**
- - OS: [e.g. Windows]
- - Minecraft version: [e.g 1.11.2]
- - Version: [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+The invite to our Discord server is https://discord.gg/SZuNem8.
