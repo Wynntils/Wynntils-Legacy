@@ -52,7 +52,7 @@ public class GameUpdateOverlay extends Overlay {
     @Setting.Limitations.IntLimit(min = 0, max = 100)
     public int messageMaxLength = 0;
 
-    @Setting(displayName = "Text Shadow", description = "The HUD Text shadow type")
+    @Setting(displayName = "Text Shadow", description = "Which text shadow type should be used for this overlay?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     /* Message Management */

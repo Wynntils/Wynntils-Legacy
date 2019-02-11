@@ -31,13 +31,13 @@ public class HealthBarOverlay extends Overlay {
     public HealthTextures texture = HealthTextures.a;
     */
 
-    @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
+    @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
     public boolean flip = false;
 
     @Setting(displayName = "Text Position", description = "The position offset of the text")
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-10);
 
-    @Setting(displayName = "Text Name", description = "The color of the text")
+    @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
     public CustomColor textColor = CommonColors.RED;
 
     private static float health = 0.0f;
