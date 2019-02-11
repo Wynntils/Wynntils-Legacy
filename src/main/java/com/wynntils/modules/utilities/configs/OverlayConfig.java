@@ -15,7 +15,7 @@ public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
 
-    @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+    @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display your coordinates when there is nothing else to show?")
@@ -35,7 +35,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -66,7 +66,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -110,7 +110,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -137,7 +137,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
         @Setting(displayName = "Bubble Vignette", description = "Should the drowning vignette be displayed?")
@@ -163,7 +163,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String levelingText = "§a(%actual%/%max%) §6%percent%%";
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
@@ -195,7 +195,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
         @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
@@ -306,7 +306,7 @@ public class OverlayConfig extends SettingsClass {
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
         
-        @Setting(displayName = "Text Shadow", description = "How should the text shadow look like?")
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
