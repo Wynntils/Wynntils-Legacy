@@ -34,7 +34,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show Players' Armor", description = "Should the worn armor of players be listed underneath their nametag? (Crafted armor cannot be displayed.)")
+    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag? (Crafted armor cannot be displayed.)")
     public boolean showArmors = false;
 
     @Setting(displayName = "Prevent Mythic Loot Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
@@ -93,7 +93,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?")
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armor Items", description = "Should your worn armor be highlighted according to rarity?")
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?")
         public boolean armorHighlight = true;
 
         @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
