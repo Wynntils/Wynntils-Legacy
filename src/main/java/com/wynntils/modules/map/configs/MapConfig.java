@@ -43,7 +43,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?")
     public PointerType pointerStyle = PointerType.ARROW;
 
-    @Setting(displayName = "Pointer Color", description = "What should the color of the pointer be?")
+    @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?")
     public PointerColor pointerColor = PointerColor.RED;
 
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
