@@ -14,36 +14,36 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Enable minimap", description = "Should a minimap be displayed?")
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?")
     public boolean enabled = true;
 
-    @Setting(displayName = "Map Format", description = "Should the Map be a Square or a Circle?")
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?")
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Follow Player Rotation", description = "Should the Map follow the Player's Rotation?")
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?")
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should compass directions (N, S, E, W) been shown on the map")
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap")
     public boolean showCompass = true;
 
-    @Setting(displayName = "Map Size", description = "How large should the Map be?")
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?")
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "North only", description = "Should only the cardinal direction: North, be displayed?")
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?")
     public boolean northOnly = false;
 
-    @Setting(displayName = "Map Zoom", description = "How far zoomed out should the map be?")
+    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Texture Style", description = "What should the Map Texture be?")
+    @Setting(displayName = "Texture Style", description = "What should the texture of the minimap be?")
     public TextureType textureType = TextureType.Paper;
 
-    @Setting(displayName = "Pointer Style", description = "What should the pointer texture style be?")
+    @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?")
     public PointerType pointerStyle = PointerType.ARROW;
 
-    @Setting(displayName = "Pointer Color", description = "What should the pointer color be?")
+    @Setting(displayName = "Pointer Color", description = "What should the color of the pointer be?")
     public PointerColor pointerColor = PointerColor.RED;
 
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();

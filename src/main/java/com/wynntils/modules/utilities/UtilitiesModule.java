@@ -19,7 +19,7 @@ import com.wynntils.modules.utilities.overlays.inventories.ItemLockOverlay;
 import com.wynntils.modules.utilities.overlays.inventories.RarityColorOverlay;
 import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
 
-@ModuleInfo(name = "utilities", displayName = "Utils")
+@ModuleInfo(name = "utilities", displayName = "Utilities")
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;

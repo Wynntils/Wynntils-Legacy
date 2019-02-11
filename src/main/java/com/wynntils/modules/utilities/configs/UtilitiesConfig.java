@@ -22,10 +22,10 @@ public class UtilitiesConfig extends SettingsClass {
     /*@Setting(displayName = "Show Server TPS in the Tab Menu", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
     public boolean showTPSCount = true;*/ //Just hid this option - perhaps for future optimizations.
 
-    @Setting(displayName = "Hide Potion Gui", description = "Should the potion effect (black squares) be hidden?")
+    @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
     public boolean hidePotionGui = true;
 
-    @Setting(displayName = "Add Class & Server button to menu", description = "Should a Class & Server button be present on the in-game menu?")
+    @Setting(displayName = "Add Class & Server Button to Menu", description = "Should a class and server button be displayed on the in-game menu?")
     public boolean addClassServer = true;
 
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
@@ -34,7 +34,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show Players' Armor", description = "Should the armor of what players are wearing be listed underneath their nametag?")
+    @Setting(displayName = "Show Players' Armor", description = "Should the worn armor of players be listed underneath their nametag? (Crafted armor cannot be displayed.)")
     public boolean showArmors = false;
 
     @Setting(displayName = "Prevent Mythic Loot Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
@@ -53,7 +53,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
 
-        @Setting(displayName = "Show player health bar", description = "Should the health bar of other warrers be displayed above their heads?")
+        @Setting(displayName = "Show Player Health Bar", description = "Should the health bar of other players in a war server be displayed above their heads?")
         public boolean warrerHealthBar = true;
 
     }
@@ -75,10 +75,10 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
-        @Setting(displayName = "Filter for ingredients", description = "Should an ingredients or crafting items filter be available?")
+        @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?")
         public boolean filterEnabled = true;
 
-        @Setting(displayName = "Filter persistency", description = "Should the filter remain the same through inventory updates?")
+        @Setting(displayName = "Filter Persistency", description = "Should the filter remain the same through inventory updates?")
         public boolean saveFilter = true;
 
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
@@ -159,10 +159,10 @@ public class UtilitiesConfig extends SettingsClass {
         public static Debug INSTANCE;
 
         @Setting.Limitations.StringLimit(maxLength = 15)
-        @Setting(displayName = "Test text field", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
+        @Setting(displayName = "Test Text Field", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public String testTextField = "default text";
 
-        @Setting(displayName = "Enum test", description = "")//empty description is just no description
+        @Setting(displayName = "Enum Test", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public TestEnum testEnumSetting = TestEnum.TEST_B;
 
         @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
@@ -170,11 +170,11 @@ public class UtilitiesConfig extends SettingsClass {
         public int lol = -3;
 
         @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
-        @Setting(displayName = "Float ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
+        @Setting(displayName = "Float Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public float floatlol = 4.6f;
 
         @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
-        @Setting(displayName = "Double tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
+        @Setting(displayName = "Double Tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
         public double doublelawl = 0.2d;
 
         public enum TestEnum {

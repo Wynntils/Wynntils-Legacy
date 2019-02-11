@@ -31,7 +31,7 @@ public class KeyManager {
             }
         });
 
-        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
+        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", true, () -> {
             SettingsUI ui = new SettingsUI(ModCore.mc().currentScreen);
@@ -43,13 +43,13 @@ public class KeyManager {
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
 
-        CoreModule.getModule().registerKeyBinding("Zoom in", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
+        CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
             if (MapConfig.INSTANCE.mapZoom >= 5) {
                 MapConfig.INSTANCE.mapZoom -= 5;
             }
         });
 
-        CoreModule.getModule().registerKeyBinding("Zoom out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
+        CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
             if (MapConfig.INSTANCE.mapZoom <= 95) {
                 MapConfig.INSTANCE.mapZoom += 5;
             }

@@ -20,9 +20,9 @@ public class CoreDBConfig extends SettingsClass {
     public int lastSelectedClass = -1;
     public ClassType lastClass = ClassType.NONE;
 
-    @Setting(displayName = "Update Stream", description = "The update stream to use.\n" +
-            "§2Stable: Only update when a new version is released, will generally by the more stable than cutting edge.\n" +
-            "§4Cutting Edge: Update whenever a new build is release, will include features currently in development.")
+    @Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
+            "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
+            "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.")
     public UpdateStream updateStream = UpdateStream.STABLE;
 
     @Override
