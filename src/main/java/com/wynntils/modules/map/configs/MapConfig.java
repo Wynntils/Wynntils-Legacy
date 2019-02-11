@@ -30,7 +30,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display North Only", description = "Should north only be displayed on the minimap?")
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?")
     public boolean northOnly = false;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
