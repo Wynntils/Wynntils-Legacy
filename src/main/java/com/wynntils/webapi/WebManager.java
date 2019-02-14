@@ -86,7 +86,7 @@ public class WebManager {
 
     public static void setupWebApi() {
         try{
-            apiUrls = new WebReader("http://api.wynntils.com/webapi");
+            apiUrls = new WebReader("https://api.wynntils.com/webapi");
         }catch (Exception ex) { ex.printStackTrace(); return; }
 
         ProgressManager.ProgressBar progressBar = ProgressManager.push("Loading data from APIs", 7);
