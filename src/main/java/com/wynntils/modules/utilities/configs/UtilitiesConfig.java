@@ -19,9 +19,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
 
-    /*@Setting(displayName = "Show Server TPS in the Tab Menu", description = "Should the connected world display its ticks-per-second in the list of players? (Tab menu)")
-    public boolean showTPSCount = true;*/ //Just hid this option - perhaps for future optimizations.
-
     @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
     public boolean hidePotionGui = true;
 

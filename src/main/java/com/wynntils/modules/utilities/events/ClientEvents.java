@@ -15,7 +15,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
-import com.wynntils.modules.utilities.managers.TPSManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -23,7 +22,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -36,7 +38,6 @@ public class ClientEvents implements Listener {
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld)
             return;
-        TPSManager.updateTPS();
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
     }
 
