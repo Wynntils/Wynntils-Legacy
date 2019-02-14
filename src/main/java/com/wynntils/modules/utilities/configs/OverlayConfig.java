@@ -250,7 +250,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game update ticker?")
             public boolean redirectLoginFriend = true;
 
-            @Setting(displayName = "Redirect Guild Login Messages", description = "Should loing messages for guild members be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game update ticker?")
             public boolean redirectLoginGuild = true;
 
             @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
