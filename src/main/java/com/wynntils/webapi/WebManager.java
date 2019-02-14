@@ -122,7 +122,11 @@ public class WebManager {
             ms = System.currentTimeMillis();
             updatePlayerProfile();
             Reference.LOGGER.info("Loaded player stats in " + (System.currentTimeMillis() - ms) + "ms");
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            for (int i = progressBar.getStep(); i < progressBar.getSteps(); i++)
+                progressBar.step("Error loading data from APIs");
+            ex.printStackTrace();
+        }
         ProgressManager.pop(progressBar);
 
         updateTerritoryThreadStatus(true);
