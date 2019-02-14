@@ -190,11 +190,11 @@ public class Utils {
             getItemFieldName.put("Air Damage", "bonusAirDamage");
             getItemFieldName.put("Thunder Damage", "bonusThunderDamage");
             getItemFieldName.put("Earth Damage", "bonusEarthDamage");
-            getItemFieldName.put("Fire Defense", "bonusFireDefense");
-            getItemFieldName.put("Water Defense", "bonusWaterDefense");
-            getItemFieldName.put("Air Defense", "bonusAirDefense");
-            getItemFieldName.put("Thunder Defense", "bonusThunderDefense");
-            getItemFieldName.put("Earth Defense", "bonusEarthDefense");
+            getItemFieldName.put("Fire Defence", "bonusFireDefense");
+            getItemFieldName.put("Water Defence", "bonusWaterDefense");
+            getItemFieldName.put("Air Defence", "bonusAirDefense");
+            getItemFieldName.put("Thunder Defence", "bonusThunderDefense");
+            getItemFieldName.put("Earth Defence", "bonusEarthDefense");
         }
 
         return getItemFieldName.getOrDefault(key, null);
