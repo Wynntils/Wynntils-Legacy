@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 0, minor: 2, revision: 1)
+def versionObj = new Version(major: 0, minor: 2, revision: 2)
 
 version = versionObj.toString()
 group = "com.wynntils"
