@@ -53,7 +53,7 @@ public class WynntilsAccount {
         SecretKey secretkey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(publicKeyBy);
 
-        String s1 = (new BigInteger(CryptManager.getServerIdHash("", publicKey, secretkey))).toString(16);
+        String s1 = (new BigInteger(1, CryptManager.getServerIdHash("", publicKey, secretkey))).toString(16);
 
         Minecraft mc = ModCore.mc();
         mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), s1);
