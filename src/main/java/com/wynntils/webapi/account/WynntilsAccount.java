@@ -72,6 +72,7 @@ public class WynntilsAccount {
 
         st2.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st2.setRequestProperty("Content-Length", "" + postAsBytes.length);
+        st2.setRequestProperty("Content-Type", "application/json");
         st2.setDoOutput(true);
 
         OutputStream outputStream = null;
