@@ -57,7 +57,7 @@ public class WebManager {
 
     private static Thread territoryUpdateThread;
 
-    private static final int REQUEST_TIMEOUT_MILLIS = 5000;
+    private static final int REQUEST_TIMEOUT_MILLIS = 16000;
 
     public static void reset() {
         apiUrls = null;
@@ -250,6 +250,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -294,6 +295,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -374,6 +376,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -413,6 +416,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -446,6 +450,7 @@ public class WebManager {
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_refineries.json"))).getAsJsonArray();
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
 
@@ -480,6 +485,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -515,6 +521,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
 
@@ -548,6 +555,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
@@ -594,6 +602,7 @@ public class WebManager {
                 useCache = true;
             }
         } catch (IOException | NullPointerException ex) {
+            ex.printStackTrace();
             useCache = true;
         }
         
