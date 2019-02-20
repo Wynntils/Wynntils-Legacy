@@ -96,25 +96,28 @@ public class MiniMapOverlay extends Overlay {
             //cursor & cursor rotation
             rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
 
-            MapConfig.PointerType type = MapConfig.INSTANCE.pointerStyle;
-            MapConfig.PointerColor color = MapConfig.INSTANCE.pointerColor;
-            drawRectF(Textures.Map.map_pointers, mapSize/2.0f - type.dWidth, mapSize/2.0f - type.dHeight, mapSize/2.0f + type.dWidth, mapSize/2.0f + type.dWidth, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
+            MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
+
+            MapConfig.Textures.INSTANCE.pointerColor.applyColor();
+            drawRectF(Textures.Map.map_pointers, (mapSize/2f) - type.dWidth, (mapSize/2f) - type.dHeight, (mapSize/2f) + type.dWidth, (mapSize/2f) + type.dHeight, 0, type.yStart, type.width, type.yStart + type.height);
+            GlStateManager.color(1, 1, 1, 1);
+
             resetRotation();
 
             if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
-                if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper) {
+                if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Paper) {
                     drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 217, 217);
-                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
+                } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     drawRect(Textures.Map.wynn_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 0, 112, 112);
-                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
+                } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
                     drawRect(Textures.Map.gilded_map_textures, -1, -1, mapSize+1, mapSize+1, 0, 263, 262, 524);
                 }
             } else if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Paper) {
+                if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Paper) {
                     drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 217, 217, 434, 438);
-                } else if(MapConfig.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
+                } else if(MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     //todo texture
-                } else if (MapConfig.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
+                } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
                     drawRect(Textures.Map.gilded_map_textures, -1, -1, mapSize+1, mapSize+1, 0, 0, 262, 262);
                 }
             }

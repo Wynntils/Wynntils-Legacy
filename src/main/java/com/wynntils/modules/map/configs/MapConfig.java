@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.configs;
 
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -37,16 +38,22 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Texture Style", description = "What should the texture of the minimap be?")
-    public TextureType textureType = TextureType.Paper;
-
-    @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?")
-    public PointerType pointerStyle = PointerType.ARROW;
-
-    @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?")
-    public PointerColor pointerColor = PointerColor.RED;
-
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
+
+    @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
+    public static class Textures extends SettingsClass {
+        public static Textures INSTANCE;
+
+        @Setting(displayName = "MiniMap Texture Style", description = "What should the texture of the minimap be?")
+        public TextureType textureType = TextureType.Paper;
+
+        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?")
+        public PointerType pointerStyle = PointerType.ARROW;
+
+        @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?")
+        public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
+
+    }
 
     public enum MapFormat {
         SQUARE, CIRCLE
@@ -58,22 +65,12 @@ public class MapConfig extends SettingsClass {
 
     public enum PointerType {
 
-        ARROW(10, 8, 5, 4, 0), PIN(8, 10, 4, 5, 32);
+        ARROW(10, 8, 5, 4, 0), CURSOR(8, 7, 4, 3.5f, 8), NARROW(8, 8, 4, 4, 15), ROUND(8, 8, 4, 4, 23), STRAIGHT(6, 8, 3, 4, 31), TRIANGLE(8, 6, 4, 3, 39);
 
-        public int width, height, dWidth, dHeight, yStart;
+        public float width, height, dWidth, dHeight, yStart;
 
-        PointerType(int width, int height, int dWidth, int dHeight, int yStart) {
+        PointerType(float width, float height, float dWidth, float dHeight, float yStart) {
             this.width = width; this.height = height; this.dWidth = dWidth; this.dHeight = dHeight; this.yStart = yStart;
-        }
-    }
-
-    public enum PointerColor {
-        BLUE(0), RED(1), WHITE(2), YELLOW(3);
-
-        public int index;
-
-        PointerColor(int index) {
-            this.index = index;
         }
     }
 

@@ -8,7 +8,6 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -336,10 +335,12 @@ public class WorldMapOverlay extends GuiScreen {
 
             ScreenRenderer.transformationOrigin((int)playerPostionX, (int)playerPostionZ);
             ScreenRenderer.rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
-            MapConfig.PointerType type = MapConfig.INSTANCE.pointerStyle;
-            MapConfig.PointerColor color = MapConfig.INSTANCE.pointerColor;
 
-            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth*1.5f, playerPostionZ - type.dHeight*1.5f, playerPostionX + type.dWidth*1.5f, playerPostionZ + type.dHeight*1.5f, 0, type.yStart + (color.index * type.height), type.width, type.yStart + ((color.index+1) * type.height));
+            MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
+
+            MapConfig.Textures.INSTANCE.pointerColor.applyColor();
+            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth*1.5f, playerPostionZ - type.dHeight*1.5f, playerPostionX + type.dWidth*1.5f, playerPostionZ + type.dHeight*1.5f, 0, type.yStart, type.width, type.yStart + type.height);
+            GlStateManager.color(1, 1, 1, 1);
 
             ScreenRenderer.resetRotation();
         }

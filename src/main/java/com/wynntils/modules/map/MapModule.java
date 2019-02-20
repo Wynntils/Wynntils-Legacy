@@ -31,6 +31,8 @@ public class MapModule extends Module {
         mainMap.updateMap();
 
         registerSettings(MapConfig.class);
+        registerSettings(MapConfig.Textures.class);
+
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay()));
