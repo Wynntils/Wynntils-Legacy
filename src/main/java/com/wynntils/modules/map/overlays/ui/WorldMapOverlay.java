@@ -254,7 +254,7 @@ public class WorldMapOverlay extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        wayPointsBtn.enabled = Reference.developmentEnvironment;
+        wayPointsBtn.enabled = false;
         this.buttonList.add(settingsBtn = new GuiButton(1,35,36,60,18, "Settings..."));
         this.buttonList.add(wayPointsBtn = new GuiButton(2,35,57,60,18, "Waypoints"));
         updateCenterPosition(centerPositionX, centerPositionZ);
