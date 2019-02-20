@@ -72,18 +72,12 @@ public class CustomColor {
             float v3 = v * (1 - s * (1 - (vh - vi)));
 
             switch(vi) {
-                case 0:
-                    return new CustomColor(v,v3,v1,a);
-                case 1:
-                    return new CustomColor(v2,v,v1,a);
-                case 2:
-                    return new CustomColor(v1,v,v3,a);
-                case 3:
-                    return new CustomColor(v1,v2,v,a);
-                case 4:
-                    return new CustomColor(v3,v1,v,a);
-                default:
-                    return new CustomColor(v,v1,v2,a);
+                case 0: return new CustomColor(v,v3,v1,a);
+                case 1: return new CustomColor(v2,v,v1,a);
+                case 2: return new CustomColor(v1,v,v3,a);
+                case 3: return new CustomColor(v1,v2,v,a);
+                case 4: return new CustomColor(v3,v1,v,a);
+                default: return new CustomColor(v,v1,v2,a);
             }
         }
     }

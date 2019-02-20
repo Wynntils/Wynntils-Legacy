@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -145,49 +146,24 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
-        @Override
-        public void onSettingChanged(String name) {
+        @Setting(displayName = "Legendary Item Highlight Color", description = "What color should be legendary items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
-        }
-    }
+        @Setting(displayName = "Mythic Item Highlight Color", description = "What color should be mythic items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
-    @SettingsInfo(name = "debug_settings", displayPath = "Main/Debug")
-    public static class Debug extends SettingsClass {
-        public static Debug INSTANCE;
+        @Setting(displayName = "Rare Item Highlight Color", description = "What color should be rare items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
-        @Setting.Limitations.StringLimit(maxLength = 15)
-        @Setting(displayName = "Test Text Field", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
-        public String testTextField = "default text";
+        @Setting(displayName = "Unique Item Highlight Color", description = "What color should be unique items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Enum Test", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
-        public TestEnum testEnumSetting = TestEnum.TEST_B;
+        @Setting(displayName = "Set Item Highlight Color", description = "What color should be set items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
 
-        @Setting.Limitations.IntLimit(min = -36,max = 24,precision = 1)
-        @Setting(displayName = "Test Integer Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
-        public int lol = -3;
+        @Setting(displayName = "Normal Item Highlight Color", description = "What color should be normal items highlighted\n§aClick above the color to open the wheel")
+        public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
 
-        @Setting.Limitations.FloatLimit(min = 3f,max = 7.4f,precision = 0.2f)
-        @Setting(displayName = "Float Ting", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
-        public float floatlol = 4.6f;
-
-        @Setting.Limitations.DoubleLimit(min = -3.68d,max = 1d,precision = 0.01d)
-        @Setting(displayName = "Double Tang", description = "This is a setting you shouldn't need to worry about unless you were specifically told by a developer to modify this.")
-        public double doublelawl = 0.2d;
-
-        public enum TestEnum {
-            TEST_A("Test A"),
-            TEST_B("Test B"),
-            TEST_C("Test C"),
-            TEST_D("Test D"),
-            TEST_E("Test E"),
-            ;
-
-            public String displayName;
-
-            TestEnum(String displayName) {
-                this.displayName = displayName;
-            }
-        }
 
         @Override
         public void onSettingChanged(String name) {

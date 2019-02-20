@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -386,6 +387,7 @@ public class ScreenRenderer {
     public void drawRectF(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
         if(!rendering || !texture.loaded) return;
         GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
         GlStateManager.enableTexture2D();
         texture.bind();
 

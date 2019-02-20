@@ -7,6 +7,7 @@ package com.wynntils.core.framework.ui;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.framework.ui.elements.UIEColorWheel;
 import com.wynntils.core.framework.ui.elements.UIEClickZone;
 import com.wynntils.core.framework.ui.elements.UIEList;
 import com.wynntils.core.framework.ui.elements.UIETextBox;
@@ -111,8 +112,10 @@ public abstract class UI extends GuiScreen {
                 this.UIElements = ((UIEList) uie).elements;
                 keyTyped(typedChar, keyCode);
                 this.UIElements = UIElements_old;
-            } else if (uie instanceof UIETextBox)
+            } else if (uie instanceof UIETextBox) {
                 ((UIETextBox) uie).keyTyped(typedChar, keyCode, this);
+            } else if(uie instanceof UIEColorWheel)
+                ((UIEColorWheel) uie).keyTyped(typedChar, keyCode, this);
         }
     }
 

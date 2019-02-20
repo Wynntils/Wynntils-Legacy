@@ -28,6 +28,7 @@ public class UIETextBox extends UIEClickZone {
     @Override
     public void render(int mouseX, int mouseY) {
         super.render(mouseX, mouseY);
+
         this.textField.x = this.position.getDrawingX();
         this.textField.y = this.position.getDrawingY();
         this.textField.setEnabled(active);
@@ -52,6 +53,10 @@ public class UIETextBox extends UIEClickZone {
             textField.setText("");
             textDisappearsOnNextClick = false;
         }
+    }
+
+    public void setColor(int color) {
+        textField.setTextColor(color);
     }
 
     public void setText(String textIn) {

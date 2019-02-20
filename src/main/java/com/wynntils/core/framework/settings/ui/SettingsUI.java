@@ -11,15 +11,13 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
-import com.wynntils.core.framework.ui.elements.UIEButton;
-import com.wynntils.core.framework.ui.elements.UIEList;
-import com.wynntils.core.framework.ui.elements.UIESlider;
-import com.wynntils.core.framework.ui.elements.UIETextBox;
+import com.wynntils.core.framework.ui.elements.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -45,6 +43,8 @@ public class SettingsUI extends UI {
 
     public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,-85,1,1f,0,null);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar,0.5f,0.5f,185,-100, 200,true,-95,-150,1f,0,null);
+
+    public SettingsUI thisScreen = this;
 
     public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
         for(String key : sortedSettings) {
@@ -376,6 +376,13 @@ public class SettingsUI extends UI {
                         ((UIESlider)valueElement).setValue((float)(double) value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }
+                } else if(field.getType().isAssignableFrom(CustomColor.class)) {
+                    valueElement = new UIEColorWheel(0, 0, 0, 17, 20, 20, true, (color) -> {
+                        try{
+                            registeredSettings.get(currentSettingsPath).setValue(field, color, false);
+                        }catch (Exception ex) { ex.printStackTrace(); }
+                    }, thisScreen);
+                    ((UIEColorWheel) valueElement).setColor((CustomColor)value);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
