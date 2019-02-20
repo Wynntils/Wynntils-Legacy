@@ -79,7 +79,7 @@ public class UIEColorWheel extends UIEClickZone {
     public void render(int mouseX, int mouseY) {
         drawRect(CommonColors.BLACK, position.drawingX, position.drawingY, position.drawingX + width+2, position.drawingY + height+2); // HeyZeer0: this makes a black box behind the color
         drawRect(color, position.drawingX+1, position.drawingY+1, position.drawingX + width+1, position.drawingY + height+1);
-        
+
         textBox.position.drawingX = position.drawingX + width + 5;
         textBox.position.drawingY = position.drawingY + 1;
         textBox.render(mouseX, mouseY);

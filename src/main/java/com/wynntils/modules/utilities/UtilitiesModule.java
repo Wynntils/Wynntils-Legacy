@@ -14,10 +14,7 @@ import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
-import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
-import com.wynntils.modules.utilities.overlays.inventories.ItemLockOverlay;
-import com.wynntils.modules.utilities.overlays.inventories.RarityColorOverlay;
-import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.*;
 
 @ModuleInfo(name = "utilities", displayName = "Utilities")
 public class UtilitiesModule extends Module {
@@ -38,7 +35,9 @@ public class UtilitiesModule extends Module {
         registerEvents(new RarityColorOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
+        registerEvents(new MenuButtonsOverlay());
 
+        //Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);

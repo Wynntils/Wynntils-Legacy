@@ -8,9 +8,12 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.List;
 
 public class GuiOverlapEvent extends Event {
 
@@ -410,6 +413,42 @@ public class GuiOverlapEvent extends Event {
 
             public int getMouseButton() {
                 return mouseButton;
+            }
+
+        }
+
+        public static class InitGui extends IngameMenuOverlap {
+
+            List<GuiButton> buttonList;
+
+            public InitGui(IngameMenuReplacer ingameMenuReplacer, List<GuiButton> buttonList) {
+                super(ingameMenuReplacer);
+
+                this.buttonList = buttonList;
+            }
+
+            public List<GuiButton> getButtonList() {
+                return buttonList;
+            }
+
+        }
+
+        public static class ActionPerformed extends IngameMenuOverlap {
+
+            GuiButton button;
+
+            public ActionPerformed(IngameMenuReplacer ingameMenuReplacer, GuiButton button) {
+                super(ingameMenuReplacer);
+
+                this.button = button;
+            }
+
+            public boolean isCancelable() {
+                return true;
+            }
+
+            public GuiButton getButton() {
+                return button;
             }
 
         }
