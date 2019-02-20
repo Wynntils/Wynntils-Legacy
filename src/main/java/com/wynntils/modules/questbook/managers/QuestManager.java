@@ -76,9 +76,6 @@ public class QuestManager {
         }
         currentQuestsData.clear();
         currentQuestsData.addAll(listToSet);
-        for (QuestInfo q : currentQuestsData) {
-            System.out.println(q.getName() + ": " + q.getCurrentDescription());
-        }
         updateTrackedQuest();
     }
 
