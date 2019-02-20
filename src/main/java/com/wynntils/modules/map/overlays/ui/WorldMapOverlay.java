@@ -35,8 +35,8 @@ public class WorldMapOverlay extends GuiScreen {
 
     private ScreenRenderer renderer = new ScreenRenderer();
 
-    private GuiButton settingsBtn = new GuiButton(1,5,6,60,18, "Settings...");
-    private GuiButton wayPointsBtn = new GuiButton(2,5,27,60,18, "Waypoints");
+    private GuiButton settingsBtn;
+    private GuiButton wayPointsBtn;
     private float centerPositionX;
     private float centerPositionZ;
     private int zoom = 0;
@@ -255,8 +255,8 @@ public class WorldMapOverlay extends GuiScreen {
     public void initGui() {
         super.initGui();
         wayPointsBtn.enabled = Reference.developmentEnvironment;
-        this.buttonList.add(settingsBtn);
-        this.buttonList.add(wayPointsBtn);
+        this.buttonList.add(settingsBtn = new GuiButton(1,35,36,60,18, "Settings..."));
+        this.buttonList.add(wayPointsBtn = new GuiButton(2,35,57,60,18, "Waypoints"));
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
@@ -293,7 +293,10 @@ public class WorldMapOverlay extends GuiScreen {
 
         //start rendering
         ScreenRenderer.beginGL(0, 0);
-        drawDefaultBackground();
+
+        //texture
+        renderer.drawRectF(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 1, 511, 255);
+        renderer.createMask(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 257, 511, 510);
 
         MapProfile map = MapModule.getModule().getMainMap();
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
@@ -315,7 +318,6 @@ public class WorldMapOverlay extends GuiScreen {
                 bufferbuilder.pos(width, 0, 0).tex(maxX, minZ).endVertex();
                 bufferbuilder.pos(0, 0, 0).tex(minX, minZ).endVertex();
                 tessellator.draw();
-
             }
 
         }catch (Exception ignored) {}
@@ -347,6 +349,7 @@ public class WorldMapOverlay extends GuiScreen {
 
         mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
 
+        renderer.clearMask();
         ScreenRenderer.endGL();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -209,6 +208,58 @@ public class ScreenRenderer {
         GlStateManager.glTexCoord2f(1, 0);
         GlStateManager.glVertex3f(x2 + drawingOrigin.x, y1 + drawingOrigin.y, 1000.0F);
         GlStateManager.glEnd();
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(false);
+        GlStateManager.depthFunc(GL_GREATER);
+
+        mask = true;
+
+        scale(prevScale);
+    }
+
+    /** createMask
+     * Creates a mask that will remove anything drawn after
+     * this and before the next {clearMask()}(or {endGL()})
+     * and is not inside the mask.
+     * A mask, is a clear and white texture where anything
+     * while will allow drawing.
+     *
+     * @param texture mask texture(please use Textures.Masks)
+     * @param x1 bottom-left x(on screen)
+     * @param y1 bottom-left y(on screen)
+     * @param x2 top-right x(on screen)
+     * @param y2 top-right y(on screen)
+     */
+    public static void createMask(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
+        if (!rendering || mask) return;
+        if (!texture.loaded) return;
+        float prevScale = scale;
+        resetScale();
+
+        float xMin  = x1  + drawingOrigin.x,
+                xMax  = x2  + drawingOrigin.x,
+                yMin  = y1  + drawingOrigin.y,
+                yMax  = y2  + drawingOrigin.y,
+                txMin = tx1 / texture.width,
+                txMax = tx2 / texture.width,
+                tyMin = ty1 / texture.height,
+                tyMax = ty2 / texture.height;
+
+        GlStateManager.enableDepth();
+        GlStateManager.colorMask(false, false, false, true);
+        texture.bind();
+
+        GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glTexCoord2f(txMin,tyMin);
+        GlStateManager.glVertex3f(xMin, yMin, 1000.0F);
+        GlStateManager.glTexCoord2f(txMin,tyMax);
+        GlStateManager.glVertex3f(xMin, yMax, 1000.0F);
+        GlStateManager.glTexCoord2f(txMax,tyMax);
+        GlStateManager.glVertex3f(xMax, yMax, 1000.0F);
+        GlStateManager.glTexCoord2f(txMax,tyMin);
+        GlStateManager.glVertex3f(xMax, yMin, 1000.0F);
+        GlStateManager.glEnd();
+
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.depthMask(false);
         GlStateManager.depthFunc(GL_GREATER);

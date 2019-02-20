@@ -59,6 +59,8 @@ public class Textures {
         public static AssetsTexture map_icons;
         public static AssetsTexture gilded_map_textures;
         public static AssetsTexture map_pointers;
+        public static AssetsTexture map_options;
+        public static AssetsTexture full_map;
     }
 
     public static class UIs {
