@@ -56,5 +56,4 @@ public class ClientEvents implements Listener {
             }
         }
     }
-
 }

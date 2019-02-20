@@ -25,6 +25,7 @@ public class QuestManager {
 
     private static boolean readingQuestBook = false;
     private static long readRequestTime = 0;
+    private static int prevSlot = 0;
 
     private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
     public static ArrayList<DiscoveryInfo> currentDiscoveryData = new ArrayList<>();
@@ -38,8 +39,6 @@ public class QuestManager {
     public static void requestQuestBookReading() {
         readRequestTime = System.currentTimeMillis();
         readingQuestBook = true;
-        currentQuestsData.clear();
-        currentDiscoveryData.clear();
 
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
@@ -62,6 +61,40 @@ public class QuestManager {
         readingQuestBook = true;
         currentQuestsData.clear();
         currentDiscoveryData.clear();
+    }
+
+    /**
+     * Set the current quest data to the specified list, if the current amount of quests is more than
+     * the list being set, a questbook reading is re-requested instead
+     *
+     * @param listToSet the list that will override the current one
+     * */
+    public static void setCurrentQuestsData(ArrayList<QuestInfo> listToSet) {
+        if (listToSet.size() < currentQuestsData.size()) {
+            requestQuestBookReading();
+            return;
+        }
+        currentQuestsData.clear();
+        currentQuestsData.addAll(listToSet);
+        for (QuestInfo q : currentQuestsData) {
+            System.out.println(q.getName() + ": " + q.getCurrentDescription());
+        }
+        updateTrackedQuest();
+    }
+
+    /**
+     * Set the current discovery data to the specified list, if the current amount of discoveries is more than
+     * the list being set, a questbook reading is re-requested instead
+     *
+     * @param listToSet the list that will override the current one
+     * */
+    public static void setCurrentDiscoveryData(ArrayList<DiscoveryInfo> listToSet) {
+        if (listToSet.size() < currentDiscoveryData.size()) {
+            requestQuestBookReading();
+            return;
+        }
+        currentDiscoveryData.clear();
+        currentDiscoveryData.addAll(listToSet);
     }
 
     /**

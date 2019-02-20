@@ -292,5 +292,4 @@ public class PacketEvent extends Event {
         }
 
     }
-
 }

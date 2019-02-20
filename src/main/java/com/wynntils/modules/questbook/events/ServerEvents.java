@@ -58,6 +58,9 @@ public class ServerEvents implements Listener {
     private ArrayList<String> readedDiscoveries = new ArrayList<>();
     private ArrayList<String> readedSecretDiscoveries = new ArrayList<>();
 
+    private ArrayList<QuestInfo> tempQuestList = new ArrayList<>();
+    private ArrayList<DiscoveryInfo> tempDiscoveryList = new ArrayList<>();
+
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
         if(!Reference.onWorld) return;
@@ -69,8 +72,10 @@ public class ServerEvents implements Listener {
                 if(e.getPacket().getSlotCount() >= 54 && base.hasCustomName() && (base.getDisplayName().getFormattedText().contains("Quests") || base.getDisplayName().getFormattedText().contains("Discoveries")) && base.getDisplayName().getFormattedText().contains("[Pg.")) {
                     if(!acceptItems) {
                         readedQuests.clear();
+                        tempQuestList.clear();
                         readedDiscoveries.clear();
                         readedSecretDiscoveries.clear();
+                        tempDiscoveryList.clear();
                         transactionId = 0;
                         acceptItems = true;
                         currentInventory = base;
@@ -133,17 +138,35 @@ public class ServerEvents implements Listener {
                 if (quests) {
                     if(!readedQuests.contains(i.getDisplayName())) {
                         readedQuests.add(i.getDisplayName());
-                        parseQuest(i);
+                        if (!parseQuest(i)) {
+                            acceptItems = false;
+                            e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
+                            QuestManager.setReadingQuestBook(false);
+                            QuestManager.requestQuestBookReading();
+                            return;
+                        }
                     }
                 } else if (discoveries) {
                     if (!readedDiscoveries.contains(i.getDisplayName())) {
                         readedDiscoveries.add(i.getDisplayName());
-                        parseDiscovery(i);
+                        if (!parseDiscovery(i)) {
+                            acceptItems = false;
+                            e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
+                            QuestManager.setReadingQuestBook(false);
+                            QuestManager.requestQuestBookReading();
+                            return;
+                        }
                     }
                 } else if (secretDiscoveries) {
                     if (!readedSecretDiscoveries.contains(i.getDisplayName())) {
                         readedSecretDiscoveries.add(i.getDisplayName());
-                        parseDiscovery(i);
+                        if (!parseDiscovery(i)) {
+                            acceptItems = false;
+                            e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
+                            QuestManager.setReadingQuestBook(false);
+                            QuestManager.requestQuestBookReading();
+                            return;
+                        }
                     }
                 }
             }
@@ -156,7 +179,6 @@ public class ServerEvents implements Listener {
                     discoveries = true;
                     windowClick(discoveriesItem, 35, e.getPacket().getWindowId(), 0, ClickType.PICKUP, e.getPlayClient());
                     skip = true;
-                    QuestManager.updateTrackedQuest();
                     QuestManager.updateRequestTime();
                 } else if (discoveries) {
                     discoveries = false;
@@ -172,6 +194,8 @@ public class ServerEvents implements Listener {
                     QuestManager.setReadingQuestBook(false);
                 }
             }
+            QuestManager.setCurrentQuestsData(tempQuestList);
+            QuestManager.setCurrentDiscoveryData(tempDiscoveryList);
         }
     }
 
@@ -181,8 +205,8 @@ public class ServerEvents implements Listener {
         return stack;
     }
 
-    public void parseQuest(ItemStack item) {
-        if(!item.hasDisplayName()) return;
+    public boolean parseQuest(ItemStack item) {
+        if(!item.hasDisplayName()) return true;
 
         String displayName = item.getDisplayName();
         displayName = displayName.substring(0, displayName.length() - 1);
@@ -191,7 +215,7 @@ public class ServerEvents implements Listener {
         QuestStatus status = null;
 
         List<String> lore = Utils.getLore(item);
-        if(lore.size() <= 0) return;
+        if(lore.size() <= 0) return true;
 
         if(lore.get(0).contains("Completed!")) {
             status = QuestStatus.COMPLETED;
@@ -203,12 +227,8 @@ public class ServerEvents implements Listener {
             status = QuestStatus.CANNOT_START;
         }
 
-        if(status == null) {
-            acceptItems = false;
-            QuestManager.setReadingQuestBook(false);
-            QuestManager.requestQuestBookReading();
-            return;
-        }
+        if(status == null)
+            return false;
 
         int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
         QuestSize size = QuestSize.valueOf(Utils.stripColor(lore.get(3)).replace("- Length: ", "").toUpperCase());
@@ -221,11 +241,12 @@ public class ServerEvents implements Listener {
             description = description + Utils.stripColor(lore.get(i));
         }
 
-        QuestManager.addQuestInfo(new QuestInfo(displayName, status, minLevel, size, description, lore));
+        tempQuestList.add(new QuestInfo(displayName, status, minLevel, size, description, lore));
+        return true;
     }
     
-    public void parseDiscovery(ItemStack item) {
-        if(!item.hasDisplayName()) return;
+    public boolean parseDiscovery(ItemStack item) {
+        if(!item.hasDisplayName()) return true;
 
         String displayName = item.getDisplayName();
         displayName = displayName.substring(0, displayName.length() - 1);
@@ -241,14 +262,20 @@ public class ServerEvents implements Listener {
         
         List<String> lore = Utils.getLore(item);
 
-        int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+        int minLevel;
+        try {
+            minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+        } catch (NumberFormatException ex) {
+            return false;
+        }
 
         String description = "";
         for(int i = 2; i < lore.size(); i ++) {
             description = description + Utils.stripColor(lore.get(i));
         }
 
-        QuestManager.addDiscoveryInfo(new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
+        tempDiscoveryList.add(new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
+        return true;
     }
 
 }

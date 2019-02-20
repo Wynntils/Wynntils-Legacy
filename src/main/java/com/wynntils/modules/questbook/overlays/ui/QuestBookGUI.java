@@ -970,7 +970,12 @@ public class QuestBookGUI extends GuiScreen {
                             break;
                         }
 
-                        QuestInfo selected = questSearch.get(i);
+                        QuestInfo selected;
+                        try {
+                            selected = questSearch.get(i);
+                        } catch (IndexOutOfBoundsException ex) {
+                            break;
+                        }
 
                         List<String> lore = new ArrayList<>(selected.getLore());
 
