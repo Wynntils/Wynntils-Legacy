@@ -146,22 +146,22 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Legendary Item Highlight Color", description = "What color should be legendary items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Legendary Item Highlight Color", description = "What color should the highlight for legendary items be?\n§aClick above the color to open the color wheel")
         public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
-        @Setting(displayName = "Mythic Item Highlight Color", description = "What color should be mythic items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Mythic Item Highlight Color", description = "What color should the highlight for mythic items be?\n§aClick above the color to open the color wheel")
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
-        @Setting(displayName = "Rare Item Highlight Color", description = "What color should be rare items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Rare Item Highlight Color", description = "What color should the highlight for rare items be?\n§aClick above the color to open the olor wheel")
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
-        @Setting(displayName = "Unique Item Highlight Color", description = "What color should be unique items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Unique Item Highlight Color", description = "What color should the highlight for unique items be?\n§aClick above the color to open the color wheel")
         public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Set Item Highlight Color", description = "What color should be set items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Set Item Highlight Color", description = "What color should the highlight for set items be?\n§aClick above the color to open the color wheel")
         public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
 
-        @Setting(displayName = "Normal Item Highlight Color", description = "What color should be normal items highlighted\n§aClick above the color to open the wheel")
+        @Setting(displayName = "Normal Item Highlight Color", description = "What color should the highlight for normal items be?\n§aClick above the color to open the color wheel")
         public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
 
 
