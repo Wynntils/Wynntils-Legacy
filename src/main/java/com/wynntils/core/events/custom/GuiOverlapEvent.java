@@ -243,6 +243,41 @@ public class GuiOverlapEvent extends Event {
 
         }
 
+        public static class MouseClicked extends ChestOverlap {
+
+            int mouseX, mouseY, mouseButton;
+
+            public MouseClicked(ChestReplacer guiChest, int mouseX, int mouseY, int mouseButton) {
+                super(guiChest);
+
+                this.mouseX = mouseX; this.mouseY = mouseY; this.mouseButton = mouseButton;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+
+            public int getMouseButton() {
+                return mouseButton;
+            }
+
+        }
+
+        public static class InitGui extends ChestOverlap {
+
+            List<GuiButton> buttonList;
+
+            public InitGui(ChestReplacer guiChest, List<GuiButton> buttonList) {
+                super(guiChest);
+                this.buttonList = buttonList;
+            }
+
+        }
+
     }
 
     public static class HorseOverlap extends GuiOverlapEvent {

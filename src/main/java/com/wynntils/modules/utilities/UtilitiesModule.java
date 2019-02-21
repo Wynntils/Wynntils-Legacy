@@ -36,6 +36,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new MenuButtonsOverlay());
+        registerEvents(new IngredientFilterOverlay());
 
         //Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
