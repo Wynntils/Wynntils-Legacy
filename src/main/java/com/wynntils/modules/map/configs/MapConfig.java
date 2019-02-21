@@ -114,4 +114,9 @@ public class MapConfig extends SettingsClass {
             put("Merchant_Emerald", true);
         }};
     }
+
+    public IconTexture iconTexture = IconTexture.Classic;
+    public enum IconTexture {
+        Classic, Medival
+    }
 }

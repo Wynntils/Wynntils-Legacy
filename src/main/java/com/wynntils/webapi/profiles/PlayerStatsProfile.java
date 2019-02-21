@@ -267,11 +267,11 @@ public class PlayerStatsProfile {
         @Override
         public PlayerStatsProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject playerProfile = json.getAsJsonObject();
-            PlayerRank rank = PlayerRank.valueOf(playerProfile.get("rank").getAsString().replace("+", "PLUS"));
+            PlayerRank rank = PlayerRank.valueOf(playerProfile.get("rank").getAsString());
 
             PlayerTag tag;
             if(playerProfile.get("tag").getAsString().isEmpty()) tag = PlayerTag.NONE;
-            else tag = PlayerTag.valueOf(playerProfile.get("tag").getAsString());
+            else tag = PlayerTag.valueOf(playerProfile.get("tag").getAsString().replace("+", "PLUS"));
 
             boolean displayTag = playerProfile.get("displayTag").getAsBoolean();
             boolean veteran = playerProfile.get("veteran").getAsBoolean();
