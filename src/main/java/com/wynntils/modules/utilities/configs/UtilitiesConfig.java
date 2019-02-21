@@ -76,9 +76,6 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?")
         public boolean filterEnabled = true;
 
-        @Setting(displayName = "Filter Persistency", description = "Should the filter remain the same through inventory updates?")
-        public boolean saveFilter = true;
-
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
         public boolean mainHighlightChest = true;
 
@@ -163,6 +160,18 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Normal Item Highlight Color", description = "What color should the highlight for normal items be?\n§aClick above the color to open the color wheel")
         public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
+
+        @Setting(displayName = "Crafted Armour & Weapon Highlight Color", description = "What color should the highlight for crafted armour and weapons be?\n§aClick above the color to open the color wheel")
+        public CustomColor craftedHighlightColor = new CustomColor(0, .545f, .545f);
+
+        @Setting(displayName = "Ingredient Highlight Color (1 star)", description = "What color should the highlight for ingredient with 1 star be?\n§aClick above the color to open the color wheel")
+        public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
+
+        @Setting(displayName = "Ingredient Highlight Color (2 stars)", description = "What color should the highlight for ingredient with 2 stars be?\n§aClick above the color to open the color wheel")
+        public CustomColor ingredientTwoHighlightColor = new CustomColor(1, 1, 0);
+
+        @Setting(displayName = "Ingredient Highlight Color (3 stars)", description = "What color should the highlight for ingredient with 3 stars be?\n§aClick above the color to open the color wheel")
+        public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
 
         @Override

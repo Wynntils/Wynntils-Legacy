@@ -16,12 +16,15 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChestReplacer extends GuiChest {
 
     IInventory lowerInv;
     IInventory upperInv;
     GuiButton professionsButton;
+    private final static ArrayList<String> professionArray = new ArrayList<String>(Arrays.asList("-", "None", "Ⓐ", "Cooking", "Ⓓ", "Jeweling", "Ⓔ", "Scribing", "Ⓕ", "Tailoring", "Ⓖ", "Weapon smithing", "Ⓗ", "Armouring", "Ⓘ", "Woodworking", "Ⓛ", "Alchemism"));
 
     public ChestReplacer(IInventory upperInv, IInventory lowerInv){
         super(upperInv, lowerInv);
@@ -42,9 +45,6 @@ public class ChestReplacer extends GuiChest {
     public void initGui() {
         super.initGui();
         if (UtilitiesConfig.Items.INSTANCE.filterEnabled) {
-            if (!UtilitiesConfig.Items.INSTANCE.saveFilter) {
-                RarityColorOverlay.setProfessionFilter("-");
-            }
             this.professionsButton = new GuiButton(11, this.guiLeft - 20, this.guiTop + 15, 18, 18, RarityColorOverlay.getProfessionFilter());
             this.buttonList.add(this.professionsButton);
         }
@@ -53,7 +53,9 @@ public class ChestReplacer extends GuiChest {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-
+        if (professionsButton.isMouseOver()) {
+            drawHoveringText(professionArray.get(professionArray.indexOf(professionsButton.displayString) + 1), mouseX, mouseY);
+        }
         FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.DrawScreen(this, mouseX, mouseY, partialTicks));
     }
 
@@ -82,20 +84,26 @@ public class ChestReplacer extends GuiChest {
     }
 
     @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (mouseButton == 1 && professionsButton.isMouseOver()) {
+            char c = professionArray.get((professionArray.indexOf(professionsButton.displayString) + 14) % 16).charAt(0);
+            professionsButton.displayString = Character.toString(c);
+            RarityColorOverlay.setProfessionFilter(professionsButton.displayString);
+            professionsButton.playPressSound(this.mc.getSoundHandler());
+            return;
+        } else if (mouseButton == 2 && professionsButton.isMouseOver()) {
+            RarityColorOverlay.setProfessionFilter("-");
+            professionsButton.displayString = "-";
+            professionsButton.playPressSound(this.mc.getSoundHandler());
+            return;
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
     public void actionPerformed(GuiButton btn) throws IOException {
         if (btn.id == 11) {
-            char c = btn.displayString.charAt(0);
-            if (c == '-') {
-                c = 'Ⓐ';
-            } else if ((c == 'Ⓐ' || c == 'Ⓘ')) {
-                c += 3;
-            } else if ((c == 'Ⓒ' || c == 'Ⓙ')) {
-                c += 2;
-            } else if (c == 'Ⓛ'){
-                c = '-';
-            } else {
-                c += 1;
-            }
+            char c = professionArray.get((professionArray.indexOf(btn.displayString) + 2) % 16).charAt(0);
             btn.displayString = Character.toString(c);
             RarityColorOverlay.setProfessionFilter(btn.displayString);
             return;
