@@ -189,17 +189,17 @@ public class ItemIdentificationOverlay implements Listener {
             if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
 
-                //thanks nbcss for this Math
+                //thanks dukiooo for this Math
                 if(wColor.contains("Mythic")) {
                     rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
                 }else if(wColor.contains("Legendary")) {
-                    rerollValue = (int)Math.ceil(30.0D + wItem.getLevel() * 6);
+                    rerollValue = (int)Math.ceil(40D + wItem.getLevel() * 5.2);
                 }else if(wColor.contains("Rare")) {
-                    rerollValue = (int)Math.ceil(10.0D + wItem.getLevel() * 1.4d);
+                    rerollValue = (int)Math.ceil(15D + wItem.getLevel() * 1.2d);
                 }else if(wColor.contains("Set")) {
-                    rerollValue = (int)Math.ceil(10.0D + wItem.getLevel() * 1.6d);
+                    rerollValue = (int)Math.ceil(12D + wItem.getLevel() * 1.6d);
                 }else if(wColor.contains("Unique")) {
-                    rerollValue = (int)Math.ceil(3.0D + wItem.getLevel() * 0.5d);
+                    rerollValue = (int)Math.ceil(5D + wItem.getLevel() * 0.5d);
                 }
 
                 int alreadyRolled = 1;
