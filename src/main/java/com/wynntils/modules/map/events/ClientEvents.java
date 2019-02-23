@@ -34,6 +34,8 @@ public class ClientEvents implements Listener {
             else if(tier.equals("IV")) wp = new WaypointProfile("Loot Chest T4", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T4);
 
             if(wp != null) {
+                if(MapConfig.Waypoints.INSTANCE.waypoints.stream().anyMatch(c -> c.getX() == lastX && c.getY() == lastY && c.getZ() == lastZ)) return;
+
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
                 MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
             }
