@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
@@ -420,6 +421,39 @@ public class WorldMapOverlay extends GuiScreen {
                 if(c == 0) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
                     ModCore.mc().world.setSpawnPoint(new BlockPos(mmp.getX(), 0, mmp.getZ()));
+                }
+            });
+
+            mapIcons.add(mp);
+        }
+
+        //HeyZeer0: Handles all waypoints
+        for(WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
+            int texPosX = 0;
+            int texPosZ = 0;
+            int texSizeX = 16;
+            int texSizeZ = 16;
+
+            int zoomNeeded = -1000;
+
+            switch (waypoint.getType()) {
+                case LOOTCHEST_T3:
+                    texPosX = 82; texPosZ = 35;
+                    texSizeX = 100; texSizeZ = 51;
+                    zoomNeeded = 0;
+                    break;
+                case LOOTCHEST_T4:
+                    texPosX = 100; texPosZ = 35;
+                    texSizeX = 118; texSizeZ = 51;
+                    zoomNeeded = 0;
+                    break;
+            }
+
+            MapIcon mp = new MapIcon(Textures.Map.map_icons, waypoint.getName(), (int)waypoint.getX(), (int)waypoint.getZ(), 2.5f, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(zoomNeeded);
+            mp.setOnClick(c -> {
+                if(c == 0) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
+                    ModCore.mc().world.setSpawnPoint(new BlockPos(waypoint.getX(), 0, waypoint.getZ()));
                 }
             });
 

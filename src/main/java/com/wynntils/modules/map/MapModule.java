@@ -9,6 +9,7 @@ import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.ui.WorldMapOverlay;
@@ -30,8 +31,11 @@ public class MapModule extends Module {
         mainMap = new MapProfile(WebManager.getApiUrls().get("MainMap"), "main-map");
         mainMap.updateMap();
 
+        registerEvents(new ClientEvents());
+
         registerSettings(MapConfig.class);
         registerSettings(MapConfig.Textures.class);
+        registerSettings(MapConfig.Waypoints.class);
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 

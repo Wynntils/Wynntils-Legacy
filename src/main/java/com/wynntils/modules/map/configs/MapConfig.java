@@ -8,7 +8,9 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.map.instances.WaypointProfile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @SettingsInfo(name = "map", displayPath = "Map")
@@ -54,6 +56,16 @@ public class MapConfig extends SettingsClass {
         public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
 
     }
+
+    @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
+    public static class Waypoints extends SettingsClass {
+        public static Waypoints INSTANCE;
+
+        //HeyZeer0: this stores all waypoints
+        public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
+
+    }
+
 
     public enum MapFormat {
         SQUARE, CIRCLE
