@@ -104,6 +104,10 @@ public class FrameworkManager {
         return holder;
     }
 
+    public static void reloadSettings() {
+        availableModules.values().forEach(ModuleContainer::reloadSettings);
+    }
+
     public static void startModules() {
         availableModules.values().forEach(c -> c.getModule().onEnable());
     }

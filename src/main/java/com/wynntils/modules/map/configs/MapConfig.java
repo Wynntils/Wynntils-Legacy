@@ -62,6 +62,7 @@ public class MapConfig extends SettingsClass {
         public static Waypoints INSTANCE;
 
         //HeyZeer0: this stores all waypoints
+        @Setting(upload = true)
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
     }

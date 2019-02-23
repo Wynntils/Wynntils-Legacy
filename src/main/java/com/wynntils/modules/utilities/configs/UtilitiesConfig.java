@@ -42,6 +42,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean preventSlotClicking = false;
 
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
+    @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
     @SettingsInfo(name = "wars", displayPath = "Wars")

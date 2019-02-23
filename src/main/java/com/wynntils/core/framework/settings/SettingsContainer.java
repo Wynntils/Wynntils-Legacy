@@ -4,8 +4,10 @@
 
 package com.wynntils.core.framework.settings;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.ModuleContainer;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 
@@ -20,6 +22,8 @@ public class SettingsContainer {
     SettingsHolder holder;
     ArrayList<Field> fields = new ArrayList<>();
     ModuleContainer m;
+
+    SettingsHolder fromCloud = null;
 
     public SettingsContainer(ModuleContainer m, SettingsHolder holder) {
         this.holder = holder;
@@ -39,6 +43,10 @@ public class SettingsContainer {
             }
         }
 
+        try{
+            fromCloud = SettingsManager.getCloudSettings(m, holder);
+        }catch (Exception ex) { ex.printStackTrace(); }
+
         try {
             tryToLoad();
         } catch (Exception ex) {
@@ -47,7 +55,7 @@ public class SettingsContainer {
     }
 
     public void tryToLoad() throws Exception {
-        updateValues(SettingsManager.getSettings(m, holder));
+        updateValues(SettingsManager.getSettings(m, holder, this));
     }
 
     public HashMap<Field, Object> getValues() throws Exception {
@@ -72,21 +80,19 @@ public class SettingsContainer {
         f.set(holder, value);
         holder.onSettingChanged(f.getName());
 
-        if(save)
-            SettingsManager.saveSettings(m, holder);
+        if(save) SettingsManager.saveSettings(m, holder);
     }
 
     public void updateValues(SettingsHolder newH) throws Exception {
         boolean save = false;
 
         ArrayList<String> fieldsName = new ArrayList<>();
-        for(Field f2 : fields) {
-            fieldsName.add(f2.getName());
-        }
+        for(Field f2 : fields) { fieldsName.add(f2.getName()); }
 
         for(Field f : newH.getClass().getDeclaredFields()) {
             if(!fieldsName.contains(f.getName())) {
                 save = true;
+
                 continue;
             }
             setValue(f, f.get(newH), false);
@@ -95,14 +101,34 @@ public class SettingsContainer {
             for(Field f : newH.getClass().getSuperclass().getDeclaredFields()) {
                 if(!fieldsName.contains(f.getName())) {
                     save = true;
+
                     continue;
                 }
                 setValue(f, f.get(newH), false);
             }
         }
 
-        if(save)
-            saveSettings();
+        if(save) saveSettings();
+    }
+
+    public void onCreateConfig() throws Exception {
+        ArrayList<String> fieldsName = new ArrayList<>();
+        for(Field f2 : fields) { fieldsName.add(f2.getName()); }
+
+        for(Field f : holder.getClass().getDeclaredFields()) {
+            getConfigFromCloud(f);
+        }
+    }
+
+    public boolean getConfigFromCloud(Field f) throws Exception {
+        if(fromCloud == null) return false;
+
+        Setting c = f.getAnnotation(Setting.class);
+        if(c == null || !c.upload()) return false;
+
+        setValue(f, f.get(fromCloud), false);
+        Reference.LOGGER.warn("Loaded configuration " + f.getName() + " from cloud!");
+        return true;
     }
 
     public void resetValue(Field field) throws Exception {
@@ -119,4 +145,5 @@ public class SettingsContainer {
     }
 
     public SettingsHolder getHolder() { return holder; }
+
 }

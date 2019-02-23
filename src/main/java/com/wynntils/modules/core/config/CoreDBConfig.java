@@ -13,16 +13,20 @@ import com.wynntils.webapi.WebManager;
 
 @SettingsInfo(name = "main", displayPath = "Core")
 public class CoreDBConfig extends SettingsClass {
-
     public static CoreDBConfig INSTANCE;
 
+    @Setting(upload = false)
     public String lastToken = "";
+
+    @Setting(upload = false)
     public int lastSelectedClass = -1;
+
+    @Setting(upload = false)
     public ClassType lastClass = ClassType.NONE;
 
     @Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
             "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
-            "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.")
+            "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
 
     @Override

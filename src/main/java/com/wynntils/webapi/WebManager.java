@@ -142,6 +142,7 @@ public class WebManager {
 
     public static void setupUserAccount() {
         account = new WynntilsAccount();
+        account.login();
     }
 
     public static WynntilsAccount getAccount() {

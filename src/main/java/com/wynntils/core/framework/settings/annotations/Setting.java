@@ -13,8 +13,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Setting {
 
-    String displayName();
+    String displayName() default "";
     String description() default "";
+    boolean upload() default true;
 
     class Limitations {
         @Retention(RetentionPolicy.RUNTIME)

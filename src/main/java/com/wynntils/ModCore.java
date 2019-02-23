@@ -44,12 +44,13 @@ public class ModCore {
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
-        CoreManager.setupCore();
         WebManager.setupWebApi();
+        WebManager.setupUserAccount();
+
+        CoreManager.setupCore();
         ModuleManager.initModules();
 
         FrameworkManager.startModules();
-        WebManager.setupUserAccount();
     }
 
     @Mod.EventHandler

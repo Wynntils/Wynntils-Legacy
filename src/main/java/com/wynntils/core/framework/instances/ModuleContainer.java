@@ -90,6 +90,13 @@ public class ModuleContainer {
         registeredSettings.put(name, new SettingsContainer(this, sh));
     }
 
+    public void reloadSettings() {
+        registeredSettings.values().forEach(c -> {
+            try { c.tryToLoad();
+            } catch (Exception e) { e.printStackTrace(); }
+        });
+    }
+
     public HashMap<String, SettingsContainer> getRegisteredSettings() {
         return registeredSettings;
     }

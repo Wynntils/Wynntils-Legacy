@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.webapi.account.WynntilsAccount;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -35,8 +35,8 @@ public class CommandToken extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        ITextComponent token = new TextComponentString(WynntilsAccount.getToken());
-        token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.com/register.php?token=" + WynntilsAccount.getToken()));
+        ITextComponent token = new TextComponentString(WebManager.getAccount().getToken());
+        token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://capes.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
         token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register account")));
         token.getStyle().setColor(TextFormatting.DARK_AQUA);
         token.getStyle().setUnderlined(true);

@@ -5,17 +5,20 @@
 package com.wynntils.core.framework.settings;
 
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.ModuleContainer;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.google.gson.stream.JsonReader;
+import com.wynntils.webapi.WebManager;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Base64;
 
 public class SettingsManager {
 
@@ -43,12 +46,17 @@ public class SettingsManager {
         if(!f.exists())
             f.createNewFile();
 
+        //HeyZeer0: Writting to file
         OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8);
         gson.toJson(obj, fileWriter);
         fileWriter.close();
+
+        //HeyZeer0: Uploading file
+        if(WebManager.getAccount() != null)
+            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(Files.readAllBytes(f.toPath())), StandardCharsets.UTF_8), (valid) -> {});
     }
 
-    public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
+    public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
         if(info == null)
             if(!(obj instanceof Overlay))
@@ -61,12 +69,28 @@ public class SettingsManager {
                 m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
         if(!f.exists()) {
             f.createNewFile();
-            saveSettings(m, obj);
+            container.onCreateConfig();
+            saveSettings(m, container.getHolder());
             return obj;
         }
 
         InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8);
         return gson.fromJson(new JsonReader(reader), obj.getClass());
+    }
+
+    public static SettingsHolder getCloudSettings(ModuleContainer m, SettingsHolder obj) {
+        SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
+        if(info == null)
+            if(!(obj instanceof Overlay))
+                return obj;
+
+        String name = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
+
+        if(WebManager.getAccount() == null) return null;
+        if(!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
+
+        String jsonDecoded = new String(Base64.getDecoder().decode(WebManager.getAccount().getEncondedConfigs().get(name)), StandardCharsets.UTF_8);
+        return gson.fromJson(jsonDecoded, obj.getClass());
     }
 
     /**

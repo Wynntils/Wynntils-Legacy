@@ -46,24 +46,14 @@ public class SettingsUI extends UI {
 
     public SettingsUI thisScreen = this;
 
+    HashSet<String> changedSettings = new HashSet<>();
+
     public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
-        for(String key : sortedSettings) {
-            try {
-                registeredSettings.get(key).tryToLoad();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
     public UIEButton applyButton = new UIEButton("Apply",Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
-        for(String key : sortedSettings) {
-            try {
-                registeredSettings.get(key).saveSettings();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
 
@@ -186,7 +176,7 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
         ScreenRenderer.scale(0.7f);
-        render.drawString(this.currentSettingsPath.replace('/','>'),(screenWidth/2+10)/0.7f,(screenHeight/2-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        render.drawString(this.currentSettingsPath.replace('/','>'),(screenWidth/2f+10)/0.7f,(screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
@@ -208,7 +198,7 @@ public class SettingsUI extends UI {
         settingsScrollbar.max = settingsScrollbar.min;
         try {
             List<Field> notSorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
-            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).collect(Collectors.toList());
+            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null && !c.getAnnotation(Setting.class).displayName().isEmpty()).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).collect(Collectors.toList());
 
             for (Field field : sorted) {
                 try {
@@ -255,13 +245,12 @@ public class SettingsUI extends UI {
             width = Math.max( this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
 
             if (!active) {
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             } else if (hovering) {
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             } else {
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             }
-            int holderTabCount = path.split("/").length-1;
         }
 
         @Override
@@ -312,6 +301,7 @@ public class SettingsUI extends UI {
                     valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, ((String) value).replace("§", "&"), false, (ui, oldString) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText().replace("&", "§"), false);
+                            changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -325,6 +315,7 @@ public class SettingsUI extends UI {
                     valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Toggle) valueElement).value, false);
+                            changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -333,6 +324,7 @@ public class SettingsUI extends UI {
                     valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) field.getType(), value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Enum) valueElement).value, false);
+                            changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -343,6 +335,7 @@ public class SettingsUI extends UI {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,limit.min(),limit.max(),limit.precision(),0,(ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, (int)((UIESlider)valueElement).getValue(), false);
+                                changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -356,6 +349,7 @@ public class SettingsUI extends UI {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,limit.min(),limit.max(),limit.precision(),0,(ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, ((UIESlider) valueElement).getValue(), false);
+                                changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -369,6 +363,7 @@ public class SettingsUI extends UI {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,(float)limit.min(),(float)limit.max(),(float)limit.precision(),0,(ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, (double)((UIESlider)valueElement).getValue(), false);
+                                changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -380,6 +375,7 @@ public class SettingsUI extends UI {
                     valueElement = new UIEColorWheel(0, 0, 0, 17, 20, 20, true, (color) -> {
                         try{
                             registeredSettings.get(currentSettingsPath).setValue(field, color, false);
+                            changedSettings.add(currentSettingsPath);
                         }catch (Exception ex) { ex.printStackTrace(); }
                     }, thisScreen);
                     ((UIEColorWheel) valueElement).setColor((CustomColor)value);
