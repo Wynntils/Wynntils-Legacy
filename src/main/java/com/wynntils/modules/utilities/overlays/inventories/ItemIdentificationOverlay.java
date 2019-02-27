@@ -521,6 +521,6 @@ public class ItemIdentificationOverlay implements Listener {
         int emeralds = priceNum % 64;
         int blocks = (priceNum % 4096) / 64;
         int liquid = (int) Math.floor((float) priceNum / 4096f);
-        return prevLore + " (§f" + liquid + "§7" + L + E + " §f" + blocks + "§7" + B + E + " §f" + emeralds + "§7" + E + ")";
+        return prevLore + " (§f" + liquid + "§7" + L + E + " §f" + blocks + "§7" + E + B + " §f" + emeralds + "§7" + E + ")";
     }
 }
