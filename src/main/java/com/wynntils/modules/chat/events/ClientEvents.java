@@ -34,8 +34,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatRecieved(ClientChatReceivedEvent e) {
-        if (e.getMessage().getFormattedText().startsWith("§4[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo)
+        if (e.getMessage().getFormattedText().startsWith("§4[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
+        } else if (e.getMessage().getFormattedText().startsWith("§7[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+            e.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

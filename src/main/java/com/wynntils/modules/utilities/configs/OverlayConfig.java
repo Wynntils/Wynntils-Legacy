@@ -99,6 +99,26 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "toast_settings", displayPath = "Overlays/Toasts")
+    public static class ToastsSettings extends SettingsClass {
+        public static ToastsSettings INSTANCE;
+
+        @Setting(displayName = "Enable toast messages", description = "Should some messages in the form of rolling parchement be displayed?")
+        public boolean enableToast = true;
+
+        @Setting(displayName = "Enable territory enter messages", description = "Should a toast be use to announce the fact that you've entered a territory?")
+        public boolean enableTerritoryEnter = true;
+
+        @Setting(displayName = "Enable area discovered messages", description = "Should a toast be use to announce the fact that you've discovered an area?")
+        public boolean enableAreaDiscovered = true;
+
+        @Setting(displayName = "Enable quest completed messages", description = "Should a toast be use to announce the fact that you've completed a quest?")
+        public boolean enableQuestCompleted = true;
+
+        @Setting(displayName = "Enable discovery found messages", description = "Should a toast be use to announce the fact that you've found a secret discovery?")
+        public boolean enableDiscovery = true;
+    }
+
     @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
