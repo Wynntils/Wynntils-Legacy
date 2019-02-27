@@ -50,6 +50,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
         registerOverlay(new GameUpdateOverlay(), Priority.LOW);
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
+        registerOverlay(new ToastOverlay(), Priority.LOW);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -65,6 +66,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
         registerSettings(OverlayConfig.Hotbar.class);
+        registerSettings(OverlayConfig.ToastsSettings.class);
         registerSettings(OverlayConfig.WarTimer.class);
         registerSettings(OverlayConfig.Bubbles.class);
         registerSettings(OverlayConfig.GameUpdate.class);
