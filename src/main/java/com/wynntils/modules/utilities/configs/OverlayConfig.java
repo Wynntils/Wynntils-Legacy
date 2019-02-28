@@ -103,19 +103,19 @@ public class OverlayConfig extends SettingsClass {
     public static class ToastsSettings extends SettingsClass {
         public static ToastsSettings INSTANCE;
 
-        @Setting(displayName = "Enable toast messages", description = "Should some messages in the form of rolling parchement be displayed?")
+        @Setting(displayName = "Enable Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?")
         public boolean enableToast = true;
 
-        @Setting(displayName = "Enable territory enter messages", description = "Should a toast be use to announce the fact that you've entered a territory?")
+        @Setting(displayName = "Enable Territory Enter Messages", description = "Should a toast be displayed to inform that you are entering a territory?")
         public boolean enableTerritoryEnter = true;
 
-        @Setting(displayName = "Enable area discovered messages", description = "Should a toast be use to announce the fact that you've discovered an area?")
+        @Setting(displayName = "Enable Area Discovered Messages", description = "Should a toast be displayed to inform that you have discovered an area?")
         public boolean enableAreaDiscovered = true;
 
-        @Setting(displayName = "Enable quest completed messages", description = "Should a toast be use to announce the fact that you've completed a quest?")
+        @Setting(displayName = "Enable Quest Completed Messages", description = "Should a toast be displayed to inform that you have completed a quest?")
         public boolean enableQuestCompleted = true;
 
-        @Setting(displayName = "Enable discovery found messages", description = "Should a toast be use to announce the fact that you've found a secret discovery?")
+        @Setting(displayName = "Enable Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
         public boolean enableDiscovery = true;
     }
 
