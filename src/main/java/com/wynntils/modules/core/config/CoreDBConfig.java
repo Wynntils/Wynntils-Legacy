@@ -8,6 +8,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 
@@ -28,6 +29,9 @@ public class CoreDBConfig extends SettingsClass {
             "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
             "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
+
+    @Setting(displayName = "Scroll Direction", description = "Which direction would you like to scroll your mouse in order for the page to scroll down?")
+    public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
     @Override
     public void onSettingChanged(String name) {

@@ -207,15 +207,15 @@ public class QuestBookGUI extends GuiScreen {
 
     long delay = System.currentTimeMillis();
     public void handleMouseInput() throws IOException {
-        int mDwehll = Mouse.getEventDWheel();
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        if(mDwehll >= 1 && (System.currentTimeMillis() - delay >= 100)) {
+        if(mDwehll <= -1 && (System.currentTimeMillis() - delay >= 100)) {
             if(acceptNext) {
                 delay = System.currentTimeMillis();
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 currentPage++;
             }
-        }else if(mDwehll <= -1 && (System.currentTimeMillis() - delay >= 100)) {
+        }else if(mDwehll >= 1 && (System.currentTimeMillis() - delay >= 100)) {
             if(acceptBack) {
                 delay = System.currentTimeMillis();
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));

@@ -1,5 +1,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import net.minecraft.client.Minecraft;
@@ -101,7 +102,7 @@ public class WorldMapSettingsUI extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        float i = Mouse.getEventDWheel();
+        float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
         if (i != 0) {
             i = MathHelper.clamp(i, -1, 1) * 10;
             offsetY = (int) i;

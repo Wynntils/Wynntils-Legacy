@@ -18,6 +18,7 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
 import com.wynntils.core.framework.ui.elements.*;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -109,8 +110,7 @@ public class SettingsUI extends UI {
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         if(settingsScrollbar.active) {
-            float i = Mouse.getEventDWheel();
-
+            float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
             if (i != 0) {
                 i = MathHelper.clamp(i, -1, 1) * settingsScrollbar.precision * 8;
 
@@ -120,7 +120,7 @@ public class SettingsUI extends UI {
             }
         }
         if (holdersScrollbar.active) {
-            float i = Mouse.getEventDWheel();
+            float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
             if (i != 0) {
                 if (mouseX <= screenWidth / 2 - 5 && mouseX > screenWidth / 2 - 185 && mouseY >= screenHeight / 2 - 100 && mouseY < screenHeight / 2 + 100) {
                     i = MathHelper.clamp(i, -1, 1) * holdersScrollbar.precision * 8;
