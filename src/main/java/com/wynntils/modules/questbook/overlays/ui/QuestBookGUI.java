@@ -1141,13 +1141,13 @@ public class QuestBookGUI extends GuiScreen {
                 if (posX >= 15 && posX <= 45 && posY >= -14 && posY <= 15) {
                     selected = 4;
                     render.drawRect(selected_cube, x - 45, y - 15, x - 15, y + 15);
-                    render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 283, 243, 21, 21);
+                    render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 282, 21, 21);
                     hoveredText = Arrays.asList("§6[>] §6§lOverlay Configuration", "§7Change position", "§7and enable/disable", "§7the various",  "§7Wynntils overlays.", "",  "§aLeft click to select");
                 } else {
                     if (selected == 4)
                         selected = 0;
                     render.drawRect(unselected_cube, x - 45, y - 15, x - 15, y + 15);
-                    render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 283, 221, 21, 21);
+                    render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 261, 21, 21);
                 }
 
                 render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);

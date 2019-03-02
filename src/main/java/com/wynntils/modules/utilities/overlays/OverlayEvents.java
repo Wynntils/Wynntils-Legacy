@@ -154,7 +154,7 @@ public class OverlayEvents implements Listener {
             System.out.println(e.getMessage().getFormattedText().toCharArray());
             if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^§[ae] {5,}§r§[ae]§l\\w.*§r$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, "Quest Completed!", Utils.stripColor(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(§e)? {5,}(§r§e)?\\w.*§r$")) {
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(§e)? {5,}(§r§e)?((?![0-9]).)*§r$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}§r§b\\w.*§r$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
