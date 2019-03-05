@@ -117,6 +117,9 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Enable Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
         public boolean enableDiscovery = true;
+
+        @Setting(displayName = "Flip Toast Messages", description = "Should a toast originate from the left to right?\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.")
+        public boolean flipToast = false;
     }
 
     @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")

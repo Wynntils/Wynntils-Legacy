@@ -172,28 +172,37 @@ public class ChatManager {
         }
 
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
-            String crdText = in.getFormattedText();
-            Matcher m = coordinateReg.matcher(crdText); m.find();
-            String color = crdText.substring(crdText.substring(0, m.start()).lastIndexOf("§"), crdText.substring(0, m.start()).lastIndexOf("§") + 2);
+            String crdText;
+            TextFormatting color;
             String command = "/compass ";
             List<ITextComponent> crdMsg = new ArrayList<>();
-            ITextComponent preText = new TextComponentString(crdText.substring(0, m.start()));
 
-            crdMsg.add(preText);
-            command += crdText.substring(m.start(1), m.end(1)).replaceAll("[ ,]", "") + " ";
-            command += crdText.substring(m.start(3), m.end(3)).replaceAll("[ ,]", "");
+            for (ITextComponent texts: in.getSiblings()) {
+                Matcher m = coordinateReg.matcher(texts.getFormattedText());
+                if (m.find()) {
+                    crdText = texts.getFormattedText();
+                    color = texts.getStyle().getColor();
+                    in.getSiblings().remove(texts);
+                    //Pre-text
+                    crdMsg.add(new TextComponentString(crdText.substring(0, m.start())));
+                    //Coordinates:
+                    command += crdText.substring(m.start(1), m.end(1)).replaceAll("[ ,]", "") + " ";
+                    command += crdText.substring(m.start(3), m.end(3)).replaceAll("[ ,]", "");
+                    ITextComponent clickableText = new TextComponentString(crdText.substring(m.start(), m.end()));
+                    clickableText.getStyle()
+                            .setColor(TextFormatting.DARK_AQUA)
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command)));
+                    crdMsg.add(clickableText);
+                    //Post-text
+                    ITextComponent postText = new TextComponentString(crdText.substring(m.end()));
+                    postText.getStyle().setColor(color);
+                    crdMsg.add(postText);
 
-            ITextComponent clickableText = new TextComponentString(crdText.substring(m.start(), m.end()));
-            clickableText.getStyle()
-                    .setColor(TextFormatting.DARK_AQUA)
-                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command)));
-            crdMsg.add(clickableText);
-            ITextComponent endText = new TextComponentString(color + crdText.substring(m.end()));
-            crdMsg.add(endText);
-
-            in.getSiblings().clear();
-            in.getSiblings().addAll(crdMsg);
+                    in.getSiblings().addAll(crdMsg);
+                    break;
+                }
+            }
         }
 
         return new Pair<>(in, cancel);
