@@ -21,7 +21,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the client receives a {@link ResourcePackReceived} packet from the server
-     *
      */
     public static class ResourcePackReceived extends PacketEvent {
         SPacketResourcePackSend packet;
@@ -49,7 +48,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the client receives a {@link SPacketOpenWindow} packet from the server
-     *
      */
     public static class InventoryReceived extends PacketEvent {
 
@@ -78,7 +76,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the client receives a {@link SPacketWindowItems} packet from the server
-     *
      */
     public static class InventoryItemsReceived extends PacketEvent {
 
@@ -107,7 +104,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the client receives a {@link SPacketSpawnObject} packet from the server
-     *
      */
     public static class SpawnObject extends PacketEvent {
 
@@ -137,7 +133,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the client receives a {@link SPacketPlayerListItem} packet from the server
-     *
      */
     public static class TabListChangeEvent extends PacketEvent {
         SPacketPlayerListItem packet;
@@ -164,7 +159,6 @@ public class PacketEvent extends Event {
     
     /**
      * Triggered when the client receives a {@link SPacketTitle} packet from the server
-     *
      */
     public static class TitleEvent extends Event {
         SPacketTitle packet;
@@ -191,7 +185,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the player tries to drop an item and {@link CPacketPlayerDigging} is triggered
-     *
      */
     public static class PlayerDropItemEvent extends PacketEvent {
 
@@ -218,7 +211,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the player try to use an item
-     *
      */
     public static class PlayerUseItemEvent extends PacketEvent {
 
@@ -245,7 +237,6 @@ public class PacketEvent extends Event {
 
     /**
      * Triggered when the player try to use an item on a block
-     *
      */
     public static class PlayerUseItemOnBlockEvent extends PacketEvent {
 
@@ -270,6 +261,9 @@ public class PacketEvent extends Event {
 
     }
 
+    /**
+     * Triggered when a {@link SPacketEntityMetadata} is sent to the client
+     */
     public static class EntityMetadata extends PacketEvent {
 
         SPacketEntityMetadata packet;

@@ -8,4 +8,5 @@ public enum UpdateStream {
 
     STABLE,
     CUTTING_EDGE
+
 }

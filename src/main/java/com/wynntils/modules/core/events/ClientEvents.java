@@ -26,6 +26,26 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEvents implements Listener {
 
+    /**
+     * This replace these GUIS into a "provided" format to make it more modular
+     *
+     * GuiInventory -> InventoryReplacer
+     * GuiChest -> ChestReplacer
+     * GuiScreenHorseInventory -> HorseReplacer
+     * GuiIngameMenu -> IngameMenuReplacer
+     *
+     * Since forge doesn't provides any way to intercept these guis, like events, we need to replace them
+     * this may cause conflicts with other mods that does the same thing
+     *
+     * @see InventoryReplacer
+     * @see ChestReplacer
+     * @see HorseReplacer
+     * @see IngameMenuReplacer
+     *
+     * All of these "class replacers" emits a bunch of events that you can use to edit the selected GUI
+     *
+     * @param e GuiOpenEvent
+     */
     @SubscribeEvent
     public void onGuiOpened(GuiOpenEvent e) {
         if(e.getGui() instanceof GuiInventory) {
@@ -52,6 +72,12 @@ public class ClientEvents implements Listener {
         }
     }
 
+    /**
+     * Detects the user class based on the class selection GUI
+     * This detection happens when the user click on an item that contains the class name pattern, inside the class selection GUI
+     *
+     * @param e Represents the click event
+     */
     @SubscribeEvent
     public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if(e.getGuiInventory().getLowerInv().getName().contains("Select a Class")) {

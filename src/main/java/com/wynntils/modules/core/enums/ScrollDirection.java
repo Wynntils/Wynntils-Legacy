@@ -1,6 +1,7 @@
 package com.wynntils.modules.core.enums;
 
 public enum ScrollDirection {
+
     UP(-1),
     DOWN(1);
 
@@ -13,4 +14,5 @@ public enum ScrollDirection {
     public int getScrollDirection() {
         return scrollDirection;
     }
+
 }

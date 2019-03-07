@@ -37,6 +37,8 @@ public class UpdateProfile {
                     if (!md5Installed.getMd5().equals(stableMd5)) {
                         hasUpdate = true;
                         latestUpdate = WebManager.getStableJarVersion();
+
+                        //TODO make this thing optional
                         UpdateOverlay.forceDownload();
                     }
                 }

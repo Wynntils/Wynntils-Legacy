@@ -10,8 +10,8 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.instances.OutgoingFilter;
-import com.wynntils.modules.core.instances.PacketFilter;
+import com.wynntils.modules.core.instances.PacketOutgoingFilter;
+import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
@@ -26,16 +26,36 @@ import java.util.HashSet;
 
 public class ServerEvents implements Listener {
 
+    /**
+     * Does 4 different things and is triggered when the user joins Wynncraft:
+     *  - Register the pipeline that intercepts INCOMING Packets
+     *  @see PacketIncomingFilter
+     *  - Register the pipline that intercepts OUTGOING Packets
+     *  @see PacketOutgoingFilter
+     *  - Check if the mod has an update available
+     *  - Check if there is anything on the download queue
+     *
+     * @param e Represents the event
+     */
     @SubscribeEvent
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketFilter());
-        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new OutgoingFilter());
+        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
+        e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
         WebManager.checkForUpdates();
         DownloaderManager.startDownloading();
     }
 
     boolean waitingForFriendList = false;
+
+    /**
+     * Called when the user joins a Wynncraft World, used to register some stuff:
+     *  - Make the player use the command /friend list in order to gatter the user friend list
+     *  - Check if the last user class was registered if not, make the player execute /class to register it
+     *  - Updates the last class
+     *
+     * @param e Represents the event
+     */
     @SubscribeEvent
     public void joinWorldEvent(WynnWorldJoinEvent e) {
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
@@ -47,6 +67,12 @@ public class ServerEvents implements Listener {
         waitingForFriendList = true;
     }
 
+    /**
+     * Detects and register the current friend list of the user
+     * Called when the client receives a chat message
+     *
+     * @param e Represents the Event
+     */
     @SubscribeEvent
     public void chatMessage(ClientChatReceivedEvent e) {
         if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
@@ -67,6 +93,12 @@ public class ServerEvents implements Listener {
         }
     }
 
+    /**
+     * Detects if the user added or removed a user from their friend list
+     * Called when the user execute /friend add or /friend remove
+     *
+     * @param e Represents the Event
+     */
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
         if(e.getMessage().startsWith("/friend add ")) {

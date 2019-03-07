@@ -14,10 +14,19 @@ import net.minecraft.network.play.server.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class PacketFilter extends ChannelInboundHandlerAdapter {
+public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
 
     private static Minecraft mc = Minecraft.getMinecraft();
 
+    /**
+     * Dispatch a bunch of packet incoming events to be checked before reaching the interpretator
+     * @see PacketEvent for more information about these events
+     *
+     *
+     * @param ctx The Channel Handler
+     * @param msg The incoming Packet
+     * @throws Exception If something fails (idk exactly, that was inherited)
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(msg == null) return;

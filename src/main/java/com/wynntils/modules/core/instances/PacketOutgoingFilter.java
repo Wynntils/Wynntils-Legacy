@@ -15,8 +15,16 @@ import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class OutgoingFilter extends ChannelOutboundHandlerAdapter {
-
+public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
+    /**
+     * Dispatch a bunch of packet outgoing events to be checked before actually being sent
+     * @see PacketEvent for more information about these events
+     *
+     *
+     * @param ctx The Channel Handler
+     * @param msg The incoming Packet
+     * @throws Exception If something fails (idk exactly, that was inherited)
+     */
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         Event e = null;
