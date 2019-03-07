@@ -80,7 +80,7 @@ public class WynntilsAccount {
                     callback.accept(false);
                     return;
                 }
-                
+
                 callback.accept(true);
             }catch (Exception ex) { ex.printStackTrace(); }
         });
@@ -145,8 +145,14 @@ public class WynntilsAccount {
                 for (Map.Entry<String, JsonElement> objs : obj.entrySet()) {
                     encondedConfigs.put(objs.getKey(), objs.getValue().getAsString());
                 }
+                return;
             }
-        }catch (Exception ex) { ex.printStackTrace(); }
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Reference.LOGGER.error("Failed to connect to Wynntils Accounts!");
     }
 
 }

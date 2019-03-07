@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -23,12 +24,15 @@ import java.util.Base64;
 public class SettingsManager {
 
     private static Gson gson = null;
+    private static final File configFolder = new File(Reference.MOD_STORAGE_ROOT, "configs");
 
     static {
         gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeHierarchyAdapter(CustomColor.class, new CommonColorsDeserialiser())
             .create();
+
+        configFolder.mkdirs(); //if the config folder doesn't exists create the directory
     }
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
@@ -37,14 +41,11 @@ public class SettingsManager {
             if(!(obj instanceof Overlay))
                 return;
 
+        File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
+        if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
-        f.mkdirs();
-
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs",
-                m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
-        if(!f.exists())
-            f.createNewFile();
+        f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
+        if(!f.exists()) f.createNewFile(); // create the config file if it doesn't exists
 
         //HeyZeer0: Writting to file
         OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8);
@@ -62,11 +63,22 @@ public class SettingsManager {
             if(!(obj instanceof Overlay))
                 return obj;
 
-        File f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs");
-        f.mkdirs();
+        File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
+        if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        f = new File(Reference.MOD_STORAGE_ROOT + File.separator + "configs",
-                m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
+        String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
+        f = new File(f, configFile);
+
+        //HeyZeer0: converts the old format to the new format
+        File conversionFile = new File(configFolder, configFile);
+        boolean delete = false;
+        if(conversionFile.exists()) {
+            f = conversionFile;
+            delete = true;
+
+            Reference.LOGGER.warn("Converting old config " + configFile + " to the new format.");
+        }
+
         if(!f.exists()) {
             f.createNewFile();
             container.onCreateConfig();
@@ -75,7 +87,13 @@ public class SettingsManager {
         }
 
         InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8);
-        return gson.fromJson(new JsonReader(reader), obj.getClass());
+        SettingsHolder holder = gson.fromJson(new JsonReader(reader), obj.getClass());
+        reader.close();
+
+        //HeyZeer0: deletes all files from the old format
+        if(delete) f.delete();
+
+        return holder;
     }
 
     public static SettingsHolder getCloudSettings(ModuleContainer m, SettingsHolder obj) {
@@ -94,7 +112,7 @@ public class SettingsManager {
     }
 
     /**
-     * HeyZeer0: This interpretates the common colors class, into the 'rgba(r,g,b,a)' format
+     * HeyZeer0: This interpretates the common colors class, into/from the 'rgba(r,g,b,a)' format
      */
     private static class CommonColorsDeserialiser implements JsonDeserializer<CustomColor>, JsonSerializer<CustomColor> {
 
