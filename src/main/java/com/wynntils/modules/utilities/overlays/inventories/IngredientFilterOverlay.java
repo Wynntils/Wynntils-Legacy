@@ -40,7 +40,7 @@ public class IngredientFilterOverlay implements Listener {
                     gb.displayString = Character.toString(c);
                     RarityColorOverlay.setProfessionFilter(gb.displayString);
                 } else if (e.getMouseButton() == 1) {
-                    c = professionArray.get((professionArray.indexOf(gb.displayString) + 14) % 18).charAt(0);
+                    c = professionArray.get((professionArray.indexOf(gb.displayString) + 16) % 18).charAt(0);
                     gb.displayString = Character.toString(c);
                     RarityColorOverlay.setProfessionFilter(gb.displayString);
                 } else if (e.getMouseButton() == 2) {
