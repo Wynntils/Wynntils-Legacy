@@ -54,9 +54,9 @@ public class ActionBarOverlay extends Overlay {
             int padding = 3;
             int y = 0;
 
-            String lCoord = "§7" + (int) ScreenRenderer.mc.player.posX;
-            String middleCoord = "§a" + getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
-            String rCoord = "§7" + (int) ScreenRenderer.mc.player.posZ;
+            String lCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posX;
+            String middleCoord = TextFormatting.GREEN + getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+            String rCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posZ;
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
@@ -70,9 +70,9 @@ public class ActionBarOverlay extends Overlay {
             if (lastActionBar.contains("%")) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[7] + " " + spaces[8];
-            } else if (lastActionBar.contains("R§7-") || lastActionBar.contains("L§7-")) {
+            } else if (lastActionBar.contains("R" + TextFormatting.GRAY + "-") || lastActionBar.contains("L" + TextFormatting.GRAY + "-")) {
                 String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5].replace("§n", "").replace("§r", "");
+                middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
                 preference = true;
             } else if (Utils.stripColor(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");

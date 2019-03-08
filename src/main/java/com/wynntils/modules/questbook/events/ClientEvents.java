@@ -11,6 +11,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.managers.QuestManager;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -23,7 +24,7 @@ public class ClientEvents implements Listener {
             QuestManager.requestQuestBookReading();
         else if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[Quest Book Updated]"))
             QuestManager.requestQuestBookReading();
-        else if(e.getMessage().getFormattedText().contains("§6[Quest Completed]"))
+        else if(e.getMessage().getFormattedText().contains(TextFormatting.GOLD + "[Quest Completed]"))
             QuestManager.requestQuestBookReading();
     }
 

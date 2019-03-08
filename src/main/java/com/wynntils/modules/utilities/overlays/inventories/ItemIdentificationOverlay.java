@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
-    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( §[abc]§l[\\u21E9\\u21E7\\u21EA]§r§[abc]\\d+\\.\\d+%)|( §[24]\\[§[ac][-+]?\\d+§[24],§[ac] [-+]?\\d+§[24]\\])|( §[ac]\\[[-+]?\\d+ SP\\])");
+    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")" + TextFormatting.BOLD + "[\\u21E9\\u21E7\\u21EA]" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")\\d+\\.\\d+%)|( (" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\[(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")[-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + "),(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ") [-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\])|( (" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")\\[[-+]?\\d+ SP\\])");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
     public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
@@ -80,7 +81,7 @@ public class ItemIdentificationOverlay implements Listener {
                 minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
                 secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
                 lore.add("");
-                lore.add("§bTime until next soul point: §f" + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
+                lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
                 NBTTagCompound nbt = stack.getTagCompound();
                 NBTTagCompound display = nbt.getCompoundTag("display");
                 NBTTagList tag = new NBTTagList();
@@ -123,30 +124,30 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         String items = null;
-        String color = "§";
+        TextFormatting color = null;
 
-        if (stack.getDisplayName().startsWith("§b") && igp.getItems().get(itemType).containsKey("Legendary")) {
+        if (stack.getDisplayName().startsWith(TextFormatting.AQUA.toString()) && igp.getItems().get(itemType).containsKey("Legendary")) {
             items = igp.getItems().get(itemType).get("Legendary");
-            color += "b";
-        } else if (stack.getDisplayName().startsWith("§d") && igp.getItems().get(itemType).containsKey("Rare")) {
+            color = TextFormatting.AQUA;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.LIGHT_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Rare")) {
             items = igp.getItems().get(itemType).get("Rare");
-            color += "d";
-        } else if (stack.getDisplayName().startsWith("§e") && igp.getItems().get(itemType).containsKey("Unique")) {
+            color = TextFormatting.LIGHT_PURPLE;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.YELLOW.toString()) && igp.getItems().get(itemType).containsKey("Unique")) {
             items = igp.getItems().get(itemType).get("Unique");
-            color += "e";
-        } else if (stack.getDisplayName().startsWith("§5") && igp.getItems().get(itemType).containsKey("Mythic")) {
+            color = TextFormatting.YELLOW;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Mythic")) {
             items = igp.getItems().get(itemType).get("Mythic");
-            color += "5";
-        } else if (stack.getDisplayName().startsWith("§a") && igp.getItems().get(itemType).containsKey("Set")) {
+            color = TextFormatting.DARK_PURPLE;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.GREEN.toString()) && igp.getItems().get(itemType).containsKey("Set")) {
             items = igp.getItems().get(itemType).get("Set");
-            color += "a";
+            color = TextFormatting.GREEN;
         }
 
         if (items != null) {
             if (lore.get(lore.size() - 1).contains("7Possibilities")) {
                 return;
             }
-            lore.add("§a- §7Possibilities: " + color + items);
+            lore.add(TextFormatting.GREEN + "- " + TextFormatting.GRAY + "Possibilities: " + color + items);
 
             NBTTagCompound nbt = stack.getTagCompound();
             NBTTagCompound display = nbt.getCompoundTag("display");
@@ -171,7 +172,7 @@ public class ItemIdentificationOverlay implements Listener {
                 if (actualLore.size() < 3)
                     return;
                 String lore = actualLore.get(2);
-                if (!lore.startsWith("§6 - "))
+                if (!lore.startsWith(TextFormatting.GOLD + " - "))
                     return;
                 String wColor = Utils.stripColor(lore);
 
@@ -238,7 +239,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                 for(int bb = 1; bb <= alreadyRolled; bb++) rerollValue *= 5;
 
-                actualLore.set(i, lore + " §a[" + decimalFormat.format(rerollValue) + E + "]");
+                actualLore.set(i, lore + TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + E + "]");
                 break;
             }
 
@@ -358,13 +359,13 @@ public class ItemIdentificationOverlay implements Listener {
                         //bestPercent = 100 - (float) (((Math.ceil(((max - 0.5d) / itemVal) * 100) - 30) / 101) * 100);
                     }
 
-                    lore += " §c§l\u21E9§r§c" + String.format("%.1f", downPercent) + "% §a§l\u21E7§r§a" + String.format("%.1f", upPercent) + "% §b§l\u21EA§r§b" + String.format("%.1f", bestPercent) + "%";
+                    lore += " " + TextFormatting.RED.toString() + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", downPercent) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", upPercent) + "% " + TextFormatting.AQUA + TextFormatting.BOLD + "\u21EA" + TextFormatting.RESET + TextFormatting.AQUA + String.format("%.1f", bestPercent) + "%";
                     identifications += 1;
 
                     chanceUp = chanceUp + ((1 - chanceUp) * (upPercent / 100));
                     chanceDown = chanceDown + ((1 - chanceDown) * (downPercent / 100));
                 } else if (showRanges) {
-                    lore += " " + (amount < 0 ? "§4[§c" + max + "§4,§c " + min + "§4]" : "§2[§a" + min + "§2,§a " + max + "§2]");
+                    lore += " " + (amount < 0 ? TextFormatting.DARK_RED + "[" + TextFormatting.RED + max + TextFormatting.DARK_RED + "," + TextFormatting.RED + " " + min + TextFormatting.DARK_RED + "]" : TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + min + TextFormatting.DARK_GREEN + "," + TextFormatting.GREEN +" " + max + TextFormatting.DARK_GREEN + "]");
                     switch (fieldName) {
                         case "agilityPoints":
                             totalSP += amount;
@@ -390,18 +391,18 @@ public class ItemIdentificationOverlay implements Listener {
                     double pVal = (double) (amount - min);
                     int percent = (int) ((pVal / intVal) * 100);
 
-                    String color = "§";
+                    TextFormatting color = null;
 
                     if (amount < 0) percent = 100 - percent;
 
                     if (percent >= 97) {
-                        color += "b";
+                        color = TextFormatting.AQUA;
                     } else if (percent >= 80) {
-                        color += "a";
+                        color = TextFormatting.GREEN;
                     } else if (percent >= 30) {
-                        color += "e";
+                        color = TextFormatting.YELLOW;
                     } else {
-                        color += "c";
+                        color = TextFormatting.RED;
                     }
 
                     lore += color + " [" + percent + "%]";
@@ -454,15 +455,15 @@ public class ItemIdentificationOverlay implements Listener {
                 String name = cleanse(display.getString("Name"));
 
                 display.setTag("Lore", tag);
-                display.setString("Name", name + " §c§l\u21E9§r§c" + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% §a§l\u21E7§r§a" + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                display.setString("Name", name + " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
                 nbt.setTag("display", display);
             } else if (showRanges) {
                 String Extra = "";
 
                 if (totalSP > 0) {
-                    Extra += " §a[" + totalSP + " SP]";
+                    Extra += " " + TextFormatting.GREEN + "[" + totalSP + " SP]";
                 } else if (totalSP < 0) {
-                    Extra += " §c[" + totalSP + " SP]";
+                    Extra += " " + TextFormatting.RED +"[" + totalSP + " SP]";
                 }
 
                 NBTTagCompound display = nbt.getCompoundTag("display");
@@ -477,15 +478,15 @@ public class ItemIdentificationOverlay implements Listener {
                 nbt.setTag("display", display);
             } else {
                 int average = total / identifications;
-                String color = "§";
+                TextFormatting color = null;
                 if (average >= 97) {
-                    color += "b";
+                    color = TextFormatting.AQUA;
                 } else if (average >= 80) {
-                    color += "a";
+                    color = TextFormatting.GREEN;
                 } else if (average >= 30) {
-                    color += "e";
+                    color = TextFormatting.YELLOW;
                 } else {
-                    color += "c";
+                    color = TextFormatting.RED;
                 }
 
                 NBTTagCompound display = nbt.getCompoundTag("display");
@@ -521,6 +522,6 @@ public class ItemIdentificationOverlay implements Listener {
         int emeralds = priceNum % 64;
         int blocks = (priceNum % 4096) / 64;
         int liquid = (int) Math.floor((float) priceNum / 4096f);
-        return prevLore + " (§f" + liquid + "§7" + L + E + " §f" + blocks + "§7" + E + B + " §f" + emeralds + "§7" + E + ")";
+        return prevLore + " (" + TextFormatting.WHITE + liquid + TextFormatting.GRAY + L + E + " " + TextFormatting.WHITE + blocks + TextFormatting.GRAY + E + B + " " + TextFormatting.WHITE + emeralds + TextFormatting.GRAY + E + ")";
     }
 }

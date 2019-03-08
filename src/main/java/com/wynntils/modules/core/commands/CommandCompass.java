@@ -9,6 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 
 import java.util.Arrays;
@@ -54,7 +55,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(new TextComponentString("§4Missing arguments: /compass [<x> <z> | <direction>]"));
+            TextComponentString text = new TextComponentString("Missing arguments: /compass [<x> <z> | <direction>]");
+            text.getStyle().setColor(TextFormatting.DARK_RED);
+            sender.sendMessage(text);
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = { 0, 0 };
             //check for north/south
@@ -76,7 +79,6 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     newPos[1] = 9999999;
                     break;
                 default:
-                    sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
                     break;
             }
             //check for east/west
@@ -99,7 +101,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     break;
                 default:
                     if (newPos[1] == 0) {
-                        sender.sendMessage(new TextComponentString("§4That wasn't supposed to happen!"));
+                        TextComponentString text = new TextComponentString("That wasn't supposed to happen!");
+                        text.getStyle().setColor(TextFormatting.DARK_RED);
+                        sender.sendMessage(text);
                     }
                     break;
             }
@@ -138,12 +142,38 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                 }
             }
             dir = dir.substring(0,1).toUpperCase() + dir.substring(1);
-            sender.sendMessage(new TextComponentString("§aCompass is now pointing towards §2" + dir + "§a." ));
+            TextComponentString text = new TextComponentString("");
+            text.getStyle().setColor(TextFormatting.GREEN);
+            text.appendText("Compass is now pointing towards ");
+            
+            TextComponentString directionText = new TextComponentString(dir);
+            directionText.getStyle().setColor(TextFormatting.DARK_GREEN);
+            text.appendSibling(directionText);
+            
+            text.appendText(".");
+            sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("[0-9-]+") && args[1].matches("[0-9-]+")) {
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
-            sender.sendMessage(new TextComponentString("§aCompass is now pointing towards (§2" + args[0] + "§a, §2" + args[1] + "§a)." ));
+            TextComponentString text = new TextComponentString("");
+            text.getStyle().setColor(TextFormatting.GREEN);
+            text.appendText("Compass is now pointing towards (");
+            
+            TextComponentString xCoordinateText = new TextComponentString(args[0]);
+            xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+            text.appendSibling(xCoordinateText);
+            
+            text.appendText(", ");
+            
+            TextComponentString zCoordinateText = new TextComponentString(args[1]);
+            zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+            text.appendSibling(zCoordinateText);
+            
+            text.appendText(").");
+            sender.sendMessage(text);
         } else {
-            sender.sendMessage(new TextComponentString("§4Invalid arguments: /compass [<x> <z> | <direction>]"));
+            TextComponentString text = new TextComponentString("Invalid arguments: /compass [<x> <z> | <direction>]");
+            text.getStyle().setColor(TextFormatting.DARK_RED);
+            sender.sendMessage(text);
         }
     }
     

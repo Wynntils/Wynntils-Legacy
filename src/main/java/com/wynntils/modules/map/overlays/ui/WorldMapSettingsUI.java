@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Mouse;
 
@@ -54,8 +55,8 @@ public class WorldMapSettingsUI extends GuiScreen {
             }
         }
         int topY = this.buttonList.get(0).y;
-        if (topY-15 > 10 && topY-15 < this.height-50) { this.fontRenderer.drawString("§lEnable/Disable Map Icons:", (this.width - 349) / 2, topY - 15, 0xffFFFFFF); }
-        if (topY+172 > 10 && topY+172 < this.height-50) { this.fontRenderer.drawString("§lMap Icon Textures:", (this.width - 349) / 2, topY + 175, 0xffFFFFFF); }
+        if (topY-15 > 10 && topY-15 < this.height-50) { this.fontRenderer.drawString(TextFormatting.WHITE + "Enable/Disable Map Icons:", (this.width - 349) / 2, topY - 15, 0xffFFFFFF); }
+        if (topY+172 > 10 && topY+172 < this.height-50) { this.fontRenderer.drawString(TextFormatting.WHITE + "Map Icon Textures:", (this.width - 349) / 2, topY + 175, 0xffFFFFFF); }
         realOffsetY += offsetY;
         offsetY = 0;
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -113,17 +114,17 @@ public class WorldMapSettingsUI extends GuiScreen {
     }
 
     private  String stripJargon(String s) {
-        s = s.replace("Special_","§r§r");
-        s = s.replace("Content_","§r");
-        s = s.replace("NPC_","§f");
+        s = s.replace("Special_",TextFormatting.RESET.toString() + TextFormatting.RESET.toString());
+        s = s.replace("Content_",TextFormatting.RESET.toString());
+        s = s.replace("NPC_",TextFormatting.WHITE.toString());
         s = s.replace("_", " ");
         return s;
     }
 
     private String addJargon(String s) {
-        s = s.replace("§r§r", "Special_");
-        s = s.replace("§r", "Content_");
-        s = s.replace("§f", "NPC_");
+        s = s.replace(TextFormatting.RESET.toString() + TextFormatting.RESET.toString(), "Special_");
+        s = s.replace(TextFormatting.RESET.toString(), "Content_");
+        s = s.replace(TextFormatting.WHITE.toString(), "NPC_");
         s = s.replace(" ", "_");
         return s;
     }

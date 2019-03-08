@@ -6,6 +6,7 @@ package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class QuestInfo {
             questbookFriendlyName = questbookFriendlyName.substring(0, 19);
             questbookFriendlyName += "...";
         }
-        lore.add(0, "§l" + this.name);
+        lore.add(0, TextFormatting.BOLD + this.name);
 
         Matcher m = coordinatePattern.matcher(currentDescription);
         if(m.find()) {

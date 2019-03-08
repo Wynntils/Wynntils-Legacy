@@ -22,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
 
 public class NametagManager {
 
-    public static final Pattern MOB_LEVEL = Pattern.compile("(\u00A76 \\[Lv\\. (.*?)\\])");
+    public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
 
     public static boolean checkForNametag(RenderLivingEvent.Specials.Pre e) {
         Entity entity =  e.getEntity();
@@ -114,28 +115,28 @@ public class NametagManager {
             if (!str.isEmpty() && !str.contains("\u0001")) {
                 if (entityIn instanceof EntityPlayer) {
                     if(PlayerInfo.getPlayerInfo().getFriendList().contains(entityIn.getName())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A7e\u00A7lFriend", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.YELLOW + (TextFormatting.BOLD + "Friend"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (PlayerInfo.getPlayerInfo().getGuildList().contains(entityIn.getName())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A7b\u00A7lGuild Member", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.AQUA + (TextFormatting.BOLD + "Guild Member"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
-                    if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A76")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lModerator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                    if (entityIn.getDisplayName().getUnformattedText().startsWith(TextFormatting.GOLD.toString())) {
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.GOLD + (TextFormatting.BOLD + "Moderator"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
-                    else if (entityIn.getDisplayName().getUnformattedText().startsWith("\u00A74")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A74\u00A7lAdmin", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                    else if (entityIn.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_RED.toString())) {
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_RED + (TextFormatting.BOLD + "Admin"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (WebManager.isModerator(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A76\u00A7lWynntils Developer", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A74Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_RED + "Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isDonator(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A7dWynntils Donator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.LIGHT_PURPLE + "Wynntils Donator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) {
@@ -146,30 +147,30 @@ public class NametagManager {
                         for (ItemStack is : entityIn.getEquipmentAndArmor()) {
                             if(!is.hasDisplayName() || !WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
                             ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(is.getDisplayName()));
-                            String prefix;
+                            TextFormatting color;
                             switch (wItem.getTier()) {
                                 case MYTHIC:
-                                    prefix = "\u00A75";
+                                    color = TextFormatting.DARK_PURPLE;
                                     break;
                                 case LEGENDARY:
-                                    prefix = "\u00A7b";
+                                    color = TextFormatting.AQUA;
                                     break;
                                 case RARE:
-                                    prefix = "\u00A7d";
+                                    color = TextFormatting.LIGHT_PURPLE;
                                     break;
                                 case UNIQUE:
-                                    prefix = "\u00A7e";
+                                    color = TextFormatting.YELLOW;
                                     break;
                                 case SET:
-                                    prefix = "\u00A7a";
+                                    color = TextFormatting.GREEN;
                                     break;
                                 case NORMAL:
-                                    prefix = "\u00A7f";
+                                    color = TextFormatting.WHITE;
                                     break;
                                 default:
-                                    prefix = "";
+                                    color = TextFormatting.RESET;
                             }
-                            drawNameplate(renderManager.getFontRenderer(), prefix + Utils.stripColor(is.getDisplayName()), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                            drawNameplate(renderManager.getFontRenderer(), color + Utils.stripColor(is.getDisplayName()), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                             i -= 10;
                         }
                         i = (int) (i / 1.2);
@@ -184,9 +185,9 @@ public class NametagManager {
                         i -= 10;
                     }
                     if (entityIn.getDisplayName().getUnformattedText().contains("Disguised")) {
-                        drawNameplate(renderManager.getFontRenderer(), "\u00A77[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.GRAY + "[Disguised]", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
                         i -= 10;
-                        str = str.replace("\u00A77 [Disguised]\u00A7r", "");
+                        str = str.replace(TextFormatting.GRAY + " [Disguised]" + TextFormatting.RESET, "");
                     }
                 }
                 drawNameplate(renderManager.getFontRenderer(), str, (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 1);
@@ -243,9 +244,9 @@ public class NametagManager {
 
     private static String getPlayerHPBar(EntityPlayer entityPlayer) {
         int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 15 ); //0.3f for better experience rounding off near full hp
-        String healthBar = "§4[§c|||||||||||||||§4]";
-        healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + "§8" + healthBar.substring(5 + Math.min(health, 15));
-        if (health < 8) { healthBar = healthBar.replace('c', '6'); }
+        String healthBar = TextFormatting.DARK_RED + "[" + TextFormatting.RED + "|||||||||||||||" + TextFormatting.DARK_RED + "]";
+        healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + TextFormatting.DARK_GRAY + healthBar.substring(5 + Math.min(health, 15));
+        if (health < 8) { healthBar = healthBar.replace(TextFormatting.RED.toString(), TextFormatting.GOLD.toString()); }
         return healthBar;
     }
 }

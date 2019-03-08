@@ -23,6 +23,7 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -130,32 +131,34 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld) return;
         if (Utils.stripColor(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§4[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility."));
+                TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
+                text.getStyle().setColor(TextFormatting.DARK_RED);
+                Minecraft.getMinecraft().player.sendMessage(text);
                 wynnExpTimestampNotified = true;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
             if (Utils.stripColor(e.getMessage().getFormattedText()).equals("There is no room for a horse.")) {
-                GameUpdateOverlay.queueMessage("§4There is no room for a horse.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "There is no room for a horse.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Since you interacted with your inventory, your horse has despawned.")) {
-                GameUpdateOverlay.queueMessage("§dHorse despawned.");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Horse despawned.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Your horse is scared to come out right now, too many mobs are nearby.")) {
-                GameUpdateOverlay.queueMessage("§4Too many mobs nearby to spawn your horse");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Too many mobs nearby to spawn your horse");
                 e.setCanceled(true);
                 return;
             }
         }
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
-            if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^§[ae] {5,}§r§[ae]§l\\w.*§r$")) {
+            if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, "Quest Completed!", Utils.stripColor(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(§e)? {5,}(§r§e)?((?![0-9]).)*§r$")) {
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?((?![0-9]).)*" + TextFormatting.RESET + "$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}§r§b\\w.*§r$")) {
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
             }
         }
@@ -163,103 +166,103 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCombat) {
             // GENERAL
             if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You don't have enough mana to do that spell!")) {
-                GameUpdateOverlay.queueMessage("§4Not enough mana.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Not enough mana.");
                 e.setCanceled(true);
                 return;
             } else if (e.getMessage().getUnformattedText().contains("You have not unlocked this spell!")) {
-                GameUpdateOverlay.queueMessage("§4Spell not unlocked.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Spell not unlocked.");
                 e.setCanceled(true);
                 return;
             // POTIONS
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\]")) {
-                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
-                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()).replace("for", "over"));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(e.getMessage().getFormattedText()).replace("for", "over"));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
-                GameUpdateOverlay.queueMessage("§2" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_GREEN + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
-                GameUpdateOverlay.queueMessage("§f" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.WHITE + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
-                GameUpdateOverlay.queueMessage("§e" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❉ Intelligence for \\d+ seconds]")) {
-                GameUpdateOverlay.queueMessage("§b" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✹ Defense for \\d+ seconds]")) {
-                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You already have that potion active...")) {
-                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             // MAGE
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Sorry, you can't teleport... Try moving away from blocks.")) {
-                GameUpdateOverlay.queueMessage("§4Can't teleport - move away from blocks.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Can't teleport - move away from blocks.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
-                GameUpdateOverlay.queueMessage("§4" + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Cleared " + TextFormatting.GRAY + "all potion effects");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Cleared " + TextFormatting.GRAY + "all potion effects (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
-                GameUpdateOverlay.queueMessage("§4" + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects");
-                GameUpdateOverlay.queueMessage("§bRemoved §7all fire");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Cleared " + TextFormatting.GRAY + "all potion effects");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Removed " + TextFormatting.GRAY + "all fire");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[3].substring(2) + " ❤] §7(§b" + res[0].replace("§r", "") + "§7)");
-                GameUpdateOverlay.queueMessage("§bCleared §7all potion effects (§b" + res[0].replace("§r", "") + "§7)");
-                GameUpdateOverlay.queueMessage("§bRemoved §7all fire (§b" + res[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Cleared " + TextFormatting.GRAY + "all potion effects (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Removed " + TextFormatting.GRAY + "all fire (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             // ARCHER
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("+3 minutes speed boost.")) {
-                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ gave you \\+3 minutes speed boost\\.")) {
-                GameUpdateOverlay.queueMessage("§b+3 minutes §7speed boost (" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost (" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
             // WARRIOR
             else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 10% resistance\\.")) {
-                GameUpdateOverlay.queueMessage("§b+10% resistance §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+10% resistance " + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
             else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 15% resistance\\.")) {
-                GameUpdateOverlay.queueMessage("§b+15% resistance §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+15% resistance " + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
             else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ has given you 20% resistance and 10% strength\\.")) {
-                GameUpdateOverlay.queueMessage("§b+20% resistance §7& §b+10% strength §7(" + e.getMessage().getFormattedText().split(" ")[0].replace("§r", "") + "§7)");
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+20% resistance " + TextFormatting.GRAY + "& " + TextFormatting.AQUA + "+10% strength " + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
@@ -267,46 +270,46 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
             if (Utils.stripColor(e.getMessage().getFormattedText()).matches("You still have \\d+ unused skill points! Click with your compass to use them!")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§e" + res[3] + " §6skill points available.");
+                GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + res[3] + TextFormatting.GOLD + " skill points available.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is now level \\d+")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§e" + res[0] + " §6is now level §e" + res[4]);
+                GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + res[0] + TextFormatting.GOLD + " is now level " + TextFormatting.YELLOW + res[4]);
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is now level \\d+ in [" + PROF_COOKING + "-" + PROF_ALCHEMISM +  "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§e" + res[0] + " §6is now §e" + res[6] + " " + res[7] + "§6 level §e" + res[4]);
+                GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + res[0] + TextFormatting.GOLD + " is now " + TextFormatting.YELLOW + res[6] + " " + res[7] + TextFormatting.GOLD + " level " + TextFormatting.YELLOW + res[4]);
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You must identify this item before using it.")) {
-                GameUpdateOverlay.queueMessage("§4Item not identified.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Item not identified.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is not a .+ weapon\\. You must use a .+\\.")) {
-                GameUpdateOverlay.queueMessage("§4This weapon is not from your class.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "This weapon is not from your class.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ is for level \\d+\\+ only\\.")) {
-                GameUpdateOverlay.queueMessage("§4You are not a high enough level to use this item.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are not a high enough level to use this item.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches(".+ requires your .+ skill to be at least \\d+\\.")) {
                 String[] res = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage("§4You don't have enough " + res[res.length - 7] + " to use this item.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You don't have enough " + res[res.length - 7] + " to use this item.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("This potion is for Lv\\. \\d+\\+ only\\.")) {
-                GameUpdateOverlay.queueMessage("§4You are not a high enough level to use this potion.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are not a high enough level to use this potion.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("[Please empty some space in your inventory first]")) {
-                GameUpdateOverlay.queueMessage("§7Not enough inventory space.");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Not enough inventory space.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You have never been to that area!")) {
-                GameUpdateOverlay.queueMessage("§4" + Utils.stripColor(e.getMessage().getFormattedText()));
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + Utils.stripColor(e.getMessage().getFormattedText()));
                 e.setCanceled(true);
                 return;
             }
@@ -317,36 +320,36 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ Soul Points?\\]")) {
                 e.setCanceled(true);
-                GameUpdateOverlay.queueMessage("§d" + e.getMessage().getUnformattedText().substring(1, 14));
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + e.getMessage().getUnformattedText().substring(1, 14));
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
             if (Utils.stripColor(e.getMessage().getFormattedText()).matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
-                GameUpdateOverlay.queueMessage("§4" + res[5] + " " + res[6].replace(".", "") + " until server restart");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[5] + " " + res[6].replace(".", "") + " until server restart");
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectQuest) {
             if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[Quest Book Updated]")) {
-                GameUpdateOverlay.queueMessage("§7Quest book updated.");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Quest book updated.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[New Quest Started:")) {
-                GameUpdateOverlay.queueMessage(e.getMessage().getFormattedText().replace("[", "").replace("]", "").replace("§r", ""));
+                GameUpdateOverlay.queueMessage(e.getMessage().getFormattedText().replace("[", "").replace("]", "").replace(TextFormatting.RESET.toString(), ""));
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectMerchants) {
             if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Item Identifier: Okay, I'll identify them now!")) {
-                GameUpdateOverlay.queueMessage("§dIdentifying Item(s)...");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Identifying Item(s)...");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("Item Identifier: It is done\\. Your items? (has|have) been identified\\. The magic (it|they) contains? will now blossom\\.")) {
-                GameUpdateOverlay.queueMessage("§dItem(s) Identified!");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Item(s) Identified!");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).startsWith("Blacksmith: You ")) {
@@ -383,9 +386,9 @@ public class OverlayEvents implements Listener {
                         if (s.matches("e\\d+")) {
                             String message;
                             if (sold) {
-                                message = "§dSold " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d/§3" + countCrafted + "§d) item(s) for §a" + s.replace("e", "") + (char) 0xB2 + "§d.";
+                                message = TextFormatting.LIGHT_PURPLE + "Sold " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "") + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
                             } else {
-                                message = "§dScrapped " + total + " (§f" + countCommon + "§d/§e" + countUnique + "§d/" + countRare + "/§a" + countSet + "§d/§b" + countLegendary + "§d/§5" + countMythic + "§d/§3" + countCrafted + "§d) item(s) for §e" + s.replace("e", "") + " scrap§d.";
+                                message = TextFormatting.LIGHT_PURPLE + "Scrapped " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.YELLOW + s.replace("e", "") + " scrap" + TextFormatting.LIGHT_PURPLE + ".";
                             }
                             GameUpdateOverlay.queueMessage(message);
                             e.setCanceled(true);
@@ -397,19 +400,19 @@ public class OverlayEvents implements Listener {
                 }
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, and armour.")) {
-                GameUpdateOverlay.queueMessage("§dYou can only sell weapons, accessories, and armour here.");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "You can only sell weapons, accessories, and armour here.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You can't scrap this item!")) {
-                GameUpdateOverlay.queueMessage("§4This item cannot be scrapped.");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "This item cannot be scrapped.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("^.+ Merchant: Thank you for your business. Come again!")) {
-                GameUpdateOverlay.queueMessage("§dPurchase complete.");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Purchase complete.");
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("^.+ Merchant: I'm afraid you cannot afford that item.")) {
-                GameUpdateOverlay.queueMessage("§dYou cannot afford that item.");
+                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "You cannot afford that item.");
                 e.setCanceled(true);
                 return;
             }
@@ -418,15 +421,15 @@ public class OverlayEvents implements Listener {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
             if (colorStrippedMessage.matches("^\\[.+\\] .+ has just logged in!")) {
                 if (colorStrippedMessage.startsWith("[HERO]")) {
-                    GameUpdateOverlay.queueMessage("§a→ §5[§dHERO§5] §d" + colorStrippedMessage.split(" ")[1]);
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_PURPLE + "[" + TextFormatting.LIGHT_PURPLE + "HERO" + TextFormatting.DARK_PURPLE + "] " + TextFormatting.LIGHT_PURPLE + colorStrippedMessage.split(" ")[1]);
                     e.setCanceled(true);
                     return;
                 } else if (colorStrippedMessage.startsWith("[VIP+]")) {
-                    GameUpdateOverlay.queueMessage("§a→ §3[§bVIP+§3] §b" + colorStrippedMessage.split(" ")[1]);
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + "VIP+" + TextFormatting.DARK_AQUA + "] " + TextFormatting.AQUA + colorStrippedMessage.split(" ")[1]);
                     e.setCanceled(true);
                     return;
                 } else if (colorStrippedMessage.startsWith("[VIP]")) {
-                    GameUpdateOverlay.queueMessage("§a→ §2[§aVIP§2] §a" + colorStrippedMessage.split(" ")[1]);
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + "VIP" + TextFormatting.DARK_GREEN + "] " + TextFormatting.GREEN + colorStrippedMessage.split(" ")[1]);
                     e.setCanceled(true);
                     return;
                 }
@@ -435,29 +438,29 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
             // Not sure on the nether server format -Bedo
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§a")) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.GREEN.toString())) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
-                    GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + "§2]");
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + TextFormatting.DARK_GREEN + "]");
                 } else if (res.length == 10) {
-                    GameUpdateOverlay.queueMessage("§a→ §2" + res[0] + " [§a" + res[5] + "§2/§a" + res[8] + " " + res[9] + "§2]");
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + " " + res[9] + TextFormatting.DARK_GREEN + "]");
                 }
                 e.setCanceled(true);
                 return;
             } else if (colorStrippedMessage.matches(".+ left the game\\.")) {
-                GameUpdateOverlay.queueMessage("§4← §2" + colorStrippedMessage.split(" ")[0]);
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "← " + TextFormatting.DARK_GREEN + colorStrippedMessage.split(" ")[0]);
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
             String colorStrippedMessage = Utils.stripColor(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith("§b")) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.AQUA.toString())) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
-                    GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + "§3]");
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + TextFormatting.DARK_AQUA + "]");
                 } else if (res.length == 10) {
-                    GameUpdateOverlay.queueMessage("§a→ §3" + res[0] + " [§b" + res[5] + "§3/§b" + res[8] + " " + res[9] + "§3]");
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + " " + res[9] + TextFormatting.DARK_AQUA + "]");
                 }
                 e.setCanceled(true);
                 return;
@@ -471,56 +474,57 @@ public class OverlayEvents implements Listener {
             return;
         if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.ONLY_OWN_GUILD && !e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName()) && !e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName()))
             return;
-        String message = "§b";
+        TextFormatting color = TextFormatting.AQUA;
         if (OverlayConfig.TerritoryFeed.INSTANCE.displayMode == OverlayConfig.TerritoryFeed.TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD) {
             if (e.getType() == WynnGuildWarEvent.WarUpdateType.ATTACKED) {
                 if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§c";
+                    color = TextFormatting.RED;
                 } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§a";
+                    color = TextFormatting.GREEN;
                 }
             } else if (e.getType() == WynnGuildWarEvent.WarUpdateType.DEFENDED) {
                 if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§2";
+                    color = TextFormatting.DARK_GREEN;
                 } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§4";
+                    color = TextFormatting.DARK_RED;
                 }
             } else {
                 if (e.getDefenderName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§4";
+                    color = TextFormatting.DARK_RED;
                 } else if (e.getAttackerName().equals(WebManager.getPlayerProfile().getGuildName())) {
-                    message = "§2";
+                    color = TextFormatting.DARK_GREEN;
                 }
             }
         }
         String attackerName = OverlayConfig.TerritoryFeed.INSTANCE.useTag ? e.getAttackerTag() : e.getAttackerName();
         String defenderName = OverlayConfig.TerritoryFeed.INSTANCE.useTag ? e.getDefenderTag() : e.getDefenderName();
+        String rawMessage = "";
         if (OverlayConfig.TerritoryFeed.INSTANCE.shortMessages) {
             switch (e.getType()) {
                 case ATTACKED:
-                    message += e.getTerritoryName() + " | " + attackerName + " ⚔ " + defenderName;
+                    rawMessage = e.getTerritoryName() + " | " + attackerName + " ⚔ " + defenderName;
                     break;
                 case DEFENDED:
-                    message += e.getTerritoryName() + " | " + defenderName + " \uD83D\uDEE1 " + attackerName;
+                    rawMessage = e.getTerritoryName() + " | " + defenderName + " \uD83D\uDEE1 " + attackerName;
                     break;
                 case CAPTURED:
-                    message += e.getTerritoryName() + " | " + attackerName + " ⚑ " + defenderName;
+                    rawMessage = e.getTerritoryName() + " | " + attackerName + " ⚑ " + defenderName;
                     break;
             }
         } else {
             switch (e.getType()) {
                 case ATTACKED:
-                    message += "[" + defenderName + "]'s territory " + e.getTerritoryName() + " is being attacked by [" + attackerName + "]";
+                    rawMessage = "[" + defenderName + "]'s territory " + e.getTerritoryName() + " is being attacked by [" + attackerName + "]";
                     break;
                 case DEFENDED:
-                    message += "[" + attackerName + "]'s attack on [" + defenderName + "]'s territory " + e.getTerritoryName() + " was defended!";
+                    rawMessage = "[" + attackerName + "]'s attack on [" + defenderName + "]'s territory " + e.getTerritoryName() + " was defended!";
                     break;
                 case CAPTURED:
-                    message += "[" + attackerName + "] has captured " + e.getTerritoryName() + " from [" + defenderName + "]";
+                    rawMessage = "[" + attackerName + "] has captured " + e.getTerritoryName() + " from [" + defenderName + "]";
                     break;
             }
         }
-        TerritoryFeedOverlay.queueMessage(message);
+        TerritoryFeedOverlay.queueMessage(color + rawMessage);
     }
 
     @SubscribeEvent

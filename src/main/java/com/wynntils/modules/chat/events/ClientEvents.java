@@ -14,6 +14,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -34,9 +35,9 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatRecieved(ClientChatReceivedEvent e) {
-        if (e.getMessage().getFormattedText().startsWith("§4[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        if (e.getMessage().getFormattedText().startsWith(TextFormatting.DARK_RED + "[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
-        } else if (e.getMessage().getFormattedText().startsWith("§7[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (e.getMessage().getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
         }
     }

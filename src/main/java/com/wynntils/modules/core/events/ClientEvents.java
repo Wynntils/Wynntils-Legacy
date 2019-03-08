@@ -21,6 +21,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -84,7 +85,7 @@ public class ClientEvents implements Listener {
             if(e.getMouseButton() == 0 && e.getSlotIn() != null &&  e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
                 PlayerInfo.getPlayerInfo().setClassId(e.getSlotId());
 
-                String classS = Utils.getLore(e.getSlotIn().getStack()).get(1).split(": §f")[1];
+                String classS = Utils.getLore(e.getSlotIn().getStack()).get(1).split(": " + TextFormatting.WHITE)[1];
 
                 ClassType selectedClass = ClassType.NONE;
 

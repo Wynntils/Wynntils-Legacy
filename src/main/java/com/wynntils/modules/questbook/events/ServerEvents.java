@@ -22,6 +22,7 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -126,7 +127,7 @@ public class ServerEvents implements Listener {
                 if(inventory == 54) break;
 
                 if(inventory == 8) {
-                    if(i.hasDisplayName() && i.getDisplayName().contains(">§2>§a>§2>§a>")) {
+                    if(i.hasDisplayName() && i.getDisplayName().contains(">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">")) {
                         next = i;
                         nextId = inventory;
                     }
@@ -235,7 +236,7 @@ public class ServerEvents implements Listener {
 
         String description = "";
         for(int i = 5; i < lore.size(); i ++) {
-            if(lore.get(i).equalsIgnoreCase("§7Right click to track")) {
+            if(lore.get(i).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
                 break;
             }
             description = description + Utils.stripColor(lore.get(i));

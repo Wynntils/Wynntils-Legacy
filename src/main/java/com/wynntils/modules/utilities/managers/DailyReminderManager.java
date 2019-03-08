@@ -13,6 +13,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 
 public class DailyReminderManager {
@@ -21,7 +22,26 @@ public class DailyReminderManager {
         if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
         if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
-            p.sendMessage(new TextComponentString("§8[§7!§8] §fDaily rewards §7are available to claim!"));
+            TextComponentString text = new TextComponentString("");
+            text.getStyle().setColor(TextFormatting.GRAY);
+            
+            TextComponentString openingBracket = new TextComponentString("[");
+            openingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
+            text.appendSibling(openingBracket);
+            
+            text.appendText("!");
+            
+            TextComponentString closingBracket = new TextComponentString("] ");
+            closingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
+            text.appendSibling(closingBracket);
+            
+            TextComponentString dailyRewards = new TextComponentString("Daily rewards ");
+            dailyRewards.getStyle().setColor(TextFormatting.WHITE);
+            text.appendSibling(dailyRewards);
+            
+            text.appendText("are available to claim!");
+            
+            p.sendMessage(text);
             ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
 
             UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 1800000;

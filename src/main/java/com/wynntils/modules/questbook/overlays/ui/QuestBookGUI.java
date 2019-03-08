@@ -38,6 +38,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -272,7 +273,9 @@ public class QuestBookGUI extends GuiScreen {
                         StringSelection selection = new StringSelection(url);
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(selection, null);
-                        ModCore.mc().player.sendMessage(new TextComponentString("§4Error opening link, it has been copied to your clipboard"));
+                        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
+                        text.getStyle().setColor(TextFormatting.DARK_RED);
+                        ModCore.mc().player.sendMessage(text);
                     }
                 }
             }
@@ -702,7 +705,7 @@ public class QuestBookGUI extends GuiScreen {
 
                 //back to menu button
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                    hoveredText = Arrays.asList("§6[>] §6§lBack to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -883,7 +886,7 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString("by clicking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                    hoveredText = Arrays.asList("§6[>] §6§lBack to Menu", "§7Click here to go", "§7back to the main page", "", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -896,8 +899,8 @@ public class QuestBookGUI extends GuiScreen {
                     } else {
                         hoveredText = new ArrayList<>(QuestManager.discoveryLore);
                         hoveredText.add(" ");
-                        hoveredText.add("§aHold shift to see Secret Discoveries!");
-                        hoveredText.add("§aClick to see all of your Discoveries!");
+                        hoveredText.add(TextFormatting.GREEN + "Hold shift to see Secret Discoveries!");
+                        hoveredText.add(TextFormatting.GREEN + "Click to see all of your Discoveries!");
                     }
                 }
 
@@ -1036,19 +1039,19 @@ public class QuestBookGUI extends GuiScreen {
                         } else if (selected.getStatus() == QuestStatus.CAN_START) {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
                             if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                                lore.set(lore.size() - 1, "§c§lLeft click to unpin it!");
+                                lore.set(lore.size() - 1, TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
                             } else {
-                                lore.set(lore.size() - 1, "§a§lLeft click to pin it!");
+                                lore.set(lore.size() - 1, TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                             }
                         } else if (selected.getStatus() == QuestStatus.STARTED) {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
                             if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                                lore.set(lore.size() - 1, "§c§lLeft click to unpin it!");
+                                lore.set(lore.size() - 1, TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
                             } else {
-                                lore.set(lore.size() - 1, "§a§lLeft click to pin it!");
+                                lore.set(lore.size() - 1, TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                             }
                         }
-                        lore.add("§6§lRight click to open on the wiki!");
+                        lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
 
                         render.drawString(selected.getQuestbookFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
@@ -1098,7 +1101,7 @@ public class QuestBookGUI extends GuiScreen {
                     guild = WebManager.getPlayerProfile().getGuildRank() != null ? WebManager.getPlayerProfile().getGuildName() + " " + WebManager.getPlayerProfile().getGuildRank().getStars() : WebManager.getPlayerProfile().getGuildName();
                 else
                     guild = "";
-                render.drawString("§3" + guild, x + 80, y - 53, CommonColors.CYAN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(TextFormatting.DARK_AQUA + guild, x + 80, y - 53, CommonColors.CYAN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(Minecraft.getMinecraft().player.getName(), x + 80, y - 43, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(PlayerInfo.getPlayerInfo().getCurrentClass().toString() + " Level " + PlayerInfo.getPlayerInfo().getLevel(), x + 80, y + 40, CommonColors.PURPLE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("In Development", x + 80, y + 50, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
@@ -1108,7 +1111,7 @@ public class QuestBookGUI extends GuiScreen {
                     selected = 1;
                     render.drawRect(selected_cube, x - 150, y - 15, x - 120, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 239, 26, 17);
-                    hoveredText = Arrays.asList("§6[>] §6§lQuest Book", "§7See and pin all your", "§7current available", "§7quests.",  "", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.",  "", TextFormatting.GREEN + "Left click to select");
                 }else{
                     if(selected == 1) selected = 0;
                     render.drawRect(unselected_cube, x - 150, y - 15, x - 120, y + 15);
@@ -1120,7 +1123,7 @@ public class QuestBookGUI extends GuiScreen {
                     render.drawRect(selected_cube, x - 115, y - 15, x - 85, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 243, 21, 21);
 
-                    hoveredText = Arrays.asList("§6[>] §6§lConfiguration", "§7Change the settings", "§7to the way you want.",  "", "§cBETA VERSION", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Configuration", TextFormatting.GRAY + "Change the settings", TextFormatting.GRAY + "to the way you want.",  "", TextFormatting.RED + "BETA VERSION", TextFormatting.GREEN + "Left click to select");
                 }else {
                     if(selected == 2) selected = 0;
                     render.drawRect(unselected_cube, x - 115, y - 15, x - 85, y + 15);
@@ -1131,7 +1134,7 @@ public class QuestBookGUI extends GuiScreen {
                     selected = 3;
                     render.drawRect(selected_cube, x - 80, y - 15, x - 50, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 242, 18, 20);
-                    hoveredText = Arrays.asList("§6[>] §6§lItem Guide", "§7See all items", "§7currently available", "§7in the game.",  "", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.",  "", TextFormatting.GREEN + "Left click to select");
                 }else{
                     if(selected == 3) selected = 0;
                     render.drawRect(unselected_cube, x - 80, y - 15, x - 50, y + 15);
@@ -1142,7 +1145,7 @@ public class QuestBookGUI extends GuiScreen {
                     selected = 4;
                     render.drawRect(selected_cube, x - 45, y - 15, x - 15, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 282, 21, 21);
-                    hoveredText = Arrays.asList("§6[>] §6§lOverlay Configuration", "§7Change position", "§7and enable/disable", "§7the various",  "§7Wynntils overlays.", "",  "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various",  TextFormatting.GRAY + "Wynntils overlays.", "",  TextFormatting.GREEN + "Left click to select");
                 } else {
                     if (selected == 4)
                         selected = 0;
@@ -1181,7 +1184,7 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawString("below.", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                    hoveredText = Arrays.asList("§6[>] §6§lBack to Quests", "§7Click here to go", "§7back to the quests", "", "§aLeft click to select");
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Quests", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the quests", "", TextFormatting.GREEN + "Left click to select");
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);

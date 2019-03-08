@@ -9,6 +9,7 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.util.text.TextFormatting;
 
 @SettingsInfo(name = "overlays", displayPath = "Overlays")
 public class OverlayConfig extends SettingsClass {
@@ -184,7 +185,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Features.StringParameters(parameters = {"actual", "max", "percent", "needed", "actualg", "maxg", "neededg", "curlvl", "nextlvl"})
         @Setting(displayName = "Current Text", description = "How should the leveling text be displayed?")
         @Setting.Limitations.StringLimit(maxLength = 200)
-        public String levelingText = "§a(%actual%/%max%) §6%percent%%";
+        public String levelingText = TextFormatting.GREEN + "(%actual%/%max%) " + TextFormatting.GOLD + "%percent%%";
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
@@ -238,7 +239,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "EXP Message Format", description = "How should the format of EXP messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"xo", "xn", "xc", "po", "pn", "pc"})
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String expMessageFormat = "§2+%xc%XP (§6+%pc%%§2)";
+            public String expMessageFormat = TextFormatting.DARK_GREEN + "+%xc%XP (" + TextFormatting.GOLD + "+%pc%%" + TextFormatting.DARK_GREEN + ")";
         }
 
         @SettingsInfo(name = "game_update_inventory_settings", displayPath = "Overlays/Update Ticker/Inventory")
@@ -254,7 +255,7 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Inventory Full Message Format", description = "What message should be displayed when your inventory is full?")
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String inventoryMessageFormat = "§4Your inventory is full";
+            public String inventoryMessageFormat = TextFormatting.DARK_RED + "Your inventory is full";
         }
 
         @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
@@ -311,17 +312,17 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String territoryEnterFormat = "§7Now Entering [%t%]";
+            public String territoryEnterFormat = TextFormatting.GRAY + "Now Entering [%t%]";
 
             @Setting(displayName = "Territory Leave Format", description = "How should the format of the territory leave ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String territoryLeaveFormat = "§7Now Leaving [%t%]";
+            public String territoryLeaveFormat = TextFormatting.GRAY + "Now Leaving [%t%]";
 
             @Setting(displayName = "Music Change Format", description = "How should the format of the music change ticker messages be displayed?")
             @Setting.Features.StringParameters(parameters = {"np"})
             @Setting.Limitations.StringLimit(maxLength = 100)
-            public String musicChangeFormat = "§7♫ %np%";
+            public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
     

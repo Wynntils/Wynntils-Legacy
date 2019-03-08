@@ -8,6 +8,7 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 import java.io.IOException;
@@ -49,9 +50,9 @@ public class TabGUI extends GuiScreen {
 
         int x = width / 2; int y = height / 2;
 
-        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 30, 40, 20, "§aSave"));
-        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 30, 40, 20, "§4Delete"));
-        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 30, 40, 20, "§fClose"));
+        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 30, 40, 20, TextFormatting.GREEN + "Save"));
+        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 30, 40, 20, TextFormatting.DARK_RED + "Delete"));
+        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 30, 40, 20, TextFormatting.WHITE + "Close"));
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
 
@@ -91,9 +92,9 @@ public class TabGUI extends GuiScreen {
         }
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 90, y - 85, 10, 10, 0xFFFFFF));
-        nameLabel.addLine("Name §c*");
+        nameLabel.addLine("Name " + TextFormatting.RED + "*");
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 90, y - 40, 10, 10, 0xFFFFFF));
-        regexLabel.addLine("Regex §c*");
+        regexLabel.addLine("Regex " + TextFormatting.RED + "*");
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x + 10, y - 85, 10, 10, 0xFFFFFF));
         autoCommand.addLine("Auto Command");
         labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 22, y + 9, 10, 10, 0xFFFFFF));
@@ -121,7 +122,7 @@ public class TabGUI extends GuiScreen {
                 }else{
                     mc.displayGuiScreen(this);
                 }
-            }, "§f§lDo you really want to delete this chat tab?", "§cThis action is irreversible!", 0));
+            }, TextFormatting.WHITE + (TextFormatting.BOLD + "Do you really want to delete this chat tab?"), TextFormatting.RED + "This action is irreversible!", 0));
         }
     }
 
@@ -137,25 +138,25 @@ public class TabGUI extends GuiScreen {
         if(orderNbField != null) orderNbField.drawTextBox();
 
         if(mouseX >= nameTextField.x && mouseX < nameTextField.x + nameTextField.width && mouseY >= nameTextField.y && mouseY < nameTextField.y + nameTextField.height)
-            drawHoveringText(Arrays.asList("§a§lName", "§7This is how your tab", "§7will be named", "", "§cRequired"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Name"), TextFormatting.GRAY + "This is how your tab", TextFormatting.GRAY + "will be named", "", TextFormatting.RED + "Required"), mouseX, mouseY);
 
         if(mouseX >= regexTextField.x && mouseX < regexTextField.x + regexTextField.width && mouseY >= regexTextField.y && mouseY < regexTextField.y + regexTextField.height)
-            drawHoveringText(Arrays.asList("§a§lRegEx", "§7This will parse the chat", " ", "§aYou can learn RegEx at", "§6https://regexr.com/", "", "§cRequired"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "RegEx"), TextFormatting.GRAY + "This will parse the chat", " ", TextFormatting.GREEN + "You can learn RegEx at", TextFormatting.GOLD + "https://regexr.com/", "", TextFormatting.RED + "Required"), mouseX, mouseY);
 
         if(mouseX >= autoCommandField.x && mouseX < autoCommandField.x + autoCommandField.width && mouseY >= autoCommandField.y && mouseY < autoCommandField.y + autoCommandField.height)
-            drawHoveringText(Arrays.asList("§a§lAuto Command", "§7This will automatically", "§7put this command before", "§7any message.", "", "§cOptional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Auto Command"), TextFormatting.GRAY + "This will automatically", TextFormatting.GRAY + "put this command before", TextFormatting.GRAY + "any message.", "", TextFormatting.RED + "Optional"), mouseX, mouseY);
 
         if(mouseX >= orderNbField.x && mouseX < orderNbField.x + orderNbField.width && mouseY >= orderNbField.y && mouseY < orderNbField.y + orderNbField.height)
-            drawHoveringText(Arrays.asList("§a§lOrder number", "§7This determines the", "§7arrangement of the", "§7chat tabs.", "§8(lowest to highest)", "§cOptional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Order number"), TextFormatting.GRAY + "This determines the", TextFormatting.GRAY + "arrangement of the", TextFormatting.GRAY + "chat tabs.", TextFormatting.DARK_GRAY + "(lowest to highest)", TextFormatting.RED + "Optional"), mouseX, mouseY);
 
         if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
-            drawHoveringText(Arrays.asList("§a§lLow priority", "§7If selected, messages", "§7will attempt to match", "§7with other tabs first.", "", "§cOptional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Low priority"), TextFormatting.GRAY + "If selected, messages", TextFormatting.GRAY + "will attempt to match", TextFormatting.GRAY + "with other tabs first.", "", TextFormatting.RED + "Optional"), mouseX, mouseY);
 
         if(saveButton.enabled && mouseX >= saveButton.x && mouseX < saveButton.x + saveButton.width && mouseY >= saveButton.y && mouseY < saveButton.y + saveButton.height)
-            drawHoveringText(Arrays.asList("§a§lSave", "§7Click here to save", "§7this chat tab."), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Save"), TextFormatting.GRAY + "Click here to save", TextFormatting.GRAY + "this chat tab."), mouseX, mouseY);
 
         if(deleteButton.enabled && mouseX >= deleteButton.x && mouseX < deleteButton.x + deleteButton.width && mouseY >= deleteButton.y && mouseY < deleteButton.y + deleteButton.height)
-            drawHoveringText(Arrays.asList("§4§lDelete", "§7Click here to delete", "§7this chat tab.", "", "§cIrreversible action"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.DARK_RED + (TextFormatting.BOLD + "Delete"), TextFormatting.GRAY + "Click here to delete", TextFormatting.GRAY + "this chat tab.", "", TextFormatting.RED + "Irreversible action"), mouseX, mouseY);
 
         saveButton.enabled = !regexTextField.getText().isEmpty() && regexValid && !nameTextField.getText().isEmpty();
     }

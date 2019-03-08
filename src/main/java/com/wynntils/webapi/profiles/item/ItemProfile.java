@@ -4,12 +4,12 @@
 
 package com.wynntils.webapi.profiles.item;
 
-import com.wynntils.core.utils.Pair;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
+import com.wynntils.core.utils.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -17,10 +17,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -491,19 +492,19 @@ public class ItemProfile {
 
             switch (getTier()) {
                 case LEGENDARY:
-                    description.add("§b" + getName());
+                    description.add(TextFormatting.AQUA + getName());
                     break;
                 case MYTHIC:
-                    description.add("§5" + getName());
+                    description.add(TextFormatting.DARK_PURPLE + getName());
                     break;
                 case RARE:
-                    description.add("§d" + getName());
+                    description.add(TextFormatting.LIGHT_PURPLE + getName());
                     break;
                 case UNIQUE:
-                    description.add("§e" + getName());
+                    description.add(TextFormatting.YELLOW + getName());
                     break;
                 case SET:
-                    description.add("§a" + getName());
+                    description.add(TextFormatting.GREEN + getName());
                     break;
                 default:
                     description.add(getName());
@@ -512,125 +513,125 @@ public class ItemProfile {
             if(attackSpeed != null) {
                 switch (getAttackSpeed().toLowerCase()) {
                     case "super_fast":
-                        description.add("§7Super Fast Attack Speed");
+                        description.add(TextFormatting.GRAY + "Super Fast Attack Speed");
                         break;
                     case "super_slow":
-                        description.add("§7Super Slow Attack Speed");
+                        description.add(TextFormatting.GRAY + "Super Slow Attack Speed");
                         break;
                     case "very_fast":
-                        description.add("§7Very Fast Attack Speed");
+                        description.add(TextFormatting.GRAY + "Very Fast Attack Speed");
                         break;
                     case "normal":
-                        description.add("§7Normal Attack Speed");
+                        description.add(TextFormatting.GRAY + "Normal Attack Speed");
                         break;
                     case "very_slow":
-                        description.add("§7Very Slow Attack Speed");
+                        description.add(TextFormatting.GRAY + "Very Slow Attack Speed");
                         break;
                     case "fast":
-                        description.add("§7Fast Attack Speed");
+                        description.add(TextFormatting.GRAY + "Fast Attack Speed");
                         break;
                     case "slow":
-                        description.add("§7Slow Attack Speed");
+                        description.add(TextFormatting.GRAY + "Slow Attack Speed");
                         break;
                 }
 
                 description.add(" ");
 
-                if(damage != null && !damage.equals("0-0")) description.add("§6✣ Neutral Damage: " + getDamage());
-                if(fireDamage != null && !fireDamage.equals("0-0")) description.add("§c✹ Fire §7Damage: " + getFireDamage());
-                if(waterDamage != null && !waterDamage.equals("0-0")) description.add("§b❉ Water §7Damage: " + getWaterDamage());
-                if(airDamage != null && !airDamage.equals("0-0")) description.add("§f❋ Air §7Damage: " + getAirDamage());
-                if(thunderDamage != null && !thunderDamage.equals("0-0")) description.add("§e✦ Thunder §7Damage: " + getThunderDamage());
-                if(earthDamage != null && !earthDamage.equals("0-0")) description.add("§2✤ Earth §7Damage: " + getEarthDamage());
+                if(damage != null && !damage.equals("0-0")) description.add(TextFormatting.GOLD + "✣ Neutral Damage: " + getDamage());
+                if(fireDamage != null && !fireDamage.equals("0-0")) description.add(TextFormatting.RED + "✹ Fire " + TextFormatting.GRAY + "Damage: " + getFireDamage());
+                if(waterDamage != null && !waterDamage.equals("0-0")) description.add(TextFormatting.AQUA + "❉ Water " + TextFormatting.GRAY + "Damage: " + getWaterDamage());
+                if(airDamage != null && !airDamage.equals("0-0")) description.add(TextFormatting.WHITE + "❋ Air " + TextFormatting.GRAY + "Damage: " + getAirDamage());
+                if(thunderDamage != null && !thunderDamage.equals("0-0")) description.add(TextFormatting.YELLOW + "✦ Thunder " + TextFormatting.GRAY + "Damage: " + getThunderDamage());
+                if(earthDamage != null && !earthDamage.equals("0-0")) description.add(TextFormatting.DARK_GREEN + "✤ Earth " + TextFormatting.GRAY + "Damage: " + getEarthDamage());
             }
             if(category != null && category.equalsIgnoreCase("armor")) {
                 description.add(" ");
 
-                description.add("§4❤ Health: " + (getHealth() < 0 ? "" : "+") + getHealth());
-                if(fireDefense != 0) description.add("§c✹ Fire §7Defense: " + (getFireDefense() > 0 ? "+" + getFireDefense() : getFireDefense()));
-                if(waterDefense != 0) description.add("§b❉ Water §7Defense: " + (getWaterDefense() > 0 ? "+" + getWaterDefense() : getWaterDefense()));
-                if(airDefense != 0) description.add("§f❋ Air §7Defense: " + (getAirDefense() > 0 ? "+" + getAirDefense() : getAirDefense()));
-                if(thunderDefense != 0) description.add("§e✦ Thunder §7Defense: " + (getThunderDefense() > 0 ? "+" + getThunderDefense() : getThunderDefense()));
-                if(earthDefense != 0) description.add("§2✤ Earth §7Defense: " + (getEarthDefense() > 0 ? "+" + getEarthDefense() : getEarthDefense()));
+                description.add(TextFormatting.DARK_RED + "❤ Health: " + (getHealth() < 0 ? "" : "+") + getHealth());
+                if(fireDefense != 0) description.add(TextFormatting.RED + "✹ Fire " + TextFormatting.GRAY + "Defense: " + (getFireDefense() > 0 ? "+" + getFireDefense() : getFireDefense()));
+                if(waterDefense != 0) description.add(TextFormatting.AQUA + "❉ Water " + TextFormatting.GRAY + "Defense: " + (getWaterDefense() > 0 ? "+" + getWaterDefense() : getWaterDefense()));
+                if(airDefense != 0) description.add(TextFormatting.WHITE + "❋ Air " + TextFormatting.GRAY + "Defense: " + (getAirDefense() > 0 ? "+" + getAirDefense() : getAirDefense()));
+                if(thunderDefense != 0) description.add(TextFormatting.YELLOW + "✦ Thunder " + TextFormatting.GRAY + "Defense: " + (getThunderDefense() > 0 ? "+" + getThunderDefense() : getThunderDefense()));
+                if(earthDefense != 0) description.add(TextFormatting.DARK_GREEN + "✤ Earth " + TextFormatting.GRAY + "Defense: " + (getEarthDefense() > 0 ? "+" + getEarthDefense() : getEarthDefense()));
             }
 
             description.add(" ");
 
-            if(quest != null) description.add("§a✔ §7Quest Req: " + getQuest());
-            description.add("§a✔ §7Lv. Min: " + getLevel());
-            if(strength != 0) description.add("§a✔ §7Strength Min: " + getStrength());
-            if(agility != 0) description.add("§a✔ §7Agility Min: " + getAgility());
-            if(defense != 0) description.add("§a✔ §7Defense Min: " + getDefense());
-            if(intelligence != 0) description.add("§a✔ §7Intelligence Min: " + getIntelligence());
-            if(dexterity != 0) description.add("§a✔ §7Dexterity Min: " + getDexterity());
+            if(quest != null) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Quest Req: " + getQuest());
+            description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Lv. Min: " + getLevel());
+            if(strength != 0) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Strength Min: " + getStrength());
+            if(agility != 0) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Agility Min: " + getAgility());
+            if(defense != 0) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Defense Min: " + getDefense());
+            if(intelligence != 0) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Intelligence Min: " + getIntelligence());
+            if(dexterity != 0) description.add(TextFormatting.GREEN + "✔ " + TextFormatting.GRAY + "Dexterity Min: " + getDexterity());
             description.add(" ");
 
-            if(attackSpeedBonus != 0) description.add(calculateStatus(attackSpeedBonus, identified, "") + " §7Attack Speed");
+            if(attackSpeedBonus != 0) description.add(calculateStatus(attackSpeedBonus, identified, "") + " " + TextFormatting.GRAY + "Attack Speed");
 
-            if(damageBonusRaw != 0) description.add(calculateStatus(damageBonusRaw, identified, "") + " §7Melee Damage");
-            if(damageBonus != 0) description.add(calculateStatus(damageBonus, identified, "%") + " §7Melee Damage");
+            if(damageBonusRaw != 0) description.add(calculateStatus(damageBonusRaw, identified, "") + " " + TextFormatting.GRAY + "Melee Damage");
+            if(damageBonus != 0) description.add(calculateStatus(damageBonus, identified, "%") + " " + TextFormatting.GRAY + "Melee Damage");
 
-            if(spellDamageRaw != 0) description.add(calculateStatus(spellDamageRaw, identified, "") + " §7Spell Damage");
-            if(spellDamage != 0) description.add(calculateStatus(spellDamage, identified, "%") + " §7Spell Damage");
+            if(spellDamageRaw != 0) description.add(calculateStatus(spellDamageRaw, identified, "") + " " + TextFormatting.GRAY + "Spell Damage");
+            if(spellDamage != 0) description.add(calculateStatus(spellDamage, identified, "%") + " " + TextFormatting.GRAY + "Spell Damage");
 
-            if(healthBonus != 0) description.add(calculateStatus(healthBonus, identified, "") + " §7Health");
-            if(healthRegenRaw != 0) description.add(calculateStatus(healthRegenRaw, identified, "") + " §7Health Regen");
-            if(healthRegen != 0) description.add(calculateStatus(healthRegen, identified, "%") + " §7Health Regen");
+            if(healthBonus != 0) description.add(calculateStatus(healthBonus, identified, "") + " " + TextFormatting.GRAY + "Health");
+            if(healthRegenRaw != 0) description.add(calculateStatus(healthRegenRaw, identified, "") + " " + TextFormatting.GRAY + "Health Regen");
+            if(healthRegen != 0) description.add(calculateStatus(healthRegen, identified, "%") + " " + TextFormatting.GRAY + "Health Regen");
 
-            if(lifeSteal != 0) description.add(calculateStatus(lifeSteal, identified, "/4s") + " §7Life Steal");
-            if(manaRegen != 0) description.add(calculateStatus(manaRegen, identified, "/4s") + " §7Mana Regen");
-            if(manaSteal != 0) description.add(calculateStatus(manaSteal, identified, "/4s") + " §7Mana Steal");
+            if(lifeSteal != 0) description.add(calculateStatus(lifeSteal, identified, "/4s") + " " + TextFormatting.GRAY + "Life Steal");
+            if(manaRegen != 0) description.add(calculateStatus(manaRegen, identified, "/4s") + " " + TextFormatting.GRAY + "Mana Regen");
+            if(manaSteal != 0) description.add(calculateStatus(manaSteal, identified, "/4s") + " " + TextFormatting.GRAY + "Mana Steal");
 
-            if(bonusFireDamage != 0) description.add(calculateStatus(bonusFireDamage, identified, "%") + " §7Fire Damage");
-            if(bonusWaterDamage != 0) description.add(calculateStatus(bonusWaterDamage, identified, "%") + " §7Water Damage");
-            if(bonusAirDamage != 0) description.add(calculateStatus(bonusAirDamage, identified, "%") + " §7Air Damage");
-            if(bonusThunderDamage != 0) description.add(calculateStatus(bonusThunderDamage, identified, "%") + " §7Thunder Damage");
-            if(bonusEarthDamage != 0) description.add(calculateStatus(bonusEarthDamage, identified, "%") + " §7Earth Damage");
+            if(bonusFireDamage != 0) description.add(calculateStatus(bonusFireDamage, identified, "%") + " " + TextFormatting.GRAY + "Fire Damage");
+            if(bonusWaterDamage != 0) description.add(calculateStatus(bonusWaterDamage, identified, "%") + " " + TextFormatting.GRAY + "Water Damage");
+            if(bonusAirDamage != 0) description.add(calculateStatus(bonusAirDamage, identified, "%") + " " + TextFormatting.GRAY + "Air Damage");
+            if(bonusThunderDamage != 0) description.add(calculateStatus(bonusThunderDamage, identified, "%") + " " + TextFormatting.GRAY + "Thunder Damage");
+            if(bonusEarthDamage != 0) description.add(calculateStatus(bonusEarthDamage, identified, "%") + " " + TextFormatting.GRAY + "Earth Damage");
 
-            if(bonusFireDefense != 0) description.add(calculateStatus(bonusFireDefense, identified, "%") + " §7Fire Defense");
-            if(bonusWaterDefense != 0) description.add(calculateStatus(bonusWaterDefense, identified, "%") + " §7Water Defense");
-            if(bonusAirDefense != 0) description.add(calculateStatus(bonusAirDefense, identified, "%") + " §7Air Defense");
-            if(bonusThunderDefense != 0) description.add(calculateStatus(bonusThunderDefense, identified, "%") + " §7Thunder Defense");
-            if(bonusEarthDefense != 0) description.add(calculateStatus(bonusEarthDefense, identified, "%") + " §7Earth Defense");
+            if(bonusFireDefense != 0) description.add(calculateStatus(bonusFireDefense, identified, "%") + " " + TextFormatting.GRAY + "Fire Defense");
+            if(bonusWaterDefense != 0) description.add(calculateStatus(bonusWaterDefense, identified, "%") + " " + TextFormatting.GRAY + "Water Defense");
+            if(bonusAirDefense != 0) description.add(calculateStatus(bonusAirDefense, identified, "%") + " " + TextFormatting.GRAY + "Air Defense");
+            if(bonusThunderDefense != 0) description.add(calculateStatus(bonusThunderDefense, identified, "%") + " " + TextFormatting.GRAY + "Thunder Defense");
+            if(bonusEarthDefense != 0) description.add(calculateStatus(bonusEarthDefense, identified, "%") + " " + TextFormatting.GRAY + "Earth Defense");
 
-            if(strengthPoints != 0) description.add(calculateStatus(strengthPoints, identified, "") + " §7Strength");
-            if(dexterityPoints != 0) description.add(calculateStatus(dexterityPoints, identified, "") + " §7Dexterity");
-            if(intelligencePoints != 0) description.add(calculateStatus(intelligencePoints, identified, "") + " §7Intelligence");
-            if(defensePoints != 0) description.add(calculateStatus(defensePoints, identified, "") + " §7Defense");
-            if(agilityPoints != 0) description.add(calculateStatus(agilityPoints, identified, "") + " §7Agility");
+            if(strengthPoints != 0) description.add(calculateStatus(strengthPoints, identified, "") + " " + TextFormatting.GRAY + "Strength");
+            if(dexterityPoints != 0) description.add(calculateStatus(dexterityPoints, identified, "") + " " + TextFormatting.GRAY + "Dexterity");
+            if(intelligencePoints != 0) description.add(calculateStatus(intelligencePoints, identified, "") + " " + TextFormatting.GRAY + "Intelligence");
+            if(defensePoints != 0) description.add(calculateStatus(defensePoints, identified, "") + " " + TextFormatting.GRAY + "Defense");
+            if(agilityPoints != 0) description.add(calculateStatus(agilityPoints, identified, "") + " " + TextFormatting.GRAY + "Agility");
 
-            if(speed != 0) description.add(calculateStatus(speed, identified, "%") + " §7Walk Speed");
-            if(exploding != 0) description.add(calculateStatus(exploding, identified, "%") + " §7Exploding");
-            if(poison != 0) description.add(calculateStatus(poison, identified, "") + " §7Poison");
-            if(thorns != 0) description.add(calculateStatus(thorns, identified, "%") + " §7Thorns");
-            if(reflection != 0) description.add(calculateStatus(reflection, identified, "%") + " §7Reflection");
-            if(soulPoints != 0) description.add(calculateStatus(soulPoints, identified, "%") + " §7Soul Point Regen");
-            if(emeraldStealing != 0) description.add(calculateStatus(emeraldStealing, identified, "%") + " §7Stealing");
-            if(lootBonus != 0) description.add(calculateStatus(lootBonus, identified, "%") + " §7Loot Bonus");
-            if(xpBonus != 0) description.add(calculateStatus(xpBonus, identified, "%") + " §7XP Bonus");
+            if(speed != 0) description.add(calculateStatus(speed, identified, "%") + " " + TextFormatting.GRAY + "Walk Speed");
+            if(exploding != 0) description.add(calculateStatus(exploding, identified, "%") + " " + TextFormatting.GRAY + "Exploding");
+            if(poison != 0) description.add(calculateStatus(poison, identified, "") + " " + TextFormatting.GRAY + "Poison");
+            if(thorns != 0) description.add(calculateStatus(thorns, identified, "%") + " " + TextFormatting.GRAY + "Thorns");
+            if(reflection != 0) description.add(calculateStatus(reflection, identified, "%") + " " + TextFormatting.GRAY + "Reflection");
+            if(soulPoints != 0) description.add(calculateStatus(soulPoints, identified, "%") + " " + TextFormatting.GRAY + "Soul Point Regen");
+            if(emeraldStealing != 0) description.add(calculateStatus(emeraldStealing, identified, "%") + " " + TextFormatting.GRAY + "Stealing");
+            if(lootBonus != 0) description.add(calculateStatus(lootBonus, identified, "%") + " " + TextFormatting.GRAY + "Loot Bonus");
+            if(xpBonus != 0) description.add(calculateStatus(xpBonus, identified, "%") + " " + TextFormatting.GRAY + "XP Bonus");
 
             if (!description.get(description.size() - 1).equals(" ")) {
                 description.add(" ");
             }
             if (sockets != 0) {
-                description.add("§7[" + sockets + " Powder Slot" + (sockets != 1 ? "s" : "") + "]");
+                description.add(TextFormatting.GRAY + "[" + sockets + " Powder Slot" + (sockets != 1 ? "s" : "") + "]");
             }
 
             switch (getTier()) {
                 case LEGENDARY:
-                    description.add("§bLegendary Item");
+                    description.add(TextFormatting.AQUA + "Legendary Item");
                     break;
                 case MYTHIC:
-                    description.add("§5Mythic Item");
+                    description.add(TextFormatting.DARK_PURPLE + "Mythic Item");
                     break;
                 case RARE:
-                    description.add("§dRare Item");
+                    description.add(TextFormatting.LIGHT_PURPLE + "Rare Item");
                     break;
                 case UNIQUE:
-                    description.add("§eUnique Item");
+                    description.add(TextFormatting.YELLOW + "Unique Item");
                     break;
                 case SET:
-                    description.add("§aSet Item");
+                    description.add(TextFormatting.GREEN + "Set Item");
                     break;
                 default:
                     break;
@@ -650,7 +651,7 @@ public class ItemProfile {
         int maxStatus = (int)Math.round(rawStatus * 1.3);
         int minStatus = (rawStatus < 0 ? (int)Math.round(rawStatus * 0.7) : (int)Math.round(rawStatus * 0.3));
 
-        return identified ? (rawStatus > 0 ? "§a+" + rawStatus + format : "§c" + rawStatus + format) : (rawStatus > 0 ? "§a+" + minStatus + format +  " §7to§a +" + maxStatus + format : "§c" + minStatus + format + " §7to§c " + maxStatus + format);
+        return identified ? (rawStatus > 0 ? TextFormatting.GREEN + "+" + rawStatus + format : TextFormatting.RED + (rawStatus + format)) : (rawStatus > 0 ? TextFormatting.GREEN + "+" + minStatus + format + TextFormatting.GRAY + " to " + TextFormatting.GREEN + "+" + maxStatus + format : TextFormatting.RED + (minStatus + format) + TextFormatting.GRAY + " to " + TextFormatting.RED + maxStatus + format);
     }
 
     public static class ItemType {

@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -119,8 +120,8 @@ public class UIEColorWheel extends UIEClickZone {
 
         @Override
         public void initGui() {
-            buttonList.add(applyButton = new GuiButton(0, width/2 - 65, height/2 + 95, 50, 20, "§aApply"));
-            buttonList.add(cancelButton = new GuiButton(1, (width/2) + 15, height/2 + 95, 50, 20, "§cCancel"));
+            buttonList.add(applyButton = new GuiButton(0, width/2 - 65, height/2 + 95, 50, 20, TextFormatting.GREEN + "Apply"));
+            buttonList.add(cancelButton = new GuiButton(1, (width/2) + 15, height/2 + 95, 50, 20, TextFormatting.RED + "Cancel"));
 
             super.initGui();
         }

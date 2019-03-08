@@ -11,6 +11,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
@@ -55,7 +56,7 @@ public class PlayerInfo {
 
         if (currentClass != ClassType.NONE) {
             if(lastActionBar.contains("|") || lastActionBar.contains("_"))  {
-                specialActionBar = Utils.getCutString(lastActionBar,"    ","    §b",false);
+                specialActionBar = Utils.getCutString(lastActionBar,"    ","    " + TextFormatting.AQUA,false);
             }else{
                 specialActionBar = null;
             }

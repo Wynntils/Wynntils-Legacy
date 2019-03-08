@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
@@ -26,7 +27,7 @@ public class LevelingOverlay extends Overlay {
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})
     @Setting(displayName = "Current Text", description = "What will be showed at the Leveling Text")
-    public String levelingText = "§a(%actual%/%max%) §6%percent%%";
+    public String levelingText = TextFormatting.GREEN + "(%actual%/%max%) " + TextFormatting.GOLD + "%percent%%";
 
     @Setting(displayName = "Text Shadow", description = "The Levelling Text shadow type")
     public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;

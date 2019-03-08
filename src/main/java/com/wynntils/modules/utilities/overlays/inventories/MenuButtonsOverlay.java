@@ -9,6 +9,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public class MenuButtonsOverlay implements Listener {
                 if (b.id >= 5 && b.id <= 7) {
                     toBeRemoved.add(b);
                 } else if (b.id == 1) {
-                    b.displayString = "§c" + b.displayString;
+                    b.displayString = TextFormatting.RED + b.displayString;
                 } else if (b.id == 12 || b.id == 0) {
-                    b.displayString = "§7" + b.displayString;
+                    b.displayString = TextFormatting.GRAY + b.displayString;
                 }
             });
             e.getButtonList().removeAll(toBeRemoved);

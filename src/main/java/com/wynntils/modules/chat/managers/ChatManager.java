@@ -35,7 +35,7 @@ public class ChatManager {
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
     
-    private static final Pattern inviteReg = Pattern.compile("((§6|§b)/(party|guild) join [a-zA-Z0-9._-]+)");
+    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
@@ -56,7 +56,6 @@ public class ChatManager {
                 newMessage.appendSibling(in);
                 newMessage.getSiblings().addAll(in.getSiblings());
                 in.getSiblings().clear();
-                in.setStyle(null);
                 in = newMessage;
             }
             List<ITextComponent> timeStamp = new ArrayList<ITextComponent>();

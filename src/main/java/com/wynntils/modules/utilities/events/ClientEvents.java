@@ -22,6 +22,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -106,8 +107,10 @@ public class ClientEvents implements Listener {
                 IInventory inv = e.getGuiInventory().getLowerInv();
                 if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
-                        if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith("§5")) {
-                            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("§cYou cannot close this loot chest while there is mythic in it!"));
+                        if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString())) {
+                            TextComponentString text = new TextComponentString("You cannot close this loot chest while there is mythic in it!");
+                            text.getStyle().setColor(TextFormatting.RED);
+                            Minecraft.getMinecraft().player.sendMessage(text);
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                             e.setCanceled(true);
                             break;

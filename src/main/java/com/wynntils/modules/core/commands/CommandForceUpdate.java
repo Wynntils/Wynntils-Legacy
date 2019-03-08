@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 
 public class CommandForceUpdate extends CommandBase implements IClientCommand {
@@ -31,7 +32,9 @@ public class CommandForceUpdate extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         WebManager.getUpdate().forceUpdate();
-        sender.sendMessage(new TextComponentString("§bForcing Wynntils Update"));
+        TextComponentString text = new TextComponentString("Forcing Wynntils Update");
+        text.getStyle().setColor(TextFormatting.AQUA);
+        sender.sendMessage(text);
     }
 
     @Override
