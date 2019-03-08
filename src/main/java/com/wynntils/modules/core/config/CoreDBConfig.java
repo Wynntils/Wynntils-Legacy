@@ -35,7 +35,6 @@ public class CoreDBConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if (name.equals("updateStream"))
-            WebManager.checkForUpdates();
+        if (name.equals("updateStream")) WebManager.checkForUpdates();
     }
 }

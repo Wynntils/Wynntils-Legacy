@@ -5,22 +5,40 @@
 package com.wynntils.modules.richpresence.profiles;
 
 import com.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
+import com.wynntils.webapi.WebManager;
 
 import java.time.OffsetDateTime;
 
 public class RichProfile {
 
-    final DiscordRichPresence.DiscordRPC rpc = DiscordRichPresence.discordInitialize();
-    boolean ready = false;
-    Thread shutdown = new Thread(() -> {
-        rpc.Discord_Shutdown();
-    });
+    final DiscordRichPresence.DiscordRPC rpc;
+    Thread shutdown = new Thread(this::disconnectRichPresence);
+
+    Thread callbacks;
 
     public RichProfile(String id) throws Exception {
-        rpc.Discord_Initialize(id, null, false, null);
-        Runtime.getRuntime().addShutdownHook(shutdown);
+        rpc = DiscordRichPresence.discordInitialize();
 
-        ready = true;
+        DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
+        handler.ready = user -> {
+            if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "-" + user.discriminator);
+            callbacks.interrupt();
+        };
+
+        rpc.Discord_Initialize(id, handler, true, null);
+
+        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this thread is stopped after receiving it
+        callbacks = new Thread(() -> {
+            while(!Thread.interrupted()) {
+                rpc.Discord_RunCallbacks();
+            }
+
+            try{ Thread.sleep(2000); }catch (Exception ignored) { }
+        }, "Wynntils RP Callbacks");
+        callbacks.start();
+        // <--------->
+
+        Runtime.getRuntime().addShutdownHook(shutdown);
     }
 
     /**
@@ -78,15 +96,8 @@ public class RichProfile {
     }
 
     public void disconnectRichPresence() {
+        callbacks.interrupt();
         rpc.Discord_Shutdown();
-    }
-
-    /**
-     * Return if the RichClient is ready to go
-     * @return if the RichClient is ready
-     */
-    public boolean isReady() {
-        return ready;
     }
 
 }
