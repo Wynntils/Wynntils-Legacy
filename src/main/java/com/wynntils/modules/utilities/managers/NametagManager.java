@@ -135,6 +135,9 @@ public class NametagManager {
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_RED + "Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
+                    } else if(WebManager.isContentTeam(entityIn.getUniqueID())) {
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_AQUA + "Wynntils CT", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        i -= 10;
                     } else if (WebManager.isDonator(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), TextFormatting.LIGHT_PURPLE + "Wynntils Donator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;

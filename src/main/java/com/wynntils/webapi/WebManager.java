@@ -43,8 +43,8 @@ public class WebManager {
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
-    private static ArrayList<UUID> premiums = new ArrayList<>();
     private static ArrayList<UUID> users = new ArrayList<>();
+    private static ArrayList<UUID> content_team = new ArrayList<>();
     private static ArrayList<UUID> donators = new ArrayList<>();
 
     private static ArrayList<UUID> ears = new ArrayList<>();
@@ -72,7 +72,7 @@ public class WebManager {
 
         helpers = new ArrayList<>();
         moderators = new ArrayList<>();
-        premiums = new ArrayList<>();
+        content_team = new ArrayList<>();
         users = new ArrayList<>();
 
         ears = new ArrayList<>();
@@ -179,9 +179,7 @@ public class WebManager {
         return moderators.contains(uuid);
     }
 
-    public static boolean isPremium(UUID uuid) {
-        return premiums.contains(uuid);
-    }
+    public static boolean isContentTeam(UUID uuid) { return content_team.contains(uuid); }
 
     public static boolean isDonator(UUID uuid) {
         return donators.contains(uuid);
@@ -579,8 +577,8 @@ public class WebManager {
         JsonArray moderator = main.getAsJsonArray("moderatorUsers");
         moderators = gson.fromJson(moderator, type);
 
-        JsonArray premium = main.getAsJsonArray("premiumUsers");
-        premiums = gson.fromJson(premium, type);
+        JsonArray premium = main.getAsJsonArray("contentTeamUsers");
+        content_team = gson.fromJson(premium, type);
 
         JsonArray user = main.getAsJsonArray("normalUsers");
         users = gson.fromJson(user, type);
