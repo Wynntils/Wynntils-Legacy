@@ -6,10 +6,12 @@ package com.wynntils;
 
 import com.wynntils.core.CoreManager;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.ModuleManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -58,6 +60,13 @@ public class ModCore {
         FrameworkManager.postEnableModules();
         FrameworkManager.registerCommands();
         Textures.loadTextures();
+        Mappings.loadMappings();
+
+        //HeyZeer0: This will reload our cache if a texture or similar is applied
+        ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
+            Textures.loadTextures();
+            Mappings.loadMappings();
+        });
     }
 
     public static Minecraft mc() {

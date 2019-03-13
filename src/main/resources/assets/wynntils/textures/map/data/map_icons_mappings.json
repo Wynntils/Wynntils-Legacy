@@ -1,0 +1,276 @@
+{
+  "CLASSIC": {
+    "Content_CorruptedDungeon": {
+      "texPosX": 12,
+      "texPosZ": 17,
+      "texSizeX": 24,
+      "texSizeZ": 29,
+      "zoomNeeded": -1000,
+      "size": 2
+    },
+    "Content_Dungeon": {
+      "texPosX": 0,
+      "texPosZ": 17,
+      "texSizeX": 12,
+      "texSizeZ": 29,
+      "zoomNeeded": -1000,
+      "size": 2
+    },
+    "Merchant_Accessory": {
+      "texPosX": 0,
+      "texPosZ": 0,
+      "texSizeX": 17,
+      "texSizeZ": 16,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Armour": {
+      "texPosX": 17,
+      "texPosZ": 0,
+      "texSizeX": 34,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Dungeon": {
+      "texPosX": 34,
+      "texPosZ": 0,
+      "texSizeX": 49,
+      "texSizeZ": 15,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Horse": {
+      "texPosX": 49,
+      "texPosZ": 0,
+      "texSizeX": 65,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_KeyForge": {
+      "texPosX": 65,
+      "texPosZ": 0,
+      "texSizeX": 82,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Liquid": {
+      "texPosX": 82,
+      "texPosZ": 0,
+      "texSizeX": 97,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Potion": {
+      "texPosX": 97,
+      "texPosZ": 0,
+      "texSizeX": 113,
+      "texSizeZ": 18,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Powder": {
+      "texPosX": 113,
+      "texPosZ": 0,
+      "texSizeX": 130,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Scroll": {
+      "texPosX": 130,
+      "texPosZ": 0,
+      "texSizeX": 148,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Seasail": {
+      "texPosX": 113,
+      "texPosZ": 17,
+      "texSizeX": 131,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Weapon": {
+      "texPosX": 148,
+      "texPosZ": 0,
+      "texSizeX": 166,
+      "texSizeZ": 15,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "NPC_Blacksmith": {
+      "texPosX": 147,
+      "texPosZ": 17,
+      "texSizeX": 165,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "NPC_GuildMaster": {
+      "texPosX": 42,
+      "texPosZ": 17,
+      "texSizeX": 60,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "NPC_ItemIdentifier": {
+      "texPosX": 60,
+      "texPosZ": 18,
+      "texSizeX": 78,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "NPC_PowderMaster": {
+      "texPosX": 96,
+      "texPosZ": 18,
+      "texSizeX": 113,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Special_FastTravel": {
+      "texPosX": 24,
+      "texPosZ": 17,
+      "texSizeX": 42,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "tnt": {
+      "texPosX": 131,
+      "texPosZ": 17,
+      "texSizeX": 147,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Ore_Refinery": {
+      "texPosX": 199,
+      "texPosZ": 0,
+      "texSizeX": 217,
+      "texSizeZ": 16,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Fish_Refinery": {
+      "texPosX": 182,
+      "texPosZ": 0,
+      "texSizeX": 199,
+      "texSizeZ": 17,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Wood_Refinery": {
+      "texPosX": 217,
+      "texPosZ": 0,
+      "texSizeX": 234,
+      "texSizeZ": 18,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Crop_Refinery": {
+      "texPosX": 166,
+      "texPosZ": 0,
+      "texSizeX": 182,
+      "texSizeZ": 18,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "MarketPlace": {
+      "texPosX": 78,
+      "texPosZ": 17,
+      "texSizeX": 96,
+      "texSizeZ": 35,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Content_Quest": {
+      "texPosX": 165,
+      "texPosZ": 18,
+      "texSizeX": 183,
+      "texSizeZ": 36,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Special_Rune": {
+      "texPosX": 64,
+      "texPosZ": 35,
+      "texSizeX": 82,
+      "texSizeZ": 53,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_UltimateDiscovery": {
+      "texPosX": 201,
+      "texPosZ": 18,
+      "texSizeX": 219,
+      "texSizeZ": 36,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_Cave": {
+      "texPosX": 234,
+      "texPosZ": 0,
+      "texSizeX": 250,
+      "texSizeZ": 18,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_GrindSpot": {
+      "texPosX": 221,
+      "texPosZ": 20,
+      "texSizeX": 233,
+      "texSizeZ": 32,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Other": {
+      "texPosX": 0,
+      "texPosZ": 29,
+      "texSizeX": 18,
+      "texSizeZ": 47,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Special_LightRealm": {
+      "texPosX": 52,
+      "texPosZ": 35,
+      "texSizeX": 64,
+      "texSizeZ": 53,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Special_RootsOfCorruption": {
+      "texPosX": 38,
+      "texPosZ": 35,
+      "texSizeX": 50,
+      "texSizeZ": 53,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Emerald": {
+      "texPosX": 233,
+      "texPosZ": 18,
+      "texSizeX": 250,
+      "texSizeZ": 36,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "painting": {
+      "texPosX": 18,
+      "texPosZ": 35,
+      "texSizeX": 36,
+      "texSizeZ": 53,
+      "zoomNeeded": 0,
+      "size": 2
+    }
+  }
+}

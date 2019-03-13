@@ -55,8 +55,6 @@ public class WynntilsAccount {
                 URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "updateDiscord/" + token + "/" + id + "/" + username).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-                System.out.println(IOUtils.toString(st.getInputStream()));
-
                 Reference.LOGGER.info("Updating user Discord ID");
             }catch (Exception ex) { ex.printStackTrace(); }
         });
