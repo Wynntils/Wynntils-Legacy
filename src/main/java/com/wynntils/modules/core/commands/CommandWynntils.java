@@ -44,6 +44,18 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length >= 1) {
             switch (String.join("", args).toLowerCase()) {
+                case "donate":
+                    TextComponentString c = new TextComponentString("You can donate to wynntils at: ");
+                    c.getStyle().setColor(TextFormatting.AQUA);
+                    TextComponentString url = new TextComponentString("https://www.patreon.com/Wynntils");
+                    url.getStyle()
+                            .setColor(TextFormatting.LIGHT_PURPLE)
+                            .setUnderlined(true)
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/Wynntils"))
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to open in your browser")));
+
+                    sender.sendMessage(c.appendSibling(url));
+                    break;
                 case "help":
                     TextComponentString text = new TextComponentString("");
                     text.getStyle().setColor(TextFormatting.GOLD);
@@ -56,6 +68,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     addCommandDescription(text, "-wynntils", " version", "Show Wynntils' version.");
                     text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " reloadapi", "Reloads all API data.");
+                    text.appendText("\n");
+                    addCommandDescription(text, "-wynntils", " donate", "Provides our patreon link.");
                     text.appendText("\n");
                     addCommandDescription(text, "-", "token", "Provides you with a clickable token to create a Wynntils account for capes.");
                     text.appendText("\n");

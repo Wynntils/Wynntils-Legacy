@@ -43,7 +43,6 @@ public class WebManager {
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
-    private static ArrayList<UUID> users = new ArrayList<>();
     private static ArrayList<UUID> content_team = new ArrayList<>();
     private static ArrayList<UUID> donators = new ArrayList<>();
 
@@ -73,7 +72,6 @@ public class WebManager {
         helpers = new ArrayList<>();
         moderators = new ArrayList<>();
         content_team = new ArrayList<>();
-        users = new ArrayList<>();
 
         ears = new ArrayList<>();
         elytras = new ArrayList<>();
@@ -195,10 +193,6 @@ public class WebManager {
 
     public static boolean hasCape(UUID uuid) {
         return capes.contains(uuid);
-    }
-
-    public static boolean isUser(UUID uuid) {
-        return users.contains(uuid);
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
@@ -577,11 +571,8 @@ public class WebManager {
         JsonArray moderator = main.getAsJsonArray("moderatorUsers");
         moderators = gson.fromJson(moderator, type);
 
-        JsonArray premium = main.getAsJsonArray("contentTeamUsers");
-        content_team = gson.fromJson(premium, type);
-
-        JsonArray user = main.getAsJsonArray("normalUsers");
-        users = gson.fromJson(user, type);
+        JsonArray contentTeam = main.getAsJsonArray("contentTeamUsers");
+        content_team = gson.fromJson(contentTeam, type);
 
         JsonArray donator = main.getAsJsonArray("donatorUsers");
         donators = gson.fromJson(donator, type);

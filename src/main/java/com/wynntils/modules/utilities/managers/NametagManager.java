@@ -133,7 +133,7 @@ public class NametagManager {
                         drawNameplate(renderManager.getFontRenderer(), TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isHelper(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_RED + "Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.GREEN + "Wynntils Helper", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if(WebManager.isContentTeam(entityIn.getUniqueID())) {
                         drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_AQUA + "Wynntils CT", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
