@@ -1,5 +1,6 @@
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 
 public class Toast {
@@ -13,7 +14,7 @@ public class Toast {
     public Toast(ToastType type, String title, String subTitle) {
         this.type = type;
         this.title = title;
-        this.subtitle = wrapText(subTitle);
+        this.subtitle = Utils.wrapText(subTitle, 24);
 
         this.creationTime = Minecraft.getSystemTime();
         this.animated = 160;
@@ -61,22 +62,5 @@ public class Toast {
 
     public void setY(int y) {
         this.Y = y;
-    }
-
-    private String[] wrapText(String s) {
-        String[] sa = s.split(" ");
-        String result = "";
-        int length = 0;
-
-        for (String o: sa) {
-            if (length + o.length() >= 24) {
-                result += ",";
-                length = 0;
-            }
-            result += o + " ";
-            length += o.length();
-        }
-
-        return result.split(",");
     }
 }

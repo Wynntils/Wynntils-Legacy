@@ -10,6 +10,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
+import com.wynntils.modules.core.overlays.ChangelogOverlay;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 
@@ -24,6 +25,7 @@ public class CoreModule extends Module {
 
         registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
+        registerOverlay(new ChangelogOverlay(), Priority.HIGHEST);
 
         registerSettings(CoreDBConfig.class);
 

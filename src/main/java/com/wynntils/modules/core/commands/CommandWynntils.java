@@ -7,6 +7,7 @@ package com.wynntils.modules.core.commands;
 import com.wynntils.Reference;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.overlays.ChangelogOverlay;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandBase;
@@ -70,6 +71,12 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     WebManager.reset();
                     WebManager.setupWebApi();
                     break;
+                case "changelog":
+                    ChangelogOverlay.displayChangelog(false);
+                    break;
+                case "changelogmajor": //DO NOT USE THIS COMMAND IN DEV ENVIROMENT
+                    ChangelogOverlay.displayChangelog(true);
+                    break;
                 default:
                     sender.sendMessage(new TextComponentString("§4Invalid argument, use /wynntils help for more info"));
                     break;
@@ -105,7 +112,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, "help", "discord", "version");
+            return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "reloadapi","changelog");
         }
         return Collections.emptyList();
     }

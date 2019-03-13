@@ -8,6 +8,9 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
@@ -18,6 +21,7 @@ import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
+import org.lwjgl.Sys;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -25,6 +29,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -776,6 +781,66 @@ public class WebManager {
             } catch (InterruptedException ignored) {
                 Reference.LOGGER.info("Terminating territory update thread.");
             }
+        }
+    }
+
+    /**
+     * Fetches a hand written changelog from the Wynntils API (if download stream is set to stable)
+     * Fetches current build changes from Jenkins (Wynntils-DEV)
+     *
+     * @return an ArrayList of ChangelogProfile's
+     */
+    public static ArrayList<String> getChangelog(boolean major) {
+        JsonObject main = null;
+        boolean failed = false;
+        ArrayList<String> changelog = new ArrayList<>();
+        if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE || major) {
+            try {
+                URLConnection st = new URL(apiUrls.get("Changelog")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                failed = true;
+            }
+
+            if (failed) {
+                Reference.LOGGER.warn("Error while fetching changelog");
+                return null;
+            }
+
+            Type type = new TypeToken<ArrayList<String>>() { }.getType();
+            ArrayList<String> temp = gson.fromJson(main.getAsJsonArray("0.2.2"), type);
+            for (String s: temp) {
+                changelog.addAll(Arrays.asList(Utils.wrapText(s, 56)));
+            }
+            return changelog;
+        } else {
+            String changes;
+            try {
+                URLConnection st = new URL(apiUrls.get("DevJars").replace("lastSuccessfulBuild", (String)(Reference.developmentEnvironment ? "lastSuccessfulBuild" : Reference.BUILD_NUMBER)) + "api/json?tree=changeSet[items[msg]]").openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                if (st.getContentType().contains("application/json")) {
+                    main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                    changes = main.getAsJsonObject().get("changeSet").getAsJsonObject().get("items").getAsJsonArray().get(0).getAsJsonObject().get("msg").getAsString().trim();
+                    changelog.addAll(Arrays.asList(Utils.wrapText(String.format("#%d: %s", Reference.BUILD_NUMBER, changes), 56)));
+                } else {
+                    failed = true;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                failed = true;
+            }
+
+            if (failed || changelog.isEmpty()) {
+                Reference.LOGGER.warn("Error while fetching changelog");
+                return null;
+            }
+            return changelog;
         }
     }
 
