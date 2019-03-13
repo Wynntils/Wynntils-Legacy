@@ -43,9 +43,14 @@ public class TerritoryFeedOverlay extends Overlay {
     }
 
     public static void queueMessage(String message) {
-        if(!OverlayConfig.TerritoryFeed.INSTANCE.enabled)return;
+        if(!OverlayConfig.TerritoryFeed.INSTANCE.enabled) return;
 
         LogManager.getFormatterLogger("TerritoryFeed").info("Message Queued: " + message);
         messageList.add(message);
+    }
+
+    public static void clearQueue() {
+        LogManager.getFormatterLogger("TerritoryFeed").info("Cleared Queued Messages");
+        messageList.clear();
     }
 }

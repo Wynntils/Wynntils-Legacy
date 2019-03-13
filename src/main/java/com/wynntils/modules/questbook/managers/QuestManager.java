@@ -43,6 +43,7 @@ public class QuestManager {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
+        // Should look into better way to do this than using packets - possibly serving quest information through an API?
         if(slot == 7) {
             mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             return;
@@ -70,10 +71,8 @@ public class QuestManager {
      * @param listToSet the list that will override the current one
      * */
     public static void setCurrentQuestsData(ArrayList<QuestInfo> listToSet) {
-        if (listToSet.size() < currentQuestsData.size()) {
-            requestQuestBookReading();
+        if (listToSet.size() < currentQuestsData.size())
             return;
-        }
         currentQuestsData.clear();
         currentQuestsData.addAll(listToSet);
         updateTrackedQuest();
@@ -86,10 +85,8 @@ public class QuestManager {
      * @param listToSet the list that will override the current one
      * */
     public static void setCurrentDiscoveryData(ArrayList<DiscoveryInfo> listToSet) {
-        if (listToSet.size() < currentDiscoveryData.size()) {
-            requestQuestBookReading();
+        if (listToSet.size() < currentDiscoveryData.size())
             return;
-        }
         currentDiscoveryData.clear();
         currentDiscoveryData.addAll(listToSet);
     }

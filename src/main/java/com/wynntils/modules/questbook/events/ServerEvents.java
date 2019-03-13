@@ -87,7 +87,8 @@ public class ServerEvents implements Listener {
 
                     e.setCanceled(true);
                 }else{
-                    acceptItems = false; QuestManager.setReadingQuestBook(false);
+                    acceptItems = false;
+                    QuestManager.setReadingQuestBook(false);
                 }
             }
         }
@@ -143,7 +144,6 @@ public class ServerEvents implements Listener {
                             acceptItems = false;
                             e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                             QuestManager.setReadingQuestBook(false);
-                            QuestManager.requestQuestBookReading();
                             return;
                         }
                     }
@@ -154,7 +154,6 @@ public class ServerEvents implements Listener {
                             acceptItems = false;
                             e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                             QuestManager.setReadingQuestBook(false);
-                            QuestManager.requestQuestBookReading();
                             return;
                         }
                     }
@@ -165,7 +164,6 @@ public class ServerEvents implements Listener {
                             acceptItems = false;
                             e.getPlayClient().sendPacket(new CPacketCloseWindow(e.getPacket().getWindowId()));
                             QuestManager.setReadingQuestBook(false);
-                            QuestManager.requestQuestBookReading();
                             return;
                         }
                     }

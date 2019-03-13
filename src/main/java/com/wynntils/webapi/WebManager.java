@@ -770,10 +770,8 @@ public class WebManager {
                         }
                     }
                 }
-                Reference.LOGGER.info("Terminating territory update thread.");
-            } catch (InterruptedException ignored) {
-                Reference.LOGGER.info("Terminating territory update thread.");
-            }
+            } catch (InterruptedException ignored) {}
+            Reference.LOGGER.info("Terminating territory update thread.");
         }
     }
 

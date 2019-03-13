@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.util.text.TextFormatting;
 
@@ -359,7 +360,10 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if(name.equals("enabled")) WebManager.updateTerritoryThreadStatus(enabled);
+            if (name.equals("enabled")) {
+                WebManager.updateTerritoryThreadStatus(enabled);
+                TerritoryFeedOverlay.clearQueue();
+            }
         }
 
         public enum TerritoryFeedDisplayMode {

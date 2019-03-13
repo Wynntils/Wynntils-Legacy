@@ -10,6 +10,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.events.ClientEvents;
 import com.wynntils.modules.questbook.events.ServerEvents;
+import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
 import com.wynntils.modules.questbook.overlays.ui.QuestBookGUI;
 import org.lwjgl.input.Keyboard;
@@ -26,7 +27,10 @@ public class QuestBookModule extends Module {
         registerSettings(QuestBookConfig.class);
         registerOverlay(new TrackedQuestOverlay(), Priority.HIGHEST);
 
-        registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, gui::openAtQuests);
+        registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> {
+            QuestManager.requestQuestBookReading();
+            gui.openAtQuests();
+        });
         registerKeyBinding("Open Item Guide", Keyboard.KEY_I, "Wynntils", true, gui::openAtItemGuide);
     }
 
