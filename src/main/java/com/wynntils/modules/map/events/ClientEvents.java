@@ -41,7 +41,7 @@ public class ClientEvents implements Listener {
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
                 MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
 
-                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "New Map Entry", "You found a " + tier + " chest!"));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "New Map Entry", "You found a tier " + tier.replace("IV", "4").replace("III", "3") + " chest!"));
             }
         }
     }

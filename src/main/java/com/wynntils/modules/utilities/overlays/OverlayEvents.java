@@ -535,7 +535,11 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWynnTerritoyChange(WynnTerritoryChangeEvent e) {
         if (OverlayConfig.ToastsSettings.INSTANCE.enableTerritoryEnter && OverlayConfig.ToastsSettings.INSTANCE.enableToast && !e.getNewTerritory().equals("Waiting")) {
-            ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", e.getNewTerritory()));
+            String newTerritoryArea = e.getNewTerritory().contains(" ") ? e.getNewTerritory().split(" ")[0] : e.getNewTerritory();
+            String oldTerritoryArea = e.getOldTerritory().contains(" ") ? e.getOldTerritory().split(" ")[0] : e.getOldTerritory();
+            if(newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
+
+            ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", newTerritoryArea));
         }
         if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.enabled) {
             if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.leave && !e.getOldTerritory().equals("Waiting")) {

@@ -85,7 +85,11 @@ public class WynntilsAccount {
                 try {
                     outputStream = st.getOutputStream();
                     IOUtils.write(bodyBytes, outputStream);
-                } finally {
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                    return;
+                }
+                finally {
                     IOUtils.closeQuietly(outputStream);
                 }
 
