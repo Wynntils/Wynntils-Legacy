@@ -337,4 +337,21 @@ public class Utils {
         }
     }
 
+    public static String[] wrapText(String s, int max) {
+        String[] stringArray = s.split(" ");
+        String result = "";
+        int length = 0;
+
+        for (String string: stringArray) {
+            if (length + string.length() >= max) {
+                result += "|";
+                length = 0;
+            }
+            result += string + " ";
+            length += string.length() + 1; //+1 for the space following
+        }
+
+        return result.split("\\|");
+    }
+
 }

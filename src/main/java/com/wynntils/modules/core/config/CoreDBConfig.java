@@ -33,6 +33,10 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(displayName = "Scroll Direction", description = "Which direction would you like to scroll your mouse in order for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
+    @Setting(displayName = "Show Changelog", description = "Should the changelog of your recent update be displayed once you log in after updating?")
+    public boolean enableChangelogOnUpdate = true;
+    public boolean justUpdates = false;
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("updateStream")) WebManager.checkForUpdates();
