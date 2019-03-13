@@ -10,6 +10,8 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.utilities.instances.Toast;
+import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,6 +40,8 @@ public class ClientEvents implements Listener {
 
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
                 MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
+
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "New Map Entry", "You found a " + tier + " chest!"));
             }
         }
     }
