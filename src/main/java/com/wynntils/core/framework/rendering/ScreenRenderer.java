@@ -224,6 +224,42 @@ public class ScreenRenderer {
      * A mask, is a clear and white texture where anything
      * while will allow drawing.
      *
+     * @param color mask color
+     * @param x1 bottom-left x(on screen)
+     * @param y1 bottom-left y(on screen)
+     * @param x2 top-right x(on screen)
+     * @param y2 top-right y(on screen)
+     */
+    public static void createMask(CustomColor color, int x1, int y1, int x2, int y2) {
+        if (!rendering || mask) return;
+        float prevScale = scale;
+        resetScale();
+
+        GlStateManager.enableDepth();
+        GlStateManager.colorMask(false, false, false, true);
+        color.applyColor();
+        GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glVertex3f(x1 + drawingOrigin.x, y1 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glVertex3f(x1 + drawingOrigin.x, y2 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glVertex3f(x2 + drawingOrigin.x, y2 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glVertex3f(x2 + drawingOrigin.x, y1 + drawingOrigin.y, 1000.0F);
+        GlStateManager.glEnd();
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(false);
+        GlStateManager.depthFunc(GL_GREATER);
+
+        mask = true;
+
+        scale(prevScale);
+    }
+
+    /** createMask
+     * Creates a mask that will remove anything drawn after
+     * this and before the next {clearMask()}(or {endGL()})
+     * and is not inside the mask.
+     * A mask, is a clear and white texture where anything
+     * while will allow drawing.
+     *
      * @param texture mask texture(please use Textures.Masks)
      * @param x1 bottom-left x(on screen)
      * @param y1 bottom-left y(on screen)
@@ -259,7 +295,6 @@ public class ScreenRenderer {
         GlStateManager.glTexCoord2f(txMax,tyMin);
         GlStateManager.glVertex3f(xMax, yMin, 1000.0F);
         GlStateManager.glEnd();
-
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.depthMask(false);
         GlStateManager.depthFunc(GL_GREATER);

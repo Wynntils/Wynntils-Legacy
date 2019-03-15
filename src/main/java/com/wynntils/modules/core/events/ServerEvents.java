@@ -9,9 +9,12 @@ import com.wynntils.core.events.custom.WynnWorldJoinEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.instances.PacketOutgoingFilter;
+import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
+import com.wynntils.modules.core.instances.PacketOutgoingFilter;
+import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
@@ -19,6 +22,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
@@ -105,6 +109,25 @@ public class ServerEvents implements Listener {
             PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
         }else if(e.getMessage().startsWith("/friend remove ")) {
             PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
+        }
+    }
+
+    /**
+     * Detects when the user enters the Wynncraft Server
+     * Used for displaying the Changelog UI
+     *
+     * @param e
+     */
+    @SubscribeEvent
+    public void onJoinLobby(TickEvent.ClientTickEvent e) {
+        if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
+            if(Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().world.getWorldTime() % 1000 != 0) return;
+
+            boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
+            CoreDBConfig.INSTANCE.showChangelogs = false;
+
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
         }
     }
 

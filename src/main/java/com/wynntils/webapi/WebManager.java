@@ -21,7 +21,6 @@ import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
-import org.lwjgl.Sys;
 
 import java.io.*;
 import java.lang.reflect.Type;

@@ -51,7 +51,6 @@ public class Textures {
         public static AssetsTexture hotbar;
         public static AssetsTexture toast;
         public static AssetsTexture proffesions;
-        public static AssetsTexture changelog;
     }
 
     public static class Map {
@@ -67,6 +66,8 @@ public class Textures {
     public static class UIs {
         public static AssetsTexture book;
         public static AssetsTexture book_scrollarea_settings;
+
+        public static AssetsTexture changelog;
 
         public static AssetsTexture button_a;
         public static AssetsTexture button_b;

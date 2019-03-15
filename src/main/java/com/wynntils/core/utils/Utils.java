@@ -20,6 +20,9 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -27,6 +30,18 @@ public class Utils {
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('\u00A7') + "[0-9A-FK-OR]");
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
+    private static ScheduledExecutorService  executorService = Executors.newSingleThreadScheduledExecutor();
+
+    /**
+     * Runs a runnable after the determined time
+     *
+     * @param r the runnable
+     * @param timeUnit the time unit
+     * @param amount the amount of the specified time unit
+     */
+    public static void runAfter(Runnable r, TimeUnit timeUnit, long amount) {
+        executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
+    }
 
     /**
      * Removes all color codes from a string

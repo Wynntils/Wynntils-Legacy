@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
@@ -150,6 +151,9 @@ public class UpdateOverlay extends Overlay {
                 disappear = true;
                 acceptYesOrNo = false;
                 download = true;
+
+                CoreDBConfig.INSTANCE.showChangelogs = true;
+                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
             }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 timeout = 35000;
                 acceptYesOrNo = false;

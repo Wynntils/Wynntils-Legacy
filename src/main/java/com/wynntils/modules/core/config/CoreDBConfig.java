@@ -35,7 +35,9 @@ public class CoreDBConfig extends SettingsClass {
 
     @Setting(displayName = "Show Changelog", description = "Should the changelog of your recent update be displayed once you log in after updating?")
     public boolean enableChangelogOnUpdate = true;
-    public boolean justUpdates = false;
+
+    @Setting(upload = false)
+    public boolean showChangelogs = true;
 
     @Override
     public void onSettingChanged(String name) {
