@@ -794,7 +794,7 @@ public class WebManager {
             }
 
             Type type = new TypeToken<ArrayList<String>>() { }.getType();
-            return gson.fromJson(main.getAsJsonArray("0.2.2"), type);
+            return gson.fromJson(main.getAsJsonArray(Reference.VERSION), type);
         }
 
         ArrayList<String> changelog = new ArrayList<>();
