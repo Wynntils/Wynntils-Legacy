@@ -26,12 +26,15 @@ public class ChangelogUI extends GuiScreen {
     ArrayList<String> changelogContent = new ArrayList<>();
 
     int scrollbarPosition = 0;
-    int scrollbarSize;
+    int scrollbarSize = 0;
 
     boolean major;
 
     public ChangelogUI(ArrayList<String> changelogContent, boolean major) {
         this.major = major;
+        if(changelogContent.size() == 0) {
+            return;
+        }
 
         for(String rawText : changelogContent)
             this.changelogContent.addAll(Arrays.asList(Utils.wrapText(rawText, 40)));
