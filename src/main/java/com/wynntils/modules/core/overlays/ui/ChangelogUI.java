@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 
@@ -32,16 +33,18 @@ public class ChangelogUI extends GuiScreen {
 
     public ChangelogUI(ArrayList<String> changelogContent, boolean major) {
         this.major = major;
-        if(changelogContent == null || changelogContent.size() == 0) {
+
+        if(changelogContent == null || changelogContent.isEmpty()) {
+            Minecraft.getMinecraft().displayGuiScreen(null);
             return;
         }
 
         for(String rawText : changelogContent)
             this.changelogContent.addAll(Arrays.asList(Utils.wrapText(rawText, 40)));
 
-        if(changelogContent.size() <= 15) scrollbarSize = 118;
+        if(this.changelogContent.size() <= 15) scrollbarSize = 118;
         else {
-            scrollbarSize = (int)(118 * Math.pow(0.5d, changelogContent.size()/15));
+            scrollbarSize = (int)(118 * Math.pow(0.5d, this.changelogContent.size()/15f));
         }
     }
 
@@ -59,13 +62,15 @@ public class ChangelogUI extends GuiScreen {
         renderer.drawRect(new CustomColor(0.917f, 0.8666f, 0.760f), (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
 
         //text area
-        renderer.createMask(Textures.Masks.full, middleX - 110, middleY - 75, middleX + 95, middleY + 84, 10, 10, 11, 11);
+        renderer.createMask(Textures.Masks.full, middleX - 110, middleY - 71, middleX + 95, middleY + 84, 10, 10, 11, 11);
         float scrollPercent = scrollbarPosition/(118f - scrollbarSize);
 
         int textX = (int)middleX - 105;
         int baseY = (int)middleY - 70;
+
+        float scrollPostionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size()/15) * 159) * scrollPercent);
         for(String changelogLine : changelogContent) {
-            renderer.drawString(changelogLine, textX, baseY - (((changelogContent.size()/15) * 159) * scrollPercent), CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString(changelogLine, textX, baseY - scrollPostionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             baseY += 10;
         }
