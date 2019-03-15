@@ -32,7 +32,7 @@ public class ChangelogUI extends GuiScreen {
 
     public ChangelogUI(ArrayList<String> changelogContent, boolean major) {
         this.major = major;
-        if(changelogContent.size() == 0) {
+        if(changelogContent == null || changelogContent.size() == 0) {
             return;
         }
 
