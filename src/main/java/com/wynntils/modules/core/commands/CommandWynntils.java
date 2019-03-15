@@ -65,7 +65,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " discord", "Provides you with an invite to our Discord server.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " version", "Shows the installed Wynntils' version.");
+                    addCommandDescription(text, "-wynntils", " version", "Shows the installed Wynntils version.");
                     text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " reloadapi", "Reloads all API data.");
                     text.appendText("\n");
