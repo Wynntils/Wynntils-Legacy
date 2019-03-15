@@ -30,10 +30,10 @@ public class CoreDBConfig extends SettingsClass {
             "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
 
-    @Setting(displayName = "Scroll Direction", description = "Which direction would you like to scroll your mouse in order for the page to scroll down?")
+    @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
-    @Setting(displayName = "Show Changelog", description = "Should the changelog of your recent update be displayed once you log in after updating?")
+    @Setting(displayName = "Show Changelog", description = "Should the changelog of the recent update be displayed upon logging in after updating?")
     public boolean enableChangelogOnUpdate = true;
 
     @Setting(upload = false)
