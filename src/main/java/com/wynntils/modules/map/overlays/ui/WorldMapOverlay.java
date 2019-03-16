@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
@@ -157,6 +158,7 @@ public class WorldMapOverlay extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
 
         //texture
+        renderer.drawRect(CommonColors.BLACK, 10, 10, width - 10, height - 10);
         renderer.drawRectF(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 1, 511, 255);
         renderer.createMask(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 257, 511, 510);
 
@@ -170,6 +172,8 @@ public class WorldMapOverlay extends GuiScreen {
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 
             map.bindTexture(); // <--- binds the texture
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {

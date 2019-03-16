@@ -69,11 +69,11 @@ public class MapProfile {
     }
 
     public float getTextureXPosition(double posX) {
-        return (float)(posX - centerX);
+        return (float)(posX - centerX + imageWidth);
     }
 
     public float getTextureZPosition(double posZ) {
-        return (float)(posZ - centerZ);
+        return (float)(posZ - centerZ + imageHeight);
     }
 
     public boolean isReadyToUse() {
