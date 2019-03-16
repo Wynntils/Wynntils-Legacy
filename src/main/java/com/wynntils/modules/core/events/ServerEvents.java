@@ -14,6 +14,7 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
+import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
@@ -121,7 +122,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onJoinLobby(TickEvent.ClientTickEvent e) {
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
-            if(DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().world.getWorldTime() % 1000 != 0) return;
+            if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().world.getWorldTime() % 1000 != 0) return;
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
             Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
