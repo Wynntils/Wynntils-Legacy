@@ -78,8 +78,6 @@ public class WynntilsAccount {
                     IOUtils.closeQuietly(outputStream);
                 }
 
-                System.out.println(IOUtils.toString(st.getInputStream()));
-
                 Reference.LOGGER.info("Updating user Discord ID");
             }catch (Exception ex) { ex.printStackTrace(); }
         });
