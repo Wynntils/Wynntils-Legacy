@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -40,15 +41,19 @@ public class WorldMapOverlay extends GuiScreen {
     private ScreenRenderer renderer = new ScreenRenderer();
 
     private GuiButton settingsBtn;
-    private GuiButton wayPointsBtn;
     private float centerPositionX;
     private float centerPositionZ;
     private int zoom = 0;
 
     private ArrayList<MapIcon> mapIcons = new ArrayList<>();
 
+    boolean holdingMapKey = false;
+    long creationTime;
+
     public WorldMapOverlay() {
         mc = Minecraft.getMinecraft();
+
+        creationTime = System.currentTimeMillis();
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
         for(MapMarkerProfile mmp : WebManager.getMapMarkers()) {
@@ -116,10 +121,8 @@ public class WorldMapOverlay extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, "Settings..."));
-        this.buttonList.add(wayPointsBtn = new GuiButton(2,22,44,60,18, "Waypoints"));
+        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, "Markers"));
 
-        wayPointsBtn.enabled = false;
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
@@ -147,8 +150,17 @@ public class WorldMapOverlay extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if(!Reference.onWorld || !MapModule.getModule().getMainMap().isReadyToUse()) return;
 
+        //HeyZeer0: This detects if the user is holding the map key;
+        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) holdingMapKey = true;
+
+        //HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
+        if(holdingMapKey && !Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) {
+            Minecraft.getMinecraft().displayGuiScreen(null);
+            return;
+        }
+
         //draging
-        if(clicking && !(wayPointsBtn.isMouseOver() || settingsBtn.isMouseOver())) {
+        if(clicking && !settingsBtn.isMouseOver()) {
             float acceleration = (1f + zoom/100f); //<---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
             updateCenterPosition(centerPositionX += (lastMouseX - mouseX) * acceleration, centerPositionZ += (lastMouseY - mouseY) * acceleration);
         }
@@ -246,7 +258,7 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (wayPointsBtn.isMouseOver() || settingsBtn.isMouseOver()) {
+        if (settingsBtn.isMouseOver()) {
             super.mouseClicked(mouseX, mouseY, mouseButton);
         }
 
@@ -260,18 +272,16 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
-            Minecraft.getMinecraft().player.closeScreen();
+        if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
+            Minecraft.getMinecraft().displayGuiScreen(null);
         }
         super.keyTyped(typedChar, keyCode);
     }
 
     @Override
     public void actionPerformed(GuiButton btn) {
-        if (btn.id == 1) { //Settings...
+        if (btn.id == 1) { //Markers
             Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI());
-        } else if (btn.id == 2) { //Waypoints
-            //TODO waypoints
         }
     }
 }
