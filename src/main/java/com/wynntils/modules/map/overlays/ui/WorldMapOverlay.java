@@ -170,7 +170,7 @@ public class WorldMapOverlay extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
 
         //texture
-        renderer.drawRect(CommonColors.BLACK, 10, 10, width - 10, height - 10);
+        renderer.drawRect(CommonColors.BLACK, 19, 19, width - 19, height - 19);
         renderer.drawRectF(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 1, 511, 255);
         renderer.createMask(Textures.Map.full_map, 10, 10, width-10, height-10, 1, 257, 511, 510);
 
