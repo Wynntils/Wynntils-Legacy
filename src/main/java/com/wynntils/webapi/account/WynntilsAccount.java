@@ -52,8 +52,33 @@ public class WynntilsAccount {
 
         service.submit(() -> {
             try {
-                URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "updateDiscord/" + token + "/" + id + "/" + username).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "updateDiscord/" + token).openConnection();
+
+                //HeyZeer0: Request below
+                JsonObject body = new JsonObject();
+                body.addProperty("id", id);
+                body.addProperty("username", username);
+                // {"id":"<user-id>", "username":"<username>"}
+
+                byte[] bodyBytes = body.toString().getBytes(Charsets.UTF_8);
+
+                st.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
+                st.setRequestProperty("Content-Length", "" + bodyBytes.length);
+                st.setRequestProperty("Content-Type", "application/json");
+                st.setDoOutput(true);
+
+                OutputStream outputStream = null;
+                try {
+                    outputStream = st.getOutputStream();
+                    IOUtils.write(bodyBytes, outputStream);
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                    return;
+                } finally {
+                    IOUtils.closeQuietly(outputStream);
+                }
+
+                System.out.println(IOUtils.toString(st.getInputStream()));
 
                 Reference.LOGGER.info("Updating user Discord ID");
             }catch (Exception ex) { ex.printStackTrace(); }
@@ -74,7 +99,7 @@ public class WynntilsAccount {
                 // {"fileName":"<file-name>", "base64":"<base-64>"}
 
                 byte[] bodyBytes = body.toString().getBytes(Charsets.UTF_8);
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
                 st.setRequestProperty("Content-Length", "" + bodyBytes.length);
                 st.setRequestProperty("Content-Type", "application/json");
                 st.setDoOutput(true);
@@ -86,8 +111,7 @@ public class WynntilsAccount {
                 }catch (Exception ex) {
                     ex.printStackTrace();
                     return;
-                }
-                finally {
+                } finally {
                     IOUtils.closeQuietly(outputStream);
                 }
 
@@ -103,10 +127,12 @@ public class WynntilsAccount {
         });
     }
 
+    boolean secondAttempt = false;
+
     public void login() {
         try {
             URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "/requestEncryption").openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
 
             JsonObject result = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
@@ -132,7 +158,7 @@ public class WynntilsAccount {
 
             byte[] postAsBytes = object.toString().getBytes(Charsets.UTF_8);
 
-            st2.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st2.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
             st2.setRequestProperty("Content-Length", "" + postAsBytes.length);
             st2.setRequestProperty("Content-Type", "application/json");
             st2.setDoOutput(true);
@@ -167,6 +193,13 @@ public class WynntilsAccount {
 
         }catch (Exception ex) {
             ex.printStackTrace();
+        }
+
+        //HeyZeer0: Tries to make a second attempt connection
+        if(!secondAttempt) {
+            secondAttempt = true;
+
+            login();
         }
 
         Reference.LOGGER.error("Failed to connect to Wynntils Accounts!");

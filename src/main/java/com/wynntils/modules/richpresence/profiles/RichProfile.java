@@ -21,7 +21,7 @@ public class RichProfile {
 
         DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
         handler.ready = user -> {
-            if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "-" + user.discriminator);
+            if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "#" + user.discriminator);
             callbacks.interrupt();
         };
 

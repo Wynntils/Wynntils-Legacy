@@ -18,11 +18,9 @@ public class WarManager {
      * @return if the mob should be filtered out
      */
     public static boolean filterMob(PacketEvent.SpawnObject e) {
-        if(!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter) return false;
-        if(!Reference.onWars) return false;
-        if(e.getPacket().getType() == 78) return true;
+        if(!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter || !Reference.onWars) return false;
 
-        return false;
+        return e.getPacket().getType() == 78;
     }
 
 }
