@@ -49,6 +49,13 @@ public class DownloaderManager {
     }
 
     /**
+     * @return if the game will be restarted when the queue finishs
+     */
+    public static boolean isRestartOnQueueFinish() {
+        return restartOnQueueFinish;
+    }
+
+    /**
      * Returns the current download file data
      * if null, no data is being downloaded
      *
