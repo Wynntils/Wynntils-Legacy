@@ -39,6 +39,9 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public boolean showChangelogs = true;
 
+    @Setting(upload = false)
+    public String lastVersion = "0.0.0";
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("updateStream")) WebManager.checkForUpdates();

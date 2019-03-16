@@ -153,6 +153,7 @@ public class UpdateOverlay extends Overlay {
                 download = true;
 
                 CoreDBConfig.INSTANCE.showChangelogs = true;
+                CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
                 CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
             }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 timeout = 35000;

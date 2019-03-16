@@ -123,7 +123,7 @@ public class ServerEvents implements Listener {
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if(Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().world.getWorldTime() % 1000 != 0) return;
 
-            boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+            boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
             Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
             CoreDBConfig.INSTANCE.showChangelogs = false;
 
