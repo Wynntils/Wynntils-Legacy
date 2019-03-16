@@ -54,7 +54,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onArmorStandSpawn(PacketEvent.EntityMetadata e) {
+        if(e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
+
         for(EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            if(entry.getValue() == null) continue;
+            
             String value = entry.getValue().toString().toLowerCase();
             if(value.contains("woodcutting")) {
 
