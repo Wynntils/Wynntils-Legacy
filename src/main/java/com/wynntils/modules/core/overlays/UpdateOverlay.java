@@ -184,4 +184,8 @@ public class UpdateOverlay extends Overlay {
         }));
     }
 
+    public static boolean isDownloading() {
+        return download;
+    }
+
 }
