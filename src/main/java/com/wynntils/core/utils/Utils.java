@@ -117,7 +117,7 @@ public class Utils {
      */
     public static List<String> getLore(ItemStack item) {
         List<String> lore = new ArrayList<>();
-        if(item == null || !item.hasTagCompound()) {
+        if(item.isEmpty() || !item.hasTagCompound()) {
             return lore;
         }
         if (item.getTagCompound().hasKey("display", 10)) {

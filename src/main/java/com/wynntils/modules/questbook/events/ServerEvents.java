@@ -109,9 +109,9 @@ public class ServerEvents implements Listener {
             e.setCanceled(true);
 
             int inventory = -1;
-            ItemStack next = null;
-            ItemStack discoveriesItem = null;
-            ItemStack secretDiscoveriesItem = null;
+            ItemStack next = ItemStack.EMPTY;
+            ItemStack discoveriesItem = ItemStack.EMPTY;
+            ItemStack secretDiscoveriesItem = ItemStack.EMPTY;
             int nextId = 0;
 
             for(ItemStack i : e.getPacket().getItemStacks()) {
@@ -135,7 +135,7 @@ public class ServerEvents implements Listener {
                     continue;
                 }
                 
-                if(i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ") || (inventory+1)%9 == 0 || (inventory+1)%9 == 8) continue;
+                if(i.isEmpty() || i.hasDisplayName() && i.getDisplayName().equalsIgnoreCase(" ") || (inventory+1)%9 == 0 || (inventory+1)%9 == 8) continue;
 
                 if (quests) {
                     if(!readedQuests.contains(i.getDisplayName())) {
@@ -169,7 +169,7 @@ public class ServerEvents implements Listener {
                     }
                 }
             }
-            if(next != null) {
+            if(!next.isEmpty()) {
                 windowClick(next, nextId, e.getPacket().getWindowId(), 0, ClickType.PICKUP, e.getPlayClient());
                 QuestManager.updateRequestTime();
             }else{

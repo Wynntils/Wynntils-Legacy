@@ -63,7 +63,7 @@ public class RarityColorOverlay implements Listener {
             String name = is.getDisplayName();
             float r, g, b;
 
-            if (is.getCount() == 0) {
+            if (is.isEmpty()) {
                 continue;
             } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
@@ -188,7 +188,7 @@ public class RarityColorOverlay implements Listener {
             String name = is.getDisplayName();
             float r, g, b;
 
-            if (is.getCount() == 0) {
+            if (is.isEmpty()) {
                 continue;
             } else if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 r = 0.078f; g = 0.35f; b = 0.8f;
@@ -252,7 +252,7 @@ public class RarityColorOverlay implements Listener {
 
                 for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
                     ItemStack it = lowerInv.getStackInSlot(i);
-                    if (it == null || it.isEmpty()) {
+                    if (it.isEmpty()) {
                         continue;
                     }
 
@@ -270,7 +270,7 @@ public class RarityColorOverlay implements Listener {
                 }
                 for (int i = 0; i < upperInv.getSizeInventory(); i++) {
                     ItemStack it = upperInv.getStackInSlot(i);
-                    if (it == null || it.isEmpty()) {
+                    if (it.isEmpty()) {
                         continue;
                     }
 

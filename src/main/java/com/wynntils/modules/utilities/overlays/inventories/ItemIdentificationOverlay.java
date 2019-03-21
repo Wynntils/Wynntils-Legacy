@@ -62,7 +62,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public void drawHoverGuess(ItemStack stack){
-        if (stack == null || !stack.hasDisplayName() || stack.isEmpty()) {
+        if (stack.isEmpty() || !stack.hasDisplayName()) {
             return;
         }
 
