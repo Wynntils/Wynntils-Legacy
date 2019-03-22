@@ -78,9 +78,9 @@ public class WarTimerOverlay extends Overlay {
         } else if (stage == WarStage.IN_WAR) {
             drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
-                drawString("You have been warring in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString("You have been at war in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
-                drawString("You have been warring for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString("You have been at war for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         }
     }
