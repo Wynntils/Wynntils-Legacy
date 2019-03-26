@@ -10,6 +10,7 @@ import com.wynntils.modules.chat.instances.ChatTab;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class TabManager {
 
@@ -19,9 +20,9 @@ public class TabManager {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
 
         if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
-            availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
-            availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "/g", false, 1));
-            availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false, 2));
+            availableTabs.add(new ChatTab("Global", ".*",null, "", true, 0));
+            availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)",null, "/g", false, 1));
+            availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)",null, "/p", false, 2));
 
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
             Collections.sort(availableTabs);
@@ -30,7 +31,7 @@ public class TabManager {
 
         if(availableTabs.size() >= 2 && availableTabs.get(1).getRegex().equals("(&3\\[(.*?)\\])|(&3You were not in the territory)")) {
             ChatTab tab = availableTabs.get(1);
-            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", "/g", false, 1);
+            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", null, "/g", false, 1);
         }
     }
 
@@ -40,18 +41,18 @@ public class TabManager {
 
             switch (ChatConfig.INSTANCE.preset) {
                 case a:
-                    availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
-                    availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "/g", false, 1));
-                    availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", "/p", false, 2));
+                    availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
+                    availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", null, "/g", false, 1));
+                    availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", null,"/p", false, 2));
                     break;
                 case b:
-                    availableTabs.add(new ChatTab("Global", ".*", "", true, 0));
-                    availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", "", false, 1));
-                    availableTabs.add(new ChatTab("G/P", "((^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))", "/g", false, 2));
-                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", "/r", false, 3));
+                    availableTabs.add(new ChatTab("Global", ".*", null,"", true, 0));
+                    availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", null,"", false, 1));
+                    availableTabs.add(new ChatTab("G/P", "((^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))",null, "/g", false, 2));
+                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]",null, "/r", false, 3));
                     break;
                 case vanilla:
-                    availableTabs.add(new ChatTab("All", ".*", "", false, 0));
+                    availableTabs.add(new ChatTab("All", ".*", null,"", false, 0));
                     break;
             }
 
@@ -87,8 +88,8 @@ public class TabManager {
         return availableTabs.get(id);
     }
 
-    public static void updateTab(int id, String name, String regex, String autoCommand, boolean lowPriority, int orderNb) {
-        availableTabs.get(id).update(name, regex.replace("&", "§"), autoCommand, lowPriority, orderNb);
+    public static void updateTab(int id, String name, String regex, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+        availableTabs.get(id).update(name, regex.replace("&", "§"), regexSettings, autoCommand, lowPriority, orderNb);
         Collections.sort(availableTabs);
         saveConfigs();
     }

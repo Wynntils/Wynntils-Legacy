@@ -9,16 +9,18 @@ import net.minecraft.client.gui.ChatLine;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ChatTab implements  Comparable<ChatTab> {
+public class ChatTab implements Comparable<ChatTab> {
 
     //stored variables
     String name, autoCommand;
     int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
+    HashMap<String, Boolean> regexSettings;
 
     //not stored ones
     transient List<ChatLine> currentMessages = new ArrayList<>();
@@ -31,8 +33,9 @@ public class ChatTab implements  Comparable<ChatTab> {
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
 
-    public ChatTab(String name, String regexFinder, String autoCommand, boolean lowPriority, int orderNb) {
+    public ChatTab(String name, String regexFinder, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
+        this.regexSettings = regexSettings;
         this.autoCommand = autoCommand;
         this.lowPriority = lowPriority;
         this.orderNb = orderNb;
@@ -62,6 +65,10 @@ public class ChatTab implements  Comparable<ChatTab> {
 
     public String getRegex() {
         return regexFinder.pattern();
+    }
+
+    public HashMap<String, Boolean> getRegexSettings() {
+        return regexSettings;
     }
 
     public ITextComponent getLastMessage() {
@@ -128,8 +135,8 @@ public class ChatTab implements  Comparable<ChatTab> {
         hasNewMessages = false; hasMentions = false;
     }
 
-    public void update(String name, String regex, String autoCommand, boolean lowPriority, int orderNb) {
-        this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.autoCommand = autoCommand; this.orderNb = orderNb;
+    public void update(String name, String regex, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+        this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.regexSettings = regexSettings; this.autoCommand = autoCommand; this.orderNb = orderNb;
     }
 
     public int compareTo(ChatTab ct) {
