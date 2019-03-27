@@ -113,6 +113,8 @@ public class ServerEvents implements Listener {
         }
     }
 
+    long currentMillis = 0;
+
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
@@ -121,8 +123,14 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void onJoinLobby(TickEvent.ClientTickEvent e) {
+        if(currentMillis == 0) {
+            currentMillis = System.currentTimeMillis();
+        }
+        if(System.currentTimeMillis() - currentMillis <= 2500 || currentMillis == -1) return;
+        currentMillis = -1;
+
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
-            if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().world.getWorldTime() % 1000 != 0) return;
+            if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
             Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));

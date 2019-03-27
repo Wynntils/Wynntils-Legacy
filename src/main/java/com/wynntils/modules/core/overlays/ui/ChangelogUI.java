@@ -70,7 +70,7 @@ public class ChangelogUI extends GuiScreen {
 
         float scrollPostionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size()/15) * 159) * scrollPercent);
         for(String changelogLine : changelogContent) {
-            renderer.drawString(changelogLine, textX, baseY - scrollPostionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString(changelogLine.replace("%user%", Minecraft.getMinecraft().player.getName()), textX, baseY - scrollPostionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             baseY += 10;
         }
