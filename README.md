@@ -1,8 +1,8 @@
 <p align="center">
-<img src="http://dl.heyzeer0.cf/Wynntils/wynntils logo - w paintstroke.png" width=30%>
+<img src="http://cdn.wynntils.com/wynntils%20logo%20-%20w%20paintstroke.png" width=30%>
 <br>
 <a href="https://discord.gg/ve49m9J"><img src="https://discordapp.com/api/guilds/394189072635133952/widget.png"></a>
-<a href="http://ci.heyzeer0.cf/job/Wynntils/"><img src="http://ci.heyzeer0.cf/buildStatus/icon?job=Wynntils"></a>
+<a href="http://ci.wynntils.com/job/Wynntils/"><img src="http://ci.wynntils.com/buildStatus/icon?job=Wynntils"></a>
 <a href="https://github.com/Wynntils/Wynntils/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-AGLP%203.0-green.svg"></a>
 </p>
 
