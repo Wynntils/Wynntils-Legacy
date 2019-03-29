@@ -5,10 +5,13 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -67,6 +70,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " version", "Shows the installed Wynntils version.");
                     text.appendText("\n");
+                    addCommandDescription(text, "-wynntils", " changelog [major]", "Shows the latest changelog of your version.");
+                    text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " reloadapi", "Reloads all API data.");
                     text.appendText("\n");
                     addCommandDescription(text, "-wynntils", " donate", "Provides our Patreon link.");
@@ -95,6 +100,17 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 case "reloadapi":
                     WebManager.reset();
                     WebManager.setupWebApi();
+                    break;
+                case "changelog":
+                    new Delay(() -> {
+                        boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
+                    }, 1);
+                    break;
+                case "changelogmajor":
+                    new Delay(() -> {
+                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(true), true));
+                    }, 1);
                     break;
                 default:
                     TextComponentString error = new TextComponentString("Invalid argument. Use /wynntils help for more info.");
