@@ -43,7 +43,7 @@ public class WaypointProfile {
 
     public enum WaypointType {
 
-        MARKER, LOOTCHEST_T3, LOOTCHEST_T4
+        MARKER, LOOTCHEST_T4, LOOTCHEST_T3, LOOTCHEST_T2, LOOTCHEST_T1
 
     }
 
