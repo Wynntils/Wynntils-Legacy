@@ -34,7 +34,7 @@ public class ChatManager {
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
-    
+
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
@@ -58,6 +58,8 @@ public class ChatManager {
                 in.getSiblings().clear();
                 in = newMessage;
             }
+            //from here
+
             List<ITextComponent> timeStamp = new ArrayList<ITextComponent>();
             ITextComponent startBracket = new TextComponentString("[");
             startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
@@ -148,7 +150,7 @@ public class ChatManager {
             in.getSiblings().clear();
             in.getSiblings().addAll(newTextComponents);
         }
-        
+
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             String inviteText = in.getUnformattedText();
             List<ITextComponent> partyInvite = new ArrayList<>();
@@ -179,6 +181,7 @@ public class ChatManager {
             for (ITextComponent texts: in.getSiblings()) {
                 Matcher m = coordinateReg.matcher(texts.getFormattedText());
                 if (m.find()) {
+                    int index = in.getSiblings().indexOf(texts);
                     crdText = texts.getFormattedText();
                     color = texts.getStyle().getColor();
                     in.getSiblings().remove(texts);
@@ -198,7 +201,7 @@ public class ChatManager {
                     postText.getStyle().setColor(color);
                     crdMsg.add(postText);
 
-                    in.getSiblings().addAll(crdMsg);
+                    in.getSiblings().addAll(index, crdMsg);
                     break;
                 }
             }
@@ -274,11 +277,11 @@ public class ChatManager {
                 } else if (isWynnic) {
                     if (!String.valueOf(character).matches(nonTranslatable)) {
                         if (String.valueOf(character).matches("[a-z]")) {
-                            newString += ((char) (((int) character) + 9275));
+                            newString += ((char) ((character) + 9275));
                         } else if (String.valueOf(character).matches("[A-Z]")) {
-                            newString += ((char) (((int) character) + 9307));
+                            newString += ((char) ((character) + 9307));
                         } else if (String.valueOf(character).matches("[1-9]")) {
-                            newString += ((char) (((int) character) + 9283));
+                            newString += ((char) ((character) + 9283));
                         } else if (character == '.') {
                             newString += "\uFF10";
                         } else if (character == '!') {
@@ -311,9 +314,9 @@ public class ChatManager {
 
     private static String translateCharacter(char wynnic) {
         if (String.valueOf(wynnic).matches("[\u249C-\u24B5]")) {
-            return String.valueOf((char) (((int) wynnic) - 9275));
+            return String.valueOf((char) ((wynnic) - 9275));
         } else if (String.valueOf(wynnic).matches("[\u2474-\u247C]")) {
-            return String.valueOf((char) (((int) wynnic) - 9283));
+            return String.valueOf((char) ((wynnic) - 9283));
         } else if (String.valueOf(wynnic).matches("[\u247D-\u247F]")) {
             return wynnic == '\u247D' ? "10" : wynnic == '\u247E' ? "50" : wynnic == '\u247F' ? "100" : "";
         } else {
