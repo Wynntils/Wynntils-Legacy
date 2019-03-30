@@ -19,10 +19,7 @@ import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.ReflectionFields;
-import com.wynntils.modules.core.commands.CommandCompass;
-import com.wynntils.modules.core.commands.CommandForceUpdate;
-import com.wynntils.modules.core.commands.CommandToken;
-import com.wynntils.modules.core.commands.CommandWynntils;
+import com.wynntils.modules.core.commands.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -121,6 +118,7 @@ public class FrameworkManager {
         ClientCommandHandler.instance.registerCommand(new CommandToken());
         ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
         ClientCommandHandler.instance.registerCommand(new CommandCompass());
+        ClientCommandHandler.instance.registerCommand(new CommandTerritory());
     }
 
     public static void disableModules() {

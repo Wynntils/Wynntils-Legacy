@@ -81,6 +81,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     addCommandDescription(text, "-", "forceupdate", "Downloads and installs the latest successful build.");
                     text.appendText("\n");
                     addCommandDescription(text, "-", "compass", "Makes your compass point towards an x and z or a direction (e.g. north, SE).");
+                    text.appendText("\n");
+                    addCommandDescription(text, "-", "territory", "Redirects your compass to a territory location");
                     sender.sendMessage(text);
                     break;
                     /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
