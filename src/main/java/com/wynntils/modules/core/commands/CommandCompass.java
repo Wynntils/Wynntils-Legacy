@@ -5,7 +5,9 @@ package com.wynntils.modules.core.commands;
 
 import com.wynntils.ModCore;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -53,11 +55,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
         if (args.length == 0) {
-            TextComponentString text = new TextComponentString("Missing arguments: /compass [<x> <z> | <direction>]");
-            text.getStyle().setColor(TextFormatting.DARK_RED);
-            sender.sendMessage(text);
+            throw new WrongUsageException("/compass [<x> <z> | <direction>]");
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = { 0, 0 };
             //check for north/south
@@ -171,9 +171,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(").");
             sender.sendMessage(text);
         } else {
-            TextComponentString text = new TextComponentString("Invalid arguments: /compass [<x> <z> | <direction>]");
-            text.getStyle().setColor(TextFormatting.DARK_RED);
-            sender.sendMessage(text);
+            throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction>]");
         }
     }
     

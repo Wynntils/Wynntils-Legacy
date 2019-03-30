@@ -13,6 +13,7 @@ import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +45,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length >= 1) {
             switch (String.join("", args).toLowerCase()) {
                 case "donate":
@@ -115,15 +116,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 default:
-                    TextComponentString error = new TextComponentString("Invalid argument. Use /wynntils help for more info.");
-                    error.getStyle().setColor(TextFormatting.DARK_RED);
-                    sender.sendMessage(error);
-                    break;
+                    throw new CommandException("Invalid argument. Use /wynntils help for more info.");
             }
         } else {
-            TextComponentString error = new TextComponentString("Missing arguments. Use /wynntils help for more info.");
-            error.getStyle().setColor(TextFormatting.DARK_RED);
-            sender.sendMessage(error);
+            throw new CommandException("Missing arguments. Use /wynntils help for more info.");
         }
     }
     

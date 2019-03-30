@@ -9,7 +9,9 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -42,15 +44,11 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length <= 0) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            TextComponentString c = new TextComponentString("Use: /territory [name] | Ex: /territory Detlas");
-            c.getStyle().setColor(TextFormatting.DARK_RED);
-
-            sender.sendMessage(c);
-            return;
+            throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
         }
         String territoryName = StringUtils.join(args, " ");
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
@@ -59,11 +57,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if(!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            TextComponentString c = new TextComponentString("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
-            c.getStyle().setColor(TextFormatting.DARK_RED);
-
-            sender.sendMessage(c);
-            return;
+            throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
         }
         Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 
