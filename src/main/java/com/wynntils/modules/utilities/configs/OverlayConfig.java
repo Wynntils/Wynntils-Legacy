@@ -105,7 +105,7 @@ public class OverlayConfig extends SettingsClass {
     public static class ToastsSettings extends SettingsClass {
         public static ToastsSettings INSTANCE;
 
-        @Setting(displayName = "Enable Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?")
+        @Setting(displayName = "Enable Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?", order = 0)
         public boolean enableToast = true;
 
         @Setting(displayName = "Enable Territory Enter Messages", description = "Should a toast be displayed to inform that you are entering a territory?")
@@ -230,7 +230,7 @@ public class OverlayConfig extends SettingsClass {
         public static class GameUpdateEXPMessages extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
-            @Setting(displayName = "Enable EXP Messages", description = "Should EXP messages be displayed in the game-update-ticker?")
+            @Setting(displayName = "Enable EXP Messages", description = "Should EXP messages be displayed in the game-update-ticker?", order = 0)
             public boolean enabled = true;
 
             @Setting(displayName = "EXP Message Update Rate", description = "How often should the EXP change messages (in seconds) be added to the game update ticker?")
@@ -339,7 +339,7 @@ public class OverlayConfig extends SettingsClass {
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
-        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?")
+        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?", order = 0)
         public boolean enabled = true;
 
         @Setting(displayName = "Animation Length", description = "How long (in seconds) should messages on the territory feed be displayed?")
@@ -352,10 +352,10 @@ public class OverlayConfig extends SettingsClass {
                 "Only Own Guild: Display only territory messages that relate to your guild.")
         public TerritoryFeedDisplayMode displayMode = TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD;
 
-        @Setting(displayName = "Shorten Messages", description = "Should territory feed messages be shortened?")
+        @Setting(displayName = "Shorten Messages", description = "Should territory feed messages be shortened?", order = 1)
         public boolean shortMessages = false;
 
-        @Setting(displayName = "Use Guild Tags", description = "Should guild tags be displayed rather than names?")
+        @Setting(displayName = "Use Guild Tags", description = "Should guild tags be displayed rather than names?", order = 2)
         public boolean useTag = false;
 
         @Override
