@@ -47,7 +47,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             TextComponentString c = new TextComponentString("Use: /territory [name] | Ex: /territory Detlas");
-            c.getStyle().setColor(TextFormatting.RED);
+            c.getStyle().setColor(TextFormatting.DARK_RED);
 
             sender.sendMessage(c);
             return;
@@ -60,7 +60,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             TextComponentString c = new TextComponentString("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
-            c.getStyle().setColor(TextFormatting.RED);
+            c.getStyle().setColor(TextFormatting.DARK_RED);
 
             sender.sendMessage(c);
             return;
