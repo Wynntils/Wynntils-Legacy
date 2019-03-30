@@ -198,7 +198,7 @@ public class SettingsUI extends UI {
         settingsScrollbar.max = settingsScrollbar.min;
         try {
             List<Field> notSorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
-            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null && !c.getAnnotation(Setting.class).displayName().isEmpty()).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).collect(Collectors.toList());
+            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null && !c.getAnnotation(Setting.class).displayName().isEmpty()).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).sorted(Comparator.comparingInt(o -> o.getAnnotation(Setting.class).order())).collect(Collectors.toList());
 
             for (Field field : sorted) {
                 try {

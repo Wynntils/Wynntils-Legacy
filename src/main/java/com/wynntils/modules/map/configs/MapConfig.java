@@ -18,26 +18,26 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?")
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 0)
     public boolean enabled = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?")
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 2)
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?")
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap")
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?")
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?")
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)")
+    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)", order = 6)
     public ChestTiers chestTiers = ChestTiers.TIER_3;
 
     public enum ChestTiers {
@@ -70,13 +70,13 @@ public class MapConfig extends SettingsClass {
     public static class Textures extends SettingsClass {
         public static Textures INSTANCE;
 
-        @Setting(displayName = "MiniMap Texture Style", description = "What should the texture of the minimap be?")
+        @Setting(displayName = "MiniMap Texture Style", description = "What should the texture of the minimap be?", order = 0)
         public TextureType textureType = TextureType.Paper;
 
-        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?")
+        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?" ,order = 1)
         public PointerType pointerStyle = PointerType.ARROW;
 
-        @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?\n\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?\n\n§aClick above the color to open the color wheel", order = 2)
         public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
 
     }

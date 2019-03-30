@@ -16,6 +16,7 @@ public @interface Setting {
     String displayName() default "";
     String description() default "";
     boolean upload() default true;
+    int order() default 100;
 
     class Limitations {
         @Retention(RetentionPolicy.RUNTIME)
