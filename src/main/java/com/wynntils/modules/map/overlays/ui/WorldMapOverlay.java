@@ -93,13 +93,13 @@ public class WorldMapOverlay extends GuiScreen {
 
             switch (waypoint.getType()) {
                 case LOOTCHEST_T1:
-                    texPosX = 82; texPosZ = 35;
-                    texSizeX = 100; texSizeZ = 51;
+                    texPosX = 136; texPosZ = 35;
+                    texSizeX = 154; texSizeZ = 51;
                     zoomNeeded = 0;
                     break;
                 case LOOTCHEST_T2:
-                    texPosX = 136; texPosZ = 35;
-                    texSizeX = 154; texSizeZ = 51;
+                    texPosX = 118; texPosZ = 35;
+                    texSizeX = 136; texSizeZ = 51;
                     zoomNeeded = 0;
                     break;
                 case LOOTCHEST_T3:
