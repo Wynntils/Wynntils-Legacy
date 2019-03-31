@@ -28,8 +28,10 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class OverlayEvents implements Listener {
 
@@ -69,6 +71,10 @@ public class OverlayEvents implements Listener {
     private static final char PROF_FARMING = 'Ⓙ';
     private static final char PROF_FISHING = 'Ⓚ';
     private static final char PROF_ALCHEMISM = 'Ⓛ';
+
+    /* Toasts */
+    private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge";
+    private static final String[] blackList = new String[]{"Transition", "to "};
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onClientTick(TickEvent.ClientTickEvent e) {
@@ -535,8 +541,10 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWynnTerritoyChange(WynnTerritoryChangeEvent e) {
         if (OverlayConfig.ToastsSettings.INSTANCE.enableTerritoryEnter && OverlayConfig.ToastsSettings.INSTANCE.enableToast && !e.getNewTerritory().equals("Waiting")) {
-            String newTerritoryArea = e.getNewTerritory().contains(" ") ? e.getNewTerritory().split(" ")[0] : e.getNewTerritory();
-            String oldTerritoryArea = e.getOldTerritory().contains(" ") ? e.getOldTerritory().split(" ")[0] : e.getOldTerritory();
+            if (Arrays.asList(blackList).stream().anyMatch(s -> StringUtils.containsIgnoreCase(e.getNewTerritory(), "s"))) return;
+
+            String newTerritoryArea = e.getNewTerritory().replaceAll(filterList, "").trim();
+            String oldTerritoryArea = e.getOldTerritory().replaceAll(filterList, "").trim();
             if(newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
 
             ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", newTerritoryArea));
