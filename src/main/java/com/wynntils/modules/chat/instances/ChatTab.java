@@ -67,6 +67,11 @@ public class ChatTab implements Comparable<ChatTab> {
         return regexFinder.pattern();
     }
 
+
+    public void setRegex(String regex) {
+        this.regexFinder = Pattern.compile(regex);
+    }
+
     public HashMap<String, Boolean> getRegexSettings() {
         return regexSettings;
     }

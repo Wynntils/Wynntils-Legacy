@@ -21,7 +21,7 @@ public class TabManager {
 
         if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
             availableTabs.add(new ChatTab("Global", ".*",null, "", true, 0));
-            availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)",null, "/g", false, 1));
+            availableTabs.add(new ChatTab("Guild", "(^&3\\[(&r&b★{0,2})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)",null, "/g", false, 1));
             availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)",null, "/p", false, 2));
 
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
@@ -29,10 +29,11 @@ public class TabManager {
             ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
         }
 
-        if(availableTabs.size() >= 2 && availableTabs.get(1).getRegex().equals("(&3\\[(.*?)\\])|(&3You were not in the territory)")) {
-            ChatTab tab = availableTabs.get(1);
-            tab.update(tab.getName(), "^(&3&3\\[(.*?)])|(&3You were not in the territory)", null, "/g", false, 1);
-        }
+        availableTabs.forEach(chatTab -> {
+            if (chatTab.getRegex().contains("(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)")) {
+                chatTab.setRegex(chatTab.getRegex().replace("(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)","(^&3\\[(&r&b★{0,2})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)"));
+            }
+        });
     }
 
     public static void registerPresets() {
@@ -42,13 +43,13 @@ public class TabManager {
             switch (ChatConfig.INSTANCE.preset) {
                 case a:
                     availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
-                    availableTabs.add(new ChatTab("Guild", "(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", null, "/g", false, 1));
+                    availableTabs.add(new ChatTab("Guild", "(^&3\\[(&r&b★{0,2})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", null, "/g", false, 1));
                     availableTabs.add(new ChatTab("Party", "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)", null,"/p", false, 2));
                     break;
                 case b:
                     availableTabs.add(new ChatTab("Global", ".*", null,"", true, 0));
                     availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", null,"", false, 1));
-                    availableTabs.add(new ChatTab("G/P", "((^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))",null, "/g", false, 2));
+                    availableTabs.add(new ChatTab("G/P", "((^&3\\[(&r&b★{0,2})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory))|((^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!))",null, "/g", false, 2));
                     availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]",null, "/r", false, 3));
                     break;
                 case vanilla:

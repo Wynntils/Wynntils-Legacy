@@ -297,7 +297,7 @@ public class TabGUI extends GuiScreen {
                         result.add("^&7\\[\\d+\\*?\\/\\w{2}");
                         break;
                     case "Guild":
-                        result.add("(^&3\\[(.*?)\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)");
+                        result.add("(^&3\\[(&r&b★{0,2})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)");
                         break;
                     case "Party":
                         result.add("(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)");
