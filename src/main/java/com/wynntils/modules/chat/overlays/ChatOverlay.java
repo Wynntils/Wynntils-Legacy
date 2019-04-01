@@ -242,6 +242,9 @@ public class ChatOverlay extends GuiNewChat {
             tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
         }
 
+        //push mention
+        if(ChatManager.proccessUserMention(chatComponent)) tab.pushMention();
+
         //message processor
         if (!alreadyFound) {
             Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
@@ -262,9 +265,6 @@ public class ChatOverlay extends GuiNewChat {
 
             tab.addMessage(new ChatLine(updateCounter, itextcomponent, chatLineId));
         }
-
-        //push mention
-        if(ChatManager.proccessUserMention(chatComponent)) tab.pushMention();
 
         while (tab.getCurrentMessages().size() > 100) {
             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);

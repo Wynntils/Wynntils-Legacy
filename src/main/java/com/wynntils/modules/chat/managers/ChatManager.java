@@ -216,8 +216,10 @@ public class ChatManager {
 
     public static boolean proccessUserMention(ITextComponent in) {
         boolean hasMention = false;
-        if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2 && in.getSiblings().get(0).getUnformattedText().contains("/")) {
+        if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2) {
             if (in.getFormattedText().contains(ModCore.mc().player.getName())) {
+                // Patterns used to detect guild/party chat
+                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
                 boolean foundStart = false;
                 ArrayList<ITextComponent> components = new ArrayList<ITextComponent>();
                 for (ITextComponent component : in.getSiblings()) {
@@ -243,9 +245,12 @@ public class ChatManager {
                             playerComponent.getStyle().setColor(TextFormatting.YELLOW);
                             components.add(playerComponent);
                         }
-
                     } else if (!foundStart) {
-                        foundStart = component.getUnformattedText().contains(":");
+                        if (in.getSiblings().get(0).getUnformattedText().contains("/")) {
+                            foundStart = component.getUnformattedText().contains(":");
+                        } else if (isGuildOrParty) {
+                            foundStart = component.getUnformattedText().contains("]");
+                        }
                         components.add(component);
                     } else {
                         components.add(component);
