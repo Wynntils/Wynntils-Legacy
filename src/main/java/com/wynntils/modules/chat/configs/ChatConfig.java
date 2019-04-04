@@ -14,48 +14,54 @@ import com.wynntils.modules.chat.managers.TabManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-@SettingsInfo(name = "chat", displayPath = "Chat")
+@SettingsInfo(name = "chat", displayPath = "wynntils.config.chat.display_path")
 public class ChatConfig extends SettingsClass {
     public static ChatConfig INSTANCE;
 
-    @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?")
+    @Setting(displayName = "wynntils.config.chat.add_timestamps_to_chat.display_name", description = "wynntils.config.chat.add_timestamps_to_chat.description")
     public boolean addTimestampsToChat = false;
 
-    @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?")
+    @Setting(displayName = "wynntils.config.chat.transparent.display_name", description = "wynntils.config.chat.transparent.description")
     public boolean transparent = false;
 
-    @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed? (This has no effect if chat timestamps are disabled.)")
+    @Setting(displayName = "wynntils.config.chat.timestamp_format.display_name", description = "wynntils.config.chat.timestamp_format.description")
     public String timestampFormat = "HH:mm:ss";
 
-    @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?")
+    @Setting(displayName = "wynntils.config.chat.chat_mentions.display_name", description = "wynntils.config.chat.chat_mentions.description")
     public boolean allowChatMentions = true;
 
-    @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
+    @Setting(displayName = "wynntils.config.chat.spam_filter.display_name", description = "wynntils.config.chat.spam_filter.description")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered? (Messages starting with §4[Info]§f will no longer appear in chat.)")
+    @Setting(displayName = "wynntils.config.chat.filter_info.display_name", description = "wynntils.config.chat.filter_info.description")
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat? (e.g [You are now entering Detlas]")
+    @Setting(displayName = "wynntils.config.chat.filter_territory_enter.display_name", description = "wynntils.config.chat.filter_territory_enter.description")
     public boolean filterTerritoryEnter = true;
 
     public boolean registeredDefaultTabs = false;
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
+    @Setting(displayName = "wynntils.config.chat.preset.display_name", description = "wynntils.config.chat.preset.description")
     public Presets preset = Presets.a;
 
-    @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?")
+    @Setting(displayName = "wynntils.config.chat.clickable_invite.display_name", description = "wynntils.config.chat.clickable_invite.description")
     public boolean clickablePartyInvites = true;
 
-    @Setting(displayName = "Clickable Coordinates", description = "Should coordinates displayed in chat be clickable as a '/compass' command?")
+    @Setting(displayName = "wynntils.config.chat.clickable_coordinate.display_name", description = "wynntils.config.chat.clickable_coordinate.description")
     public boolean clickableCoordinates = true;
 
     public enum Presets {
-        a,
-        b,
-        vanilla
+        a("wynntils.config.chat.enum.preset.a"),
+        b("wynntils.config.chat.enum.preset.b"),
+        vanilla("wynntils.config.chat.enum.preset.vanilla");
+
+        public String displayName;
+
+        Presets(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     @Override

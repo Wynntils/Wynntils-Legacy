@@ -11,19 +11,19 @@ import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.music.managers.MusicManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 
-@SettingsInfo(name = "music", displayPath = "Music")
+@SettingsInfo(name = "music", displayPath = "wynntils.config.music.display_path")
 public class MusicConfig extends SettingsClass {
 
     public static MusicConfig INSTANCE;
 
-    @Setting(displayName = "Music System", description = "Should Wynncraft's music system be replaced by Wynntils'?", order = 0)
+    @Setting(displayName = "wynntils.config.music.allow_music.display_name", description = "wynntils.config.music.allow_music.description", order = 0)
     public boolean allowMusicModule = false;
 
-    @Setting(displayName = "Base Volume", description = "How loud should all soundtracks be?")
+    @Setting(displayName = "wynntils.config.music.volume.display_name", description = "wynntils.config.music.volume.description")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float baseVolume = 1;
 
-    @Setting(displayName = "Off Focus Volume", description = "How loud should the soundtrack be when Minecraft is not focused on?")
+    @Setting(displayName = "wynntils.config.music.background_volume.display_name", description = "wynntils.config.music.background_volume.description")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float focusVolume = -10;
 

@@ -12,7 +12,7 @@ import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 
-@SettingsInfo(name = "main", displayPath = "Core")
+@SettingsInfo(name = "main", displayPath = "wynntils.config.core.display_path")
 public class CoreDBConfig extends SettingsClass {
     public static CoreDBConfig INSTANCE;
 
@@ -25,15 +25,13 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public ClassType lastClass = ClassType.NONE;
 
-    @Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
-            "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
-            "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.", upload = false)
+    @Setting(displayName = "wynntils.config.core.update_stream.display_name", description = "wynntils.config.core.update_stream.description", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
 
-    @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
+    @Setting(displayName = "wynntils.config.core.scroll_direction.display_name", description = "wynntils.config.core.scroll_direction.description")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
-    @Setting(displayName = "Show Changelog", description = "Should the changelog of the recent update be displayed upon logging in after updating?")
+    @Setting(displayName = "wynntils.config.core.enable_changelog_on_update.display_name", description = "wynntils.config.core.enable_changelog_on_update.description")
     public boolean enableChangelogOnUpdate = true;
 
     @Setting(upload = false)

@@ -1,62 +1,448 @@
-language.name=English
-language.region= United States
-language.code=en_us
+#################
+# CONFIGURATION #
+#################
 
-#Config main
-config.wyntils=Wyntils
-config.wynnrp.tooltip=Click here to edit Wynncraft RichPresence configurations
-config.market=Market Account
-config.market.tooltip=Don't change this if you have no idea what it is
-config.inventory=Inventory Configs
+## CORE CONFIG ##
+wynntils.config.core.display_path=Core
+wynntils.config.core.update_stream.display_name=Update Stream
+wynntils.config.core.update_stream.description=Which update stream should the mod be on?\n\n§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are currently in development, but may also be less stable than Stable versions.
+wynntils.config.core.scroll_direction.display_name=Scroll Direction
+wynntils.config.core.scroll_direction.description=Which direction should your mouse scroll for the page to scroll down?
+wynntils.config.core.enable_changelog_on_update.display_name=Show Changelog
+wynntils.config.core.enable_changelog_on_update.description=Should the changelog of the recent update be displayed upon logging in after updating?
+wynntils.config.core.selected_language.display_name=Language
+wynntils.config.core.selected_language.description=Which language should Wynntils use?
 
-#Config WynnRP
-config.wynnrp.title=Wynncraft RichPresence
-config.wynnrp.discord=Discord Configurations
-config.wynnrp.discord.tooltip=Click here to edit some discord configurations
-config.wynnrp.discordversion.tooltip=Available: Any, Stable, Canary, PTB
-config.wynnrp.bombstelemetry.tooltip=Collect data from your client to provide game bomb info
+## CORE UPDATE STREAM ENUM CONFIG ##
+wynntils.config.core.enum.update_stream.stable=Stable
+wynntils.config.core.enum.update_stream.cutting_edge=Cutting Edge
 
-#Config market
-config.market.resetaccount.tooltip=If you want to reset your market account, set this to YES and save the settings
+## CORE SCROLL DIRECTION ENUM CONFIG ##
+wynntils.config.core.enum.scroll_direction.up=Up
+wynntils.config.core.enum.scroll_direction.down=Down
 
-#Config WynnExp
-config.expansion=Expansion
-config.expansion.chats=Chat Settings
-config.expansion.chats.party=Party Chat
-config.expansion.chats.guild=Guild Chat
-config.expansion.chats.main=Main Chat
-config.expansion.chats.enabled=Enable Chat
-config.expansion.inv.player=Player Inventory
-config.expansion.inv.chest=Chest Inventory
-config.expansion.items=Items
-config.expansion.items.mythic=§5Mythic
-config.expansion.items.legendary=§bLegendary
-config.expansion.items.rare=§dRare
-config.expansion.items.unique=§eUnique
-config.expansion.items.set=§aSet
-config.expansion.items.normal=Normal
-config.expansion.items.nameplate=Nameplate
-config.expansion.items.format=Name Format
-config.expansion.items.idformat=Id'd Name Format
-config.expansion.items.unidformat=Unid'd Name Format
-config.expansion.items.highlight.ground=Highlight on the ground
-config.expansion.items.highlight.inv=Highlight in Inventories
-config.expansion.items.announce=Announcements
-config.expansion.items.announce.size=Announcement Size
-config.expansion.items.sound=Play Sound
-config.expansion.items.sound.location=Sound Location
-config.expansion.items.powders=Powders
-config.expansion.items.powders.fire=§c✹ Fire
-config.expansion.items.powders.water=§b❉ Water
-config.expansion.items.powders.air=§f❋ Air
-config.expansion.items.powders.thunder=§e✦ Thunder
-config.expansion.items.powders.earth=§2✤ Earth
-config.expansion.items.powders.blank=§8✣ Blank
-config.expansion.items.powders.name_format=Name Format
-config.expansion.items.powders.highlight_colour=Highlight Colour
-config.expansion.items.powders.tier1=Tier I
-config.expansion.items.powders.tier2=Tier II
-config.expansion.items.powders.tier3=Tier III
-config.expansion.items.powders.tier4=Tier IV
-config.expansion.items.powders.tier5=Tier V
-config.expansion.items.powders.tier6=Tier VI
+## CHAT CONFIG ##
+wynntils.config.chat.display_path=Chat
+wynntils.config.chat.add_timestamps_to_chat.display_name=Chat Timestamps
+wynntils.config.chat.add_timestamps_to_chat.description=Should chat messages have timestamps attached before the beginning of them?
+wynntils.config.chat.transparent.display_name=Transparent Chat
+wynntils.config.chat.transparent.description=Should the chat window be transparent?
+wynntils.config.chat.timestamp_format.display_name=Chat Timestamp Format
+wynntils.config.chat.timestamp_format.description=How should the timestamps be displayed? (This has no effect if chat timestamps are disabled.)
+wynntils.config.chat.chat_mentions.display_name=Chat Mentions
+wynntils.config.chat.chat_mentions.description=Should a sound play when your username appears in chat?
+wynntils.config.chat.spam_filter.display_name=Chat Spam Filter
+wynntils.config.chat.spam_filter.description=Should repeating messages stack rather than flood the chat?
+wynntils.config.chat.filter_info.display_name=Filter Info Messages
+wynntils.config.chat.filter_info.description=Should Wynncraft Info messages be filtered? (Messages starting with §4[Info]§f will no longer appear in chat.)
+wynntils.config.chat.filter_territory_enter.display_name=Filter Territory Enter
+wynntils.config.chat.filter_territory_enter.description=Should territory enter messages be displayed in chat? (e.g [You are now entering Detlas])
+wynntils.config.chat.preset.display_name=Alter Chat Tab by Presets
+wynntils.config.chat.preset.description=Which pre-made selection of chat tabs should be used?\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All
+wynntils.config.chat.clickable_invite.display_name=Clickable Party Invites
+wynntils.config.chat.clickable_invite.description=Should party invites provide a clickable command?
+wynntils.config.chat.clickable_coordinate.display_name=Clickable Coordinates
+wynntils.config.chat.clickable_coordinate.description=Should coordinates displayed in chat be clickable as a '/compass' command?
+
+## CHAT PRESET ENUM CONFIG ##
+wynntils.config.chat.enum.preset.a=A
+wynntils.config.chat.enum.preset.b=B
+wynntils.config.chat.enum.preset.vanilla=Vanilla
+
+## MAP CONFIG ##
+wynntils.config.map.display_path=Map
+wynntils.config.map.enable_minimap.display_name=Enable Minimap
+wynntils.config.map.enable_minimap.description=Should a minimap be displayed?
+wynntils.config.map.minimap_shape.display_name=Minimap Shape
+wynntils.config.map.minimap_shape.description=Should the minimap be a square or a circle?
+wynntils.config.map.minimap_rotation.display_name=Minimap Rotation
+wynntils.config.map.minimap_rotation.description=Should the minimap be locked facing north or rotate based on the direction you're facing?
+wynntils.config.map.compass_directions.display_name=Show Compass Directions
+wynntils.config.map.compass_directions.description=Should the cardinal directions (N, E, S, W) been displayed on the minimap?
+wynntils.config.map.minimap_size.display_name=Minimap Size
+wynntils.config.map.minimap_size.description=How large should the minimap be?
+wynntils.config.map.only_north.display_name=Display Only North
+wynntils.config.map.only_north.description=Should only north be displayed on the minimap?
+wynntils.config.map.record_chest_tier.display_name=Recording Chest Waypoints
+wynntils.config.map.record_chest_tier.description=Which chest tiers should be recorded as waypoints? (This and up)
+wynntils.config.map.minimap_zoom.display_name=Minimap Zoom
+wynntils.config.map.minimap_zoom.description=How far zoomed out should the minimap be?
+
+## MAP MAP FORMAT ENUM CONFIG ##
+wynntils.config.map.enum.map_format.square=Square
+wynntils.config.map.enum.map_format.circle=Circle
+
+## MAP CHEST TIER ENUM CONFIG ##
+wynntils.config.map.enum.chest_tier.tier_1=Tier 1
+wynntils.config.map.enum.chest_tier.tier_2=Tier 2
+wynntils.config.map.enum.chest_tier.tier_3=Tier 3
+wynntils.config.map.enum.chest_tier.tier_4=Tier 4
+wynntils.config.map.enum.chest_tier.none=None
+
+## MAP TEXTURES CONFIG ##
+wynntils.config.map.textures.display_path=Map/Textures
+wynntils.config.map.textures.minimap_style.display_name=MiniMap Texture Style
+wynntils.config.map.textures.minimap_style.description=What should the texture of the minimap be?
+wynntils.config.map.textures.pointer_style.display_name=Pointer Style
+wynntils.config.map.textures.pointer_style.description=What should the texture of the pointer be?
+wynntils.config.map.textures.pointer_color.display_name=Pointer Color
+wynntils.config.map.textures.pointer_color.description=What should the colour of the pointer be?\n\n§aClick above the color to open the color wheel
+
+## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.texture_type.paper=Paper
+wynntils.config.map.textures.enum.texture_type.wynn=Wynn
+wynntils.config.map.textures.enum.texture_type.gilded=Gilded
+
+## MAP TEXTURES POINTER TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.pointer_type.arrow=Arrow
+wynntils.config.map.textures.enum.pointer_type.cursor=Cursor
+wynntils.config.map.textures.enum.pointer_type.narrow=Narrow
+wynntils.config.map.textures.enum.pointer_type.round=Round
+wynntils.config.map.textures.enum.pointer_type.straight=Straight
+wynntils.config.map.textures.enum.pointer_type.triangle=Triangle
+
+## MAP WAYPOINTS CONFIG ##
+wynntils.config.map.waypoints.display_path=Map/Waypoints
+
+## MUSIC CONFIG ##
+wynntils.config.music.display_path=Music
+wynntils.config.music.allow_music.display_name=Music System
+wynntils.config.music.allow_music.description=Should Wynncraft's music system be replaced by Wynntils'?
+wynntils.config.music.volume.display_name=Base Volume
+wynntils.config.music.volume.description=How loud should all soundtracks be?
+wynntils.config.music.background_volume.display_name=Background Volume
+wynntils.config.music.background_volume.description=How loud should the soundtrack be when Minecraft is in the background?
+
+## QUESTBOOK CONFIG ##
+wynntils.config.questbook.display_path=Quest Book
+wynntils.config.questbook.allow_questbook.display_name=Allow Wynntils' Questbook
+wynntils.config.questbook.allow_questbook.description=Should Wynncraft's quest book be replaced by Wynntils'?
+wynntils.config.questbook.compass_follow.display_name=Set Quest Location to Compass
+wynntils.config.questbook.compass_follow.description=Should the compass point towards given coordinates of quests?
+wynntils.config.questbook.search_click.display_name=Search Box Requires Click
+wynntils.config.questbook.search_click.description=Should you be required to click on the search bar before typing or be able to type in the search bar immediately after opening the quest book?
+wynntils.config.questbook.fuzzy_search.display_name=Fuzzy Search
+wynntils.config.questbook.fuzzy_search.description=Should a different search algorithm be used that allows searching for acronyms and abbreviations?
+
+## RICH PRESENCE CONFIG ##
+wynntils.config.richpresence.display_path=Rich Presence
+wynntils.config.richpresence.show_information.display_name=Show Class Info
+wynntils.config.richpresence.show_information.description=Should Rich Presence display basic information about the class you're using?
+wynntils.config.richpresence.enable.display_name=Enable Rich Presence
+wynntils.config.richpresence.enable.description=Should the mod enable Rich Presence on Discord?
+
+## UTILITIES CONFIG ##
+wynntils.config.utils.display_path=Utilities
+wynntils.config.utils.daily_reminder.display_name=Daily Chest Reminder
+wynntils.config.utils.daily_reminder.description=Should a message notifying that you can claim your daily chest be sent upon joining a world?
+wynntils.config.utils.hide_potion.display_name=Hide Vanilla Active Potions Indicators
+wynntils.config.utils.hide_potion.description=Should the indicator for active potion effects (black squares) be hidden?
+wynntils.config.utils.add_class_server.display_name=Add Class & Server Button to Menu
+wynntils.config.utils.add_class_server.description=Should a class and server button be displayed on the in-game menu?
+wynntils.config.utils.hide_nametags_through_blocks.display_name=Hide Nametags Through Walls
+wynntils.config.utils.hide_nametags_through_blocks.description=Should nametags be hidden when behind opaque blocks?
+wynntils.config.utils.hide_nametag_box.display_name=Hide Nametags' Box
+wynntils.config.utils.hide_nametag_box.description=Should the box around nametags be hidden?
+wynntils.config.utils.show_armor.display_name=Show Players' Armor
+wynntils.config.utils.show_armor.description=Should the worn armor of players be listed underneath their nametag? (Crafted armor cannot be displayed.)
+wynntils.config.utils.prevent_mythic.display_name=Prevent Mythic Loot Chest Closing
+wynntils.config.utils.prevent_mythic.description=Should the closing of loot chests be prevented when they contain mythics?
+wynntils.config.utils.prevent_slot_click.display_name=Prevent Slot Click on Locked Items
+wynntils.config.utils.prevent_slot_click.description=Should moving items to and from locked inventory slots be blocked?
+
+## UTILITIES WAR CONFIG ##
+wynntils.config.utils.war.display_path=War
+wynntils.config.utils.war.entity_filter.display_name=Entity Filter
+wynntils.config.utils.war.entity_filter.description=Should the nametag of mobs be hidden in war servers?
+wynntils.config.utils.war.warrer_health_bar.display_name=Show Player Health Bar
+wynntils.config.utils.war.warrer_health_bar.description=Should the health bar of other players in a war server be displayed above their heads?
+
+## UTILITIES ITEM HIGHLIGHTS CONFIG ##
+wynntils.config.utils.item_highlights.display_path=Utilities/Item Highlights
+wynntils.config.utils.item_highlights.ingredient_filter.display_name=Filter for Ingredients
+wynntils.config.utils.item_highlights.ingredient_filter.description=Should a filter for ingredients and crafted items be displayed?
+wynntils.config.utils.item_highlights.highlight_container.display_name=Item Highlights in Containers
+wynntils.config.utils.item_highlights.highlight_container.description=Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)
+wynntils.config.utils.item_highlights.highlight_inventory.display_name=Item Highlights in Inventory
+wynntils.config.utils.item_highlights.highlight_inventory.description=Should items be highlighted according to rarity in your inventory?
+wynntils.config.utils.item_highlights.highlight_accessory.display_name=Accessories Highlight
+wynntils.config.utils.item_highlights.highlight_accessory.description=Should your worn accessories be highlighted according to rarity?
+wynntils.config.utils.item_highlights.highlight_hotbar.display_name=Highlight Hotbar Items
+wynntils.config.utils.item_highlights.highlight_hotbar.description=Should the items in your hotbar be highlighted according to rarity?
+wynntils.config.utils.item_highlights.highlight_armor.display_name=Highlight Armor Items
+wynntils.config.utils.item_highlights.highlight_armor.description=Should your worn armor be highlighted according to rarity?
+wynntils.config.utils.item_highlights.highlight_mythic.display_name=Highlight Mythics
+wynntils.config.utils.item_highlights.highlight_mythic.description=Should mythic items be highlighted?
+wynntils.config.utils.item_highlights.highlight_legendary.display_name=Highlight Legendaries
+wynntils.config.utils.item_highlights.highlight_legendary.description=Should legendary items be highlighted?
+wynntils.config.utils.item_highlights.highlight_rare.display_name=Highlight Rares
+wynntils.config.utils.item_highlights.highlight_rare.description=Should rare items be highlighted?
+wynntils.config.utils.item_highlights.highlight_unique.display_name=Highlight Uniques
+wynntils.config.utils.item_highlights.highlight_unique.description=Should unique items be highlighted?
+wynntils.config.utils.item_highlights.highlight_set.display_name=Highlight Set Items
+wynntils.config.utils.item_highlights.highlight_set.description=Should set items be highlighted?
+wynntils.config.utils.item_highlights.highlight_normal.display_name=Highlight Normal Items
+wynntils.config.utils.item_highlights.highlight_normal.description=Should normal items be highlighted?
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=Highlight Black Market Cosmetics
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=Should black market cosmetic items be highlighted?
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name=Highlight Godly Cosmetics
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description=Should godly cosmetic items be highlighted?
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name=Highlight Epic Cosmetics
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description=Should epic cosmetic items be highlighted?
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.display_name=Highlight Rare Cosmetics
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.description=Should rare cosmetic items be highlighted?
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.display_name=Highlight Common Cosmetics
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.description=Should common cosmetic items be highlighted?
+wynntils.config.utils.item_highlights.emeralds_container.display_name=Show Emerald Count in Containers
+wynntils.config.utils.item_highlights.emeralds_container.description=Should your emerald count be displayed in remote containers? (chests, bank, etc.)
+wynntils.config.utils.item_highlights.emeralds_inventory.display_name=Show Emerald Count in Inventory
+wynntils.config.utils.item_highlights.emeralds_inventory.description=Should your emerald count be displayed in your inventory?
+wynntils.config.utils.item_highlights.highlight_powder.display_name=Highlight Powders
+wynntils.config.utils.item_highlights.highlight_powder.description=Should powders be highlighted according to their element?
+wynntils.config.utils.item_highlights.highlight_crafting.display_name=Highlight Crafting Ingredients
+wynntils.config.utils.item_highlights.highlight_crafting.description=Should crafting ingredients be highlighted according to their tier?
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name=Highlight Crafting Ingredients
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Should duplicate cosmetics be highlighted on the scrap menu?
+wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Minimum Powder Tier Highlight
+wynntils.config.utils.item_highlights.minimum_powder_tier.description=What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.
+wynntils.config.utils.item_highlights.legendary_color.display_name=Legendary Item Highlight Color
+wynntils.config.utils.item_highlights.legendary_color.description=What color should the highlight for legendary items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Item Highlight Color
+wynntils.config.utils.item_highlights.mythic_color.description=What color should the highlight for mythic items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.rare_color.display_name=Rare Item Highlight Color
+wynntils.config.utils.item_highlights.rare_color.description=What color should the highlight for rare items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.unique_color.display_name=Unique Item Highlight Color
+wynntils.config.utils.item_highlights.unique_color.description=What color should the highlight for unique items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.set_color.display_name=Set Item Highlight Color
+wynntils.config.utils.item_highlights.set_color.description=What color should the highlight for set items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.normal_color.display_name=Normal Item Highlight Color
+wynntils.config.utils.item_highlights.normal_color.description=What color should the highlight for normal items be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.crafted_color.display_name=Crafted Armor & Weapon Highlight Color
+wynntils.config.utils.item_highlights.crafted_color.description=What color should the highlight for crafted armor and weapons be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.onestar_color.display_name=Ingredient Highlight Color (1 star)
+wynntils.config.utils.item_highlights.onestar_color.description=What color should the highlight for ingredient with 1 star be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.twostar_color.display_name=Ingredient Highlight Color (2 stars)
+wynntils.config.utils.item_highlights.twostar_color.description=What color should the highlight for ingredient with 2 stars be?\n§aClick above the color to open the color wheel
+wynntils.config.utils.item_highlights.threestar_color.display_name=Ingredient Highlight Color (3 stars)
+wynntils.config.utils.item_highlights.threestar_color.description=What color should the highlight for ingredient with 3 stars be?\n§aClick above the color to open the color wheel
+
+## OVERLAYS CONFIG ##
+wynntils.config.overlay.display_path=Overlays
+wynntils.config.overlay.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.text_shadow.description=What should the text shadow look like?
+wynntils.config.overlay.actionbar_coords.display_name=Action Bar Coordinates
+wynntils.config.overlay.actionbar_coords.description=Should the action bar display your coordinates when there is nothing else to show?
+wynntils.config.overlay.split_coords.display_name=Split Coordinates
+wynntils.config.overlay.split_coords.description=Should the coordinates be shown separately to the action bar?
+
+## OVERLAYS HEALTH CONFIG ##
+wynntils.config.overlay.health.display_path=Overlays/Health
+wynntils.config.overlay.health.texture.display_name=Health Texture
+wynntils.config.overlay.health.texture.description=What texture should be used for the health bar?
+wynntils.config.overlay.health.animation_speed.display_name=Animation Speed
+wynntils.config.overlay.health.animation_speed.description=How fast should the animation be played? (0 for instant)
+wynntils.config.overlay.health.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.health.text_shadow.description=What should the text shadow look like?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
+wynntils.config.overlay.health.enum.health_texture.grune=Grune
+wynntils.config.overlay.health.enum.health_texture.aether=Aether
+wynntils.config.overlay.health.enum.health_texture.skull=Skull
+wynntils.config.overlay.health.enum.health_texture.skyrim=Skyrim
+wynntils.config.overlay.health.enum.health_texture.a=A
+wynntils.config.overlay.health.enum.health_texture.b=B
+wynntils.config.overlay.health.enum.health_texture.c=C
+wynntils.config.overlay.health.enum.health_texture.d=D
+
+## OVERLAYS MANA CONFIG ##
+wynntils.config.overlay.mana.display_path=Overlays/Mana
+wynntils.config.overlay.mana.texture.display_name=Mana Texture
+wynntils.config.overlay.mana.texture.description=What texture should be used for the mana bar?
+wynntils.config.overlay.mana.animation_speed.display_name=Animation Speed
+wynntils.config.overlay.mana.animation_speed.description=How fast should the animation be played? (0 for instant)
+wynntils.config.overlay.mana.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.mana.text_shadow.description=What should the text shadow look like?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.mana.enum.mana_texture.wynn=Wynn
+wynntils.config.overlay.mana.enum.mana_texture.brune=Brune
+wynntils.config.overlay.mana.enum.mana_texture.aether=Aether
+wynntils.config.overlay.mana.enum.mana_texture.skull=Skull
+wynntils.config.overlay.mana.enum.mana_texture.inverse=Inverse
+wynntils.config.overlay.mana.enum.mana_texture.skyrim=Skyrim
+wynntils.config.overlay.mana.enum.mana_texture.a=A
+wynntils.config.overlay.mana.enum.mana_texture.b=B
+wynntils.config.overlay.mana.enum.mana_texture.c=C
+wynntils.config.overlay.mana.enum.mana_texture.d=D
+
+## OVERLAYS HOTBAR CONFIG ##
+wynntils.config.overlay.hotbar.display_path=Overlays/Hotbar
+wynntils.config.overlay.hotbar.texture.display_name=Hotbar Texture
+wynntils.config.overlay.hotbar.texture.description=What texture should be used for the hotbar?
+
+## OVERLAYS HOTBAR HOTBAR TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=Resource Pack
+wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn=Wynn
+
+## OVERLAYS TOAST CONFIG ##
+wynntils.config.overlay.toast.display_path=Overlays/Toasts
+wynntils.config.overlay.toast.enable.display_name=Enable Toast Messages
+wynntils.config.overlay.toast.enable.description=Should certain messages be displayed in the form of rolling parchment?
+wynntils.config.overlay.toast.territory_enter.display_name=Enable Territory Enter Messages
+wynntils.config.overlay.toast.territory_enter.description=Should a toast be displayed to inform that you are entering a territory?
+wynntils.config.overlay.toast.area_discovered.display_name=Enable Area Discovered Messages
+wynntils.config.overlay.toast.area_discovered.description=Should a toast be displayed to inform that you have discovered an area?
+wynntils.config.overlay.toast.quest_completed.display_name=Enable Quest Completed Messages
+wynntils.config.overlay.toast.quest_completed.description=Should a toast be displayed to inform that you have completed a quest?
+wynntils.config.overlay.toast.discovery_found.display_name=Enable Discovery Found Messages
+wynntils.config.overlay.toast.discovery_found.description=Should a toast be displayed to inform that you have found a secret discovery?
+wynntils.config.overlay.toast.flip.display_name=Flip Toast Messages
+wynntils.config.overlay.toast.flip.description=Should a toast originate from the left to right?\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.
+
+## OVERLAYS EXP CONFIG ##
+wynntils.config.overlay.exp.display_path=Overlays/Experience
+wynntils.config.overlay.exp.texture.display_name=EXP Texture
+wynntils.config.overlay.exp.texture.description=What texture should be used for the EXP bar?
+wynntils.config.overlay.exp.animation_speed.display_name=Animation Speed
+wynntils.config.overlay.exp.animation_speed.description=How fast should the animation be played? (0 for instant)
+wynntils.config.overlay.exp.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.exp.text_shadow.description=What should the text shadow look like?
+
+## OVERLAYS EXP EXP TEXTURES ENUM CONFIG ##
+wynntils.config.overlay.exp.enum.exp_texture.wynn=Wynn
+wynntils.config.overlay.exp.enum.exp_texture.liquid=Liquid
+wynntils.config.overlay.exp.enum.exp_texture.emerald=Emerald
+wynntils.config.overlay.exp.enum.exp_texture.a=A
+wynntils.config.overlay.exp.enum.exp_texture.b=B
+wynntils.config.overlay.exp.enum.exp_texture.c=C
+
+## OVERLAYS BUBBLES CONFIG ##
+wynntils.config.overlay.bubbles.display_path=Overlays/Bubbles
+wynntils.config.overlay.bubbles.texture.display_name=Bubbles Texture
+wynntils.config.overlay.bubbles.texture.description=What texture should be used for the EXP bar when it acts as the air meter?
+wynntils.config.overlay.bubbles.animation_speed.display_name=Animation Speed
+wynntils.config.overlay.bubbles.animation_speed.description=How fast should the animation be played? (0 for instant)
+wynntils.config.overlay.bubbles.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.bubbles.text_shadow.description=What should the text shadow look like?
+wynntils.config.overlay.bubbles.drowning_vignette.display_name=Bubble Vignette
+wynntils.config.overlay.bubbles.drowning_vignette.description=Should the drowning vignette be displayed?
+
+## OVERLAYS BUBBLES BUBBLE TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.bubbles.enum.bubble_texture.wynn=Wynn
+wynntils.config.overlay.bubbles.enum.bubble_texture.liquid=Liquid
+# Misspelling in code is replicated here for consistency
+wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=Sapphire
+wynntils.config.overlay.bubbles.enum.bubble_texture.a=A
+wynntils.config.overlay.bubbles.enum.bubble_texture.b=B
+wynntils.config.overlay.bubbles.enum.bubble_texture.c=C
+
+## OVERLAYS LEVELING CONFIG ##
+wynntils.config.overlay.leveling.display_path=Overlays/Leveling
+wynntils.config.overlay.leveling.text.display_name=Current Text
+wynntils.config.overlay.leveling.text.description=How should the leveling text be displayed?
+wynntils.config.overlay.leveling.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.leveling.text_shadow.description=What should the text shadow look like?
+
+## OVERLAYS TICKER CONFIG ##
+wynntils.config.overlay.ticker.display_path=Overlays/Update Ticker
+wynntils.config.overlay.ticker.message_limit.display_name=Message Limit
+wynntils.config.overlay.ticker.message_limit.description=What should the maximum amount of ticker messages displayed in the game-update-list be?
+wynntils.config.overlay.ticker.expiry_time.display_name=Message Expiry Time
+wynntils.config.overlay.ticker.expiry_time.description=How long (in seconds) should a ticker message remain on the screen?
+wynntils.config.overlay.ticker.fadeout_time.display_name=Message Fadeout Animation
+wynntils.config.overlay.ticker.fadeout_time.description=How long should the fadeout animation be played?
+wynntils.config.overlay.ticker.invert_growth.display_name=Invert Growth
+wynntils.config.overlay.ticker.invert_growth.description=Should the way ticker messages grow be inverted?
+wynntils.config.overlay.ticker.max_message_length.display_name=Max Message Length
+wynntils.config.overlay.ticker.max_message_length.description=What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)
+wynntils.config.overlay.ticker.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.ticker.text_shadow.description=What should the text shadow look like?
+wynntils.config.overlay.ticker.new_message_override.display_name=New Message Override
+wynntils.config.overlay.ticker.new_message_override.description=Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.
+
+## OVERLAYS TICKER EXP CONFIG ##
+wynntils.config.overlay.ticker.exp.display_path=Overlays/Update Ticker/Experience
+wynntils.config.overlay.ticker.exp.enable.display_name=Enable EXP Messages
+wynntils.config.overlay.ticker.exp.enable.description=Should EXP messages be displayed in the game-update-ticker?
+wynntils.config.overlay.ticker.exp.update_rate.display_name=EXP Message Update Rate
+wynntils.config.overlay.ticker.exp.update_rate.description=How often should the EXP change messages (in seconds) be added to the game update ticker?
+wynntils.config.overlay.ticker.exp.format.display_name=EXP Message Format
+wynntils.config.overlay.ticker.exp.format.description=How should the format of EXP messages be displayed?
+
+## OVERLAYS TICKER INVENTORY CONFIG ##
+wynntils.config.overlay.ticker.inv.display_path=Overlays/Update Ticker/Inventory
+wynntils.config.overlay.ticker.inv.enable.display_name=Enable Full Inventory Messages
+wynntils.config.overlay.ticker.inv.enable.description=Should messages be displayed in the game-update-ticker when your inventory is full?
+wynntils.config.overlay.ticker.inv.update_rate.display_name=Full Inventory Update Rate
+wynntils.config.overlay.ticker.inv.update_rate.description=How often should the inventory full message (in seconds) be displayed in the game update ticker?
+wynntils.config.overlay.ticker.inv.format.display_name=Inventory Full Message Format
+wynntils.config.overlay.ticker.inv.format.description=What message should be displayed when your inventory is full?
+
+## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
+wynntils.config.overlay.ticker.redir.display_path=Overlays/Update Ticker/Redirect Messages
+wynntils.config.overlay.ticker.redir.combat.display_name=Redirect Combat Messages
+wynntils.config.overlay.ticker.redir.combat.description=Should combat chat messages be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.horse.display_name=Redirect Horse Messages
+wynntils.config.overlay.ticker.redir.horse.description=Should messages related to your horse be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.local_login.display_name=Redirect Local Login Messages
+wynntils.config.overlay.ticker.redir.local_login.description=Should local login messages (for people with ranks) be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.friend_login.display_name=Redirect Friend Login Messages
+wynntils.config.overlay.ticker.redir.friend_login.description=Should login messages for friends be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.guild_login.display_name=Redirect Guild Login Messages
+wynntils.config.overlay.ticker.redir.guild_login.description=Should login messages for guild members be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.merchant.display_name=Redirect Merchant Messages
+wynntils.config.overlay.ticker.redir.merchant.description=Should item buyer and identifier messages be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.other.display_name=Redirect Other Messages
+wynntils.config.overlay.ticker.redir.other.description=Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.server.display_name=Redirect Server Status
+wynntils.config.overlay.ticker.redir.server.description=Should server shutdown messages be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.quest.display_name=Redirect Quest Messages
+wynntils.config.overlay.ticker.redir.quest.description=Should messages relating to the progress of a quest be redirected to the game update ticker?
+wynntils.config.overlay.ticker.redir.soul_point.display_name=Redirect Soul Point Messages
+wynntils.config.overlay.ticker.redir.soul_point.description=Should messages about regaining soul points be redirected to the game update ticker
+
+## OVERLAYS TICKER TERRITORY CONFIG ##
+wynntils.config.overlay.ticker.territory.display_path=Overlays/Update Ticker/Territory Change
+wynntils.config.overlay.ticker.territory.enable.display_name=Enable Territory Change
+wynntils.config.overlay.ticker.territory.enable.description=Should territory change messages be displayed in the game update ticker?
+wynntils.config.overlay.ticker.territory.enter.display_name=Enable Territory Enter
+wynntils.config.overlay.ticker.territory.enter.description=Should territory enter messages be displayed in the game update ticker?
+wynntils.config.overlay.ticker.territory.leave.display_name=Enable Territory Leave
+wynntils.config.overlay.ticker.territory.leave.description=Should territory leave messages be displayed in the game update ticker?
+wynntils.config.overlay.ticker.territory.music_change.display_name=Enable Music Change
+wynntils.config.overlay.ticker.territory.music_change.description=Should music change messages be displayed in the game update ticker? (This has no effect if the Music module is disabled.)
+wynntils.config.overlay.ticker.territory.enter_format.display_name=Territory Enter Format
+wynntils.config.overlay.ticker.territory.enter_format.description=How should the format of the territory enter ticker messages be displayed?
+wynntils.config.overlay.ticker.territory.leave_format.display_name=Territory Leave Format
+wynntils.config.overlay.ticker.territory.leave_format.description=How should the format of the territory leave ticker messages be displayed?
+wynntils.config.overlay.ticker.territory.music_change_format.display_name=Music Change Format
+wynntils.config.overlay.ticker.territory.music_change_format.description=How should the format of the music change ticker messages be displayed?
+
+## OVERLAYS WARTIMER CONFIG ##
+wynntils.config.overlay.wartimer.display_path=Overlays/War Timer
+wynntils.config.overlay.wartimer.text_shadow.display_name=Text Shadow
+wynntils.config.overlay.wartimer.text_shadow.description=What should the text shadow look like?
+
+## OVERLAYS TERRITORY FEED CONFIG ##
+wynntils.config.overlay.territoryfeed.display_path=Overlays/Territory Feed
+wynntils.config.overlay.territoryfeed.enabled.display_name=Territory Feed
+wynntils.config.overlay.territoryfeed.enabled.description=Should the territory feed be displayed?
+wynntils.config.overlay.territoryfeed.animation_length.display_name=Animation Length
+wynntils.config.overlay.territoryfeed.animation_length.description=How long (in seconds) should messages on the territory feed be displayed?
+wynntils.config.overlay.territoryfeed.display_mode.display_name=Territory Messages Mode
+wynntils.config.overlay.territoryfeed.display_mode.description=What messages should be displayed in the territory feed?\n\nNormal: Display all territory messages.\n\nDistinguish Own Guild: Display all territory messages, but messages relating to your guild will be displayed in different colors. (§2Gained territory §r& §4lost territory§r)\n\nOnly Own Guild: Display only territory messages that relate to your guild.
+wynntils.config.overlay.territoryfeed.short_message.display_name=Shorten Messages
+wynntils.config.overlay.territoryfeed.short_message.description=Should territory feed messages be shortened?
+wynntils.config.overlay.territoryfeed.guild_tag.display_name=Use Guild Tags
+wynntils.config.overlay.territoryfeed.guild_tag.description=Should guild tags be displayed rather than names?
+
+## OVERLAYS TERRITORY FEED DISPLAY MODE ENUM CONFIG ##
+wynntils.config.overlay.territoryfeed.enum.display_mode.normal=Normal
+wynntils.config.overlay.territoryfeed.enum.display_mode.distinguish_own_guild=Distinguish own guild
+wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=Only own guild
+
+## OTHER CONFIG TEXT SHADOW ENUM ##
+wynntils.config.other.enum.text_shadow.none=None
+wynntils.config.other.enum.text_shadow.normal=Normal
+wynntils.config.other.enum.text_shadow.outline=Outline

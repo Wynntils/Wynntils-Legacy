@@ -22,6 +22,7 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.input.Mouse;
@@ -164,7 +165,7 @@ public class SettingsUI extends UI {
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
                 ScreenRenderer.scale(0.8f);
-                render.drawString(((SettingElement) setting).info.displayName(), (setting.position.getDrawingX() + 33f) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(I18n.format(((SettingElement) setting).info.displayName()), (setting.position.getDrawingX() + 33f) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 ScreenRenderer.resetScale();
             }
             setting.position.offsetX -= settings.position.offsetX;
@@ -180,7 +181,7 @@ public class SettingsUI extends UI {
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
-                List<String> lines = Arrays.asList(((SettingElement) setting).info.description().split("_nl"));
+                List<String> lines = Arrays.asList(I18n.format(((SettingElement) setting).info.description()).replace("\\n", "\n").split("_nl"));
 //                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
             }

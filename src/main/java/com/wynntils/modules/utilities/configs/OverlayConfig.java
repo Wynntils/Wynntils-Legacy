@@ -12,350 +12,375 @@ import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.util.text.TextFormatting;
 
-@SettingsInfo(name = "overlays", displayPath = "Overlays")
+@SettingsInfo(name = "overlays", displayPath = "wynntils.config.overlay.display_path")
 public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
 
-    @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+    @Setting(displayName = "wynntils.config.overlay.text_shadow.display_name", description = "wynntils.config.overlay.text_shadow.description")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-    @Setting(displayName = "Action Bar Coordinates", description = "Should the action bar display your coordinates when there is nothing else to show?")
+    @Setting(displayName = "wynntils.config.overlay.actionbar_coords.display_name", description = "wynntils.config.overlay.actionbar_coords.description")
     public boolean actionBarCoordinates = true;
 
-    @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
+    @Setting(displayName = "wynntils.config.overlay.split_coords.display_name", description = "wynntils.config.overlay.split_coords.description")
     public boolean splitCoordinates = false;
 
-    @SettingsInfo(name = "health_settings", displayPath = "Overlays/Health")
+    @SettingsInfo(name = "health_settings", displayPath = "wynntils.config.overlay.health.display_path")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
-        @Setting(displayName = "Health Texture", description = "What texture should be used for the health bar?")
+        @Setting(displayName = "wynntils.config.overlay.health.texture.display_name", description = "wynntils.config.overlay.health.texture.description")
         public HealthTextures healthTexture = HealthTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "wynntils.config.overlay.health.animation_speed.display_name", description = "wynntils.config.overlay.health.animation_speed.description")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.health.text_shadow.display_name", description = "wynntils.config.overlay.health.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
         public enum HealthTextures {
-            Wynn,
-            Grune,
-            Aether,
-            Skull,
-            Skyrim,
-            a,
-            b,
-            c,
-            d
+            Wynn("wynntils.config.overlay.health.enum.health_texture.wynn"),
+            Grune("wynntils.config.overlay.health.enum.health_texture.grune"),
+            Aether("wynntils.config.overlay.health.enum.health_texture.aether"),
+            Skull("wynntils.config.overlay.health.enum.health_texture.skull"),
+            Skyrim("wynntils.config.overlay.health.enum.health_texture.skyrim"),
+            a("wynntils.config.overlay.health.enum.health_texture.a"),
+            b("wynntils.config.overlay.health.enum.health_texture.b"),
+            c("wynntils.config.overlay.health.enum.health_texture.c"),
+            d("wynntils.config.overlay.health.enum.health_texture.d");
             //following the format, to add more textures, register them here with a name and create a special case in the render method
+
+            public String displayName;
+
+            HealthTextures(String displayName) {
+                this.displayName = displayName;
+            }
         }
 
     }
 
 
-    @SettingsInfo(name = "mana_settings", displayPath = "Overlays/Mana")
+    @SettingsInfo(name = "mana_settings", displayPath = "wynntils.config.overlay.mana.display_path")
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
 
-        @Setting(displayName = "Mana Texture", description = "What texture should be used for the mana bar?")
+        @Setting(displayName = "wynntils.config.overlay.mana.texture.display_name", description = "wynntils.config.overlay.mana.texture.description")
         public ManaTextures manaTexture = ManaTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "wynntils.config.overlay.mana.animation_speed.display_name", description = "wynntils.config.overlay.mana.animation_speed.description")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.mana.text_shadow.display_name", description = "wynntils.config.overlay.mana.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
         public enum ManaTextures {
-            Wynn,
-            Brune,
-            Aether,
-            Skull,
-            Inverse,
-            Skyrim,
-            a,
-            b,
-            c,
-            d
+            Wynn("wynntils.config.overlay.mana.enum.mana_texture.wynn"),
+            Brune("wynntils.config.overlay.mana.enum.mana_texture.brune"),
+            Aether("wynntils.config.overlay.mana.enum.mana_texture.aether"),
+            Skull("wynntils.config.overlay.mana.enum.mana_texture.skull"),
+            Inverse("wynntils.config.overlay.mana.enum.mana_texture.inverse"),
+            Skyrim("wynntils.config.overlay.mana.enum.mana_texture.skyrim"),
+            a("wynntils.config.overlay.mana.enum.mana_texture.a"),
+            b("wynntils.config.overlay.mana.enum.mana_texture.b"),
+            c("wynntils.config.overlay.mana.enum.mana_texture.c"),
+            d("wynntils.config.overlay.mana.enum.mana_texture.d");
             //following the format, to add more textures, register them here with a name and create a special case in the render method
+
+            public String displayName;
+
+            ManaTextures(String displayName) {
+                this.displayName = displayName;
+            }
         }
 
     }
 
-    @SettingsInfo(name = "hotbar_settings", displayPath = "Overlays/Hotbar")
+    @SettingsInfo(name = "hotbar_settings", displayPath = "wynntils.config.overlay.hotbar.display_path")
     public static class Hotbar extends SettingsClass {
         public static Hotbar INSTANCE;
 
-        @Setting(displayName = "Hotbar Texture", description = "What texture should be used for the hotbar?")
+        @Setting(displayName = "wynntils.config.overlay.hotbar.texture.display_name", description = "wynntils.config.overlay.hotbar.texture.description")
         public HotbarTextures hotbarTexture = HotbarTextures.Resource_Pack;
 
         public enum HotbarTextures {
-            Resource_Pack,
-            Wynn
+            Resource_Pack("wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack"),
+            Wynn("wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn");
+
+            public String displayName;
+
+            HotbarTextures(String displayName) {
+                this.displayName = displayName;
+            }
         }
     }
 
-    @SettingsInfo(name = "toast_settings", displayPath = "Overlays/Toasts")
+    @SettingsInfo(name = "toast_settings", displayPath = "wynntils.config.overlay.toast.display_path")
     public static class ToastsSettings extends SettingsClass {
         public static ToastsSettings INSTANCE;
 
-        @Setting(displayName = "Enable Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?", order = 0)
+        @Setting(displayName = "wynntils.config.overlay.toast.enable.display_name", description = "wynntils.config.overlay.toast.enable.description", order = 0)
         public boolean enableToast = true;
 
-        @Setting(displayName = "Enable Territory Enter Messages", description = "Should a toast be displayed to inform that you are entering a territory?")
+        @Setting(displayName = "wynntils.config.overlay.toast.territory_enter.display_name", description = "wynntils.config.overlay.toast.territory_enter.description")
         public boolean enableTerritoryEnter = true;
 
-        @Setting(displayName = "Enable Area Discovered Messages", description = "Should a toast be displayed to inform that you have discovered an area?")
+        @Setting(displayName = "wynntils.config.overlay.toast.area_discovered.display_name", description = "wynntils.config.overlay.toast.area_discovered.description")
         public boolean enableAreaDiscovered = true;
 
-        @Setting(displayName = "Enable Quest Completed Messages", description = "Should a toast be displayed to inform that you have completed a quest?")
+        @Setting(displayName = "wynntils.config.overlay.toast.quest_completed.display_name", description = "wynntils.config.overlay.toast.quest_completed.description")
         public boolean enableQuestCompleted = true;
 
-        @Setting(displayName = "Enable Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
+        @Setting(displayName = "wynntils.config.overlay.toast.discovery_found.display_name", description = "wynntils.config.overlay.toast.discovery_found.description")
         public boolean enableDiscovery = true;
 
-        @Setting(displayName = "Flip Toast Messages", description = "Should a toast originate from the left to right?\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.")
+        @Setting(displayName = "wynntils.config.overlay.toast.flip.display_name", description = "wynntils.config.overlay.toast.flip.description")
         public boolean flipToast = false;
     }
 
-    @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
+    @SettingsInfo(name = "exp_settings", displayPath = "wynntils.config.overlay.exp.display_path")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
 
-        @Setting(displayName = "EXP Texture", description = "What texture should be used for the EXP bar?")
+        @Setting(displayName = "wynntils.config.overlay.exp.texture.display_name", description = "wynntils.config.overlay.exp.texture.description")
         public expTextures expTexture = expTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "wynntils.config.overlay.exp.animation_speed.display_name", description = "wynntils.config.overlay.exp.animation_speed.description")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.exp.text_shadow.display_name", description = "wynntils.config.overlay.exp.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
 
         public enum expTextures {
-            Wynn,
-            Liquid,
-            Emerald,
-            a,
-            b,
-            c
+            Wynn("wynntils.config.overlay.exp.enum.exp_texture.wynn"),
+            Liquid("wynntils.config.overlay.exp.enum.exp_texture.liquid"),
+            Emerald("wynntils.config.overlay.exp.enum.exp_texture.emerald"),
+            a("wynntils.config.overlay.exp.enum.exp_texture.a"),
+            b("wynntils.config.overlay.exp.enum.exp_texture.b"),
+            c("wynntils.config.overlay.exp.enum.exp_texture.c");
             //following the format, to add more textures, register them here with a name and create a special case in the render method
+
+            public String displayName;
+
+            expTextures(String displayName) {
+                this.displayName = displayName;
+            }
         }
 
     }
 
-    @SettingsInfo(name = "bubbles_settings", displayPath = "Overlays/Bubbles")
+    @SettingsInfo(name = "bubbles_settings", displayPath = "wynntils.config.overlay.bubbles.display_path")
     public static class Bubbles extends SettingsClass {
         public static Bubbles INSTANCE;
 
-        @Setting(displayName = "Bubbles Texture", description = "What texture should be used for the EXP bar when it acts as the air meter?")
+        @Setting(displayName = "wynntils.config.overlay.bubbles.texture.display_name", description = "wynntils.config.overlay.bubbles.texture.description")
         public BubbleTexture bubblesTexture = BubbleTexture.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "wynntils.config.overlay.bubbles.animation_speed.display_name", description = "wynntils.config.overlay.bubbles.animation_speed.description")
         public float animated = 2f;
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.bubbles.text_shadow.display_name", description = "wynntils.config.overlay.bubbles.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "Bubble Vignette", description = "Should the drowning vignette be displayed?")
+        @Setting(displayName = "wynntils.config.overlay.bubbles.drowning_vignette.display_name", description = "wynntils.config.overlay.bubbles.drowning_vignette.description")
         public boolean drowningVignette = true;
 
         public enum BubbleTexture {
-            Wynn,
-            Liquid,
-            Saphire,
-            a,
-            b,
-            c
+            Wynn("wynntils.config.overlay.bubbles.enum.bubble_texture.wynn"),
+            Liquid("wynntils.config.overlay.bubbles.enum.bubble_texture.liquid"),
+            Saphire("wynntils.config.overlay.bubbles.enum.bubble_texture.saphire"),
+            a("wynntils.config.overlay.bubbles.enum.bubble_texture.a"),
+            b("wynntils.config.overlay.bubbles.enum.bubble_texture.b"),
+            c("wynntils.config.overlay.bubbles.enum.bubble_texture.c");
+
+            public String displayName;
+
+            BubbleTexture(String displayName) {
+                this.displayName = displayName;
+            }
         }
     }
 
 
-    @SettingsInfo(name = "leveling_settings", displayPath = "Overlays/Leveling")
+    @SettingsInfo(name = "leveling_settings", displayPath = "wynntils.config.overlay.leveling.display_path")
     public static class Leveling extends SettingsClass {
         public static Leveling INSTANCE;
 
         @Setting.Features.StringParameters(parameters = {"actual", "max", "percent", "needed", "actualg", "maxg", "neededg", "curlvl", "nextlvl"})
-        @Setting(displayName = "Current Text", description = "How should the leveling text be displayed?")
+        @Setting(displayName = "wynntils.config.overlay.leveling.text.display_name", description = "wynntils.config.overlay.leveling.text.description")
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String levelingText = TextFormatting.GREEN + "(%actual%/%max%) " + TextFormatting.GOLD + "%percent%%";
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.leveling.text_shadow.display_name", description = "wynntils.config.overlay.leveling.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
-
-
     }
 
-    @SettingsInfo(name = "game_update_settings", displayPath = "Overlays/Update Ticker")
+    @SettingsInfo(name = "game_update_settings", displayPath = "wynntils.config.overlay.ticker.display_path")
     public static class GameUpdate extends SettingsClass {
         public static GameUpdate INSTANCE;
 
         // Default settings designed for large ui scale @ 1080p
         // I personally use ui scale normal - but this works fine with that too
 
-        @Setting(displayName = "Message Limit", description = "What should the maximum amount of ticker messages displayed in the game-update-list be?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.message_limit.display_name", description = "wynntils.config.overlay.ticker.message_limit.description")
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
 
-        @Setting(displayName = "Message Expiry Time", description = "How long (in seconds) should a ticker message remain on the screen?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.expiry_time.display_name", description = "wynntils.config.overlay.ticker.expiry_time.description")
         @Setting.Limitations.FloatLimit(min = 0.2f, max = 20f, precision = 0.2f)
         public float messageTimeLimit = 10f;
 
-        @Setting(displayName = "Message Fadeout Animation", description = "How long should the fadeout animation be played?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.fadeout_time.display_name", description = "wynntils.config.overlay.ticker.fadeout_time.description")
         @Setting.Limitations.FloatLimit(min = 10f, max = 60f, precision = 1f)
         public float messageFadeOut = 30f;
 
-        @Setting(displayName = "Invert Growth", description = "Should the way ticker messages grow be inverted?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.invert_growth.display_name", description = "wynntils.config.overlay.ticker.invert_growth.description")
         public boolean invertGrowth = true;
 
-        @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
+        @Setting(displayName = "wynntils.config.overlay.ticker.max_message_length.display_name", description = "wynntils.config.overlay.ticker.max_message_length.description")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.text_shadow.display_name", description = "wynntils.config.overlay.ticker.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
+        @Setting(displayName = "wynntils.config.overlay.ticker.new_message_override.display_name", description = "wynntils.config.overlay.ticker.new_message_override.description")
         public boolean overrideNewMessages = true;
 
-        @SettingsInfo(name = "game_update_exp_settings", displayPath = "Overlays/Update Ticker/Experience")
+        @SettingsInfo(name = "game_update_exp_settings", displayPath = "wynntils.config.overlay.ticker.exp.display_path")
         public static class GameUpdateEXPMessages extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
-            @Setting(displayName = "Enable EXP Messages", description = "Should EXP messages be displayed in the game-update-ticker?", order = 0)
+            @Setting(displayName = "wynntils.config.overlay.ticker.exp.enable.display_name", description = "wynntils.config.overlay.ticker.exp.enable.description", order = 0)
             public boolean enabled = true;
 
-            @Setting(displayName = "EXP Message Update Rate", description = "How often should the EXP change messages (in seconds) be added to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.exp.update_rate.display_name", description = "wynntils.config.overlay.ticker.exp.update_rate.description")
             @Setting.Limitations.FloatLimit(min = 0.2f, max = 10f, precision = 0.2f)
             public float expUpdateRate = 1f;
 
-            @Setting(displayName = "EXP Message Format", description = "How should the format of EXP messages be displayed?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.exp.format.display_name", description = "wynntils.config.overlay.ticker.exp.format.description")
             @Setting.Features.StringParameters(parameters = {"xo", "xn", "xc", "po", "pn", "pc"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String expMessageFormat = TextFormatting.DARK_GREEN + "+%xc%XP (" + TextFormatting.GOLD + "+%pc%%" + TextFormatting.DARK_GREEN + ")";
         }
 
-        @SettingsInfo(name = "game_update_inventory_settings", displayPath = "Overlays/Update Ticker/Inventory")
+        @SettingsInfo(name = "game_update_inventory_settings", displayPath = "wynntils.config.overlay.ticker.inv.display_path")
         public static class GameUpdateInventoryMessages extends SettingsClass {
             public static GameUpdateInventoryMessages INSTANCE;
 
-            @Setting(displayName = "Enable Full Inventory Messages", description = "Should messages be displayed in the game-update-ticker when your inventory is full?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.inv.enable.display_name", description = "wynntils.config.overlay.ticker.inv.enable.description")
             public boolean enabled = false;
 
-            @Setting(displayName = "Full Inventory Update Rate", description = "How often should the inventory full message (in seconds) be displayed in the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.inv.update_rate.display_name", description = "wynntils.config.overlay.ticker.inv.update_rate.description")
             @Setting.Limitations.FloatLimit(min = 5f, max = 60f, precision = 5f)
             public float inventoryUpdateRate = 10f;
 
-            @Setting(displayName = "Inventory Full Message Format", description = "What message should be displayed when your inventory is full?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.inv.format.display_name", description = "wynntils.config.overlay.ticker.inv.format.description")
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String inventoryMessageFormat = TextFormatting.DARK_RED + "Your inventory is full";
         }
 
-        @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
+        @SettingsInfo(name = "game_update_redirect_settings", displayPath = "wynntils.config.overlay.ticker.redir.display_path")
         public static class RedirectSystemMessages extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
 
-            @Setting(displayName = "Redirect Combat Messages", description = "Should combat chat messages be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.combat.display_name", description = "wynntils.config.overlay.ticker.redir.combat.description")
             public boolean redirectCombat = true;
 
-            @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.horse.display_name", description = "wynntils.config.overlay.ticker.redir.horse.description")
             public boolean redirectHorse = true;
 
-            @Setting(displayName = "Redirect Local Login Messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.local_login.display_name", description = "wynntils.config.overlay.ticker.redir.local_login.description")
             public boolean redirectLoginLocal = true;
 
-            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.friend_login.display_name", description = "wynntils.config.overlay.ticker.redir.friend_login.description")
             public boolean redirectLoginFriend = true;
 
-            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.guild_login.display_name", description = "wynntils.config.overlay.ticker.redir.guild_login.description")
             public boolean redirectLoginGuild = true;
 
-            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.merchant.display_name", description = "wynntils.config.overlay.ticker.redir.merchant.description")
             public boolean redirectMerchants = true;
 
-            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.other.display_name", description = "wynntils.config.overlay.ticker.redir.other.description")
             public boolean redirectOther = true;
 
-            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.server.display_name", description = "wynntils.config.overlay.ticker.redir.server.description")
             public boolean redirectServer = true;
 
-            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.quest.display_name", description = "wynntils.config.overlay.ticker.redir.quest.description")
             public boolean redirectQuest = true;
 
-            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game update ticker")
+            @Setting(displayName = "wynntils.config.overlay.ticker.redir.soul_point.display_name", description = "wynntils.config.overlay.ticker.redir.soul_point.description")
             public boolean redirectSoulPoint = true;
         }
 
-        @SettingsInfo(name = "game_update_territory_settings", displayPath = "Overlays/Update Ticker/Territory Change")
+        @SettingsInfo(name = "game_update_territory_settings", displayPath = "wynntils.config.overlay.ticker.territory.display_path")
         public static class TerritoryChangeMessages extends SettingsClass {
             public static TerritoryChangeMessages INSTANCE;
 
-            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.enable.display_name", description = "wynntils.config.overlay.ticker.territory.enable.description")
             public boolean enabled = false;
 
-            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.enter.display_name", description = "wynntils.config.overlay.ticker.territory.enter.description")
             public boolean enter = true;
 
-            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game update ticker?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.leave.display_name", description = "wynntils.config.overlay.ticker.territory.leave.description")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the Music module is disabled.)")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.music_change.display_name", description = "wynntils.config.overlay.ticker.territory.music_change.description")
             public boolean musicChange = true;
 
-            @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.enter_format.display_name", description = "wynntils.config.overlay.ticker.territory.enter_format.description")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String territoryEnterFormat = TextFormatting.GRAY + "Now Entering [%t%]";
 
-            @Setting(displayName = "Territory Leave Format", description = "How should the format of the territory leave ticker messages be displayed?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.leave_format.display_name", description = "wynntils.config.overlay.ticker.territory.leave_format.description")
             @Setting.Features.StringParameters(parameters = {"t"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String territoryLeaveFormat = TextFormatting.GRAY + "Now Leaving [%t%]";
 
-            @Setting(displayName = "Music Change Format", description = "How should the format of the music change ticker messages be displayed?")
+            @Setting(displayName = "wynntils.config.overlay.ticker.territory.music_change_format.display_name", description = "wynntils.config.overlay.ticker.territory.music_change_format.description")
             @Setting.Features.StringParameters(parameters = {"np"})
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
     
-    @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
+    @SettingsInfo(name = "war_timer_settings", displayPath = "wynntils.config.overlay.wartimer.display_path")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
         
-        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        @Setting(displayName = "wynntils.config.overlay.wartimer.text_shadow.display_name", description = "wynntils.config.overlay.wartimer.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
-    @SettingsInfo(name = "territory_feed_settings", displayPath = "Overlays/Territory Feed")
+    @SettingsInfo(name = "territory_feed_settings", displayPath = "wynntils.config.overlay.territoryfeed.display_path")
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
-        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?", order = 0)
+        @Setting(displayName = "wynntils.config.overlay.territoryfeed.enabled.display_name" ,description = "wynntils.config.overlay.territoryfeed.enabled.description", order = 0)
         public boolean enabled = true;
 
-        @Setting(displayName = "Animation Length", description = "How long (in seconds) should messages on the territory feed be displayed?")
+        @Setting(displayName = "wynntils.config.overlay.territoryfeed.animation_length.display_name", description = "wynntils.config.overlay.territoryfeed.animation_length.description")
         @Setting.Limitations.IntLimit(min = 1, max = 60)
         public int animationLength = 20;
 
-        @Setting(displayName = "Territory Messages Mode", description = "What messages should be displayed in the territory feed?\n\n" +
-                "Normal: Display all territory messages.\n\n" +
-                "Distinguish Own Guild: Display all territory messages, but messages relating to your guild will be displayed in different colors. (§2Gained territory §r& §4lost territory§r)\n\n" +
-                "Only Own Guild: Display only territory messages that relate to your guild.")
+        @Setting(displayName = "wynntils.config.overlay.territoryfeed.display_mode.display_name", description = "wynntils.config.overlay.territoryfeed.display_mode.description")
         public TerritoryFeedDisplayMode displayMode = TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD;
 
-        @Setting(displayName = "Shorten Messages", description = "Should territory feed messages be shortened?", order = 1)
+        @Setting(displayName = "wynntils.config.overlay.territoryfeed.short_message.display_name", description = "wynntils.config.overlay.territoryfeed.short_message.description", order = 1)
         public boolean shortMessages = false;
 
-        @Setting(displayName = "Use Guild Tags", description = "Should guild tags be displayed rather than names?", order = 2)
+        @Setting(displayName = "wynntils.config.overlay.territoryfeed.guild_tag.display_name", description = "wynntils.config.overlay.territoryfeed.guild_tag.description", order = 2)
         public boolean useTag = false;
 
         @Override
@@ -367,9 +392,15 @@ public class OverlayConfig extends SettingsClass {
         }
 
         public enum TerritoryFeedDisplayMode {
-            NORMAL,
-            DISTINGUISH_OWN_GUILD,
-            ONLY_OWN_GUILD
+            NORMAL("wynntils.config.overlay.territoryfeed.enum.display_mode.normal"),
+            DISTINGUISH_OWN_GUILD("wynntils.config.overlay.territoryfeed.enum.display_mode.distinguish_own_guild"),
+            ONLY_OWN_GUILD("wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild");
+
+            public String displayName;
+
+            TerritoryFeedDisplayMode(String displayName) {
+                this.displayName = displayName;
+            }
         }
     }
 }

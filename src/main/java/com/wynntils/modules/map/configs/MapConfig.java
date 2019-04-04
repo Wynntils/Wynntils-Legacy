@@ -14,44 +14,46 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-@SettingsInfo(name = "map", displayPath = "Map")
+@SettingsInfo(name = "map", displayPath = "wynntils.config.map.display_path")
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 0)
+    @Setting(displayName = "wynntils.config.map.enable_minimap.display_name", description = "wynntils.config.map.enable_minimap.description", order = 0)
     public boolean enabled = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 2)
+    @Setting(displayName = "wynntils.config.map.minimap_shape.display_name", description = "wynntils.config.map.minimap_shape.description", order = 2)
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
+    @Setting(displayName = "wynntils.config.map.minimap_rotation.display_name", description = "wynntils.config.map.minimap_rotation.description", order = 3)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
+    @Setting(displayName = "wynntils.config.map.compass_directions.display_name", description = "wynntils.config.map.compass_directions.description", order = 4)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
+    @Setting(displayName = "wynntils.config.map.minimap_size.display_name", description = "wynntils.config.map.minimap_size.description", order = 1)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
+    @Setting(displayName = "wynntils.config.map.only_north.display_name", description = "wynntils.config.map.only_north.description", order = 5)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)", order = 6)
+    @Setting(displayName = "wynntils.config.map.record_chest_tier.display_name", description = "wynntils.config.map.record_chest_tier.description", order = 6)
     public ChestTiers chestTiers = ChestTiers.TIER_3;
 
     public enum ChestTiers {
-        TIER_1(4),
-        TIER_2(3),
-        TIER_3(2),
-        TIER_4(1),
-        NONE(0);
+        TIER_1(4, "wynntils.config.map.enum.chest_tier.tier_1"),
+        TIER_2(3, "wynntils.config.map.enum.chest_tier.tier_2"),
+        TIER_3(2, "wynntils.config.map.enum.chest_tier.tier_3"),
+        TIER_4(1, "wynntils.config.map.enum.chest_tier.tier_4"),
+        NONE(0, "wynntils.config.map.enum.chest_tier.none");
 
         private int tierArrayIndex; //Array starts at 1 :P
         private String[] tiers = new String[]{"IV", "III", "II", "I"};
+        public String displayName;
 
-        ChestTiers(int tierArrayIndex) {
+        ChestTiers(int tierArrayIndex, String displayName) {
             this.tierArrayIndex = tierArrayIndex;
+            this.displayName = displayName;
         }
 
         public boolean isTierAboveThis(String testTier) {
@@ -60,28 +62,28 @@ public class MapConfig extends SettingsClass {
         }
     }
 
-    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
+    @Setting(displayName = "wynntils.config.map.minimap_zoom.display_name", description = "wynntils.config.map.minimap_zoom.description")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
 
-    @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
+    @SettingsInfo(name = "map_textures", displayPath = "wynntils.config.map.textures.display_path")
     public static class Textures extends SettingsClass {
         public static Textures INSTANCE;
 
-        @Setting(displayName = "MiniMap Texture Style", description = "What should the texture of the minimap be?", order = 0)
+        @Setting(displayName = "wynntils.config.map.textures.minimap_style.display_name", description = "wynntils.config.map.textures.minimap_style.description", order = 0)
         public TextureType textureType = TextureType.Paper;
 
-        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?" ,order = 1)
+        @Setting(displayName = "wynntils.config.map.textures.pointer_style.display_name", description = "wynntils.config.map.textures.pointer_style.description" ,order = 1)
         public PointerType pointerStyle = PointerType.ARROW;
 
-        @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?\n\n§aClick above the color to open the color wheel", order = 2)
+        @Setting(displayName = "wynntils.config.map.textures.pointer_color.display_name", description = "wynntils.config.map.textures.pointer_color.description", order = 2)
         public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
 
     }
 
-    @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
+    @SettingsInfo(name = "waypoints", displayPath = "wynntils.config.map.waypoints.display_path")
     public static class Waypoints extends SettingsClass {
         public static Waypoints INSTANCE;
 
@@ -93,21 +95,42 @@ public class MapConfig extends SettingsClass {
 
 
     public enum MapFormat {
-        SQUARE, CIRCLE
+        SQUARE("wynntils.config.map.enum.map_format.square"),
+        CIRCLE("wynntils.config.map.enum.map_format.circle");
+
+        public String displayName;
+
+        MapFormat(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     public enum TextureType {
-        Paper, Wynn, Gilded
+        Paper("wynntils.config.map.textures.enum.texture_type.paper"),
+        Wynn("wynntils.config.map.textures.enum.texture_type.wynn"),
+        Gilded("wynntils.config.map.textures.enum.texture_type.gilded");
+
+        public String displayName;
+
+        TextureType(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     public enum PointerType {
 
-        ARROW(10, 8, 5, 4, 0), CURSOR(8, 7, 4, 3.5f, 8), NARROW(8, 8, 4, 4, 15), ROUND(8, 8, 4, 4, 23), STRAIGHT(6, 8, 3, 4, 31), TRIANGLE(8, 6, 4, 3, 39);
+        ARROW(10, 8, 5, 4, 0, "wynntils.config.map.textures.enum.pointer_type.arrow"),
+        CURSOR(8, 7, 4, 3.5f, 8, "wynntils.config.map.textures.enum.pointer_type.cursor"),
+        NARROW(8, 8, 4, 4, 15, "wynntils.config.map.textures.enum.pointer_type.narrow"),
+        ROUND(8, 8, 4, 4, 23, "wynntils.config.map.textures.enum.pointer_type.round"),
+        STRAIGHT(6, 8, 3, 4, 31, "wynntils.config.map.textures.enum.pointer_type.straight"),
+        TRIANGLE(8, 6, 4, 3, 39, "wynntils.config.map.textures.enum.pointer_type.triangle");
 
         public float width, height, dWidth, dHeight, yStart;
+        public String displayName;
 
-        PointerType(float width, float height, float dWidth, float dHeight, float yStart) {
-            this.width = width; this.height = height; this.dWidth = dWidth; this.dHeight = dHeight; this.yStart = yStart;
+        PointerType(float width, float height, float dWidth, float dHeight, float yStart, String displayName) {
+            this.width = width; this.height = height; this.dWidth = dWidth; this.dHeight = dHeight; this.yStart = yStart; this.displayName = displayName;
         }
     }
 

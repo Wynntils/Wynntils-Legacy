@@ -9,14 +9,14 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.richpresence.events.ServerEvents;
 
-@SettingsInfo(name = "main", displayPath = "Main")
+@SettingsInfo(name = "main", displayPath = "wynntils.config.richpresence.display_path")
 public class RichPresenceConfig extends SettingsClass {
     public static RichPresenceConfig INSTANCE;
 
-    @Setting(displayName = "Show Class Info", description = "Should Rich Presence display basic information about the class you're using?")
+    @Setting(displayName = "wynntils.config.richpresence.show_information.display_name", description = "wynntils.config.richpresence.show_information.description")
     public boolean showUserInformation = true;
     
-    @Setting(displayName = "Enable Rich Presence", description = "Should the mod enable Rich Presence on Discord?")
+    @Setting(displayName = "wynntils.config.richpresence.enable.display_name", description = "wynntils.config.richpresence.enable.description")
     public boolean enableRichPresence = true;
 
     @Override

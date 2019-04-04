@@ -133,7 +133,15 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public enum TextShadow {
-        NONE,NORMAL,OUTLINE
+        NONE("wynntils.config.other.enum.text_shadow.none"),
+        NORMAL("wynntils.config.other.enum.text_shadow.normal"),
+        OUTLINE("wynntils.config.other.enum.text_shadow.outline");
+
+        public String displayName;
+
+        TextShadow(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     private enum ChatCommonColorCodes {

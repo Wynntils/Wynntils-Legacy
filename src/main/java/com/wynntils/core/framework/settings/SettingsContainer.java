@@ -10,6 +10,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
+import net.minecraft.client.resources.I18n;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -28,7 +29,7 @@ public class SettingsContainer {
     public SettingsContainer(ModuleContainer m, SettingsHolder holder) {
         this.holder = holder;
         this.m = m;
-        this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
+        this.displayPath = holder instanceof Overlay ? I18n.format(m.getInfo().displayName()) + "/" + ((Overlay) holder).displayName : I18n.format(holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",I18n.format(m.getInfo().displayName())));
 
         for(Field f : holder.getClass().getDeclaredFields()) {
             if (!Modifier.isStatic(f.getModifiers())) {

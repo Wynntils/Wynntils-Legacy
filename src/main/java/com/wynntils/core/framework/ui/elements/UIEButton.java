@@ -9,6 +9,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.framework.ui.UI;
+import net.minecraft.client.resources.I18n;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
@@ -135,7 +136,7 @@ public class UIEButton extends UIEClickZone {
             for(Field f : value.getClass().getFields())
                 if(f.getType().isAssignableFrom(String.class) && f.getName().equals("displayName")) //This might be flipped
                     try {
-                        return (String) f.get(value);
+                        return I18n.format((String) f.get(value));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

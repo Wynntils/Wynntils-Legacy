@@ -12,47 +12,47 @@ import com.wynntils.core.framework.settings.instances.SettingsClass;
 import java.util.HashMap;
 import java.util.HashSet;
 
-@SettingsInfo(name = "main", displayPath = "Main")
+@SettingsInfo(name = "main", displayPath = "wynntils.config.utils.display_path")
 public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
 
-    @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
+    @Setting(displayName = "wynntils.config.utils.daily_reminder.display_name", description = "wynntils.config.utils.daily_reminder.description")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
+    @Setting(displayName = "wynntils.config.utils.hide_potion.display_name", description = "wynntils.config.utils.hide_potion.description")
     public boolean hidePotionGui = true;
 
-    @Setting(displayName = "Add Class & Server Button to Menu", description = "Should a class and server button be displayed on the in-game menu?")
+    @Setting(displayName = "wynntils.config.utils.add_class_server.display_name", description = "wynntils.config.utils.add_class_server.description")
     public boolean addClassServer = true;
 
-    @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
+    @Setting(displayName = "wynntils.config.utils.hide_nametags_through_blocks.display_name", description = "wynntils.config.utils.hide_nametags_through_blocks.description")
     public boolean hideNametags = true;
 
-    @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
+    @Setting(displayName = "wynntils.config.utils.hide_nametag_box.display_name", description = "wynntils.config.utils.hide_nametag_box.description")
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag? (Crafted armour cannot be displayed.)")
+    @Setting(displayName = "wynntils.config.utils.show_armor.display_name", description = "wynntils.config.utils.show_armor.description")
     public boolean showArmors = false;
 
-    @Setting(displayName = "Prevent Mythic Loot Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
+    @Setting(displayName = "wynntils.config.utils.prevent_mythic.display_name", description = "wynntils.config.utils.prevent_mythic.description")
     public boolean preventMythicChestClose = true;
 
-    @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
+    @Setting(displayName = "wynntils.config.utils.prevent_slot_click.display_name", description = "wynntils.config.utils.prevent_slot_click.description")
     public boolean preventSlotClicking = false;
 
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
-    @SettingsInfo(name = "wars", displayPath = "Wars")
+    @SettingsInfo(name = "wars", displayPath = "wynntils.config.utils.war.display_path")
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
 
-        @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
+        @Setting(displayName = "wynntils.config.utils.war.entity_filter.display_name", description = "wynntils.config.utils.war.entity_filter.description")
         public boolean allowEntityFilter = true;
 
-        @Setting(displayName = "Show Player Health Bar", description = "Should the health bar of other players in a war server be displayed above their heads?")
+        @Setting(displayName = "wynntils.config.utils.war.warrer_health_bar.display_name", description = "wynntils.config.utils.war.warrer_health_bar.description")
         public boolean warrerHealthBar = true;
 
     }
@@ -60,7 +60,6 @@ public class UtilitiesConfig extends SettingsClass {
     @SettingsInfo(name = "data", displayPath = "")
     public static class Data extends SettingsClass {
         public static Data INSTANCE;
-
 
         public long dailyReminder = 0L;
 
@@ -70,108 +69,108 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
+    @SettingsInfo(name = "item_highlights", displayPath = "wynntils.config.utils.item_highlights.display_path")
     public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
-        @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.ingredient_filter.display_name", description = "wynntils.config.utils.item_highlights.ingredient_filter.description")
         public boolean filterEnabled = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_container.display_name", description = "wynntils.config.utils.item_highlights.highlight_container.description")
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_inventory.display_name", description = "wynntils.config.utils.item_highlights.highlight_inventory.description")
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_accessory.display_name", description = "wynntils.config.utils.item_highlights.highlight_accessory.description")
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_hotbar.display_name", description = "wynntils.config.utils.item_highlights.highlight_hotbar.description")
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_armor.display_name", description = "wynntils.config.utils.item_highlights.highlight_armor.description")
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_mythic.display_name", description = "wynntils.config.utils.item_highlights.highlight_mythic.description")
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_legendary.display_name", description = "wynntils.config.utils.item_highlights.highlight_legendary.description")
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_rare.display_name", description = "wynntils.config.utils.item_highlights.highlight_rare.description")
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_unique.display_name", description = "wynntils.config.utils.item_highlights.highlight_unique.description")
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_set.display_name", description = "wynntils.config.utils.item_highlights.highlight_set.description")
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_normal.display_name", description = "wynntils.config.utils.item_highlights.highlight_normal.description")
         public boolean normalHighlight = false;
 
-        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description")
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description")
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description")
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_rare_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_rare_cosmetic.description")
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_common_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_common_cosmetic.description")
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.emeralds_container.display_name", description = "wynntils.config.utils.item_highlights.emeralds_container.description")
         public boolean emeraldCountChest = true;
 
-        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.emeralds_inventory.display_name", description = "wynntils.config.utils.item_highlights.emeralds_inventory.description")
         public boolean emeraldCountInventory = true;
 
-        @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_powder.display_name", description = "wynntils.config.utils.item_highlights.highlight_powder.description")
         public boolean powderHighlight = true;
 
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_crafting.display_name", description = "wynntils.config.utils.item_highlights.highlight_crafting.description")
         public boolean ingredientHighlight = true;
 
-        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted on the scrap menu")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name", description = "wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description")
         public boolean highlightCosmeticDuplicates = true;
 
-        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.minimum_powder_tier.display_name", description = "wynntils.config.utils.item_highlights.minimum_powder_tier.description")
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Legendary Item Highlight Color", description = "What color should the highlight for legendary items be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.legendary_color.display_name", description = "wynntils.config.utils.item_highlights.legendary_color.description")
         public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
-        @Setting(displayName = "Mythic Item Highlight Color", description = "What color should the highlight for mythic items be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.mythic_color.display_name", description = "wynntils.config.utils.item_highlights.mythic_color.description")
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
-        @Setting(displayName = "Rare Item Highlight Color", description = "What color should the highlight for rare items be?\n§aClick above the color to open the olor wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.rare_color.display_name", description = "wynntils.config.utils.item_highlights.rare_color.description")
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
-        @Setting(displayName = "Unique Item Highlight Color", description = "What color should the highlight for unique items be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.unique_color.display_name", description = "wynntils.config.utils.item_highlights.unique_color.description")
         public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Set Item Highlight Color", description = "What color should the highlight for set items be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.set_color.display_name", description = "wynntils.config.utils.item_highlights.set_color.description")
         public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
 
-        @Setting(displayName = "Normal Item Highlight Color", description = "What color should the highlight for normal items be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.normal_color.display_name", description = "wynntils.config.utils.item_highlights.normal_color.description")
         public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Color", description = "What color should the highlight for crafted armour and weapons be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.crafted_color.display_name", description = "wynntils.config.utils.item_highlights.crafted_color.description")
         public CustomColor craftedHighlightColor = new CustomColor(0, .545f, .545f);
 
-        @Setting(displayName = "Ingredient Highlight Color (1 star)", description = "What color should the highlight for ingredient with 1 star be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.onestar_color.display_name", description = "wynntils.config.utils.item_highlights.onestar_color.description")
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Color (2 stars)", description = "What color should the highlight for ingredient with 2 stars be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.twostar_color.display_name", description = "wynntils.config.utils.item_highlights.twostar_color.description")
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Ingredient Highlight Color (3 stars)", description = "What color should the highlight for ingredient with 3 stars be?\n§aClick above the color to open the color wheel")
+        @Setting(displayName = "wynntils.config.utils.item_highlights.threestar_color.display_name", description = "wynntils.config.utils.item_highlights.threestar_color.description")
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
 
