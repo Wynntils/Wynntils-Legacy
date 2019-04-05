@@ -1,0 +1,621 @@
+#################
+# CONFIGURATION #
+#################
+
+## CORE CONFIG ##
+wynntils.config.core.display_path=Algemeen
+wynntils.config.core.update_stream.display_name=Update Variant
+wynntils.config.core.update_stream.description=Welke update variant van de mod wilt u?\n\n§2Stabiele: §rDe mod update alleen wanneer er een nieuwe versie is. De Stabiele variant heeft over het algemeen minder bugs.\n\n§4Nieuwste: §rDe mod zal updaten zodra er veranderingen zijn. Deze variant zal de nieuwste functies bevatten maar kan ook meer bugs bevatten.
+wynntils.config.core.scroll_direction.display_name=Scrol richting
+wynntils.config.core.scroll_direction.description=Welke scrol richting zorgt ervoor dat de pagina naar beneden gaat?
+wynntils.config.core.enable_changelog_on_update.display_name=Weergeven Verandering Samenvatting
+wynntils.config.core.enable_changelog_on_update.description=Moeten de veranderingen van de recente update worden weergeven bij het inloggen?
+wynntils.config.core.selected_language.display_name=Taal
+wynntils.config.core.selected_language.description=In welke taal wilt u Wynntils gebruiken?
+
+## CORE UPDATE STREAM ENUM CONFIG ##
+wynntils.config.core.enum.update_stream.stable=Stabiele
+wynntils.config.core.enum.update_stream.cutting_edge=Nieuwste
+
+## CORE SCROLL DIRECTION ENUM CONFIG ##
+wynntils.config.core.enum.scroll_direction.up=Omhoog
+wynntils.config.core.enum.scroll_direction.down=Omlaag
+
+## CHAT CONFIG ##
+wynntils.config.chat.display_path=Chat
+wynntils.config.chat.add_timestamps_to_chat.display_name=Chat Tijdsaanduiding
+wynntils.config.chat.add_timestamps_to_chat.description=Moet de ontvangst tijd van chat berichten voor het bericht gevoegd worden?
+wynntils.config.chat.transparent.display_name=Doorzichtigheid Chat
+wynntils.config.chat.transparent.description=Moet het chat venster doorzichtig zijn?
+wynntils.config.chat.timestamp_format.display_name=Chat Tijdsaanduiding Opbouw
+wynntils.config.chat.timestamp_format.description=Hoe moeten de tijdsaanduiding worden opgebouwd? (This has no effect if chat timestamps are disabled.)
+wynntils.config.chat.chat_mentions.display_name=Chat Benoemingen
+wynntils.config.chat.chat_mentions.description=Moet een geluid worden afgespeeld wanneer je gebruikersnaam in de chat verschijnt?
+wynntils.config.chat.spam_filter.display_name=Chat Spam Filter
+wynntils.config.chat.spam_filter.description=Moeten geherhaalde berichten als een verschijnen?
+wynntils.config.chat.filter_info.display_name=Filter Info Berichten
+wynntils.config.chat.filter_info.description=Moeten Wynncraft's info berichten gefilterd worden? (Berichten die beginnen met §4[Info]§f zullen dan niet meer verschijnen.)
+wynntils.config.chat.filter_territory_enter.display_name=Filter Territorium Betredings Berichten
+wynntils.config.chat.filter_territory_enter.description=Moet het bericht van bij het betreden van een territorium verschijnen in de chat? (e.g [You are now entering Detlas])
+wynntils.config.chat.preset.display_name=Verander Chat Tabbladen
+wynntils.config.chat.preset.description=Welk vooraf ingestelde tabbladen moet gebruikt worden?\na - Globaal, Gilde, Groep\nb - Globaal, Omroepingen, Gilde/Groep, PB's\nNaturel - Alles
+wynntils.config.chat.clickable_invite.display_name=Klikbare Groeps Uitnodigingen
+wynntils.config.chat.clickable_invite.description=Moet een uitnodiging voor een groep klikbaar zijn?
+wynntils.config.chat.clickable_coordinate.display_name=Klikbare coordinaten
+wynntils.config.chat.clickable_coordinate.description=Moeten coordinaten in chat te beklikken zijn als '/compass' command?
+
+## CHAT PRESET ENUM CONFIG ##
+wynntils.config.chat.enum.preset.a=A
+wynntils.config.chat.enum.preset.b=B
+wynntils.config.chat.enum.preset.vanilla=Naturel
+
+## MAP CONFIG ##
+wynntils.config.map.display_path=Kaart
+wynntils.config.map.enable_minimap.display_name=Kaart Widget - Activeer
+wynntils.config.map.enable_minimap.description=Moet de kaart widget aanstaan?
+wynntils.config.map.minimap_shape.display_name=Kaart Widget - Vorm
+wynntils.config.map.minimap_shape.description=Moet de kaart widget vierkant of cirkelachtig van vorm zijn?
+wynntils.config.map.minimap_rotation.display_name=Kaart Widget - Draai Eigenschap
+wynntils.config.map.minimap_rotation.description=Moet de kaart naar het noorden wijzen of mee gaan met jouw kijkrichting?
+wynntils.config.map.compass_directions.display_name=Windrichtingen
+wynntils.config.map.compass_directions.description=Moeten de windrichtingen (N, O, Z, W) worden weergegeven op de kaart widget?
+wynntils.config.map.minimap_size.display_name=Kaart Widget - Grootte
+wynntils.config.map.minimap_size.description=Hoe groot moet de kaart widget zijn?
+wynntils.config.map.only_north.display_name=Alleen Noord
+wynntils.config.map.only_north.description=Moet alleen de noordelijke richting worden weergeven op de kaart widget?
+wynntils.config.map.record_chest_tier.display_name=Bewaar Kisten als Waypoints
+wynntils.config.map.record_chest_tier.description=Welke kist niveaus moeten worden bewaard als Waypoints? (Dit en omhoog)
+wynntils.config.map.minimap_zoom.display_name=Kaart Widget - Zoom
+wynntils.config.map.minimap_zoom.description=Hoe ver moet uitgezoomd moet de kaart widget zijn?
+
+## MAP MAP FORMAT ENUM CONFIG ##
+wynntils.config.map.enum.map_format.square=Vierkant
+wynntils.config.map.enum.map_format.circle=Cirkel
+
+## MAP CHEST TIER ENUM CONFIG ##
+wynntils.config.map.enum.chest_tier.tier_1=Niveau 1
+wynntils.config.map.enum.chest_tier.tier_2=Niveau 2
+wynntils.config.map.enum.chest_tier.tier_3=Niveau 3
+wynntils.config.map.enum.chest_tier.tier_4=Niveau 4
+wynntils.config.map.enum.chest_tier.none=Geen
+
+## MAP TEXTURES CONFIG ##
+wynntils.config.map.textures.display_path=Kaart/Textures
+wynntils.config.map.textures.minimap_style.display_name=Kaart Widget - Texture Stijl
+wynntils.config.map.textures.minimap_style.description=Welke texture moet er gebruikt worden voor de kaart widget?
+wynntils.config.map.textures.pointer_style.display_name=Pijl - Stijl
+wynntils.config.map.textures.pointer_style.description=Welke texture moet er gebruikt worden voor de spelers pijl?
+wynntils.config.map.textures.pointer_color.display_name=Pijl - Kleur
+wynntils.config.map.textures.pointer_color.description=Welke kleur moet de speler's pijl zijn?\n\n§aKlik hierboven op de kleur om te keizen.
+
+## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.texture_type.paper=Papier
+wynntils.config.map.textures.enum.texture_type.wynn=Wynn
+wynntils.config.map.textures.enum.texture_type.gilded=Vergulden
+
+## MAP TEXTURES POINTER TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.pointer_type.arrow=Pijl
+wynntils.config.map.textures.enum.pointer_type.cursor=Pijltje
+wynntils.config.map.textures.enum.pointer_type.narrow=Dun
+wynntils.config.map.textures.enum.pointer_type.round=Rond
+wynntils.config.map.textures.enum.pointer_type.straight=Recht
+wynntils.config.map.textures.enum.pointer_type.triangle=Driehoek
+
+## MAP WAYPOINTS CONFIG ##
+wynntils.config.map.waypoints.display_path=Kaart/Waypoints
+
+## MUSIC CONFIG ##
+wynntils.config.music.display_path=Muziek
+wynntils.config.music.allow_music.display_name=Muziek Systeem
+wynntils.config.music.allow_music.description=Zou Wynntils Wynncrafts muziek systeem moeten vervangen?
+wynntils.config.music.volume.display_name=Basis Volume
+wynntils.config.music.volume.description=Hoe luid moet de muziek zijn?
+wynntils.config.music.background_volume.display_name=Achtergrond Volume
+wynntils.config.music.background_volume.description=Hoe luid moet de muziek zijn als Minecraft op de achtergrond staat?
+
+## QUESTBOOK CONFIG ##
+wynntils.config.questbook.display_path=Avonturen Boek
+wynntils.config.questbook.allow_questbook.display_name=Activeer Wynntils' Avonturen Boek 
+wynntils.config.questbook.allow_questbook.description=Moet Wynncraft's avonturen boek vervangen worden door die van Wynntils?
+wynntils.config.questbook.compass_follow.display_name=Zet Locaties van Avonturen op het Kompas
+wynntils.config.questbook.compass_follow.description=Moet het kompas wijzen naar benoemde punten in uw avontuur?
+wynntils.config.questbook.search_click.display_name=Zoekbalk Beklikken
+wynntils.config.questbook.search_click.description=Moet je eerste op de zoekbalk klikken of meteen al kunnen typen?
+wynntils.config.questbook.fuzzy_search.display_name=Gelijkend Zoeken
+wynntils.config.questbook.fuzzy_search.description=Moet een ander algoritme gebruikt worden om te zoeken? Dit staat het gebruik van afkortingen toe.
+
+## RICH PRESENCE CONFIG ##
+wynntils.config.richpresence.display_path=Rich Presence
+wynntils.config.richpresence.show_information.display_name=Laat je Rol Weergeven
+wynntils.config.richpresence.show_information.description=Moet Discord's Rich Presence informatie weergeven over je huidige rol?
+wynntils.config.richpresence.enable.display_name=Activeer Rich Presence
+wynntils.config.richpresence.enable.description=Should the mod enable Rich Presence on Discord?
+
+## UTILITIES CONFIG ##
+wynntils.config.utils.display_path=Voorzieningen
+wynntils.config.utils.daily_reminder.display_name=Dagelijkse Kist Geheugensteuntje
+wynntils.config.utils.daily_reminder.description=Moet er een bericht verschijnen wanneer je dagelijkse kist beschikbaar is? (Als je de wereld in gaat)
+wynntils.config.utils.hide_potion.display_name=Verberg Active Potion Effecten
+wynntils.config.utils.hide_potion.description=Moeten de indicators voor potion effecten worden weergegeven?
+wynntils.config.utils.add_class_server.display_name=Voeg Class & Server Knoppen toe aan het Menu
+wynntils.config.utils.add_class_server.description=Moeten er class en server knoppen worden toegevoegd aan het menu?
+wynntils.config.utils.hide_nametags_through_blocks.display_name=Verberg Naamplaatjes door Muren
+wynntils.config.utils.hide_nametags_through_blocks.description=Moeten naamplaatjes verborgen worden achter ondoorzichtige blokken?
+wynntils.config.utils.hide_nametag_box.display_name=Verberg het Plaatje van Naamplaatjes
+wynntils.config.utils.hide_nametag_box.description=Moeten de grijze vierkanten van naamplaatjes verborgen worden?
+wynntils.config.utils.show_armor.display_name=Geef de Uitrusting van Spelers Weer
+wynntils.config.utils.show_armor.description=Moet de uitrusting van andere spelers worden weergegeven boven hun hoofd? (Zelf-gemaakte uitrusting wordt niet weergegeven.)
+wynntils.config.utils.prevent_mythic.display_name=Preventeer het Sluiten van Kisten bij Mythics
+wynntils.config.utils.prevent_mythic.description=Moeten kisten met mystics er in openblijven?
+wynntils.config.utils.prevent_slot_click.display_name=Preventeer het Klikken op Gesloten Spullen
+wynntils.config.utils.prevent_slot_click.description=Moeten kliks op gesloten spullen worden genegeerd?
+
+## UTILITIES WAR CONFIG ##
+wynntils.config.utils.war.display_path=Oorlog
+wynntils.config.utils.war.entity_filter.display_name=Monster Filter
+wynntils.config.utils.war.entity_filter.description=Moeten de naamplaatjes van monsters verborgen worden in tijden van oorlog?
+wynntils.config.utils.war.warrer_health_bar.display_name=Geef Speler's Levens Weer
+wynntils.config.utils.war.warrer_health_bar.description=Moeten de levens van spelers worden weergegeven tijdens oorlogen?
+
+## UTILITIES ITEM HIGHLIGHTS CONFIG ##
+wynntils.config.utils.item_highlights.display_path=Voorzieningen/Goederen Highlights
+wynntils.config.utils.item_highlights.ingredient_filter.display_name=Filter voor Ingredienten
+wynntils.config.utils.item_highlights.ingredient_filter.description=Moet er een filter voor ingredienten beschikbaar zijn in chesten?
+wynntils.config.utils.item_highlights.highlight_container.display_name=Highlight Spullen in Kisten
+wynntils.config.utils.item_highlights.highlight_container.description=Moeten spullen worden gehighlight naar hun zeldzaamheid in kisten? (ook bank en etc.)
+wynntils.config.utils.item_highlights.highlight_inventory.display_name=Highlight Spullen in Inventaris
+wynntils.config.utils.item_highlights.highlight_inventory.description=Moeten spullen worden gehighlight naar hun zeldzaamheid in uw inventaris?
+wynntils.config.utils.item_highlights.highlight_accessory.display_name=Highlight Accessoires
+wynntils.config.utils.item_highlights.highlight_accessory.description=Moeten accessoires worden gehighlight naar hun zeldzaamheid?
+wynntils.config.utils.item_highlights.highlight_hotbar.display_name=Highlight Balk Spullen
+wynntils.config.utils.item_highlights.highlight_hotbar.description=Moeten spullen in de balk worden gehighlight naar hun zeldzaamheid?
+wynntils.config.utils.item_highlights.highlight_armor.display_name=Highlight Uitrusting Spullen
+wynntils.config.utils.item_highlights.highlight_armor.description=Moeten de uitrusting die je draagt worden gehighlight naar hun zeldzaamheid?
+wynntils.config.utils.item_highlights.highlight_mythic.display_name=Highlight Mythische Spullen
+wynntils.config.utils.item_highlights.highlight_mythic.description=Moeten mythische spullen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_legendary.display_name=Highlight Legendarische Spullen
+wynntils.config.utils.item_highlights.highlight_legendary.description=Moeten legendarische spullen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_rare.display_name=Highlight Zeldzame Spullen
+wynntils.config.utils.item_highlights.highlight_rare.description=Moeten zeldzame spullen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_unique.display_name=Highlight Unieke Spullen
+wynntils.config.utils.item_highlights.highlight_unique.description=Moeten unieke spullen worden gehighlight
+wynntils.config.utils.item_highlights.highlight_set.display_name=Highlight Set Spullen
+wynntils.config.utils.item_highlights.highlight_set.description=Moeten spullen uit sets worden gehighlight
+wynntils.config.utils.item_highlights.highlight_normal.display_name=Highlight Normale Spullen
+wynntils.config.utils.item_highlights.highlight_normal.description=Moeten normale spullen worden gehighlight
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=Highlight Zwarte Markt Accessoires
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=Moeten zwarte markt accessoires worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name=Highlight Goddelijke Accessoires
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description=Moeten goddelijke accessoires worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name=Highlight Epische Accessoires
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description=Moeten epische accessoires worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.display_name=Highlight Zeldzame Accessoires
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.description=Moeten zeldzame accessoires worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.display_name=Highlight Gewone Accessoires
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.description=Moeten gewone accessoires worden gehighlight?
+wynntils.config.utils.item_highlights.emeralds_container.display_name=Geef Emerald Aantal Weer in Kisten
+wynntils.config.utils.item_highlights.emeralds_container.description=Moet het aantal emerald worden weergegeven in kisten? (ook bank en etc.)
+wynntils.config.utils.item_highlights.emeralds_inventory.display_name=Geef Emerald Aantal Weer in Inventaris
+wynntils.config.utils.item_highlights.emeralds_inventory.description=Moet het aantal emerald worden weergegeven in uw inventaris?
+wynntils.config.utils.item_highlights.highlight_powder.display_name=Highlight Poeders
+wynntils.config.utils.item_highlights.highlight_powder.description=Moeten poeders worden gehighlight naar hun soort?
+wynntils.config.utils.item_highlights.highlight_crafting.display_name=Highlight Ingredienten
+wynntils.config.utils.item_highlights.highlight_crafting.description=Moeten ingredienten worden gehighlight naar hun niveau?
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name=Highlight Dubbele Accessoires
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Moeten dubbele accessoirees worden gehightlight op het 'scrap' menu?
+wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Minimum Poeder Niveau voor Highlights
+wynntils.config.utils.item_highlights.minimum_powder_tier.description=Wat is het minimum niveau van poeders dat gehighlight moet worden?
+wynntils.config.utils.item_highlights.legendary_color.display_name=Legendarische Highlight Kleur
+wynntils.config.utils.item_highlights.legendary_color.description=Welke kleur moet de highlight voor legendarische spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Highlight Kleur
+wynntils.config.utils.item_highlights.mythic_color.description=Welke kleur moet de highlight voor mythische spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.rare_color.display_name=Zeldzame Highlight Kleur
+wynntils.config.utils.item_highlights.rare_color.description=Welke kleur moet de highlight voor zeldzame spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.unique_color.display_name=Unieke Highlight Kleur
+wynntils.config.utils.item_highlights.unique_color.description=Welke kleur moet de highlight voor unieke spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.set_color.display_name=Set Highlight Kleur
+wynntils.config.utils.item_highlights.set_color.description=Welke kleur moet de highlight voor spullen uit sets zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.normal_color.display_name=Normale Highlight Kleur
+wynntils.config.utils.item_highlights.normal_color.description=Welke kleur moet de highlight voor normale spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.crafted_color.display_name=Zelf-gemaakte Uitrusting Highlight Kleur
+wynntils.config.utils.item_highlights.crafted_color.description=Welke kleur moet de highlight voor zelf-gemaakte uitrusting zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.onestar_color.display_name=Ingredient Highlight Kleur (1 ster)
+wynntils.config.utils.item_highlights.onestar_color.description=Welke kleur moet de highlight voor ingredienten met 1 ster zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.twostar_color.display_name=Ingredient Highlight Kleur (2 sterren)
+wynntils.config.utils.item_highlights.twostar_color.description=Welke kleur moet de highlight voor ingredienten met 2 sterren zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.threestar_color.display_name=Ingredient Highlight Kleur (3 sterren)
+wynntils.config.utils.item_highlights.threestar_color.description=Welke kleur moet de highlight voor ingredienten met 3 sterren zijn?\n§aKlik hierboven op de kleur om het te veranderen
+
+## OVERLAYS CONFIG ##
+wynntils.config.overlay.display_path=Widgets
+wynntils.config.overlay.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+wynntils.config.overlay.actionbar_coords.display_name=Actie Balk Coordinaten
+wynntils.config.overlay.actionbar_coords.description=Moeten de actie balk uw coordinaten weergeven wanneer er niks anders is?
+wynntils.config.overlay.split_coords.display_name=Splijt de Coordinaten
+wynntils.config.overlay.split_coords.description=Moeten de coordinaten appart worden weergeven bij de actie balk?
+
+## OVERLAYS HEALTH CONFIG ##
+wynntils.config.overlay.health.display_path=Widgets/Levens
+wynntils.config.overlay.health.texture.display_name=Levens Texture
+wynntils.config.overlay.health.texture.description=Welke texture moet gebruikt worden voor het weergeven van de levens balk?
+wynntils.config.overlay.health.animation_speed.display_name=Animatie Snelheid
+wynntils.config.overlay.health.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
+wynntils.config.overlay.health.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.health.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
+wynntils.config.overlay.health.enum.health_texture.grune=Grune
+wynntils.config.overlay.health.enum.health_texture.aether=Aether
+wynntils.config.overlay.health.enum.health_texture.skull=Skull
+wynntils.config.overlay.health.enum.health_texture.skyrim=Skyrim
+wynntils.config.overlay.health.enum.health_texture.a=A
+wynntils.config.overlay.health.enum.health_texture.b=B
+wynntils.config.overlay.health.enum.health_texture.c=C
+wynntils.config.overlay.health.enum.health_texture.d=D
+
+## OVERLAYS MANA CONFIG ##
+wynntils.config.overlay.mana.display_path=Widgets/Mana
+wynntils.config.overlay.mana.texture.display_name=Mana Texture
+wynntils.config.overlay.mana.texture.description=Welke texture moet gebruikt worden voor het weergeven van de mana balk?
+wynntils.config.overlay.mana.animation_speed.display_name=Animatie Snelheid
+wynntils.config.overlay.mana.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
+wynntils.config.overlay.mana.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.mana.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.mana.enum.mana_texture.wynn=Wynn
+wynntils.config.overlay.mana.enum.mana_texture.brune=Brune
+wynntils.config.overlay.mana.enum.mana_texture.aether=Aether
+wynntils.config.overlay.mana.enum.mana_texture.skull=Skull
+wynntils.config.overlay.mana.enum.mana_texture.inverse=Invers
+wynntils.config.overlay.mana.enum.mana_texture.skyrim=Skyrim
+wynntils.config.overlay.mana.enum.mana_texture.a=A
+wynntils.config.overlay.mana.enum.mana_texture.b=B
+wynntils.config.overlay.mana.enum.mana_texture.c=C
+wynntils.config.overlay.mana.enum.mana_texture.d=D
+
+## OVERLAYS HOTBAR CONFIG ##
+wynntils.config.overlay.hotbar.display_path=Widgets/Balk
+wynntils.config.overlay.hotbar.texture.display_name=Balk Texture
+wynntils.config.overlay.hotbar.texture.description=Welke texture moet gebruikt worden voor het weergeven van de balk?
+
+## OVERLAYS HOTBAR HOTBAR TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=Bronpakketen
+wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn=Wynncraft
+
+## OVERLAYS TOAST CONFIG ##
+wynntils.config.overlay.toast.display_path=Widgets/Meldingen
+wynntils.config.overlay.toast.enable.display_name=Activeer Meldingen
+wynntils.config.overlay.toast.enable.description=Moeten sommige berichten worden weergegeven als meldingen in de vorm van rollend papier?
+wynntils.config.overlay.toast.territory_enter.display_name=Activeer Betreding Territorium Melding
+wynntils.config.overlay.toast.territory_enter.description=Moet er een melding verschijnen bij het betreden van een territorium?
+wynntils.config.overlay.toast.area_discovered.display_name=Activeer Ontdekkings Meldingen
+wynntils.config.overlay.toast.area_discovered.description=Moet er een melding verschijnen bij het ontdekken van een gebied?
+wynntils.config.overlay.toast.quest_completed.display_name=Activeer Avontuur Beëindigd Meldingen
+wynntils.config.overlay.toast.quest_completed.description=Moet er een melding verschijnen bij het beëindigen van een avontuur?
+wynntils.config.overlay.toast.discovery_found.display_name=Activeer Geheime Locatie Meldingen
+wynntils.config.overlay.toast.discovery_found.description=Moet er een melding verschijnen bij het ontdekken van een gehieme locatie?
+wynntils.config.overlay.toast.flip.display_name=Spiegel Meldingen
+wynntils.config.overlay.toast.flip.description=Moeten meldingen gespiegeld worden (links naar rechts)?\n§8Dit kan problemen opleveren als de meldingen niet aan de juiste kant van het scherm staan.
+
+## OVERLAYS EXP CONFIG ##
+wynntils.config.overlay.exp.display_path=Widgets/Levels
+wynntils.config.overlay.exp.texture.display_name=Level Texture
+wynntils.config.overlay.exp.texture.description=Welke texture moet gebruikt worden voor het weergeven van de level balk?
+wynntils.config.overlay.exp.animation_speed.display_name=Animatie Snelheid
+wynntils.config.overlay.exp.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
+wynntils.config.overlay.exp.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.exp.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+
+## OVERLAYS EXP EXP TEXTURES ENUM CONFIG ##
+wynntils.config.overlay.exp.enum.exp_texture.wynn=Wynn
+wynntils.config.overlay.exp.enum.exp_texture.liquid=Liquid
+wynntils.config.overlay.exp.enum.exp_texture.emerald=Emerald
+wynntils.config.overlay.exp.enum.exp_texture.a=A
+wynntils.config.overlay.exp.enum.exp_texture.b=B
+wynntils.config.overlay.exp.enum.exp_texture.c=C
+
+## OVERLAYS BUBBLES CONFIG ##
+wynntils.config.overlay.bubbles.display_path=Widgets/Bubbels
+wynntils.config.overlay.bubbles.texture.display_name=Bubbels Texture
+wynntils.config.overlay.bubbles.texture.description=Welke texture moet gebruikt worden voor het weergeven van de level balk voor het weergeven van uw lucht? (voor onderwater)
+wynntils.config.overlay.bubbles.animation_speed.display_name=Animatie Snelheid
+wynntils.config.overlay.bubbles.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
+wynntils.config.overlay.bubbles.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.bubbles.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+wynntils.config.overlay.bubbles.drowning_vignette.display_name=Bubbel Vignet
+wynntils.config.overlay.bubbles.drowning_vignette.description=Moet er een vignet worden weergegeven bij het verdrinken?
+
+## OVERLAYS BUBBLES BUBBLE TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.bubbles.enum.bubble_texture.wynn=Wynn
+wynntils.config.overlay.bubbles.enum.bubble_texture.liquid=Vloeibaar
+# Misspelling in code is replicated here for consistency
+wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=Safier
+wynntils.config.overlay.bubbles.enum.bubble_texture.a=A
+wynntils.config.overlay.bubbles.enum.bubble_texture.b=B
+wynntils.config.overlay.bubbles.enum.bubble_texture.c=C
+
+## OVERLAYS LEVELING CONFIG ##
+wynntils.config.overlay.leveling.display_path=Widgets/Levelen
+wynntils.config.overlay.leveling.text.display_name=Huidige Tekst
+wynntils.config.overlay.leveling.text.description=Hoe moet de levels tekst worden weergegeven?
+wynntils.config.overlay.leveling.text_shadow.display_name=Tekst Shaduw
+wynntils.config.overlay.leveling.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+
+## OVERLAYS TICKER CONFIG ##
+wynntils.config.overlay.ticker.display_path=Widgets/Updates Ticker
+wynntils.config.overlay.ticker.message_limit.display_name=Berichten Limiet
+wynntils.config.overlay.ticker.message_limit.description=Wat is het maximum aantal berichten dat tegelijk in de Updates Ticker mag worden weergegeven?
+wynntils.config.overlay.ticker.expiry_time.display_name=Berichten Verloop Tijd
+wynntils.config.overlay.ticker.expiry_time.description=Hoe lang (in secondes) moeten berichten zichtbaar blijven?
+wynntils.config.overlay.ticker.fadeout_time.display_name=Berichten Vervagings Animatie
+wynntils.config.overlay.ticker.fadeout_time.description=Hoe lang moet de vervagings animatie duren?
+wynntils.config.overlay.ticker.invert_growth.display_name=Gespiegeld
+wynntils.config.overlay.ticker.invert_growth.description=Moeten de berichten van onder naar boven to verschijnen?
+wynntils.config.overlay.ticker.max_message_length.display_name=Maximum Lenght Berichten
+wynntils.config.overlay.ticker.max_message_length.description=Wat is de maximum lengte van berichten in de Updates Ticker? Langere berichten worden afgekort. (0 = oneindig)
+wynntils.config.overlay.ticker.text_shadow.display_name=Tekst Schaduw
+wynntils.config.overlay.ticker.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+wynntils.config.overlay.ticker.new_message_override.display_name=Berichten Overschrijven
+wynntils.config.overlay.ticker.new_message_override.description=Moeten nieuwe berichten oude overschrijven? Als het uitstaat dan worden nieuwe berichten in de wacht gezet.
+
+## OVERLAYS TICKER EXP CONFIG ##
+wynntils.config.overlay.ticker.exp.display_path=Widgets/Updates Ticker/Levels
+wynntils.config.overlay.ticker.exp.enable.display_name=Activeer EXP Berichten
+wynntils.config.overlay.ticker.exp.enable.description=Moet EXP verschijnen als berichten in de Updates Ticker?
+wynntils.config.overlay.ticker.exp.update_rate.display_name=EXP Bericht Update Snelhied
+wynntils.config.overlay.ticker.exp.update_rate.description=Hoe vaak moet de verandering in EXP als bericht verschijnen (in secondes)?
+wynntils.config.overlay.ticker.exp.format.display_name=EXP Bericht Opbouw
+wynntils.config.overlay.ticker.exp.format.description=Hoe moeten de EXP berichten worden opgebouwd?
+
+## OVERLAYS TICKER INVENTORY CONFIG ##
+wynntils.config.overlay.ticker.inv.display_path=Widgets/Updates Ticker/Inventaris
+wynntils.config.overlay.ticker.inv.enable.display_name=Activeer Vol Inventaris Berichten
+wynntils.config.overlay.ticker.inv.enable.description=Moet er een bericht verschijnen zodra de inventaris vol is?
+wynntils.config.overlay.ticker.inv.update_rate.display_name=Inventaris Update Snelheid
+wynntils.config.overlay.ticker.inv.update_rate.description=Hoe vaak (in secondes) moet het volle inventaris bericht verschijnen?
+wynntils.config.overlay.ticker.inv.format.display_name=Vol Inventaris Bericht Opbouw 
+wynntils.config.overlay.ticker.inv.format.description=Hoe moet het volle inventaris bericht zijn opgebouwd?
+
+## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
+wynntils.config.overlay.ticker.redir.display_path=Widgets/Updates Ticker/Doorsturen
+wynntils.config.overlay.ticker.redir.combat.display_name=Doorsturen Gevechts Berichten
+wynntils.config.overlay.ticker.redir.combat.description=Moeten gevechts gerelateerde berichten worden door gestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.horse.display_name=Doorsturen Paard Berichten
+wynntils.config.overlay.ticker.redir.horse.description=Moeten paard gerelateerde berichten worden door gestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.local_login.display_name=Doorsturen Lokale Login
+wynntils.config.overlay.ticker.redir.local_login.description=Moeten berichten van mensen die dichtbij inloggen worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.friend_login.display_name=Doorsturen Vriend Login
+wynntils.config.overlay.ticker.redir.friend_login.description=Moeten berichten van vrienden die inloggen worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.guild_login.display_name=Doorsturen Gilde Login
+wynntils.config.overlay.ticker.redir.guild_login.description=Moeten berichten van gilde leden die inloggen worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.merchant.display_name=Doorsturen Verkopers Berichten
+wynntils.config.overlay.ticker.redir.merchant.description=Moeten berichten van Blacksmiths en Identifiers worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.other.display_name=Doorsturen Overige Berichten
+wynntils.config.overlay.ticker.redir.other.description=Moeten skill points, prijs van identificeren van spullen en levelen van andere spelen worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.server.display_name=Doorsturen Server Status
+wynntils.config.overlay.ticker.redir.server.description=Moeten berichten over het herstarten van de server worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.quest.display_name=Doorsturen Avonturen Berichten
+wynntils.config.overlay.ticker.redir.quest.description=Moeten berichten met betrekking tot de voortgang van een avontuur worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.soul_point.display_name=Doorsturen Soul Point Berichten
+wynntils.config.overlay.ticker.redir.soul_point.description=Moeten berichten over het verkrijgen van Soul Points worden doorgestuurd naar de Updates Ticker?
+
+## OVERLAYS TICKER TERRITORY CONFIG ##
+wynntils.config.overlay.ticker.territory.display_path=Widgets/Updates Ticker/Territorium Verandering
+wynntils.config.overlay.ticker.territory.enable.display_name=Activeer Territorium Verandering
+wynntils.config.overlay.ticker.territory.enable.description=Moeten berichten over het veranderen van territorium worden weergegeven in de Updates Ticker?
+wynntils.config.overlay.ticker.territory.enter.display_name=Activeer Territorium Betreden
+wynntils.config.overlay.ticker.territory.enter.description=Moeten berichten over het betreden van territorium worden weergegeven in de Updates Ticker?
+wynntils.config.overlay.ticker.territory.leave.display_name=Activeer Territorium Verlaten
+wynntils.config.overlay.ticker.territory.leave.description=Moeten berichten over het verlaten van territorium worden weergegeven in de Updates Ticker?
+wynntils.config.overlay.ticker.territory.music_change.display_name=Activeer Muziek Verandering
+wynntils.config.overlay.ticker.territory.music_change.description=Moet de verandering van Muziek worden weergegeven in de Updates Ticker? (Alleen als Wynntils' muziek systeem in gebruik is)
+wynntils.config.overlay.ticker.territory.enter_format.display_name=Territorium Betreden Opbouw
+wynntils.config.overlay.ticker.territory.enter_format.description=Hoe moet het territorium betreden bericht worden opgebouwd?
+wynntils.config.overlay.ticker.territory.leave_format.display_name=Territorium Verlaten Opbouw
+wynntils.config.overlay.ticker.territory.leave_format.description=Hoe moet het territorium verlaten bericht worden opgebouwd?
+wynntils.config.overlay.ticker.territory.music_change_format.display_name=Muziek Verandering Opbouw
+wynntils.config.overlay.ticker.territory.music_change_format.description=Hoe moet de muziek veranderings bericht worden opgebouwd?
+
+## OVERLAYS WARTIMER CONFIG ##
+wynntils.config.overlay.wartimer.display_path=Widgets/Oorlog Timer
+wynntils.config.overlay.wartimer.text_shadow.display_name=Tekst Schaduw
+wynntils.config.overlay.wartimer.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+
+## OVERLAYS TERRITORY FEED CONFIG ##
+wynntils.config.overlay.territoryfeed.display_path=Widgets/Territorium Nieuws
+wynntils.config.overlay.territoryfeed.enabled.display_name=Territorium Nieuws
+wynntils.config.overlay.territoryfeed.enabled.description=Moet er een Territorium Nieuws Feed worden weergegeven?
+wynntils.config.overlay.territoryfeed.animation_length.display_name=Animatie Duur
+wynntils.config.overlay.territoryfeed.animation_length.description=Hoe lang (in secondes) moet een bericht weergegeven worden in de nieuws feed?
+wynntils.config.overlay.territoryfeed.display_mode.display_name=Territorium Bericht Modus
+wynntils.config.overlay.territoryfeed.display_mode.description=Welke berichten moeten er verschijnen in de nieuws feed?\n\nNormaal: Geeft alle berichten weer.\n\nHighlight Eigen Gilde: Geeft alle berichten weer, maar geeft jouw gilde een andere kleur. (§2Verovered Territorium §r& §4Verloor Territorium§r)\n\nAlleen Eigen Gilde: Geeft alleen berichten over jouw gilde weer.
+wynntils.config.overlay.territoryfeed.short_message.display_name=Verklein Berichten
+wynntils.config.overlay.territoryfeed.short_message.description=Moeten berichten in de territorium nieuws feed verkort worden?
+wynntils.config.overlay.territoryfeed.guild_tag.display_name=Gebruik Gilde Afkortingen
+wynntils.config.overlay.territoryfeed.guild_tag.description=Moeten de afkortingen van gildes gebruikt worden in plaats van de namen?
+
+## OVERLAYS TERRITORY FEED DISPLAY MODE ENUM CONFIG ##
+wynntils.config.overlay.territoryfeed.enum.display_mode.normal=Normaal
+wynntils.config.overlay.territoryfeed.enum.display_mode.distinguish_own_guild=Highlight eigen Gilde
+wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=Alleen Eigen Gilde
+
+## OTHER CONFIG TEXT SHADOW ENUM ##
+wynntils.config.other.enum.text_shadow.none=Geen
+wynntils.config.other.enum.text_shadow.normal=Normaal
+wynntils.config.other.enum.text_shadow.outline=Omlijnd
+
+###########
+# MODULES #
+###########
+
+## MODULE DISPLAY NAMES ##
+wynntils.modules.capes.display_name=Cape
+wynntils.modules.chat.display_name=Chat
+wynntils.modules.core.display_name=Algemeen
+wynntils.modules.map.display_name=Kaart
+wynntils.modules.sounds.display_name=WynnGeluiden
+wynntils.modules.questbook.display_name=Avonturen Boek
+wynntils.modules.richpresence.display_name=Rich Presence
+wynntils.modules.utilities.display_name=Voorzieningen
+
+########
+# CHAT #
+########
+
+## TAB GUI ##
+wynntils.chat.tabgui.generic.required=Vereist
+wynntils.chat.tabgui.generic.optional=Optioneel
+wynntils.chat.tabgui.button.save=Opslaan
+wynntils.chat.tabgui.button.save.tooltip_1=Klik hier om deze chat
+wynntils.chat.tabgui.button.save.tooltip_2=tabblad op te slaan.
+wynntils.chat.tabgui.button.delete=Verwijderen
+wynntils.chat.tabgui.button.delete.tooltip_1=Klik hier om deze chat
+wynntils.chat.tabgui.button.delete.tooltip_2=tabblad te verwijderen.
+wynntils.chat.tabgui.button.delete.tooltip_3=
+wynntils.chat.tabgui.button.delete.tooltip_4=Onomkeerbaar
+wynntils.chat.tabgui.button.close=Sluiten
+wynntils.chat.tabgui.button.advanced_show=Geavanceerde Instellingen
+wynntils.chat.tabgui.button.advanced_hide=Simpele Instellingen
+wynntils.chat.tabgui.button.low_priority=Lage Prioriteit
+wynntils.chat.tabgui.button.low_priority.tooltip_1=Indien geselecteed, zullen
+wynntils.chat.tabgui.button.low_priority.tooltip_2=berichten eerst met
+wynntils.chat.tabgui.button.low_priority.tooltip_3=andere tabbladen matchen.
+wynntils.chat.tabgui.button.low_priority.tooltip_4=
+wynntils.chat.tabgui.button.low_priority.tooltip_5=Dit zal ook berichten
+wynntils.chat.tabgui.button.low_priority.tooltip_6=verdubbelen over andere
+wynntils.chat.tabgui.button.low_priority.tooltip_7=lage prioriteits tabbladen.
+wynntils.chat.tabgui.button.message_types=Type berichten
+wynntils.chat.tabgui.button.message_type.all=Alles
+wynntils.chat.tabgui.button.message_type.all.tooltip_1=Bericht Type: Alles
+wynntils.chat.tabgui.button.message_type.all.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=berichten, behalve de
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=gedeselecteerde types.
+wynntils.chat.tabgui.button.message_type.local=Locaal
+wynntils.chat.tabgui.button.message_type.local.tooltip_1=Bericht Type: Locaal
+wynntils.chat.tabgui.button.message_type.local.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.local.tooltip_3=berichten van dichtbijzijnde
+wynntils.chat.tabgui.button.message_type.local.tooltip_4=spelers naar dit tabblad.
+wynntils.chat.tabgui.button.message_type.guild=Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_1=Bericht Type: Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.guild.tooltip_3=berichten van uw Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_4=naar dit tabblad.
+wynntils.chat.tabgui.button.message_type.party=Groep
+wynntils.chat.tabgui.button.message_type.party.tooltip_1=Bericht Type: Groep
+wynntils.chat.tabgui.button.message_type.party.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.party.tooltip_3=berichten van uw Groep
+wynntils.chat.tabgui.button.message_type.party.tooltip_4=naar dit tabblad.
+wynntils.chat.tabgui.button.message_type.shouts=Omroepingen
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_1=Bericht Type: Omroepingen
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_3=omroepingen naar
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_4=dit tabblad.
+wynntils.chat.tabgui.button.message_type.pms=PBs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_1=Bericht Type: PBs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_2=Dit verstuurd alle
+wynntils.chat.tabgui.button.message_type.pms.tooltip_3=privé berichten
+wynntils.chat.tabgui.button.message_type.pms.tooltip_4=naar dit tabblad.
+wynntils.chat.tabgui.button.name=Naam
+wynntils.chat.tabgui.button.name.tooltip_1=Dit is de naam
+wynntils.chat.tabgui.button.name.tooltip_2=van het tabblad
+wynntils.chat.tabgui.button.name.tooltip_3=
+wynntils.chat.tabgui.button.regex=Regex
+wynntils.chat.tabgui.button.regex.tooltip_1=Dit herkent berichten
+wynntils.chat.tabgui.button.regex.tooltip_2=
+wynntils.chat.tabgui.button.regex.tooltip_3=Meer over Regex hier:
+wynntils.chat.tabgui.button.regex.tooltip_4=https://regexr.com/
+wynntils.chat.tabgui.button.auto_command=Auto Command
+wynntils.chat.tabgui.button.auto_command.tooltip_1=Dit plaats automatisch
+wynntils.chat.tabgui.button.auto_command.tooltip_2=een command voor elk
+wynntils.chat.tabgui.button.auto_command.tooltip_3=bericht.
+wynntils.chat.tabgui.button.auto_command.tooltip_4=
+wynntils.chat.tabgui.button.order_number=Plaats Nummer #
+wynntils.chat.tabgui.button.order_number_alt=Plaats Nummber
+wynntils.chat.tabgui.button.order_number.tooltip_1=Dit bepaald de plaats
+wynntils.chat.tabgui.button.order_number.tooltip_2=van dit tabblad.
+wynntils.chat.tabgui.button.order_number.tooltip_3=
+wynntils.chat.tabgui.button.order_number.tooltip_4=(Laag naar Hoog)
+wynntils.chat.tabgui.menu.confirm_delete_main=Weet u zeker dat u dit tabblad wilt verwijderen?
+wynntils.chat.tabgui.menu.confirm_delete_sub=Dit is onomkeerbaar!
+
+############
+# COMMANDS #
+############
+# Note to translators: do not change the actual text of a command (for example, don't change /territory in "/territory [name] | Ex: /territory Detlas") or the arguments within those commands
+
+## /compass ##
+wynntils.commands.compass.error.generic=Dit was niet de bedoeling!
+wynntils.commands.compass.direction=Richting
+wynntils.commands.compass.now_pointing=Het kompas wijst nu richting
+
+## /forceupdate ##
+wynntils.commands.forceupdate.usage=Forceer Wynntils om te updaten
+wynntils.commands.forceupdate.running=Forceren Update
+
+## /territory ##
+wynntils.commands.territory.usage=Laat uw kompas richting een territorium wijzen
+wynntils.commands.territory.error.wrong_usage=/territory [naam] | Bijv: /territory Detlas
+wynntils.commands.territory.error.territory_not_valid=Ongeldig territorium! Gebruik: /territory [naam] | Bijv: /territory Detlas
+wynntils.commands.territory.now_pointing=Het kompas wijst nu naar %s (%o, %o)
+wynntils.commands.territory.compass_warning=\nHoudt in de gaten dat uw kompas naar het midden van het territorium wijst.
+
+## /token ##
+wynntils.commands.token.usage=Geeft u uw Wynntils verificatie code
+wynntils.commands.token.token_text=Wynntils code
+wynntils.commands.token.token_link_hover=Klik hier om een account aan te maken!
+
+## /wynntils ##
+wynntils.commands.wynntils.usage=/wynntils <command>
+wynntils.commands.wynntils.donate.donate_text=Je kan doneren op:
+wynntils.commands.wynntils.donate.donate_link_hover=Klik hier om de link te openen.
+wynntils.commands.wynntils.help.basic_text=Wynntils' command lijst:
+wynntils.commands.wynntils.help.help=Geeft een lijst van alle Wynntils commands.
+wynntils.commands.wynntils.help.discord=Geeft een uitnodigings link voor onze Discord server.
+wynntils.commands.wynntils.help.version=Geeft weer welke versie van Wynntils geïnstalleerd is.
+wynntils.commands.wynntils.help.changelog=Geeft de laatste verandering weer van de update.
+wynntils.commands.wynntils.help.reloadapi=Herlaad alle API gegevens.
+wynntils.commands.wynntils.help.donate=Geeft een link naar onze Patreon.
+wynntils.commands.wynntils.help.token=Geeft een klikbare code om een Wynntils account aan te maken, om een cape in te stellen.
+wynntils.commands.wynntils.help.forceupdate=Downloadt en installeerd de laatste versie van Wynntils.
+wynntils.commands.wynntils.help.compass=Laat je kompas wijzen naar een x & z of naar een richting (e.g. north, SE).
+wynntils.commands.wynntils.help.territory=Laat je kompas wijzen naar de locatie van een territorium.
+wynntils.commands.wynntils.discord.basic_text=Je bent welkom in onze Discord op:
+wynntils.commands.wynntils.discord.discord_link_hover=Klik hier om in onze Discord server te komen.
+wynntils.commands.wynntils.version.development_environment=Wynntils is gestart in een ontwikkelings instelling.
+wynntils.commands.wynntils.version.using_stable=U gebruikt de Stabiele variant:
+wynntils.commands.wynntils.version.using_cutting_edge=U gebruikt de nieuwste variant:
+wynntils.commands.wynntils.version.version=Versie %s
+wynntils.commands.wynntils.version.build=Revisie %s
+wynntils.commands.wynntils.version.build_unknown=Onbekende Revisie
+wynntils.commands.wynntils.version.update_check_failed=Wynntils kon niet kijken naar updates - Druk op %s om het opnieuw te proberen.
+wynntils.commands.wynntils.version.update_check_outdated=Wynntils is verouderd - Druk op %s om te updaten.
+wynntils.commands.wynntils.version.update_check_up_to_date=Wynntils is up-to-date - Druk op %s om opnieuw te kijken naar updates.
+wynntils.commands.wynntils.error.invalid_argument=Ongeldige parameters. Gebruik /wynntils help voor meer informatie.
+wynntils.commands.wynntils.error.missing_argument=Ontbrekende parameters. Gebruik /wynntils help voor meer informatie.
+
+########
+# CORE #
+########
+
+## CHANGELOG UI ##
+wynntils.core.ui.changelog.changelog=Veranderingen
+
+## DOWNLOAD OVERLAY ##
+wynntils.core.ui.download.display_name=Downloaden
+wynntils.core.ui.download.close_in=Uw game wordt gesloten over %o seconden
+wynntils.core.ui.download.files_left=%o bestand te gaan
+
+## UPDATE OVERLAY ##
+wynntils.core.ui.update.display_name=Update
+wynntils.core.ui.update.upper_text=Wynntils §av%s - §f%ss over
+wynntils.core.ui.update.build_is_avaliable=§eRevisie %s §fis beschikbaar.
+wynntils.core.ui.update.version_is_avaliable=Een nieuwe update is beschikbaar §ev%s
+wynntils.core.ui.update.download_question=Download automatisch? §a(y/n)
+wynntils.core.ui.update.yes=Ja (y)
+wynntils.core.ui.update.no=Nee (n)
+wynntils.core.ui.update.updating_to=Updaten naar %s
+wynntils.core.ui.update.update_downloaded_version=Een update voor Wynntils (Versie %s) is gedownload. En, wordt geïnstalleerd zodra het spel herstart is.
+wynntils.core.ui.update.update_downloaded_build=Een update voor Wynntils (Revisie %s) is gedownload. En, wordt geïnstalleerd zodra het spel herstart is.
