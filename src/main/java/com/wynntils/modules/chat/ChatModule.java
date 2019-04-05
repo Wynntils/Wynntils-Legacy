@@ -10,7 +10,7 @@ import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.events.ClientEvents;
 import com.wynntils.modules.chat.managers.TabManager;
 
-@ModuleInfo(name = "chat", displayName = "Chat")
+@ModuleInfo(name = "chat", displayName = "wynntils.modules.chat.display_name")
 public class ChatModule extends Module {
 
     private static ChatModule module;

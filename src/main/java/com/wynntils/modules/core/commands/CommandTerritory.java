@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,6 +17,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +42,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "Redirects your compass to a territory";
+        return I18n.format("wynntils.commands.territory.usage");
     }
 
     @Override
@@ -48,7 +50,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if(args.length <= 0) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
+            throw new WrongUsageException(I18n.format("wynntils.commands.territory.error.wrong_usage"));
         }
         String territoryName = StringUtils.join(args, " ");
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
@@ -57,7 +59,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if(!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
+            throw new CommandException(I18n.format("wynntils.commands.territory.error.territory_not_valid"));
         }
         Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 
@@ -68,10 +70,10 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
         ModCore.mc().world.setSpawnPoint(new BlockPos(xMiddle, 0, zMiddle));
 
-        TextComponentString success = new TextComponentString("Compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
+        TextComponentTranslation success = new TextComponentTranslation("wynntils.commands.territory.now_pointing", territoryName, xMiddle, zMiddle);
         success.getStyle().setColor(TextFormatting.GREEN);
 
-        TextComponentString warn = new TextComponentString("\nPlease be sure that you know that this command redirects your compass to the middle of the territory");
+        TextComponentTranslation warn = new TextComponentTranslation("wynntils.commands.territory.compass_warning");
         warn.getStyle().setColor(TextFormatting.AQUA);
 
         success.appendSibling(warn);

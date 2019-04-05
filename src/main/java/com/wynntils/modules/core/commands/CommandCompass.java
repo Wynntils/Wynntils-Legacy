@@ -4,6 +4,7 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.ModCore;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -11,6 +12,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 
@@ -51,13 +53,13 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "compass [<x> <z> | <direction>]";
+        return "compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            throw new WrongUsageException("/compass [<x> <z> | <direction>]");
+            throw new WrongUsageException("/compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]");
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = { 0, 0 };
             //check for north/south
@@ -101,7 +103,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     break;
                 default:
                     if (newPos[1] == 0) {
-                        TextComponentString text = new TextComponentString("That wasn't supposed to happen!");
+                        TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.error.generic");
                         text.getStyle().setColor(TextFormatting.DARK_RED);
                         sender.sendMessage(text);
                     }
@@ -142,9 +144,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                 }
             }
             dir = dir.substring(0,1).toUpperCase() + dir.substring(1);
-            TextComponentString text = new TextComponentString("");
+            TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.now_pointing");
             text.getStyle().setColor(TextFormatting.GREEN);
-            text.appendText("Compass is now pointing towards ");
+            text.appendText(" ");
             
             TextComponentString directionText = new TextComponentString(dir);
             directionText.getStyle().setColor(TextFormatting.DARK_GREEN);
@@ -154,9 +156,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("[0-9-]+") && args[1].matches("[0-9-]+")) {
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
-            TextComponentString text = new TextComponentString("");
+            TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.now_pointing");
             text.getStyle().setColor(TextFormatting.GREEN);
-            text.appendText("Compass is now pointing towards (");
+            text.appendText(" (");
             
             TextComponentString xCoordinateText = new TextComponentString(args[0]);
             xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
@@ -171,7 +173,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(").");
             sender.sendMessage(text);
         } else {
-            throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction>]");
+            throw new CommandException("Invalid arguments: /compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]");
         }
     }
     

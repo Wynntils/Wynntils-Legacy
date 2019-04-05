@@ -5,10 +5,12 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 
@@ -26,13 +28,13 @@ public class CommandForceUpdate extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "Force Wynntils to update";
+        return I18n.format("wynntils.commands.forceupdate.usage");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         WebManager.getUpdate().forceUpdate();
-        TextComponentString text = new TextComponentString("Forcing Wynntils Update");
+        TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.forceupdate.running");
         text.getStyle().setColor(TextFormatting.AQUA);
         sender.sendMessage(text);
     }

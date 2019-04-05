@@ -11,7 +11,7 @@ import com.wynntils.modules.music.events.ClientEvents;
 import com.wynntils.modules.music.managers.MusicManager;
 import com.wynntils.modules.music.overlays.inventories.CurrentMusicDisplayer;
 
-@ModuleInfo(name = "sounds", displayName = "WynnSounds")
+@ModuleInfo(name = "sounds", displayName = "wynntils.modules.sounds.display_name")
 public class MusicModule extends Module {
 
     @Override

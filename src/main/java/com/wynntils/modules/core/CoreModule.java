@@ -13,7 +13,7 @@ import com.wynntils.modules.core.events.ServerEvents;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 
-@ModuleInfo(name = "core", displayName = "Core")
+@ModuleInfo(name = "core", displayName = "wynntils.modules.core.display_name")
 public class CoreModule extends Module {
 
     private static CoreModule module;

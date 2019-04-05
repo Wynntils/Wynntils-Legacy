@@ -16,7 +16,7 @@ import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.modules.utilities.overlays.inventories.*;
 
-@ModuleInfo(name = "utilities", displayName = "Utilities")
+@ModuleInfo(name = "utilities", displayName = "wynntils.modules.utilities.display_name")
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;

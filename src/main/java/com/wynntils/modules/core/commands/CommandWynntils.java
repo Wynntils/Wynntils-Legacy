@@ -12,6 +12,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -19,6 +20,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -41,7 +43,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/wynntils <command>";
+        return I18n.format("wynntils.commands.wynntils.usage");
     }
 
     @Override
@@ -49,51 +51,53 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         if (args.length >= 1) {
             switch (String.join("", args).toLowerCase()) {
                 case "donate":
-                    TextComponentString c = new TextComponentString("You can donate to Wynntils at: ");
+                    TextComponentTranslation c = new TextComponentTranslation("wynntils.commands.wynntils.donate.donate_text");
+                    c.appendText(" ");
                     c.getStyle().setColor(TextFormatting.AQUA);
                     TextComponentString url = new TextComponentString("https://www.patreon.com/Wynntils");
                     url.getStyle()
                             .setColor(TextFormatting.LIGHT_PURPLE)
                             .setUnderlined(true)
                             .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/Wynntils"))
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to open in your browser.")));
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("wynntils.commands.wynntils.donate.donate_link_hover")));
 
                     sender.sendMessage(c.appendSibling(url));
                     break;
                 case "help":
-                    TextComponentString text = new TextComponentString("");
+                    TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.wynntils.help.basic_text");
                     text.getStyle().setColor(TextFormatting.GOLD);
-                    text.appendText("Wynntils' command list: ");
+                    text.appendText(" ");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " help", "Shows a list of all Wynntils' commands.");
+                    addCommandDescription(text, "-wynntils", " help", "wynntils.commands.wynntils.help.help");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " discord", "Provides you with an invite to our Discord server.");
+                    addCommandDescription(text, "-wynntils", " discord", "wynntils.commands.wynntils.help.discord");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " version", "Shows the installed Wynntils version.");
+                    addCommandDescription(text, "-wynntils", " version", "wynntils.commands.wynntils.help.version");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " changelog [major]", "Shows the latest changelog of your version.");
+                    addCommandDescription(text, "-wynntils", " changelog [major]", "wynntils.commands.wynntils.help.changelog");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " reloadapi", "Reloads all API data.");
+                    addCommandDescription(text, "-wynntils", " reloadapi", "wynntils.commands.wynntils.help.reloadapi");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " donate", "Provides our Patreon link.");
+                    addCommandDescription(text, "-wynntils", " donate", "wynntils.commands.wynntils.help.donate");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "token", "Provides you with a clickable token to create a Wynntils account to manage cosmetics.");
+                    addCommandDescription(text, "-", "token", "wynntils.commands.wynntils.help.token");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "forceupdate", "Downloads and installs the latest successful build.");
+                    addCommandDescription(text, "-", "forceupdate", "wynntils.commands.wynntils.help.forceupdate");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "compass", "Makes your compass point towards an x and z or a direction (e.g. north, SE).");
+                    addCommandDescription(text, "-", "compass", "wynntils.commands.wynntils.help.compass");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "territory", "Redirects your compass to a territory location");
+                    addCommandDescription(text, "-", "territory", "wynntils.commands.wynntils.help.territory");
                     sender.sendMessage(text);
                     break;
                     /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
                 case "discord":
-                    TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
+                    TextComponentTranslation msg = new TextComponentTranslation("wynntils.commands.wynntils.discord.basic_text");
+                    msg.appendText("\n");
                     msg.getStyle().setColor(TextFormatting.GOLD);
                     TextComponentString link = new TextComponentString(WebManager.getApiUrls().get("DiscordInvite"));
                     link.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")))
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("wynntils.commands.wynntils.discord.discord_link_hover")))
                             .setColor(TextFormatting.DARK_AQUA);
                     sender.sendMessage(msg.appendSibling(link));
                     break;
@@ -116,10 +120,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 default:
-                    throw new CommandException("Invalid argument. Use /wynntils help for more info.");
+                    throw new CommandException(I18n.format("wynntils.commands.wynntils.error.invalid_argument"));
             }
         } else {
-            throw new CommandException("Missing arguments. Use /wynntils help for more info.");
+            throw new CommandException(I18n.format("wynntils.commands.wynntils.error.missing_argument"));
         }
     }
     
@@ -134,48 +138,49 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         
         text.appendText(" ");
         
-        TextComponentString descriptionText = new TextComponentString(description);
+        TextComponentTranslation descriptionText = new TextComponentTranslation(description);
         descriptionText.getStyle().setColor(TextFormatting.GRAY);
         text.appendSibling(descriptionText);
     }
 
     private void handleModVersion(ICommandSender sender) {
         if (Reference.developmentEnvironment) {
-            TextComponentString text = new TextComponentString("Wynntils is running in a development environment.");
+            TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.wynntils.version.development_environment");
             text.getStyle().setColor(TextFormatting.GOLD);
             sender.sendMessage(text);
             return;
         }
         
-        TextComponentString releaseStreamText = null;
-        TextComponentString buildText = null;
+        TextComponentTranslation releaseStreamText;
+        TextComponentTranslation buildText;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
-            releaseStreamText = new TextComponentString("Using Stable release stream: ");
-            buildText = new TextComponentString("Version " + Reference.VERSION);
+            releaseStreamText = new TextComponentTranslation("wynntils.commands.wynntils.version.using_stable");
+            buildText = new TextComponentTranslation("wynntils.commands.wynntils.version.version", Reference.VERSION);
         } else {
-            releaseStreamText = new TextComponentString("Using Cutting Edge release stream: ");
+            releaseStreamText = new TextComponentTranslation("wynntils.commands.wynntils.version.using_cutting_edge");
             if (Reference.BUILD_NUMBER == -1) {
-                buildText = new TextComponentString("Unknown Build");
+                buildText = new TextComponentTranslation("wynntils.commands.wynntils.version.build_unknown");
             } else {
-                buildText = new TextComponentString("Build " + Reference.BUILD_NUMBER);
+                buildText = new TextComponentTranslation("wynntils.commands.wynntils.version.build", Reference.BUILD_NUMBER);
             }
         }
+        releaseStreamText.appendText(" ");
         releaseStreamText.getStyle().setColor(TextFormatting.GOLD);
         buildText.getStyle().setColor(TextFormatting.YELLOW);
         TextComponentString versionText = new TextComponentString("");
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
         
-        TextComponentString updateCheckText = null;
-        TextFormatting color = null;
+        TextComponentTranslation updateCheckText;
+        TextFormatting color;
         if (WebManager.getUpdate().updateCheckFailed()) {
-            updateCheckText = new TextComponentString("Wynntils failed to check for updates - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to try again.");
+            updateCheckText = new TextComponentTranslation("wynntils.commands.wynntils.version.update_check_failed", KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName());
             color = TextFormatting.DARK_RED;
         } else if (WebManager.getUpdate().hasUpdate()) {
-            updateCheckText = new TextComponentString("Wynntils is currently outdated - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to update now.");
+            updateCheckText = new TextComponentTranslation("wynntils.commands.wynntils.version.update_check_outdated", KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName());
             color = TextFormatting.DARK_RED;
         } else {
-            updateCheckText = new TextComponentString("Wynntils was up-to-date when last checked - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates.");
+            updateCheckText = new TextComponentTranslation("wynntils.commands.wynntils.version.update_check_up_to_date", KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName());
             color = TextFormatting.DARK_GREEN;
         }
         updateCheckText.getStyle().setColor(color);

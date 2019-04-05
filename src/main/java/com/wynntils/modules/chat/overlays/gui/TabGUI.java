@@ -8,6 +8,7 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
@@ -63,10 +64,10 @@ public class TabGUI extends GuiScreen {
         int x = width / 2; int y = height / 2;
 
         //General
-        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 40, 40, 20, TextFormatting.GREEN + "Save"));
-        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 40, 40, 20, TextFormatting.DARK_RED + "Delete"));
-        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 40, 40, 20, TextFormatting.WHITE + "Close"));
-        buttonList.add(advancedButton = new GuiButton(4, x - 65, y - 60, 130, 20, "Show Advanced Settings"));
+        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 40, 40, 20, TextFormatting.GREEN + I18n.format("wynntils.chat.tabgui.button.save")));
+        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 40, 40, 20, TextFormatting.DARK_RED + I18n.format("wynntils.chat.tabgui.button.delete")));
+        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 40, 40, 20, TextFormatting.WHITE + I18n.format("wynntils.chat.tabgui.button.close")));
+        buttonList.add(advancedButton = new GuiButton(4, x - 65, y - 60, 130, 20, I18n.format("wynntils.chat.tabgui.button.advanced_show")));
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
 
@@ -88,18 +89,18 @@ public class TabGUI extends GuiScreen {
         orderNbField.setEnableBackgroundDrawing(true);
         orderNbField.setMaxStringLength(2);
 
-        buttonList.add(lowPriority = new GuiCheckBox(3, x - 100, y + 22, "Low Priority", true));
+        buttonList.add(lowPriority = new GuiCheckBox(3, x - 100, y + 22, I18n.format("wynntils.chat.tabgui.button.low_priority"), true));
 
         //Simple
         labelList.add(simpleSettings = new GuiLabel(mc.fontRenderer, 4, x - 100, y - 35, 10, 10, 0xFFFFFF));
-        simpleSettings.addLine("Message types " + TextFormatting.RED + "*");
+        simpleSettings.addLine(I18n.format("wynntils.chat.tabgui.button.message_types") + TextFormatting.RED + " *");
 
-        simpleRegexSettings.add(allRegex = new GuiCheckBox(10,x - 100, y - 25, "All", false));
-        simpleRegexSettings.add(localRegex = new GuiCheckBox(11,x - 50, y - 25, "Local", false));
-        simpleRegexSettings.add(guildRegex = new GuiCheckBox(12,x, y - 25, "Guild", false));
-        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13, x + 50 , y - 25, "Party", false));
-        simpleRegexSettings.add(shoutsRegex = new GuiCheckBox(14,x - 100, y - 10, "Shouts", false));
-        simpleRegexSettings.add(pmRegex = new GuiCheckBox(15,x - 50, y - 10, "PMs", false));
+        simpleRegexSettings.add(allRegex = new GuiCheckBox(10,x - 100, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.all"), false));
+        simpleRegexSettings.add(localRegex = new GuiCheckBox(11,x - 50, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.local"), false));
+        simpleRegexSettings.add(guildRegex = new GuiCheckBox(12,x, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.guild"), false));
+        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13, x + 50 , y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.party"), false));
+        simpleRegexSettings.add(shoutsRegex = new GuiCheckBox(14,x - 100, y - 10, I18n.format("wynntils.chat.tabgui.button.message_type.shouts"), false));
+        simpleRegexSettings.add(pmRegex = new GuiCheckBox(15,x - 50, y - 10, I18n.format("wynntils.chat.tabgui.button.message_type.pms"), false));
         buttonList.addAll(simpleRegexSettings);
         applyRegexSettings();
         //Advanced
@@ -119,14 +120,14 @@ public class TabGUI extends GuiScreen {
         }
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 110, y - 105, 10, 10, 0xFFFFFF));
-        nameLabel.addLine("Name " + TextFormatting.RED + "*");
+        nameLabel.addLine(I18n.format("wynntils.chat.tabgui.button.name") + TextFormatting.RED + " *");
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
-        regexLabel.addLine("Regex " + TextFormatting.RED + "*");
+        regexLabel.addLine(I18n.format("wynntils.chat.tabgui.button.regex") + TextFormatting.RED + " *");
         regexLabel.visible = false;
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
-        autoCommand.addLine("Auto Command");
+        autoCommand.addLine(I18n.format("wynntils.chat.tabgui.button.auto_command"));
         labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
-        orderNb.addLine("Order #");
+        orderNb.addLine(I18n.format("wynntils.chat.tabgui.button.order_number"));
     }
 
     @Override
@@ -150,14 +151,14 @@ public class TabGUI extends GuiScreen {
                 }else{
                     mc.displayGuiScreen(this);
                 }
-            }, TextFormatting.WHITE + (TextFormatting.BOLD + "Do you really want to delete this chat tab?"), TextFormatting.RED + "This action is irreversible!", 0));
+            }, TextFormatting.WHITE + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.menu.confirm_delete_main")), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.confirm_delete_sub"), 0));
         } else if (button == advancedButton) {
             boolean simple;
-            if (button.displayString.equals("Show Advanced Settings")) {
-                button.displayString = "Hide Advanced Settings";
+            if (button.displayString.equals(I18n.format("wynntils.chat.tabgui.button.advanced_show"))) {
+                button.displayString = I18n.format("wynntils.chat.tabgui.button.advanced_hide");
                 simple = false;
             } else {
-                button.displayString = "Show Advanced Settings";
+                button.displayString = I18n.format("wynntils.chat.tabgui.button.advanced_show");
                 simple = true;
             }
             regexTextField.setVisible(!simple);
@@ -189,41 +190,41 @@ public class TabGUI extends GuiScreen {
         if(orderNbField != null) orderNbField.drawTextBox();
 
         if(mouseX >= nameTextField.x && mouseX < nameTextField.x + nameTextField.width && mouseY >= nameTextField.y && mouseY < nameTextField.y + nameTextField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Name"), TextFormatting.GRAY + "This is how your tab", TextFormatting.GRAY + "will be named", "", TextFormatting.RED + "Required"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.name")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.name.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.name.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.name.tooltip_3"), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.generic.required")), mouseX, mouseY);
 
         if(regexTextField.getVisible() && mouseX >= regexTextField.x && mouseX < regexTextField.x + regexTextField.width && mouseY >= regexTextField.y && mouseY < regexTextField.y + regexTextField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "RegEx"), TextFormatting.GRAY + "This will parse the chat", " ", TextFormatting.GREEN + "You can learn RegEx at", TextFormatting.GOLD + "https://regexr.com/", "", TextFormatting.RED + "Required"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.regex")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.regex.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.regex.tooltip_2"), TextFormatting.GREEN + I18n.format("wynntils.chat.tabgui.button.regex.tooltip_3"), TextFormatting.GOLD + I18n.format("wynntils.chat.tabgui.button.regex.tooltip_4"), "", TextFormatting.RED + I18n.format("wynntils.chat.tabgui.generic.required")), mouseX, mouseY);
 
         if(mouseX >= autoCommandField.x && mouseX < autoCommandField.x + autoCommandField.width && mouseY >= autoCommandField.y && mouseY < autoCommandField.y + autoCommandField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Auto Command"), TextFormatting.GRAY + "This will automatically", TextFormatting.GRAY + "put this command before", TextFormatting.GRAY + "any message.", "", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.auto_command")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.auto_command.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.auto_command.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.auto_command.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.auto_command.tooltip_4"), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.generic.optional")), mouseX, mouseY);
 
         if(mouseX >= orderNbField.x && mouseX < orderNbField.x + orderNbField.width && mouseY >= orderNbField.y && mouseY < orderNbField.y + orderNbField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Order number"), TextFormatting.GRAY + "This determines the", TextFormatting.GRAY + "arrangement of the", TextFormatting.GRAY + "chat tabs.", TextFormatting.DARK_GRAY + "(lowest to highest)", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.order_number_alt")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.order_number.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.order_number.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.order_number.tooltip_3"), TextFormatting.DARK_GRAY + I18n.format("wynntils.chat.tabgui.button.order_number.tooltip_4"), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.generic.optional")), mouseX, mouseY);
 
         if(mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Low priority"), TextFormatting.GRAY + "If selected, messages", TextFormatting.GRAY + "will attempt to match", TextFormatting.GRAY + "with other tabs first.", "", TextFormatting.GRAY + "This will also duplicate", TextFormatting.GRAY + "messages across other", TextFormatting.GRAY + "low priority tabs.", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.low_priority")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_4"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_5"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_6"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.low_priority.tooltip_7"), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.generic.optional")), mouseX, mouseY);
 
-        if (advancedButton.displayString.equals("Show Advanced Settings")) {
+        if (advancedButton.displayString.equals(I18n.format("wynntils.chat.tabgui.button.advanced_show"))) {
             if (mouseX >= allRegex.x && mouseX < allRegex.x + allRegex.width && mouseY >= allRegex.y && mouseY < allRegex.y + allRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: All"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages, except those", TextFormatting.GRAY + "deselected to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.all.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.all.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.all.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.all.tooltip_4")), mouseX, mouseY);
             } else if (mouseX >= localRegex.x && mouseX < localRegex.x + localRegex.width && mouseY >= localRegex.y && mouseY < localRegex.y + localRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Local"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by nearby", TextFormatting.GRAY + "players to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.local.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.local.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.local.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.local.tooltip_4")), mouseX, mouseY);
             } else if (mouseX >= guildRegex.x && mouseX < guildRegex.x + guildRegex.width && mouseY >= guildRegex.y && mouseY < guildRegex.y + guildRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Guild"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by guild", TextFormatting.GRAY + "members to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.guild.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.guild.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.guild.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.guild.tooltip_4")), mouseX, mouseY);
             } else if (mouseX >= partyRegex.x && mouseX < partyRegex.x + partyRegex.width && mouseY >= partyRegex.y && mouseY < partyRegex.y + partyRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Party"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by party", TextFormatting.GRAY + "members to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.party.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.party.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.party.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.party.tooltip_4")), mouseX, mouseY);
             } else if (mouseX >= shoutsRegex.x && mouseX < shoutsRegex.x + shoutsRegex.width && mouseY >= shoutsRegex.y && mouseY < shoutsRegex.y + shoutsRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Shouts"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "shouts messages", TextFormatting.GRAY + "to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.shouts.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.shouts.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.shouts.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.shouts.tooltip_4")), mouseX, mouseY);
             } else if (mouseX >= pmRegex.x && mouseX < pmRegex.x + pmRegex.width && mouseY >= pmRegex.y && mouseY < pmRegex.y + pmRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: PMs"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "private messages", TextFormatting.GRAY + "to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.message_type.pms.tooltip_1")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.pms.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.pms.tooltip_3"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.message_type.pms.tooltip_4")), mouseX, mouseY);
             }
         }
 
         if(saveButton.enabled && mouseX >= saveButton.x && mouseX < saveButton.x + saveButton.width && mouseY >= saveButton.y && mouseY < saveButton.y + saveButton.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Save"), TextFormatting.GRAY + "Click here to save", TextFormatting.GRAY + "this chat tab."), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.save")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.save.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.save.tooltip_2")), mouseX, mouseY);
 
         if(deleteButton.enabled && mouseX >= deleteButton.x && mouseX < deleteButton.x + deleteButton.width && mouseY >= deleteButton.y && mouseY < deleteButton.y + deleteButton.height)
-            drawHoveringText(Arrays.asList(TextFormatting.DARK_RED + (TextFormatting.BOLD + "Delete"), TextFormatting.GRAY + "Click here to delete", TextFormatting.GRAY + "this chat tab.", "", TextFormatting.RED + "Irreversible action"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(TextFormatting.DARK_RED + (TextFormatting.BOLD + I18n.format("wynntils.chat.tabgui.button.delete")), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.delete.tooltip_1"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.delete.tooltip_2"), TextFormatting.GRAY + I18n.format("wynntils.chat.tabgui.button.delete.tooltip_3"), TextFormatting.RED + I18n.format("wynntils.chat.tabgui.button.delete.tooltip_4")), mouseX, mouseY);
 
         saveButton.enabled = !regexTextField.getText().isEmpty() && regexValid && !nameTextField.getText().isEmpty();
     }
@@ -263,7 +264,7 @@ public class TabGUI extends GuiScreen {
     }
 
     private HashMap<String, Boolean> regexSettingsCreator() {
-        if (advancedButton.displayString.equals("Hide Advanced Settings")) return null;
+        if (advancedButton.displayString.equals(I18n.format("wynntils.chat.tabgui.button.advanced_hide"))) return null;
 
         HashMap<String, Boolean> r = new HashMap<>();
         simpleRegexSettings.forEach(b->{
@@ -284,7 +285,7 @@ public class TabGUI extends GuiScreen {
     }
 
     private String regexCreator() {
-        if (advancedButton.displayString.equals("Hide Advanced Settings")) return "";
+        if (advancedButton.displayString.equals(I18n.format("wynntils.chat.tabgui.button.advanced_hide"))) return "";
 
         HashMap<String, Boolean> regexSettings = regexSettingsCreator();
         ArrayList<String> result = new ArrayList<>();

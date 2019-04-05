@@ -11,7 +11,7 @@ import com.wynntils.modules.richpresence.events.ServerEvents;
 import com.wynntils.modules.richpresence.profiles.DataProfile;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
 
-@ModuleInfo(name = "rich_presence", displayName = "Rich Presence")
+@ModuleInfo(name = "rich_presence", displayName = "wynntils.modules.richpresence.display_name")
 public class RichPresenceModule extends Module {
 
     private static RichPresenceModule module;
