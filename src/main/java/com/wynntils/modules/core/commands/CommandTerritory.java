@@ -8,7 +8,6 @@ import com.wynntils.ModCore;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -42,7 +41,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return I18n.format("wynntils.commands.territory.usage");
+        return "wynntils.commands.territory.usage";
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if(args.length <= 0) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            throw new WrongUsageException(I18n.format("wynntils.commands.territory.error.wrong_usage"));
+            throw new WrongUsageException("wynntils.commands.territory.error.wrong_usage");
         }
         String territoryName = StringUtils.join(args, " ");
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
@@ -59,7 +58,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if(!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
-            throw new CommandException(I18n.format("wynntils.commands.territory.error.territory_not_valid"));
+            throw new CommandException("wynntils.commands.territory.error.territory_not_valid");
         }
         Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 

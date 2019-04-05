@@ -12,7 +12,6 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -43,7 +42,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return I18n.format("wynntils.commands.wynntils.usage");
+        return "wynntils.commands.wynntils.usage";
     }
 
     @Override
@@ -120,10 +119,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 default:
-                    throw new CommandException(I18n.format("wynntils.commands.wynntils.error.invalid_argument"));
+                    throw new CommandException("wynntils.commands.wynntils.error.invalid_argument");
             }
         } else {
-            throw new CommandException(I18n.format("wynntils.commands.wynntils.error.missing_argument"));
+            throw new CommandException("wynntils.commands.wynntils.error.missing_argument");
         }
     }
     
