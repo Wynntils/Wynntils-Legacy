@@ -447,3 +447,177 @@ wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=Seulement
 wynntils.config.other.enum.text_shadow.none=Aucun
 wynntils.config.other.enum.text_shadow.normal=Normaux
 wynntils.config.other.enum.text_shadow.outline=Contour
+
+
+###########
+# MODULES #
+###########
+
+## MODULE DISPLAY NAMES ##
+wynntils.modules.capes.display_name=Capes
+wynntils.modules.chat.display_name=Chat
+wynntils.modules.core.display_name=Coeur
+wynntils.modules.map.display_name=Minicarte
+wynntils.modules.sounds.display_name=WynnSounds
+wynntils.modules.questbook.display_name=Livre de la Quête
+wynntils.modules.richpresence.display_name=Présence Riche
+wynntils.modules.utilities.display_name=Utilitaires
+
+########
+# CHAT #
+########
+
+## TAB GUI ##
+wynntils.chat.tabgui.generic.required=Nécessaire
+wynntils.chat.tabgui.generic.optional=Optionnel
+wynntils.chat.tabgui.button.save=Sauver
+wynntils.chat.tabgui.button.save.tooltip_1=Cliquez ici pour sauvegarder cet onglet.
+wynntils.chat.tabgui.button.save.tooltip_2=cet onglet.
+wynntils.chat.tabgui.button.delete=Supprimer
+wynntils.chat.tabgui.button.delete.tooltip_1=Cliquez ici pour supprimer
+wynntils.chat.tabgui.button.delete.tooltip_2=cet onglet.
+wynntils.chat.tabgui.button.delete.tooltip_3=
+wynntils.chat.tabgui.button.delete.tooltip_4=Action irréversible
+wynntils.chat.tabgui.button.close=Près
+wynntils.chat.tabgui.button.advanced_show=Affichez des Paramètres avancé
+wynntils.chat.tabgui.button.advanced_hide=Cachez des Paramètres avancé
+wynntils.chat.tabgui.button.low_priority=Faible priorité
+wynntils.chat.tabgui.button.low_priority.tooltip_1=Si sélectionné, les messages
+wynntils.chat.tabgui.button.low_priority.tooltip_2=tenteront de correspondre
+wynntils.chat.tabgui.button.low_priority.tooltip_3=avec d’autres onglets en premier.
+wynntils.chat.tabgui.button.low_priority.tooltip_4=
+wynntils.chat.tabgui.button.low_priority.tooltip_5=Cela permettra également de reproduire les messages
+wynntils.chat.tabgui.button.low_priority.tooltip_6=les messages dans d’autres
+wynntils.chat.tabgui.button.low_priority.tooltip_7=onglets de faible priorité. 
+wynntils.chat.tabgui.button.message_types=Types de Messages
+wynntils.chat.tabgui.button.message_type.all=Tout
+wynntils.chat.tabgui.button.message_type.all.tooltip_1=Type de Message: Tout
+wynntils.chat.tabgui.button.message_type.all.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=les messages, sauf ceux 
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=désélectionnés à cet onglet.
+wynntils.chat.tabgui.button.message_type.local=Local
+wynntils.chat.tabgui.button.message_type.local.tooltip_1=Type de Message : Local
+wynntils.chat.tabgui.button.message_type.local.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.local.tooltip_3=les messages envoyés par à proximité
+wynntils.chat.tabgui.button.message_type.local.tooltip_4=joueurs à cet onglet.
+wynntils.chat.tabgui.button.message_type.guild=Guilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_1=Type de Message : Guilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.guild.tooltip_3=les messages envoyés par guilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_4=membres à cet onglet.
+wynntils.chat.tabgui.button.message_type.party=Partie
+wynntils.chat.tabgui.button.message_type.party.tooltip_1=Type de Message: Partie
+wynntils.chat.tabgui.button.message_type.party.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.party.tooltip_3=les messages envoyés par partie
+wynntils.chat.tabgui.button.message_type.party.tooltip_4=membres à cet onglet.
+wynntils.chat.tabgui.button.message_type.shouts=Shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_1=Type de Message: Shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_3=shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_4=à cet onglet.
+wynntils.chat.tabgui.button.message_type.pms=MPs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_1=Message Type: MPs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_2=Cela enverra tous
+wynntils.chat.tabgui.button.message_type.pms.tooltip_3=messages privés
+wynntils.chat.tabgui.button.message_type.pms.tooltip_4=à cet onglet.
+wynntils.chat.tabgui.button.name=Nom
+wynntils.chat.tabgui.button.name.tooltip_1=Voici comment votre onglet
+wynntils.chat.tabgui.button.name.tooltip_2=sera nommé
+wynntils.chat.tabgui.button.name.tooltip_3=
+wynntils.chat.tabgui.button.regex=Regex
+wynntils.chat.tabgui.button.regex.tooltip_1=Ceci fera l'analyse syntaxique du chat
+wynntils.chat.tabgui.button.regex.tooltip_2=
+wynntils.chat.tabgui.button.regex.tooltip_3=Vous pouvez apprendre regex à
+wynntils.chat.tabgui.button.regex.tooltip_4=https://regexr.com/
+wynntils.chat.tabgui.button.auto_command=Commande Auto
+wynntils.chat.tabgui.button.auto_command.tooltip_1=Ceci sera automatiquement
+wynntils.chat.tabgui.button.auto_command.tooltip_2=mis cette commande auparavant
+wynntils.chat.tabgui.button.auto_command.tooltip_3=un message.
+wynntils.chat.tabgui.button.auto_command.tooltip_4=
+wynntils.chat.tabgui.button.order_number=Commande #
+wynntils.chat.tabgui.button.order_number_alt=Numéro de Commande
+wynntils.chat.tabgui.button.order_number.tooltip_1=Cela détermine
+wynntils.chat.tabgui.button.order_number.tooltip_2=al’arrangement des
+wynntils.chat.tabgui.button.order_number.tooltip_3=onglets de chat.
+wynntils.chat.tabgui.button.order_number.tooltip_4=(Le plus bas au plus haut)
+wynntils.chat.tabgui.menu.confirm_delete_main=Voulez-vous vraiment supprimer cet onglet de chat?
+wynntils.chat.tabgui.menu.confirm_delete_sub=Cette action est irréversible!
+
+############
+# COMMANDS #
+############
+# Note to translators: do not change the actual text of a command (for example, don't change /territory in "/territory [name] | Ex: /territory Detlas") or the arguments within those commands
+
+## /compass ##
+wynntils.commands.compass.error.generic=C'a été pas censé arriver!
+wynntils.commands.compass.direction=orientation
+wynntils.commands.compass.now_pointing=La boussole pointe maintenant vers
+
+## /forceupdate ##
+wynntils.commands.forceupdate.usage=Forcez Wynntils à mettre à jour
+wynntils.commands.forceupdate.running=Contrainte Wynntils Mise à jour
+
+## /territory ##
+wynntils.commands.territory.usage=Redirige votre boussole vers un territoire
+wynntils.commands.territory.error.wrong_usage=/territory [nom] | p. ex.: /territory Detlas
+wynntils.commands.territory.error.territory_not_valid=Territoire invalide! Utilisation: /territory [name] | p. ex.: /territory Detlas
+wynntils.commands.territory.now_pointing=La boussole pointe maintenant vers %s (%o, %o)
+wynntils.commands.territory.compass_warning=\nVeuillez vous assurer que vous savez que cette commande redirige votre boussole vers le milieu du territoire
+
+## /token ##
+wynntils.commands.token.usage=Renvoie votre jeton Wynntils auth
+wynntils.commands.token.token_text=Wynntils Jetom
+wynntils.commands.token.token_link_hover=Cliquez sur moi pour enregistrer le compte
+
+## /wynntils ##
+wynntils.commands.wynntils.usage=/wynntils <commande>
+wynntils.commands.wynntils.donate.donate_text=Vous pouvez faire un don à Wynntils à :
+wynntils.commands.wynntils.donate.donate_link_hover=Cliquez ici pour ouvrir dans votre navigateur.
+wynntils.commands.wynntils.help.basic_text=Wynntils' Liste de Commande:
+wynntils.commands.wynntils.help.help=Affiche une liste de toutes les commandes de Wynntils.
+wynntils.commands.wynntils.help.discord=Vous propose une invitation à notre serveur Discord.
+wynntils.commands.wynntils.help.version=Montre la version Wynntils installée
+wynntils.commands.wynntils.help.changelog=Affiche le dernier changelog de votre version.
+wynntils.commands.wynntils.help.reloadapi=Recharge toutes les données d'API.
+wynntils.commands.wynntils.help.donate=Fournit notre lien de Patreon.
+wynntils.commands.wynntils.help.token=Vous fournit un jeton cliquable pour créer un compte Wynntils pour gérer les cosmétiques.
+wynntils.commands.wynntils.help.forceupdate=Télécharge et installe la dernière version réussie.
+wynntils.commands.wynntils.help.compass=Faire pointer votre boussole vers un x et un z ou une direction (p. ex., nord, SE).
+wynntils.commands.wynntils.help.territory=Redirige votre boussole vers un territoire
+wynntils.commands.wynntils.discord.basic_text=Vous pouvez rejoindre notre serveur Discord à :
+wynntils.commands.wynntils.discord.discord_link_hover=Cliquez ici pour rejoindre notre serveur Discord.
+wynntils.commands.wynntils.version.development_environment=Wynntils fonctionne dans un environnement de développement.
+wynntils.commands.wynntils.version.using_stable=L'utilisation de l'Écurie sort le courant Stable:
+wynntils.commands.wynntils.version.using_cutting_edge=L'utilisation de l'Écurie sort le courant Cutting Edge:
+wynntils.commands.wynntils.version.version=Version %s
+wynntils.commands.wynntils.version.build=Build %s
+wynntils.commands.wynntils.version.build_unknown=Inconnu Build
+wynntils.commands.wynntils.version.update_check_failed=Wynntils n’a pas vérifié les mises à jour - appuyez sur %s pour essayer à nouveau.
+wynntils.commands.wynntils.version.update_check_outdated=Wynntils est actuellement dépassé - appuyez sur %s pour mettre à jour maintenant.
+wynntils.commands.wynntils.version.update_check_up_to_date=Wynntils était à jour lors de la dernière vérification - appuyez sur %s pour vérifier les mises à jour.
+wynntils.commands.wynntils.error.invalid_argument=Argumentaire invalide. Utilisez /wynntils help pour plus d’informations.
+wynntils.commands.wynntils.error.missing_argument=Arguments manquants. Utilisez /wynntils help pour plus d’informations.
+
+########
+# CORE #
+########
+
+## CHANGELOG UI ##
+wynntils.core.ui.changelog.changelog=Journal des Modifications
+
+## DOWNLOAD OVERLAY ##
+wynntils.core.ui.download.display_name=Téléchargeant
+wynntils.core.ui.download.close_in=Votre jeu sera fermé en %o secondes
+wynntils.core.ui.download.files_left=%o des fichiers est parti
+
+## UPDATE OVERLAY ##
+wynntils.core.ui.update.display_name=Mise à jour
+wynntils.core.ui.update.upper_text=Wynntils §av% s - §f%ss gauche
+wynntils.core.ui.update.build_is_avaliable=§eBuild %s §fis disponible.
+wynntils.core.ui.update.version_is_avaliable=Une nouvelle mise à jour est disponible §ev%s
+wynntils.core.ui.update.download_question=Téléchargement automagiquement? §a (y/n)
+wynntils.core.ui.update.yes=Oui (y)
+wynntils.core.ui.update.no=Non (n)
+wynntils.core.ui.update.updating_to=Mise à jour à %s
+wynntils.core.ui.update.update_downloaded_version=Une mise à jour de Wynntils (Version %s) a été téléchargée, et sera appliquée lorsque le jeu est redémarré.
+wynntils.core.ui.update.update_downloaded_build=Une mise à jour de Wynntils (Build %s) a été téléchargée, et sera appliquée lorsque le jeu est redémarré.
