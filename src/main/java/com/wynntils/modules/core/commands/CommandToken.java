@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -34,13 +35,13 @@ public class CommandToken extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        TextComponentString text = new TextComponentString("");
-        text.appendText("Wynntils Token ");
+        TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.token.token_text");
+        text.appendText(" ");
         text.getStyle().setColor(TextFormatting.AQUA);
         
         TextComponentString token = new TextComponentString(WebManager.getAccount().getToken());
         token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://account.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
-        token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register account")));
+        token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("wynntils.commands.token.token_link_hover")));
         token.getStyle().setColor(TextFormatting.DARK_AQUA);
         token.getStyle().setUnderlined(true);
         text.appendSibling(token);

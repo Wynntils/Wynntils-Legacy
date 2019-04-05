@@ -17,7 +17,7 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "map", displayName = "Map")
+@ModuleInfo(name = "map", displayName = "wynntils.modules.map.display_name")
 public class MapModule extends Module {
 
     private static MapModule module;

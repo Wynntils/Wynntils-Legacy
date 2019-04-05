@@ -15,7 +15,7 @@ import com.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
 import com.wynntils.modules.questbook.overlays.ui.QuestBookGUI;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "quest_book", displayName = "Quest Book")
+@ModuleInfo(name = "quest_book", displayName = "wynntils.modules.questbook.display_name")
 public class QuestBookModule extends Module {
 
     public static final QuestBookGUI gui = new QuestBookGUI();

@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.webapi.downloader.DownloadProfile;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadPhase;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class DownloadOverlay extends Overlay {
@@ -32,7 +33,7 @@ public class DownloadOverlay extends Overlay {
     public static int size = 53;
 
     public DownloadOverlay() {
-        super("Downloading",20,20,true,1.0f,0.0f,0,0, null);
+        super(I18n.format("wynntils.core.ui.download.display_name"),20,20,true,1.0f,0.0f,0,0, null);
     }
 
     @Override
@@ -53,8 +54,7 @@ public class DownloadOverlay extends Overlay {
 
                 drawRect(brackgroundRed, -172,0 - size, 0, 52 - size);
                 drawRect(boxRed, -170,0 - size, 0, 50 - size);
-                drawString("Your game will be closed in", -84, 15 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                drawString(((timeToRestart - System.currentTimeMillis()) / 1000) + " seconds", -84, 25 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                drawString(I18n.format("wynntils.core.ui.download.close_in", ((timeToRestart - System.currentTimeMillis()) / 1000)), -84, 15 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 return;
             }
 
@@ -75,7 +75,7 @@ public class DownloadOverlay extends Overlay {
             drawRect(progress, -160, 20 - size, ((lastPercent * (-10 + 160)) + 100 * -160) / 100, 36 - size);
             drawString(lastPercent + "%", -84, 25 - size, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
-            drawString((DownloaderManager.getQueueSizeLeft()) + " files left", -84, 40 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            drawString(I18n.format("wynntils.core.ui.download.files_left", DownloaderManager.getQueueSizeLeft()), -84, 40 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
 
         if (size > 0 && DownloaderManager.currentPhase != DownloadPhase.WAITING) {

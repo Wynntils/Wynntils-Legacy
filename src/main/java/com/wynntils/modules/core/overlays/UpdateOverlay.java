@@ -17,7 +17,9 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -34,7 +36,7 @@ public class UpdateOverlay extends Overlay {
     private static CustomColor no = CustomColor.fromString("fd8080",1);
 
     public UpdateOverlay() {
-        super("Update", 20, 20, true, 1f, 0f, 0, 0, null);
+        super(I18n.format("wynntils.core.ui.update.display_name"), 20, 20, true, 1f, 0f, 0, 0, null);
     }
 
     static boolean disappear = false;
@@ -65,20 +67,20 @@ public class UpdateOverlay extends Overlay {
         drawRect(background, -172,0 - size, 0, 62 - size);
         drawRect(box, -170,0 - size, 0, 60 - size);
 
-        drawString("Wynntils " + TextFormatting.GREEN + "v" + Reference.VERSION + " - " + TextFormatting.WHITE + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
+        drawString(I18n.format("wynntils.core.ui.update.upper_text", Reference.VERSION, ((timeout + 35000) - System.currentTimeMillis()) / 1000), -165, 5 - size, CommonColors.ORANGE);
         if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
-            drawString(TextFormatting.YELLOW + "Build " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + TextFormatting.WHITE + " is available.", -165, 15 - size, CommonColors.WHITE);
+            drawString(I18n.format("wynntils.core.ui.update.build_is_avaliable", WebManager.getUpdate().getLatestUpdate().replace("B", "")), -165, 15 - size, CommonColors.WHITE);
         } else {
-            drawString("A new update is available " + TextFormatting.YELLOW + "v" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
+            drawString(I18n.format("wynntils.core.ui.update.version_is_avaliable", WebManager.getUpdate().getLatestUpdate()), -165, 15 - size, CommonColors.WHITE);
         }
 
-        drawString("Download automagically? " + TextFormatting.GREEN + "(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
+        drawString(I18n.format("wynntils.core.ui.update.download_question"), -165, 25 - size, CommonColors.LIGHT_GRAY);
 
         drawRect(yes, -155,40 - size, -95, 55 - size);
         drawRect(no, -75 ,40 - size, -15, 55 - size);
 
-        drawString("Yes (y)", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        drawString("No (n)", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(I18n.format("wynntils.core.ui.update.yes"), -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(I18n.format("wynntils.core.ui.update.no"), -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (size > 0 && System.currentTimeMillis() - timeout < 35000) {
             size--;
@@ -128,13 +130,16 @@ public class UpdateOverlay extends Overlay {
 
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
-                DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
+                DownloaderManager.queueDownload(I18n.format("wynntils.core.ui.update.updating_to", WebManager.getUpdate().getLatestUpdate()), url, f, DownloadAction.SAVE, (x) -> {
                     if(x) {
                         try {
-                            String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
-                            message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jar_name.split("_")[0].split("-")[1] : "Build " + jar_name.split("_")[1].replace(".jar", "");
-                            message += ") has been downloaded, and will be applied when the game is restarted.";
-                            ModCore.mc().player.sendMessage(new TextComponentString(message));
+                            TextComponentTranslation message;
+                            if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
+                                message = new TextComponentTranslation("wynntils.core.ui.update.update_downloaded_version", jar_name.split("_")[0].split("-")[1]);
+                            } else {
+                                message = new TextComponentTranslation("wynntils.core.ui.update.update_downloaded_build", jar_name.split("_")[1].replace(".jar", ""));
+                            }
+                            ModCore.mc().player.sendMessage(message);
                             copyUpdate(jar_name);
                         } catch (Exception ex) {
                             ex.printStackTrace();

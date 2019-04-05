@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 
-@ModuleInfo(name = "capes", displayName = "Capes")
+@ModuleInfo(name = "capes", displayName = "wynntils.modules.capes.display_name")
 public class CapesModule extends Module {
 
     public void onEnable() {
