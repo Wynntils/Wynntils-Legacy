@@ -125,7 +125,7 @@
       "texPosZ": 18,
       "texSizeX": 78,
       "texSizeZ": 35,
-      "zoomNeeded": 0,
+      "zoomNeeded": -1000,
       "size": 2
     },
     "NPC_PowderMaster": {
