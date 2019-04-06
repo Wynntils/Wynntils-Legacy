@@ -447,6 +447,100 @@ wynntils.config.other.enum.text_shadow.none=None
 wynntils.config.other.enum.text_shadow.normal=Normal
 wynntils.config.other.enum.text_shadow.outline=Outline
 
+###########
+# MODULES #
+###########
+
+## MODULE DISPLAY NAMES ##
+wynntils.modules.capes.display_name=Capes
+wynntils.modules.chat.display_name=Chat
+wynntils.modules.core.display_name=Core
+wynntils.modules.map.display_name=Map
+wynntils.modules.sounds.display_name=WynnSounds
+wynntils.modules.questbook.display_name=Quest Book
+wynntils.modules.richpresence.display_name=Rich Presence
+wynntils.modules.utilities.display_name=Utilities
+
+########
+# CHAT #
+########
+
+## TAB GUI ##
+wynntils.chat.tabgui.generic.required=Required
+wynntils.chat.tabgui.generic.optional=Optional
+wynntils.chat.tabgui.button.save=Save
+wynntils.chat.tabgui.button.save.tooltip_1=Click here to save
+wynntils.chat.tabgui.button.save.tooltip_2=this chat tab.
+wynntils.chat.tabgui.button.delete=Delete
+wynntils.chat.tabgui.button.delete.tooltip_1=Click here to delete
+wynntils.chat.tabgui.button.delete.tooltip_2=this chat tab.
+wynntils.chat.tabgui.button.delete.tooltip_3=
+wynntils.chat.tabgui.button.delete.tooltip_4=Irreversible action
+wynntils.chat.tabgui.button.close=Close
+wynntils.chat.tabgui.button.advanced_show=Show Advanced Settings
+wynntils.chat.tabgui.button.advanced_hide=Hide Advanced Settings
+wynntils.chat.tabgui.button.low_priority=Low Priority
+wynntils.chat.tabgui.button.low_priority.tooltip_1=If selected, messages
+wynntils.chat.tabgui.button.low_priority.tooltip_2=will attempt to match
+wynntils.chat.tabgui.button.low_priority.tooltip_3=with other tabs first.
+wynntils.chat.tabgui.button.low_priority.tooltip_4=
+wynntils.chat.tabgui.button.low_priority.tooltip_5=This will also duplicate
+wynntils.chat.tabgui.button.low_priority.tooltip_6=messages across other
+wynntils.chat.tabgui.button.low_priority.tooltip_7=low priority tabs.
+wynntils.chat.tabgui.button.message_types=Message types
+wynntils.chat.tabgui.button.message_type.all=All
+wynntils.chat.tabgui.button.message_type.all.tooltip_1=Message Type: All
+wynntils.chat.tabgui.button.message_type.all.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=messages, except those
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=deselected to this tab.
+wynntils.chat.tabgui.button.message_type.local=Local
+wynntils.chat.tabgui.button.message_type.local.tooltip_1=Message Type: Local
+wynntils.chat.tabgui.button.message_type.local.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.local.tooltip_3=messages sent by nearby
+wynntils.chat.tabgui.button.message_type.local.tooltip_4=players to this tab.
+wynntils.chat.tabgui.button.message_type.guild=Guild
+wynntils.chat.tabgui.button.message_type.guild.tooltip_1=Message Type: Guild
+wynntils.chat.tabgui.button.message_type.guild.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.guild.tooltip_3=messages sent by guild
+wynntils.chat.tabgui.button.message_type.guild.tooltip_4=members to this tab.
+wynntils.chat.tabgui.button.message_type.party=Party
+wynntils.chat.tabgui.button.message_type.party.tooltip_1=Message Type: Party
+wynntils.chat.tabgui.button.message_type.party.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.party.tooltip_3=messages sent by party
+wynntils.chat.tabgui.button.message_type.party.tooltip_4=members to this tab.
+wynntils.chat.tabgui.button.message_type.shouts=Shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_1=Message Type: Shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_3=shouts
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_4=to this tab.
+wynntils.chat.tabgui.button.message_type.pms=PMs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_1=Message Type: PMs
+wynntils.chat.tabgui.button.message_type.pms.tooltip_2=This will send all
+wynntils.chat.tabgui.button.message_type.pms.tooltip_3=private messages
+wynntils.chat.tabgui.button.message_type.pms.tooltip_4=to this tab.
+wynntils.chat.tabgui.button.name=Name
+wynntils.chat.tabgui.button.name.tooltip_1=This is how your tab
+wynntils.chat.tabgui.button.name.tooltip_2=will be named
+wynntils.chat.tabgui.button.name.tooltip_3=
+wynntils.chat.tabgui.button.regex=Regex
+wynntils.chat.tabgui.button.regex.tooltip_1=This will parse the chat
+wynntils.chat.tabgui.button.regex.tooltip_2=
+wynntils.chat.tabgui.button.regex.tooltip_3=You can learn RegEx at
+wynntils.chat.tabgui.button.regex.tooltip_4=https://regexr.com/
+wynntils.chat.tabgui.button.auto_command=Auto Command
+wynntils.chat.tabgui.button.auto_command.tooltip_1=This will automatically
+wynntils.chat.tabgui.button.auto_command.tooltip_2=put this command before
+wynntils.chat.tabgui.button.auto_command.tooltip_3=any message.
+wynntils.chat.tabgui.button.auto_command.tooltip_4=
+wynntils.chat.tabgui.button.order_number=Order #
+wynntils.chat.tabgui.button.order_number_alt=Order number
+wynntils.chat.tabgui.button.order_number.tooltip_1=This determines the
+wynntils.chat.tabgui.button.order_number.tooltip_2=arrangement of the
+wynntils.chat.tabgui.button.order_number.tooltip_3=chat tabs.
+wynntils.chat.tabgui.button.order_number.tooltip_4=(lowest to highest)
+wynntils.chat.tabgui.menu.confirm_delete_main=Do you really want to delete this chat tab?
+wynntils.chat.tabgui.menu.confirm_delete_sub=This action is irreversible!
+
 ############
 # COMMANDS #
 ############
