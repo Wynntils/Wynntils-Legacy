@@ -350,6 +350,8 @@ wynntils.config.overlay.leveling.text_shadow.description=À quoi devrait ressemb
 wynntils.config.overlay.ticker.display_path=Superpositions/Ticker de Mise à jour
 wynntils.config.overlay.ticker.message_limit.display_name=Limite de Message
 wynntils.config.overlay.ticker.message_limit.description=Quel devrait être le nombre maximum de messages de ticker affichés dans la liste de mise à jour du jeu?
+wynntils.config.overlay.ticker.align_right.display_name=Align Text - Right ##TODO
+wynntils.config.overlay.ticker.align_right.description=Should the text align along the right side? ##TODO
 wynntils.config.overlay.ticker.expiry_time.display_name=Temps d'Expiration de Message
 wynntils.config.overlay.ticker.expiry_time.description=Combien de temps (en secondes) un message ticker doit-il rester à l’écran?
 wynntils.config.overlay.ticker.fadeout_time.display_name=Message Animation Fadeout
@@ -362,7 +364,6 @@ wynntils.config.overlay.ticker.text_shadow.display_name=Ombre de Texte
 wynntils.config.overlay.ticker.text_shadow.description=À quoi devrait ressembler l’ombre de texte?
 wynntils.config.overlay.ticker.new_message_override.display_name=Nouveau Message Prioritaire
 wynntils.config.overlay.ticker.new_message_override.description=Les nouveaux messages devraient-ils forcer les messages précédents les plus anciens ? Si désactivés, les messages ticker seront mis en file d’attente et apparaîtront lorsqu’un message précédent disparaîtra.
-
 
 ## OVERLAYS TICKER EXP CONFIG ##
 wynntils.config.overlay.ticker.exp.display_path=Superpositions/Ticker de Mise à jour/Expérience
@@ -449,7 +450,6 @@ wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=Seulement
 wynntils.config.other.enum.text_shadow.none=Aucun
 wynntils.config.other.enum.text_shadow.normal=Normaux
 wynntils.config.other.enum.text_shadow.outline=Contour
-
 
 ###########
 # MODULES #
@@ -623,3 +623,185 @@ wynntils.core.ui.update.no=Non (n)
 wynntils.core.ui.update.updating_to=Mise à jour à %s
 wynntils.core.ui.update.update_downloaded_version=Une mise à jour de Wynntils (Version %s) a été téléchargée, et sera appliquée lorsque le jeu est redémarré.
 wynntils.core.ui.update.update_downloaded_build=Une mise à jour de Wynntils (Build %s) a été téléchargée, et sera appliquée lorsque le jeu est redémarré.
+ ##TODO
+####### ##TODO
+# MAP # ##TODO
+####### ##TODO
+ ##TODO
+## TOASTS ## ##TODO
+wynntils.map.toasts.new_map_entry.title=New Map Entry ##TODO
+wynntils.map.toasts.new_map_entry.body=You found a tier %s chest! ##TODO
+ ##TODO
+## WORLD MAP UI ## ##TODO
+wynntils.map.ui.world_map.button.markers=Markers ##TODO
+ ##TODO
+## WORLD MAP SETTINGS UI ## ##TODO
+wynntils.map.ui.world_map_settings.buttons.cancel=Cancel ##TODO
+wynntils.map.ui.world_map_settings.buttons.default=Default ##TODO
+wynntils.map.ui.world_map_settings.buttons.save=Save ##TODO
+wynntils.map.ui.world_map_settings.floating.enable_or_disable=Enable/Disable Map Icons: ##TODO
+wynntils.map.ui.world_map_settings.floating.textures=Map Icon Textures: ##TODO
+ ##TODO
+## ICON TEXTURE ENUM ## ##TODO
+wynntils.map.enum.icon_texutre.classic=Classic ##TODO
+# Spell error in code replicated for consistency ##TODO
+wynntils.map.enum.icon_texutre.medival=Medieval ##TODO
+ ##TODO
+## MINIMAP OVERLAY ## ##TODO
+wynntils.map.overlays.minimap.display_name=Mini Map ##TODO
+wynntils.map.overlays.minimap.north_short=N ##TODO
+wynntils.map.overlays.minimap.north_east_short=NE ##TODO
+wynntils.map.overlays.minimap.east_short=E ##TODO
+wynntils.map.overlays.minimap.south_east_short=SE ##TODO
+wynntils.map.overlays.minimap.south_short=S ##TODO
+wynntils.map.overlays.minimap.south_west_short=SW ##TODO
+wynntils.map.overlays.minimap.west_short=W ##TODO
+wynntils.map.overlays.minimap.north_west_short=NW ##TODO
+ ##TODO
+######### ##TODO
+# MUSIC # ##TODO
+######### ##TODO
+ ##TODO
+## NOW PLAYING DISPLAY ## ##TODO
+wynntils.music.overlays.now_playing.nothing_playing=Nothing is being played! ##TODO
+wynntils.music.overlays.now_playing.play=Play ##TODO
+wynntils.music.overlays.now_playing.pause=Pause ##TODO
+ ##TODO
+############## ##TODO
+# QUEST BOOK # ##TODO
+############## ##TODO
+ ##TODO
+## TRACKED QUEST OVERLAY ## ##TODO
+wynntils.questbook.overlays.tracked_quest.display_name=Tracked Quest ##TODO
+wynntils.questbook.overlays.tracked_quest.title=Tracked Quest Info: ##TODO
+ ##TODO
+## QUEST BOOK UI ## ##TODO
+wynntils.questbook.ui.questbook.button.generic.left_to_select=Left click to select ##TODO
+wynntils.questbook.ui.questbook.link_error=Error opening link, it has been copied to your clipboard ##TODO
+wynntils.questbook.ui.questbook.sort_type=Order the list by ##TODO
+wynntils.questbook.ui.questbook.sort_type.alphabetical=Alphabetical Order (A-Z) ##TODO
+wynntils.questbook.ui.questbook.sort_type.level=Level Order (100-0) ##TODO
+wynntils.questbook.ui.questbook.sort_type.rarity=Rarity Order (MYTH-NORMAL) ##TODO
+wynntils.questbook.ui.questbook.item_filter=Item Filter ##TODO
+wynntils.questbook.ui.questbook.button.back_to_menu=Back to Menu ##TODO
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1=Click here to go ##TODO
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2=back to the main page ##TODO
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3= ##TODO
+wynntils.questbook.ui.questbook.search_bar.type=Type to search ##TODO
+wynntils.questbook.ui.questbook.search_bar.click=Click to search ##TODO
+wynntils.questbook.ui.questbook.available_items=Available Items ##TODO
+wynntils.questbook.ui.questbook.item_guide=Item Guide ##TODO
+wynntils.questbook.ui.questbook.item_guide.subtitle_1=See all items ##TODO
+wynntils.questbook.ui.questbook.item_guide.subtitle_2=currently available ##TODO
+wynntils.questbook.ui.questbook.item_guide.subtitle_3=in the game. ##TODO
+wynntils.questbook.ui.questbook.item_guide.subtitle_4= ##TODO
+wynntils.questbook.ui.questbook.quests.description_1=Here you can see all quests ##TODO
+wynntils.questbook.ui.questbook.quests.description_2=available to you. You can ##TODO
+wynntils.questbook.ui.questbook.quests.description_3=also search for a specific ##TODO
+wynntils.questbook.ui.questbook.quests.description_4=quest just by typing its name. ##TODO
+wynntils.questbook.ui.questbook.quests.description_5=You can go to the next page ##TODO
+wynntils.questbook.ui.questbook.quests.description_6=by clicking on the two buttons ##TODO
+wynntils.questbook.ui.questbook.quests.description_7=or by scrolling your mouse. ##TODO
+wynntils.questbook.ui.questbook.quests.description_8=You can pin/unpin a quest ##TODO
+wynntils.questbook.ui.questbook.quests.description_9=by clicking on it. ##TODO
+wynntils.questbook.ui.questbook.quests.discovery_hover_1=Hold shift to see Secret Discoveries! ##TODO
+wynntils.questbook.ui.questbook.quests.discovery_hover_2=Click to see all of your Discoveries! ##TODO
+wynntils.questbook.ui.questbook.quests.pin=Left click to pin it! ##TODO
+wynntils.questbook.ui.questbook.quests.unpin=Left click to unpin it! ##TODO
+wynntils.questbook.ui.questbook.quests.open_on_wiki=Right click to open on the wiki! ##TODO
+wynntils.questbook.ui.questbook.quests=Quests ##TODO
+wynntils.questbook.ui.questbook.configs=Configs ##TODO
+wynntils.questbook.ui.questbook.class_and_level=%s Level %s ##TODO
+wynntils.questbook.ui.questbook.in_development=In Development ##TODO
+wynntils.questbook.ui.questbook.open_quests.subtitle_1=See and pin all your ##TODO
+wynntils.questbook.ui.questbook.open_quests.subtitle_2=currently available ##TODO
+wynntils.questbook.ui.questbook.open_quests.subtitle_3=quests. ##TODO
+wynntils.questbook.ui.questbook.open_quests.subtitle_4= ##TODO
+wynntils.questbook.ui.questbook.configuration=Configuration ##TODO
+wynntils.questbook.ui.questbook.configuration.subtitle_1=Change the settings ##TODO
+wynntils.questbook.ui.questbook.configuration.subtitle_2=to the way you want. ##TODO
+wynntils.questbook.ui.questbook.configuration.subtitle_3= ##TODO
+wynntils.questbook.ui.questbook.configuration.subtitle_4=BETA VERSION ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration=Overlay Configuration ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_1=Change position ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_2=and enable/disable ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_3=the various ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_4=Wynntils overlays. ##TODO
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_5= ##TODO
+wynntils.questbook.ui.questbook.select_to_continue=Select an option to continue ##TODO
+wynntils.questbook.ui.questbook.intro_1=Welcome to Wynntils. You can ##TODO
+wynntils.questbook.ui.questbook.intro_2=see your statistics on the right ##TODO
+wynntils.questbook.ui.questbook.intro_3=or select some of the options ##TODO
+wynntils.questbook.ui.questbook.intro_4=above for more features. ##TODO
+wynntils.questbook.ui.questbook.user_profile=User Profile ##TODO
+wynntils.questbook.ui.questbook.discoveries.info_1=Here you can see all of the ##TODO
+wynntils.questbook.ui.questbook.discoveries.info_2=discoveries you have already ##TODO
+wynntils.questbook.ui.questbook.discoveries.info_3=found. ##TODO
+wynntils.questbook.ui.questbook.discoveries.info_4=You can also use the filters ##TODO
+wynntils.questbook.ui.questbook.discoveries.info_5=below. ##TODO
+wynntils.questbook.ui.questbook.discoveries.back_to_quests=Back to Quests ##TODO
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1=Click here to go ##TODO
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2=back to the quests ##TODO
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3= ##TODO
+wynntils.questbook.ui.questbook.discoveries=Discoveries ##TODO
+wynntils.questbook.ui.questbook.version.stable=Stable v%s ##TODO
+wynntils.questbook.ui.questbook.version.cutting_edge=CE Build %s ##TODO
+ ##TODO
+############# ##TODO
+# UTILITIES # ##TODO
+############# ##TODO
+ ##TODO
+## CLIENT EVENTS ## ##TODO
+wynntils.utilities.events.prevent_mythic_close=You cannot close this loot chest while there is mythic in it! ##TODO
+wynntils.utilities.events.check_daily=§7Daily rewards §fare available to claim! ##TODO
+ ##TODO
+## ACTIONBAR HELPER OVERLAY ## ##TODO
+wynntils.utilities.overlays.actionbar_helper.display_name=ActionBar Helper ##TODO
+ ##TODO
+## BUBBLES OVERLAY ## ##TODO
+wynntils.utilities.overlays.bubbles.display_name=Bubbles Overlay ##TODO
+ ##TODO
+## EXPERIENCE BAR OVERLAY ## ##TODO
+wynntils.utilities.overlays.experience_bar.display_name=Experience Bar ##TODO
+ ##TODO
+## GAME UPDATE OVERLAY ## ##TODO
+wynntils.utilities.overlays.game_update.display_name=Game Update Ticker ##TODO
+ ##TODO
+## GAMMA OVERLAY ## ##TODO
+wynntils.utilities.overlays.gamma.display_name=Gamma ##TODO
+wynntils.utilities.overlays.gamma.text=GammaBright ##TODO
+ ##TODO
+## HEALTH BAR OVERLAY ## ##TODO
+wynntils.utilities.overlays.health_bar.display_name=Health Bar ##TODO
+ ##TODO
+## HOTBAR OVERLAY ## ##TODO
+wynntils.utilities.overlays.hotbar.display_name=Hotbar ##TODO
+ ##TODO
+## LEVELING OVERLAY ## ##TODO
+wynntils.utilities.overlays.leveling.display_name=Leveling Helper ##TODO
+ ##TODO
+## MANA BAR OVERLAY ## ##TODO
+wynntils.utilities.overlays.mana_bar.display_name=Mana Bar ##TODO
+ ##TODO
+## TERRITORY FEED OVERLAY ## ##TODO
+wynntils.utilities.overlays.territory_feed.display_name=Territory Feed ##TODO
+wynntils.utilities.overlays.territory_feed.attacked=[%1$s]'s territory %2$s is being attacked by [%3$s] ##TODO
+wynntils.utilities.overlays.territory_feed.defended=[%1$s]'s attack on [%2$s]'s territory %3$s was defended! ##TODO
+wynntils.utilities.overlays.territory_feed.captured=[%1$s] has captured %2$s from [%3$s] ##TODO
+ ##TODO
+## TOASTS OVERLAY ## ##TODO
+wynntils.utilities.overlays.toasts.display_name=Toasts ##TODO
+wynntils.utilities.overlays.toasts.now_entering=Now entering ##TODO
+wynntils.utilities.overlays.toasts.quest_completed=Quest Completed! ##TODO
+wynntils.utilities.overlays.toasts.area_discovered=Area Discovered! ##TODO
+wynntils.utilities.overlays.toasts.discovery_found=Discovery Found! ##TODO
+ ##TODO
+## WAR TIMER OVERLAY ## ##TODO
+wynntils.utilities.overlays.war_timer.display_name=War Timer overlay ##TODO
+wynntils.utilities.overlays.war_timer.message.lasted_for=The war for %s lasted for ##TODO
+wynntils.utilities.overlays.war_timer.message.start_in=The war for %s will start in ##TODO
+wynntils.utilities.overlays.war_timer.message.start_in.no_territory=The war will start in ##TODO
+wynntils.utilities.overlays.war_timer.message.mob_spawn=The mobs for %s will start spawning in ##TODO
+wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=The mobs will start spawning in ##TODO
+wynntils.utilities.overlays.war_timer.message.in_war=You have been at war in %s for ##TODO
+wynntils.utilities.overlays.war_timer.message.in_war.no_territory=You have been at war for ##TODO
