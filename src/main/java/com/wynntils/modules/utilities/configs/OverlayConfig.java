@@ -233,7 +233,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
 
-        @Setting(displayName = "Align Text - Right", description = "Should the text align along the right side?")
+        @Setting(displayName = "wynntils.config.overlay.ticker.align_right.display_name", description = "wynntils.config.overlay.ticker.align_right.description")
         public boolean rightToLeft = true;
 
         @Setting(displayName = "wynntils.config.overlay.ticker.expiry_time.display_name", description = "wynntils.config.overlay.ticker.expiry_time.description")
