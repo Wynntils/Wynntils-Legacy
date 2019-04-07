@@ -9,12 +9,13 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnWorldJoinEvent;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
     public WarTimerOverlay() {
-        super("War Timer overlay", 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
+        super(I18n.format("wynntils.utilities.overlays.war_timer.display_name"), 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
     
     private static int timer = -1;
@@ -59,28 +60,28 @@ public class WarTimerOverlay extends Overlay {
         if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
             if (lastTerritory != null) {
                 drawString((int) (Math.floor(((double) lastTimer) / 60)) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
-                drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.lasted_for", lastTerritory), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if ((timer != 0 || !Reference.onLobby) && stage == WarStage.WAR_STARTING) {
             drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
-                drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.start_in", territory), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
-                drawString("The war will start in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.start_in.no_territory"), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.WAITING_FOR_MOBS) {
             drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
-                drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.mob_spawn", territory), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
-                drawString("The mobs will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory"), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.IN_WAR) {
             drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
-                drawString("You have been at war in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.in_war", territory), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
-                drawString("You have been at war for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString(I18n.format("wynntils.utilities.overlays.war_timer.message.in_war.no_territory"), 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         }
     }

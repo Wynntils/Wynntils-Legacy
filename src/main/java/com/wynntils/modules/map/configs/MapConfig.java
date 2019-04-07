@@ -177,6 +177,13 @@ public class MapConfig extends SettingsClass {
 
     public IconTexture iconTexture = IconTexture.Classic;
     public enum IconTexture {
-        Classic, Medival
+        Classic("wynntils.map.enum.icon_texutre.classic"),
+        Medival("wynntils.map.enum.icon_texutre.medival");
+
+        public String displayName;
+
+        IconTexture(String displayName) {
+            this.displayName = displayName;
+        }
     }
 }

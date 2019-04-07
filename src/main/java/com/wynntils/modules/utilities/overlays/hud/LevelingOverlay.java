@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -22,7 +23,7 @@ public class LevelingOverlay extends Overlay {
     public static final DecimalFormat GROUPED_FORMAT = new DecimalFormat("#,###");
 
     public LevelingOverlay() {
-        super("Leveling Helper", 80, 10, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
+        super(I18n.format("wynntils.utilities.overlays.leveling.display_name"), 80, 10, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})

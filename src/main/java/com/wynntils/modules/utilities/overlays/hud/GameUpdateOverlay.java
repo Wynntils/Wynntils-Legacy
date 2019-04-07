@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ import java.util.List;
 public class GameUpdateOverlay extends Overlay {
 
     public GameUpdateOverlay() {
-        super("Game Update Ticker", 100, 20, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
+        super(I18n.format("wynntils.utilities.overlays.game_update.display_name"), 100, 20, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
     @Setting(displayName = "Message Limit", description = "The maximum amount of messages to display in the game update list")

@@ -9,6 +9,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -22,7 +23,7 @@ public class ToastOverlay extends Overlay {
     public int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
     public ToastOverlay() {
-        super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
+        super(I18n.format("wynntils.utilities.overlays.toasts.display_name"), 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
     }
 
     @Override

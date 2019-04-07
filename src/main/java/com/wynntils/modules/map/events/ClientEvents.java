@@ -12,6 +12,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,7 +54,7 @@ public class ClientEvents implements Listener {
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
                 MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
 
-                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "New Map Entry", "You found a tier " + tier.replace("IV", "4").replace("III", "3") + " chest!"));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, I18n.format("wynntils.map.toasts.new_map_entry.title"), I18n.format("wynntils.map.toasts.new_map_entry.body", tier.replace("IV", "4").replace("III", "3"))));
             }
         }
     }

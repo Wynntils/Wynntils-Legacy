@@ -21,6 +21,7 @@ import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -161,11 +162,11 @@ public class OverlayEvents implements Listener {
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
             if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, "Quest Completed!", Utils.stripColor(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, I18n.format("wynntils.utilities.overlays.toasts.quest_completed"), Utils.stripColor(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?((?![0-9]).)*" + TextFormatting.RESET + "$")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, I18n.format("wynntils.utilities.overlays.toasts.area_discovered"), Utils.stripColor(e.getMessage().getFormattedText()).trim()));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, I18n.format("wynntils.utilities.overlays.toasts.discovery_found"), Utils.stripColor(e.getMessage().getFormattedText()).trim()));
             }
         }
 
@@ -520,13 +521,13 @@ public class OverlayEvents implements Listener {
         } else {
             switch (e.getType()) {
                 case ATTACKED:
-                    rawMessage = "[" + defenderName + "]'s territory " + e.getTerritoryName() + " is being attacked by [" + attackerName + "]";
+                    rawMessage = I18n.format("wynntils.utilities.overlays.territory_feed.attacked", defenderName, e.getTerritoryName(), attackerName);
                     break;
                 case DEFENDED:
-                    rawMessage = "[" + attackerName + "]'s attack on [" + defenderName + "]'s territory " + e.getTerritoryName() + " was defended!";
+                    rawMessage = I18n.format("wynntils.utilities.overlays.territory_feed.defended", attackerName, defenderName, e.getTerritoryName());
                     break;
                 case CAPTURED:
-                    rawMessage = "[" + attackerName + "] has captured " + e.getTerritoryName() + " from [" + defenderName + "]";
+                    rawMessage = I18n.format("wynntils.utilities.overlays.territory_feed.captured", attackerName, e.getTerritoryName(), defenderName);
                     break;
             }
         }
@@ -547,7 +548,7 @@ public class OverlayEvents implements Listener {
             String oldTerritoryArea = e.getOldTerritory().replaceAll(filterList, "").trim();
             if(newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
 
-            ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", newTerritoryArea));
+            ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, I18n.format("wynntils.utilities.overlays.toasts.now_entering"), newTerritoryArea));
         }
         if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.enabled) {
             if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.leave && !e.getOldTerritory().equals("Waiting")) {

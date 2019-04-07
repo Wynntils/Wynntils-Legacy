@@ -13,6 +13,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiScreenEvent;
 
@@ -34,13 +35,10 @@ public class DailyReminderManager {
             TextComponentString closingBracket = new TextComponentString("] ");
             closingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.appendSibling(closingBracket);
-            
-            TextComponentString dailyRewards = new TextComponentString("Daily rewards ");
-            dailyRewards.getStyle().setColor(TextFormatting.WHITE);
+
+            TextComponentTranslation dailyRewards = new TextComponentTranslation("wynntils.utilities.events.check_daily");
             text.appendSibling(dailyRewards);
-            
-            text.appendText("are available to claim!");
-            
+
             p.sendMessage(text);
             ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
 

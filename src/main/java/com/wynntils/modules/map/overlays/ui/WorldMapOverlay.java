@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -131,7 +132,7 @@ public class WorldMapOverlay extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, "Markers"));
+        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, I18n.format("wynntils.map.ui.world_map.button.markers")));
 
         updateCenterPosition(centerPositionX, centerPositionZ);
     }

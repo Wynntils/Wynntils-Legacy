@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -29,7 +30,7 @@ public class ActionBarOverlay extends Overlay {
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
+        super(I18n.format("wynntils.utilities.overlays.actionbar_helper.display_name"), 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Override
@@ -105,21 +106,21 @@ public class ActionBarOverlay extends Overlay {
 
         switch (dir) {
             case 1:
-                return "NE";
+                return I18n.format("wynntils.map.overlays.minimap.north_east_short");
             case 2:
-                return "E";
+                return I18n.format("wynntils.map.overlays.minimap.east_short");
             case 3:
-                return "SE";
+                return I18n.format("wynntils.map.overlays.minimap.south_east_short");
             case 4:
-                return "S";
+                return I18n.format("wynntils.map.overlays.minimap.south_short");
             case 5:
-                return "SW";
+                return I18n.format("wynntils.map.overlays.minimap.south_west_short");
             case 6:
-                return "W";
+                return I18n.format("wynntils.map.overlays.minimap.west_short");
             case 7:
-                return "NW";
+                return I18n.format("wynntils.map.overlays.minimap.north_west_short");
             default:
-                return "N";
+                return I18n.format("wynntils.map.overlays.minimap.north_short");
         }
     }
 
