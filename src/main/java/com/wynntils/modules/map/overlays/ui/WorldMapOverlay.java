@@ -59,9 +59,14 @@ public class WorldMapOverlay extends GuiScreen {
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
         for(MapMarkerProfile mmp : WebManager.getMapMarkers()) {
             if (MapConfig.INSTANCE.enabledMapIcons.containsKey(mmp.getIcon()) && !MapConfig.INSTANCE.enabledMapIcons.get(mmp.getIcon())) continue;
-            if(!Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().has(mmp.getIcon())) continue;
+            if(!Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().has(mmp.getIcon()) || !Mappings.Map.map_icons_mappings.get("MEDIVAL").getAsJsonObject().has(mmp.getIcon())) continue;
 
-            JsonObject iconMapping = Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
+            JsonObject iconMapping;
+            if (MapConfig.INSTANCE.iconTexture == MapConfig.IconTexture.Classic) {
+                iconMapping = Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
+            } else {
+                iconMapping = Mappings.Map.map_icons_mappings.get("MEDIVAL").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
+            }
 
             MapIcon mp = new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(),
                     iconMapping.get("size").getAsFloat(),

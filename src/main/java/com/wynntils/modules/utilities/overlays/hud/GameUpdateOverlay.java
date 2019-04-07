@@ -26,21 +26,6 @@ public class GameUpdateOverlay extends Overlay {
         super(I18n.format("wynntils.utilities.overlays.game_update.display_name"), 100, 20, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
-    @Setting(displayName = "Message Limit", description = "The maximum amount of messages to display in the game update list")
-    @Setting.Limitations.IntLimit(min = 1, max = 20)
-    public int messageLimit = 5;
-
-    @Setting(displayName = "Message Expire Time", description = "The amount of time (in seconds) that a message will remain on-screen")
-    @Setting.Limitations.FloatLimit(min = 0.05f, max = 20f, precision = 0.05f)
-    public float messageTimeLimit = 5f;
-
-    @Setting(displayName = "Message Fade Time", description = "The amount of time (in seconds) that a message should take to fade out when it's expired")
-    @Setting.Limitations.FloatLimit(min = 0f, max = 5f, precision = 0.05f)
-    public float messageFadeTime = 0.5f;
-
-    @Setting(displayName = "Enabled", description = "Should game updates be displayed")
-    public boolean enabled = true;
-
     @Setting(displayName = "Offset X", description = "How far the ticker should be offset on the X axis")
     @Setting.Limitations.IntLimit(min = -200, max = 10)
     public int offsetX = 0;
@@ -48,13 +33,6 @@ public class GameUpdateOverlay extends Overlay {
     @Setting(displayName = "Offset Y", description = "How far the ticker should be offset on the Y axis")
     @Setting.Limitations.IntLimit(min = -200, max = 10)
     public int offsetY = 0;
-
-    @Setting(displayName = "Max message length", description = "The maximum length of messages in the game update ticker. Messages longer than this value will be truncated. (0 = unlimited)")
-    @Setting.Limitations.IntLimit(min = 0, max = 100)
-    public int messageMaxLength = 0;
-
-    @Setting(displayName = "Text Shadow", description = "Which text shadow type should be used for this overlay?")
-    public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     /* Message Management */
     public static List<MessageContainer> messageQueue = new LinkedList<>();
@@ -86,9 +64,9 @@ public class GameUpdateOverlay extends Overlay {
         for (MessageContainer message : new LinkedList<>(messageQueue)) {
             if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
                 if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.getMessage(), 0, (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 } else {
-                    drawString(message.getMessage(), 0, 0 - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), 0 - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 }
                 lines++;
             } else
