@@ -205,6 +205,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 20)
         public int messageLimit = 5;
 
+        @Setting(displayName = "Align Text - Right", description = "Should the text align along the right side?")
+        public boolean rightToLeft = true;
+
         @Setting(displayName = "Message Expiry Time", description = "How long (in seconds) should a ticker message remain on the screen?")
         @Setting.Limitations.FloatLimit(min = 0.2f, max = 20f, precision = 0.2f)
         public float messageTimeLimit = 10f;
