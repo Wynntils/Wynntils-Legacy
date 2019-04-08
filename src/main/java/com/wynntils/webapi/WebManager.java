@@ -16,6 +16,7 @@ import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.IOUtils;
 
@@ -504,7 +505,7 @@ public class WebManager {
         String json = null;
         boolean useCache = false;
         try {
-            URLConnection st = new URL(apiUrls.get("PlayerStats") + ModCore.mc().getSession().getUsername()).openConnection();
+            URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getUsername() + "/stats").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -528,7 +529,7 @@ public class WebManager {
         }.getType();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerProfileDeserializer());
+        gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerStatsProfileDeserializer());
         Gson gson = gsonBuilder.create();
 
         playerProfile = gson.fromJson(json, type);
