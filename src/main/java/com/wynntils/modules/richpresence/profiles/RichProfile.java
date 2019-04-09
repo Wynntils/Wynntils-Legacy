@@ -31,9 +31,9 @@ public class RichProfile {
         callbacks = new Thread(() -> {
             while(!Thread.interrupted()) {
                 rpc.Discord_RunCallbacks();
-            }
 
-            try{ Thread.sleep(2000); }catch (Exception ignored) { }
+                try{ Thread.sleep(2000); }catch (Exception ignored) { }
+            }
         }, "Wynntils RP Callbacks");
         callbacks.start();
         // <--------->
