@@ -18,12 +18,14 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
 import com.wynntils.core.framework.ui.elements.*;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.lwjgl.input.Mouse;
 
@@ -37,6 +39,8 @@ public class SettingsUI extends UI {
     private GuiScreen parentScreen;
 
     private String currentSettingsPath = "";
+    private String currentSettingsPathParent = "";
+    private String currentSettingsPathChild = "";
     private Map<String, SettingsContainer> registeredSettings = new HashMap<>();
     private List<String> sortedSettings = new ArrayList<>();
 
@@ -50,11 +54,13 @@ public class SettingsUI extends UI {
 
     HashSet<String> changedSettings = new HashSet<>();
 
-    public UIEButton cancelButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel"),Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
+    private int resetSize = 0;
+
+    public UIEButton cancelButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel"),Textures.UIs.button_a,0.5f,0.5f,-180,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
-    public UIEButton applyButton = new UIEButton(I18n.format("wynntils.config.other.apply"),Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton(I18n.format("wynntils.config.other.apply"),Textures.UIs.button_a,0.5f,0.5f,-130,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
@@ -137,6 +143,9 @@ public class SettingsUI extends UI {
         CommonUIFeatures.drawBook();
         CommonUIFeatures.drawScrollArea();
 
+        if (applyButton.position.offsetX < cancelButton.position.offsetX + cancelButton.width + 2)
+            applyButton.position.offsetX = cancelButton.position.offsetX + cancelButton.width + 2;
+
         settings.position.offsetY = (int)settingsScrollbar.getValue();
         holders.position.offsetY = (int)holdersScrollbar.getValue();
 
@@ -165,7 +174,19 @@ public class SettingsUI extends UI {
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
                 ScreenRenderer.scale(0.8f);
-                render.drawString(I18n.format(((SettingElement) setting).info.displayName()), (setting.position.getDrawingX() + 33f) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                if (resetSize <= 0)
+                    for (UIElement element : ((UIEList) setting).elements)
+                        if (element instanceof UIEButton)
+                            if (((UIEButton) element).text.equals(I18n.format("wynntils.config.other.reset")))
+                                resetSize = ((UIEButton) element).width;
+
+                if (((SettingElement) setting).wrappedName.length == 1) {
+                    render.drawString(I18n.format(((SettingElement) setting).info.displayName()), (setting.position.getDrawingX() + resetSize + 1) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else {
+                    render.drawString(I18n.format(((SettingElement) setting).wrappedName[0]), (setting.position.getDrawingX() + resetSize + 1) / 0.8f, (setting.position.getDrawingY()) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawString(I18n.format(((SettingElement) setting).wrappedName[1]), (setting.position.getDrawingX() + resetSize + 1) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                }
                 ScreenRenderer.resetScale();
             }
             setting.position.offsetX -= settings.position.offsetX;
@@ -177,11 +198,13 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
         ScreenRenderer.scale(0.7f);
-        render.drawString(this.currentSettingsPath.replace('/','>'),(screenWidth/2f+10)/0.7f,(screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        render.drawString(currentSettingsPathParent,(screenWidth/2f - 185)/0.7f,(screenHeight/2f-104)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        render.drawString(currentSettingsPathChild,(screenWidth/2f + 10)/0.7f,(screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
-                List<String> lines = Arrays.asList(I18n.format(((SettingElement) setting).info.description()).replace("\\n", "\n").split("_nl"));
+                ArrayList<String> lines = new ArrayList<>(Arrays.asList(I18n.format(((SettingElement) setting).info.description()).replace("\\n", "\n").split("_nl")));
+                lines.add(0, TextFormatting.BOLD + I18n.format(((SettingElement) setting).info.displayName()));
 //                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
             }
@@ -195,6 +218,20 @@ public class SettingsUI extends UI {
 
     public void setCurrentSettingsPath(String path) {
         currentSettingsPath = path;
+        String[] splitPath = path.split("/");
+        if (splitPath.length == 1) {
+            currentSettingsPathParent = "";
+            currentSettingsPathChild = path;
+        } else {
+            StringBuilder builder = new StringBuilder(splitPath[0]);
+            for (int i = 1; i <= splitPath.length - 2; i++) {
+                builder.append(">");
+                builder.append(splitPath[i]);
+            }
+            currentSettingsPathParent = builder.toString();
+            currentSettingsPathChild = splitPath[splitPath.length - 1];
+        }
+
         settings.elements.clear();
         settingsScrollbar.max = settingsScrollbar.min;
         try {
@@ -233,9 +270,16 @@ public class SettingsUI extends UI {
             String[] paths = path.split("/");
             this.height = 9;
             this.path = path;
-            this.text = paths[paths.length-1];
             this.position.offsetY = 11*holders.elements.size();
             this.position.offsetX = 10*paths.length;
+
+            boolean shrunk = false;
+            this.text = paths[paths.length-1];
+            while (fontRenderer.getStringWidth(text) + position.offsetX > 137) {
+                this.text = text.substring(0, text.lastIndexOf(" "));
+                shrunk = true;
+            }
+            if (shrunk) text += "...";
         }
 
         @Override
@@ -269,6 +313,7 @@ public class SettingsUI extends UI {
         public Field field;
         public Setting info;
         public UIElement valueElement;
+        public String[] wrappedName;
 
         public SettingElement(Field field) throws NullPointerException {
             super(0f, 0f, 0, 0);
@@ -288,6 +333,19 @@ public class SettingsUI extends UI {
                     e.printStackTrace();
                 }
             }));
+
+            String[] wrappedName = Utils.wrapText(I18n.format(info.displayName()), 95 - resetSize);
+            if (wrappedName.length >= 3) {
+                String toChange = wrappedName[1];
+                String[] splitToChange = toChange.split(" ");
+                wrappedName[1] = wrappedName[1].replace(splitToChange[splitToChange.length - 1], "").replace(splitToChange[splitToChange.length - 2], splitToChange[splitToChange.length - 2] + "...");
+                String[] toSet = new String[2];
+                toSet[0] = wrappedName[0];
+                toSet[1] = wrappedName[1];
+                this.wrappedName = toSet;
+            } else {
+                this.wrappedName = wrappedName;
+            }
 
             updateValue();
         }
