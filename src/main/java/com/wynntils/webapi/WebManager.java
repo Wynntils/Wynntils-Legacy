@@ -726,8 +726,7 @@ public class WebManager {
             apiCacheFileTemp.delete();
             return new FileInputStream(apiCacheFile);
         } catch (IOException ex) {
-            Reference.LOGGER.warn("Error while downloading API result - attempting to use cached data", ex);
-            return recallApiResult(fileName);
+            return null;
         }
     }
 
