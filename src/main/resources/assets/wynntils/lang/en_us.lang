@@ -462,6 +462,12 @@ wynntils.config.other.enum.text_shadow.none=None
 wynntils.config.other.enum.text_shadow.normal=Normal
 wynntils.config.other.enum.text_shadow.outline=Outline
 
+## OTHER CONFIG ##
+wynntils.config.other.reset=reset
+wynntils.config.other.apply=Apply
+wynntils.config.other.enabled=Enabled
+wynntils.config.other.disabled=Disabled
+
 ###########
 # MODULES #
 ###########

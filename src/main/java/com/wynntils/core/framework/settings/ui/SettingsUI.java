@@ -50,11 +50,11 @@ public class SettingsUI extends UI {
 
     HashSet<String> changedSettings = new HashSet<>();
 
-    public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
+    public UIEButton cancelButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel"),Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
-    public UIEButton applyButton = new UIEButton("Apply",Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton(I18n.format("wynntils.config.other.apply"),Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
@@ -279,7 +279,7 @@ public class SettingsUI extends UI {
 
             this.position.offsetY = settingHeight * settings.elements.size();
 
-            add(new UIEButton("reset", Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
+            add(new UIEButton(I18n.format("wynntils.config.other.reset"), Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
                 try {
                     registeredSettings.get(currentSettingsPath).resetValue(field);
 
@@ -313,7 +313,7 @@ public class SettingsUI extends UI {
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
                     else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
                 } else if (field.getType().isAssignableFrom(boolean.class)) {
-                    valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Toggle(I18n.format("wynntils.config.other.enabled"), Textures.UIs.button_b, I18n.format("wynntils.config.other.disabled"), Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Toggle) valueElement).value, false);
                             changedSettings.add(currentSettingsPath);
