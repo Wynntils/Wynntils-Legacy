@@ -30,6 +30,16 @@ public class OverlayConfig extends SettingsClass {
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
+        @Setting(displayName = "wynntils.config.overlay.health.health_vignette.display_name", description = "wynntils.config.overlay.health.health_vignette.description")
+        public boolean healthVignette = true;
+
+        @Setting(displayName = "wynntils.config.overlay.health.health_vignette_threshold.display_name", description = "wynntils.config.overlay.health.health_vignette_threshold.description")
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int lowHealthThreshold = 25;
+
+        @Setting(displayName = "wynntils.config.overlay.health.health_vignette_effect.display_name", description = "wynntils.config.overlay.health.health_vignette_effect.description")
+        public HealthVignetteEffect healthVignetteEffect = HealthVignetteEffect.Pulse;
+
         @Setting(displayName = "wynntils.config.overlay.health.texture.display_name", description = "wynntils.config.overlay.health.texture.description")
         public HealthTextures healthTexture = HealthTextures.a;
 
@@ -40,6 +50,17 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "wynntils.config.overlay.health.text_shadow.display_name", description = "wynntils.config.overlay.health.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
+        public enum HealthVignetteEffect {
+            Pulse("wynntils.config.overlay.health.enum.health_vignette_effect.pulse"),
+            Growing("wynntils.config.overlay.health.enum.health_vignette_effect.growing"),
+            Static("wynntils.config.overlay.health.enum.health_vignette_effect.static");
+
+            public String displayName;
+
+            HealthVignetteEffect(String displayName) {
+                this.displayName = displayName;
+            }
+        }
 
         public enum HealthTextures {
             Wynn("wynntils.config.overlay.health.enum.health_texture.wynn"),

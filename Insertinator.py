@@ -18,14 +18,16 @@ for filename in os.listdir(path):
             try:
                 if (en_us_data[i].split("=")[0] != other_lang_data[i].split("=")[0] and (not en_us_data[i].startswith("#"))):
                     inserts += 1
-                    #print("Inserted at {0}".format(i))
+                    #print("{0} inserted at {1}".format(en_us_data[i], i))
                     if (len(en_us_data[i].strip()) == 0 or ("#" in en_us_data[i])):
                         other_lang_data.insert(i, en_us_data[i])
                     else:
                         other_lang_data.insert(i, "{0} ##TODO\n".format(en_us_data[i].strip()))
+                elif ((en_us_data[i].strip().startswith("#") and en_us_data[i].strip().endswith("#")) and en_us_data[i] != other_lang_data[i]):
+                    other_lang_data.insert(i, en_us_data[i])
             except IndexError:
                 appends += 1
-                #print("Appended at {0}".format(i))
+                #print("{0} appended at {1}".format(en_us_data[i], i))
                 if (len(en_us_data[i].strip()) == 0 or ("#" in en_us_data[i])):
                     other_lang_data.append(en_us_data[i])
                 else:

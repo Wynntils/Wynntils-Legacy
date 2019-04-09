@@ -245,6 +245,12 @@ wynntils.config.overlay.health.animation_speed.display_name=Animatie Snelheid
 wynntils.config.overlay.health.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
 wynntils.config.overlay.health.text_shadow.display_name=Tekst Shaduw
 wynntils.config.overlay.health.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
+wynntils.config.overlay.health.health_vignette.display_name=Low Heatlh Vignette ##TODO
+wynntils.config.overlay.health.health_vignette.description=Should the screen tint red when on low health? ##TODO
+wynntils.config.overlay.health.health_vignette_threshold.display_name=Low Heatlh Threshold ##TODO
+wynntils.config.overlay.health.health_vignette_threshold.description=At what percentage of health should the screen start tinting red? ##TODO
+wynntils.config.overlay.health.health_vignette_effect.display_name=Low Health Effect ##TODO
+wynntils.config.overlay.health.health_vignette_effect.description=What animation effect should the low health indicator have? ##TODO
 
 ## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
 wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
@@ -256,6 +262,11 @@ wynntils.config.overlay.health.enum.health_texture.a=A
 wynntils.config.overlay.health.enum.health_texture.b=B
 wynntils.config.overlay.health.enum.health_texture.c=C
 wynntils.config.overlay.health.enum.health_texture.d=D
+
+## OVERLAYS HEALTH HEALTH VIGNETTE EFFECT ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_vignette_effect.pulse=Pulse ##TODO
+wynntils.config.overlay.health.enum.health_vignette_effect.static=Static ##TODO
+wynntils.config.overlay.health.enum.health_vignette_effect.growing=Growing ##TODO
 
 ## OVERLAYS MANA CONFIG ##
 wynntils.config.overlay.mana.display_path=Widgets/Mana
