@@ -27,36 +27,36 @@ public class PlayerClassProfile {
     private int skillDefense;
     private int skillAgility;
     private int alchemismLevel;
-    private int alchemismXp;
+    private float alchemismXp;
     private int armouringLevel;
-    private int armouringXp;
+    private float armouringXp;
     private int combatLevel;
-    private int combatXp;
+    private float combatXp;
     private int cookingLevel;
-    private int cookingXp;
+    private float cookingXp;
     private int farmingLevel;
-    private int farmingXp;
+    private float farmingXp;
     private int fishingLevel;
-    private int fishingXp;
+    private float fishingXp;
     private int jewelingLevel;
-    private int jewelingXp;
+    private float jewelingXp;
     private int miningLevel;
-    private int miningXp;
+    private float miningXp;
     private int scribingLevel;
-    private int scribingXp;
+    private float scribingXp;
     private int tailoringLevel;
-    private int tailoringXp;
+    private float tailoringXp;
     private int weaponsmithingLevel;
-    private int weaponsmithingXp;
+    private float weaponsmithingXp;
     private int woodcuttingLevel;
-    private int woodcuttingXp;
+    private float woodcuttingXp;
     private int woodworkingLevel;
-    private int woodworkingXp;
+    private float woodworkingXp;
     private int discoveries;
     private int eventsWon;
     private boolean preEconomyUpdate;
 
-    public PlayerClassProfile(String name, int level, HashMap<String, Integer> dungeonsCompleted, ArrayList<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefense, int skillAgility, int alchemismLevel, int alchemismXp, int armouringLevel, int armouringXp, int combatLevel, int combatXp, int cookingLevel, int cookingXp, int farmingLevel, int farmingXp, int fishingLevel, int fishingXp, int jewelingLevel, int jewelingXp, int miningLevel, int miningXp, int scribingLevel, int scribingXp, int tailoringLevel, int tailoringXp, int weaponsmithingLevel, int weaponsmithingXp, int woodcuttingLevel, int woodcuttingXp, int woodworkingLevel, int woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
+    public PlayerClassProfile(String name, int level, HashMap<String, Integer> dungeonsCompleted, ArrayList<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefense, int skillAgility, int alchemismLevel, float alchemismXp, int armouringLevel, float armouringXp, int combatLevel, float combatXp, int cookingLevel, float cookingXp, int farmingLevel, float farmingXp, int fishingLevel, float fishingXp, int jewelingLevel, float jewelingXp, int miningLevel, float miningXp, int scribingLevel, float scribingXp, int tailoringLevel, float tailoringXp, int weaponsmithingLevel, float weaponsmithingXp, int woodcuttingLevel, float woodcuttingXp, int woodworkingLevel, float woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
         this.name = name;
         this.level = level;
         this.dungeonsCompleted = dungeonsCompleted;
@@ -182,7 +182,7 @@ public class PlayerClassProfile {
         return alchemismLevel;
     }
 
-    public int getAlchemismXp() {
+    public float getAlchemismXp() {
         return alchemismXp;
     }
 
@@ -190,7 +190,7 @@ public class PlayerClassProfile {
         return armouringLevel;
     }
 
-    public int getArmouringXp() {
+    public float getArmouringXp() {
         return armouringXp;
     }
 
@@ -198,7 +198,7 @@ public class PlayerClassProfile {
         return combatLevel;
     }
 
-    public int getCombatXp() {
+    public float getCombatXp() {
         return combatXp;
     }
 
@@ -206,7 +206,7 @@ public class PlayerClassProfile {
         return cookingLevel;
     }
 
-    public int getCookingXp() {
+    public float getCookingXp() {
         return cookingXp;
     }
 
@@ -214,7 +214,7 @@ public class PlayerClassProfile {
         return farmingLevel;
     }
 
-    public int getFarmingXp() {
+    public float getFarmingXp() {
         return farmingXp;
     }
 
@@ -222,7 +222,7 @@ public class PlayerClassProfile {
         return fishingLevel;
     }
 
-    public int getFishingXp() {
+    public float getFishingXp() {
         return fishingXp;
     }
 
@@ -230,7 +230,7 @@ public class PlayerClassProfile {
         return jewelingLevel;
     }
 
-    public int getJewelingXp() {
+    public float getJewelingXp() {
         return jewelingXp;
     }
 
@@ -238,7 +238,7 @@ public class PlayerClassProfile {
         return miningLevel;
     }
 
-    public int getMiningXp() {
+    public float getMiningXp() {
         return miningXp;
     }
 
@@ -246,7 +246,7 @@ public class PlayerClassProfile {
         return scribingLevel;
     }
 
-    public int getScribingXp() {
+    public float getScribingXp() {
         return scribingXp;
     }
 
@@ -254,7 +254,7 @@ public class PlayerClassProfile {
         return tailoringLevel;
     }
 
-    public int getTailoringXp() {
+    public float getTailoringXp() {
         return tailoringXp;
     }
 
@@ -262,7 +262,7 @@ public class PlayerClassProfile {
         return weaponsmithingLevel;
     }
 
-    public int getWeaponsmithingXp() {
+    public float getWeaponsmithingXp() {
         return weaponsmithingXp;
     }
 
@@ -270,7 +270,7 @@ public class PlayerClassProfile {
         return woodcuttingLevel;
     }
 
-    public int getWoodcuttingXp() {
+    public float getWoodcuttingXp() {
         return woodcuttingXp;
     }
 
@@ -278,7 +278,7 @@ public class PlayerClassProfile {
         return woodworkingLevel;
     }
 
-    public int getWoodworkingXp() {
+    public float getWoodworkingXp() {
         return woodworkingXp;
     }
 
@@ -335,49 +335,54 @@ public class PlayerClassProfile {
             int skillAgility = skills.get("agility").getAsInt();
 
             JsonObject professions = playerClass.get("professions").getAsJsonObject();
-            JsonObject alchemism = professions.get("alchemism").getAsJsonObject();
-            int alchemismLevel = alchemism.get("level").getAsInt();
-            int alchemismXp = alchemism.get("xp").getAsInt();
-            JsonObject armouring = professions.get("armouring").getAsJsonObject();
-            int armouringLevel = armouring.get("level").getAsInt();
-            int armouringXp = armouring.get("xp").getAsInt();
             JsonObject combat = professions.get("combat").getAsJsonObject();
             int combatLevel = combat.get("level").getAsInt();
-            int combatXp = combat.get("xp").getAsInt();
-            JsonObject cooking = professions.get("cooking").getAsJsonObject();
-            int cookingLevel = cooking.get("level").getAsInt();
-            int cookingXp = cooking.get("xp").getAsInt();
-            JsonObject farming = professions.get("farming").getAsJsonObject();
-            int farmingLevel = farming.get("level").getAsInt();
-            int farmingXp = farming.get("xp").getAsInt();
-            JsonObject fishing = professions.get("fishing").getAsJsonObject();
-            int fishingLevel = fishing.get("level").getAsInt();
-            int fishingXp = fishing.get("xp").getAsInt();
-            JsonObject jeweling = professions.get("jeweling").getAsJsonObject();
-            int jewelingLevel = jeweling.get("level").getAsInt();
-            int jewelingXp = jeweling.get("xp").getAsInt();
-            JsonObject mining = professions.get("mining").getAsJsonObject();
-            int miningLevel = mining.get("level").getAsInt();
-            int miningXp = mining.get("xp").getAsInt();
-            JsonObject scribing = professions.get("scribing").getAsJsonObject();
-            int scribingLevel = scribing.get("level").getAsInt();
-            int scribingXp = scribing.get("xp").getAsInt();
-            JsonObject tailoring = professions.get("tailoring").getAsJsonObject();
-            int tailoringLevel = tailoring.get("level").getAsInt();
-            int tailoringXp = tailoring.get("xp").getAsInt();
-            JsonObject weaponsmithing = professions.get("weaponsmithing").getAsJsonObject();
-            int weaponsmithingLevel = weaponsmithing.get("level").getAsInt();
-            int weaponsmithingXp = weaponsmithing.get("xp").getAsInt();
-            JsonObject woodcutting = professions.get("woodcutting").getAsJsonObject();
-            int woodcuttingLevel = woodcutting.get("level").getAsInt();
-            int woodcuttingXp = woodcutting.get("xp").getAsInt();
-            JsonObject woodworking = professions.get("woodworking").getAsJsonObject();
-            int woodworkingLevel = woodworking.get("level").getAsInt();
-            int woodworkingXp = woodworking.get("xp").getAsInt();
+            float combatXp = combat.get("xp").getAsFloat();
+            int alchemismLevel = 1, armouringLevel = 1, cookingLevel = 1, farmingLevel = 1, fishingLevel = 1, jewelingLevel = 1, miningLevel = 1, scribingLevel = 1, tailoringLevel = 1, weaponsmithingLevel = 1, woodcuttingLevel = 1, woodworkingLevel = 1;
+            float alchemismXp = 0, armouringXp = 0, cookingXp = 0, farmingXp = 0, fishingXp = 0, jewelingXp = 0, miningXp = 0, scribingXp = 0, tailoringXp = 0, weaponsmithingXp = 0, woodcuttingXp = 0, woodworkingXp = 0;
+            boolean preEconomyUpdate = true;
+            if (playerClass.has("preEconomyUpdate") && !playerClass.get("preEconomyUpdate").getAsBoolean()) {
+                preEconomyUpdate = false;
+                JsonObject alchemism = professions.get("alchemism").getAsJsonObject();
+                alchemismLevel = alchemism.get("level").getAsInt();
+                alchemismXp = alchemism.get("xp").getAsFloat();
+                JsonObject armouring = professions.get("armouring").getAsJsonObject();
+                armouringLevel = armouring.get("level").getAsInt();
+                armouringXp = armouring.get("xp").getAsFloat();
+                JsonObject cooking = professions.get("cooking").getAsJsonObject();
+                cookingLevel = cooking.get("level").getAsInt();
+                cookingXp = cooking.get("xp").getAsFloat();
+                JsonObject farming = professions.get("farming").getAsJsonObject();
+                farmingLevel = farming.get("level").getAsInt();
+                farmingXp = farming.get("xp").getAsFloat();
+                JsonObject fishing = professions.get("fishing").getAsJsonObject();
+                fishingLevel = fishing.get("level").getAsInt();
+                fishingXp = fishing.get("xp").getAsFloat();
+                JsonObject jeweling = professions.get("jeweling").getAsJsonObject();
+                jewelingLevel = jeweling.get("level").getAsInt();
+                jewelingXp = jeweling.get("xp").getAsFloat();
+                JsonObject mining = professions.get("mining").getAsJsonObject();
+                miningLevel = mining.get("level").getAsInt();
+                miningXp = mining.get("xp").getAsFloat();
+                JsonObject scribing = professions.get("scribing").getAsJsonObject();
+                scribingLevel = scribing.get("level").getAsInt();
+                scribingXp = scribing.get("xp").getAsFloat();
+                JsonObject tailoring = professions.get("tailoring").getAsJsonObject();
+                tailoringLevel = tailoring.get("level").getAsInt();
+                tailoringXp = tailoring.get("xp").getAsFloat();
+                JsonObject weaponsmithing = professions.get("weaponsmithing").getAsJsonObject();
+                weaponsmithingLevel = weaponsmithing.get("level").getAsInt();
+                weaponsmithingXp = weaponsmithing.get("xp").getAsFloat();
+                JsonObject woodcutting = professions.get("woodcutting").getAsJsonObject();
+                woodcuttingLevel = woodcutting.get("level").getAsInt();
+                woodcuttingXp = woodcutting.get("xp").getAsFloat();
+                JsonObject woodworking = professions.get("woodworking").getAsJsonObject();
+                woodworkingLevel = woodworking.get("level").getAsInt();
+                woodworkingXp = woodworking.get("xp").getAsFloat();
+            }
 
             int discoveries = playerClass.get("discoveries").getAsInt();
             int eventsWon = playerClass.get("eventsWon").getAsInt();
-            boolean preEconomyUpdate = playerClass.get("preEconomyUpdate").getAsBoolean();
             return new PlayerClassProfile(name, level, dungeonsCompleted, questsCompleted, itemsIdentified, mobsKilled, pvpKills, pvpDeaths, chestsFound, blocksWalked, logins, deaths, playtime, skillStrength, skillDexterity, skillIntelligence, skillDefense, skillAgility, alchemismLevel, alchemismXp, armouringLevel, armouringXp, combatLevel, combatXp, cookingLevel, cookingXp, farmingLevel, farmingXp, fishingLevel, fishingXp, jewelingLevel, jewelingXp, miningLevel, miningXp, scribingLevel, scribingXp, tailoringLevel, tailoringXp, weaponsmithingLevel, weaponsmithingXp, woodcuttingLevel, woodcuttingXp, woodworkingLevel, woodworkingXp, discoveries, eventsWon, preEconomyUpdate);
         }
     }

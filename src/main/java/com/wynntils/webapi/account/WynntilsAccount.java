@@ -24,18 +24,18 @@ import java.net.URLConnection;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class WynntilsAccount {
 
-    private static ExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
     String token;
     boolean ready = false;
 
     HashMap<String, String> encondedConfigs = new HashMap<>();
+    CloudConfigurations configurationUploader;
 
     public WynntilsAccount() { }
 
@@ -83,46 +83,10 @@ public class WynntilsAccount {
         });
     }
 
-    public void uploadConfig(String fileName, String base64, Consumer<Boolean> callback) {
-        if(!ready) callback.accept(false);
+    public void uploadConfig(String fileName, String base64) {
+        if(!ready || configurationUploader == null) return;
 
-        service.submit(() -> {
-            try {
-                URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "uploadConfig/" + token).openConnection();
-
-                //HeyZeer0: Request below
-                JsonObject body = new JsonObject();
-                body.addProperty("fileName", fileName);
-                body.addProperty("base64", base64);
-                // {"fileName":"<file-name>", "base64":"<base-64>"}
-
-                byte[] bodyBytes = body.toString().getBytes(Charsets.UTF_8);
-                st.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
-                st.setRequestProperty("Content-Length", "" + bodyBytes.length);
-                st.setRequestProperty("Content-Type", "application/json");
-                st.setDoOutput(true);
-
-                OutputStream outputStream = null;
-                try {
-                    outputStream = st.getOutputStream();
-                    IOUtils.write(bodyBytes, outputStream);
-                }catch (Exception ex) {
-                    ex.printStackTrace();
-                    return;
-                } finally {
-                    IOUtils.closeQuietly(outputStream);
-                }
-
-                //HeyZeer0: Response below
-                JsonObject response = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
-                if (!response.has("result")) {
-                    callback.accept(false);
-                    return;
-                }
-
-                callback.accept(true);
-            }catch (Exception ex) { ex.printStackTrace(); }
-        });
+        configurationUploader.queueConfig(fileName, base64);
     }
 
     boolean secondAttempt = false;
@@ -177,6 +141,8 @@ public class WynntilsAccount {
             if (finalResult.has("result")) {
                 token = finalResult.get("authtoken").getAsString();
                 ready = true;
+
+                configurationUploader = new CloudConfigurations(service, token);
 
                 Reference.LOGGER.info("Succesfully connected to accounts!");
 

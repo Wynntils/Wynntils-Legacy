@@ -54,7 +54,7 @@ public class SettingsManager {
 
         //HeyZeer0: Uploading file
         if(WebManager.getAccount() != null)
-            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(Files.readAllBytes(f.toPath())), StandardCharsets.UTF_8), (valid) -> {});
+            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(Files.readAllBytes(f.toPath())), StandardCharsets.UTF_8));
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws Exception {
