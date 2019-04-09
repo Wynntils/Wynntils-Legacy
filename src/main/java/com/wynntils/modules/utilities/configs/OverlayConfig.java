@@ -30,6 +30,16 @@ public class OverlayConfig extends SettingsClass {
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
+        @Setting(displayName = "Low Health Vignette", description = "Should the screen tint red when on low health?")
+        public boolean healthVignette = true;
+
+        @Setting(displayName = "Low Heatlh Threshold", description = "At what percentage of health should the screen start tinting red?")
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int lowHealthThreshold = 25;
+
+        @Setting(displayName = "Low Health Effect", description = "What animation effect should the low health indicator have?")
+        public HealthVignetteEffect healthVignetteEffect = HealthVignetteEffect.Pulse;
+
         @Setting(displayName = "Health Texture", description = "What texture should be used for the health bar?")
         public HealthTextures healthTexture = HealthTextures.a;
 
@@ -41,15 +51,9 @@ public class OverlayConfig extends SettingsClass {
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
         public enum HealthVignetteEffect {
-            Pulse("wynntils.config.overlay.health.enum.health_vignette_effect.pulse"),
-            Growing("wynntils.config.overlay.health.enum.health_vignette_effect.growing"),
-            Static("wynntils.config.overlay.health.enum.health_vignette_effect.static");
-
-            public String displayName;
-
-            HealthVignetteEffect(String displayName) {
-                this.displayName = displayName;
-            }
+            Pulse,
+            Growing,
+            Static
         }
 
         public enum HealthTextures {

@@ -160,9 +160,9 @@ public class OverlayEvents implements Listener {
         }
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
-            if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$")) {
+            if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$") && !e.getMessage().getUnformattedText().contains("Powder Manual")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, "Quest Completed!", Utils.stripColor(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?((?![0-9]).)*" + TextFormatting.RESET + "$")) {
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?((?![0-9]).)*" + TextFormatting.RESET + "$") && !e.getMessage().getUnformattedText().contains("Battle Summary") && !e.getMessage().getUnformattedText().contains("Powder Manual")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", Utils.stripColor(e.getMessage().getFormattedText()).trim()));
