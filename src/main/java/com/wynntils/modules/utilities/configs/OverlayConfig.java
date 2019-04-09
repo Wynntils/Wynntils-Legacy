@@ -40,6 +40,17 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
+        public enum HealthVignetteEffect {
+            Pulse("wynntils.config.overlay.health.enum.health_vignette_effect.pulse"),
+            Growing("wynntils.config.overlay.health.enum.health_vignette_effect.growing"),
+            Static("wynntils.config.overlay.health.enum.health_vignette_effect.static");
+
+            public String displayName;
+
+            HealthVignetteEffect(String displayName) {
+                this.displayName = displayName;
+            }
+        }
 
         public enum HealthTextures {
             Wynn,
