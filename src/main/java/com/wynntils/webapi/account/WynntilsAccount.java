@@ -4,6 +4,7 @@
 
 package com.wynntils.webapi.account;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,7 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class WynntilsAccount {
 
-    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Accounts").build());
 
     String token;
     boolean ready = false;

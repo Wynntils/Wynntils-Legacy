@@ -30,7 +30,7 @@ public class RichProfile {
 
         rpc.Discord_Initialize(id, handler, true, null);
 
-        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this executor is stopped after receiving it
+        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this executorals is stopped after receiving it
         callbacks = Utils.runTaskTimer(rpc::Discord_RunCallbacks, TimeUnit.SECONDS, 2);
 
         Runtime.getRuntime().addShutdownHook(shutdown);

@@ -78,15 +78,15 @@ public class CloudConfigurations {
                 toUpload.clear();
             }catch (Exception ex) { ex.printStackTrace(); }
 
-        },0, 5, TimeUnit.SECONDS);
+        },0, 10, TimeUnit.SECONDS);
     }
 
     private class ConfigContainer {
 
-        String filename, base64;
+        String fileName, base64;
 
         public ConfigContainer(String fileName, String base64) {
-            this.filename = fileName; this.base64 = base64;
+            this.fileName = fileName; this.base64 = base64;
         }
 
     }
