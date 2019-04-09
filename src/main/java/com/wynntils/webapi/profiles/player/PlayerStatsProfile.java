@@ -303,7 +303,13 @@ public class PlayerStatsProfile {
     public enum PlayerRank {
         Player,
         Moderator,
-        Administrator
+        Administrator,
+        Music,
+        Game_Master,
+        Item,
+        Builder,
+        Hybrid,
+        CMD
     }
 
     public enum PlayerTag {
@@ -339,7 +345,7 @@ public class PlayerStatsProfile {
             JsonObject playerProfile = json.getAsJsonObject().get("data").getAsJsonArray().get(0).getAsJsonObject();
             String username = playerProfile.get("username").getAsString();
             String uuid = playerProfile.get("uuid").getAsString().replace("-", "");
-            PlayerRank rank = PlayerRank.valueOf(playerProfile.get("rank").getAsString());
+            PlayerRank rank = PlayerRank.valueOf(playerProfile.get("rank").getAsString().replace(" ", "_"));
 
             JsonObject playerMeta = playerProfile.get("meta").getAsJsonObject();
             Date firstJoin;
