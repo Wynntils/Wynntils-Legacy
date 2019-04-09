@@ -18,6 +18,7 @@ import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraftforge.fml.common.ProgressManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -707,18 +708,27 @@ public class WebManager {
      * @throws IOException
      */
     public static FileInputStream cacheApiResult(InputStream stream, String fileName) throws IOException {
-        File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
-        File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
-        FileOutputStream cacheOutputStream;
-        if (!apiCacheFolder.exists())
-            apiCacheFolder.mkdirs();
-        if (!apiCacheFile.exists())
-            apiCacheFile.createNewFile();
-        cacheOutputStream = new FileOutputStream(apiCacheFile);
-        IOUtils.copy(stream, cacheOutputStream);
-        cacheOutputStream.close();
-        stream.close();
-        return new FileInputStream(apiCacheFile);
+        try {
+            File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
+            File apiCacheFileTemp = new File(apiCacheFolder.getPath() + "/" + fileName + ".temp");
+            File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
+            if (!apiCacheFolder.exists())
+                apiCacheFolder.mkdirs();
+            if (!apiCacheFileTemp.exists())
+                apiCacheFileTemp.createNewFile();
+            if (!apiCacheFile.exists())
+                apiCacheFile.createNewFile();
+            FileOutputStream cacheOutputStream = new FileOutputStream(apiCacheFileTemp);
+            IOUtils.copy(stream, cacheOutputStream);
+            cacheOutputStream.close();
+            stream.close();
+            FileUtils.copyFile(apiCacheFileTemp, apiCacheFile);
+            apiCacheFileTemp.delete();
+            return new FileInputStream(apiCacheFile);
+        } catch (IOException ex) {
+            Reference.LOGGER.warn("Error while downloading API result - attempting to use cached data", ex);
+            return recallApiResult(fileName);
+        }
     }
 
     /**
