@@ -149,8 +149,8 @@ wynntils.config.utils.show_armor.display_name=Geef de Uitrusting van Spelers Wee
 wynntils.config.utils.show_armor.description=Moet de uitrusting van andere spelers worden weergegeven boven hun hoofd? (Zelf-gemaakte uitrusting wordt niet weergegeven.)
 wynntils.config.utils.prevent_mythic.display_name=Preventeer het Sluiten van Kisten bij Mythics
 wynntils.config.utils.prevent_mythic.description=Moeten kisten met mystics er in openblijven?
-wynntils.config.utils.prevent_slot_click.display_name=Preventeer het Klikken op Gesloten Spullen
-wynntils.config.utils.prevent_slot_click.description=Moeten kliks op gesloten spullen worden genegeerd?
+wynntils.config.utils.prevent_slot_click.display_name=Preventeer het Klikken op Gesloten Voorwerpen
+wynntils.config.utils.prevent_slot_click.description=Moeten kliks op gesloten voorwerpen worden genegeerd?
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Oorlog
@@ -163,28 +163,28 @@ wynntils.config.utils.war.warrer_health_bar.description=Moeten de levens van spe
 wynntils.config.utils.item_highlights.display_path=Voorzieningen/Goederen Highlights
 wynntils.config.utils.item_highlights.ingredient_filter.display_name=Filter voor Ingredienten
 wynntils.config.utils.item_highlights.ingredient_filter.description=Moet er een filter voor ingredienten beschikbaar zijn in chesten?
-wynntils.config.utils.item_highlights.highlight_container.display_name=Highlight Spullen in Kisten
-wynntils.config.utils.item_highlights.highlight_container.description=Moeten spullen worden gehighlight naar hun zeldzaamheid in kisten? (ook bank en etc.)
-wynntils.config.utils.item_highlights.highlight_inventory.display_name=Highlight Spullen in Inventaris
-wynntils.config.utils.item_highlights.highlight_inventory.description=Moeten spullen worden gehighlight naar hun zeldzaamheid in uw inventaris?
+wynntils.config.utils.item_highlights.highlight_container.display_name=Highlight Voorwerpen in Kisten
+wynntils.config.utils.item_highlights.highlight_container.description=Moeten voorwerpen worden gehighlight naar hun zeldzaamheid in kisten? (ook bank en etc.)
+wynntils.config.utils.item_highlights.highlight_inventory.display_name=Highlight Voorwerpen in Inventaris
+wynntils.config.utils.item_highlights.highlight_inventory.description=Moeten voorwerpen worden gehighlight naar hun zeldzaamheid in uw inventaris?
 wynntils.config.utils.item_highlights.highlight_accessory.display_name=Highlight Accessoires
 wynntils.config.utils.item_highlights.highlight_accessory.description=Moeten accessoires worden gehighlight naar hun zeldzaamheid?
-wynntils.config.utils.item_highlights.highlight_hotbar.display_name=Highlight Balk Spullen
-wynntils.config.utils.item_highlights.highlight_hotbar.description=Moeten spullen in de balk worden gehighlight naar hun zeldzaamheid?
-wynntils.config.utils.item_highlights.highlight_armor.display_name=Highlight Uitrusting Spullen
+wynntils.config.utils.item_highlights.highlight_hotbar.display_name=Highlight Balk Voorwerpen
+wynntils.config.utils.item_highlights.highlight_hotbar.description=Moeten voorwerpen in de balk worden gehighlight naar hun zeldzaamheid?
+wynntils.config.utils.item_highlights.highlight_armor.display_name=Highlight Uitrusting Voorwerpen
 wynntils.config.utils.item_highlights.highlight_armor.description=Moeten de uitrusting die je draagt worden gehighlight naar hun zeldzaamheid?
-wynntils.config.utils.item_highlights.highlight_mythic.display_name=Highlight Mythische Spullen
-wynntils.config.utils.item_highlights.highlight_mythic.description=Moeten mythische spullen worden gehighlight?
-wynntils.config.utils.item_highlights.highlight_legendary.display_name=Highlight Legendarische Spullen
-wynntils.config.utils.item_highlights.highlight_legendary.description=Moeten legendarische spullen worden gehighlight?
-wynntils.config.utils.item_highlights.highlight_rare.display_name=Highlight Zeldzame Spullen
-wynntils.config.utils.item_highlights.highlight_rare.description=Moeten zeldzame spullen worden gehighlight?
-wynntils.config.utils.item_highlights.highlight_unique.display_name=Highlight Unieke Spullen
-wynntils.config.utils.item_highlights.highlight_unique.description=Moeten unieke spullen worden gehighlight
-wynntils.config.utils.item_highlights.highlight_set.display_name=Highlight Set Spullen
-wynntils.config.utils.item_highlights.highlight_set.description=Moeten spullen uit sets worden gehighlight
-wynntils.config.utils.item_highlights.highlight_normal.display_name=Highlight Normale Spullen
-wynntils.config.utils.item_highlights.highlight_normal.description=Moeten normale spullen worden gehighlight
+wynntils.config.utils.item_highlights.highlight_mythic.display_name=Highlight Mythische Voorwerpen
+wynntils.config.utils.item_highlights.highlight_mythic.description=Moeten mythische voorwerpen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_legendary.display_name=Highlight Legendarische Voorwerpen
+wynntils.config.utils.item_highlights.highlight_legendary.description=Moeten legendarische voorwerpen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_rare.display_name=Highlight Zeldzame Voorwerpen
+wynntils.config.utils.item_highlights.highlight_rare.description=Moeten zeldzame voorwerpen worden gehighlight?
+wynntils.config.utils.item_highlights.highlight_unique.display_name=Highlight Unieke Voorwerpen
+wynntils.config.utils.item_highlights.highlight_unique.description=Moeten unieke voorwerpen worden gehighlight
+wynntils.config.utils.item_highlights.highlight_set.display_name=Highlight Set Voorwerpen
+wynntils.config.utils.item_highlights.highlight_set.description=Moeten voorwerpen uit sets worden gehighlight
+wynntils.config.utils.item_highlights.highlight_normal.display_name=Highlight Normale Voorwerpen
+wynntils.config.utils.item_highlights.highlight_normal.description=Moeten normale voorwerpen worden gehighlight
 wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=Highlight Zwarte Markt Accessoires
 wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=Moeten zwarte markt accessoires worden gehighlight?
 wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name=Highlight Goddelijke Accessoires
@@ -208,17 +208,17 @@ wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Moeten
 wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Minimum Poeder Niveau voor Highlights
 wynntils.config.utils.item_highlights.minimum_powder_tier.description=Wat is het minimum niveau van poeders dat gehighlight moet worden?
 wynntils.config.utils.item_highlights.legendary_color.display_name=Legendarische Highlight Kleur
-wynntils.config.utils.item_highlights.legendary_color.description=Welke kleur moet de highlight voor legendarische spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.legendary_color.description=Welke kleur moet de highlight voor legendarische voorwerpen zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Highlight Kleur
-wynntils.config.utils.item_highlights.mythic_color.description=Welke kleur moet de highlight voor mythische spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.mythic_color.description=Welke kleur moet de highlight voor mythische voorwerpen zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.rare_color.display_name=Zeldzame Highlight Kleur
-wynntils.config.utils.item_highlights.rare_color.description=Welke kleur moet de highlight voor zeldzame spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.rare_color.description=Welke kleur moet de highlight voor zeldzame voorwerpen zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.unique_color.display_name=Unieke Highlight Kleur
-wynntils.config.utils.item_highlights.unique_color.description=Welke kleur moet de highlight voor unieke spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.unique_color.description=Welke kleur moet de highlight voor unieke voorwerpen zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.set_color.display_name=Set Highlight Kleur
-wynntils.config.utils.item_highlights.set_color.description=Welke kleur moet de highlight voor spullen uit sets zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.set_color.description=Welke kleur moet de highlight voor voorwerpen uit sets zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.normal_color.display_name=Normale Highlight Kleur
-wynntils.config.utils.item_highlights.normal_color.description=Welke kleur moet de highlight voor normale spullen zijn?\n§aKlik hierboven op de kleur om het te veranderen
+wynntils.config.utils.item_highlights.normal_color.description=Welke kleur moet de highlight voor normale voorwerpen zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.crafted_color.display_name=Zelf-gemaakte Uitrusting Highlight Kleur
 wynntils.config.utils.item_highlights.crafted_color.description=Welke kleur moet de highlight voor zelf-gemaakte uitrusting zijn?\n§aKlik hierboven op de kleur om het te veranderen
 wynntils.config.utils.item_highlights.onestar_color.display_name=Ingredient Highlight Kleur (1 ster)
@@ -245,12 +245,12 @@ wynntils.config.overlay.health.animation_speed.display_name=Animatie Snelheid
 wynntils.config.overlay.health.animation_speed.description=Hoe snel moet de levens balk geanimeert zijn? (0 voor direct)
 wynntils.config.overlay.health.text_shadow.display_name=Tekst Shaduw
 wynntils.config.overlay.health.text_shadow.description=Wat moet het schaduw type rondom tekst zijn?
-wynntils.config.overlay.health.health_vignette.display_name=Low Heatlh Vignette ##TODO
-wynntils.config.overlay.health.health_vignette.description=Should the screen tint red when on low health? ##TODO
-wynntils.config.overlay.health.health_vignette_threshold.display_name=Low Heatlh Threshold ##TODO
-wynntils.config.overlay.health.health_vignette_threshold.description=At what percentage of health should the screen start tinting red? ##TODO
-wynntils.config.overlay.health.health_vignette_effect.display_name=Low Health Effect ##TODO
-wynntils.config.overlay.health.health_vignette_effect.description=What animation effect should the low health indicator have? ##TODO
+wynntils.config.overlay.health.health_vignette.display_name=Laag op Levens Gloed
+wynntils.config.overlay.health.health_vignette.description=Moet het scherm rood kleuren als u laag op levens bent?
+wynntils.config.overlay.health.health_vignette_threshold.display_name=Laag op Levens Minimum
+wynntils.config.overlay.health.health_vignette_threshold.description=Op welk percentage levens moet het scherm rood kleuren?
+wynntils.config.overlay.health.health_vignette_effect.display_name=Laag op Levens Animatie
+wynntils.config.overlay.health.health_vignette_effect.description=Wat voor animatie moet de rode tint hebben?
 
 ## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
 wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
@@ -264,9 +264,9 @@ wynntils.config.overlay.health.enum.health_texture.c=C
 wynntils.config.overlay.health.enum.health_texture.d=D
 
 ## OVERLAYS HEALTH HEALTH VIGNETTE EFFECT ENUM CONFIG ##
-wynntils.config.overlay.health.enum.health_vignette_effect.pulse=Pulse ##TODO
-wynntils.config.overlay.health.enum.health_vignette_effect.static=Static ##TODO
-wynntils.config.overlay.health.enum.health_vignette_effect.growing=Growing ##TODO
+wynntils.config.overlay.health.enum.health_vignette_effect.pulse=Pulseren
+wynntils.config.overlay.health.enum.health_vignette_effect.static=Stil
+wynntils.config.overlay.health.enum.health_vignette_effect.growing=Groeiend
 
 ## OVERLAYS MANA CONFIG ##
 wynntils.config.overlay.mana.display_path=Widgets/Mana
@@ -361,8 +361,8 @@ wynntils.config.overlay.leveling.text_shadow.description=Wat moet het schaduw ty
 wynntils.config.overlay.ticker.display_path=Widgets/Updates Ticker
 wynntils.config.overlay.ticker.message_limit.display_name=Berichten Limiet
 wynntils.config.overlay.ticker.message_limit.description=Wat is het maximum aantal berichten dat tegelijk in de Updates Ticker mag worden weergegeven?
-wynntils.config.overlay.ticker.align_right.display_name=Align Text - Right ##TODO
-wynntils.config.overlay.ticker.align_right.description=Should the text align along the right side? ##TODO
+wynntils.config.overlay.ticker.align_right.display_name=Aligneer Tekst - Rechts ##TODO
+wynntils.config.overlay.ticker.align_right.description=Moet de tekst worden op een lijn worden gesteld met rechts als oorsprong?
 wynntils.config.overlay.ticker.expiry_time.display_name=Berichten Verloop Tijd
 wynntils.config.overlay.ticker.expiry_time.description=Hoe lang (in secondes) moeten berichten zichtbaar blijven?
 wynntils.config.overlay.ticker.fadeout_time.display_name=Berichten Vervagings Animatie
@@ -409,7 +409,7 @@ wynntils.config.overlay.ticker.redir.guild_login.description=Moeten berichten va
 wynntils.config.overlay.ticker.redir.merchant.display_name=Doorsturen Verkopers Berichten
 wynntils.config.overlay.ticker.redir.merchant.description=Moeten berichten van Blacksmiths en Identifiers worden doorgestuurd naar de Updates Ticker?
 wynntils.config.overlay.ticker.redir.other.display_name=Doorsturen Overige Berichten
-wynntils.config.overlay.ticker.redir.other.description=Moeten skill points, prijs van identificeren van spullen en levelen van andere spelen worden doorgestuurd naar de Updates Ticker?
+wynntils.config.overlay.ticker.redir.other.description=Moeten skill points, prijs van identificeren van voorwerpen en levelen van andere spelers worden doorgestuurd naar de Updates Ticker?
 wynntils.config.overlay.ticker.redir.server.display_name=Doorsturen Server Status
 wynntils.config.overlay.ticker.redir.server.description=Moeten berichten over het herstarten van de server worden doorgestuurd naar de Updates Ticker?
 wynntils.config.overlay.ticker.redir.quest.display_name=Doorsturen Avonturen Berichten
@@ -640,225 +640,225 @@ wynntils.core.ui.update.update_downloaded_build=Een update voor Wynntils (Revisi
 #######
 
 ## TOASTS ##
-wynntils.map.toasts.new_map_entry.title=New Map Entry ##TODO
-wynntils.map.toasts.new_map_entry.body=You found a tier %s chest! ##TODO
+wynntils.map.toasts.new_map_entry.title=Nieuwe Kaart Markering
+wynntils.map.toasts.new_map_entry.body=Je hebt een chest gevonden van niveau %s!
 
 ## WORLD MAP UI ##
-wynntils.map.ui.world_map.button.markers=Markers ##TODO
+wynntils.map.ui.world_map.button.markers=Markeringen
 
 ## WORLD MAP SETTINGS UI ##
-wynntils.map.ui.world_map_settings.buttons.cancel=Cancel ##TODO
-wynntils.map.ui.world_map_settings.buttons.default=Default ##TODO
-wynntils.map.ui.world_map_settings.buttons.save=Save ##TODO
-wynntils.map.ui.world_map_settings.floating.enable_or_disable=Enable/Disable Map Icons: ##TODO
-wynntils.map.ui.world_map_settings.floating.textures=Map Icon Textures: ##TODO
+wynntils.map.ui.world_map_settings.buttons.cancel=Annuleer
+wynntils.map.ui.world_map_settings.buttons.default=Standaard
+wynntils.map.ui.world_map_settings.buttons.save=Opslaan
+wynntils.map.ui.world_map_settings.floating.enable_or_disable=Activeer Kaart Icoontjes:
+wynntils.map.ui.world_map_settings.floating.textures=Kaart Icoon Style:
 
 ## ICON TEXTURE ENUM ##
-wynntils.map.enum.icon_texutre.classic=Classic ##TODO
+wynntils.map.enum.icon_texutre.classic=Klassiek
 # Spell error in code replicated for consistency
-wynntils.map.enum.icon_texutre.medival=Medieval ##TODO
+wynntils.map.enum.icon_texutre.medival=Middeleeuws
 
 ## MINIMAP OVERLAY ##
-wynntils.map.overlays.minimap.display_name=Mini Map ##TODO
-wynntils.map.overlays.minimap.north_short=N ##TODO
-wynntils.map.overlays.minimap.north_east_short=NE ##TODO
-wynntils.map.overlays.minimap.east_short=E ##TODO
-wynntils.map.overlays.minimap.south_east_short=SE ##TODO
-wynntils.map.overlays.minimap.south_short=S ##TODO
-wynntils.map.overlays.minimap.south_west_short=SW ##TODO
-wynntils.map.overlays.minimap.west_short=W ##TODO
-wynntils.map.overlays.minimap.north_west_short=NW ##TODO
+wynntils.map.overlays.minimap.display_name=Kaart Widget
+wynntils.map.overlays.minimap.north_short=N
+wynntils.map.overlays.minimap.north_east_short=NO
+wynntils.map.overlays.minimap.east_short=O
+wynntils.map.overlays.minimap.south_east_short=ZO
+wynntils.map.overlays.minimap.south_short=Z
+wynntils.map.overlays.minimap.south_west_short=ZW
+wynntils.map.overlays.minimap.west_short=W
+wynntils.map.overlays.minimap.north_west_short=NW
 
 #########
 # MUSIC #
 #########
 
 ## NOW PLAYING DISPLAY ##
-wynntils.music.overlays.now_playing.nothing_playing=Nothing is being played! ##TODO
-wynntils.music.overlays.now_playing.play=Play ##TODO
-wynntils.music.overlays.now_playing.pause=Pause ##TODO
+wynntils.music.overlays.now_playing.nothing_playing=Er wordt niks gespeeld
+wynntils.music.overlays.now_playing.play=Speel
+wynntils.music.overlays.now_playing.pause=Pauze
 
 ##############
 # QUEST BOOK #
 ##############
 
 ## TRACKED QUEST OVERLAY ##
-wynntils.questbook.overlays.tracked_quest.display_name=Tracked Quest ##TODO
-wynntils.questbook.overlays.tracked_quest.title=Tracked Quest Info: ##TODO
+wynntils.questbook.overlays.tracked_quest.display_name=Gevolgd Avontuur
+wynntils.questbook.overlays.tracked_quest.title=Gevolgd Avontuur Informatie
 
 ## QUEST BOOK UI ##
-wynntils.questbook.ui.questbook.button.generic.left_to_select=Left click to select ##TODO
-wynntils.questbook.ui.questbook.link_error=Error opening link, it has been copied to your clipboard ##TODO
-wynntils.questbook.ui.questbook.sort_type=Order the list by ##TODO
-wynntils.questbook.ui.questbook.sort_type.alphabetical=Alphabetical Order (A-Z) ##TODO
-wynntils.questbook.ui.questbook.sort_type.level=Level Order (100-0) ##TODO
-wynntils.questbook.ui.questbook.sort_type.rarity=Rarity Order (MYTH-NORMAL) ##TODO
-wynntils.questbook.ui.questbook.item_filter=Item Filter ##TODO
-wynntils.questbook.ui.questbook.button.back_to_menu=Back to Menu ##TODO
-wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1=Click here to go ##TODO
-wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2=back to the main page ##TODO
-wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3= ##TODO
-wynntils.questbook.ui.questbook.search_bar.type=Type to search ##TODO
-wynntils.questbook.ui.questbook.search_bar.click=Click to search ##TODO
-wynntils.questbook.ui.questbook.available_items=Available Items ##TODO
-wynntils.questbook.ui.questbook.item_guide=Item Guide ##TODO
-wynntils.questbook.ui.questbook.item_guide.subtitle_1=See all items ##TODO
-wynntils.questbook.ui.questbook.item_guide.subtitle_2=currently available ##TODO
-wynntils.questbook.ui.questbook.item_guide.subtitle_3=in the game. ##TODO
-wynntils.questbook.ui.questbook.item_guide.subtitle_4= ##TODO
-wynntils.questbook.ui.questbook.quests.description_1=Here you can see all quests ##TODO
-wynntils.questbook.ui.questbook.quests.description_2=available to you. You can ##TODO
-wynntils.questbook.ui.questbook.quests.description_3=also search for a specific ##TODO
-wynntils.questbook.ui.questbook.quests.description_4=quest just by typing its name. ##TODO
-wynntils.questbook.ui.questbook.quests.description_5=You can go to the next page ##TODO
-wynntils.questbook.ui.questbook.quests.description_6=by clicking on the two buttons ##TODO
-wynntils.questbook.ui.questbook.quests.description_7=or by scrolling your mouse. ##TODO
-wynntils.questbook.ui.questbook.quests.description_8=You can pin/unpin a quest ##TODO
-wynntils.questbook.ui.questbook.quests.description_9=by clicking on it. ##TODO
-wynntils.questbook.ui.questbook.quests.discovery_hover_1=Hold shift to see Secret Discoveries! ##TODO
-wynntils.questbook.ui.questbook.quests.discovery_hover_2=Click to see all of your Discoveries! ##TODO
-wynntils.questbook.ui.questbook.quests.pin=Left click to pin it! ##TODO
-wynntils.questbook.ui.questbook.quests.unpin=Left click to unpin it! ##TODO
-wynntils.questbook.ui.questbook.quests.open_on_wiki=Right click to open on the wiki! ##TODO
-wynntils.questbook.ui.questbook.quests=Quests ##TODO
-wynntils.questbook.ui.questbook.configs=Configs ##TODO
-wynntils.questbook.ui.questbook.class_and_level=%s Level %s ##TODO
-wynntils.questbook.ui.questbook.in_development=In Development ##TODO
-wynntils.questbook.ui.questbook.open_quests.subtitle_1=See and pin all your ##TODO
-wynntils.questbook.ui.questbook.open_quests.subtitle_2=currently available ##TODO
-wynntils.questbook.ui.questbook.open_quests.subtitle_3=quests. ##TODO
-wynntils.questbook.ui.questbook.open_quests.subtitle_4= ##TODO
-wynntils.questbook.ui.questbook.configuration=Configuration ##TODO
-wynntils.questbook.ui.questbook.configuration.subtitle_1=Change the settings ##TODO
-wynntils.questbook.ui.questbook.configuration.subtitle_2=to the way you want. ##TODO
-wynntils.questbook.ui.questbook.configuration.subtitle_3= ##TODO
-wynntils.questbook.ui.questbook.configuration.subtitle_4=BETA VERSION ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration=Overlay Configuration ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration.subtitle_1=Change position ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration.subtitle_2=and enable/disable ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration.subtitle_3=the various ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration.subtitle_4=Wynntils overlays. ##TODO
-wynntils.questbook.ui.questbook.overlay_configuration.subtitle_5= ##TODO
-wynntils.questbook.ui.questbook.select_to_continue=Select an option to continue ##TODO
-wynntils.questbook.ui.questbook.intro_1=Welcome to Wynntils. You can ##TODO
-wynntils.questbook.ui.questbook.intro_2=see your statistics on the right ##TODO
-wynntils.questbook.ui.questbook.intro_3=or select some of the options ##TODO
-wynntils.questbook.ui.questbook.intro_4=above for more features. ##TODO
-wynntils.questbook.ui.questbook.user_profile=User Profile ##TODO
-wynntils.questbook.ui.questbook.discoveries.info_1=Here you can see all of the ##TODO
-wynntils.questbook.ui.questbook.discoveries.info_2=discoveries you have already ##TODO
-wynntils.questbook.ui.questbook.discoveries.info_3=found. ##TODO
-wynntils.questbook.ui.questbook.discoveries.info_4=You can also use the filters ##TODO
-wynntils.questbook.ui.questbook.discoveries.info_5=below. ##TODO
-wynntils.questbook.ui.questbook.discoveries.back_to_quests=Back to Quests ##TODO
-wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1=Click here to go ##TODO
-wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2=back to the quests ##TODO
-wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3= ##TODO
-wynntils.questbook.ui.questbook.discoveries=Discoveries ##TODO
-wynntils.questbook.ui.questbook.version.stable=Stable v%s ##TODO
-wynntils.questbook.ui.questbook.version.cutting_edge=CE Build %s ##TODO
+wynntils.questbook.ui.questbook.button.generic.left_to_select=Gebruik linkse muisknop om te selecteren
+wynntils.questbook.ui.questbook.link_error=Fout tijdens het openen van de link, het is gekopieerd naar uw klembord
+wynntils.questbook.ui.questbook.sort_type=Orden de lijst op
+wynntils.questbook.ui.questbook.sort_type.alphabetical=Alfabetische volgorde (A-Z)
+wynntils.questbook.ui.questbook.sort_type.level=Levels (100-0)
+wynntils.questbook.ui.questbook.sort_type.rarity=Zeldzaamheid (MYTHISCH-NORMAAL)
+wynntils.questbook.ui.questbook.item_filter=Voorwerp Filter
+wynntils.questbook.ui.questbook.button.back_to_menu=Terug naar het Menu
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1=Klik hier om door te gaan
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2=Terug naar het hoofdmenu
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3=
+wynntils.questbook.ui.questbook.search_bar.type=Typ om te zoeken
+wynntils.questbook.ui.questbook.search_bar.click=Klik hier om te zoeken
+wynntils.questbook.ui.questbook.available_items=Beschikbare voorwerpen
+wynntils.questbook.ui.questbook.item_guide=Voorwerp Handleiding
+wynntils.questbook.ui.questbook.item_guide.subtitle_1=Zie alle voorwerpen
+wynntils.questbook.ui.questbook.item_guide.subtitle_2=nu beschikbaar
+wynntils.questbook.ui.questbook.item_guide.subtitle_3=in het spel.
+wynntils.questbook.ui.questbook.item_guide.subtitle_4=
+wynntils.questbook.ui.questbook.quests.description_1=Hier kunt u al uw beschikbare
+wynntils.questbook.ui.questbook.quests.description_2=avonturen zien. Je kunt ook
+wynntils.questbook.ui.questbook.quests.description_3=zoeken naar specifieke avon-
+wynntils.questbook.ui.questbook.quests.description_4=turen door de naam te typen.
+wynntils.questbook.ui.questbook.quests.description_5=Je kunt naar de volgende 
+wynntils.questbook.ui.questbook.quests.description_6=pagina m.b.v. de knoppen of
+wynntils.questbook.ui.questbook.quests.description_7=door te scrollen.
+wynntils.questbook.ui.questbook.quests.description_8=Je kan een avontuur volgen
+wynntils.questbook.ui.questbook.quests.description_9=door er op te klikken.
+wynntils.questbook.ui.questbook.quests.discovery_hover_1=Houdt shift in gedrukt voor Geheime Ontdekkingen!
+wynntils.questbook.ui.questbook.quests.discovery_hover_2=Klik hier om al uw Ontdekkingen te zien!
+wynntils.questbook.ui.questbook.quests.pin=Linker muisknop om te volgen!
+wynntils.questbook.ui.questbook.quests.unpin=Linker muisknop om te ontvolgen!
+wynntils.questbook.ui.questbook.quests.open_on_wiki=Rechter muisknop voor het openen van de Wiki!
+wynntils.questbook.ui.questbook.quests=Avonturen
+wynntils.questbook.ui.questbook.configs=Instellingen
+wynntils.questbook.ui.questbook.class_and_level=%s Level %s
+wynntils.questbook.ui.questbook.in_development=In Ontwikkeling
+wynntils.questbook.ui.questbook.open_quests.subtitle_1=Zie en volg al uw
+wynntils.questbook.ui.questbook.open_quests.subtitle_2=beschikbare avon-
+wynntils.questbook.ui.questbook.open_quests.subtitle_3=turen.
+wynntils.questbook.ui.questbook.open_quests.subtitle_4=
+wynntils.questbook.ui.questbook.configuration=Instellingen
+wynntils.questbook.ui.questbook.configuration.subtitle_1=Verander uw Instellingen
+wynntils.questbook.ui.questbook.configuration.subtitle_2=hoe uw ze maar wilt.
+wynntils.questbook.ui.questbook.configuration.subtitle_3=
+wynntils.questbook.ui.questbook.configuration.subtitle_4=BETA VERSIE
+wynntils.questbook.ui.questbook.overlay_configuration=Widget Configuratie
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_1=Verander de positie
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_2=en activeer verschil-
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_3=lende Wynntils Widgets
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_4=
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_5=
+wynntils.questbook.ui.questbook.select_to_continue=Selecteer een optie om door te gaan
+wynntils.questbook.ui.questbook.intro_1=Welkom bij Wynntils. Recht kun u
+wynntils.questbook.ui.questbook.intro_2=uw statistieken zien of selecteer
+wynntils.questbook.ui.questbook.intro_3=een optie hierboven voor mee
+wynntils.questbook.ui.questbook.intro_4=functies.
+wynntils.questbook.ui.questbook.user_profile=Gebruikers Profiel
+wynntils.questbook.ui.questbook.discoveries.info_1=Hier kunt uw al uw gevonden
+wynntils.questbook.ui.questbook.discoveries.info_2=ontdekkingen bekijken.
+wynntils.questbook.ui.questbook.discoveries.info_3=
+wynntils.questbook.ui.questbook.discoveries.info_4=U kunt ook gebruik maken van
+wynntils.questbook.ui.questbook.discoveries.info_5=de onderstaande filters.
+wynntils.questbook.ui.questbook.discoveries.back_to_quests=Terug naar avonturen
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1=Klik hier om door te gaan
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2=terug naar avonturen
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3=
+wynntils.questbook.ui.questbook.discoveries=Ontdekkingen
+wynntils.questbook.ui.questbook.version.stable=Stabiel v%s
+wynntils.questbook.ui.questbook.version.cutting_edge=Nieuwste Revisie %s
 
 #############
 # UTILITIES #
 #############
 
 ## CLIENT EVENTS ##
-wynntils.utilities.events.prevent_mythic_close=You cannot close this loot chest while there is mythic in it! ##TODO
-wynntils.utilities.events.check_daily=§7Daily rewards §fare available to claim! ##TODO
+wynntils.utilities.events.prevent_mythic_close=U kunt deze chest niet sluiten zo lang er een Mytisch voorwerp in zit!
+wynntils.utilities.events.check_daily=§fU kunt uw §7Dagelijkse beloning§f ophalen!
 
 ## ACTIONBAR HELPER OVERLAY ##
-wynntils.utilities.overlays.actionbar_helper.display_name=ActionBar Helper ##TODO
+wynntils.utilities.overlays.actionbar_helper.display_name=Actie Balk Helper
 
 ## BUBBLES OVERLAY ##
-wynntils.utilities.overlays.bubbles.display_name=Bubbles Overlay ##TODO
+wynntils.utilities.overlays.bubbles.display_name=Bubbel Widget
 
 ## EXPERIENCE BAR OVERLAY ##
-wynntils.utilities.overlays.experience_bar.display_name=Experience Bar ##TODO
+wynntils.utilities.overlays.experience_bar.display_name=EXP Balk
 
 ## GAME UPDATE OVERLAY ##
-wynntils.utilities.overlays.game_update.display_name=Game Update Ticker ##TODO
-wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] WynnExpansion's chat timestamps detected, please use Wynntils' chat timestamps for full compatibility. ##TODO
-wynntils.utilities.overlays.game_update.redir.horse.no_room=There is no room for a horse. ##TODO
-wynntils.utilities.overlays.game_update.redir.horse.despawned=Horse despawned. ##TODO
-wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs=Too many mobs nearby to spawn your horse. ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.no_mana=Not enough mana. ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.not_unlocked=Spell not unlocked ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.mana_pot=[+%1$s %3$s mana over %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.strength_pot=[+%1$s %3$s Strength for %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.agility_pot=[+%1$s %3$s Agility for %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot=[+%1$s %3$s Dexterity for %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot=[+%1$s %3$s Intelligence for %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.defense_pot=[+%1$s %3$s Defense for %2$s seconds] ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.pot_already_active=You already have that potion active... ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.cant_teleport=Can't teleport - move away from blocks. ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.cleared_effects=§bCleared §7all potion effects ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.removed_fire=§bRemoved §7all fire ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.speed_boost=§b+3 minutes §7speed boost ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.10_resistance=§b+10% resistance ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.15_resistance=§b+15% resistance ##TODO
-wynntils.utilities.overlays.game_update.redir.combat.20_resistance=§b+20% resistance §7& §b+10% strength ##TODO
-wynntils.utilities.overlays.game_update.redir.other.skill_points_available=§e%s §6skill points available. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.combat_level_up=§e%1$s §6is now level §e%2$s ##TODO
-wynntils.utilities.overlays.game_update.redir.other.profession_level_up=§e%1$s §6is now §e%2$s %3$s §6level §e%4$s ##TODO
-wynntils.utilities.overlays.game_update.redir.other.not_identified=Item not identified. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.not_class=This weapon is not from your class. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.too_low_level=You are not a high enough level to use this item. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.skill_too_low=You don't have enough %s to use this item. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.too_low_level_potion=You are not a high enough level to use this potion. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.full_inventory=Not enough inventory space. ##TODO
-wynntils.utilities.overlays.game_update.redir.other.not_visited=You have never been to that area! ##TODO
+wynntils.utilities.overlays.game_update.display_name=Spel Updates Ticker
+wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] WynnExpansion's tijdsaanduidingen gedetecteerd. Schakel het uit, om problemen te voorkomen.
+wynntils.utilities.overlays.game_update.redir.horse.no_room=Er is geen ruimte voor een paard!
+wynntils.utilities.overlays.game_update.redir.horse.despawned=Paard is weggegaan!
+wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs=Te veel monsters in de buurt voor uw paard!
+wynntils.utilities.overlays.game_update.redir.combat.no_mana=Niet genoeg mana
+wynntils.utilities.overlays.game_update.redir.combat.not_unlocked=Spreuk nog vergrendeld
+wynntils.utilities.overlays.game_update.redir.combat.mana_pot=[+%1$s %3$s mana over %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.strength_pot=[+%1$s %3$s Kracht voor %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.agility_pot=[+%1$s %3$s Wendbaarheid voor %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot=[+%1$s %3$s Behendigheid voor %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot=[+%1$s %3$s Kennis voor %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.defense_pot=[+%1$s %3$s Verdediging voor %2$s seconden]
+wynntils.utilities.overlays.game_update.redir.combat.pot_already_active=Dit middel is al actief...
+wynntils.utilities.overlays.game_update.redir.combat.cant_teleport=Kan niet teleporteren - ga weg van blokken.
+wynntils.utilities.overlays.game_update.redir.combat.cleared_effects=§bAlle §7vloeken §bverwijderd
+wynntils.utilities.overlays.game_update.redir.combat.removed_fire=§7Vuur §bgedoofd
+wynntils.utilities.overlays.game_update.redir.combat.speed_boost=§b+3 minuten §7snelheids boost
+wynntils.utilities.overlays.game_update.redir.combat.10_resistance=§b+10% weerstand
+wynntils.utilities.overlays.game_update.redir.combat.15_resistance=§b+15% weerstand
+wynntils.utilities.overlays.game_update.redir.combat.20_resistance=§b+20% weerstand §7& §b+10% kracht
+wynntils.utilities.overlays.game_update.redir.other.skill_points_available=§e%s §6skill points beschikbaar.
+wynntils.utilities.overlays.game_update.redir.other.combat_level_up=§e%1$s §6is nu level §e%2$s
+wynntils.utilities.overlays.game_update.redir.other.profession_level_up=§e%1$s §6is nu §e%2$s %3$s §6level §e%4$s
+wynntils.utilities.overlays.game_update.redir.other.not_identified=Voorwerp niet geïdentificeerd
+wynntils.utilities.overlays.game_update.redir.other.not_class=Dit wapen is niet bestemd voor uw rol.
+wynntils.utilities.overlays.game_update.redir.other.too_low_level=Uw level is niet hoog genoeg om dit te gebruiken.
+wynntils.utilities.overlays.game_update.redir.other.skill_too_low=U heeft niet genoeg %s om dit te gebruiken.
+wynntils.utilities.overlays.game_update.redir.other.too_low_level_potion=Uw level is niet hoog genoeg om dit te drinken.
+wynntils.utilities.overlays.game_update.redir.other.full_inventory=Uw inventaris zit vol!
+wynntils.utilities.overlays.game_update.redir.other.not_visited=U bent daar nog nooit geweest!
 wynntils.utilities.overlays.game_update.redir.soul_point.single=+1 Soul Point ##TODO
 wynntils.utilities.overlays.game_update.redir.soul_point.plural=%s Soul Points ##TODO
-wynntils.utilities.overlays.game_update.redir.server.minute.single=1 minute until server restart ##TODO
-wynntils.utilities.overlays.game_update.redir.server.minute.plural=%s minutes until server restart ##TODO
-wynntils.utilities.overlays.game_update.redir.server.second.single=1 second until server restart ##TODO
-wynntils.utilities.overlays.game_update.redir.server.second.plural=%s seconds until server restart ##TODO
-wynntils.utilities.overlays.game_update.redir.quest.updated=Quest book updated. ##TODO
-wynntils.utilities.overlays.game_update.redir.quest.started=New Quest Started: ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.identifying=Identifying Item(s)... ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.identified=Item(s) Identified! ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.sold=§dSold %1$s item(s) for §a%2$s§d. ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.scrapped=§dScrapped %1$s item(s) for §e%2$s scrap§d. ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.not_weapon=You can only sell weapons, accessories, and armor here. ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.cant_scrap=This item cannot be scrapped. ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.purchased=Purchase complete. ##TODO
-wynntils.utilities.overlays.game_update.redir.merchant.cant_afford=You cannot afford that item. ##TODO
+wynntils.utilities.overlays.game_update.redir.server.minute.single=1 minuut tot de server herstart!
+wynntils.utilities.overlays.game_update.redir.server.minute.plural=%s minuten tot de server herstart!
+wynntils.utilities.overlays.game_update.redir.server.second.single=1 seconde tot de server herstart!
+wynntils.utilities.overlays.game_update.redir.server.second.plural=%s seconden tot de server herstart!
+wynntils.utilities.overlays.game_update.redir.quest.updated=Avonturen boek geupdate.
+wynntils.utilities.overlays.game_update.redir.quest.started=Nieuw avontuur begonnen:
+wynntils.utilities.overlays.game_update.redir.merchant.identifying=Voorwerp(en) aan het Identificeren...
+wynntils.utilities.overlays.game_update.redir.merchant.identified=Voorwerp(en) Geidentificeerd
+wynntils.utilities.overlays.game_update.redir.merchant.sold=§dVerkocht %1$s voorwerp(en) voor §a%2$s§d.
+wynntils.utilities.overlays.game_update.redir.merchant.scrapped=§dRecyclede %1$s voorwerp(en) voor §e%2$s schroot§d.
+wynntils.utilities.overlays.game_update.redir.merchant.not_weapon=U kunt hier alleen uitrusting en accessoires verkopen.
+wynntils.utilities.overlays.game_update.redir.merchant.cant_scrap=Dit voorwerp kan niet worden gerecycled.
+wynntils.utilities.overlays.game_update.redir.merchant.purchased=Aankoop kompleet.
+wynntils.utilities.overlays.game_update.redir.merchant.cant_afford=U kunt zich dit niet veroorloven.
 
 ## GAMMA OVERLAY ##
-wynntils.utilities.overlays.gamma.display_name=Gamma ##TODO
-wynntils.utilities.overlays.gamma.text=GammaBright ##TODO
+wynntils.utilities.overlays.gamma.display_name=Licht
+wynntils.utilities.overlays.gamma.text=Lumen
 
 ## HEALTH BAR OVERLAY ##
-wynntils.utilities.overlays.health_bar.display_name=Health Bar ##TODO
+wynntils.utilities.overlays.health_bar.display_name=Levens Balk
 
 ## HOTBAR OVERLAY ##
-wynntils.utilities.overlays.hotbar.display_name=Hotbar ##TODO
+wynntils.utilities.overlays.hotbar.display_name=Balk
 
 ## LEVELING OVERLAY ##
-wynntils.utilities.overlays.leveling.display_name=Leveling Helper ##TODO
+wynntils.utilities.overlays.leveling.display_name=Levelen Helper
 
 ## MANA BAR OVERLAY ##
-wynntils.utilities.overlays.mana_bar.display_name=Mana Bar ##TODO
+wynntils.utilities.overlays.mana_bar.display_name=Mana Balk
 
 ## TERRITORY FEED OVERLAY ##
-wynntils.utilities.overlays.territory_feed.display_name=Territory Feed ##TODO
-wynntils.utilities.overlays.territory_feed.attacked=[%1$s]'s territory %2$s is being attacked by [%3$s] ##TODO
-wynntils.utilities.overlays.territory_feed.defended=[%1$s]'s attack on [%2$s]'s territory %3$s was defended! ##TODO
-wynntils.utilities.overlays.territory_feed.captured=[%1$s] has captured %2$s from [%3$s] ##TODO
+wynntils.utilities.overlays.territory_feed.display_name=Territorium Nieuws Feed
+wynntils.utilities.overlays.territory_feed.attacked=[%1$s]'s territorium %2$s wordt aangevallen door [%3$s]
+wynntils.utilities.overlays.territory_feed.defended=[%1$s]'s aanval op [%2$s]'s territorium %3$s was mislukt! ##TODO
+wynntils.utilities.overlays.territory_feed.captured=[%1$s] heeft %2$s verovered van [%3$s]
 
 ## TOASTS OVERLAY ##
-wynntils.utilities.overlays.toasts.display_name=Toasts ##TODO
-wynntils.utilities.overlays.toasts.now_entering=Now entering ##TODO
-wynntils.utilities.overlays.toasts.quest_completed=Quest Completed! ##TODO
-wynntils.utilities.overlays.toasts.area_discovered=Area Discovered! ##TODO
-wynntils.utilities.overlays.toasts.discovery_found=Discovery Found! ##TODO
+wynntils.utilities.overlays.toasts.display_name=Meldingen
+wynntils.utilities.overlays.toasts.now_entering=U betreed
+wynntils.utilities.overlays.toasts.quest_completed=Avontuur Kompleet!
+wynntils.utilities.overlays.toasts.area_discovered=Gebied Ontdekt!
+wynntils.utilities.overlays.toasts.discovery_found=Ontdekking Gevonden!
 
 ## WAR TIMER OVERLAY ##
-wynntils.utilities.overlays.war_timer.display_name=War Timer overlay ##TODO
-wynntils.utilities.overlays.war_timer.message.lasted_for=The war for %s lasted for ##TODO
-wynntils.utilities.overlays.war_timer.message.start_in=The war for %s will start in ##TODO
-wynntils.utilities.overlays.war_timer.message.start_in.no_territory=The war will start in ##TODO
-wynntils.utilities.overlays.war_timer.message.mob_spawn=The mobs for %s will start spawning in ##TODO
-wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=The mobs will start spawning in ##TODO
-wynntils.utilities.overlays.war_timer.message.in_war=You have been at war in %s for ##TODO
-wynntils.utilities.overlays.war_timer.message.in_war.no_territory=You have been at war for ##TODO
+wynntils.utilities.overlays.war_timer.display_name=Oorlogs Timer Widget
+wynntils.utilities.overlays.war_timer.message.lasted_for=De oorlog duurde %s
+wynntils.utilities.overlays.war_timer.message.start_in=De oorlog begint over %s
+wynntils.utilities.overlays.war_timer.message.start_in.no_territory=De oorlog begint over
+wynntils.utilities.overlays.war_timer.message.mob_spawn=De monsters verschijnen over %s
+wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=De monsters verschijnen over
+wynntils.utilities.overlays.war_timer.message.in_war=De oorlog is al bezig voor %s
+wynntils.utilities.overlays.war_timer.message.in_war.no_territory=De oorlog is al bezig voor
