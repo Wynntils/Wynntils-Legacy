@@ -187,32 +187,32 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.mana_pot", inMessage[0].replace("[+", ""), inMessage[3])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.mana_pot", inMessage[0].replace("[+", ""), inMessage[3], "✺")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.strength_pot", inMessage[0].replace("[+", ""), inMessage[4])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.strength_pot", inMessage[0].replace("[+", ""), inMessage[4], "✤")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.agility_pot", inMessage[0].replace("[+", ""), inMessage[4])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.agility_pot", inMessage[0].replace("[+", ""), inMessage[4], "❋")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot", inMessage[0].replace("[+", ""), inMessage[4])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot", inMessage[0].replace("[+", ""), inMessage[4], "✦")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❉ Intelligence for \\d+ seconds]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot", inMessage[0].replace("[+", ""), inMessage[4])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot", inMessage[0].replace("[+", ""), inMessage[4], "❉")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✹ Defense for \\d+ seconds]")) {
                 String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.defense_pot", inMessage[0].replace("[+", ""), inMessage[4])));
+                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + Utils.stripColor(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.defense_pot", inMessage[0].replace("[+", ""), inMessage[4], "✹")));
                 e.setCanceled(true);
                 return;
             } else if (Utils.stripColor(e.getMessage().getFormattedText()).equals("You already have that potion active...")) {
