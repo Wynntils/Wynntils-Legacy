@@ -337,7 +337,7 @@ public class PlayerClassProfile {
             JsonObject professions = playerClass.get("professions").getAsJsonObject();
             JsonObject combat = professions.get("combat").getAsJsonObject();
             int combatLevel = combat.get("level").getAsInt();
-            int combatXp = combat.get("xp").getAsInt();
+            float combatXp = combat.get("xp").getAsFloat();
             int alchemismLevel = 1, armouringLevel = 1, cookingLevel = 1, farmingLevel = 1, fishingLevel = 1, jewelingLevel = 1, miningLevel = 1, scribingLevel = 1, tailoringLevel = 1, weaponsmithingLevel = 1, woodcuttingLevel = 1, woodworkingLevel = 1;
             float alchemismXp = 0, armouringXp = 0, cookingXp = 0, farmingXp = 0, fishingXp = 0, jewelingXp = 0, miningXp = 0, scribingXp = 0, tailoringXp = 0, weaponsmithingXp = 0, woodcuttingXp = 0, woodworkingXp = 0;
             boolean preEconomyUpdate = true;
