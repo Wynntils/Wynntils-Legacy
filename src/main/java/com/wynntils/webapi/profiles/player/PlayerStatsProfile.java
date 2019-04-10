@@ -366,7 +366,7 @@ public class PlayerStatsProfile {
             JsonObject playerTag = playerMeta.get("tag").getAsJsonObject();
             boolean displayTag = playerTag.get("display").getAsBoolean();
             PlayerTag tag;
-            if (playerTag.get("value").getAsString().isEmpty()) tag = PlayerTag.NONE;
+            if (playerTag.get("value").isJsonNull()) tag = PlayerTag.NONE;
             else tag = PlayerTag.valueOf(playerTag.get("value").getAsString().replace("+", "PLUS"));
             boolean veteran = playerMeta.get("veteran").getAsBoolean();
 
