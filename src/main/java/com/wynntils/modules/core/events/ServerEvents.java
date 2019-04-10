@@ -9,6 +9,7 @@ import com.wynntils.core.events.custom.WynnWorldJoinEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -123,20 +124,16 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void onJoinLobby(TickEvent.ClientTickEvent e) {
-        if(currentMillis == 0) {
-            currentMillis = System.currentTimeMillis();
-        }
-        if(System.currentTimeMillis() - currentMillis <= 2500 || currentMillis == -1) return;
-        currentMillis = -1;
-
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
-            boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
-            CoreDBConfig.INSTANCE.showChangelogs = false;
+            new Delay(() -> {
+                boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+                Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
+                CoreDBConfig.INSTANCE.showChangelogs = false;
 
-            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            }, 80);
         }
     }
 

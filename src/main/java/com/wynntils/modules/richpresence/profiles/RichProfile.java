@@ -4,39 +4,34 @@
 
 package com.wynntils.modules.richpresence.profiles;
 
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
 import com.wynntils.webapi.WebManager;
 
 import java.time.OffsetDateTime;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class RichProfile {
 
     final DiscordRichPresence.DiscordRPC rpc;
     Thread shutdown = new Thread(this::disconnectRichPresence);
 
-    Thread callbacks;
+    ScheduledFuture callbacks;
 
-    public RichProfile(String id) throws Exception {
+    public RichProfile(String id) {
         rpc = DiscordRichPresence.discordInitialize();
 
         DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
         handler.ready = user -> {
             if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "#" + user.discriminator);
-            callbacks.interrupt();
+            callbacks.cancel(true);
         };
 
         rpc.Discord_Initialize(id, handler, true, null);
 
-        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this thread is stopped after receiving it
-        callbacks = new Thread(() -> {
-            while(!Thread.interrupted()) {
-                rpc.Discord_RunCallbacks();
-            }
-
-            try{ Thread.sleep(2000); }catch (Exception ignored) { }
-        }, "Wynntils RP Callbacks");
-        callbacks.start();
-        // <--------->
+        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this executorals is stopped after receiving it
+        callbacks = Utils.runTaskTimer(rpc::Discord_RunCallbacks, TimeUnit.SECONDS, 2);
 
         Runtime.getRuntime().addShutdownHook(shutdown);
     }
@@ -96,7 +91,7 @@ public class RichProfile {
     }
 
     public void disconnectRichPresence() {
-        callbacks.interrupt();
+        callbacks.cancel(true);
         rpc.Discord_Shutdown();
     }
 

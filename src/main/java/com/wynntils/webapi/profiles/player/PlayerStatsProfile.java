@@ -366,7 +366,7 @@ public class PlayerStatsProfile {
             JsonObject playerTag = playerMeta.get("tag").getAsJsonObject();
             boolean displayTag = playerTag.get("display").getAsBoolean();
             PlayerTag tag;
-            if (playerTag.get("value").getAsString().isEmpty()) tag = PlayerTag.NONE;
+            if (playerTag.get("value").isJsonNull()) tag = PlayerTag.NONE;
             else tag = PlayerTag.valueOf(playerTag.get("value").getAsString().replace("+", "PLUS"));
             boolean veteran = playerMeta.get("veteran").getAsBoolean();
 
@@ -383,10 +383,13 @@ public class PlayerStatsProfile {
                 classes.add(gson.fromJson(playerClass, playerClassType));
 
             JsonObject playerGuild = playerProfile.get("guild").getAsJsonObject();
-            String guildName = playerGuild.get("name").getAsString();
-            GuildRank guildRank;
-            if (playerGuild.get("rank").getAsString().isEmpty()) guildRank = GuildRank.NONE;
-            else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase());
+            String guildName = "";
+            GuildRank guildRank = GuildRank.NONE;
+            if (!playerGuild.get("name").isJsonNull()) {
+                guildName = playerGuild.get("name").getAsString();
+                if (playerGuild.get("rank").getAsString().isEmpty()) guildRank = GuildRank.NONE;
+                else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase());
+            }
 
             JsonObject globalStats = playerProfile.get("global").getAsJsonObject();
             int chestsFound = globalStats.get("chestsFound").getAsInt();

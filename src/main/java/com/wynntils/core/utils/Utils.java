@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,15 +23,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Utils {
 
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf('\u00A7') + "[0-9A-FK-OR]");
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
-    private static ScheduledExecutorService  executorService = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
 
     /**
      * Runs a runnable after the determined time
@@ -41,6 +43,10 @@ public class Utils {
      */
     public static void runAfter(Runnable r, TimeUnit timeUnit, long amount) {
         executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
+    }
+
+    public static ScheduledFuture runTaskTimer(Runnable r, TimeUnit timeUnit, long amount) {
+        return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
     /**
