@@ -383,10 +383,13 @@ public class PlayerStatsProfile {
                 classes.add(gson.fromJson(playerClass, playerClassType));
 
             JsonObject playerGuild = playerProfile.get("guild").getAsJsonObject();
-            String guildName = playerGuild.get("name").getAsString();
-            GuildRank guildRank;
-            if (playerGuild.get("rank").getAsString().isEmpty()) guildRank = GuildRank.NONE;
-            else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase());
+            String guildName = "";
+            GuildRank guildRank = GuildRank.NONE;
+            if (!playerGuild.get("name").isJsonNull()) {
+                guildName = playerGuild.get("name").getAsString();
+                if (playerGuild.get("rank").getAsString().isEmpty()) guildRank = GuildRank.NONE;
+                else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase());
+            }
 
             JsonObject globalStats = playerProfile.get("global").getAsJsonObject();
             int chestsFound = globalStats.get("chestsFound").getAsInt();
