@@ -6,8 +6,6 @@ package com.wynntils.webapi.account;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.wynntils.Reference;
 import com.wynntils.webapi.WebManager;
 import org.apache.commons.io.Charsets;
@@ -72,8 +70,6 @@ public class CloudConfigurations {
                 } finally {
                     IOUtils.closeQuietly(outputStream);
                 }
-
-                JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
 
                 toUpload.clear();
             }catch (Exception ex) { ex.printStackTrace(); }
