@@ -20,10 +20,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CommandTerritory extends CommandBase implements IClientCommand {
@@ -87,7 +84,15 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length >= 1) {
-            return getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map(TerritoryProfile::getName).collect(Collectors.toList()));
+            String temp = String.join(" ", args).toLowerCase();
+            List<String> result = getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map(territoryProfile -> {
+                if (args.length <= territoryProfile.getName().split(" ").length && territoryProfile.getName().toLowerCase().startsWith(temp)) {
+                    return territoryProfile.getName().split(" ")[args.length - 1];
+                }
+                return "";
+            }).collect(Collectors.toList()));
+            result.removeAll(Arrays.asList("", null));
+            return result.stream().distinct().collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
