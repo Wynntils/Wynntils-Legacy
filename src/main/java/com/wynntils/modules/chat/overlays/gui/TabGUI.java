@@ -64,43 +64,43 @@ public class TabGUI extends GuiScreen {
         int x = width / 2; int y = height / 2;
 
         //General
-        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 40, 40, 20, TextFormatting.GREEN + I18n.format("wynntils.chat.tabgui.button.save")));
-        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 40, 40, 20, TextFormatting.DARK_RED + I18n.format("wynntils.chat.tabgui.button.delete")));
-        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 40, 40, 20, TextFormatting.WHITE + I18n.format("wynntils.chat.tabgui.button.close")));
-        buttonList.add(advancedButton = new GuiButton(4, x - 65, y - 60, 130, 20, I18n.format("wynntils.chat.tabgui.button.advanced_show")));
+        buttonList.add(saveButton = new GuiButton(0, x - 100, y + 80, 95, 20, TextFormatting.GREEN + I18n.format("wynntils.chat.tabgui.button.save")));
+        buttonList.add(deleteButton = new GuiButton(1, x + 5, y + 80, 95, 20, TextFormatting.DARK_RED + I18n.format("wynntils.chat.tabgui.button.delete")));
+        buttonList.add(closeButton = new GuiButton(2, x - 25, y + 105, 50, 20, TextFormatting.WHITE + I18n.format("wynntils.chat.tabgui.button.close")));
+        buttonList.add(advancedButton = new GuiButton(4, x - 100, y - 20, 200, 20, I18n.format("wynntils.chat.tabgui.button.advanced_show")));
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
 
-        nameTextField = new GuiTextField(3, mc.fontRenderer, x - 110, y - 90, 80, 20);
+        nameTextField = new GuiTextField(3, mc.fontRenderer, x - 110, y - 90, 220, 20);
         nameTextField.setVisible(true);
         nameTextField.setEnabled(true);
         nameTextField.setEnableBackgroundDrawing(true);
         nameTextField.setMaxStringLength(10);
 
-        autoCommandField = new GuiTextField(3, mc.fontRenderer, x - 12, y - 90, 80, 20);
+        autoCommandField = new GuiTextField(3, mc.fontRenderer, x - 110, y - 50, 185, 20);
         autoCommandField.setVisible(true);
         autoCommandField.setEnabled(true);
         autoCommandField.setEnableBackgroundDrawing(true);
         autoCommandField.setMaxStringLength(10);
 
-        orderNbField = new GuiTextField(3, mc.fontRenderer, x + 85, y - 90, 25, 20);
+        orderNbField = new GuiTextField(3, mc.fontRenderer, x + 85, y - 50, 25, 20);
         orderNbField.setVisible(true);
         orderNbField.setEnabled(true);
         orderNbField.setEnableBackgroundDrawing(true);
         orderNbField.setMaxStringLength(2);
 
-        buttonList.add(lowPriority = new GuiCheckBox(3, x - 100, y + 22, I18n.format("wynntils.chat.tabgui.button.low_priority"), true));
+        buttonList.add(lowPriority = new GuiCheckBox(3, x - 100, y + 62, I18n.format("wynntils.chat.tabgui.button.low_priority"), true));
 
         //Simple
-        labelList.add(simpleSettings = new GuiLabel(mc.fontRenderer, 4, x - 100, y - 35, 10, 10, 0xFFFFFF));
+        labelList.add(simpleSettings = new GuiLabel(mc.fontRenderer, 4, x - 100, y + 5, 10, 10, 0xFFFFFF));
         simpleSettings.addLine(I18n.format("wynntils.chat.tabgui.button.message_types") + TextFormatting.RED + " *");
 
-        simpleRegexSettings.add(allRegex = new GuiCheckBox(10,x - 100, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.all"), false));
-        simpleRegexSettings.add(localRegex = new GuiCheckBox(11,x - 50, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.local"), false));
-        simpleRegexSettings.add(guildRegex = new GuiCheckBox(12,x, y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.guild"), false));
-        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13, x + 50 , y - 25, I18n.format("wynntils.chat.tabgui.button.message_type.party"), false));
-        simpleRegexSettings.add(shoutsRegex = new GuiCheckBox(14,x - 100, y - 10, I18n.format("wynntils.chat.tabgui.button.message_type.shouts"), false));
-        simpleRegexSettings.add(pmRegex = new GuiCheckBox(15,x - 50, y - 10, I18n.format("wynntils.chat.tabgui.button.message_type.pms"), false));
+        simpleRegexSettings.add(allRegex = new GuiCheckBox(10, x - 100, y + 15, I18n.format("wynntils.chat.tabgui.button.message_type.all"), false));
+        simpleRegexSettings.add(localRegex = new GuiCheckBox(11, x, y + 15, I18n.format("wynntils.chat.tabgui.button.message_type.local"), false));
+        simpleRegexSettings.add(guildRegex = new GuiCheckBox(12, x - 100, y + 30, I18n.format("wynntils.chat.tabgui.button.message_type.guild"), false));
+        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13,  x , y + 30, I18n.format("wynntils.chat.tabgui.button.message_type.party"), false));
+        simpleRegexSettings.add(shoutsRegex = new GuiCheckBox(14, x - 100, y + 45, I18n.format("wynntils.chat.tabgui.button.message_type.shouts"), false));
+        simpleRegexSettings.add(pmRegex = new GuiCheckBox(15, x, y + 45, I18n.format("wynntils.chat.tabgui.button.message_type.pms"), false));
         buttonList.addAll(simpleRegexSettings);
         applyRegexSettings();
         //Advanced
@@ -124,9 +124,9 @@ public class TabGUI extends GuiScreen {
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
         regexLabel.addLine(I18n.format("wynntils.chat.tabgui.button.regex") + TextFormatting.RED + " *");
         regexLabel.visible = false;
-        labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
+        labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 110, y - 65, 10, 10, 0xFFFFFF));
         autoCommand.addLine(I18n.format("wynntils.chat.tabgui.button.auto_command"));
-        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
+        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 65, 10, 10, 0xFFFFFF));
         orderNb.addLine(I18n.format("wynntils.chat.tabgui.button.order_number"));
     }
 

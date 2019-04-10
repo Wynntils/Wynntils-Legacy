@@ -611,7 +611,16 @@ public class QuestBookGUI extends GuiScreen {
 
                 //order buttons
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type"), x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"), x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                float scale;
+                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"));
+                if (size > 135f) {
+                    scale = (135f / size);
+                } else {
+                    scale = 1f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"), (x - 140) / scale, (y - 15) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.resetScale();
 
                 if(posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                     selected = 1;
@@ -625,7 +634,15 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"), x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"));
+                if (size > 135f) {
+                    scale = (135f / size);
+                } else {
+                    scale = 1f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"), (x - 140) / scale, (y - 5) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.resetScale();
 
                 if(posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                     selected = 2;
@@ -639,7 +656,15 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"), x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"));
+                if (size > 135f) {
+                    scale = (135f / size);
+                } else {
+                    scale = 1f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"), (x - 140) / scale, (y + 5) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.resetScale();
 
                 if(posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
                     selected = 3;
@@ -865,8 +890,14 @@ public class QuestBookGUI extends GuiScreen {
                     placedCubes++;
                 }
 
-                ScreenRenderer.scale(2f);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.item_guide"), (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.item_guide"));
+                if (size > 75f) {
+                    scale = (75f / size) * 2f;
+                } else {
+                    scale = 2f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.item_guide"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }
@@ -1061,8 +1092,15 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                ScreenRenderer.scale(2f);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests"), (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                float scale;
+                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.quests"));
+                if (size > 75f) {
+                    scale = (75f / size) * 2f;
+                } else {
+                    scale = 2f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }else if(page == QuestBookPage.CONFIGS) {
@@ -1136,7 +1174,7 @@ public class QuestBookGUI extends GuiScreen {
                     selected = 3;
                     render.drawRect(selected_cube, x - 80, y - 15, x - 50, y + 15);
                     render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 242, 18, 20);
-                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + I18n.format("wynntils.questbook.ui.questbook.item_guide"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_1"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_3"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_3"),  TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_4"), TextFormatting.GREEN + I18n.format("wynntils.questbook.ui.questbook.button.generic.left_to_select"));
+                    hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + I18n.format("wynntils.questbook.ui.questbook.item_guide"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_1"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_2"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_3"),  TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.item_guide.subtitle_4"), TextFormatting.GREEN + I18n.format("wynntils.questbook.ui.questbook.button.generic.left_to_select"));
                 }else{
                     if(selected == 3) selected = 0;
                     render.drawRect(unselected_cube, x - 80, y - 15, x - 50, y + 15);
@@ -1155,11 +1193,13 @@ public class QuestBookGUI extends GuiScreen {
                     render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 261, 21, 21);
                 }
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue"), x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_1"), x - 81, y - 40, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_2"), x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_1"), x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_2"), x - 155, y + 35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_3"), x - 155, y + 45, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_4"), x - 155, y + 55, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_5"), x - 155, y + 65, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);
                 render.drawRect(Textures.UIs.quest_book, x + 48, y - 90, 224, 253, 17, 18);
@@ -1167,8 +1207,15 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawRect(Textures.UIs.quest_book, x + 100, y - 90, 224, 253, 17, 18);
                 render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
 
-                ScreenRenderer.scale(2f);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.user_profile"), (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                float scale;
+                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.user_profile"));
+                if (size > 75f) {
+                    scale = (75f / size) * 2f;
+                } else {
+                    scale = 2f;
+                }
+                ScreenRenderer.scale(scale);
+                render.drawString(I18n.format("wynntils.questbook.ui.questbook.user_profile"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }

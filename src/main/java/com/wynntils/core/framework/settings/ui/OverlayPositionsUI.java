@@ -43,7 +43,7 @@ public class OverlayPositionsUI extends UI {
 
     public int GRID_SIZE_VERTICAL, GRID_SIZE_HORIZONTAL;
 
-    public UIEButton cancelButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel"), Textures.UIs.button_a,0.5f,0.5f,13,0,-10,true,(ui, mouseButton) -> {
+    public UIEButton cancelButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel"), Textures.UIs.button_a,0.5f,0.5f,5,-6,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
             try {
                 settingsContainer.getOverlaySettings().tryToLoad();
@@ -54,7 +54,7 @@ public class OverlayPositionsUI extends UI {
         onClose();
     });
 
-    public UIEButton applyButton = new UIEButton(I18n.format("wynntils.config.other.apply"), Textures.UIs.button_a,0.5f,0.5f,-48,0,-10,true,(ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton(I18n.format("wynntils.config.other.apply"), Textures.UIs.button_a,0.5f,0.5f,5,-21,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
             // Convert offset -> anchor, then save
             Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
@@ -71,7 +71,7 @@ public class OverlayPositionsUI extends UI {
         onClose();
     });
 
-    public UIEButton resetButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.default"), Textures.UIs.button_a,0.5f,0.5f,-22,15,-10,true,(ui, mouseButton) -> {
+    public UIEButton resetButton = new UIEButton(I18n.format("wynntils.map.ui.world_map_settings.buttons.default"), Textures.UIs.button_a,0.5f,0.5f,5,9,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
             try {
                 settingsContainer.getOverlaySettings().resetValues();
