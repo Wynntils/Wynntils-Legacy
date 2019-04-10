@@ -104,7 +104,7 @@ public class TabGUI extends GuiScreen {
         buttonList.addAll(simpleRegexSettings);
         applyRegexSettings();
         //Advanced
-        regexTextField = new GuiTextField(3, mc.fontRenderer, x - 100, y - 20, 200, 20);
+        regexTextField = new GuiTextField(3, mc.fontRenderer, x - 100, y + 20, 200, 20);
         regexTextField.setVisible(false);
         regexTextField.setEnabled(true);
         regexTextField.setEnableBackgroundDrawing(true);
@@ -121,7 +121,7 @@ public class TabGUI extends GuiScreen {
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 110, y - 105, 10, 10, 0xFFFFFF));
         nameLabel.addLine(I18n.format("wynntils.chat.tabgui.button.name") + TextFormatting.RED + " *");
-        labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
+        labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y + 5, 10, 10, 0xFFFFFF));
         regexLabel.addLine(I18n.format("wynntils.chat.tabgui.button.regex") + TextFormatting.RED + " *");
         regexLabel.visible = false;
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 110, y - 65, 10, 10, 0xFFFFFF));
