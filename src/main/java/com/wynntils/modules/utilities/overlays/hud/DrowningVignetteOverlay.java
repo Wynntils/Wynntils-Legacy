@@ -19,7 +19,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class DrowningVignetteOverlay extends Overlay {
 
     public DrowningVignetteOverlay() {
-        super("Drowning Vignette", 20, 20, true, 0, 0, 0, 0, null);
+        super("Drowning Vignette", "Drowning Vignette", 20, 20, true, 0, 0, 0, 0, null);
     }
 
     private static float animation = 300.0f;

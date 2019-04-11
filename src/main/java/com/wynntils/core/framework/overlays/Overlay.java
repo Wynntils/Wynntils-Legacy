@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.awt.Point;
 
 public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
+    public transient String name;
     public transient ModuleContainer module = null;
     public transient String displayName;
     public transient Point staticSize;
@@ -27,7 +28,8 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public boolean active = true;
     public Position position = new Position();
 
-    public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, OverlayGrowFrom growth, RenderGameOverlayEvent.ElementType... overrideElements) {
+    public Overlay(String name, String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, OverlayGrowFrom growth, RenderGameOverlayEvent.ElementType... overrideElements) {
+        this.name = name;
         this.displayName = displayName;
         this.staticSize = new Point(sizeX,sizeY);
         this.visible = visible;

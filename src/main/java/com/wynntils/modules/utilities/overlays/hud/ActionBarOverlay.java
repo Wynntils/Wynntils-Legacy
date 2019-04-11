@@ -30,7 +30,7 @@ public class ActionBarOverlay extends Overlay {
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     public ActionBarOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.actionbar_helper.display_name"), 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
+        super("ActionBar Helper", I18n.format("wynntils.utilities.overlays.actionbar_helper.display_name"), 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Override

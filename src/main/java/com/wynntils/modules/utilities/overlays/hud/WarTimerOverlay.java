@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
     public WarTimerOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.war_timer.display_name"), 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
+        super("War Timer overlay", I18n.format("wynntils.utilities.overlays.war_timer.display_name"), 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
     
     private static int timer = -1;

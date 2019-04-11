@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class HealthBarOverlay extends Overlay {
 
     public HealthBarOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.health_bar.display_name"), 81, 21, true, 0.5f, 1.0f, -10, -38, OverlayGrowFrom.MIDDLE_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+        super("Health Bar", I18n.format("wynntils.utilities.overlays.health_bar.display_name"), 81, 21, true, 0.5f, 1.0f, -10, -38, OverlayGrowFrom.MIDDLE_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
 //    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)

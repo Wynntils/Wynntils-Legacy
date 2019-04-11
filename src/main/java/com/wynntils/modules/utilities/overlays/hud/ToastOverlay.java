@@ -23,7 +23,7 @@ public class ToastOverlay extends Overlay {
     public int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
     public ToastOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.toasts.display_name"), 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
+        super("Toasts", I18n.format("wynntils.utilities.overlays.toasts.display_name"), 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
     }
 
     @Override

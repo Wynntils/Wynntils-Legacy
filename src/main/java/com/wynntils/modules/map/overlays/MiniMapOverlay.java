@@ -25,7 +25,7 @@ import java.awt.*;
 public class MiniMapOverlay extends Overlay {
 
     public MiniMapOverlay() {
-        super(I18n.format("wynntils.map.overlays.minimap.display_name"), 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
+        super("Mini Map", I18n.format("wynntils.map.overlays.minimap.display_name"), 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
     private static int zoom = 100;

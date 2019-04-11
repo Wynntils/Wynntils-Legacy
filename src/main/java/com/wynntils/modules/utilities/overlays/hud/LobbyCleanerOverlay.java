@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class LobbyCleanerOverlay extends Overlay {
 
     public LobbyCleanerOverlay() {
-        super("Lobby Cleaning", 0, 0, true, 0, 0, 0, 0, null);
+        super("Lobby Cleaning", "Lobby Cleaning", 0, 0, true, 0, 0, 0, 0, null);
     }
 
     @Setting(displayName = "No Health Bar", description = "Should the Health Bar be visible in the lobby")

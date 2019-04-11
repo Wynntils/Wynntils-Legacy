@@ -19,7 +19,7 @@ public class TerritoryFeedOverlay extends Overlay {
     private static long animationStartTime;
 
     public TerritoryFeedOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.territory_feed.display_name"), 300, 11, true, 0, 0, 0, 40, OverlayGrowFrom.TOP_LEFT);
+        super("Territory Feed", I18n.format("wynntils.utilities.overlays.territory_feed.display_name"), 300, 11, true, 0, 0, 0, 40, OverlayGrowFrom.TOP_LEFT);
     }
 
     @Override

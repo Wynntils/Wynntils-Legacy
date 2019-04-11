@@ -44,7 +44,7 @@ public class SettingsManager {
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
         if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
+        f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).name.toLowerCase().replace(" ", "_") : info.name()) + ".config");
         if(!f.exists()) f.createNewFile(); // create the config file if it doesn't exists
 
         //HeyZeer0: Writting to file
@@ -66,7 +66,7 @@ public class SettingsManager {
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
         if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
+        String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).name.toLowerCase().replace(" ", "_") : info.name()) + ".config";
         f = new File(f, configFile);
 
         //HeyZeer0: converts the old format to the new format
@@ -102,7 +102,7 @@ public class SettingsManager {
             if(!(obj instanceof Overlay))
                 return obj;
 
-        String name = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
+        String name = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).name.toLowerCase().replace(" ", "_") : info.name()) + ".config";
 
         if(WebManager.getAccount() == null) return null;
         if(!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;

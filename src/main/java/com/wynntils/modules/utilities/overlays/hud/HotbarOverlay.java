@@ -20,7 +20,7 @@ public class HotbarOverlay extends Overlay {
     private static final AssetsTexture WIDGETS_TEXTURE = new AssetsTexture(new ResourceLocation("textures/gui/widgets.png"), false);
 
     public HotbarOverlay() {
-        super(I18n.format("wynntils.utilities.overlays.hotbar.display_name=Hotbar"), 182, 22, true, 0.5f, 1f, 0, -23, OverlayGrowFrom.TOP_CENTRE, RenderGameOverlayEvent.ElementType.HOTBAR);
+        super("Hotbar", I18n.format("wynntils.utilities.overlays.hotbar.display_name"), 182, 22, true, 0.5f, 1f, 0, -23, OverlayGrowFrom.TOP_CENTRE, RenderGameOverlayEvent.ElementType.HOTBAR);
     }
 
     @Override
