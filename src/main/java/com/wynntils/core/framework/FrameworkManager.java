@@ -86,7 +86,7 @@ public class FrameworkManager {
 
         overlay.module = mc;
 
-        mc.registerSettings("overlay" + overlay.displayName, overlay);
+        mc.registerSettings("overlay" + overlay.name, overlay);
 
         registeredOverlays.get(priority).add(overlay);
     }
@@ -158,7 +158,7 @@ public class FrameworkManager {
                             continue;
                     }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
+                        Minecraft.getMinecraft().profiler.startSection(overlay.name);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
@@ -189,7 +189,7 @@ public class FrameworkManager {
                             continue;
                     }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
+                        Minecraft.getMinecraft().profiler.startSection(overlay.name);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
@@ -229,7 +229,7 @@ public class FrameworkManager {
         SettingsInfo info2 = holder.getClass().getAnnotation(SettingsInfo.class);
         if(info2 == null) {
             if(holder instanceof Overlay)
-                return availableModules.get(info.name()).getRegisteredSettings().get("overlay" + ((Overlay) holder).displayName);
+                return availableModules.get(info.name()).getRegisteredSettings().get("overlay" + ((Overlay) holder).name);
             else
                 return null;
         }
