@@ -76,7 +76,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?" ,order = 1)
         public PointerType pointerStyle = PointerType.ARROW;
 
-        @Setting(displayName = "Pointer Color", description = "What should the colour of the pointer be?\n\n§aClick the colored box to open the color wheel.", order = 2)
+        @Setting(displayName = "Pointer Colour", description = "What should the colour of the pointer be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
         public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
 
     }
