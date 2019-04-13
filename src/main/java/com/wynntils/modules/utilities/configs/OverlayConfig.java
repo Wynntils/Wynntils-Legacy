@@ -33,7 +33,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Low Health Vignette", description = "Should a red vignette be displayed when you're low on health?")
         public boolean healthVignette = true;
 
-        @Setting(displayName = "Low Heatlh Threshold", description = "At what percentage of health should a red vignette be displayed?")
+        @Setting(displayName = "Low Health Threshold", description = "At what percentage of health should a red vignette be displayed?")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int lowHealthThreshold = 25;
 
