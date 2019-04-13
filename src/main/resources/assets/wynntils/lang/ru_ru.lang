@@ -7,11 +7,11 @@
 ## CORE CONFIG ##
 wynntils.config.core.display_path=Система
 wynntils.config.core.update_stream.display_name=Выбор обновлений
-wynntils.config.core.update_stream.description=На какую сборку должен обновляться мод?\n\n§2Стабильная: §rМод будет обновляться только при выходе новой версии. Стабильные сборки, как правило, содержат меньше багов, чем тестовые.\n\n§4Тестовая: §rМод будет обновляться при выходе любой новой сборки. Тестовые сборки будут включать функции, которые в настоящее время находятся в разработке, и могут содержать большее число багов, чем стабильные версии.
+wynntils.config.core.update_stream.description=На какую сборку должен обновляться мод?\n\n§2Стабильная: §rМод будет обновляться только при выходе новой версии. Стабильные сборки, как правило, содержат меньше багов, чем тестовые.\n\n§4Тестовая: §rМод будет обновляться при выходе любой новой сборки. Тестовые сборки будут включать в себя функции, которые в настоящее время находятся в разработке, и которых нет в стабильной версии. Также они могут содержать большее число багов, чем стабильные версии.
 wynntils.config.core.scroll_direction.display_name=Направление прокрутки
 wynntils.config.core.scroll_direction.description=В каком направлении прокручивать мышь для прокрутки страницы вниз?
 wynntils.config.core.enable_changelog_on_update.display_name=Показ списка изменений
-wynntils.config.core.enable_changelog_on_update.description=Отображать при входе на сервер список изменений последнего обновления?
+wynntils.config.core.enable_changelog_on_update.description=Отображать при входе на сервер список изменений из последнего обновления?
 wynntils.config.core.selected_language.display_name=Язык
 wynntils.config.core.selected_language.description=Какой язык использовать для Wynntils?
 
@@ -30,31 +30,31 @@ wynntils.config.chat.add_timestamps_to_chat.description=Прикреплять �
 wynntils.config.chat.transparent.display_name=Прозрачный чат
 wynntils.config.chat.transparent.description=Сделать окно чата прозрачным?
 wynntils.config.chat.timestamp_format.display_name=Формат временных меток
-wynntils.config.chat.timestamp_format.description=Как отображать временные метки? (Не работает, если временные метки отключены.)
+wynntils.config.chat.timestamp_format.description=Как отображать временные метки? (Не работает, если временные метки отключены)
 wynntils.config.chat.chat_mentions.display_name=Упоминания в чате
-wynntils.config.chat.chat_mentions.description=Издать звук, когда ваш ник упоминают в чате?
+wynntils.config.chat.chat_mentions.description=Издать звук, если ваш ник упоминают в чате?
 wynntils.config.chat.spam_filter.display_name=Чат спам фильтр
 wynntils.config.chat.spam_filter.description=Объединять повторяющиеся сообщения, чтобы они не наводняли чат?
 wynntils.config.chat.filter_info.display_name=Фильтр инфо сообщений
-wynntils.config.chat.filter_info.description=Фильтровать Wynncraft инфо сообщения? (Сообщения, начинающиеся с §4[Info]§f больше не будут появляться в чате.)
+wynntils.config.chat.filter_info.description=Фильтровать Wynncraft инфо сообщения? \n\n§8Сообщения, начинающиеся с §4[Info]§8 больше не будут появляться в чате
 wynntils.config.chat.filter_territory_enter.display_name=Фильтр о входе на территории
-wynntils.config.chat.filter_territory_enter.description=Отображать сообщения о входе на территорию в чате? (к примеру [You are now entering Detlas])
-wynntils.config.chat.preset.display_name=Вкладки чата по пресетам
-wynntils.config.chat.preset.description=Какой выбор вкладок чата использовать?\nА - Глобальные, Гильдия, Пати\nБ - Глобальные, Шауты, Гильдия/Пати, ЛС\nСтандарт - Все
+wynntils.config.chat.filter_territory_enter.description=Отображать сообщения о входе на территорию в чате?\n\n§8К примеру выглядящие так §7[You are now entering Detlas]§8.
+wynntils.config.chat.preset.display_name=Вкладки чата по наборам
+wynntils.config.chat.preset.description=Какой набор вкладок чата использовать?\n\nА - Глобальные, Гильдия, Пати\n\nБ - Глобальные, Шауты, Гильдия/Пати, ЛС\n\nСтандарт - Все
 wynntils.config.chat.clickable_invite.display_name=Кликабельные инвайты в пати
 wynntils.config.chat.clickable_invite.description=Сделать приглашения в пати кликабельными?
 wynntils.config.chat.clickable_coordinate.display_name=Кликабельные координаты
-wynntils.config.chat.clickable_coordinate.description=Should coordinates displayed in chat be clickable as a '/compass' command?
+wynntils.config.chat.clickable_coordinate.description=Сделать отображаемые в чате координаты кликабельными по типу '/compass' команды?
 
 ## CHAT PRESET ENUM CONFIG ##
-wynntils.config.chat.enum.preset.a=A
-wynntils.config.chat.enum.preset.b=B
-wynntils.config.chat.enum.preset.vanilla=Vanilla
+wynntils.config.chat.enum.preset.a=А
+wynntils.config.chat.enum.preset.b=Б
+wynntils.config.chat.enum.preset.vanilla=Стандарт
 
 ## MAP CONFIG ##
 wynntils.config.map.display_path=Карта
 wynntils.config.map.enable_minimap.display_name=Отображение миникарты
-wynntils.config.map.enable_minimap.description=Отображать миникарту?
+wynntils.config.map.enable_minimap.description=Отображать на экране миникарту?
 wynntils.config.map.minimap_shape.display_name=Форма миникарты
 wynntils.config.map.minimap_shape.description=Сделать миникарту квадратной или круглой?
 wynntils.config.map.minimap_rotation.display_name=Вращение миникарты
@@ -66,9 +66,9 @@ wynntils.config.map.minimap_size.description=Насколько большой �
 wynntils.config.map.only_north.display_name=Отображение севера
 wynntils.config.map.only_north.description=Отображать только направление на север на миникарте?
 wynntils.config.map.record_chest_tier.display_name=Сохранение координат сундуков
-wynntils.config.map.record_chest_tier.description=Сохранять места с сундуками от какого уровня? (От этого и выше)
+wynntils.config.map.record_chest_tier.description=Сохранять места с сундуками, при их нахождении, от какого уровня?\n\n§8Мод также записывает сундуки уровня выше, чем указанно.
 wynntils.config.map.minimap_zoom.display_name=Зум миникарты
-wynntils.config.map.minimap_zoom.description=Насколько далеко увеличить миникарту?
+wynntils.config.map.minimap_zoom.description=Насколько далеко приблизить миникарту?
 
 ## MAP MAP FORMAT ENUM CONFIG ##
 wynntils.config.map.enum.map_format.square=Квадрат
@@ -84,11 +84,11 @@ wynntils.config.map.enum.chest_tier.none=Не сохранять
 ## MAP TEXTURES CONFIG ##
 wynntils.config.map.textures.display_path=Карта/Текстуры
 wynntils.config.map.textures.minimap_style.display_name=Стиль текстур миникарты
-wynntils.config.map.textures.minimap_style.description=Какая текстура у миникарты?
+wynntils.config.map.textures.minimap_style.description=Какую сделать текстуру у миникарты?
 wynntils.config.map.textures.pointer_style.display_name=Стиль указателя
-wynntils.config.map.textures.pointer_style.description=Какая текстура у указателя на карте?
+wynntils.config.map.textures.pointer_style.description=Какую сделать текстуру у указателя на карте?
 wynntils.config.map.textures.pointer_color.display_name=Цвет указателя
-wynntils.config.map.textures.pointer_color.description=Какой цвет у указателя на карте?\n\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.map.textures.pointer_color.description=Какой сделать цвет у указателя на карте?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 
 ## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
 wynntils.config.map.textures.enum.texture_type.paper=Бумага
@@ -118,11 +118,11 @@ wynntils.config.music.background_volume.description=Насколько гром�
 ## QUESTBOOK CONFIG ##
 wynntils.config.questbook.display_path=Книга заданий
 wynntils.config.questbook.allow_questbook.display_name=Книга заданий Wynntils
-wynntils.config.questbook.allow_questbook.description=Заменить квестовую книгу от Wynncraft'а на Wynntils?
+wynntils.config.questbook.allow_questbook.description=Заменить квестовую книгу от Wynncraft'а на книгу от Wynntils?
 wynntils.config.questbook.compass_follow.display_name=Координаты квеста на компас 
 wynntils.config.questbook.compass_follow.description=Должен ли компас указывать на заданные координаты квестов?
 wynntils.config.questbook.search_click.display_name=Клик в поле поиска
-wynntils.config.questbook.search_click.description=Нужно нажать на строку поиска перед вводом, или печатать сразу после открытия книги квестов?
+wynntils.config.questbook.search_click.description=Нужно ли нажать на строку поиска перед вводом, или же печатать сразу после открытия книги квестов?
 wynntils.config.questbook.fuzzy_search.display_name=Нечеткий поиск
 wynntils.config.questbook.fuzzy_search.description=Использовать другой алгоритм поисковика для поиска сокращений и аббревиатур?
 
@@ -139,18 +139,18 @@ wynntils.config.utils.daily_reminder.display_name=Упоминание о еже
 wynntils.config.utils.daily_reminder.description=Показывать упоминание о том, что можно забрать ежедневный сундук при заходе на сервер?
 wynntils.config.utils.hide_potion.display_name=Индикаторы действий ванильных зелий
 wynntils.config.utils.hide_potion.description=Скрыть индикаторы о действии эффектов зелий на игрока (черные квадраты слева от инвентаря)?
-wynntils.config.utils.add_class_server.display_name= Кнопки Class и Server в меню
+wynntils.config.utils.add_class_server.display_name=Кнопки Class и Server в меню
 wynntils.config.utils.add_class_server.description=Отображать кнопки class и server в меню паузы?
 wynntils.config.utils.hide_nametags_through_blocks.display_name=Ники через стены
 wynntils.config.utils.hide_nametags_through_blocks.description=Скрывать ники, если они находятся за блоками?
 wynntils.config.utils.hide_nametag_box.display_name=Строка с никами
-wynntils.config.utils.hide_nametag_box.description=Скрыть строку с ником над игроками и npc?
+wynntils.config.utils.hide_nametag_box.description=Скрыть строку с ником над игроками и Npc?
 wynntils.config.utils.show_armor.display_name=Показ брони игроков
-wynntils.config.utils.show_armor.description=Показывать надетую на игроках броню над их никами? (Крафтовая броня не отображается.)
-wynntils.config.utils.prevent_mythic.display_name=Закрытие сундука с мификом
-wynntils.config.utils.prevent_mythic.description=Запретить сундуку закрываться, если там есть мифик?
+wynntils.config.utils.show_armor.description=Показывать надетую на игроках броню над их никами?\n\n§8Крафтовая броня не отображается
+wynntils.config.utils.prevent_mythic.display_name=Закрытие сундука с mythic'ом
+wynntils.config.utils.prevent_mythic.description=Запретить сундуку закрываться, если там есть mythic?
 wynntils.config.utils.prevent_slot_click.display_name=Клик по слоту с закрытым предметом
-wynntils.config.utils.prevent_slot_click.description=Заблокировать клики по слоту с предметом, который закрыт, чтобы его нельзя было передвинуть?
+wynntils.config.utils.prevent_slot_click.description=Заблокировать клики по слоту с закрытым предметом, чтобы его нельзя было передвинуть?
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Захват территорий
@@ -208,32 +208,32 @@ wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Под
 wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Подсветка минимального уровня порошков
 wynntils.config.utils.item_highlights.minimum_powder_tier.description=Подсвечивать порошки минимум какого уровня? Не работает, если Подсветка порошков отключена.
 wynntils.config.utils.item_highlights.legendary_color.display_name=Цвет подсветки легендарных предметов
-wynntils.config.utils.item_highlights.legendary_color.description=Каким цветом подсвечивать легендарные предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.legendary_color.description=Каким цветом подсвечивать легендарные предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.mythic_color.display_name=Цвет подсветки мифических предметов
-wynntils.config.utils.item_highlights.mythic_color.description=Каким цветом подсвечивать мифические предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.mythic_color.description=Каким цветом подсвечивать мифические предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.rare_color.display_name=Цвет подсветки редких предметов
-wynntils.config.utils.item_highlights.rare_color.description=Каким цветом подсвечивать редкие предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.rare_color.description=Каким цветом подсвечивать редкие предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.unique_color.display_name=Цвет подсветки уникальных предметов
-wynntils.config.utils.item_highlights.unique_color.description=Каким цветом подсвечивать уникальные предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.unique_color.description=Каким цветом подсвечивать уникальные предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.set_color.display_name=Цвет подсветки сетовых предметов
-wynntils.config.utils.item_highlights.set_color.description=Каким цветом подсвечивать сэтовые предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.set_color.description=Каким цветом подсвечивать сэтовые предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.normal_color.display_name=Цвет подсветки обычных предметов
-wynntils.config.utils.item_highlights.normal_color.description=Каким цветом подсвечивать обычные предметы?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.normal_color.description=Каким цветом подсвечивать обычные предметы?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.crafted_color.display_name=Цвет подсветки крафтовых предметов
-wynntils.config.utils.item_highlights.crafted_color.description=Каким цветом подсвечивать крафтовую броню и оружия?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.crafted_color.description=Каким цветом подсвечивать крафтовую броню и оружия?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.onestar_color.display_name=Цвет подсветки ингредиентов (1 звезда)
-wynntils.config.utils.item_highlights.onestar_color.description=Каким цветом подсвечивать ингредиенты с 1 звездой?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.onestar_color.description=Каким цветом подсвечивать ингредиенты с 1 звездой?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.twostar_color.display_name=Цвет подсветки ингредиентов (2 звезды)
-wynntils.config.utils.item_highlights.twostar_color.description=Каким цветом подсвечивать ингредиенты с 2 звездами?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.twostar_color.description=Каким цветом подсвечивать ингредиенты с 2 звездами?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 wynntils.config.utils.item_highlights.threestar_color.display_name=Цвет подсветки ингредиентов (3 звезды)
-wynntils.config.utils.item_highlights.threestar_color.description=Каким цветом подсвечивать ингредиенты с 3 звездами?\n§aНажмите на цвет, чтобы открыть цветовой круг
+wynntils.config.utils.item_highlights.threestar_color.description=Каким цветом подсвечивать ингредиенты с 3 звездами?\n\n§aНажмите на квадрат, чтобы открыть цветовой круг.
 
 ## OVERLAYS CONFIG ##
 wynntils.config.overlay.display_path=Слои
 wynntils.config.overlay.text_shadow.display_name=Тень текста
 wynntils.config.overlay.text_shadow.description=Как должна выглядеть тень за текстом?
 wynntils.config.overlay.actionbar_coords.display_name=Экшн бар координаты
-wynntils.config.overlay.actionbar_coords.description=Показывать ваши координаты в экшн баре, если там больше нечего показать?
+wynntils.config.overlay.actionbar_coords.description=Показывать ваши координаты в экшн баре, если там больше нечего показывать?
 wynntils.config.overlay.split_coords.display_name=Разделить координаты
 wynntils.config.overlay.split_coords.description=Показывать ваши координаты отдельно от экшн бара?
 
@@ -242,11 +242,11 @@ wynntils.config.overlay.health.display_path=Слои/Здоровье
 wynntils.config.overlay.health.texture.display_name=Текстура шкалы здоровья
 wynntils.config.overlay.health.texture.description=Какую текстуру использовать для шкалы здоровья?
 wynntils.config.overlay.health.animation_speed.display_name=Скорость анимации
-wynntils.config.overlay.health.animation_speed.description=Насколько быстро проигрывать анимацию? (0 - мгновенно)
+wynntils.config.overlay.health.animation_speed.description=Насколько быстро проигрывать анимацию?\n\n§8Установите на 0, чтобы проигрывать мгновенно.
 wynntils.config.overlay.health.text_shadow.display_name=Тень текста
 wynntils.config.overlay.health.text_shadow.description=Как должна выглядеть тень за текстом?
 wynntils.config.overlay.health.health_vignette.display_name=Затемнение при малом здоровье
-wynntils.config.overlay.health.health_vignette.description=Окрашивать экран в красный цвет когда у вас остается мало здоровья?
+wynntils.config.overlay.health.health_vignette.description=Затемнять экран в красный цвет когда у вас остается мало здоровья?
 wynntils.config.overlay.health.health_vignette_threshold.display_name=Порог малого здоровья
 wynntils.config.overlay.health.health_vignette_threshold.description=На каком проценте вашего здоровья экран должен становится красным?
 wynntils.config.overlay.health.health_vignette_effect.display_name=Эффект малого здоровья
@@ -255,13 +255,13 @@ wynntils.config.overlay.health.health_vignette_effect.description=Какой э�
 ## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
 wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
 wynntils.config.overlay.health.enum.health_texture.grune=Grune
-wynntils.config.overlay.health.enum.health_texture.aether=Aether
-wynntils.config.overlay.health.enum.health_texture.skull=Skull
+wynntils.config.overlay.health.enum.health_texture.aether=Эфир
+wynntils.config.overlay.health.enum.health_texture.skull=Череп
 wynntils.config.overlay.health.enum.health_texture.skyrim=Skyrim
-wynntils.config.overlay.health.enum.health_texture.a=A
-wynntils.config.overlay.health.enum.health_texture.b=B
-wynntils.config.overlay.health.enum.health_texture.c=C
-wynntils.config.overlay.health.enum.health_texture.d=D
+wynntils.config.overlay.health.enum.health_texture.a=А
+wynntils.config.overlay.health.enum.health_texture.b=Б
+wynntils.config.overlay.health.enum.health_texture.c=В
+wynntils.config.overlay.health.enum.health_texture.d=Г
 
 ## OVERLAYS HEALTH HEALTH VIGNETTE EFFECT ENUM CONFIG ##
 wynntils.config.overlay.health.enum.health_vignette_effect.pulse=Пульсирующий
@@ -273,21 +273,21 @@ wynntils.config.overlay.mana.display_path=Слои/Мана
 wynntils.config.overlay.mana.texture.display_name=Текстура шкалы маны
 wynntils.config.overlay.mana.texture.description=Какую текстуру использовать для шкалы маны?
 wynntils.config.overlay.mana.animation_speed.display_name=Скорость анимации
-wynntils.config.overlay.mana.animation_speed.description=Насколько быстро проигрывать анимацию? (0 - мгновенно)
+wynntils.config.overlay.mana.animation_speed.description=Насколько быстро проигрывать анимацию?\n\n§8Установите на 0, чтобы проигрывать мгновенно.
 wynntils.config.overlay.mana.text_shadow.display_name=Тень текста
 wynntils.config.overlay.mana.text_shadow.description=Как должна выглядеть тень за текстом?
 
 ## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
 wynntils.config.overlay.mana.enum.mana_texture.wynn=Wynn
 wynntils.config.overlay.mana.enum.mana_texture.brune=Brune
-wynntils.config.overlay.mana.enum.mana_texture.aether=Aether
-wynntils.config.overlay.mana.enum.mana_texture.skull=Skull
-wynntils.config.overlay.mana.enum.mana_texture.inverse=Inverse
+wynntils.config.overlay.mana.enum.mana_texture.aether=Эфир
+wynntils.config.overlay.mana.enum.mana_texture.skull=Череп
+wynntils.config.overlay.mana.enum.mana_texture.inverse=Инверсия
 wynntils.config.overlay.mana.enum.mana_texture.skyrim=Skyrim
-wynntils.config.overlay.mana.enum.mana_texture.a=A
-wynntils.config.overlay.mana.enum.mana_texture.b=B
-wynntils.config.overlay.mana.enum.mana_texture.c=C
-wynntils.config.overlay.mana.enum.mana_texture.d=D
+wynntils.config.overlay.mana.enum.mana_texture.a=А
+wynntils.config.overlay.mana.enum.mana_texture.b=Б
+wynntils.config.overlay.mana.enum.mana_texture.c=В
+wynntils.config.overlay.mana.enum.mana_texture.d=Г
 
 ## OVERLAYS HOTBAR CONFIG ##
 wynntils.config.overlay.hotbar.display_path=Слои/Хотбар
@@ -310,45 +310,45 @@ wynntils.config.overlay.toast.quest_completed.display_name=Квест пройд
 wynntils.config.overlay.toast.quest_completed.description=Показывать всплывающее сообщение при прохождении квеста?
 wynntils.config.overlay.toast.discovery_found.display_name=Дискавери найдено сообщения
 wynntils.config.overlay.toast.discovery_found.description=Показывать всплывающее сообщение при нахождении дискавери?
-wynntils.config.overlay.toast.flip.display_name=Перенос всплывающих сообщений
-wynntils.config.overlay.toast.flip.description=Перенести всплывающие сообщения из левой стороны в правую?\n§8Визуальные глюки могут возникать, если слой сообщений не перенесен на другую сторону экрана.
+wynntils.config.overlay.toast.flip.display_name=Переворот всплывающих сообщений
+wynntils.config.overlay.toast.flip.description=Перевернуть выезжающий текст всплывающих сообщений из левой стороны в правую?\n\n§8Визуальные глюки могут возникать, если слой сообщений не перенесен на другую сторону экрана.
 
 ## OVERLAYS EXP CONFIG ##
 wynntils.config.overlay.exp.display_path=Слои/Опыт
 wynntils.config.overlay.exp.texture.display_name=Текстура шкалы опыта
 wynntils.config.overlay.exp.texture.description=Какую текстуру использовать для шкалы опыта?
 wynntils.config.overlay.exp.animation_speed.display_name=Скорость анимации
-wynntils.config.overlay.exp.animation_speed.description=Насколько быстро проигрывать анимацию? (0 - мгновенно)
+wynntils.config.overlay.exp.animation_speed.description=Насколько быстро проигрывать анимацию?\n\n§8Установите на 0, чтобы проигрывать мгновенно.
 wynntils.config.overlay.exp.text_shadow.display_name=Тень текста
 wynntils.config.overlay.exp.text_shadow.description=Как должна выглядеть тень за текстом?
 
 ## OVERLAYS EXP EXP TEXTURES ENUM CONFIG ##
 wynntils.config.overlay.exp.enum.exp_texture.wynn=Wynn
 wynntils.config.overlay.exp.enum.exp_texture.liquid=Liquid
-wynntils.config.overlay.exp.enum.exp_texture.emerald=Emerald
-wynntils.config.overlay.exp.enum.exp_texture.a=A
-wynntils.config.overlay.exp.enum.exp_texture.b=B
-wynntils.config.overlay.exp.enum.exp_texture.c=C
+wynntils.config.overlay.exp.enum.exp_texture.emerald=Эмеральд
+wynntils.config.overlay.exp.enum.exp_texture.a=А
+wynntils.config.overlay.exp.enum.exp_texture.b=Б
+wynntils.config.overlay.exp.enum.exp_texture.c=В
 
 ## OVERLAYS BUBBLES CONFIG ##
 wynntils.config.overlay.bubbles.display_path=Слои/Пузырьки
 wynntils.config.overlay.bubbles.texture.display_name=Текстура пузырьков
-wynntils.config.overlay.bubbles.texture.description=Какую текстуру использовать для шкалы опыта, когда она действует как шкала воздуха?
+wynntils.config.overlay.bubbles.texture.description=Какую текстуру использовать для шкалы опыта, когда она действует в роли шкалы воздуха?
 wynntils.config.overlay.bubbles.animation_speed.display_name=Скорость анимации
-wynntils.config.overlay.bubbles.animation_speed.description=Насколько быстро проигрывать анимацию? (0 - мгновенно)
+wynntils.config.overlay.bubbles.animation_speed.description=Насколько быстро проигрывать анимацию?\n\n§8Установите на 0, чтобы проигрывать мгновенно.
 wynntils.config.overlay.bubbles.text_shadow.display_name=Тень текста
 wynntils.config.overlay.bubbles.text_shadow.description=Как должна выглядеть тень за текстом?
-wynntils.config.overlay.bubbles.drowning_vignette.display_name=Пузырьки при погружении
-wynntils.config.overlay.bubbles.drowning_vignette.description=Отображать пузырьки при погружении в воду?
+wynntils.config.overlay.bubbles.drowning_vignette.display_name=Затемнение при погружении
+wynntils.config.overlay.bubbles.drowning_vignette.description=Отображать синее затемнение экрана при погружении в воду?
 
 ## OVERLAYS BUBBLES BUBBLE TEXTURE ENUM CONFIG ##
 wynntils.config.overlay.bubbles.enum.bubble_texture.wynn=Wynn
 wynntils.config.overlay.bubbles.enum.bubble_texture.liquid=Liquid
 # Misspelling in code is replicated here for consistency
-wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=Sapphire
-wynntils.config.overlay.bubbles.enum.bubble_texture.a=A
-wynntils.config.overlay.bubbles.enum.bubble_texture.b=B
-wynntils.config.overlay.bubbles.enum.bubble_texture.c=C
+wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=Сапфир
+wynntils.config.overlay.bubbles.enum.bubble_texture.a=А
+wynntils.config.overlay.bubbles.enum.bubble_texture.b=Б
+wynntils.config.overlay.bubbles.enum.bubble_texture.c=В
 
 ## OVERLAYS LEVELING CONFIG ##
 wynntils.config.overlay.leveling.display_path=Слои/Шкала уровня
@@ -362,19 +362,19 @@ wynntils.config.overlay.ticker.display_path=Слои/Лента обновлен
 wynntils.config.overlay.ticker.message_limit.display_name=Лимит сообщений
 wynntils.config.overlay.ticker.message_limit.description=Какое максимальное количество сообщений отображать в ленте?
 wynntils.config.overlay.ticker.align_right.display_name=Выравнивание текста
-wynntils.config.overlay.ticker.align_right.description=Выровнять текст по правой стороне
+wynntils.config.overlay.ticker.align_right.description=Выровнять текст по правой стороне?
 wynntils.config.overlay.ticker.expiry_time.display_name=Время ухода сообщений
 wynntils.config.overlay.ticker.expiry_time.description=Как долго (в секундах) оставлять сообщения на экране?
 wynntils.config.overlay.ticker.fadeout_time.display_name=Анимация ухода сообщений
 wynntils.config.overlay.ticker.fadeout_time.description=Как долго проигрывать анимацию ухода сообщений?
 wynntils.config.overlay.ticker.invert_growth.display_name=Инвертировать прокрутку
-wynntils.config.overlay.ticker.invert_growth.description=Изменить направление прокрутки сообщений снизу вверх или сверху вниз?
+wynntils.config.overlay.ticker.invert_growth.description=Изменить направление появления сообщений с снизу вверх на сверху вниз?
 wynntils.config.overlay.ticker.max_message_length.display_name=Максимальная длина сообщений
 wynntils.config.overlay.ticker.max_message_length.description=Какую максимальную длину сообщений сделать в ленте? Сообщения больше этого значения будут обрезаны. (0 = бесконечно)
 wynntils.config.overlay.ticker.text_shadow.display_name=Тень текста
 wynntils.config.overlay.ticker.text_shadow.description=Как должна выглядеть тень за текстом?
 wynntils.config.overlay.ticker.new_message_override.display_name=Замещение новых сообщений
-wynntils.config.overlay.ticker.new_message_override.description=Новые сообщения будут вытеснять самые старые предыдущие? Если отключено, сообщения ленты будут добавлены в очередь и появятся, когда предыдущее сообщение исчезнет.
+wynntils.config.overlay.ticker.new_message_override.description=Новые сообщения будут вытеснять самые старые предыдущие?\n\n§8Если отключено, сообщения ленты будут добавлены в очередь, и появятся, когда предыдущее сообщение исчезнет.
 
 ## OVERLAYS TICKER EXP CONFIG ##
 wynntils.config.overlay.ticker.exp.display_path=Слои/Лента обновлений/Опыт
@@ -512,8 +512,8 @@ wynntils.chat.tabgui.button.message_types=Типы сообщений
 wynntils.chat.tabgui.button.message_type.all=Все
 wynntils.chat.tabgui.button.message_type.all.tooltip_1=Тип сообщений: Все
 wynntils.chat.tabgui.button.message_type.all.tooltip_2=Это будет отправлять все
-wynntils.chat.tabgui.button.message_type.all.tooltip_3=сообщения, кроме 
-wynntils.chat.tabgui.button.message_type.all.tooltip_4=не выбранных в эту вкладку.
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=сообщения, кроме не выбранных 
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=в эту вкладку.
 wynntils.chat.tabgui.button.message_type.local=Рядом
 wynntils.chat.tabgui.button.message_type.local.tooltip_1=Тип сообщений: Рядом
 wynntils.chat.tabgui.button.message_type.local.tooltip_2=Это будет отправлять все
@@ -560,7 +560,7 @@ wynntils.chat.tabgui.button.order_number.tooltip_2=расположение
 wynntils.chat.tabgui.button.order_number.tooltip_3=вкладок чата.
 wynntils.chat.tabgui.button.order_number.tooltip_4=(от низшей к высшей)
 wynntils.chat.tabgui.menu.confirm_delete_main=Вы действительно хотите удалить эту вкладку чата?
-wynntils.chat.tabgui.menu.confirm_delete_sub=Это будет нельзя отменить!
+wynntils.chat.tabgui.menu.confirm_delete_sub=Это действие будет нельзя отменить!
 
 ############
 # COMMANDS #
@@ -569,19 +569,19 @@ wynntils.chat.tabgui.menu.confirm_delete_sub=Это будет нельзя от
 
 ## /compass ##
 wynntils.commands.compass.error.generic=Этого не должно было случиться!
-wynntils.commands.compass.direction=направление
+wynntils.commands.compass.direction=Направление
 wynntils.commands.compass.now_pointing=Компас теперь указывает на
 
 ## /forceupdate ##
 wynntils.commands.forceupdate.usage=Обновить Wynntils
-wynntils.commands.forceupdate.running=Обновление Wynntils'a
+wynntils.commands.forceupdate.running=Идет обновление Wynntils'a...
 
 ## /territory ##
 wynntils.commands.territory.usage=Направить ваш компас на территорию
 wynntils.commands.territory.error.wrong_usage=/territory [имя] | Пример: /territory Detlas
 wynntils.commands.territory.error.territory_not_valid=Неправильная территория! Нужно: /territory [имя] | Пример: /territory Detlas
 wynntils.commands.territory.now_pointing=Компас теперь указывает на %s (%o, %o)
-wynntils.commands.territory.compass_warning=\nПожалуйста убедитесь, что вы знаете, что эта команда перенаправляет ваш компас на середину территории
+wynntils.commands.territory.compass_warning=\nПожалуйста убедитесь, что вы знаете, что эта команда перенаправляет ваш компас на середину территории.
 
 ## /token ##
 wynntils.commands.token.usage=Возвращает ваш автоматический токен Wynntils
@@ -602,18 +602,18 @@ wynntils.commands.wynntils.help.donate=Дает ссылку на наш Patreon
 wynntils.commands.wynntils.help.token=Дает кликабельный токен, чтобы вы могли создать Wynntils аккаунт для косметических изменений.
 wynntils.commands.wynntils.help.forceupdate=Загружает и устанавливает последнюю успешную сборку.
 wynntils.commands.wynntils.help.compass=Направляет ваш компас на координаты X и Z, или на направления (к примеру. north, SE).
-wynntils.commands.wynntils.help.territory=Перенаправляет ваш компас на территорию
+wynntils.commands.wynntils.help.territory=Направляет ваш компас на определенную территорию
 wynntils.commands.wynntils.discord.basic_text=Вы можете присоединиться к нашему Дискорд серверу:
 wynntils.commands.wynntils.discord.discord_link_hover=Нажмите сюда, чтобы присоединиться к нашему Дискорду.
 wynntils.commands.wynntils.version.development_environment=Wynntils работает в среде разработки.
-wynntils.commands.wynntils.version.using_stable=Использвется Стабильная версия:
-wynntils.commands.wynntils.version.using_cutting_edge=Используется Тестовая версия:
+wynntils.commands.wynntils.version.using_stable=Вы используете Стабильную версию:
+wynntils.commands.wynntils.version.using_cutting_edge=Вы используете Тестовую версию:
 wynntils.commands.wynntils.version.version=Версия %s
 wynntils.commands.wynntils.version.build=Сборка %s
 wynntils.commands.wynntils.version.build_unknown=Неизвестная сборка
-wynntils.commands.wynntils.version.update_check_failed=Wynntils не смог проверить апдейты - нажмите %s , чтобы попробовать снова.
-wynntils.commands.wynntils.version.update_check_outdated=Wynntils устарел - нажмите %s , чтобы обновиться.
-wynntils.commands.wynntils.version.update_check_up_to_date=Версия Wynntils была актуальной в прошлую проверку - нажмите %s , чтобы проверить обновления.
+wynntils.commands.wynntils.version.update_check_failed=Wynntils не смог проверить апдейты. Нажмите %s , чтобы попробовать снова.
+wynntils.commands.wynntils.version.update_check_outdated=Wynntils устарел. Нажмите %s , чтобы обновиться.
+wynntils.commands.wynntils.version.update_check_up_to_date=Версия Wynntils была актуальной в прошлую проверку. Нажмите %s , чтобы проверить обновления.
 wynntils.commands.wynntils.error.invalid_argument=Недопустимый аргумент. Используйте /wynntils help для большей информации.
 wynntils.commands.wynntils.error.missing_argument=Пропущены аргументы. Используйте /wynntils help для большей информации.
 
@@ -632,7 +632,7 @@ wynntils.core.ui.download.files_left=%o файлов осталось
 ## UPDATE OVERLAY ##
 wynntils.core.ui.update.display_name=Обновление
 wynntils.core.ui.update.upper_text=Wynntils §av%s - §f%ss осталось
-wynntils.core.ui.update.build_is_avaliable=§eСборка %s §fдоступна.
+wynntils.core.ui.update.build_is_avaliable=§eСборка %s §fдоступна
 wynntils.core.ui.update.version_is_avaliable=Доступно обновление §ev%s
 wynntils.core.ui.update.download_question=Загружать автоматически? §a(да/нет)
 wynntils.core.ui.update.yes=Да (y)
@@ -694,7 +694,7 @@ wynntils.questbook.overlays.tracked_quest.title=Отслеживаемый кв�
 
 ## QUEST BOOK UI ##
 wynntils.questbook.ui.questbook.button.generic.left_to_select=Левый клик для выбора
-wynntils.questbook.ui.questbook.link_error=Ошибка открытия ссылки, она была скопирована в буфер обмена
+wynntils.questbook.ui.questbook.link_error=Произошла ошибка при открытии ссылки. Она была скопирована в ваш буфер обмена.
 wynntils.questbook.ui.questbook.sort_type=Упорядочить список по
 wynntils.questbook.ui.questbook.sort_type.alphabetical=Алфавиту (A-Z)
 wynntils.questbook.ui.questbook.sort_type.level=Уровню (100-0)
@@ -785,7 +785,7 @@ wynntils.utilities.overlays.experience_bar.display_name=Шкала опыта
 
 ## GAME UPDATE OVERLAY ##
 wynntils.utilities.overlays.game_update.display_name=Лента обновлений
-wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] Обнаружены временные метки WynnExpansion'а, пожалуйста, используйте Wynntils временные метки для полной совместимости.
+wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] Обнаружены временные метки WynnExpansion'а. Пожалуйста, используйте Wynntils временные метки для полной совместимости.
 wynntils.utilities.overlays.game_update.redir.horse.no_room=Здесь мало места для лошади.
 wynntils.utilities.overlays.game_update.redir.horse.despawned=Лошадь убрана.
 wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs=Слишком много мобов рядом, чтобы заспавнить лошадь.
