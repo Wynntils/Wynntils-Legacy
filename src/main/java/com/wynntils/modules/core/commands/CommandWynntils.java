@@ -65,25 +65,25 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     text.getStyle().setColor(TextFormatting.GOLD);
                     text.appendText("Wynntils' command list: ");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " help", "Shows a list of all Wynntils' commands.");
+                    addCommandDescription(text, "-wynntils", " help", "This shows a list of all available commands for Wynntils.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " discord", "Provides you with an invite to our Discord server.");
+                    addCommandDescription(text, "-wynntils", " discord", "This provides you with an invite to our Discord server.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " version", "Shows the installed Wynntils version.");
+                    addCommandDescription(text, "-wynntils", " version", "This shows the installed Wynntils version.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " changelog [major]", "Shows the latest changelog of your version.");
+                    addCommandDescription(text, "-wynntils", " changelog [major]", "This shows the latest changelog of your installed version.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " reloadapi", "Reloads all API data.");
+                    addCommandDescription(text, "-wynntils", " reloadapi", "This reloads all API data.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " donate", "Provides our Patreon link.");
+                    addCommandDescription(text, "-wynntils", " donate", "This provides our Patreon link.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "token", "Provides you with a clickable token to create a Wynntils account to manage cosmetics.");
+                    addCommandDescription(text, "-", "token", "This provides a clickable token for you to create a Wynntils account to manage your cosmetics.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "forceupdate", "Downloads and installs the latest successful build.");
+                    addCommandDescription(text, "-", "forceupdate", "This downloads and installs the latest successful build.");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "compass", "Makes your compass point towards an x and z or a direction (e.g. north, SE).");
+                    addCommandDescription(text, "-", "compass", "This makes your compass point towards an x and z or a direction (e.g. north, SE).");
                     text.appendText("\n");
-                    addCommandDescription(text, "-", "territory", "Redirects your compass to a territory location");
+                    addCommandDescription(text, "-", "territory", "This makes your compass point towards a specified territory.");
                     sender.sendMessage(text);
                     break;
                     /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
@@ -150,10 +150,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString releaseStreamText = null;
         TextComponentString buildText = null;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
-            releaseStreamText = new TextComponentString("Using Stable release stream: ");
+            releaseStreamText = new TextComponentString("You are using Stable release stream: ");
             buildText = new TextComponentString("Version " + Reference.VERSION);
         } else {
-            releaseStreamText = new TextComponentString("Using Cutting Edge release stream: ");
+            releaseStreamText = new TextComponentString("You are using Cutting Edge release stream: ");
             if (Reference.BUILD_NUMBER == -1) {
                 buildText = new TextComponentString("Unknown Build");
             } else {
@@ -169,13 +169,13 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString updateCheckText = null;
         TextFormatting color = null;
         if (WebManager.getUpdate().updateCheckFailed()) {
-            updateCheckText = new TextComponentString("Wynntils failed to check for updates - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to try again.");
+            updateCheckText = new TextComponentString("Wynntils failed to check for updates. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to try again.");
             color = TextFormatting.DARK_RED;
         } else if (WebManager.getUpdate().hasUpdate()) {
-            updateCheckText = new TextComponentString("Wynntils is currently outdated - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to update now.");
+            updateCheckText = new TextComponentString("Wynntils is currently outdated. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to update now.");
             color = TextFormatting.DARK_RED;
         } else {
-            updateCheckText = new TextComponentString("Wynntils was up-to-date when last checked - press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates.");
+            updateCheckText = new TextComponentString("Wynntils was up-to-date when last checked. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates.");
             color = TextFormatting.DARK_GREEN;
         }
         updateCheckText.getStyle().setColor(color);

@@ -30,21 +30,21 @@ public class OverlayConfig extends SettingsClass {
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
-        @Setting(displayName = "Low Health Vignette", description = "Should the screen tint red when on low health?")
+        @Setting(displayName = "Low Health Vignette", description = "Should a red vignette be displayed when you're low on health?")
         public boolean healthVignette = true;
 
-        @Setting(displayName = "Low Heatlh Threshold", description = "At what percentage of health should the screen start tinting red?")
+        @Setting(displayName = "Low Heatlh Threshold", description = "At what percentage of health should a red vignette be displayed?")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int lowHealthThreshold = 25;
 
-        @Setting(displayName = "Low Health Effect", description = "What animation effect should the low health indicator have?")
+        @Setting(displayName = "Low Health Animation", description = "Which animation should be used for the low health indicator?")
         public HealthVignetteEffect healthVignetteEffect = HealthVignetteEffect.Pulse;
 
         @Setting(displayName = "Health Texture", description = "What texture should be used for the health bar?")
         public HealthTextures healthTexture = HealthTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -80,7 +80,7 @@ public class OverlayConfig extends SettingsClass {
         public ManaTextures manaTexture = ManaTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (Set this to 0 for it to display instantly.)")
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -135,7 +135,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Enable Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
         public boolean enableDiscovery = true;
 
-        @Setting(displayName = "Flip Toast Messages", description = "Should a toast originate from the left to right?\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.")
+        @Setting(displayName = "Flip Toast Messages", description = "Should a toast display from the left to right?\n\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.")
         public boolean flipToast = false;
     }
 
@@ -180,7 +180,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "Bubble Vignette", description = "Should the drowning vignette be displayed?")
+        @Setting(displayName = "Bubble Vignette", description = "Should a drowning vignette be displayed when you're underwater?")
         public boolean drowningVignette = true;
 
         public enum BubbleTexture {
@@ -231,7 +231,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 10f, max = 60f, precision = 1f)
         public float messageFadeOut = 30f;
 
-        @Setting(displayName = "Invert Growth", description = "Should the way ticker messages grow be inverted?")
+        @Setting(displayName = "Invert Growth", description = "Should the way ticker messages appear be inverted?")
         public boolean invertGrowth = true;
 
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
@@ -241,7 +241,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages? If disabled, ticker messages will be queued and appear when a previous message disappears.")
+        @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages?\n\n§8If disabled, ticker messages will be queued and appear when a previous message disappears.")
         public boolean overrideNewMessages = true;
 
         @SettingsInfo(name = "game_update_exp_settings", displayPath = "Overlays/Update Ticker/Experience")
@@ -290,25 +290,25 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Local Login Messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker?")
             public boolean redirectLoginLocal = true;
 
-            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game-update-ticker?")
             public boolean redirectLoginFriend = true;
 
-            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game-update-ticker?")
             public boolean redirectLoginGuild = true;
 
-            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game-update-ticker?")
             public boolean redirectMerchants = true;
 
-            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game-update-ticker?")
             public boolean redirectOther = true;
 
-            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game-update-ticker?")
             public boolean redirectServer = true;
 
-            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game-update-ticker?")
             public boolean redirectQuest = true;
 
-            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game update ticker")
+            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game-update-ticker?")
             public boolean redirectSoulPoint = true;
         }
 
@@ -316,16 +316,16 @@ public class OverlayConfig extends SettingsClass {
         public static class TerritoryChangeMessages extends SettingsClass {
             public static TerritoryChangeMessages INSTANCE;
 
-            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game-update-ticker?")
             public boolean enabled = false;
 
-            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game-update-ticker?")
             public boolean enter = true;
 
-            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game update ticker?")
+            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game-update-ticker?")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker? (This has no effect if the Music module is disabled.)")
+            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker?\n\n§8This has no effect if the Music module is disabled.")
             public boolean musicChange = true;
 
             @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
