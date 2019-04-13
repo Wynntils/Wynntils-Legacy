@@ -37,7 +37,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints as you discover them? (The mod will also record better tiers than the specified tier.)", order = 6)
+    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints as you discover them?\n\n§8The mod will also record better tiers than the specified tier.", order = 6)
     public ChestTiers chestTiers = ChestTiers.TIER_3;
 
     public enum ChestTiers {
