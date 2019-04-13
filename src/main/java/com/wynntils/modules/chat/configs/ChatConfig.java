@@ -33,10 +33,10 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered?\n\n§8Messages starting with §4[Info]§r will no longer appear in chat.")
+    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered?\n\n§8Messages starting with §4[Info]§8 will no longer appear in chat.")
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§r.")
+    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.")
     public boolean filterTerritoryEnter = true;
 
     public boolean registeredDefaultTabs = false;

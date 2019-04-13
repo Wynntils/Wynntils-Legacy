@@ -180,7 +180,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "Bubble Vignette", description = "Should a drowning vignette be displayed when you're underwater?")
+        @Setting(displayName = "Bubble Vignette", description = "Should a blue vignette be displayed when you're underwater?")
         public boolean drowningVignette = true;
 
         public enum BubbleTexture {

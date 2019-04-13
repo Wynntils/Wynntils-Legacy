@@ -144,34 +144,34 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Legendary Item Highlight Color", description = "What color should the highlight for legendary items be?\n\n§aClick the colored box to open the color wheel..")
+        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel..")
         public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
-        @Setting(displayName = "Mythic Item Highlight Color", description = "What color should the highlight for mythic items be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
-        @Setting(displayName = "Rare Item Highlight Color", description = "What color should the highlight for rare items be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
-        @Setting(displayName = "Unique Item Highlight Color", description = "What color should the highlight for unique items be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Set Item Highlight Color", description = "What color should the highlight for set items be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
 
-        @Setting(displayName = "Normal Item Highlight Color", description = "What color should the highlight for normal items be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Color", description = "What color should the highlight for crafted armour and weapons be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor craftedHighlightColor = new CustomColor(0, .545f, .545f);
 
-        @Setting(displayName = "Ingredient Highlight Color (1 star)", description = "What color should the highlight for ingredient with one star be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Color (2 stars)", description = "What color should the highlight for ingredient with two stars be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Ingredient Highlight Color (3 stars)", description = "What color should the highlight for ingredient with three stars be?\n\n§aClick the colored box to open the color wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
 
