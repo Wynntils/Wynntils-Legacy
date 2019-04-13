@@ -144,7 +144,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel..")
+        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
         @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.")
