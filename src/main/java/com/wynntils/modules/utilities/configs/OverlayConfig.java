@@ -234,7 +234,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Invert Growth", description = "Should the way ticker messages appear be inverted?")
         public boolean invertGrowth = true;
 
-        @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be? Messages longer than this set value will be truncated. (0 = unlimited)")
+        @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be?\n\n§8Messages longer than this set value will be truncated. Set this to 0 for no maximum length.")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
 
@@ -325,7 +325,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game-update-ticker?")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker?\n\n§8This has no effect if the Music module is disabled.")
+            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game-update-ticker?\n\n§8This has no effect if the Music module is disabled.")
             public boolean musicChange = true;
 
             @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
