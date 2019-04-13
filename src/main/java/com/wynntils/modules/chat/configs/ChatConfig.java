@@ -24,7 +24,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?")
     public boolean transparent = false;
 
-    @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed? (This has no effect if chat timestamps are disabled.)")
+    @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed?\n\n§8This has no effect if chat timestamps are disabled.")
     public String timestampFormat = "HH:mm:ss";
 
     @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?")
@@ -33,17 +33,17 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack rather than flood the chat?")
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered? (Messages starting with §4[Info]§r will no longer appear in chat.)")
+    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered?\n\n§8Messages starting with §4[Info]§r will no longer appear in chat.")
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat? (e.g. §7[You are now entering Detlas]§r)")
+    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§r.")
     public boolean filterTerritoryEnter = true;
 
     public boolean registeredDefaultTabs = false;
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\nb - Global, Shouts, Guild/Party, PM's\nvanilla - All")
+    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All")
     public Presets preset = Presets.a;
 
     @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?")
