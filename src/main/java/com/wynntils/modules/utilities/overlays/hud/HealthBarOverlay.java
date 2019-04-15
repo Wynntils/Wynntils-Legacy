@@ -30,7 +30,9 @@ public class HealthBarOverlay extends Overlay {
     @Setting(displayName = "Texture", description = "What texture to use")
     public HealthTextures texture = HealthTextures.a;
     */
-
+    @Setting(displayName = "Health Bar Size", description = "Should the health bar have more than one line of hearths?")
+    public boolean health = true;
+    
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
     public boolean flip = false;
 
@@ -83,8 +85,10 @@ public class HealthBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
+        if healthBar{
         drawProgressBar(Textures.Overlays.bars_health, -81, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
         drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a, textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
+        }
     }
 }
 
