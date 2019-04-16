@@ -24,6 +24,7 @@ public class RichProfile {
 
         DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
         handler.ready = user -> {
+            System.out.println("DISCORD READY"); //HeyZeer0: for a random reason, it doesn't seems to work without this println
             if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "#" + user.discriminator);
             callbacks.cancel(true);
         };

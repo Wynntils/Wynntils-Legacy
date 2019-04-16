@@ -67,10 +67,10 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         ModCore.mc().world.setSpawnPoint(new BlockPos(xMiddle, 0, zMiddle));
         WorldMapOverlay.setCompassCoordinates(new int[] {xMiddle, zMiddle});
 
-        TextComponentString success = new TextComponentString("Compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
+        TextComponentString success = new TextComponentString("The compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
         success.getStyle().setColor(TextFormatting.GREEN);
 
-        TextComponentString warn = new TextComponentString("\nPlease be sure that you know that this command redirects your compass to the middle of the territory");
+        TextComponentString warn = new TextComponentString("\nPlease be sure you know that this command redirects your compass to the middle of the territory.");
         warn.getStyle().setColor(TextFormatting.AQUA);
 
         success.appendSibling(warn);
