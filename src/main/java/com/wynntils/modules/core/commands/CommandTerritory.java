@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.ModCore;
+import com.wynntils.modules.map.overlays.ui.WorldMapOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
@@ -64,6 +65,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         int zMiddle = tp.getStartZ() + ((tp.getEndZ() - tp.getStartZ())/2);
 
         ModCore.mc().world.setSpawnPoint(new BlockPos(xMiddle, 0, zMiddle));
+        WorldMapOverlay.setCompassCoordinates(new int[] {xMiddle, zMiddle});
 
         TextComponentString success = new TextComponentString("Compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
         success.getStyle().setColor(TextFormatting.GREEN);

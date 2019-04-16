@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.modules.map.overlays.ui.WorldMapOverlay;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -40,6 +41,7 @@ public class TrackedQuestOverlay extends Overlay {
 
             if (QuestBookConfig.INSTANCE.compassFollowQuests && QuestManager.getTrackedQuest().getX() != 0 && QuestManager.getTrackedQuest().getZ() != 0)
                 ScreenRenderer.mc.world.setSpawnPoint(new BlockPos(QuestManager.getTrackedQuest().getX(), 0, QuestManager.getTrackedQuest().getZ()));
+                WorldMapOverlay.setCompassCoordinates(new int[] {QuestManager.getTrackedQuest().getX(), QuestManager.getTrackedQuest().getZ()});
         } catch (NullPointerException ex) {
             // Likely caused by concurrent modification after updating quests
             Reference.LOGGER.warn("NPE caught when rendering tracked quest - this is generally nothing to worry about", ex);

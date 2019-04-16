@@ -37,29 +37,6 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)", order = 6)
-    public ChestTiers chestTiers = ChestTiers.TIER_3;
-
-    public enum ChestTiers {
-        TIER_1(4),
-        TIER_2(3),
-        TIER_3(2),
-        TIER_4(1),
-        NONE(0);
-
-        private int tierArrayIndex; //Array starts at 1 :P
-        private String[] tiers = new String[]{"IV", "III", "II", "I"};
-
-        ChestTiers(int tierArrayIndex) {
-            this.tierArrayIndex = tierArrayIndex;
-        }
-
-        public boolean isTierAboveThis(String testTier) {
-            ArrayList<String> allowedTiers = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
-            return allowedTiers.contains(testTier);
-        }
-    }
-
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
@@ -89,6 +66,32 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
+
+        @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)", order = 6)
+        public ChestTiers chestTiers = ChestTiers.TIER_3;
+
+        public enum ChestTiers {
+            TIER_1(4),
+            TIER_2(3),
+            TIER_3(2),
+            TIER_4(1),
+            NONE(0);
+
+            private int tierArrayIndex; //Array starts at 1 :P
+            private String[] tiers = new String[]{"IV", "III", "II", "I"};
+
+            ChestTiers(int tierArrayIndex) {
+                this.tierArrayIndex = tierArrayIndex;
+            }
+
+            public boolean isTierAboveThis(String testTier) {
+                ArrayList<String> allowedTiers = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                return allowedTiers.contains(testTier);
+            }
+        }
+
+        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
+        public boolean compassMarker = true;
     }
 
 
