@@ -809,7 +809,7 @@ public class WebManager {
 
         ArrayList<String> changelog = new ArrayList<>();
         try {
-            URLConnection st = new URL(apiUrls.get("DevJars").replace("lastSuccessfulBuild", (String)(Reference.developmentEnvironment ? "lastSuccessfulBuild" : Reference.BUILD_NUMBER)) + "api/json?tree=changeSet[items[msg]]").openConnection();
+            URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=changeSet[items[msg]]").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);

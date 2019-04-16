@@ -41,7 +41,13 @@ public class WaypointOverviewUI extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        fontRenderer.drawString(TextFormatting.BOLD + "" + TextFormatting.UNDERLINE + "Icon: Name:                X          Z      Y                      ", this.width/2 - 185, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 185, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width/2 - 150, 39, 0xFFFFFF);
+        drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 - 35, 39, 0xFFFFFF);
+        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 20, 39, 0xFFFFFF);
+        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Y", this.width/2 + 60, 39, 0xFFFFFF);
+        drawRect(this.width/2 - 185, 48,this.width/2 + 170,49, 0xFFFFFFFF);
+        
         ScreenRenderer.beginGL(0,0);
         for (int i = 0; i < Math.min(pageHeight, waypoints.size() - pageHeight * page); i++) {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
