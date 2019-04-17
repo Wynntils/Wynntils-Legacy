@@ -78,11 +78,16 @@ public class CustomElytraModel extends ModelBase
             f = f4 * 0.34906584F + (1.0F - f4) * f;
             f1 = f4 * -((float)Math.PI / 2F) + (1.0F - f4) * f1;
         }
-        else if (entityIn.isSneaking() || entityIn.isSprinting())
+        else if (entityIn.isSneaking())
         {
             f = ((float)Math.PI * 2F / 9F);
             f1 = -((float)Math.PI / 4F);
-            f2 = 1.F;
+            f2 = 3F;
+            f3 = 0.08726646F;
+        }else if(entityIn.isSprinting()) {
+            f = ((float)Math.PI * 2F / 9F);
+            f1 = -((float)Math.PI / 4F);
+            f2 = 1F;
             f3 = 0.08726646F;
         }
 
