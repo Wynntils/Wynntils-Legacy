@@ -5,7 +5,6 @@
 package com.wynntils.core.framework.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,11 +12,16 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class SmartFontRenderer extends FontRenderer {
 
     public static final int LINE_SPACING = 3;
     public static final int CHAR_SPACING = 0;
     public static final int CHAR_HEIGHT = 9;
+
+    private static HashMap<Integer, CustomColor> colors = new HashMap<>();
 
     //TODO document
     public SmartFontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
@@ -84,8 +88,28 @@ public class SmartFontRenderer extends FontRenderer {
     private float drawChars(String text, CustomColor color, boolean forceColor) {
         if(text.isEmpty()) return -CHAR_SPACING;
         if(text.startsWith("§") && text.length() > 1) {
-            Pair<String,CustomColor> sc = decodeColor(text.substring(1), color);
-            return drawChars(sc.a,forceColor ? color : sc.b,forceColor);
+            String withoutSelector = text.substring(1);
+            String textToRender;
+            CustomColor colorToRender;
+            if (withoutSelector.startsWith("[")) {
+                String[] colorSplit = withoutSelector.substring(1).split("]");
+                if (colorSplit.length == 1) {
+                    textToRender = withoutSelector;
+                    colorToRender = ChatCommonColorCodes.color_f.color.setA(color.a);
+                } else {
+                    textToRender = colorSplit[1];
+                    colorToRender = decodeCustomColor(colorSplit[0], color);
+                }
+            } else {
+                colorToRender = decodeCommonColor(withoutSelector, color);
+                if (colorToRender == null) {
+                    colorToRender = ChatCommonColorCodes.color_f.color.setA(color.a);
+                    textToRender = withoutSelector;
+                } else {
+                    textToRender = withoutSelector.substring(1);
+                }
+            }
+            return drawChars(textToRender, forceColor ? color : colorToRender, forceColor);
         }
         color.applyColor();
         float charLength = renderChar(text.charAt(0));
@@ -94,24 +118,31 @@ public class SmartFontRenderer extends FontRenderer {
         return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
     }
 
-    private Pair<String,CustomColor> decodeColor(String text, CustomColor baseColor) {
-        if(text.startsWith("[")) {
-            String[] s1 = text.substring(1).split("]");
-            String[] s2 = s1[0].split(",");
-            try {
-                return new Pair<>(
-                        s1[1],
-                        new CustomColor(
-                                Float.parseFloat(s2[0]),
-                                Float.parseFloat(s2[1]),
-                                Float.parseFloat(s2[2]),
-                                (s2.length == 4) ? Float.parseFloat(s2[3]) : 1f).setA(baseColor.a));
-            } catch (NumberFormatException | IndexOutOfBoundsException ex) {/* Not valid custom colour formatting, return default white*/}
-        } else
-            for (ChatCommonColorCodes cccc : ChatCommonColorCodes.values())
-                if(cccc.name().charAt(6) == Character.toLowerCase(text.charAt(0)))
-                    return new Pair<>(text.substring(1),cccc.color.setA(baseColor.a));
-        return new Pair<>(text, ChatCommonColorCodes.color_f.color.setA(baseColor.a));
+    private CustomColor decodeCommonColor(String text, CustomColor baseColor) {
+        for (ChatCommonColorCodes cccc : ChatCommonColorCodes.values())
+            if(cccc.name().charAt(6) == Character.toLowerCase(text.charAt(0)))
+                return cccc.color.setA(baseColor.a);
+        return null;
+    }
+
+    private CustomColor decodeCustomColor(String text, CustomColor baseColor) {
+        String[] s2 = text.split(",");
+        try {
+            float r = Float.parseFloat(s2[0]);
+            float g = Float.parseFloat(s2[1]);
+            float b = Float.parseFloat(s2[2]);
+            float a = s2.length == 4 ? Float.parseFloat(s2[0]) : 1f;
+            float[] colorArray = new float[]{r, g, b, a};
+            int arrayHashCode = Arrays.hashCode(colorArray);
+            CustomColor currentColor = colors.get(arrayHashCode);
+            if (currentColor == null) {
+                CustomColor color = new CustomColor(r, g, b, a).setA(baseColor.a);
+                colors.put(arrayHashCode, color);
+            } else {
+                return currentColor;
+            }
+        } catch (NumberFormatException | IndexOutOfBoundsException ex) {/* Not valid custom colour formatting, return default white*/}
+        return ChatCommonColorCodes.color_f.color.setA(baseColor.a);
     }
 
     private float renderChar(char ch)
