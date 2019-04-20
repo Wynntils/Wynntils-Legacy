@@ -80,7 +80,7 @@ public class OverlayConfig extends SettingsClass {
         public ManaTextures manaTexture = ManaTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (Set this to 0 for it to display instantly.)")
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -147,7 +147,7 @@ public class OverlayConfig extends SettingsClass {
         public expTextures expTexture = expTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -174,7 +174,7 @@ public class OverlayConfig extends SettingsClass {
         public BubbleTexture bubblesTexture = BubbleTexture.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played? (0 for instant)")
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
