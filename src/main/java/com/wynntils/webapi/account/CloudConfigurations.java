@@ -6,6 +6,8 @@ package com.wynntils.webapi.account;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wynntils.Reference;
 import com.wynntils.webapi.WebManager;
 import org.apache.commons.io.Charsets;
@@ -47,6 +49,8 @@ public class CloudConfigurations {
         runningTask = service.scheduleAtFixedRate(() -> {
             if(toUpload.size() == 0) return;
 
+            Reference.LOGGER.info("Uploading configurations...");
+
             JsonArray body = new JsonArray();
             for(ConfigContainer container : toUpload) {
                 body.add(gson.toJsonTree(container));
@@ -69,6 +73,13 @@ public class CloudConfigurations {
                     ex.printStackTrace();
                 } finally {
                     IOUtils.closeQuietly(outputStream);
+                }
+
+                JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                if(finalResult.has("result")) {
+                    Reference.LOGGER.info("Configuration upload complete!");
+                }else{
+                    Reference.LOGGER.info("Configuration upload failed!");
                 }
 
                 toUpload.clear();
