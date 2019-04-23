@@ -130,6 +130,12 @@ public class ChatManager {
                             }
                         }
                     }
+                    if (!currentNonTranslatable.isEmpty()) {
+                        oldText += currentNonTranslatable;
+                        if (previousWynnic) {
+                            toAdd += currentNonTranslatable;
+                        }
+                    }
                     if (previousWynnic) {
                         ITextComponent oldComponent = new TextComponentString(oldText);
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
