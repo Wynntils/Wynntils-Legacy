@@ -12,7 +12,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
-import com.wynntils.modules.map.overlays.ui.WorldMapOverlay;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
@@ -39,7 +39,7 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay()));
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI()));
     }
 
     public static MapModule getModule() {

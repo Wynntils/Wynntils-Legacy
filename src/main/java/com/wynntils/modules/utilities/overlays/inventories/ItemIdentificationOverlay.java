@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -162,6 +163,9 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static void drawHoverItem(ItemStack stack, IInventory inventory) {
+        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("rainbowTitle")) {
+            stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + stack.getTagCompound().getString("rainbowTitle"), false));
+        }
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && stack.getTagCompound().getBoolean("showChances") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && stack.getTagCompound().getBoolean("showRanges") == Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) return;
         boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
         boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
@@ -498,6 +502,9 @@ public class ItemIdentificationOverlay implements Listener {
 
                 display.setTag("Lore", tag);
                 display.setString("Name", name + color + " [" + average + "%]");
+
+                if(average >= 100) nbt.setString("rainbowTitle", name.substring(2));
+
                 nbt.setTag("display", display);
             }
         }

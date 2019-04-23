@@ -37,7 +37,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class WorldMapOverlay extends GuiScreen {
+public class WorldMapUI extends GuiScreen {
 
     private ScreenRenderer renderer = new ScreenRenderer();
     private static int[] compassCoordinates;
@@ -54,7 +54,7 @@ public class WorldMapOverlay extends GuiScreen {
     boolean holdingMapKey = false;
     long creationTime;
 
-    public WorldMapOverlay() {
+    public WorldMapUI() {
         mc = Minecraft.getMinecraft();
 
         creationTime = System.currentTimeMillis();
@@ -230,6 +230,7 @@ public class WorldMapOverlay extends GuiScreen {
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             Tessellator tessellator = Tessellator.getInstance();
+
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
                 bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);

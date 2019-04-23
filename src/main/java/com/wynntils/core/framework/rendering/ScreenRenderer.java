@@ -338,6 +338,21 @@ public class ScreenRenderer {
     }
 
     /**
+     * Draws a rainbow text
+     *
+     * @param text The text
+     * @param x x(from drawingOrigin) to render at
+     * @param y y(from drawingOrigin) to render at
+     * @param alignment the alignment around {x} and {y} to render the text about
+     */
+    public void drawRainbowString(String text, float x, float y, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
+        if(!rendering) return;
+
+        fontRenderer.drawRainbowText(text, drawingOrigin.x + x, drawingOrigin.y + y, alignment, shadow);
+        GlStateManager.color(1.0f,1.0f,1.0f,1.0f);
+    }
+
+    /**
      * Shorter overload for {{drawString}}
      */
     public float drawString(String text, float x, float y, CustomColor color) {

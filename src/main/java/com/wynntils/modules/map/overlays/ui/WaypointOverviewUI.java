@@ -111,7 +111,7 @@ public class WaypointOverviewUI extends GuiScreen {
             checkAvailablePages();
             setEditButtons();
         } else if (b == exitBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
+            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
         } else if (b.id % 10 == 3) {
             Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(waypoints.get(b.id / 10 + page * pageHeight), this));
         } else if (b.id %10 == 5) {

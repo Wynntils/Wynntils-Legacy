@@ -552,9 +552,7 @@ public class QuestBookGUI extends GuiScreen {
         
         discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : discoveries;
         
-        discoverySearch.sort((firstDiscovery, secondDiscovery) -> {
-            return firstDiscovery.getMinLevel() - secondDiscovery.getMinLevel();
-        });
+        discoverySearch.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
         
         discoverySearch = (ArrayList<DiscoveryInfo>) discoverySearch.stream().filter(c -> {
             if (territory && c.getType() == DiscoveryType.TERRITORY) return true;

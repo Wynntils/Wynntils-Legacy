@@ -181,9 +181,9 @@ public class WaypointCreationMenu extends GuiScreen {
                 MapConfig.Waypoints.INSTANCE.waypoints.add(new WaypointProfile(nameField.getText().trim(), Integer.valueOf(xCoordField.getText().trim()), Integer.valueOf(yCoordField.getText().trim()), Integer.valueOf(zCoordField.getText().trim()), CommonColors.WHITE, waypointType, alwaysVisible.isChecked() ? -1000 : 0));
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapOverlay() : previousGui);
+            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
         } else if (button == cancelButton) {
-            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapOverlay() : previousGui);
+            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
         } else if (button == waypointTypeNext) {
             waypointType = WaypointType.values()[(waypointType.ordinal() + 1) % WaypointType.values().length];
         } else if (button == waypointTypeBack) {

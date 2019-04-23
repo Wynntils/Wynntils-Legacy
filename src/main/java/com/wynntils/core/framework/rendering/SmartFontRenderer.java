@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -83,6 +84,64 @@ public class SmartFontRenderer extends FontRenderer {
                 }
         }
 
+    }
+
+    public void drawRainbowText(String input, float x, float y, TextAlignment alignment, TextShadow shadow) {
+        if(alignment == TextAlignment.MIDDLE) {
+            drawRainbowText(input, x - getStringWidth(input)/2, y, TextAlignment.LEFT_RIGHT, shadow);
+            return;
+        }else if(alignment == TextAlignment.RIGHT_LEFT) {
+            drawRainbowText(input, x - getStringWidth(input), y, TextAlignment.LEFT_RIGHT, shadow);
+            return;
+        }
+
+        posX = x; posY = y;
+
+        for(char c : input.toCharArray()) {
+            long dif = ((long)posX * 10) - ((long)posY * 10);
+
+            long time = System.currentTimeMillis() - dif;
+            float z = 2000.0F;
+            int color = Color.HSBtoRGB((float) (time % (int) z) / z, 0.8F, 0.8F);
+
+            float red = (float)(color >> 16 & 255) / 255.0F;
+            float blue = (float)(color >> 8 & 255) / 255.0F;
+            float green = (float)(color & 255) / 255.0F;
+
+            float originPosX = posX; float originPosY = posY;
+            //rendering shadows
+            switch (shadow) {
+                case OUTLINE:
+                    GlStateManager.color(red * (1 - 0.8f), green * (1 - 0.8f), blue * (1 - 0.8f), 1);
+                    posX = originPosX-1;
+                    posY = originPosY;
+                    renderChar(c);
+                    posX = originPosX+1;
+                    posY = originPosY;
+                    renderChar(c);
+                    posX = originPosX;
+                    posY = originPosY-1;
+                    renderChar(c);
+                    posX = originPosX;
+                    posY = originPosY+1;
+                    renderChar(c);
+                    posX = originPosX;
+                    posY = originPosY;
+                    break;
+                case NORMAL:
+                    GlStateManager.color(red * (1 - 0.8f), green * (1 - 0.8f), blue * (1 - 0.8f), 1);
+                    posX = originPosX+1;
+                    posY = originPosY+1;
+                    renderChar(c);
+                    posX = originPosX;
+                    posY = originPosY;
+                    break;
+            }
+
+            GlStateManager.color(red, green, blue, 1);
+            float charLenght = renderChar(c);
+            posX += charLenght + CHAR_SPACING;
+        }
     }
 
     private float drawChars(String text, CustomColor color, boolean forceColor) {

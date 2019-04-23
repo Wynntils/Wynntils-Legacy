@@ -4,7 +4,7 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.ModCore;
-import com.wynntils.modules.map.overlays.ui.WorldMapOverlay;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -155,7 +155,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
             ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
-            WorldMapOverlay.setCompassCoordinates(new int[] {Integer.valueOf(args[0]), Integer.valueOf(args[1])});
+            WorldMapUI.setCompassCoordinates(new int[] {Integer.valueOf(args[0]), Integer.valueOf(args[1])});
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards (");

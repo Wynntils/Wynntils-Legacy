@@ -45,21 +45,9 @@ public class ManaBarOverlay extends Overlay {
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!(visible = (getPlayerInfo().getCurrentMana() != -1 && !Reference.onLobby))) return;
-//        if(this.animated > 0.0f && this.animated < 10.0f)
-//            mana -= (animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
         if (OverlayConfig.Mana.INSTANCE.animated > 0.0f && OverlayConfig.Mana.INSTANCE.animated < 10.0f)
             mana -= (OverlayConfig.Mana.INSTANCE.animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
         else mana = getPlayerInfo().getCurrentMana();
-
-        /*
-        //debug, activate this to make it switch between the textures every few seconds
-        if(ticks % 100 == 0) {
-            if(texture.ordinal()+1 >= ManaTextures.values().length) {
-                texture = ManaTextures.values()[0];
-            } else {
-                texture = ManaTextures.values()[texture.ordinal()+1];
-            }
-        }*/
     }
 
     @Override

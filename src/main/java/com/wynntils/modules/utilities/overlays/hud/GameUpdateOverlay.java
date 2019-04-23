@@ -39,6 +39,8 @@ public class GameUpdateOverlay extends Overlay {
     /* Rendering */
     public static final int LINE_HEIGHT = 12;
 
+    private static final CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
+
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE)
@@ -63,9 +65,9 @@ public class GameUpdateOverlay extends Overlay {
         for (MessageContainer message : new LinkedList<>(messageQueue)) {
             if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
                 if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), new CustomColor(1, 1, 1, message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), alphaColor.setA(message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 } else {
-                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), 0 - (LINE_HEIGHT * lines),  new CustomColor(1, 1, 1, message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
+                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), 0 - (LINE_HEIGHT * lines), alphaColor.setA(message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
                 }
                 lines++;
             } else

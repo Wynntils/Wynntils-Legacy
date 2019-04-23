@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
+
     public WarTimerOverlay() {
         super("War Timer overlay", 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
@@ -228,7 +229,7 @@ public class WarTimerOverlay extends Overlay {
         return stage;
     }
 
-    public static enum WarStage {
+    public enum WarStage {
         WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR;
     }
 }
