@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
@@ -139,7 +140,7 @@ public class NametagManager {
                         drawNameplate(renderManager.getFontRenderer(), TextFormatting.DARK_AQUA + "Wynntils CT", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     } else if (WebManager.isDonator(entityIn.getUniqueID())) {
-                        drawNameplate(renderManager.getFontRenderer(), TextFormatting.LIGHT_PURPLE + "Wynntils Donator", (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
+                        drawNameplate(renderManager.getFontRenderer(), RainbowText.makeRainbow("Wynntils Donator", true), (float) x, (float) y + f2, (float) z, i, f, f1, flag1, flag, r, g, b, 0.7f);
                         i -= 10;
                     }
                     if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) {
