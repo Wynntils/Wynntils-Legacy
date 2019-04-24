@@ -85,4 +85,5 @@ public class CustomColor {
     public String toString() { /** HeyZeer0: this is = rgba(1,1,1,1) **/
         return "rgba(" + r + "," + g + "," + b + "," + a +")";
     }
+
 }

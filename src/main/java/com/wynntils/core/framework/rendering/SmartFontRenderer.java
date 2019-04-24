@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering;
 
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -34,6 +35,9 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
+        if(customColor == CommonColors.RAINBOW) {
+            return drawRainbowText(text, x, y, alignment, shadow);
+        }
         String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "");
         switch (alignment) {
             case MIDDLE:
@@ -86,20 +90,18 @@ public class SmartFontRenderer extends FontRenderer {
 
     }
 
-    public void drawRainbowText(String input, float x, float y, TextAlignment alignment, TextShadow shadow) {
-        if(alignment == TextAlignment.MIDDLE) {
-            drawRainbowText(input, x - getStringWidth(input)/2, y, TextAlignment.LEFT_RIGHT, shadow);
-            return;
-        }else if(alignment == TextAlignment.RIGHT_LEFT) {
-            drawRainbowText(input, x - getStringWidth(input), y, TextAlignment.LEFT_RIGHT, shadow);
-            return;
-        }
+    private float drawRainbowText(String input, float x, float y, TextAlignment alignment, TextShadow shadow) {
+        if(alignment == TextAlignment.MIDDLE)
+            return drawRainbowText(input, x - getStringWidth(input)/2, y, TextAlignment.LEFT_RIGHT, shadow);
+        else if(alignment == TextAlignment.RIGHT_LEFT)
+            return drawRainbowText(input, x - getStringWidth(input), y, TextAlignment.LEFT_RIGHT, shadow);
 
         posX = x; posY = y;
 
         for(char c : input.toCharArray()) {
             long dif = ((long)posX * 10) - ((long)posY * 10);
 
+            //color settings
             long time = System.currentTimeMillis() - dif;
             float z = 2000.0F;
             int color = Color.HSBtoRGB((float) (time % (int) z) / z, 0.8F, 0.8F);
@@ -108,8 +110,8 @@ public class SmartFontRenderer extends FontRenderer {
             float blue = (float)(color >> 8 & 255) / 255.0F;
             float green = (float)(color & 255) / 255.0F;
 
-            float originPosX = posX; float originPosY = posY;
             //rendering shadows
+            float originPosX = posX; float originPosY = posY;
             switch (shadow) {
                 case OUTLINE:
                     GlStateManager.color(red * (1 - 0.8f), green * (1 - 0.8f), blue * (1 - 0.8f), 1);
@@ -138,10 +140,13 @@ public class SmartFontRenderer extends FontRenderer {
                     break;
             }
 
+            //rendering the text
             GlStateManager.color(red, green, blue, 1);
             float charLenght = renderChar(c);
             posX += charLenght + CHAR_SPACING;
         }
+
+        return posX;
     }
 
     private float drawChars(String text, CustomColor color, boolean forceColor) {
