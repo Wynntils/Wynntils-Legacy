@@ -40,7 +40,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 public class NametagManager {
 
     private static final NametagLabel friendLabel = new NametagLabel(null, TextFormatting.YELLOW + (TextFormatting.BOLD + "Friend"), 0.7f);
-    private static final NametagLabel guildLabel = new NametagLabel(CommonColors.CYAN, "Guild Member", 0.7f);
+    private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.CYAN, "Guild Member", 0.7f);
     private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.ORANGE, "Wynncraft Moderator", 0.7f);
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
@@ -127,19 +127,19 @@ public class NametagManager {
         float playerViewY = renderManager.playerViewY;
         boolean thirdPerson = renderManager.options.thirdPersonView == 2;
         float position = entity.height + 0.5F - (isSneaking ? 0.25F : 0);
-        int offsetY = 0;
+        int offsetY = +10;
 
+        float lastScale = 0;
         //player labels
         if(!labels.isEmpty() && entity instanceof EntityPlayer) {
             for(NametagLabel label : labels) {
+                offsetY-=10 * label.scale;
                 drawNametag(label.text, label.color, (float)x, (float) y + position, (float) z, offsetY, playerViewY, playerViewX, thirdPerson, isSneaking, label.scale);
-
-                offsetY-= 10 * label.scale;
             }
         }
 
         //default label
-        drawNametag(entityName, null, (float) x, (float) y + position, (float) z, (int)(offsetY*1.2), playerViewY, playerViewX, thirdPerson, isSneaking, 1);
+        drawNametag(entityName, null, (float) x, (float) y + position, (float) z, offsetY-10, playerViewY, playerViewX, thirdPerson, isSneaking, 1);
     }
 
     /**
