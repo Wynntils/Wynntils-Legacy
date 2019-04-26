@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
@@ -17,9 +18,11 @@ import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -30,16 +33,45 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 
 public class ClientEvents implements Listener {
 
+    boolean isAfk = false;
+    int lastPosition = 0;
+    long lastMovement = 0;
+
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
-        if(!Reference.onWorld)
-            return;
+        if(!Reference.onWorld) return;
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
+
+        if(!UtilitiesConfig.INSTANCE.blockAfkPushs) return;
+
+        if(isAfk) Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
+        else Utils.removeFakeScoreboard("Afk");
+
+        //Afk detection
+        if(!Display.isActive()) { //by focus
+            isAfk = true;
+            return;
+        }
+
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(player == null) return;
+
+        //by position
+        int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
+        if(lastPosition == currentPosition) {
+            if(!isAfk && (System.currentTimeMillis() - lastMovement) >= 10000) isAfk = true;
+        }else{
+            lastMovement = System.currentTimeMillis();
+            isAfk = false;
+        }
+
+        lastPosition = currentPosition;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

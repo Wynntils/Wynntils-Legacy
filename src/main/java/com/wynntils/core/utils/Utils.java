@@ -5,10 +5,14 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
@@ -383,6 +387,24 @@ public class Utils {
         healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + TextFormatting.DARK_GRAY + healthBar.substring(5 + Math.min(health, 15));
         if (health < 8) { healthBar = healthBar.replace(TextFormatting.RED.toString(), TextFormatting.GOLD.toString()); }
         return healthBar;
+    }
+
+    public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
+        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
+        if(mc.getTeam(name) != null) return mc.getTeam(name);
+
+        ScorePlayerTeam team = mc.createTeam(name);
+        team.setCollisionRule(rule);
+
+        mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), name);
+        return team;
+    }
+
+    public static void removeFakeScoreboard(String name) {
+        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
+        if(mc.getTeam(name) == null) return;
+
+        mc.removeTeam(mc.getTeam(name));
     }
 
 }
