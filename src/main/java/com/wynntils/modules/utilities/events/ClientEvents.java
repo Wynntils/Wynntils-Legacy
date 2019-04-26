@@ -51,7 +51,6 @@ public class ClientEvents implements Listener {
         if(!UtilitiesConfig.INSTANCE.blockAfkPushs) return;
 
         if(isAfk) Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
-        else Utils.removeFakeScoreboard("Afk");
 
         //Afk detection
         if(!Display.isActive()) { //by focus
@@ -69,6 +68,7 @@ public class ClientEvents implements Listener {
         }else{
             lastMovement = System.currentTimeMillis();
             isAfk = false;
+            Utils.removeFakeScoreboard("Afk");
         }
 
         lastPosition = currentPosition;
