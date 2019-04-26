@@ -54,7 +54,7 @@ public class HotbarOverlay extends Overlay {
             ItemStack stack = player.inventory.mainInventory.get(i);
 
             int x = -88 + (i*20);
-            if(!stack.isEmpty() && stack.hasDisplayName() && WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
+            if(UtilitiesConfig.Items.INSTANCE.highlighItemsInHotbar && !stack.isEmpty() && stack.hasDisplayName() && WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
                 ItemProfile wynnItem = WebManager.getItems().get(Utils.stripColor(stack.getDisplayName()));
                 CustomColor color;
                 switch (wynnItem.getTier()) {
