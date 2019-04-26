@@ -174,7 +174,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Highligh Items in Hotbar", description = "Should item rarities highlight be displayed at the hotbar", order = 0)
+        @Setting(displayName = "Display Item Highlighting on Hotbar", description = "Should the highlight of item rarities be displayed on the hotbar?", order = 0)
         public boolean highlighItemsInHotbar = true;
 
 
