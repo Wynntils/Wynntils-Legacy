@@ -56,19 +56,23 @@ public class HotbarOverlay extends Overlay {
             int x = -88 + (i*20);
             if(UtilitiesConfig.Items.INSTANCE.highlighItemsInHotbar && !stack.isEmpty() && stack.hasDisplayName() && WebManager.getItems().containsKey(Utils.stripColor(stack.getDisplayName()))) {
                 ItemProfile wynnItem = WebManager.getItems().get(Utils.stripColor(stack.getDisplayName()));
-                CustomColor color;
+
+                CustomColor color = null;
                 switch (wynnItem.getTier()) {
                     case MYTHIC: color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor; break;
                     case LEGENDARY: color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor; break;
                     case RARE: color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor; break;
                     case UNIQUE: color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor; break;
                     case SET: color = UtilitiesConfig.Items.INSTANCE.setHighlightColor; break;
-                    default: return;
+                    default: break;
                 }
 
-                color.setA(0.3f);
-                drawRect(color, x, 3, x + 16, 19);
+                if(color != null) {
+                    color.setA(0.3f);
+                    drawRect(color, x, 3, x + 16, 19);
+                }
             }
+
             drawItemStack(stack, x, 3);
         }
 
