@@ -20,7 +20,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Block pushs if you're afk", description = "Should you be blocked from being pushed if AFK?")
+    @Setting(displayName = "Block Player Collision When AFK", description = "Should player collision be blocked when you are AFK?")
     public boolean blockAfkPushs = true;
 
     @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
