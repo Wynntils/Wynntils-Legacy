@@ -114,6 +114,21 @@ public class ServerEvents implements Listener {
         }
     }
 
+    /**
+     * Used for replacing commands by others, also knows as, creating aliases
+     *
+     * Replacements:
+     * /tell -> /msg
+     * /xp -> /guild xp
+     *
+     * @param e
+     */
+    @SubscribeEvent
+    public void commandReplacements(ClientChatEvent e) {
+        if(e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
+        else if(e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
+    }
+
     long currentMillis = 0;
 
     /**

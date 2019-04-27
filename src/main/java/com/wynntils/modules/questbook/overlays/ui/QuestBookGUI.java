@@ -174,7 +174,10 @@ public class QuestBookGUI extends GuiScreen {
                 if (searchBarText.length() <= 0) {
                     return;
                 }
-                searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+
+                if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) searchBarText = "";
+                else searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
                 text_flicker = System.currentTimeMillis();
                 keepForTime = false;
