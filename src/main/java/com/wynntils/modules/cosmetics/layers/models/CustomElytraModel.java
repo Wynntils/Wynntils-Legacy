@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.modules.capes.layers.models;
+package com.wynntils.modules.cosmetics.layers.models;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;

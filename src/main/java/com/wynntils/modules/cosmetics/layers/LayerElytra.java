@@ -2,9 +2,9 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.modules.capes.layers;
+package com.wynntils.modules.cosmetics.layers;
 
-import com.wynntils.modules.capes.layers.models.CustomElytraModel;
+import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;

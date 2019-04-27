@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.modules.capes.managers;
+package com.wynntils.modules.cosmetics.managers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IImageBuffer;
