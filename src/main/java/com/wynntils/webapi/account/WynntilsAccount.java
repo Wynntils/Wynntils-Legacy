@@ -117,7 +117,7 @@ public class WynntilsAccount {
             JsonObject object = new JsonObject();
             object.addProperty("username", mc.getSession().getUsername());
             object.addProperty("key", lastKey);
-            object.addProperty("version", Reference.VERSION);
+            object.addProperty("version", Reference.VERSION + (Reference.BUILD_NUMBER != -1 ? "_" + Reference.BUILD_NUMBER : ""));
 
             byte[] postAsBytes = object.toString().getBytes(Charsets.UTF_8);
 

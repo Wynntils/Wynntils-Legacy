@@ -221,7 +221,7 @@ public class NametagManager {
         List<NametagLabel> labels = new ArrayList<>();
 
         //detects if the user is looking into the player
-        if(Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
+        if(Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
         for(ItemStack is : player.getEquipmentAndArmor()) {
             if(!is.hasDisplayName() || !WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
