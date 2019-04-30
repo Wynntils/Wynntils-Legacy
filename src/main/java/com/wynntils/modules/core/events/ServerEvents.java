@@ -53,6 +53,7 @@ public class ServerEvents implements Listener {
     }
 
     boolean waitingForFriendList = false;
+    long guildListTimeout = -1;
 
     /**
      * Called when the user joins a Wynncraft World, used to register some stuff:
@@ -64,18 +65,20 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void joinWorldEvent(WynnWorldJoinEvent e) {
-        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
-
         if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
-
         if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
         waitingForFriendList = true;
+
+        if(WebManager.getPlayerProfile().getGuildName() != null) Minecraft.getMinecraft().player.sendChatMessage("/guild list");
+        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
     }
 
     /**
      * Detects and register the current friend list of the user
      * Called when the client receives a chat message
+     *
+     * Also detects the guild list messages to register the guild members
      *
      * @param e Represents the Event
      */
@@ -97,11 +100,31 @@ public class ServerEvents implements Listener {
             if(waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
         }
+        if(guildListTimeout != -1 && e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
+            if(System.currentTimeMillis() - guildListTimeout >= 250) {
+                guildListTimeout = -1;
+                return;
+            }
+
+            if(waitingForFriendList) e.setCanceled(true);
+
+            String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
+            PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
+        }
+        if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
+            String[] splittedText = e.getMessage().getUnformattedText().split(" ");
+            if(!splittedText[1].equalsIgnoreCase("has")) return;
+
+            if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
+            else if(splittedText[2].equalsIgnoreCase("kicked")) PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3]);
+        }
     }
 
     /**
      * Detects if the user added or removed a user from their friend list
      * Called when the user execute /friend add or /friend remove
+     *
+     * Also detects the guild list command used to parse the entire guild list
      *
      * @param e Represents the Event
      */
@@ -111,6 +134,8 @@ public class ServerEvents implements Listener {
             PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
         }else if(e.getMessage().startsWith("/friend remove ")) {
             PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
+        }else if(e.getMessage().startsWith("/guild list")) {
+            guildListTimeout = System.currentTimeMillis();
         }
     }
 

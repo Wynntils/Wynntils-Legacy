@@ -144,6 +144,8 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if(!overlay.active) continue;
+
                     if (overlay.overrideElements.length != 0) {
                         boolean contained = false;
                         for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {
@@ -175,6 +177,8 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if(!overlay.active) continue;
+
                     if (overlay.overrideElements.length != 0) {
                         boolean contained = false;
                         for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {

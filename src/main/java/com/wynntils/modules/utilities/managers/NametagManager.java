@@ -64,7 +64,8 @@ public class NametagManager {
 
         if(entity instanceof EntityPlayer) {
             if(PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel); //friend
-            if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
+            else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
+
             if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.GOLD.toString())) customLabels.add(moderatorLabel); //moderator
             if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_RED.toString())) customLabels.add(adminLabel); //admin
             if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
@@ -72,7 +73,7 @@ public class NametagManager {
             if(WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel); //contentTeam
             if(WebManager.isDonator(entity.getUniqueID())) customLabels.add(donatorLabel); //donator
             if(Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) customLabels.add(new NametagLabel(null, Utils.getPlayerHPBar((EntityPlayer)entity), 0.7f)); //war health
-            if(UtilitiesConfig.INSTANCE.showArmors) customLabels.addAll(getUserArmorLabels((EntityPlayer)entity));
+            if(UtilitiesConfig.INSTANCE.showArmors) customLabels.addAll(getUserArmorLabels((EntityPlayer)entity)); // armors
         }else if(!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) return false;
 
         double distance = entity.getDistanceSq(e.getRenderer().getRenderManager().renderViewEntity);
