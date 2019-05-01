@@ -9,7 +9,6 @@ import com.wynntils.core.events.custom.WynnWorldJoinEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -23,8 +22,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
@@ -156,6 +155,8 @@ public class ServerEvents implements Listener {
 
     long currentMillis = 0;
 
+    boolean test = false;
+
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
@@ -163,17 +164,15 @@ public class ServerEvents implements Listener {
      * @param e
      */
     @SubscribeEvent
-    public void onJoinLobby(TickEvent.ClientTickEvent e) {
+    public void onJoinLobby(RenderPlayerEvent.Post e) {
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
             CoreDBConfig.INSTANCE.showChangelogs = false;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
 
-            new Delay(() -> {
-                boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-                Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
-            }, 520);
+            boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
         }
     }
 
