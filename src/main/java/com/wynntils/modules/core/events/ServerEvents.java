@@ -152,11 +152,7 @@ public class ServerEvents implements Listener {
         if(e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
         else if(e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
     }
-
-    long currentMillis = 0;
-
-    boolean test = false;
-
+    
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
