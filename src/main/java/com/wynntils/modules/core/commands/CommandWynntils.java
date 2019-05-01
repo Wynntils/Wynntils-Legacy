@@ -6,6 +6,7 @@ package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Delay;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
@@ -114,6 +115,9 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     new Delay(() -> {
                         Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(true), true));
                     }, 1);
+                    break;
+                case "debug":
+                    Utils.joinWorld(3);
                     break;
                 default:
                     throw new CommandException("Invalid argument. Use /wynntils help for more info.");

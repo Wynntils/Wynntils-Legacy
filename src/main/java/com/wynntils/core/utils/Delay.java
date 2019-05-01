@@ -1,7 +1,6 @@
 package com.wynntils.core.utils;
 
-import com.wynntils.ModCore;
-import com.wynntils.Reference;
+import com.wynntils.core.framework.FrameworkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -17,7 +16,7 @@ public class Delay {
         this.function = function;
         this.delay = delay;
 
-        MinecraftForge.EVENT_BUS.register(this);
+        FrameworkManager.getEventBus().register(this);
     }
 
     @SubscribeEvent

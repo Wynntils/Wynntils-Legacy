@@ -5,8 +5,12 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,6 +31,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -389,6 +394,13 @@ public class Utils {
         return healthBar;
     }
 
+    /**
+     * Creates a Fake scoreboard
+     *
+     * @param name Scoreboard Name
+     * @param rule Collision Rule
+     * @return the Scoreboard Team
+     */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
         Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
         if(mc.getTeam(name) != null) return mc.getTeam(name);
@@ -400,11 +412,42 @@ public class Utils {
         return team;
     }
 
+    /**
+     * Deletes a fake scoreboard from existence
+     *
+     * @param name the scoreboard name
+     */
     public static void removeFakeScoreboard(String name) {
         Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
         if(mc.getTeam(name) == null) return;
 
         mc.removeTeam(mc.getTeam(name));
+    }
+
+    /**
+     * Search for a Wynncraft World.
+     * only works if the user is on lobby!
+     *
+     * @param worldNumber
+     */
+    public static void joinWorld(int worldNumber) {
+        if(!Reference.onServer || Reference.onWorld) return;
+
+        FakeInventory serverSelector = new FakeInventory("Wynncraft Servers", 0);
+        serverSelector.onReceiveItems(c -> {
+            Map.Entry<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            if(world != null) {
+                c.clickItem(world.getKey(), 1, ClickType.PICKUP);
+                c.close();
+                return;
+            }
+
+            Map.Entry<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
+            if(nextPage != null) serverSelector.clickItem(nextPage.getKey(), 1, ClickType.PICKUP);
+            else c.close();
+        });
+
+        serverSelector.open();
     }
 
 }

@@ -167,13 +167,13 @@ public class ServerEvents implements Listener {
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
+            CoreDBConfig.INSTANCE.showChangelogs = false;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+
             new Delay(() -> {
                 boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
                 Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
-                CoreDBConfig.INSTANCE.showChangelogs = false;
-
-                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-            }, 80);
+            }, 520);
         }
     }
 
