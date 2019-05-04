@@ -10,7 +10,7 @@ import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
-import com.wynntils.core.framework.instances.ModuleContainer;
+import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.framework.overlays.Overlay;

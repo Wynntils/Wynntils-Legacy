@@ -17,6 +17,8 @@ import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -155,6 +157,8 @@ public class FakeInventory {
         return open;
     }
 
+    //EVENTS BELOW
+
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
@@ -187,6 +191,24 @@ public class FakeInventory {
 
         if(onReceiveItems != null) onReceiveItems.accept(this);
 
+        e.setCanceled(true);
+    }
+
+    //cancel all other interactions to avoid GUI openings while this one is already opened
+    @SubscribeEvent
+    public void cancelInteract(PacketEvent.PlayerUseItemEvent e) {
+        if(!open) return;
+
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
+        e.setCanceled(true);
+    }
+
+    //cancel all other interactions to avoid GUI openings while this one is already opened
+    @SubscribeEvent
+    public void cancelInteract(PacketEvent.PlayerUseItemOnBlockEvent e) {
+        if(!open) return;
+
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
         e.setCanceled(true);
     }
 

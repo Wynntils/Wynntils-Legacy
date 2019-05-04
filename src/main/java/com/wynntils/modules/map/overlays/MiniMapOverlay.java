@@ -79,6 +79,7 @@ public class MiniMapOverlay extends Overlay {
             //map quad
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 
+            GlStateManager.enableBlend();
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
@@ -89,8 +90,9 @@ public class MiniMapOverlay extends Overlay {
                 bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2.0f, 0).tex(maxX, minZ).endVertex();
                 bufferbuilder.pos(position.getDrawingX() - extraSize/2.0f, position.getDrawingY() - extraSize/2.0f, 0).tex(minX, minZ).endVertex();
                 tessellator.draw();
-
             }
+            GlStateManager.disableAlpha();
+            GlStateManager.disableBlend();
             clearMask();
 
             //cursor & cursor rotation

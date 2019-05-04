@@ -67,5 +67,6 @@ public class WaypointProfile {
         public String getDisplayName() {
             return displayName;
         }
+
     }
 }

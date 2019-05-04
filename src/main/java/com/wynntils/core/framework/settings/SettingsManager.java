@@ -7,7 +7,7 @@ package com.wynntils.core.framework.settings;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.wynntils.Reference;
-import com.wynntils.core.framework.instances.ModuleContainer;
+import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;

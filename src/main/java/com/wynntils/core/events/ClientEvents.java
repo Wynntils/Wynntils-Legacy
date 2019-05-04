@@ -14,15 +14,11 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.google.gson.*;
-import com.mojang.authlib.GameProfile;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.launchwrapper.Launch;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
-import net.minecraft.util.EnumTypeAdapterFactory;
 import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -37,11 +33,14 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class ClientEvents {
+
+    private static final UUID worldUUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SideOnly(Side.CLIENT)
@@ -97,45 +96,49 @@ public class ClientEvents {
     @SideOnly(Side.CLIENT)
     public void onTabListChange(PacketEvent.TabListChangeEvent e) {
         if (!Reference.onServer) return;
-        try {
-            Class<?> gameProfileSerializer = Class.forName("com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService$GameProfileSerializer");
-            Constructor<?> constructor = gameProfileSerializer.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeHierarchyAdapter(ITextComponent.class, new ITextComponent.Serializer());
-            gsonBuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
-            gsonBuilder.registerTypeHierarchyAdapter(GameProfile.class, constructor.newInstance());
-            gsonBuilder.registerTypeAdapterFactory(new EnumTypeAdapterFactory());
-            Gson gson = gsonBuilder.create();
-            String json = gsonBuilder.create().toJson(e.getPacket());
-            JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
-            boolean dev = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-            for (JsonElement playerInfoJson : jsonObject.get(dev ? "players" : "field_179769_b").getAsJsonArray()) {
-                UUID id = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
-                GameProfile profile = gson.fromJson(playerInfoJson.getAsJsonObject().get(dev ? "profile" : "field_179964_d"), GameProfile.class);
-                ITextComponent displayName = gson.fromJson(playerInfoJson.getAsJsonObject().get(dev ? "displayName" : "field_179965_e"), TextComponentString.class);
-                if (profile.getId().equals(id) && (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME || e.getPacket().getAction() == Action.REMOVE_PLAYER)) {
-                    if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
-                        String name = displayName.getUnformattedText();
-                        String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
-                        if (!world.equals(lastWorld)) {
-                            Reference.setUserWorld(world);
-                            MinecraftForge.EVENT_BUS.post(new WynnWorldJoinEvent(world));
-                            lastWorld = world;
-                            acceptLeft = true;
-                        }
-                    } else if (acceptLeft) {
-                        acceptLeft = false;
-                        lastWorld = "";
-                        Reference.setUserWorld(null);
-                        MinecraftForge.EVENT_BUS.post(new WynnWorldLeftEvent());
-                        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-                    }
+        if(e.getPacket().getAction() != Action.UPDATE_DISPLAY_NAME && e.getPacket().getAction() != Action.REMOVE_PLAYER) return;
+
+        List<String> partyMembers = new ArrayList<>();
+        String partyOwner = "";
+
+        for(SPacketPlayerListItem.AddPlayerData player : e.getPacket().getEntries()) {
+            //world handling below
+            if(player.getProfile().getId().equals(worldUUID)) {
+                if(e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
+                    String name = player.getDisplayName().getUnformattedText();
+                    String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+
+                    if(world.equalsIgnoreCase(lastWorld)) continue;
+
+                    Reference.setUserWorld(world);
+                    FrameworkManager.getEventBus().post(new WynnWorldJoinEvent(world));
+                    lastWorld = world;
+                    acceptLeft = true;
+                }else if (acceptLeft) {
+                    acceptLeft = false;
+                    lastWorld = "";
+                    Reference.setUserWorld(null);
+                    FrameworkManager.getEventBus().post(new WynnWorldLeftEvent());
+                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                 }
+                continue;
             }
-        } catch (Exception e1) {
-            e1.printStackTrace();
+            if(player.getDisplayName() == null) continue;
+
+            //party handling below
+            if(player.getDisplayName().getUnformattedText().contains("/party create")) {
+                PlayerInfo.getPlayerInfo().getPlayerParty().closeParty();
+                continue;
+            }
+
+            String formatedName = player.getDisplayName().getFormattedText();
+            if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
+                if(formatedName.startsWith("§e")) partyMembers.add(Utils.stripColor(formatedName));
+                else if(formatedName.startsWith("§c")) partyOwner = Utils.stripColor(formatedName);
+            }
         }
+
+        if(!partyOwner.isEmpty() || !partyMembers.isEmpty()) PlayerInfo.getPlayerInfo().getPlayerParty().updateParty(partyOwner, partyMembers);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

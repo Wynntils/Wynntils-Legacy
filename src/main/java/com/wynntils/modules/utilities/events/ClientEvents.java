@@ -46,6 +46,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld) return;
+
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
 
         if(!UtilitiesConfig.INSTANCE.blockAfkPushs) return;

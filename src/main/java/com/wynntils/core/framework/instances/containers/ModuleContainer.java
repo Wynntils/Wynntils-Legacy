@@ -2,9 +2,11 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.framework.instances;
+package com.wynntils.core.framework.instances.containers;
 
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.instances.KeyHolder;
+import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
@@ -49,9 +51,9 @@ public class ModuleContainer {
             return;
         }
         keyHolders.forEach(k -> {
-            if(k.press && k.keyBinding.isPressed()) {
+            if(k.isPress() && k.getKeyBinding().isPressed()) {
                 k.getOnAction().run();
-            }else if(!k.press && k.keyBinding.isKeyDown()) {
+            }else if(!k.isPress() && k.getKeyBinding().isKeyDown()) {
                 k.getOnAction().run();
             }
         });

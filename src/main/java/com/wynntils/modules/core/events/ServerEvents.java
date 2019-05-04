@@ -98,6 +98,7 @@ public class ServerEvents implements Listener {
 
             if(waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
+            return;
         }
         if(guildListTimeout != -1 && e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
             if(System.currentTimeMillis() - guildListTimeout >= 250) {
@@ -109,6 +110,7 @@ public class ServerEvents implements Listener {
 
             String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
             PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
+            return;
         }
         if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
             String[] splittedText = e.getMessage().getUnformattedText().split(" ");
@@ -152,7 +154,7 @@ public class ServerEvents implements Listener {
         if(e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
         else if(e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
     }
-    
+
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
