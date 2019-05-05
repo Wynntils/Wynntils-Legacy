@@ -128,6 +128,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
 
             if(!RichPresenceModule.getModule().getRichPresence().validSecrent(content)) return;
 
+            e.setCanceled(true);
             Minecraft.getMinecraft().player.sendChatMessage("/party invite " + user);
         }
     }
