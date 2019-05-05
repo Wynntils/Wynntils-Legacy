@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -15,6 +16,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -23,6 +25,7 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEvents implements Listener {
@@ -109,6 +112,18 @@ public class ClientEvents implements Listener {
 
                 PlayerInfo.getPlayerInfo().updatePlayerClass(selectedClass);
             }
+        }
+    }
+
+    /**
+     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator)
+     * 
+     * @param e
+     */
+    @SubscribeEvent
+    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
+        if (Reference.onWorld && e.getEntityPlayer() != null && e.getEntityPlayer().isInvisible() && Minecraft.getMinecraft().playerController.isSpectator()) {
+            e.setCanceled(true);
         }
     }
 
