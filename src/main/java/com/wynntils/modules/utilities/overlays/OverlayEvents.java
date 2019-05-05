@@ -73,7 +73,7 @@ public class OverlayEvents implements Listener {
     private static final char PROF_ALCHEMISM = 'Ⓛ';
 
     /* Toasts */
-    private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge";
+    private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge|Close|Far";
     private static final String[] blackList = new String[]{"Transition", "to "};
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -541,10 +541,10 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWynnTerritoyChange(WynnTerritoryChangeEvent e) {
         if (OverlayConfig.ToastsSettings.INSTANCE.enableTerritoryEnter && OverlayConfig.ToastsSettings.INSTANCE.enableToast && !e.getNewTerritory().equals("Waiting")) {
-            if (Arrays.asList(blackList).stream().anyMatch(s -> StringUtils.containsIgnoreCase(e.getNewTerritory(), "s"))) return;
+            if (Arrays.stream(blackList).parallel().anyMatch(e.getNewTerritory()::contains)) return;
 
-            String newTerritoryArea = e.getNewTerritory().replaceAll(filterList, "").trim();
-            String oldTerritoryArea = e.getOldTerritory().replaceAll(filterList, "").trim();
+            String newTerritoryArea = e.getNewTerritory().replaceAll(filterList, "").replaceAll(" {2,}", " ").trim();
+            String oldTerritoryArea = e.getOldTerritory().replaceAll(filterList, "").replaceAll(" {2,}", " ").trim();
             if(newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
 
             ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", newTerritoryArea));
