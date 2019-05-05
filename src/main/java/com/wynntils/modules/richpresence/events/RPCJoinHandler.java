@@ -126,7 +126,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
             String content = Utils.stripColor(m.group(4).substring(1));
             String user = Utils.stripColor(m.group(2));
 
-            if(!RichPresenceModule.getModule().getRichPresence().validSecrent(content)) return;
+            if(!RichPresenceModule.getModule().getRichPresence().validSecrent(content.substring(0, content.length() -1))) return;
 
             e.setCanceled(true);
             Minecraft.getMinecraft().player.sendChatMessage("/party invite " + user);
