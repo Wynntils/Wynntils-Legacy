@@ -45,7 +45,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
 
     public void accept(String joinSecret) {
         lastSecret = new SecretContainer(joinSecret);
-        if(lastSecret.getOwner().isEmpty() || lastSecret.getRandomHash().isEmpty())
+        if(lastSecret.getOwner().isEmpty() || lastSecret.getRandomHash().isEmpty()) return;
 
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(lastSecret);
 
@@ -99,7 +99,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
 
     @SubscribeEvent
     public void onChatMessage(ClientChatReceivedEvent e) {
-        if(e.getType() != ChatType.CHAT) return;
+        if(e.getType() != ChatType.CHAT && e.getType() != ChatType.SYSTEM) return;
 
         //handles the invitation
         if(lastSecret != null && e.getMessage().getUnformattedText().startsWith("You have been invited to join " + lastSecret.getOwner())) {
