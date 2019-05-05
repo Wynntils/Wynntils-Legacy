@@ -132,9 +132,10 @@ public class ClientEvents {
             }
 
             String formatedName = player.getDisplayName().getFormattedText();
+
             if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
                 if(formatedName.startsWith("§e")) partyMembers.add(Utils.stripColor(formatedName));
-                else if(formatedName.startsWith("§c")) partyOwner = Utils.stripColor(formatedName);
+                else if(formatedName.startsWith("§c")) { partyOwner = Utils.stripColor(formatedName); }
             }
         }
 

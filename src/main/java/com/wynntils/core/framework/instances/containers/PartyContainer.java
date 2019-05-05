@@ -55,11 +55,6 @@ public class PartyContainer {
      */
     public void addMember(String username) {
         partyMembers.add(username);
-
-        if(!inParty) {
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin());
-            inParty = true;
-        }
     }
 
     /**
@@ -69,11 +64,6 @@ public class PartyContainer {
      */
     public void addMembers(List<String> members) {
         partyMembers.addAll(members);
-
-        if(!inParty) {
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin());
-            inParty = true;
-        }
     }
 
     /**
@@ -85,8 +75,8 @@ public class PartyContainer {
         this.owner = owner;
 
         if(!owner.isEmpty() && !inParty) {
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin());
             inParty = true;
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin());
         }
     }
 

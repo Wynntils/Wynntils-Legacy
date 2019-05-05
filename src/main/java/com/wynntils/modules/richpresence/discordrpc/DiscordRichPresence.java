@@ -16,8 +16,8 @@ public class DiscordRichPresence {
         return instance;
     }
     
-    public static interface DiscordRPC extends Library {
-        
+    public interface DiscordRPC extends Library {
+
         DiscordRPC INSTANCE = Native.loadLibrary("/assets/wynntils/native/" + Platform.RESOURCE_PREFIX + "/" + System.mapLibraryName("discord-rpc"), DiscordRPC.class);
         
         void Discord_Initialize(String applicationID, DiscordEventHandlers eventHandler, boolean autoRegister, String steamID);

@@ -16,7 +16,6 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
-import java.util.UUID;
 
 public class PlayerInfo {
 
@@ -25,8 +24,6 @@ public class PlayerInfo {
     private static DecimalFormat perFormat = new DecimalFormat("##.#");
 
     private Minecraft mc;
-    private String name;
-    private UUID uuid;
 
     private ClassType currentClass = ClassType.NONE;
     private int health = -1;
@@ -46,7 +43,7 @@ public class PlayerInfo {
     int lastXp = 0;
 
     public PlayerInfo(Minecraft mc) {
-        this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
+        this.mc = mc;
 
         instance = this;
     }
@@ -115,14 +112,6 @@ public class PlayerInfo {
 
         FrameworkManager.getEventBus().post(new WynnClassChangeEvent(this.currentClass, currentClass));
         this.currentClass = currentClass;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public UUID getUUID() {
-        return uuid;
     }
 
     public ClassType getCurrentClass() {

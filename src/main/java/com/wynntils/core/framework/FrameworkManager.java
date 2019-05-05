@@ -128,7 +128,7 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer || e instanceof WynncraftServerEvent) {
+        if(Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent) {
             ReflectionFields.Event_phase.setValue(e, null);
             eventBus.post(e);
         }
