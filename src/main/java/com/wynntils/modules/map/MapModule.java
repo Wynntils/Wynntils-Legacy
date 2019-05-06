@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
@@ -39,7 +40,7 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI()));
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI()); });
     }
 
     public static MapModule getModule() {
