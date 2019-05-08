@@ -50,10 +50,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestBookGUI extends GuiScreen {
@@ -545,15 +542,20 @@ public class QuestBookGUI extends GuiScreen {
     }
 
     private void updateQuestSearch() {
-        ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
+        HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
-        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
+                .filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase()))
+                .collect(Collectors.toList())
+                : new ArrayList<>(questsMap.values());
+
+        questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }
     
     private void updateDiscoverySearch() {
-        ArrayList<DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
+        HashMap<String, DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
         
-        discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : discoveries;
+        discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.values().stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : new ArrayList<>(discoveries.values());
         
         discoverySearch.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
         

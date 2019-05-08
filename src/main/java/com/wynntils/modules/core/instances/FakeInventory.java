@@ -41,8 +41,10 @@ public class FakeInventory {
     int itemSlot;
 
     private Consumer<FakeInventory> onReceiveItems = null;
+    private Consumer<FakeInventory> onClose = null;
     private int windowId = -1;
     private short transactionId = 0;
+    private String realWindowTitle = "";
 
     private HashMap<Integer, ItemStack> items = new HashMap<>();
 
@@ -59,6 +61,12 @@ public class FakeInventory {
         return this;
     }
 
+    public FakeInventory onClose(Consumer<FakeInventory> onClose) {
+        this.onClose = onClose;
+
+        return this;
+    }
+
     /**
      * Request the inventory to be opened
      *
@@ -69,6 +77,8 @@ public class FakeInventory {
 
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
+
+        System.out.println(slot);
 
         if(slot == itemSlot) {
             mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
@@ -92,6 +102,8 @@ public class FakeInventory {
 
         FrameworkManager.getEventBus().unregister(this);
         open = false;
+
+        if(onClose != null) onClose.accept(this);
         if(windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
     }
 
@@ -157,6 +169,15 @@ public class FakeInventory {
         return open;
     }
 
+    /**
+     * Returns the Inventory Title
+     *
+     * @return the inventory title
+     */
+    public String getWindowTitle() {
+        return realWindowTitle;
+    }
+
     //EVENTS BELOW
 
     //handles the inventory container receive, sets open to true
@@ -169,6 +190,7 @@ public class FakeInventory {
 
         windowId = e.getPacket().getWindowId();
         open = true;
+        realWindowTitle = e.getPacket().getWindowTitle().getUnformattedText();
 
         e.setCanceled(true);
     }
@@ -179,6 +201,7 @@ public class FakeInventory {
         if(e.getPacket().getWindowId() != windowId) {
             FrameworkManager.getEventBus().unregister(this);
             open = false;
+            if(onClose != null) onClose.accept(this);
             return;
         }
 

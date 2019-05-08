@@ -72,6 +72,7 @@ public class ServerEvents implements Listener {
 
         if(WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
+            guildListTimeout = System.currentTimeMillis();
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
@@ -105,7 +106,7 @@ public class ServerEvents implements Listener {
             return;
         }
         if(guildListTimeout != -1 && e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
-            if(System.currentTimeMillis() - guildListTimeout >= 250) {
+            if(System.currentTimeMillis() - guildListTimeout >= 350) {
                 guildListTimeout = -1;
                 waitingForGuildList = false;
                 return;

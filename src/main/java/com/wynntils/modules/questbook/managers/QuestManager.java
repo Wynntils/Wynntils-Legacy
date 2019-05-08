@@ -4,91 +4,140 @@
 
 package com.wynntils.modules.questbook.managers;
 
-import com.wynntils.ModCore;
-import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.instances.FakeInventory;
+import com.wynntils.modules.questbook.enums.DiscoveryType;
+import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
-import com.wynntils.modules.questbook.events.ServerEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class QuestManager {
 
-    private static boolean readingQuestBook = false;
     private static long readRequestTime = 0;
-    private static int prevSlot = 0;
 
-    private static ArrayList<QuestInfo> currentQuestsData = new ArrayList<>();
-    public static ArrayList<DiscoveryInfo> currentDiscoveryData = new ArrayList<>();
+    private static HashMap<String, QuestInfo> currentQuestsData = new HashMap<>();
+    public static HashMap<String, DiscoveryInfo> currentDiscoveryData = new HashMap<>();
     public static QuestInfo trackedQuest = null;
+
     public static List<String> discoveryLore = new ArrayList<>();
     public static List<String> secretdiscoveryLore = new ArrayList<>();
+
+    private static boolean secretDiscoveries = false;
+    private static boolean readingQuestbook = false;
 
     /**
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
-        readRequestTime = System.currentTimeMillis();
-        readingQuestBook = true;
+        if(readingQuestbook) return;
+        readingQuestbook = true;
 
-        Minecraft mc = ModCore.mc();
-        int slot = mc.player.inventory.currentItem;
+        FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
+        secretDiscoveries = false;
 
-        // Should look into better way to do this than using packets - possibly serving quest information through an API?
-        if(slot == 7) {
-            mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-            return;
-        }
+        fakeInventory.onReceiveItems(i -> {
+            if(i.getWindowTitle().contains("Quests")) { //Quests
+                Map.Entry<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
+                Map.Entry<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.EQUALS);
 
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(7));
-        mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(slot));
-    }
+                //lore
+                if(discoveries != null) discoveryLore = Utils.getLore(discoveries.getValue());
 
-    /**
-     * Requests a full QuestBook re-read, when the player already clicked on the book by itself
-     */
-    public static void requestLessIntrusiveQuestBookReading() {
-        readRequestTime = System.currentTimeMillis();
-        readingQuestBook = true;
-        currentQuestsData.clear();
-        currentDiscoveryData.clear();
-    }
+                //parsing
+                for(ItemStack item : i.getItems()) {
+                    if(!item.hasDisplayName()) continue; //not a valid quest
 
-    /**
-     * Set the current quest data to the specified list, if the current amount of quests is more than
-     * the list being set, a questbook reading is re-requested instead
-     *
-     * @param listToSet the list that will override the current one
-     * */
-    public static void setCurrentQuestsData(ArrayList<QuestInfo> listToSet) {
-        if (listToSet.size() < currentQuestsData.size())
-            return;
-        currentQuestsData.clear();
-        currentQuestsData.addAll(listToSet);
-        updateTrackedQuest();
-    }
+                    List<String> lore = Utils.getLore(item);
+                    if(lore.isEmpty()) continue; //not a valid quest
 
-    /**
-     * Set the current discovery data to the specified list, if the current amount of discoveries is more than
-     * the list being set, a questbook reading is re-requested instead
-     *
-     * @param listToSet the list that will override the current one
-     * */
-    public static void setCurrentDiscoveryData(ArrayList<DiscoveryInfo> listToSet) {
-        if (listToSet.size() < currentDiscoveryData.size())
-            return;
-        currentDiscoveryData.clear();
-        currentDiscoveryData.addAll(listToSet);
+                    List<String> realLore = lore.stream().map(Utils::stripColor).collect(Collectors.toList());
+                    if(!realLore.contains("Right click to track")) continue; //not a valid quest
+
+                    QuestStatus status = null;
+                    if(lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
+                    else if(lore.get(0).contains("Started")) status = QuestStatus.STARTED;
+                    else if(lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
+                    else if(lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
+                    if(status == null) continue;
+
+                    int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
+                    QuestSize size = QuestSize.valueOf(Utils.stripColor(lore.get(3)).replace("- Length: ", "").toUpperCase());
+
+                    String description = "";
+                    for(int x = 5; x < lore.size(); x++) {
+                        if(lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
+                            break;
+                        }
+                        description = description + Utils.stripColor(lore.get(x));
+                    }
+
+                    String displayName = Utils.stripColor(item.getDisplayName());
+                    QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description, lore);
+                    currentQuestsData.put(displayName, quest);
+
+                    if(trackedQuest != null && trackedQuest.getName().equals(displayName)) trackedQuest = quest;
+                }
+
+                //pagination
+                if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
+                else if(discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
+                else i.close();
+            }else if(i.getWindowTitle().contains("Discoveries")) { //Discoveries
+                Map.Entry<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
+                Map.Entry<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
+
+                //lore
+                if(sDiscoveries != null) discoveryLore = Utils.getLore(sDiscoveries.getValue());
+
+                for(ItemStack item : i.getItems()) { //parsing discoveries
+                    if(!item.hasDisplayName()) continue; //not a valid discovery
+
+                    List<String> lore = Utils.getLore(item);
+                    if(lore.isEmpty() || !Utils.stripColor(lore.get(0)).contains("✔ Combat Lv")) continue; //not a valid discovery
+
+                    String displayName = item.getDisplayName();
+                    displayName = displayName.substring(0, displayName.length() - 1);
+
+                    DiscoveryType discoveryType = null;
+                    if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;
+                    else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
+                    else if (displayName.charAt(1) == 'b') discoveryType = DiscoveryType.SECRET;
+
+                    int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+
+                    String description = "";
+                    for(int x = 2; x < lore.size(); x ++) {
+                        description = description + Utils.stripColor(lore.get(x));
+                    }
+
+                    currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
+                }
+
+                //pagination
+                if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
+                else if(!secretDiscoveries && sDiscoveries != null) {
+                    secretDiscoveries = true;
+                    i.clickItem(sDiscoveries.getKey(), 1, ClickType.PICKUP);
+                }
+                else i.close();
+            }else i.close();
+        });
+        fakeInventory.onClose(c -> {
+            readingQuestbook = false;
+        });
+
+        fakeInventory.open();
     }
 
     /**
@@ -96,7 +145,7 @@ public class QuestManager {
      *
      * @return the current quest data in a {@link java.util.ArrayList}
      */
-    public static ArrayList<QuestInfo> getCurrentQuestsData() {
+    public static HashMap<String, QuestInfo> getCurrentQuestsData() {
         return currentQuestsData;
     }
 
@@ -109,113 +158,23 @@ public class QuestManager {
     public static QuestInfo getTrackedQuest() {
         return trackedQuest;
     }
-
-    /**
-     * Sets the current tracked quest.
-     *
-     * @param selected the track that will be tracked.
-     */
-    public static void setTrackedQuest(QuestInfo selected) {
-        trackedQuest = selected;
-    }
-
-    /**
-     * If the questbook is being read.
-     * This can be used to avoid duplicates or crashes
-     *
-     * @return if the questbook is being read
-     */
-    public static boolean isReadingQuestBook() {
-        if(readingQuestBook && System.currentTimeMillis() - readRequestTime >= 3000) {
-            readingQuestBook = false;
-            Reference.LOGGER.warn("Could not read questbook, timedout (" + (System.currentTimeMillis() - readRequestTime) + "ms)");
-        }
-        return readingQuestBook;
-    }
-
-    /**
-     * Called when the questbook is starting or finish to be read
-     * @see ServerEvents#onInventoryReceiveItems line 107
-     *
-     * @param readingQuestBook selected boolean
-     */
-    public static void setReadingQuestBook(boolean readingQuestBook) {
-        readRequestTime = System.currentTimeMillis();
-        QuestManager.readingQuestBook = readingQuestBook;
-    }
-    
-    
-    public static void updateRequestTime() {
-        readRequestTime = System.currentTimeMillis();
-    }
-
-    /**
-     * Called when the questbook updates to update the current tracked quest
-     * @see ServerEvents#onInventoryReceiveItems line 106
-     *
-     */
-    public static void updateTrackedQuest() {
-        if(trackedQuest == null) return;
-
-        QuestInfo questInfo = currentQuestsData.stream().filter(c -> c.getName().equals(trackedQuest.getName())).filter(c -> c.getStatus() == QuestStatus.STARTED || c.getStatus() == QuestStatus.CAN_START).findFirst().orElse(null);
-        if(questInfo != null && questInfo.getCurrentDescription().equals(trackedQuest.getCurrentDescription())) {
-            return;
-        }
-        trackedQuest = questInfo;
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
-    }
-
-    /**
-     * Registers a new {@link QuestInfo} into the cache
-     * Called when the questbook is reading for new quests
-     * @see ServerEvents#parseQuest(ItemStack) line 150
-     *
-     * @param quest the quest that will be registered
-     */
-    public static void addQuestInfo(QuestInfo quest) {
-        currentQuestsData.add(quest);
-    }
-    
-    /**
-     * Registers a new {@link DiscoveryInfo} into the cache
-     * Called when the questbook is reading for new discoveries
-     * @see ServerEvents#parseDiscovery(ItemStack) line 227
-     *
-     * @param discovery the quest that will be registered
-     */
-    public static void addDiscoveryInfo(DiscoveryInfo discovery) {
-        currentDiscoveryData.add(discovery);
-    }
-
-    /**
-     * Update the current discovery lore
-     *
-     * @param lore the selected lore
-     */
-    public static void updateDiscoveryLore(String name, List<String> lore) {
-        List<String> list = new ArrayList<>();
-        list.add(name); list.addAll(lore);
-        discoveryLore = list;
-    }
-
-    /**
-     * Update the current secret discovery lore
-     *
-     * @param lore the selected lore
-     */
-    public static void updateSecretDiscoveryLore(String name, List<String> lore) {
-        List<String> list = new ArrayList<>();
-        list.add(name); list.addAll(lore);
-        secretdiscoveryLore = list;
-    }
     
     /**
      * Returns the current discoveries data
      *
      * @return the current discovery data in a {@link java.util.ArrayList}
      */
-    public static ArrayList<DiscoveryInfo> getCurrentDiscoveriesData() {
+    public static HashMap<String, DiscoveryInfo> getCurrentDiscoveriesData() {
         return currentDiscoveryData;
+    }
+
+    public static void setTrackedQuest(QuestInfo selected) {
+        trackedQuest = selected;
+    }
+
+    public static void clearData() {
+        currentQuestsData.clear();
+        currentDiscoveryData.clear();
     }
 
 }
