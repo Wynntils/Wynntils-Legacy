@@ -78,8 +78,6 @@ public class FakeInventory {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
-        System.out.println(slot);
-
         if(slot == itemSlot) {
             mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             return this;
