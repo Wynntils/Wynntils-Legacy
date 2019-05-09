@@ -19,6 +19,7 @@ import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -231,6 +232,14 @@ public class FakeInventory {
 
         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
         e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void cancelCommands(ClientChatEvent e) {
+        if(!open || !e.getMessage().startsWith("/class")) return;
+
+        e.setCanceled(true);
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your command was canceled because Wynntils is processing a background inventory."));
     }
 
 }
