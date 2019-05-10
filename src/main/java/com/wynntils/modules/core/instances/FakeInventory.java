@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.instances;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
@@ -20,6 +21,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class FakeInventory {
     private HashMap<Integer, ItemStack> items = new HashMap<>();
 
     boolean open = false;
+    long openTime = System.currentTimeMillis();
 
     public FakeInventory(String windowTitle, int itemSlot) {
         this.windowTitle = windowTitle;
@@ -74,6 +77,8 @@ public class FakeInventory {
      * @return
      */
     public FakeInventory open() {
+        openTime = System.currentTimeMillis();
+
         FrameworkManager.getEventBus().register(this);
 
         Minecraft mc = ModCore.mc();
@@ -177,6 +182,16 @@ public class FakeInventory {
         return realWindowTitle;
     }
 
+    public boolean isCrashed() {
+        if(System.currentTimeMillis() - openTime >= 3000) {
+            close();
+            Reference.LOGGER.warn("Wynntils Inventory Analyse was interrupted because it crashed.");
+            return true;
+        }
+
+        return false;
+    }
+
     //EVENTS BELOW
 
     //handles the inventory container receive, sets open to true
@@ -219,7 +234,7 @@ public class FakeInventory {
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
     public void cancelInteract(PacketEvent.PlayerUseItemEvent e) {
-        if(!open) return;
+        if(!open || isCrashed()) return;
 
         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
         e.setCanceled(true);
@@ -228,18 +243,26 @@ public class FakeInventory {
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
     public void cancelInteract(PacketEvent.PlayerUseItemOnBlockEvent e) {
-        if(!open) return;
+        if(!open || isCrashed()) return;
 
         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
         e.setCanceled(true);
     }
 
+    //avoid teleportation while reading the questbook
     @SubscribeEvent
     public void cancelCommands(ClientChatEvent e) {
-        if(!open || !e.getMessage().startsWith("/class")) return;
+        if(!open || !e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes") || isCrashed()) return;
 
-        e.setCanceled(true);
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your command was canceled because Wynntils is processing a background inventory."));
+        close();
+    }
+
+    //cancel the reading if the user changes the world
+    @SubscribeEvent
+    public void closeOnWorldLoad(WorldEvent.Load e) {
+        if(!open || isCrashed()) return;
+
+        close();
     }
 
 }

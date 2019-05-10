@@ -549,6 +549,7 @@ public class QuestBookGUI extends GuiScreen {
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());
 
+        questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
         questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }
     
