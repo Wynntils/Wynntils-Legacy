@@ -14,6 +14,7 @@ import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -28,6 +29,11 @@ public class ClientEvents implements Listener {
             QuestManager.requestQuestBookReading();
         else if(e.getMessage().getUnformattedText().contains("[Quest Completed]") && e.getMessage().getUnformattedText().indexOf("[") >= 5)
             QuestManager.requestQuestBookReading();
+        else if(e.getMessage().getUnformattedText().contains("[Mini-Quest Completed]") && e.getMessage().getUnformattedText().indexOf("[") >= 5)
+            QuestManager.requestQuestBookReading();
+        else if(e.getMessage().getUnformattedText().contains(TextFormatting.BOLD.toString()) && e.getMessage().getUnformattedText().contains("Level Up!")) {
+            QuestManager.requestQuestBookReading();
+        }
     }
 
     @SubscribeEvent
