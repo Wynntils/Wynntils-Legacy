@@ -7,13 +7,13 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.util.text.TextFormatting;
@@ -145,7 +145,7 @@ public class WarTimerOverlay extends Overlay {
         }
     }
     
-    public static void onWorldJoin(WynnWorldJoinEvent event) {
+    public static void onWorldJoin(WynnWorldEvent.Join event) {
         if (Reference.onWars) {
             if (stage == WarStage.WAR_STARTING) {
                 stage = WarStage.WAITING_FOR_MOB_TIMER;

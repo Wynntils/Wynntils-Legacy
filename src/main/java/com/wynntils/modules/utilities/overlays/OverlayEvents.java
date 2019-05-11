@@ -43,7 +43,7 @@ public class OverlayEvents implements Listener {
     }
     
     @SubscribeEvent
-    public void onWorldJoin(WynnWorldJoinEvent e) {
+    public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
     }
     

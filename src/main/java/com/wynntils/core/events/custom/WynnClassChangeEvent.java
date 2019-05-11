@@ -8,7 +8,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * Called when the player changes a class inside the Wynncraft Server
+ * Triggered when the player changes a class inside the Wynncraft Server
  *
  */
 public class WynnClassChangeEvent extends Event {

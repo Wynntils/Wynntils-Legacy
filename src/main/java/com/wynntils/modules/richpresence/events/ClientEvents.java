@@ -6,7 +6,7 @@ package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnSocialEvent;
-import com.wynntils.core.events.custom.WynnWorldLeftEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.SecretContainer;
@@ -26,7 +26,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onLeaveWorld(WynnWorldLeftEvent e) {
+    public void onLeaveWorld(WynnWorldEvent.Leave e) {
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
     }
 

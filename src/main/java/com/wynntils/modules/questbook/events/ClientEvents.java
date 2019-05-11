@@ -5,10 +5,7 @@
 package com.wynntils.modules.questbook.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.ChatEvent;
-import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.events.custom.WynnClassChangeEvent;
-import com.wynntils.core.events.custom.WynnWorldLeftEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
@@ -34,7 +31,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void startReading(WynnWorldLeftEvent e) {
+    public void startReading(WynnWorldEvent.Leave e) {
         QuestManager.clearData();
     }
 

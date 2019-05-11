@@ -5,7 +5,7 @@
 package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.Utils;
@@ -89,7 +89,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
     }
 
     @SubscribeEvent
-    public void onWorldJoin(WynnWorldJoinEvent e) {
+    public void onWorldJoin(WynnWorldEvent.Join e) {
         if(!waitingInvite) return;
 
         sentInvite = true;

@@ -5,7 +5,7 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -63,7 +63,7 @@ public class ServerEvents implements Listener {
      * @param e Represents the event
      */
     @SubscribeEvent
-    public void joinWorldEvent(WynnWorldJoinEvent e) {
+    public void joinWorldEvent(WynnWorldEvent.Join e) {
         if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
         if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
@@ -141,21 +141,6 @@ public class ServerEvents implements Listener {
         }else if(e.getMessage().startsWith("/guild list")) {
             guildListTimeout = System.currentTimeMillis();
         }
-    }
-
-    /**
-     * Used for replacing commands by others, also knows as, creating aliases
-     *
-     * Replacements:
-     * /tell -> /msg
-     * /xp -> /guild xp
-     *
-     * @param e
-     */
-    @SubscribeEvent
-    public void commandReplacements(ClientChatEvent e) {
-        if(e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
-        else if(e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
     }
 
     /**

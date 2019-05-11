@@ -11,12 +11,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class WynnSocialEvent extends Event {
 
     /**
-     * Called when the users leaves a Party
+     * Triggered when the users leaves a Party
      */
     public static class PartyLeave extends WynnSocialEvent { }
 
     /**
-     * Called when the users joins a Party
+     * Triggered when the users joins a Party
      */
     public static class PartyJoin extends WynnSocialEvent {
 
