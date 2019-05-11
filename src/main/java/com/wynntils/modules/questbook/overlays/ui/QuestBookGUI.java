@@ -15,6 +15,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.ui.OverlayPositionsUI;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.framework.ui.UI;
+import com.wynntils.core.utils.Easing;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -70,6 +71,7 @@ public class QuestBookGUI extends GuiScreen {
         acceptNext = false;
         animationCompleted = false;
         requestOpening = true;
+        time = Minecraft.getSystemTime();
 
         if(page == QuestBookPage.ITEM_GUIDE) updateItemListSearch();
         if(page == QuestBookPage.QUESTS) updateQuestSearch();
@@ -568,6 +570,7 @@ public class QuestBookGUI extends GuiScreen {
         }).collect(Collectors.toList());
     }
 
+    private static long time = Minecraft.getSystemTime();
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
@@ -575,7 +578,8 @@ public class QuestBookGUI extends GuiScreen {
         ScreenRenderer.beginGL(0,0);
         {
             if (requestOpening) {
-                float animationTick = ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 0.5f;
+                float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
+                animationTick /= 10f;
 
                 if (animationTick <= 1) {
                     ScreenRenderer.scale(animationTick);

@@ -7,13 +7,16 @@ package com.wynntils.modules.questbook.managers;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -34,14 +37,16 @@ public class QuestManager {
     public static List<String> secretdiscoveryLore = new ArrayList<>();
 
     private static boolean secretDiscoveries = false;
-    private static boolean readingQuestbook = false;
+    private static FakeInventory currentInventory = null;
+
+    private static boolean clicksAllowed = false;
 
     /**
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
-        if(readingQuestbook) return;
-        readingQuestbook = true;
+        if(currentInventory != null) return;
+        clicksAllowed = true;
 
         FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
         secretDiscoveries = false;
@@ -91,7 +96,7 @@ public class QuestManager {
 
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
-                else if(discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
+                else if(QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
                 else i.close();
             }else if(i.getWindowTitle().contains("Discoveries")) { //Discoveries
                 Map.Entry<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
@@ -134,8 +139,11 @@ public class QuestManager {
             }else i.close();
         });
         fakeInventory.onClose(c -> {
-            readingQuestbook = false;
+            currentInventory = null;
+            clicksAllowed = false;
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
         });
+        currentInventory = fakeInventory;
 
         fakeInventory.open();
     }
@@ -170,6 +178,15 @@ public class QuestManager {
 
     public static void setTrackedQuest(QuestInfo selected) {
         trackedQuest = selected;
+    }
+
+    public static boolean isClicksAllowed() {
+        if(clicksAllowed) {
+            clicksAllowed = false;
+            return true;
+        }
+
+        return false;
     }
 
     public static void clearData() {

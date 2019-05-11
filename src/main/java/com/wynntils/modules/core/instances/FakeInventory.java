@@ -198,6 +198,7 @@ public class FakeInventory {
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent.InventoryReceived e) {
         if(!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !e.getPacket().getWindowTitle().getUnformattedText().contains(windowTitle)) {
+            windowId = -1;
             close();
             return;
         }
@@ -213,9 +214,8 @@ public class FakeInventory {
     @SubscribeEvent
     public void onItemsReceive(PacketEvent.InventoryItemsReceived e) {
         if(e.getPacket().getWindowId() != windowId) {
-            FrameworkManager.getEventBus().unregister(this);
-            open = false;
-            if(onClose != null) onClose.accept(this);
+            windowId = -1;
+            close();
             return;
         }
 
@@ -236,7 +236,9 @@ public class FakeInventory {
     public void cancelInteract(PacketEvent.PlayerUseItemEvent e) {
         if(!open || isCrashed()) return;
 
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
+        if(!e.isCanceled())
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
+
         e.setCanceled(true);
     }
 
@@ -245,7 +247,9 @@ public class FakeInventory {
     public void cancelInteract(PacketEvent.PlayerUseItemOnBlockEvent e) {
         if(!open || isCrashed()) return;
 
-        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
+        if(!e.isCanceled())
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
+
         e.setCanceled(true);
     }
 
