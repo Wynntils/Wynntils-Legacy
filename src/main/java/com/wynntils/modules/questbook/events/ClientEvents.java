@@ -50,6 +50,16 @@ public class ClientEvents implements Listener {
         if(!QuestManager.isClicksAllowed()) e.setCanceled(true);
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void clickOnQuestBook(PacketEvent.PlayerUseItemOnBlockEvent e) {
+        if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
+                || !Reference.onWorld || Reference.onNether || Reference.onWars
+                || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
+
+        openQuestBook = true;
+        if(!QuestManager.isClicksAllowed()) e.setCanceled(true);
+    }
+
     @SubscribeEvent
     public void updateQuestBook(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld || Reference.onNether || Reference.onWars) return;
@@ -62,6 +72,8 @@ public class ClientEvents implements Listener {
 
         if(QuestManager.getCurrentQuestsData().size() <= 0) QuestManager.requestQuestBookReading();
     }
+
+
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
