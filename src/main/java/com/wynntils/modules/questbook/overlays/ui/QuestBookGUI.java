@@ -543,7 +543,7 @@ public class QuestBookGUI extends GuiScreen {
         }).collect(Collectors.toList());
     }
 
-    private void updateQuestSearch() {
+    public void updateQuestSearch() {
         HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
         questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
@@ -555,7 +555,7 @@ public class QuestBookGUI extends GuiScreen {
         questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }
     
-    private void updateDiscoverySearch() {
+    public void updateDiscoverySearch() {
         HashMap<String, DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
         
         discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.values().stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : new ArrayList<>(discoveries.values());

@@ -50,7 +50,10 @@ public class ClientEvents implements Listener {
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
         openQuestBook = true;
-        if(!QuestManager.isClicksAllowed()) e.setCanceled(true);
+        if(!QuestManager.isClicksAllowed()) {
+            e.setCanceled(true);
+            if(QuestManager.getCurrentQuestsData().size() <= 0) QuestManager.requestQuestBookReading();
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -72,11 +75,7 @@ public class ClientEvents implements Listener {
             openQuestBook = false;
             QuestBookModule.gui.open();
         }
-
-        if(QuestManager.getCurrentQuestsData().size() <= 0) QuestManager.requestQuestBookReading();
     }
-
-
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {

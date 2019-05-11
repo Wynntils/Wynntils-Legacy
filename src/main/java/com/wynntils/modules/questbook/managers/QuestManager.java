@@ -7,6 +7,7 @@ package com.wynntils.modules.questbook.managers;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
+import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestSize;
@@ -94,6 +95,7 @@ public class QuestManager {
                     if(trackedQuest != null && trackedQuest.getName().equals(displayName)) trackedQuest = quest;
                 }
 
+                QuestBookModule.gui.updateQuestSearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
@@ -129,6 +131,7 @@ public class QuestManager {
                     currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
                 }
 
+                QuestBookModule.gui.updateDiscoverySearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(!secretDiscoveries && sDiscoveries != null) {
