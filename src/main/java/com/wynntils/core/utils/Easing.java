@@ -5,6 +5,8 @@
 package com.wynntils.core.utils;
 
 
+import net.minecraft.util.math.MathHelper;
+
 /**
  * <p>The Easing class holds a set of general-purpose motion
  * tweening functions by Robert Penner. This class is
@@ -129,17 +131,17 @@ public interface Easing {
     /**
      * Sinusoidal easing in - accelerating from zero velocity.
      */
-    Easing SINE_IN = (t, b, c, d) -> -c * (float)Utils.cos(t/d * (Math.PI/2)) + c + b;
+    Easing SINE_IN = (t, b, c, d) -> -c * MathHelper.cos((float)(t/d * (Math.PI/2))) + c + b;
 
     /**
      * Sinusoidal easing out - decelerating to zero velocity.
      */
-    Easing SINE_OUT = (t, b, c, d) -> c * (float)Utils.sin(t/d * (Math.PI/2)) + b;
+    Easing SINE_OUT = (t, b, c, d) -> c * MathHelper.sin((float)(t/d * (Math.PI/2))) + b;
 
     /**
      * Sinusoidal easing in/out - accelerating until halfway, then decelerating.
      */
-    Easing SINE_IN_OUT = (t, b, c, d) -> -c/2 * ((float)Utils.cos(Math.PI*t/d) - 1) + b;
+    Easing SINE_IN_OUT = (t, b, c, d) -> -c/2 * (MathHelper.cos((float)Math.PI*t/d) - 1) + b;
 
     ///////////// EXPONENTIAL EASING: 2^t /////////////////
 
@@ -285,7 +287,7 @@ public interface Easing {
             float s;
             if (a < Math.abs(c)) { a=c; s=p/4; }
             else s = p/(float)(2*Math.PI) * (float)Math.asin(c/a);
-            return a*(float)Math.pow(2,-10*t) * (float)Utils.sin( (t*d-s)*(2*Math.PI)/p ) + c + b;
+            return a*(float)Math.pow(2,-10*t) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p)) + c + b;
         }
     }
 
@@ -308,8 +310,8 @@ public interface Easing {
             float s;
             if (a < Math.abs(c)) { a=c; s=p/4f; }
             else s = p/(float)(2*Math.PI) * (float)Math.asin(c/a);
-            if (t < 1) return -.5f*(a*(float)Math.pow(2,10*(t-=1)) * (float)Utils.sin( (t*d-s)*(2*Math.PI)/p )) + b;
-            return a*(float)Math.pow(2,-10*(t-=1)) * (float)Utils.sin( (t*d-s)*(2*Math.PI)/p )*.5f + c + b;
+            if (t < 1) return -.5f*(a*(float)Math.pow(2,10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p ))) + b;
+            return a*(float)Math.pow(2,-10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p))*.5f + c + b;
         }
     }
 
