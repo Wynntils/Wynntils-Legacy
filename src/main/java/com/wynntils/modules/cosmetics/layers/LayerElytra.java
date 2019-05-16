@@ -45,7 +45,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
         if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID()) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             if (entitylivingbaseIn instanceof AbstractClientPlayer) {
                 AbstractClientPlayer abstractclientplayer = entitylivingbaseIn;
