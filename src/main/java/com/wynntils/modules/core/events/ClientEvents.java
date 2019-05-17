@@ -116,13 +116,13 @@ public class ClientEvents implements Listener {
     }
 
     /**
-     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator)
+     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
      * 
      * @param e
      */
     @SubscribeEvent
     public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
-        if (Reference.onWorld && e.getEntityPlayer() != null && e.getEntityPlayer().isInvisible() && Minecraft.getMinecraft().playerController.isSpectator()) {
+        if (Reference.onWorld && e.getEntityPlayer() != null && (e.getEntityPlayer().isInvisible() || e.getEntityPlayer().isSpectator() || e.getEntityPlayer().isPotionActive(Potion.getPotionById(14)))) {
             e.setCanceled(true);
         }
     }
