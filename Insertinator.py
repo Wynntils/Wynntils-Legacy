@@ -1,6 +1,6 @@
 import sys, os
 path = os.path.dirname(os.path.abspath(sys.argv[0])) + "/src/main/resources/assets/wynntils/lang/"
-f = open(path + "en_us.lang", "r")
+f = open(path + "en_us.lang", "r", encoding='utf-8')
 en_us_data = f.readlines()
 f.close()
 
@@ -9,7 +9,7 @@ for filename in os.listdir(path):
         if (filename.endswith("en_us.lang")):
             continue
 
-        f = open(os.path.dirname(path) + "/" + filename, "r")
+        f = open(os.path.dirname(path) + "/" + filename, "r", encoding='utf-8')
         other_lang_data = f.readlines()
         f.close()
         inserts = 0
@@ -32,7 +32,7 @@ for filename in os.listdir(path):
                     other_lang_data.append(en_us_data[i])
                 else:
                     other_lang_data.append("{0} ##TODO\n".format(en_us_data[i].strip()))
-        f = open(os.path.dirname(path) + "/" + filename, "w")
+        f = open(os.path.dirname(path) + "/" + filename, "w", encoding='utf-8')
         f.writelines(other_lang_data)
         f.close()
         print("Finished {0}, Inserted {1} line(s) and Appended {2} line(s)".format(filename, inserts, appends))
