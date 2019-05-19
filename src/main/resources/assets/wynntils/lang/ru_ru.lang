@@ -105,6 +105,8 @@ wynntils.config.map.textures.enum.pointer_type.triangle=Треугольный
 
 ## MAP WAYPOINTS CONFIG ##
 wynntils.config.map.waypoints.display_path=Карта/Вейпоинты
+wynntils.config.map.waypoints.compass_marker.display_name=Компас маркер
+wynntils.config.map.waypoints.compass_marker.description=Отображать маркер на карте когда компас указывает направление?
 
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Музыка
@@ -125,6 +127,8 @@ wynntils.config.questbook.search_click.display_name=Клик в поле пои�
 wynntils.config.questbook.search_click.description=Нужно ли нажать на строку поиска перед вводом, или же печатать сразу после открытия книги квестов?
 wynntils.config.questbook.fuzzy_search.display_name=Нечеткий поиск
 wynntils.config.questbook.fuzzy_search.description=Использовать другой алгоритм поисковика для поиска сокращений и аббревиатур?
+wynntils.config.questbook.scan_discoveries.display_name=Сканирование дискавери
+wynntils.config.questbook.scan_discoveries.description=Анализировать дискавери книгой заданий?\nОтключив это, книга заданий не будет показывать вкладку с дискавери, но сама будет анализироваться быстрее
 
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Rich Presence
@@ -151,6 +155,10 @@ wynntils.config.utils.prevent_mythic.display_name=Закрытие сундук�
 wynntils.config.utils.prevent_mythic.description=Запретить сундуку закрываться, если там есть mythic?
 wynntils.config.utils.prevent_slot_click.display_name=Клик по слоту с закрытым предметом
 wynntils.config.utils.prevent_slot_click.description=Заблокировать клики по слоту с закрытым предметом, чтобы его нельзя было передвинуть?
+wynntils.config.utils.afk_collision_block.display_name=Блок толкания АФК игрока
+wynntils.config.utils.afk_collision_block.description=Запретить толкать вас когда вы АФК?
+wynntils.config.utils.highlight_on_hotbar.display_name=Отображение подсветки предметов хотбара
+wynntils.config.utils.highlight_on_hotbar.description=Подсвечивать предметы в хотбаре в соответствии с редкостью?
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Захват территорий
@@ -651,6 +659,7 @@ wynntils.map.toasts.new_map_entry.body=Вы нашли tier %s сундук!
 
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Маркеры
+wynntils.map.ui.world_map.button.waypoints=Вейпоинты
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Отмена
@@ -674,6 +683,18 @@ wynntils.map.overlays.minimap.south_short=S
 wynntils.map.overlays.minimap.south_west_short=SW
 wynntils.map.overlays.minimap.west_short=W
 wynntils.map.overlays.minimap.north_west_short=NW
+
+## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.always_visible=Всегда видим
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=Имя вейпоинта:
+wynntils.map.ui.waypoint_creation.floating.coordinates=Координаты:
+wynntils.map.ui.world_map_settings.floating.icon=Иконка:
+wynntils.map.ui.world_map_settings.floating.color=Цвет:
+
+## WAYPOINT MENU ##
+wynntils.map.ui.waypoints.floating.icon=Иконка
+wynntils.map.ui.waypoints.floating.name=Имя
+wynntils.map.ui.waypoints.button.edit=Изменить...
 
 #########
 # MUSIC #
