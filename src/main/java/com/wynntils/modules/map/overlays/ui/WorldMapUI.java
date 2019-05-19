@@ -163,8 +163,8 @@ public class WorldMapUI extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, I18n.format("wynntils.map.ui.world_map.button.markers")));
-        this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
+        this.buttonList.add(settingsBtn = new GuiButton(1,22,23,100,18, I18n.format("wynntils.map.ui.world_map.button.markers")));
+        this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 100, 18, I18n.format("wynntils.map.ui.world_map.button.waypoints")));
         this.buttonList.add(addWaypointBtn = new GuiButtonImage(2,24,69,14,14,0,0, 0, Textures.Map.map_options.resourceLocation));
 
         updateCenterPosition(centerPositionX, centerPositionZ);

@@ -38,10 +38,10 @@ public class WorldMapSettingsUI extends GuiScreen {
             i++;
         }
 
-        this.buttonList.add(new GuiButton(99, rightAlign + 120, 205, 45, 18, I18n.format(selectedTexture.displayName)));
-        this.buttonList.add(new GuiButton(100, this.width/2 - 71, this.height-40, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel")));
-        this.buttonList.add(new GuiButton(101, this.width/2 - 23, this.height-40, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.default")));
-        this.buttonList.add(new GuiButton(102, this.width/2 + 25, this.height-40, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.save")));
+        this.buttonList.add(new GuiButton(99, rightAlign + 120, 205, 100, 18, I18n.format(selectedTexture.displayName)));
+        this.buttonList.add(new GuiButton(100, this.width/2 - 200, this.height-40, 120, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel")));
+        this.buttonList.add(new GuiButton(101, this.width/2 - 70, this.height-40, 120, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.default")));
+        this.buttonList.add(new GuiButton(102, this.width/2 + 60, this.height-40, 120, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.save")));
     }
 
     @Override

@@ -91,7 +91,7 @@ public class MapConfig extends SettingsClass {
             }
         }
 
-        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
+        @Setting(displayName = "wynntils.config.map.waypoints.compass_marker.display_name", description = "wynntils.config.map.waypoints.compass_marker.description")
         public boolean compassMarker = true;
     }
 

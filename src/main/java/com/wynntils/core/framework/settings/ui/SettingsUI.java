@@ -334,7 +334,7 @@ public class SettingsUI extends UI {
                 }
             }));
 
-            String[] wrappedName = Utils.wrapText(I18n.format(info.displayName()), 95 - resetSize);
+            String[] wrappedName = Utils.wrapText(I18n.format(info.displayName()), 88 - resetSize);
             if (wrappedName.length >= 3) {
                 String toChange = wrappedName[1];
                 String[] splitToChange = toChange.split(" ");

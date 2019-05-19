@@ -370,6 +370,19 @@ public class ScreenRenderer {
         return fontRenderer.getCharWidth(text.charAt(0)) + SmartFontRenderer.CHAR_SPACING + getStringWidth(text.substring(1));
     }
 
+    /**
+     * Draw a string, scaling in size if the specified text is too long
+     */
+    public float drawScaledString(String text, float maxLength, float normalScale, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
+        float scale, size = getStringWidth(text);
+        if (size > maxLength) scale = (maxLength / size) * normalScale;
+        else scale = normalScale;
+        ScreenRenderer.scale(scale);
+        float returnVal = drawString(text, x / scale, (y / scale) + ((5f * normalScale) - ((10f * scale) / 2f)), color, alignment, shadow);
+        ScreenRenderer.resetScale();
+        return returnVal;
+    }
+
     /** void drawRect
      * Draws a rectangle with a filled color.
      *

@@ -9,6 +9,7 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
@@ -56,9 +57,9 @@ public class WaypointCreationMenu extends GuiScreen {
         yCoordField = new GuiTextField(3, mc.fontRenderer, this.width/2 + 55, this.height/2 - 30, 25, 20);
         buttonList.add(waypointTypeNext = new GuiButton(97, this.width/2 - 40, this.height/2 + 10, 18, 18, ">"));
         buttonList.add(waypointTypeBack = new GuiButton(98, this.width/2 - 80, this.height/2 + 10, 18, 18, "<"));
-        buttonList.add(alwaysVisible = new GuiCheckBox(99, this.width/2 - 29,this.height/2 + 40,"Always Visible",false));
-        buttonList.add(cancelButton = new GuiButton(100, this.width/2 - 71, this.height - 80, 45, 18, "Cancel"));
-        buttonList.add(saveButton = new GuiButton(101, this.width/2 + 25, this.height - 80, 45, 18, "Save"));
+        buttonList.add(alwaysVisible = new GuiCheckBox(99, this.width/2 - 29,this.height/2 + 40, I18n.format("wynntils.map.ui.waypoint_creation.buttons.always_visible"),false));
+        buttonList.add(cancelButton = new GuiButton(100, this.width/2 - 71, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel")));
+        buttonList.add(saveButton = new GuiButton(101, this.width/2 + 25, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.save")));
         saveButton.enabled = false;
 
         xCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getX()));
@@ -66,7 +67,7 @@ public class WaypointCreationMenu extends GuiScreen {
         yCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getY()));
 
         nameFieldLabel = new GuiLabel(mc.fontRenderer,0,this.width/2 - 80,this.height/2 - 81,40,10,0xFFFFFF);
-        nameFieldLabel.addLine("Waypoint Name:");
+        nameFieldLabel.addLine(I18n.format("wynntils.map.ui.waypoint_creation.floating.waypoint_name"));
         xCoordFieldLabel = new GuiLabel(mc.fontRenderer,1,this.width/2 - 75,this.height/2 - 24,40,10,0xFFFFFF);
         xCoordFieldLabel.addLine("X");
         yCoordFieldLabel = new GuiLabel(mc.fontRenderer,2,this.width/2 + 45,this.height/2 - 24,40,10,0xFFFFFF);
@@ -74,7 +75,7 @@ public class WaypointCreationMenu extends GuiScreen {
         zCoordFieldLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 15,this.height/2 - 24,40,10,0xFFFFFF);
         zCoordFieldLabel.addLine("Z");
         coordinatesLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 80,this.height/2 - 41,40,10,0xFFFFFF);
-        coordinatesLabel.addLine("Coordinates:");
+        coordinatesLabel.addLine(I18n.format("wynntils.map.ui.waypoint_creation.floating.coordinates"));
 
         if (wp != null) {
             nameField.setText(wp.getName());
@@ -144,9 +145,9 @@ public class WaypointCreationMenu extends GuiScreen {
                 break;
         }
 
-        fontRenderer.drawString("Icon:", this.width/2 - 80,this.height/2,0xFFFFFF, true);
-        fontRenderer.drawString("Colour:", this.width/2,this.height/2,0xFFFFFF, true);
-        fontRenderer.drawString( "[" + TextFormatting.GRAY +"In Development"+ TextFormatting.RESET + "]", this.width/2, this.height/2 + 15, 0x808080, true);
+        fontRenderer.drawString(I18n.format("wynntils.map.ui.world_map_settings.floating.icon"), this.width/2 - 80,this.height/2,0xFFFFFF, true);
+        fontRenderer.drawString(I18n.format("wynntils.map.ui.world_map_settings.floating.color"), this.width/2,this.height/2,0xFFFFFF, true);
+        fontRenderer.drawString( "[" + TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.in_development") + TextFormatting.RESET + "]", this.width/2, this.height/2 + 15, 0x808080, true);
         ScreenRenderer.beginGL(0, 0);
         renderer.drawRect(Textures.Map.map_icons, (this.width/2 - 60), (this.height/2 + 10), (this.width/2 - 60) + 18, (this.height/2 + 10) + 18, tx1, ty1, tx2, ty2);
         ScreenRenderer.endGL();

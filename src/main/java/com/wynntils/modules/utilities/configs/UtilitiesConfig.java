@@ -20,7 +20,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.utils.daily_reminder.display_name", description = "wynntils.config.utils.daily_reminder.description")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Block Player Collision When AFK", description = "Should player collision be blocked when you are AFK?")
+    @Setting(displayName = "wynntils.config.utils.afk_collision_block.display_name", description = "wynntils.config.utils.afk_collision_block.description")
     public boolean blockAfkPushs = true;
 
     @Setting(displayName = "wynntils.config.utils.hide_potion.display_name", description = "wynntils.config.utils.hide_potion.description")
@@ -176,7 +176,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "wynntils.config.utils.item_highlights.threestar_color.display_name", description = "wynntils.config.utils.item_highlights.threestar_color.description")
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Display Item Highlighting on Hotbar", description = "Should the highlight of item rarities be displayed on the hotbar?", order = 0)
+        @Setting(displayName = "wynntils.config.utils.highlight_on_hotbar.display_name", description = "wynntils.config.utils.highlight_on_hotbar.description", order = 0)
         public boolean highlighItemsInHotbar = true;
 
 

@@ -105,6 +105,8 @@ wynntils.config.map.textures.enum.pointer_type.triangle=Triangle
 
 ## MAP WAYPOINTS CONFIG ##
 wynntils.config.map.waypoints.display_path=Map/Waypoints
+wynntils.config.map.waypoints.compass_marker.display_name=Compass Marker
+wynntils.config.map.waypoints.compass_marker.description=Should a marker appear on the map where the compass is currently pointing towards?
 
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Music
@@ -125,6 +127,8 @@ wynntils.config.questbook.search_click.display_name=Search Box Requires Click
 wynntils.config.questbook.search_click.description=Should you be required to click on the search bar before typing or be able to type in the search bar immediately after opening the quest book?
 wynntils.config.questbook.fuzzy_search.display_name=Fuzzy Search
 wynntils.config.questbook.fuzzy_search.description=Should a different search algorithm be used that allows searching for acronyms and abbreviations?
+wynntils.config.questbook.scan_discoveries.display_name=Scan Discoveries
+wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster
 
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Rich Presence
@@ -151,6 +155,10 @@ wynntils.config.utils.prevent_mythic.display_name=Prevent Mythic Loot Chest Clos
 wynntils.config.utils.prevent_mythic.description=Should the closing of loot chests be prevented when they contain mythics?
 wynntils.config.utils.prevent_slot_click.display_name=Prevent Slot Click on Locked Items
 wynntils.config.utils.prevent_slot_click.description=Should moving items to and from locked inventory slots be blocked?
+wynntils.config.utils.afk_collision_block.display_name=Block Player Collision When AFK
+wynntils.config.utils.afk_collision_block.description=Should player collision be blocked when you are AFK?
+wynntils.config.utils.highlight_on_hotbar.display_name=Display Item Highlighting on Hotbar
+wynntils.config.utils.highlight_on_hotbar.description=Should the highlight of item rarities be displayed on the hotbar?
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=War
@@ -651,6 +659,7 @@ wynntils.map.toasts.new_map_entry.body=You found a tier %s chest!
 
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Markers
+wynntils.map.ui.world_map.button.waypoints=Waypoints
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Cancel
@@ -674,6 +683,18 @@ wynntils.map.overlays.minimap.south_short=S
 wynntils.map.overlays.minimap.south_west_short=SW
 wynntils.map.overlays.minimap.west_short=W
 wynntils.map.overlays.minimap.north_west_short=NW
+
+## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.always_visible=Always Visible
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=Waypoint Name:
+wynntils.map.ui.waypoint_creation.floating.coordinates=Coordinates:
+wynntils.map.ui.world_map_settings.floating.icon=Icon:
+wynntils.map.ui.world_map_settings.floating.color=Color:
+
+## WAYPOINT MENU ##
+wynntils.map.ui.waypoints.floating.icon=Icon
+wynntils.map.ui.waypoints.floating.name=Name
+wynntils.map.ui.waypoints.button.edit=Edit...
 
 #########
 # MUSIC #

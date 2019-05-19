@@ -105,6 +105,8 @@ wynntils.config.map.textures.enum.pointer_type.triangle=Driehoek
 
 ## MAP WAYPOINTS CONFIG ##
 wynntils.config.map.waypoints.display_path=Kaart/Waypoints
+wynntils.config.map.waypoints.compass_marker.display_name=Compass Marker ##TODO
+wynntils.config.map.waypoints.compass_marker.description=Should a marker appear on the map where the compass is currently pointing towards? ##TODO
 
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Muziek
@@ -125,6 +127,8 @@ wynntils.config.questbook.search_click.display_name=Zoekbalk Beklikken
 wynntils.config.questbook.search_click.description=Moet je eerste op de zoekbalk klikken of meteen al kunnen typen?
 wynntils.config.questbook.fuzzy_search.display_name=Gelijkend Zoeken
 wynntils.config.questbook.fuzzy_search.description=Moet een ander algoritme gebruikt worden om te zoeken? Dit staat het gebruik van afkortingen toe.
+wynntils.config.questbook.scan_discoveries.display_name=Scan Discoveries ##TODO
+wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster ##TODO
 
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Rich Presence
@@ -151,6 +155,10 @@ wynntils.config.utils.prevent_mythic.display_name=Preventeer het Sluiten van Kis
 wynntils.config.utils.prevent_mythic.description=Moeten kisten met mystics er in openblijven?
 wynntils.config.utils.prevent_slot_click.display_name=Preventeer het Klikken op Gesloten Voorwerpen
 wynntils.config.utils.prevent_slot_click.description=Moeten kliks op gesloten voorwerpen worden genegeerd?
+wynntils.config.utils.afk_collision_block.display_name=Block Player Collision When AFK ##TODO
+wynntils.config.utils.afk_collision_block.description=Should player collision be blocked when you are AFK? ##TODO
+wynntils.config.utils.highlight_on_hotbar.display_name=Display Item Highlighting on Hotbar ##TODO
+wynntils.config.utils.highlight_on_hotbar.description=Should the highlight of item rarities be displayed on the hotbar? ##TODO
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Oorlog
@@ -361,7 +369,7 @@ wynntils.config.overlay.leveling.text_shadow.description=Wat moet het schaduw ty
 wynntils.config.overlay.ticker.display_path=Widgets/Updates Ticker
 wynntils.config.overlay.ticker.message_limit.display_name=Berichten Limiet
 wynntils.config.overlay.ticker.message_limit.description=Wat is het maximum aantal berichten dat tegelijk in de Updates Ticker mag worden weergegeven?
-wynntils.config.overlay.ticker.align_right.display_name=Aligneer Tekst - Rechts ##TODO
+wynntils.config.overlay.ticker.align_right.display_name=Aligneer Tekst - Rechts
 wynntils.config.overlay.ticker.align_right.description=Moet de tekst worden op een lijn worden gesteld met rechts als oorsprong?
 wynntils.config.overlay.ticker.expiry_time.display_name=Berichten Verloop Tijd
 wynntils.config.overlay.ticker.expiry_time.description=Hoe lang (in secondes) moeten berichten zichtbaar blijven?
@@ -651,6 +659,7 @@ wynntils.map.toasts.new_map_entry.body=Je hebt een chest gevonden van niveau %s!
 
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Markeringen
+wynntils.map.ui.world_map.button.waypoints=Waypoints ##TODO
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Annuleer
@@ -674,6 +683,18 @@ wynntils.map.overlays.minimap.south_short=Z
 wynntils.map.overlays.minimap.south_west_short=ZW
 wynntils.map.overlays.minimap.west_short=W
 wynntils.map.overlays.minimap.north_west_short=NW
+
+## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.always_visible=Always Visible ##TODO
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=Waypoint Name: ##TODO
+wynntils.map.ui.waypoint_creation.floating.coordinates=Coordinates: ##TODO
+wynntils.map.ui.world_map_settings.floating.icon=Icon: ##TODO
+wynntils.map.ui.world_map_settings.floating.color=Color: ##TODO
+
+## WAYPOINT MENU ##
+wynntils.map.ui.waypoints.floating.icon=Icon ##TODO
+wynntils.map.ui.waypoints.floating.name=Name ##TODO
+wynntils.map.ui.waypoints.button.edit=Edit... ##TODO
 
 #########
 # MUSIC #
@@ -851,7 +872,7 @@ wynntils.utilities.overlays.mana_bar.display_name=Mana Balk
 ## TERRITORY FEED OVERLAY ##
 wynntils.utilities.overlays.territory_feed.display_name=Territorium Nieuws Feed
 wynntils.utilities.overlays.territory_feed.attacked=[%1$s]'s territorium %2$s wordt aangevallen door [%3$s]
-wynntils.utilities.overlays.territory_feed.defended=[%1$s]'s aanval op [%2$s]'s territorium %3$s was mislukt! ##TODO
+wynntils.utilities.overlays.territory_feed.defended=[%1$s]'s aanval op [%2$s]'s territorium %3$s was mislukt!
 wynntils.utilities.overlays.territory_feed.captured=[%1$s] heeft %2$s verovered van [%3$s]
 
 ## TOASTS OVERLAY ##

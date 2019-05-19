@@ -619,16 +619,7 @@ public class QuestBookGUI extends GuiScreen {
 
                 //order buttons
                 render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type"), x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                float scale;
-                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"));
-                if (size > 135f) {
-                    scale = (135f / size);
-                } else {
-                    scale = 1f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"), (x - 140) / scale, (y - 15) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                ScreenRenderer.resetScale();
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.sort_type.alphabetical"), 135f, 1f, x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if(posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                     selected = 1;
@@ -642,15 +633,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"));
-                if (size > 135f) {
-                    scale = (135f / size);
-                } else {
-                    scale = 1f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"), (x - 140) / scale, (y - 5) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                ScreenRenderer.resetScale();
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.sort_type.level"), 135f, 1f, x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if(posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                     selected = 2;
@@ -664,15 +647,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"));
-                if (size > 135f) {
-                    scale = (135f / size);
-                } else {
-                    scale = 1f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"), (x - 140) / scale, (y + 5) / scale, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                ScreenRenderer.resetScale();
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.sort_type.rarity"), 135f, 1f, x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if(posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
                     selected = 3;
@@ -748,9 +723,9 @@ public class QuestBookGUI extends GuiScreen {
 
                 //searchBar
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else if (searchBarText.length() <= 0 && !searchBarFocused) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
 
                     String text = searchBarText;
@@ -898,14 +873,7 @@ public class QuestBookGUI extends GuiScreen {
                     placedCubes++;
                 }
 
-                size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.item_guide"));
-                if (size > 75f) {
-                    scale = (75f / size) * 2f;
-                } else {
-                    scale = 2f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.item_guide"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.item_guide"), 75f, 2f, x - 158f, y - 74, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }
@@ -916,15 +884,15 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_1"), x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_2"), x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_3"), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_4"), x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_5"), x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_6"), x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_7"), x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_8"), x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests.description_9"), x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_1"), 150f, 1f, x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_2"), 150f, 1f, x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_3"), 150f, 1f, x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_4"), 150f, 1f, x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_5"), 150f, 1f, x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_6"), 150f, 1f, x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_7"), 150f, 1f, x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_8"), 150f, 1f, x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests.description_9"), 150f, 1f, x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                     hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + I18n.format("wynntils.questbook.ui.questbook.button.back_to_menu"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3"), TextFormatting.GREEN + I18n.format("wynntils.questbook.ui.questbook.button.generic.left_to_select"));
@@ -947,9 +915,9 @@ public class QuestBookGUI extends GuiScreen {
 
                 //searchBar
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else if (searchBarText.length() <= 0 && !searchBarFocused) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
 
                     String text = searchBarText;
@@ -1100,15 +1068,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                float scale;
-                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.quests"));
-                if (size > 75f) {
-                    scale = (75f / size) * 2f;
-                } else {
-                    scale = 2f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.quests"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.quests"), 75f, 2f, x - 158f, y - 74, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }else if(page == QuestBookPage.CONFIGS) {
@@ -1201,13 +1161,13 @@ public class QuestBookGUI extends GuiScreen {
                     render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 261, 21, 21);
                 }
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_1"), x - 81, y - 40, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_2"), x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_1"), x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_2"), x - 155, y + 35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_3"), x - 155, y + 45, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_4"), x - 155, y + 55, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.intro_5"), x - 155, y + 65, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_1"), 150f, 1f, x - 81, y - 40, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.select_to_continue_2"), 150f, 1f, x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.intro_1"), 150f, 1f, x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.intro_2"), 150f, 1f, x - 155, y + 35, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.intro_3"), 150f, 1f, x - 155, y + 45, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.intro_4"), 150f, 1f, x - 155, y + 55, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.intro_5"), 150f, 1f, x - 155, y + 65, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);
                 render.drawRect(Textures.UIs.quest_book, x + 48, y - 90, 224, 253, 17, 18);
@@ -1215,15 +1175,7 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawRect(Textures.UIs.quest_book, x + 100, y - 90, 224, 253, 17, 18);
                 render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
 
-                float scale;
-                float size = render.getStringWidth(I18n.format("wynntils.questbook.ui.questbook.user_profile"));
-                if (size > 75f) {
-                    scale = (75f / size) * 2f;
-                } else {
-                    scale = 2f;
-                }
-                ScreenRenderer.scale(scale);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.user_profile"), (x - 158f) / scale, (y - 74) / scale, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.user_profile"), 75f, 2f, x - 158f, y - 74, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }
@@ -1234,11 +1186,11 @@ public class QuestBookGUI extends GuiScreen {
                 render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
 
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_1"), x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_2"), x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_3"), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_4"), x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_5"), x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_1"), 150f, 1f, x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_2"), 150f, 1f, x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_3"), 150f, 1f, x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_4"), 150f, 1f, x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries.info_5"), 150f, 1f, x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                     hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + I18n.format("wynntils.questbook.ui.questbook.discoveries.back_to_quests"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2"), TextFormatting.GRAY + I18n.format("wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3"), TextFormatting.GREEN + I18n.format("wynntils.questbook.ui.questbook.button.generic.left_to_select"));
@@ -1248,9 +1200,9 @@ public class QuestBookGUI extends GuiScreen {
                 }
 
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.type"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else if (searchBarText.length() <= 0 && !searchBarFocused) {
-                    render.drawString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.search_bar.click"), 110f, 1f, x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
 
                     String text = searchBarText;
@@ -1393,8 +1345,7 @@ public class QuestBookGUI extends GuiScreen {
                     }
                 }
 
-                ScreenRenderer.scale(2f);
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.discoveries"), (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.discoveries"), 75f, 2f, x - 158f, y - 74, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }
@@ -1402,12 +1353,10 @@ public class QuestBookGUI extends GuiScreen {
         //default texts
         ScreenRenderer.beginGL(0, 0);
         {
-            ScreenRenderer.scale(0.7f);
-            if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.version.stable", Reference.VERSION), (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-            } else {
-                render.drawString(I18n.format("wynntils.questbook.ui.questbook.version.cutting_edge", Reference.BUILD_NUMBER == -1 ? "?" : Reference.BUILD_NUMBER), (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-            }
+            if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE)
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.version.stable", Reference.VERSION), 160f, 0.7f, x - 80, y + 86, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            else
+                render.drawScaledString(I18n.format("wynntils.questbook.ui.questbook.version.cutting_edge", Reference.BUILD_NUMBER == -1 ? "?" : Reference.BUILD_NUMBER), 160f, 0.7f, x - 80, y + 86, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             ScreenRenderer.resetScale();
         }
         ScreenRenderer.endGL();

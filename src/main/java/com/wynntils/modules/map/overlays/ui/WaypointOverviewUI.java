@@ -8,6 +8,7 @@ import com.wynntils.modules.map.instances.WaypointProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -41,8 +42,8 @@ public class WaypointOverviewUI extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 185, 39, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width/2 - 150, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + I18n.format("wynntils.map.ui.waypoints.floating.icon"), this.width/2 - 185, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + I18n.format("wynntils.map.ui.waypoints.floating.name"), this.width/2 - 150, 39, 0xFFFFFF);
         drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 - 35, 39, 0xFFFFFF);
         drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 20, 39, 0xFFFFFF);
         drawCenteredString(fontRenderer,TextFormatting.BOLD + "Y", this.width/2 + 60, 39, 0xFFFFFF);
@@ -130,8 +131,8 @@ public class WaypointOverviewUI extends GuiScreen {
         this.buttonList.removeAll(editButtons);
         editButtons.clear();
         for (int i = 0; i < Math.min(pageHeight, waypoints.size() - pageHeight * page); i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85,50 + 25 * i,40,20,"Edit..."));
-            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130, 50 + 25 * i, 40, 20, "Delete"));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85,50 + 25 * i,40,20,I18n.format("wynntils.map.ui.waypoints.button.edit")));
+            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130, 50 + 25 * i, 40, 20, I18n.format("wynntils.chat.tabgui.button.delete")));
         }
         this.buttonList.addAll(editButtons);
     }

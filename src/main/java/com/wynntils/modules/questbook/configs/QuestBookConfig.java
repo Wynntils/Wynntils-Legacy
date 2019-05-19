@@ -25,7 +25,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.questbook.fuzzy_search.display_name", description = "wynntils.config.questbook.fuzzy_search.description")
     public boolean useFuzzySearch = true;
 
-    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster")
+    @Setting(displayName = "wynntils.config.questbook.scan_discoveries.display_name", description = "wynntils.config.questbook.scan_discoveries.description")
     public boolean scanDiscoveries = true;
 
 }
