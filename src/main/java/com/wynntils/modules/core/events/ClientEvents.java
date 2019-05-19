@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -21,8 +22,10 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEvents implements Listener {
@@ -112,4 +115,15 @@ public class ClientEvents implements Listener {
         }
     }
 
+    /**
+     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
+     * 
+     * @param e
+     */
+    @SubscribeEvent
+    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
+        if (Reference.onWorld && e.getEntityPlayer() != null && (e.getEntityPlayer().isInvisible() || e.getEntityPlayer().isSpectator() || e.getEntityPlayer().isPotionActive(Potion.getPotionById(14)))) {
+            e.setCanceled(true);
+        }
+    }
 }

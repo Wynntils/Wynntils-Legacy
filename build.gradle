@@ -59,6 +59,9 @@ processResources {
 
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest {
+        attributes 'FMLAT': 'wynntils_at.cfg'
+    }
 }
 
 reobfJar {

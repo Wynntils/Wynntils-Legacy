@@ -10,7 +10,7 @@ import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
-import com.wynntils.core.framework.instances.ModuleContainer;
+import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -128,7 +128,7 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer || e instanceof WynncraftServerEvent) {
+        if(Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent) {
             ReflectionFields.Event_phase.setValue(e, null);
             eventBus.post(e);
         }
@@ -144,6 +144,8 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if(!overlay.active) continue;
+
                     if (overlay.overrideElements.length != 0) {
                         boolean contained = false;
                         for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {
@@ -175,6 +177,8 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
+                    if(!overlay.active) continue;
+
                     if (overlay.overrideElements.length != 0) {
                         boolean contained = false;
                         for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {

@@ -5,11 +5,10 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -23,8 +22,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
@@ -53,6 +52,7 @@ public class ServerEvents implements Listener {
     }
 
     boolean waitingForFriendList = false;
+    long guildListTimeout = -1;
 
     /**
      * Called when the user joins a Wynncraft World, used to register some stuff:
@@ -63,19 +63,24 @@ public class ServerEvents implements Listener {
      * @param e Represents the event
      */
     @SubscribeEvent
-    public void joinWorldEvent(WynnWorldJoinEvent e) {
-        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
-
+    public void joinWorldEvent(WynnWorldEvent.Join e) {
         if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
-
         if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
         waitingForFriendList = true;
+
+        if(WebManager.getPlayerProfile().getGuildName() != null) {
+            guildListTimeout = System.currentTimeMillis();
+            Minecraft.getMinecraft().player.sendChatMessage("/guild list");
+        }
+        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
     }
 
     /**
      * Detects and register the current friend list of the user
      * Called when the client receives a chat message
+     *
+     * Also detects the guild list messages to register the guild members
      *
      * @param e Represents the Event
      */
@@ -96,12 +101,34 @@ public class ServerEvents implements Listener {
 
             if(waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
+            return;
+        }
+        if(guildListTimeout != -1 && e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
+            if(System.currentTimeMillis() - guildListTimeout >= 350) {
+                guildListTimeout = -1;
+                return;
+            }
+
+            if(waitingForFriendList) e.setCanceled(true);
+
+            String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
+            PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
+            return;
+        }
+        if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
+            String[] splittedText = e.getMessage().getUnformattedText().split(" ");
+            if(!splittedText[1].equalsIgnoreCase("has")) return;
+
+            if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
+            else if(splittedText[2].equalsIgnoreCase("kicked")) PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3]);
         }
     }
 
     /**
      * Detects if the user added or removed a user from their friend list
      * Called when the user execute /friend add or /friend remove
+     *
+     * Also detects the guild list command used to parse the entire guild list
      *
      * @param e Represents the Event
      */
@@ -111,10 +138,10 @@ public class ServerEvents implements Listener {
             PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
         }else if(e.getMessage().startsWith("/friend remove ")) {
             PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
+        }else if(e.getMessage().startsWith("/guild list")) {
+            guildListTimeout = System.currentTimeMillis();
         }
     }
-
-    long currentMillis = 0;
 
     /**
      * Detects when the user enters the Wynncraft Server
@@ -123,17 +150,15 @@ public class ServerEvents implements Listener {
      * @param e
      */
     @SubscribeEvent
-    public void onJoinLobby(TickEvent.ClientTickEvent e) {
+    public void onJoinLobby(RenderPlayerEvent.Post e) {
         if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
-            new Delay(() -> {
-                boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-                Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
-                CoreDBConfig.INSTANCE.showChangelogs = false;
+            CoreDBConfig.INSTANCE.showChangelogs = false;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
 
-                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-            }, 80);
+            boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
         }
     }
 

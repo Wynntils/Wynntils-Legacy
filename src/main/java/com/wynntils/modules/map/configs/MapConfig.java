@@ -37,31 +37,6 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.map.only_north.display_name", description = "wynntils.config.map.only_north.description", order = 5)
     public boolean northOnly = false;
 
-    @Setting(displayName = "wynntils.config.map.record_chest_tier.display_name", description = "wynntils.config.map.record_chest_tier.description", order = 6)
-    public ChestTiers chestTiers = ChestTiers.TIER_3;
-
-    public enum ChestTiers {
-        TIER_1(4, "wynntils.config.map.enum.chest_tier.tier_1"),
-        TIER_2(3, "wynntils.config.map.enum.chest_tier.tier_2"),
-        TIER_3(2, "wynntils.config.map.enum.chest_tier.tier_3"),
-        TIER_4(1, "wynntils.config.map.enum.chest_tier.tier_4"),
-        NONE(0, "wynntils.config.map.enum.chest_tier.none");
-
-        private int tierArrayIndex; //Array starts at 1 :P
-        private String[] tiers = new String[]{"IV", "III", "II", "I"};
-        public String displayName;
-
-        ChestTiers(int tierArrayIndex, String displayName) {
-            this.tierArrayIndex = tierArrayIndex;
-            this.displayName = displayName;
-        }
-
-        public boolean isTierAboveThis(String testTier) {
-            ArrayList<String> allowedTiers = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
-            return allowedTiers.contains(testTier);
-        }
-    }
-
     @Setting(displayName = "wynntils.config.map.minimap_zoom.display_name", description = "wynntils.config.map.minimap_zoom.description")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
@@ -91,6 +66,33 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
+        @Setting(displayName = "wynntils.config.map.record_chest_tier.display_name", description = "wynntils.config.map.record_chest_tier.description", order = 6)
+        public ChestTiers chestTiers = ChestTiers.TIER_3;
+
+        public enum ChestTiers {
+            TIER_1(4, "wynntils.config.map.enum.chest_tier.tier_1"),
+            TIER_2(3, "wynntils.config.map.enum.chest_tier.tier_2"),
+            TIER_3(2, "wynntils.config.map.enum.chest_tier.tier_3"),
+            TIER_4(1, "wynntils.config.map.enum.chest_tier.tier_4"),
+            NONE(0, "wynntils.config.map.enum.chest_tier.none");
+
+            private int tierArrayIndex; //Array starts at 1 :P
+            private String[] tiers = new String[]{"IV", "III", "II", "I"};
+            public String displayName;
+
+            ChestTiers(int tierArrayIndex, String displayName) {
+                this.tierArrayIndex = tierArrayIndex;
+                this.displayName = displayName;
+            }
+
+            public boolean isTierAboveThis(String testTier) {
+                ArrayList<String> allowedTiers = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                return allowedTiers.contains(testTier);
+            }
+        }
+
+        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
+        public boolean compassMarker = true;
     }
 
 

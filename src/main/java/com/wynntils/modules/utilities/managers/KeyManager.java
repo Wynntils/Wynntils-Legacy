@@ -52,6 +52,11 @@ public class KeyManager {
                 MapConfig.INSTANCE.mapZoom += 5;
             }
         });
+
+        CoreModule.getModule().registerKeyBinding("Cast First Spell", Keyboard.KEY_Z, "Wynntils", true, QuickCastManager::castFirstSpell);
+        CoreModule.getModule().registerKeyBinding("Cast Second Spell", Keyboard.KEY_X, "Wynntils", true, QuickCastManager::castSecondSpell);
+        CoreModule.getModule().registerKeyBinding("Cast Third Spell", Keyboard.KEY_C, "Wynntils", true, QuickCastManager::castThirdSpell);
+        CoreModule.getModule().registerKeyBinding("Cast Fourth Spell", Keyboard.KEY_V, "Wynntils", true, QuickCastManager::castFourthSpell);
     }
 
     public static KeyHolder getLockInventoryKey() {

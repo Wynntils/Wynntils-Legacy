@@ -79,7 +79,6 @@ public class HealthBarOverlay extends Overlay {
             case Skyrim:
                 drawDefaultBar(-1, 8, 132, 147, textColor);
                 break;
-
         }
     }
 

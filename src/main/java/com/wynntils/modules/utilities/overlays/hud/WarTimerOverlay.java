@@ -7,7 +7,7 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
+
     public WarTimerOverlay() {
         super("War Timer overlay", I18n.format("wynntils.utilities.overlays.war_timer.display_name"), 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
@@ -145,7 +146,7 @@ public class WarTimerOverlay extends Overlay {
         }
     }
     
-    public static void onWorldJoin(WynnWorldJoinEvent event) {
+    public static void onWorldJoin(WynnWorldEvent.Join event) {
         if (Reference.onWars) {
             if (stage == WarStage.WAR_STARTING) {
                 stage = WarStage.WAITING_FOR_MOB_TIMER;
@@ -229,7 +230,7 @@ public class WarTimerOverlay extends Overlay {
         return stage;
     }
 
-    public static enum WarStage {
+    public enum WarStage {
         WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR;
     }
 }

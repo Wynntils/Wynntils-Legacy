@@ -22,5 +22,6 @@ public class CommonColors {
     public static final CustomColor MAGENTA = CustomColor.fromString("ff0083",1);
     public static final CustomColor ORANGE = CustomColor.fromString("ff9000",1);
     public static final CustomColor WHITE = CustomColor.fromString("ffffff",1);
+    public static final CustomColor RAINBOW = new CustomColor(-10, -10, -10);
 
 }

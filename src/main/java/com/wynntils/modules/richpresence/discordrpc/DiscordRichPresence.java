@@ -16,8 +16,8 @@ public class DiscordRichPresence {
         return instance;
     }
     
-    public static interface DiscordRPC extends Library {
-        
+    public interface DiscordRPC extends Library {
+
         DiscordRPC INSTANCE = Native.loadLibrary("/assets/wynntils/native/" + Platform.RESOURCE_PREFIX + "/" + System.mapLibraryName("discord-rpc"), DiscordRPC.class);
         
         void Discord_Initialize(String applicationID, DiscordEventHandlers eventHandler, boolean autoRegister, String steamID);
@@ -94,27 +94,27 @@ public class DiscordRichPresence {
     
     public static class DiscordEventHandlers extends Structure {
 
-        public static interface OnReady extends Callback {
+        public interface OnReady extends Callback {
             void accept(DiscordUser user);
         }
         
-        public static interface OnDisconnected extends Callback {
+        public interface OnDisconnected extends Callback {
             void accept(int errorCode, String message);
         }
         
-        public static interface OnErrored extends Callback {
+        public interface OnErrored extends Callback {
             void accept(int errorCode, String message);
         }
         
-        public static interface OnJoinGame extends Callback {
+        public interface OnJoinGame extends Callback {
             void accept(String joinSecret);
         }
         
-        public static interface OnSpectateGame extends Callback {
+        public interface OnSpectateGame extends Callback {
             void accept(String spectateSecret);
         }
         
-        public static interface OnJoinRequest extends Callback {
+        public interface OnJoinRequest extends Callback {
             void accept(DiscordUser user);
         }
         

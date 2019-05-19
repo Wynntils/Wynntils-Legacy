@@ -21,6 +21,7 @@ import com.wynntils.webapi.profiles.MapMarkerProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -37,11 +38,14 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class WorldMapOverlay extends GuiScreen {
+public class WorldMapUI extends GuiScreen {
 
     private ScreenRenderer renderer = new ScreenRenderer();
+    private static int[] compassCoordinates;
 
     private GuiButton settingsBtn;
+    private GuiButton waypointMenuBtn;
+    private GuiButtonImage addWaypointBtn;
     private float centerPositionX;
     private float centerPositionZ;
     private int zoom = 0;
@@ -51,7 +55,7 @@ public class WorldMapOverlay extends GuiScreen {
     boolean holdingMapKey = false;
     long creationTime;
 
-    public WorldMapOverlay() {
+    public WorldMapUI() {
         mc = Minecraft.getMinecraft();
 
         creationTime = System.currentTimeMillis();
@@ -82,6 +86,7 @@ public class WorldMapOverlay extends GuiScreen {
                 if(c == 0) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
                     ModCore.mc().world.setSpawnPoint(new BlockPos(mmp.getX(), 0, mmp.getZ()));
+                    setCompassCoordinates(new int[]{mmp.getX(), mmp.getZ()});
                 }
             });
 
@@ -95,40 +100,61 @@ public class WorldMapOverlay extends GuiScreen {
             int texSizeX = 16;
             int texSizeZ = 16;
 
-            int zoomNeeded = -1000;
-
             switch (waypoint.getType()) {
                 case LOOTCHEST_T1:
                     texPosX = 136; texPosZ = 35;
-                    texSizeX = 154; texSizeZ = 51;
-                    zoomNeeded = 0;
+                    texSizeX = 154; texSizeZ = 53;
                     break;
                 case LOOTCHEST_T2:
                     texPosX = 118; texPosZ = 35;
-                    texSizeX = 136; texSizeZ = 51;
-                    zoomNeeded = 0;
+                    texSizeX = 136; texSizeZ = 53;
                     break;
                 case LOOTCHEST_T3:
                     texPosX = 82; texPosZ = 35;
-                    texSizeX = 100; texSizeZ = 51;
-                    zoomNeeded = 0;
+                    texSizeX = 100; texSizeZ = 53;
                     break;
                 case LOOTCHEST_T4:
                     texPosX = 100; texPosZ = 35;
-                    texSizeX = 118; texSizeZ = 51;
-                    zoomNeeded = 0;
+                    texSizeX = 118; texSizeZ = 53;
+                    break;
+                case DIAMOND:
+                    texPosX = 172; texPosZ = 37;
+                    texSizeX = 190; texSizeZ = 55;
+                    break;
+                case FLAG:
+                    //TODO handle colours
+                    texPosX = 154; texPosZ = 36;
+                    texSizeX = 172; texSizeZ = 54;
+                    break;
+                case SIGN:
+                    texPosX = 190; texPosZ = 36;
+                    texSizeX = 208; texSizeZ = 54;
+                    break;
+                case STAR:
+                    texPosX = 208; texPosZ = 36;
+                    texSizeX = 226; texSizeZ = 54;
+                    break;
+                case TURRET:
+                    texPosX = 226; texPosZ = 36;
+                    texSizeX = 244; texSizeZ = 54;
                     break;
             }
 
-            MapIcon mp = new MapIcon(Textures.Map.map_icons, waypoint.getName(), (int)waypoint.getX(), (int)waypoint.getZ(), 2.5f, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(zoomNeeded);
+            MapIcon mp = new MapIcon(Textures.Map.map_icons, waypoint.getName(), (int)waypoint.getX(), (int)waypoint.getZ(), 2.5f, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(waypoint.getZoomNeeded());
             mp.setOnClick(c -> {
                 if(c == 0) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
                     ModCore.mc().world.setSpawnPoint(new BlockPos(waypoint.getX(), 0, waypoint.getZ()));
+                    setCompassCoordinates(new int[]{(int) waypoint.getX(), (int) waypoint.getZ()});
                 }
             });
 
             mapIcons.add(mp);
+        }
+
+
+        if (compassCoordinates != null && compassCoordinates.length == 2) {
+            mapIcons.add(new MapIcon(Textures.Map.map_icons, "Compass Beacon", compassCoordinates[0], compassCoordinates[1], 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
         }
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
@@ -138,6 +164,8 @@ public class WorldMapOverlay extends GuiScreen {
     public void initGui() {
         super.initGui();
         this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, I18n.format("wynntils.map.ui.world_map.button.markers")));
+        this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
+        this.buttonList.add(addWaypointBtn = new GuiButtonImage(2,24,69,14,14,0,0, 0, Textures.Map.map_options.resourceLocation));
 
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
@@ -203,6 +231,7 @@ public class WorldMapOverlay extends GuiScreen {
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
             Tessellator tessellator = Tessellator.getInstance();
+
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
                 bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -245,6 +274,7 @@ public class WorldMapOverlay extends GuiScreen {
 
         renderer.clearMask();
         ScreenRenderer.endGL();
+
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -274,11 +304,10 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (settingsBtn.isMouseOver()) {
+        if (settingsBtn.isMouseOver() || addWaypointBtn.isMouseOver() || waypointMenuBtn.isMouseOver()) {
             super.mouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        if (mouseButton == 1) {
+            return;
+        } else if (mouseButton == 1) {
             updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
             return;
         }
@@ -296,8 +325,17 @@ public class WorldMapOverlay extends GuiScreen {
 
     @Override
     public void actionPerformed(GuiButton btn) {
-        if (btn.id == 1) { //Markers
+        if (btn == settingsBtn) {
             Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI());
+        } else if (btn == addWaypointBtn) {
+            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
+        } else if (btn == waypointMenuBtn) {
+            Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI());
         }
+    }
+
+    public static void setCompassCoordinates(int[] coord) {
+        if (!MapConfig.Waypoints.INSTANCE.compassMarker) return;
+        compassCoordinates = coord;
     }
 }

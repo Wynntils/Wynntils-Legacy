@@ -130,6 +130,12 @@ public class ChatManager {
                             }
                         }
                     }
+                    if (!currentNonTranslatable.isEmpty()) {
+                        oldText += currentNonTranslatable;
+                        if (previousWynnic) {
+                            toAdd += currentNonTranslatable;
+                        }
+                    }
                     if (previousWynnic) {
                         ITextComponent oldComponent = new TextComponentString(oldText);
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -152,24 +158,15 @@ public class ChatManager {
         }
 
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
-            String inviteText = in.getUnformattedText();
-            List<ITextComponent> partyInvite = new ArrayList<>();
-            ITextComponent preText = new TextComponentString(inviteText.substring(0, inviteText.indexOf("/")));
-            preText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
-            partyInvite.add(preText);
-            String command = inviteText.substring(inviteText.indexOf("/"), inviteText.indexOf(" to "));
-            ITextComponent clickableText = new TextComponentString(command);
-            clickableText.getStyle()
-                    .setColor(inviteText.contains("party") ? TextFormatting.GOLD : TextFormatting.AQUA)
-                    .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                    .setUnderlined(true)
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
-            partyInvite.add(clickableText);
-            ITextComponent endText = new TextComponentString(inviteText.substring(inviteText.indexOf(" to ")));
-            endText.getStyle().setColor(inviteText.contains("party") ? TextFormatting.YELLOW : TextFormatting.BLUE);
-            partyInvite.add(endText);
-            in.getSiblings().clear();
-            in.getSiblings().addAll(partyInvite);
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
+                }
+            }
         }
 
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {

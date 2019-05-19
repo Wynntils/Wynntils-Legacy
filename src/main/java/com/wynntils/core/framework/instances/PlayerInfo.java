@@ -7,6 +7,7 @@ package com.wynntils.core.framework.instances;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -15,17 +16,15 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
-import java.util.UUID;
 
 public class PlayerInfo {
 
     private static PlayerInfo instance;
-    private static int[] xpNeeded = new int[] {110,190,275,385,505,645,790,940,1100,1370,1570,1800,2090,2400,2720,3100,3600,4150,4800,5300,5900,6750,7750,8900,10200,11650,13300,15200,17150,19600,22100,24900,28000,31500,35500,39900,44700,50000,55800,62000,68800,76400,84700,93800,103800,114800,126800,140000,154500,170300,187600,206500,227000,249500,274000,300500,329500,361000,395000,432200,472300,515800,562800,613700,668600,728000,792000,860000,935000,1040400,1154400,1282600,1414800,1567500,1730400,1837000,1954800,2077600,2194400,2325600,2455000,2645000,2845000,3141100,3404710,3782160,4151400,4604100,5057300,5533840,6087120,6685120,7352800,8080800,8725600,9578400,10545600,11585600,12740000,14418250,16280000,21196500,200268440};
+    private static final int[] xpNeeded = new int[] {110,190,275,385,505,645,790,940,1100,1370,1570,1800,2090,2400,2720,3100,3600,4150,4800,5300,5900,6750,7750,8900,10200,11650,13300,15200,17150,19600,22100,24900,28000,31500,35500,39900,44700,50000,55800,62000,68800,76400,84700,93800,103800,114800,126800,140000,154500,170300,187600,206500,227000,249500,274000,300500,329500,361000,395000,432200,472300,515800,562800,613700,668600,728000,792000,860000,935000,1040400,1154400,1282600,1414800,1567500,1730400,1837000,1954800,2077600,2194400,2325600,2455000,2645000,2845000,3141100,3404710,3782160,4151400,4604100,5057300,5533840,6087120,6685120,7352800,8080800,8725600,9578400,10545600,11585600,12740000,14418250,16280000,21196500,200268440};
     private static DecimalFormat perFormat = new DecimalFormat("##.#");
 
     private Minecraft mc;
-    private String name;
-    private UUID uuid;
+
     private ClassType currentClass = ClassType.NONE;
     private int health = -1;
     private int maxHealth = -1;
@@ -38,12 +37,13 @@ public class PlayerInfo {
 
     private HashSet<String> friendList = new HashSet<>();
     private HashSet<String> guildList = new HashSet<>();
+    private PartyContainer playerParty = new PartyContainer();
 
     int lastLevel = 0;
     int lastXp = 0;
 
     public PlayerInfo(Minecraft mc) {
-        this.mc = mc; this.name = mc.player.getName(); this.uuid = mc.player.getUniqueID();
+        this.mc = mc;
 
         instance = this;
     }
@@ -114,14 +114,6 @@ public class PlayerInfo {
         this.currentClass = currentClass;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public UUID getUUID() {
-        return uuid;
-    }
-
     public ClassType getCurrentClass() {
         return currentClass;
     }
@@ -163,6 +155,10 @@ public class PlayerInfo {
     public int getLevel() { return currentClass == ClassType.NONE ? -1 : level; }
 
     public int getMaxMana() {return currentClass == ClassType.NONE ? -1 : 20;}
+
+    public PartyContainer getPlayerParty() {
+        return playerParty;
+    }
 
     public int getClassId() {
         return classId;

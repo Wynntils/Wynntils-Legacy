@@ -8,7 +8,6 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,7 +15,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.Sys;
 
 public class LowHealthVignetteOverlay extends Overlay {
 
@@ -45,15 +43,20 @@ public class LowHealthVignetteOverlay extends Overlay {
             GlStateManager.depthMask(false);
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.disableAlpha();
+
             Textures.Masks.vignette.bind();
+
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(0.0D, (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
-            bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
+            {
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.pos(0.0D, (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
+            }
             tessellator.draw();
+
             GlStateManager.depthMask(true);
             GlStateManager.enableDepth();
             GlStateManager.enableAlpha();

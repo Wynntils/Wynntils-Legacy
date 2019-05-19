@@ -9,6 +9,7 @@ import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -117,6 +118,9 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     new Delay(() -> {
                         Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(true), true));
                     }, 1);
+                    break;
+                case "debug":
+                    QuestManager.requestQuestBookReading();
                     break;
                 default:
                     throw new CommandException("wynntils.commands.wynntils.error.invalid_argument");

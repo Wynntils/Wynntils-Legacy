@@ -15,6 +15,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.ui.OverlayPositionsUI;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.framework.ui.UI;
+import com.wynntils.core.utils.Easing;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -52,10 +53,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestBookGUI extends GuiScreen {
@@ -75,6 +73,7 @@ public class QuestBookGUI extends GuiScreen {
         acceptNext = false;
         animationCompleted = false;
         requestOpening = true;
+        time = Minecraft.getSystemTime();
 
         if(page == QuestBookPage.ITEM_GUIDE) updateItemListSearch();
         if(page == QuestBookPage.QUESTS) updateQuestSearch();
@@ -176,7 +175,10 @@ public class QuestBookGUI extends GuiScreen {
                 if (searchBarText.length() <= 0) {
                     return;
                 }
-                searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+
+                if(Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) searchBarText = "";
+                else searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
                 text_flicker = System.currentTimeMillis();
                 keepForTime = false;
@@ -543,20 +545,24 @@ public class QuestBookGUI extends GuiScreen {
         }).collect(Collectors.toList());
     }
 
-    private void updateQuestSearch() {
-        ArrayList<QuestInfo> quests = QuestManager.getCurrentQuestsData();
+    public void updateQuestSearch() {
+        HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
-        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) quests.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : quests;
+        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
+                .filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase()))
+                .collect(Collectors.toList())
+                : new ArrayList<>(questsMap.values());
+
+        questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
+        questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }
     
-    private void updateDiscoverySearch() {
-        ArrayList<DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
+    public void updateDiscoverySearch() {
+        HashMap<String, DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
         
-        discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : discoveries;
+        discoverySearch = !searchBarText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.values().stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase())).collect(Collectors.toList()) : new ArrayList<>(discoveries.values());
         
-        discoverySearch.sort((firstDiscovery, secondDiscovery) -> {
-            return firstDiscovery.getMinLevel() - secondDiscovery.getMinLevel();
-        });
+        discoverySearch.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
         
         discoverySearch = (ArrayList<DiscoveryInfo>) discoverySearch.stream().filter(c -> {
             if (territory && c.getType() == DiscoveryType.TERRITORY) return true;
@@ -566,6 +572,7 @@ public class QuestBookGUI extends GuiScreen {
         }).collect(Collectors.toList());
     }
 
+    private static long time = Minecraft.getSystemTime();
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
@@ -573,7 +580,8 @@ public class QuestBookGUI extends GuiScreen {
         ScreenRenderer.beginGL(0,0);
         {
             if (requestOpening) {
-                float animationTick = ((getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 0.5f;
+                float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
+                animationTick /= 10f;
 
                 if (animationTick <= 1) {
                     ScreenRenderer.scale(animationTick);

@@ -69,7 +69,7 @@ public class WorldMapSettingsUI extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || // DEFAULT: E
                 keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) { //DEFAULT: M
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
+            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
         }
         super.keyTyped(typedChar, keyCode);
     }
@@ -80,7 +80,7 @@ public class WorldMapSettingsUI extends GuiScreen {
             selectedTexture = MapConfig.IconTexture.values()[(selectedTexture.ordinal() + 1) % MapConfig.IconTexture.values().length];
             button.displayString = I18n.format(selectedTexture.displayName);
         } else if (button.id == 100) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
+            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
         } else if (button.id == 102) {
             MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton cb: this.buttonList) {
@@ -90,7 +90,7 @@ public class WorldMapSettingsUI extends GuiScreen {
             }
             MapConfig.INSTANCE.iconTexture = selectedTexture;
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapOverlay());
+            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
         } else if (button.id == 101) {
             this.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton b: this.buttonList) {

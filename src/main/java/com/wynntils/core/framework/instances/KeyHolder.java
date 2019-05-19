@@ -28,6 +28,10 @@ public class KeyHolder {
         ClientRegistry.registerKeyBinding(keyBinding);
     }
 
+    public boolean isPress() {
+        return press;
+    }
+
     public Runnable getOnAction() {
         return onAction;
     }

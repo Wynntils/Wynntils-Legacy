@@ -6,7 +6,7 @@ package com.wynntils.modules;
 
 
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.modules.capes.CapesModule;
+import com.wynntils.modules.cosmetics.CosmeticsModule;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.MapModule;
@@ -25,7 +25,7 @@ public class ModuleManager {
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
         FrameworkManager.registerModule(new RichPresenceModule());
-        FrameworkManager.registerModule(new CapesModule());
+        FrameworkManager.registerModule(new CosmeticsModule());
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());
         FrameworkManager.registerModule(new MapModule());

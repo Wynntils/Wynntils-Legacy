@@ -46,15 +46,20 @@ public class DrowningVignetteOverlay extends Overlay {
             GlStateManager.depthMask(false);
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.disableAlpha();
+
             Textures.Masks.vignette.bind();
+
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-            bufferbuilder.pos(0.0D, (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
-            bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
-            bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
-            bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
+            {
+                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.pos(0.0D, (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
+            }
             tessellator.draw();
+
             GlStateManager.depthMask(true);
             GlStateManager.enableDepth();
             GlStateManager.enableAlpha();

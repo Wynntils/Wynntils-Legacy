@@ -4,34 +4,33 @@
 
 package com.wynntils.modules.richpresence.profiles;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
+import com.wynntils.modules.richpresence.events.RPCJoinHandler;
 import com.wynntils.webapi.WebManager;
 
 import java.time.OffsetDateTime;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class RichProfile {
 
     final DiscordRichPresence.DiscordRPC rpc;
     Thread shutdown = new Thread(this::disconnectRichPresence);
 
-    ScheduledFuture callbacks;
+    SecretContainer joinSecret = null;
+
+    DiscordRichPresence.DiscordRichPresenceStructure lastStructure = null;
 
     public RichProfile(String id) {
         rpc = DiscordRichPresence.discordInitialize();
 
         DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
         handler.ready = user -> {
+            System.out.println("DISCORD READY"); //HeyZeer0: for a random reason, it doesn't seems to work without this println
             if(WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "#" + user.discriminator);
-            callbacks.cancel(true);
         };
+        handler.joinGame = new RPCJoinHandler();
 
         rpc.Discord_Initialize(id, handler, true, null);
-
-        //HeyZeer0: this handles the events, since we just want the ready one, and it is triggered only once, this executorals is stopped after receiving it
-        callbacks = Utils.runTaskTimer(rpc::Discord_RunCallbacks, TimeUnit.SECONDS, 2);
 
         Runtime.getRuntime().addShutdownHook(shutdown);
     }
@@ -62,6 +61,16 @@ public class RichProfile {
         richPresence.largeImageText = largText;
         richPresence.startTimestamp = date.toInstant().getEpochSecond();
         richPresence.largeImageKey = "wynn";
+
+        if(joinSecret != null) {
+            richPresence.joinSecret = joinSecret.toString();
+            richPresence.partyId = joinSecret.id;
+            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partyMax = 15;
+        }
+
+        lastStructure = richPresence;
+
         rpc.Discord_UpdatePresence(richPresence);
     }
 
@@ -87,12 +96,57 @@ public class RichProfile {
         richPresence.largeImageText = largText;
         richPresence.startTimestamp = date.toInstant().getEpochSecond();
         richPresence.smallImageKey = "wynn";
+
+        if(joinSecret != null) {
+            richPresence.joinSecret = joinSecret.toString();
+            richPresence.partyId = joinSecret.id;
+            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partyMax = 15;
+        }
+
+        lastStructure = richPresence;
+
         rpc.Discord_UpdatePresence(richPresence);
     }
 
+    /**
+     * Runs all the callbacks from the RPC
+     */
+    public void runCallbacks() {
+        if(rpc == null) return;
+
+        rpc.Discord_RunCallbacks();
+    }
+
+    /**
+     * Updates the Join Secret
+     *
+     * @param joinSecret the join secret
+     */
+    public void setJoinSecret(SecretContainer joinSecret) {
+        this.joinSecret = joinSecret;
+
+        if(lastStructure != null) updateRichPresence(lastStructure.state, lastStructure.details, lastStructure.largeImageKey, lastStructure.largeImageText, OffsetDateTime.now());
+    }
+
+    public boolean validSecrent(String secret) {
+        return joinSecret != null && joinSecret.getRandomHash().equals(secret);
+    }
+
+    /**
+     * Shutdown the RPC
+     */
     public void disconnectRichPresence() {
-        callbacks.cancel(true);
         rpc.Discord_Shutdown();
+    }
+
+    /**
+     * Gets the join secret container
+     *
+     * @return the join secret container
+     */
+    public SecretContainer getJoinSecret() {
+        return joinSecret;
     }
 
 }

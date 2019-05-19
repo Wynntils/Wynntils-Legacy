@@ -2,13 +2,13 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.modules.capes.layers;
+package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelElytra;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -31,7 +31,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     /**
      * The model used by the Elytra.
      */
-    private final ModelElytra modelElytra = new ModelElytra();
+    private final CustomElytraModel modelElytra = new CustomElytraModel();
 
     public LayerElytra(RenderPlayer playerRendererIn) {
         this.renderPlayer = playerRendererIn;
@@ -45,7 +45,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
         if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID()) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             if (entitylivingbaseIn instanceof AbstractClientPlayer) {
                 AbstractClientPlayer abstractclientplayer = entitylivingbaseIn;
@@ -89,8 +89,10 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             if (entitylivingbaseIn.isSneaking()) {
                 f1 += 15.0F;
             }
+
             GlStateManager.rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
+
             this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 

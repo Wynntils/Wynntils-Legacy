@@ -7,6 +7,7 @@ package com.wynntils.modules.richpresence;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.richpresence.configs.RichPresenceConfig;
+import com.wynntils.modules.richpresence.events.ClientEvents;
 import com.wynntils.modules.richpresence.events.ServerEvents;
 import com.wynntils.modules.richpresence.profiles.DataProfile;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
@@ -29,6 +30,7 @@ public class RichPresenceModule extends Module {
         module = this;
 
         registerEvents(new ServerEvents());
+        registerEvents(new ClientEvents());
 
         registerSettings(RichPresenceConfig.class);
     }
@@ -52,4 +54,5 @@ public class RichPresenceModule extends Module {
     public DataProfile getData() {
         return modData;
     }
+
 }

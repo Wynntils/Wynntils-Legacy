@@ -6,10 +6,7 @@ package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.WynnClassChangeEvent;
-import com.wynntils.core.events.custom.WynnWorldJoinEvent;
-import com.wynntils.core.events.custom.WynnWorldLeftEvent;
-import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -93,7 +90,7 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onWorldJoin(WynnWorldJoinEvent e) {
+    public void onWorldJoin(WynnWorldEvent.Join e) {
         if (Reference.onWars) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             if (WarTimerOverlay.getTerritory() != null) {
@@ -123,7 +120,7 @@ public class ServerEvents implements Listener {
     public static boolean forceUpdate = false;
 
     @SubscribeEvent
-    public void onWorldLeft(WynnWorldLeftEvent e) {
+    public void onWorldLeft(WynnWorldEvent.Leave e) {
         if (updateTimer != null) {
             updateTimer.cancel(true);
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;

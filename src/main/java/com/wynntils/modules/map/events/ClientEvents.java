@@ -31,21 +31,21 @@ public class ClientEvents implements Listener {
     public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if(e.getGuiInventory().getLowerInv().getName().contains("Loot Chest ")) {
             String tier = e.getGuiInventory().getLowerInv().getName().replace("Loot Chest ", "");
-            if (!MapConfig.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
+            if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
 
             WaypointProfile wp = null;
             switch (tier) {
                 case "IV":
-                    wp = new WaypointProfile("Loot Chest T4", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T4);
+                    wp = new WaypointProfile("Loot Chest T4", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T4, -1000);
                     break;
                 case "III":
-                    wp = new WaypointProfile("Loot Chest T3", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T3);
+                    wp = new WaypointProfile("Loot Chest T3", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T3, -1000);
                     break;
                 case "II":
-                    wp = new WaypointProfile("Loot Chest T2", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T2);
+                    wp = new WaypointProfile("Loot Chest T2", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T2, -1000);
                     break;
                 case "I":
-                    wp = new WaypointProfile("Loot Chest T1", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T1);
+                    wp = new WaypointProfile("Loot Chest T1", lastX, lastY, lastZ, CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T1, -1000);
                     break;
             }
             if(wp != null) {
