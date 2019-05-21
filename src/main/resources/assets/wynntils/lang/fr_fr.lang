@@ -105,8 +105,8 @@ wynntils.config.map.textures.enum.pointer_type.triangle=Triangle
 
 ## MAP WAYPOINTS CONFIG ##
 wynntils.config.map.waypoints.display_path=Carte/Waypoints
-wynntils.config.map.waypoints.compass_marker.display_name=Compass Marker ##TODO
-wynntils.config.map.waypoints.compass_marker.description=Should a marker appear on the map where the compass is currently pointing towards? ##TODO
+wynntils.config.map.waypoints.compass_marker.display_name=Marqueur de Boussole
+wynntils.config.map.waypoints.compass_marker.description=Un repère devrait-il apparaître sur la carte vers laquelle la boussole pointe actuellement?
 
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Musique
@@ -127,8 +127,8 @@ wynntils.config.questbook.search_click.display_name=La barre de Recherche Exige 
 wynntils.config.questbook.search_click.description=Devez-vous cliquer sur la barre de recherche avant de taper ou être en mesure de taper dans la barre de recherche immédiatement après l’ouverture du livre de quête?
 wynntils.config.questbook.fuzzy_search.display_name=Recherce Floue
 wynntils.config.questbook.fuzzy_search.description=Devrait-on utiliser un algorithme de recherche différent qui permet de rechercher des acronymes et des abréviations?
-wynntils.config.questbook.scan_discoveries.display_name=Scan Discoveries ##TODO
-wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster ##TODO
+wynntils.config.questbook.scan_discoveries.display_name=Scannez Découvertes
+wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nLa désactivation de cela fera le questbook ne montre pas l’onglet découvertes, mais fera les analyses questbook plus rapide.
 
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Présence Riche
@@ -155,10 +155,10 @@ wynntils.config.utils.prevent_mythic.display_name=Prévenir la fermeture du coff
 wynntils.config.utils.prevent_mythic.description=Faut-il empêcher la fermeture des coffres de pillage lorsqu’ils contiennent des mythes?
 wynntils.config.utils.prevent_slot_click.display_name=Empêcher le clic de fente sur les articles verrouillés
 wynntils.config.utils.prevent_slot_click.description=Devrait-on bloquer le déplacement des articles à destination et en provenance des fentes d’inventaire verrouillées?
-wynntils.config.utils.afk_collision_block.display_name=Block Player Collision When AFK ##TODO
-wynntils.config.utils.afk_collision_block.description=Should player collision be blocked when you are AFK? ##TODO
-wynntils.config.utils.highlight_on_hotbar.display_name=Display Item Highlighting on Hotbar ##TODO
-wynntils.config.utils.highlight_on_hotbar.description=Should the highlight of item rarities be displayed on the hotbar? ##TODO
+wynntils.config.utils.afk_collision_block.display_name=Bloquer les collisions de joueurs quand AFK
+wynntils.config.utils.afk_collision_block.description=Faut-il bloquer la collision des joueurs lorsque vous êtes AFK?
+wynntils.config.utils.highlight_on_hotbar.display_name=Afficher l’élément en surbrillance dans la barre d’affichage
+wynntils.config.utils.highlight_on_hotbar.description=Devrait-on afficher les points saillants des raretés sur la barre d’affichage?
 
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Guerre
@@ -659,7 +659,7 @@ wynntils.map.toasts.new_map_entry.body=Tu as trouvé un coffre de catégorie %s!
 
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Marqeurs
-wynntils.map.ui.world_map.button.waypoints=Waypoints ##TODO
+wynntils.map.ui.world_map.button.waypoints=Points de Cheminement
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Annuler
@@ -685,16 +685,16 @@ wynntils.map.overlays.minimap.west_short=O
 wynntils.map.overlays.minimap.north_west_short=NO
 
 ## WAYPOINT CREATION MENU ##
-wynntils.map.ui.waypoint_creation.buttons.always_visible=Always Visible ##TODO
-wynntils.map.ui.waypoint_creation.floating.waypoint_name=Waypoint Name: ##TODO
-wynntils.map.ui.waypoint_creation.floating.coordinates=Coordinates: ##TODO
-wynntils.map.ui.world_map_settings.floating.icon=Icon: ##TODO
-wynntils.map.ui.world_map_settings.floating.color=Color: ##TODO
+wynntils.map.ui.waypoint_creation.buttons.always_visible=Toujours Visible
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=Nom de Point de cheminement
+wynntils.map.ui.waypoint_creation.floating.coordinates=Coordonnées:
+wynntils.map.ui.world_map_settings.floating.icon=Icône:
+wynntils.map.ui.world_map_settings.floating.color=Couleur:
 
 ## WAYPOINT MENU ##
-wynntils.map.ui.waypoints.floating.icon=Icon ##TODO
-wynntils.map.ui.waypoints.floating.name=Name ##TODO
-wynntils.map.ui.waypoints.button.edit=Edit... ##TODO
+wynntils.map.ui.waypoints.floating.icon=Icône
+wynntils.map.ui.waypoints.floating.name=Nom
+wynntils.map.ui.waypoints.button.edit=Modifier...
 
 #########
 # MUSIC #
