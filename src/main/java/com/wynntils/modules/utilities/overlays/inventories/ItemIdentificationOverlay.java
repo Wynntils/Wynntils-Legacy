@@ -170,7 +170,7 @@ public class ItemIdentificationOverlay implements Listener {
         boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
         boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
-        if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))))) {
+        if (!WebManager.getItems().containsKey(Utils.stripExtended(cleanse(stack.getDisplayName()), 1))) {
             if (inventory != null && Utils.stripColor(inventory.getDisplayName().getUnformattedText()).matches("\\[Pg\\. \\d+\\] Marketplace")) {
                 List<String> actualLore = Utils.getLore(stack);
                 if (actualLore.size() < 3)
@@ -195,7 +195,7 @@ public class ItemIdentificationOverlay implements Listener {
             }
             return;
         }
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))));
+        ItemProfile wItem = WebManager.getItems().get(Utils.stripExtended(cleanse(stack.getDisplayName()), 1));
 
         if (wItem.isIdentified()) {
             return;

@@ -73,6 +73,61 @@ public class Utils {
     }
 
     /**
+     * Removes the invisible character À
+     *
+     * @param input
+     * @return input string without the invisible character
+     */
+    public static String stripInvisibleChar(String input) {
+        return input.replace("À", "");
+    }
+
+    /**
+     * Removes the percentage box (e.g. [96%])
+     *
+     * @param input
+     * @return input string without the percentage box
+     */
+    public static String stripPercentage(String input) {
+        return input.replaceAll(" \\[\\d{1,3}%\\]", "");
+    }
+
+    /**
+     * Removes the "Perfect"-rainbow from input string
+     *
+     * @param input
+     * @return input string without the "Perfect"-rainbow
+     */
+    public static String stripPerfect(String input) {
+        return stripColor(input).replace("Perfect ", "");
+    }
+
+    /**
+     * Removes characters from input string based on extended.
+     *
+     * @param input
+     * @param extended
+     *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
+     *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
+     *      2 - Removes invisible characters and colours.
+     *      3 - Removes colours.
+     * @return input string with removed characters
+     */
+    public static String stripExtended(String input, int extended) {
+        switch (extended) {
+            default:
+            case 0:
+                input = stripPercentage(input);
+            case 1:
+                input = stripPerfect(input);
+            case 2:
+                input = stripInvisibleChar(input);
+            case 3:
+                return stripColor(input);
+        }
+    }
+
+    /**
      * Returns a cutted string after x characters
      *
      * @param x
