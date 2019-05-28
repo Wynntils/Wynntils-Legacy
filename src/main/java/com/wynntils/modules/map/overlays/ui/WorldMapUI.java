@@ -116,6 +116,7 @@ public class WorldMapUI extends GuiScreen {
                     texPosX = 100; texPosZ = 35;
                     texSizeX = 118; texSizeZ = 53;
                     break;
+                default:
                 case DIAMOND:
                     texPosX = 172; texPosZ = 37;
                     texSizeX = 190; texSizeZ = 55;
