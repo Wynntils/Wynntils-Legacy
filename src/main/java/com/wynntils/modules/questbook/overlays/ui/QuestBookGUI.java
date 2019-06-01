@@ -230,64 +230,65 @@ public class QuestBookGUI extends GuiScreen {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if(overQuest != null) {
-            if (mouseButton != 1) {
-                if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
-                    return;
-                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
-                    QuestManager.setTrackedQuest(null);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
-                    return;
-                }
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
-                QuestManager.setTrackedQuest(overQuest);
-            } else {
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    String url = "https://wynncraft.gamepedia.com/";
-                    //Link Overrides
-                    if (overQuest.getName().equals("The House of Twain")) {
-                        url += "The_House_of_Twain_(Quest)";
-                    } else if (overQuest.getName().equals("Tower of Ascension")){
-                        url += "Tower_of_Ascension_(Quest)";
-                    } else if (overQuest.getName().equals("The Qira Hive")) {
-                        url += "The_Qira_Hive_(Quest)";
-                    } else if (overQuest.getName().equals("The Realm of Light")) {
-                        url += "The_Realm_of_Light_(Quest)";
-                    } else if (overQuest.getName().equals("Temple of the Legends")) {
-                        url += "Temple_of_the_Legends_(Quest)";
-                    } else if (overQuest.getName().equals("Taproot")) {
-                        url += "Taproot_(Quest)";
-                    } else if (overQuest.getName().equals("The Passage")) {
-                        url += "The_Passage_(Quest)";
-                    } else if (overQuest.getName().equals("Zhight Island")) {
-                        url += "Zhight_Island_(Quest)";
-                    } else if (overQuest.getName().equals("The Tower of Amnesia")) {
-                        url += "The_Tower_of_Amnesia_(Quest)";
-                    } else if (overQuest.getName().equals("Pit of the Dead")) {
-                        url += "Pit_of_the_Dead_(Quest)";
-                    } else {
-                        url += URLEncoder.encode(overQuest.getName().replace(" ", "_").replace("À", ""), "UTF-8");
-                    }
-                    try {
-                        Desktop.getDesktop().browse(new URI(url));
-                    } catch (Exception ignored) {
-                        StringSelection selection = new StringSelection(url);
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(selection, null);
-                        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
-                        text.getStyle().setColor(TextFormatting.DARK_RED);
-                        ModCore.mc().player.sendMessage(text);
-                    }
-                }
-            }
-            return;
-        }
         ScaledResolution res = new ScaledResolution(getMinecraft());
 
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
         if(page == QuestBookPage.QUESTS) {
+            if(overQuest != null) {
+                if (mouseButton != 1) {
+                    if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
+                        return;
+                    if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
+                        QuestManager.setTrackedQuest(null);
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                        return;
+                    }
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                    QuestManager.setTrackedQuest(overQuest);
+                } else {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                        String url = "https://wynncraft.gamepedia.com/";
+                        //Link Overrides
+                        if (overQuest.getName().equals("The House of Twain")) {
+                            url += "The_House_of_Twain_(Quest)";
+                        } else if (overQuest.getName().equals("Tower of Ascension")){
+                            url += "Tower_of_Ascension_(Quest)";
+                        } else if (overQuest.getName().equals("The Qira Hive")) {
+                            url += "The_Qira_Hive_(Quest)";
+                        } else if (overQuest.getName().equals("The Realm of Light")) {
+                            url += "The_Realm_of_Light_(Quest)";
+                        } else if (overQuest.getName().equals("Temple of the Legends")) {
+                            url += "Temple_of_the_Legends_(Quest)";
+                        } else if (overQuest.getName().equals("Taproot")) {
+                            url += "Taproot_(Quest)";
+                        } else if (overQuest.getName().equals("The Passage")) {
+                            url += "The_Passage_(Quest)";
+                        } else if (overQuest.getName().equals("Zhight Island")) {
+                            url += "Zhight_Island_(Quest)";
+                        } else if (overQuest.getName().equals("The Tower of Amnesia")) {
+                            url += "The_Tower_of_Amnesia_(Quest)";
+                        } else if (overQuest.getName().equals("Pit of the Dead")) {
+                            url += "Pit_of_the_Dead_(Quest)";
+                        } else {
+                            url += URLEncoder.encode(overQuest.getName().replace(" ", "_").replace("À", ""), "UTF-8");
+                        }
+                        try {
+                            Desktop.getDesktop().browse(new URI(url));
+                        } catch (Exception ignored) {
+                            StringSelection selection = new StringSelection(url);
+                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            clipboard.setContents(selection, null);
+                            TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
+                            text.getStyle().setColor(TextFormatting.DARK_RED);
+                            ModCore.mc().player.sendMessage(text);
+                        }
+                    }
+                }
+                return;
+            }
+
             if (posX >= -145 && posX <= -13 && posY >= 86 && posY <= 100) {
                 searchBarFocused = true;
                 if (mouseButton == 1) {
