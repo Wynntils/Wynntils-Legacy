@@ -267,7 +267,7 @@ public class QuestBookGUI extends GuiScreen {
                     } else if (overQuest.getName().equals("Pit of the Dead")) {
                         url += "Pit_of_the_Dead_(Quest)";
                     } else {
-                        url += URLEncoder.encode(overQuest.getName().replace(" ", "_"), "UTF-8");
+                        url += URLEncoder.encode(overQuest.getName().replace(" ", "_").replace("À", ""), "UTF-8");
                     }
                     try {
                         Desktop.getDesktop().browse(new URI(url));
