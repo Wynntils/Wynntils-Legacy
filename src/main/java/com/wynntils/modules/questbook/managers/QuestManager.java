@@ -105,7 +105,7 @@ public class QuestManager {
                 Map.Entry<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
 
                 //lore
-                if(sDiscoveries != null) discoveryLore = Utils.getLore(sDiscoveries.getValue());
+                if (sDiscoveries != null) secretdiscoveryLore = Utils.getLore(sDiscoveries.getValue());
 
                 for(ItemStack item : i.getItems()) { //parsing discoveries
                     if(!item.hasDisplayName()) continue; //not a valid discovery
