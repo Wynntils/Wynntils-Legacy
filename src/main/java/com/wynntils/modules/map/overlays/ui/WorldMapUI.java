@@ -5,12 +5,13 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.google.gson.JsonObject;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.Location;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -28,7 +29,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 public class WorldMapUI extends GuiScreen {
 
     private ScreenRenderer renderer = new ScreenRenderer();
-    private static int[] compassCoordinates;
 
     private GuiButton settingsBtn;
     private GuiButton waypointMenuBtn;
@@ -84,8 +83,8 @@ public class WorldMapUI extends GuiScreen {
             mp.setOnClick(c -> {
                 if(c == 0) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(mmp.getX(), 0, mmp.getZ()));
-                    setCompassCoordinates(new int[]{mmp.getX(), mmp.getZ()});
+
+                    CompassManager.setCompassLocation(new Location(mmp.getX(), 0, mmp.getZ()));
                 }
             });
 
@@ -144,8 +143,8 @@ public class WorldMapUI extends GuiScreen {
             mp.setOnClick(c -> {
                 if(c == 0) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
-                    ModCore.mc().world.setSpawnPoint(new BlockPos(waypoint.getX(), 0, waypoint.getZ()));
-                    setCompassCoordinates(new int[]{(int) waypoint.getX(), (int) waypoint.getZ()});
+
+                    CompassManager.setCompassLocation(new Location(waypoint.getX(), 0, waypoint.getZ()));
                 }
             });
 
@@ -153,8 +152,8 @@ public class WorldMapUI extends GuiScreen {
         }
 
 
-        if (compassCoordinates != null && compassCoordinates.length == 2) {
-            mapIcons.add(new MapIcon(Textures.Map.map_icons, "Compass Beacon", compassCoordinates[0], compassCoordinates[1], 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
+        if (CompassManager.getCompassLocation() != null) {
+            mapIcons.add(new MapIcon(Textures.Map.map_icons, "Compass Beacon", (int)CompassManager.getCompassLocation().getX(), (int)CompassManager.getCompassLocation().getZ(), 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
         }
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
@@ -332,10 +331,5 @@ public class WorldMapUI extends GuiScreen {
         } else if (btn == waypointMenuBtn) {
             Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI());
         }
-    }
-
-    public static void setCompassCoordinates(int[] coord) {
-        if (!MapConfig.Waypoints.INSTANCE.compassMarker) return;
-        compassCoordinates = coord;
     }
 }

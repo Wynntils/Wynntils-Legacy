@@ -3,8 +3,8 @@
  */
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.ModCore;
-import com.wynntils.modules.map.overlays.ui.WorldMapUI;
+import com.wynntils.core.utils.Location;
+import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -108,7 +108,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     }
                     break;
             }
-            ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(newPos[0]), 0, Integer.valueOf(newPos[1])));
+
+            CompassManager.setCompassLocation(new Location(newPos[0], 0, newPos[1]));
+
             String dir = args[0];
             if (dir.length() <= 2) {
                 //dir = dir.toUpperCase();
@@ -154,8 +156,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(".");
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
-            ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
-            WorldMapUI.setCompassCoordinates(new int[] {Integer.valueOf(args[0]), Integer.valueOf(args[1])});
+            CompassManager.setCompassLocation(new Location(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
+
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards (");

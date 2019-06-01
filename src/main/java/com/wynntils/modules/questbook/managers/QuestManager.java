@@ -92,7 +92,10 @@ public class QuestManager {
                     QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description, lore);
                     currentQuestsData.put(displayName, quest);
 
-                    if(trackedQuest != null && trackedQuest.getName().equals(displayName)) trackedQuest = quest;
+                    if(trackedQuest != null && trackedQuest.getName().equals(displayName)) {
+                        if(quest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
+                        else trackedQuest = quest;
+                    }
                 }
 
                 QuestBookModule.gui.updateQuestSearch();

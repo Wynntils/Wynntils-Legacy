@@ -44,6 +44,11 @@ public class ClientEvents implements Listener {
     long lastMovement = 0;
 
     @SubscribeEvent
+    public void worldTick(TickEvent.WorldTickEvent e) {
+        if(Minecraft.getSystemTime() % 1000 != 0) return;
+    }
+
+    @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld) return;
 
