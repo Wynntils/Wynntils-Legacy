@@ -60,8 +60,11 @@ public class MapTerritory {
         if (!shouldRender || renderer == null) return;
 
         CustomColor color = Utils.colorFromString(territory.getGuild());
-        renderer.drawRectF(color.setA(0.2f), initX, initY, endX, endY);
-        renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 3f);
+
+        if(MapConfig.WorldMap.INSTANCE.territoryArea) {
+            renderer.drawRectF(color.setA(0.6f), initX, initY, endX, endY);
+            renderer.drawRectWBordersF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY, 2f);
+        }
 
         float ppX = initX + ((endX - initX)/2f);
         float ppY = initY + ((endY - initY)/2f);

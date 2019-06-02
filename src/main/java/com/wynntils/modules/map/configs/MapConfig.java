@@ -56,6 +56,13 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Guild Short Names", description = "Should be guild names be replaced by their short name?")
         public boolean useGuildShortNames = true;
 
+        @Setting(displayName = "Territory Color Transparency", description = "How much the color transparency should for territories?")
+        @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
+        public float colorAlpha = 0.4f;
+
+        @Setting(displayName = "Show Territory Area", description = "Should the territory rectangle be visible?")
+        public boolean territoryArea = true;
+
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
