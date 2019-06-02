@@ -189,7 +189,11 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "reloadapi", "donate");
+            return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "changelog", "reloadapi", "donate");
+        } else if (args.length == 2) {
+            if (args[0].equals("changelog")) {
+                return getListOfStringsMatchingLastWord(args, "major");
+            }
         }
         return Collections.emptyList();
     }
