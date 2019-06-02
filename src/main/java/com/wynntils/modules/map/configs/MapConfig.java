@@ -47,7 +47,7 @@ public class MapConfig extends SettingsClass {
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
 
-        @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be rendered rather than displaying only when you hold CTRL?")
+        @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
 
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
