@@ -90,7 +90,7 @@ public class QuickCastManager implements Listener {
     //TODO find a way to make the time follow the player ping to avoid clicks not being triggered correctly
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if(packetQueue.size() == 0 || Minecraft.getSystemTime() % 7 != 0) return;
+        if(packetQueue.size() == 0 || Minecraft.getMinecraft().world.getTotalWorldTime() % 5 != 0) return;
 
         Minecraft.getMinecraft().getConnection().sendPacket(packetQueue.get(0));
         packetQueue.remove(0);

@@ -122,7 +122,11 @@ public class TerritoryProfile {
                 endZ = location.get("endY").getAsInt();
             }
             String territoryName = territory.get("territory").getAsString();
-            String guild = territory.get("guild").getAsString();
+
+            String guild;
+            if(territory.get("guild").isJsonNull()) guild = "Unknown";
+            else guild = territory.get("guild").getAsString();
+
             Date acquired = null;
             try {
                 acquired = dateFormat.parse(territory.get("acquired").getAsString());
@@ -134,7 +138,10 @@ public class TerritoryProfile {
                 attacker = territory.get("attacker").getAsString();
             }
 
-            String guildPrefix = territory.get("guildPrefix").getAsString();
+            String guildPrefix;
+            if(territory.get("guildPrefix").isJsonNull()) guildPrefix = "UNK";
+            else guildPrefix= territory.get("guildPrefix").getAsString();
+
             int level = territory.get("level").getAsInt();
 
             return new TerritoryProfile(territoryName, guildPrefix, level, startX, startZ, endX, endZ, guild, attacker, acquired);
