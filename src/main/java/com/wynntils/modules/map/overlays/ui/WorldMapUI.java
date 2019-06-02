@@ -7,10 +7,13 @@ package com.wynntils.modules.map.overlays.ui;
 import com.google.gson.JsonObject;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -19,6 +22,7 @@ import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -249,7 +253,6 @@ public class WorldMapUI extends GuiScreen {
 
         minX = minX*map.getImageWidth(); maxX = maxX*map.getImageWidth();
         minZ = minZ*map.getImageHeight(); maxZ = maxZ*map.getImageHeight();
-
         float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
         float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
 
@@ -269,9 +272,39 @@ public class WorldMapUI extends GuiScreen {
             ScreenRenderer.resetRotation();
         }
 
-        mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
 
+        if(MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+            for(TerritoryProfile profile : WebManager.getTerritories().values()) {
+
+                float initX = width * (map.getTextureXPosition(profile.getStartX() - minX) / (maxX - minX));
+                float initZ = height * (map.getTextureZPosition(profile.getStartZ() - minZ) / (maxZ - minZ));
+
+                float endX = width * (map.getTextureXPosition(profile.getEndX() - minX) / (maxX - minX));
+                float endZ = height * (map.getTextureZPosition(profile.getEndZ() - minZ) / (maxZ - minZ));
+
+                if(MapConfig.WorldMap.INSTANCE.limitTerritories)
+                    if(initX < 0 || initZ < 0 || endX > width || endZ > height) continue; //this avoid lagging while the map is open
+
+                CustomColor color = Utils.colorFromString(profile.getGuild());
+                renderer.drawRectF(color.setA(0.2f), initX, initZ, endX, endZ);
+                renderer.drawRectWBordersF(color.setA(1), initX, initZ, endX, endZ);
+
+                float ppX = initX + ((endX - initX)/2f);
+                float ppY = initZ + ((endZ - initZ)/2f);
+
+                float alpha = 1 - ((zoom - 10) / 40.0f);
+                if(alpha == 0) continue;
+
+                if(MapConfig.WorldMap.INSTANCE.showTerritoryName)
+                    renderer.drawString(profile.getName(), ppX, ppY, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+
+                renderer.drawString(profile.getGuild(), ppX, ppY + (MapConfig.WorldMap.INSTANCE.showTerritoryName ? 10 : 0), color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            }
+        }
+
+        mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
         renderer.clearMask();
+
         ScreenRenderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);

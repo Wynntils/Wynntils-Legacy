@@ -43,6 +43,21 @@ public class MapConfig extends SettingsClass {
 
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
 
+    @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
+    public static class WorldMap extends SettingsClass {
+        public static WorldMap INSTANCE;
+
+        @Setting(displayName = "Keep Territory Visible", description = "Should territories be always visible instead of pressing control?")
+        public boolean keepTerritoryVisible = false;
+
+        @Setting(displayName = "Territory Name", description = "Should territory name be visible?")
+        public boolean showTerritoryName = false;
+
+        @Setting(displayName = "Territory Limit", description = "Should the territory loading be limited to the size of your screen?\nDisabling this can cause a massive lag while the map is open")
+        public boolean limitTerritories = true;
+
+    }
+
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
     public static class Textures extends SettingsClass {
         public static Textures INSTANCE;

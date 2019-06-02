@@ -7,6 +7,7 @@ package com.wynntils.core.utils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,6 +38,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 public class Utils {
 
@@ -61,7 +63,7 @@ public class Utils {
     }
 
     /**
-     * Removes all color codes from a string
+     * Removes all registeredColors codes from a string
      *
      * @param input
      *        Input string
@@ -503,6 +505,32 @@ public class Utils {
         });
         
         serverSelector.open();
+    }
+
+    private static HashMap<String, CustomColor> registeredColors = new HashMap<>();
+
+    /**
+     * Generates a Color based in the input string
+     * The color will be always the same if the string is the same
+     *
+     * @param input the input stream
+     * @return the color
+     */
+    public static CustomColor colorFromString(String input) {
+        if(registeredColors.containsKey(input)) return registeredColors.get(input);
+
+        CRC32 crc32 = new CRC32();
+        crc32.update(input.getBytes());
+
+        String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
+        int r = Integer.valueOf(hex.substring(1, 3), 16);
+        int g = Integer.valueOf(hex.substring(3, 5), 16);
+        int b = Integer.valueOf(hex.substring(5, 7), 16);
+
+        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
+        registeredColors.put(input, color);
+
+        return color;
     }
 
 }

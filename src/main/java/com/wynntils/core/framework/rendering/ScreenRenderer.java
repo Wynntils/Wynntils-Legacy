@@ -525,6 +525,27 @@ public class ScreenRenderer {
         GlStateManager.enableTexture2D();
     }
 
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2) {
+        if(!rendering) return;
+        GlStateManager.enableAlpha();
+        GlStateManager.disableTexture2D();
+        color.applyColor();
+
+        GlStateManager.glLineWidth(2f);
+
+        float xMin  = Math.min(x1, x2) + drawingOrigin.x,
+                xMax  = Math.max(x1, x2) + drawingOrigin.x,
+                yMin  = Math.min(y1, y2) + drawingOrigin.y,
+                yMax  = Math.max(y1, y2) + drawingOrigin.y;
+        GlStateManager.glBegin(GL_LINE_LOOP);
+        GlStateManager.glVertex3f(xMin, yMin, 0);
+        GlStateManager.glVertex3f(xMin, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMin, 0);
+        GlStateManager.glEnd();
+        GlStateManager.enableTexture2D();
+    }
+
     /** drawProgressBar
      * Draws a textured progress bar, if you dont know how to use it, use the method after.
      *
