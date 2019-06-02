@@ -13,7 +13,7 @@ public class QuestBookConfig extends SettingsClass {
 
     public static QuestBookConfig INSTANCE;
 
-    @Setting(displayName = "Allow Wynntils' Questbook", description = "Should Wynncraft's quest book be replaced by Wynntils'?")
+    @Setting(displayName = "Allow Wynntils' Quest Book", description = "Should Wynncraft's quest book be replaced by Wynntils'?")
     public boolean allowCustomQuestbook = true;
 
     @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")
@@ -25,7 +25,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
-    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster")
+    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analyzed by the quest book?\n\n§8Disabling this will cause the quest book to not show the Discoveries tab but will make the quest book analyze faster.")
     public boolean scanDiscoveries = true;
 
 }
