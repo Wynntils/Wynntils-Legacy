@@ -59,7 +59,7 @@ public class MapTerritory {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (!shouldRender || renderer == null) return;
 
-        CustomColor color = Utils.colorFromString(territory.getGuild());
+        CustomColor color = territory.getGuildColor() == null ? Utils.colorFromString(territory.getGuild()) : Utils.colorFromHex(territory.getGuildColor());
 
         if(MapConfig.WorldMap.INSTANCE.territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);

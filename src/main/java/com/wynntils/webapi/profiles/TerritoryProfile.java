@@ -27,17 +27,19 @@ public class TerritoryProfile {
 
     String guild;
     String guildPrefix;
+    String guildColor;
     String attacker;
     Date acquired;
 
     int level;
 
-    public TerritoryProfile(String name, String guildPrefix, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
+    public TerritoryProfile(String name, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
         this.name = name;
 
         this.level = level;
 
         this.guildPrefix = guildPrefix;
+        this.guildColor = guildColor;
         this.guild = guild;
         this.attacker = attacker;
 
@@ -63,6 +65,10 @@ public class TerritoryProfile {
 
     public String getName() {
         return name;
+    }
+
+    public String getGuildColor() {
+        return guildColor;
     }
 
     public int getStartX() {
@@ -144,7 +150,11 @@ public class TerritoryProfile {
 
             int level = territory.get("level").getAsInt();
 
-            return new TerritoryProfile(territoryName, guildPrefix, level, startX, startZ, endX, endZ, guild, attacker, acquired);
+            String guildColor;
+            if(territory.get("guildColor").isJsonNull()) guildColor = null;
+            else guildColor = territory.get("guildColor").getAsString();
+
+            return new TerritoryProfile(territoryName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
         }
 
     }

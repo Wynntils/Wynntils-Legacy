@@ -523,12 +523,26 @@ public class Utils {
         crc32.update(input.getBytes());
 
         String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
+
         int r = Integer.valueOf(hex.substring(1, 3), 16);
         int g = Integer.valueOf(hex.substring(3, 5), 16);
         int b = Integer.valueOf(hex.substring(5, 7), 16);
 
         CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
         registeredColors.put(input, color);
+
+        return color;
+    }
+
+    public static CustomColor colorFromHex(String hex) {
+        if(registeredColors.containsKey(hex)) return registeredColors.get(hex);
+
+        int r = Integer.valueOf(hex.substring(1, 3), 16);
+        int g = Integer.valueOf(hex.substring(3, 5), 16);
+        int b = Integer.valueOf(hex.substring(5, 7), 16);
+
+        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
+        registeredColors.put(hex, color);
 
         return color;
     }
