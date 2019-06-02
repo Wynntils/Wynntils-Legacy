@@ -47,13 +47,13 @@ public class MapConfig extends SettingsClass {
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
 
-        @Setting(displayName = "Keep Territory Visible", description = "Should territories be always visible instead of pressing control?")
+        @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be rendered rather than displaying only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
 
-        @Setting(displayName = "Territory Name", description = "Should territory name be visible?")
+        @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Limit", description = "Should the territory loading be limited to the size of your screen?\nDisabling this can cause a massive lag while the map is open")
+        @Setting(displayName = "Territory Limit", description = "Should territories loading be limited to the size of your screen?\n\n§8Disabling this can cause massive lag while the map is open.")
         public boolean limitTerritories = true;
 
     }
@@ -82,7 +82,7 @@ public class MapConfig extends SettingsClass {
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
 
-        @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints? (This and up)", order = 6)
+        @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§Tiers higher than the specified value will also be recorded.", order = 6)
         public ChestTiers chestTiers = ChestTiers.TIER_3;
 
         public enum ChestTiers {
