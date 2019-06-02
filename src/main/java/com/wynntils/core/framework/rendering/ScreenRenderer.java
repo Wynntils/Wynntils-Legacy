@@ -525,13 +525,13 @@ public class ScreenRenderer {
         GlStateManager.enableTexture2D();
     }
 
-    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2) {
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
         if(!rendering) return;
         GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
         color.applyColor();
 
-        GlStateManager.glLineWidth(2f);
+        GlStateManager.glLineWidth(lineWidth);
 
         float xMin  = Math.min(x1, x2) + drawingOrigin.x,
                 xMax  = Math.max(x1, x2) + drawingOrigin.x,

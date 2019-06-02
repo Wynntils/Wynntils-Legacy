@@ -26,12 +26,18 @@ public class TerritoryProfile {
     int endZ;
 
     String guild;
+    String guildPrefix;
     String attacker;
     Date acquired;
 
-    public TerritoryProfile(String name, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
+    int level;
+
+    public TerritoryProfile(String name, String guildPrefix, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
         this.name = name;
 
+        this.level = level;
+
+        this.guildPrefix = guildPrefix;
         this.guild = guild;
         this.attacker = attacker;
 
@@ -79,6 +85,14 @@ public class TerritoryProfile {
         return guild;
     }
 
+    public String getGuildPrefix() {
+        return guildPrefix;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public String getAttacker() {
         return attacker;
     }
@@ -119,7 +133,11 @@ public class TerritoryProfile {
             if (!territory.get("attacker").isJsonNull()) {
                 attacker = territory.get("attacker").getAsString();
             }
-            return new TerritoryProfile(territoryName, startX, startZ, endX, endZ, guild, attacker, acquired);
+
+            String guildPrefix = territory.get("guildPrefix").getAsString();
+            int level = territory.get("level").getAsInt();
+
+            return new TerritoryProfile(territoryName, guildPrefix, level, startX, startZ, endX, endZ, guild, attacker, acquired);
         }
 
     }

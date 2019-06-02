@@ -53,8 +53,8 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Limit", description = "Should territories loading be limited to the size of your screen?\n\n§8Disabling this can cause massive lag while the map is open.")
-        public boolean limitTerritories = true;
+        @Setting(displayName = "Territory Guild Short Names", description = "Should be guild names be replaced by their short name?")
+        public boolean useGuildShortNames = true;
 
     }
 
