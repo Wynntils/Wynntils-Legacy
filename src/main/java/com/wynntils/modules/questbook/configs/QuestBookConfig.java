@@ -25,7 +25,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
-    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analyzed by the quest book?\n\n§8Disabling this will cause the quest book to not show the Discoveries tab but will make the quest book analyze faster.")
+    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analysed by the quest book?\n\n§8Disabling this will cause the quest book to not show the Discoveries tab but will make the quest book analyse faster.")
     public boolean scanDiscoveries = true;
 
 }
