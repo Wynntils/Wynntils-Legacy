@@ -82,7 +82,7 @@ public class MapConfig extends SettingsClass {
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
 
-        @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§Tiers higher than the specified value will also be recorded.", order = 6)
+        @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§8Tiers higher than the specified value will also be recorded.", order = 6)
         public ChestTiers chestTiers = ChestTiers.TIER_3;
 
         public enum ChestTiers {
