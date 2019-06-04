@@ -53,7 +53,6 @@ public class ServerEvents implements Listener {
 
     boolean waitingForFriendList = false;
     boolean waitingForGuildList = false;
-    long guildListTimeout = -1;
 
     /**
      * Called when the user joins a Wynncraft World, used to register some stuff:
@@ -72,7 +71,6 @@ public class ServerEvents implements Listener {
 
         if(WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
-            guildListTimeout = System.currentTimeMillis();
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
@@ -106,12 +104,6 @@ public class ServerEvents implements Listener {
             return;
         }
         if(e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
-            if(System.currentTimeMillis() - guildListTimeout >= 450) {
-                guildListTimeout = -1;
-                waitingForGuildList = false;
-                return;
-            }
-
             if(waitingForGuildList) e.setCanceled(true);
 
             String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
@@ -142,7 +134,7 @@ public class ServerEvents implements Listener {
         }else if(e.getMessage().startsWith("/friend remove ")) {
             PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
         }else if(e.getMessage().startsWith("/guild list")) {
-            guildListTimeout = System.currentTimeMillis();
+            waitingForGuildList = false;
         }
     }
 
