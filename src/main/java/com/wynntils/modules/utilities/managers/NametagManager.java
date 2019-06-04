@@ -91,6 +91,7 @@ public class NametagManager {
      * Check if the nametag should be rendered, used over checkForNametags
      */
     private static boolean canRender(Entity entity, RenderManager manager) {
+        if(entity.isBeingRidden()) return false;
         if(!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
