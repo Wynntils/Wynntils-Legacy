@@ -52,6 +52,7 @@ public class ServerEvents implements Listener {
     }
 
     boolean waitingForFriendList = false;
+    boolean waitingForGuildList = false;
     long guildListTimeout = -1;
 
     /**
@@ -70,6 +71,7 @@ public class ServerEvents implements Listener {
         waitingForFriendList = true;
 
         if(WebManager.getPlayerProfile().getGuildName() != null) {
+            waitingForGuildList = true;
             guildListTimeout = System.currentTimeMillis();
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
@@ -103,13 +105,14 @@ public class ServerEvents implements Listener {
             waitingForFriendList = false;
             return;
         }
-        if(guildListTimeout != -1 && e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
-            if(System.currentTimeMillis() - guildListTimeout >= 350) {
+        if(e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
+            if(System.currentTimeMillis() - guildListTimeout >= 450) {
                 guildListTimeout = -1;
+                waitingForGuildList = false;
                 return;
             }
 
-            if(waitingForFriendList) e.setCanceled(true);
+            if(waitingForGuildList) e.setCanceled(true);
 
             String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
             PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);

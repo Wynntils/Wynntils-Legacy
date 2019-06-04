@@ -547,4 +547,12 @@ public class Utils {
         return color;
     }
 
+    public static String millisToString(long duration) {
+        long millis = duration % 1000,
+             second = (duration / 1000) % 60,
+             minute = (duration / (1000 * 60)) % 60,
+             hour = (duration / (1000 * 60 * 60)) % 24;
+
+        return String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+    }
 }

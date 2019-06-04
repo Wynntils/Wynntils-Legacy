@@ -11,6 +11,7 @@ import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.webapi.WebManager;
 import org.lwjgl.input.Keyboard;
 
@@ -57,6 +58,8 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Cast Second Spell", Keyboard.KEY_X, "Wynntils", true, QuickCastManager::castSecondSpell);
         CoreModule.getModule().registerKeyBinding("Cast Third Spell", Keyboard.KEY_C, "Wynntils", true, QuickCastManager::castThirdSpell);
         CoreModule.getModule().registerKeyBinding("Cast Fourth Spell", Keyboard.KEY_V, "Wynntils", true, QuickCastManager::castFourthSpell);
+
+        CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
     }
 
     public static KeyHolder getLockInventoryKey() {
