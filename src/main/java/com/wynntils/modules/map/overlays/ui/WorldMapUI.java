@@ -46,6 +46,7 @@ public class WorldMapUI extends GuiScreen {
     private GuiButton settingsBtn;
     private GuiButton waypointMenuBtn;
     private GuiButtonImage addWaypointBtn;
+
     private float centerPositionX;
     private float centerPositionZ;
     private int zoom = 0;
