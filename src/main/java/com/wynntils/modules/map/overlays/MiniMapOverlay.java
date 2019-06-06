@@ -56,6 +56,11 @@ public class MiniMapOverlay extends Overlay {
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
         minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
 
+        float centerX = minX + ((maxX - minX)/2);
+        float centerZ = minZ + ((maxZ - minZ)/2);
+
+        if(centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
+
         try{
             GlStateManager.enableAlpha();
             GlStateManager.enableTexture2D();
@@ -73,8 +78,7 @@ public class MiniMapOverlay extends Overlay {
 
             //rotation axis
             transformationOrigin(mapSize/2, mapSize/2);
-            if(MapConfig.INSTANCE.followPlayerRotation)
-                rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
+            if(MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
             //map quad
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
