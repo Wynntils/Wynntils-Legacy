@@ -36,9 +36,9 @@ public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
             errorScreen.drawCenteredString(fontRenderer, "§f§l" + x + "§f§o (" + conflictMods.get(x) + ")", errorScreen.width/2, offset, 0xFFFFFF);
         }
         offset+=20;
-        errorScreen.drawCenteredString(fontRenderer, "§fThese mods causes §f§lmassives conflicts", errorScreen.width/2, offset, 0xFFFFFF);
+        errorScreen.drawCenteredString(fontRenderer, "§fThese mods are known to cause §f§lmassive conflicts §fwith Wynntils", errorScreen.width/2, offset, 0xFFFFFF);
         offset+=10;
-        errorScreen.drawCenteredString(fontRenderer, "§cRemove these mods and restart your game to Continue", errorScreen.width/2, offset, 0xFFFFFF);
+        errorScreen.drawCenteredString(fontRenderer, "§cPlease remove these mods and restart your game to play", errorScreen.width/2, offset, 0xFFFFFF);
     }
 
 }
