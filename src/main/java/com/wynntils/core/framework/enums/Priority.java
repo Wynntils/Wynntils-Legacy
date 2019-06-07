@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.enums;
 
 public enum Priority {
+
     LOWEST,
     LOW,
     NORMAL,

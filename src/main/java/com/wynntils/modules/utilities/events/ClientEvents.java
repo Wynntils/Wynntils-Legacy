@@ -26,10 +26,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -44,8 +41,8 @@ public class ClientEvents implements Listener {
     long lastMovement = 0;
 
     @SubscribeEvent
-    public void worldTick(TickEvent.WorldTickEvent e) {
-        if(Minecraft.getSystemTime() % 1000 != 0) return;
+    public void fovCancel(FOVUpdateEvent e) {
+
     }
 
     @SubscribeEvent
