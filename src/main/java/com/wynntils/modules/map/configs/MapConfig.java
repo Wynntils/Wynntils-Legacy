@@ -27,7 +27,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap?", order = 4)
     public boolean showCompass = true;
 
     @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
@@ -53,14 +53,14 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Short Names", description = "Should be guild names be replaced by their short name?")
+        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
-        @Setting(displayName = "Territory Color Transparency", description = "How much the color transparency should for territories?")
+        @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
 
-        @Setting(displayName = "Show Territory Area", description = "Should the territory rectangle be visible?")
+        @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
     }
