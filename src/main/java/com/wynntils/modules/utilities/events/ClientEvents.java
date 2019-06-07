@@ -41,11 +41,6 @@ public class ClientEvents implements Listener {
     long lastMovement = 0;
 
     @SubscribeEvent
-    public void fovCancel(FOVUpdateEvent e) {
-
-    }
-
-    @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld) return;
 
