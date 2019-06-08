@@ -18,26 +18,23 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
-    public boolean showCompassBeam = true;
-
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 1)
-    public boolean showCompass = true;
-
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 0)
     public boolean enabled = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 3)
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 2)
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 4)
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
+    public boolean showCompass = true;
+
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 6)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
     public boolean northOnly = false;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
@@ -56,14 +53,14 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Short Names", description = "Should be guild names be replaced by their short name?")
+        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
-        @Setting(displayName = "Territory Color Transparency", description = "How much the color transparency should for territories?")
+        @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
 
-        @Setting(displayName = "Show Territory Area", description = "Should the territory rectangle be visible?")
+        @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
     }
