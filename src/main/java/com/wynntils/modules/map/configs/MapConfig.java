@@ -18,23 +18,26 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 0)
-    public boolean enabled = true;
+    @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
+    public boolean showCompassBeam = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 2)
-    public MapFormat mapFormat = MapFormat.CIRCLE;
-
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
-    public boolean followPlayerRotation = true;
-
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 1)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
+    public boolean enabled = true;
+
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 3)
+    public MapFormat mapFormat = MapFormat.CIRCLE;
+
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 4)
+    public boolean followPlayerRotation = true;
+
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 6)
     public boolean northOnly = false;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
