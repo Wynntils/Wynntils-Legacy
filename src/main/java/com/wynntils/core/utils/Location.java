@@ -26,6 +26,10 @@ public class Location {
         return z;
     }
 
+    public void setY(double y) {
+        this.y = y;
+    }
+
     public void add(Location loc) {
         x += loc.getX();
         y += loc.getY();
