@@ -54,14 +54,14 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class QuestBookGUI extends GuiScreen {
+public class QuestBookGUIold extends GuiScreen {
 
     boolean requestOpening = true;
     final ScreenRenderer render = new ScreenRenderer();
 
     long lastTick = 0;
 
-    public QuestBookGUI() { }
+    public QuestBookGUIold() { }
 
     public void open() {
         if(!Reference.onWorld) return;

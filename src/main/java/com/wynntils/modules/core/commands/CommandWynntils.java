@@ -9,6 +9,7 @@ import com.wynntils.core.utils.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -117,7 +118,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 case "debug":
-                    QuestManager.requestQuestBookReading();
+                    new Delay(QuestBookHandler::openQuestBook, 1);
                     break;
                 default:
                     throw new CommandException("Invalid argument. Use /wynntils help for more info.");
