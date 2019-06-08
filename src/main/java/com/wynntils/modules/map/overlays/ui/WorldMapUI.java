@@ -97,6 +97,8 @@ public class WorldMapUI extends GuiScreen {
 
         //HeyZeer0: Handles all waypoints
         for(WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
+            if(waypoint.getType() == null) continue;
+
             int texPosX = 0;
             int texPosZ = 0;
             int texSizeX = 16;
