@@ -46,7 +46,7 @@ public class QuestManager {
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
-        if(currentInventory != null) {
+        if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
             requestQuestBookReading();
