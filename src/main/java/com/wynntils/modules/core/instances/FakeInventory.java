@@ -21,7 +21,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -194,13 +193,6 @@ public class FakeInventory {
     }
 
     //EVENTS BELOW
-    @SubscribeEvent
-    public void onInventoryClose(GuiOpenEvent e) {
-        if(e.getGui() != null) return;
-
-        windowId = -1;
-        close();
-    }
 
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
