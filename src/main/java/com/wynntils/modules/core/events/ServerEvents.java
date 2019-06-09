@@ -69,7 +69,7 @@ public class ServerEvents implements Listener {
 
         waitingForFriendList = true;
 
-        if(WebManager.getPlayerProfile().getGuildName() != null) {
+        if(WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
