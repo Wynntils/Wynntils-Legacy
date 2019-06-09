@@ -6,6 +6,7 @@ package com.wynntils.core.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -56,6 +57,25 @@ public class ClientEvents {
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void triggerGameEvents(ClientChatReceivedEvent e) {
+        if(e.getType() == ChatType.GAME_INFO) return;
+
+        String message = e.getMessage().getUnformattedText();
+
+        if(message.contains("Quest")) System.out.println(message);
+
+        GameEvent toDispatch = null;
+        if(message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
+        else if(message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
+        else if(message.contains("[Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
+        else if(message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
+        else if(message.contains("Level Up!") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
+
+        if(toDispatch == null) return;
+        FrameworkManager.getEventBus().post(toDispatch);
     }
 
     @SubscribeEvent

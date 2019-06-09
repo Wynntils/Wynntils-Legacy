@@ -46,7 +46,13 @@ public class QuestManager {
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
-        if(currentInventory != null) return;
+        if(currentInventory != null) {
+            currentInventory.close();
+
+            requestQuestBookReading();
+            return;
+        }
+
         clicksAllowed = true;
 
         FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);

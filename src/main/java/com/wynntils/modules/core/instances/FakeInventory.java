@@ -108,8 +108,8 @@ public class FakeInventory {
         FrameworkManager.getEventBus().unregister(this);
         open = false;
 
-        if(onClose != null) onClose.accept(this);
         if(windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        if(onClose != null) onClose.accept(this);
     }
 
     /**

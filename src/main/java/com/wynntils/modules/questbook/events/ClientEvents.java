@@ -5,16 +5,17 @@
 package com.wynntils.modules.questbook.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.GameEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -22,18 +23,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onChat(ChatEvent.Pre e)  {
-        if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[New Quest Started:"))
-            QuestManager.requestQuestBookReading();
-        else if(Utils.stripColor(e.getMessage().getFormattedText()).startsWith("[Quest Book Updated]"))
-            QuestManager.requestQuestBookReading();
-        else if(e.getMessage().getUnformattedText().contains("[Quest Completed]") && e.getMessage().getUnformattedText().indexOf("[") >= 5)
-            QuestManager.requestQuestBookReading();
-        else if(e.getMessage().getUnformattedText().contains("[Mini-Quest Completed]") && e.getMessage().getUnformattedText().indexOf("[") >= 5)
-            QuestManager.requestQuestBookReading();
-        else if(e.getMessage().getUnformattedText().contains(TextFormatting.BOLD.toString()) && e.getMessage().getUnformattedText().contains("Level Up!")) {
-            QuestManager.requestQuestBookReading();
-        }
+    public void onChat(GameEvent e)  {
+        QuestManager.requestQuestBookReading();
     }
 
     @SubscribeEvent
