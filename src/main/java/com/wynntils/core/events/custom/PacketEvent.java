@@ -8,6 +8,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.*;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -248,6 +249,32 @@ public class PacketEvent extends Event {
         }
 
         public CPacketPlayerTryUseItemOnBlock getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
+
+    /**
+     * Triggered when the players right clicks an entity
+     */
+    public static class UseEntityEvent extends PacketEvent {
+
+        CPacketUseEntity packet;
+        NetHandlerPlayClient playClient;
+
+        public UseEntityEvent(CPacketUseEntity packet, NetHandlerPlayClient playClient) {
+            this.packet = packet; this.playClient = playClient;
+        }
+
+        public CPacketUseEntity getPacket() {
             return packet;
         }
 
