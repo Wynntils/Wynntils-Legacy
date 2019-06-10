@@ -97,7 +97,7 @@ public class ChatOverlay extends GuiNewChat {
                         if (l1 > 3) {
                             int j2 = -i1 * 9;
                             if (!ChatConfig.INSTANCE.transparent) {
-                                drawRect(-2, j2 - 9, extraY + 4, j2, l1 / 2 << 24);
+                                drawRect(-2, j2 - 9, extraY + 40, j2, l1 / 2 << 24);
                             }
                             String s = ChatManager.renderMessage(chatline.getChatComponent()).getFormattedText();
                             GlStateManager.enableBlend();
