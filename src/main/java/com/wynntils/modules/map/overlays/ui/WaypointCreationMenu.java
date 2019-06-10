@@ -31,7 +31,7 @@ public class WaypointCreationMenu extends GuiScreen {
     private GuiButton cancelButton;
     private GuiButton waypointTypeNext;
     private GuiButton waypointTypeBack;
-    private WaypointType waypointType = WaypointType.FLAG;
+    private WaypointType waypointType;
 
     private boolean isUpdatingExisting;
     private WaypointProfile wp;
@@ -64,6 +64,7 @@ public class WaypointCreationMenu extends GuiScreen {
         xCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getX()));
         zCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getZ()));
         yCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getY()));
+        waypointType  = WaypointType.FLAG;
 
         nameFieldLabel = new GuiLabel(mc.fontRenderer,0,this.width/2 - 80,this.height/2 - 81,40,10,0xFFFFFF);
         nameFieldLabel.addLine("Waypoint Name:");
@@ -82,7 +83,7 @@ public class WaypointCreationMenu extends GuiScreen {
             yCoordField.setText(Integer.toString((int) wp.getY()));
             zCoordField.setText(Integer.toString((int) wp.getZ()));
             alwaysVisible.setIsChecked(wp.getZoomNeeded() == -1000);
-            waypointType = wp.getType();
+            if (wp.getType() != null) waypointType = wp.getType();
             isAllValidInformation();
         }
     }
