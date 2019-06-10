@@ -188,6 +188,8 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly) {
+        ITextComponent componentToCheck = stripTimestamp(chatComponent);
+
         if (chatLineId != 0) {
             deleteChatLine(chatLineId);
         }
@@ -196,26 +198,25 @@ public class ChatOverlay extends GuiNewChat {
 
         boolean found = false;
         for(ChatTab tab : TabManager.getAvailableTabs()) {
-            if(!tab.regexMatches(chatComponent) || tab.isLowPriority()) continue;
+            if(!tab.regexMatches(componentToCheck) || tab.isLowPriority()) continue;
 
-            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, found);
+            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId);
             found = true;
         }
 
         if(!found) {
             for (ChatTab tab : TabManager.getAvailableTabs()) {
-                if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
+                if (!tab.isLowPriority() || !tab.regexMatches(componentToCheck))
                     continue;
-                updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, found);
-                found = true;
+                updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId);
             }
         }
     }
 
-    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean alreadyFound) {
+    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId) {
         //spam filter
         if(tab.getLastMessage() != null) {
-            if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(chatComponent.getFormattedText()) && chatLineId == 0) {
+            if (ChatConfig.INSTANCE.blockChatSpamFilter && stripTimestamp(tab.getLastMessage()).getFormattedText().equals(stripTimestamp(chatComponent).getFormattedText()) && chatLineId == 0) {
                 try {
                     List<ChatLine> oldLines = tab.getCurrentMessages();
 
@@ -245,16 +246,15 @@ public class ChatOverlay extends GuiNewChat {
         //push mention
         if(ChatManager.proccessUserMention(chatComponent)) tab.pushMention();
 
-        //message processor
-        if (!alreadyFound) {
-            Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponent);
+        ITextComponent chatComponentCopy = chatComponent.createCopy();
 
-            chatComponent = c.a;
-        }
+        //message processor
+        Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponentCopy);
+        chatComponentCopy = c.a;
         //continue mc code
 
         int i = MathHelper.floor((float)getChatWidth() / getChatScale());
-        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponent, i, mc.fontRenderer, false, false);
+        List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponentCopy, i, mc.fontRenderer, false, false);
         boolean flag = getChatOpen();
 
         for (ITextComponent itextcomponent : list) {
@@ -262,7 +262,6 @@ public class ChatOverlay extends GuiNewChat {
                 isScrolled = true;
                 scroll(1);
             }
-
             tab.addMessage(new ChatLine(updateCounter, itextcomponent, chatLineId));
         }
 
@@ -423,5 +422,9 @@ public class ChatOverlay extends GuiNewChat {
         return currentTab;
     }
 
-
+    public ITextComponent stripTimestamp(ITextComponent component) {
+        return new TextComponentString(component.getFormattedText()
+                .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.GRAY + ChatConfig.INSTANCE.timestampFormat + TextFormatting.DARK_GRAY + "] ", "")
+                .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RED + "Invalid Format" + TextFormatting.DARK_GRAY + "] ", ""));
+    }
 }
