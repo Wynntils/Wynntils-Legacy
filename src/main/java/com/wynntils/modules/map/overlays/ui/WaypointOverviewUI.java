@@ -51,6 +51,7 @@ public class WaypointOverviewUI extends GuiScreen {
         ScreenRenderer.beginGL(0,0);
         for (int i = 0; i < Math.min(pageHeight, waypoints.size() - pageHeight * page); i++) {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
+            if (wp.getType() == null) continue;
             int tx1 = 0; int tx2 = 0; int ty1 = 0; int ty2 = 0;
             switch (wp.getType()) {
                 case LOOTCHEST_T1:
