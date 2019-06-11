@@ -613,7 +613,7 @@ public class QuestBookGUIold extends GuiScreen {
         if(page == QuestBookPage.ITEM_GUIDE) {
             ScreenRenderer.beginGL(0, 0);
             {
-                render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
+                render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33); //
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
 
                 //order buttons
