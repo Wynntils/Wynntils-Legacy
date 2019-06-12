@@ -38,8 +38,45 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WorldMapUI extends GuiScreen {
+
+    private static final HashMap<String, String> MAPMARKERNAME_TRANSLATION = new HashMap<String, String>() {{
+        put("Content_Dungeon", "Dungeons");
+        put("Merchant_Accessory", "Accessory Merchant");
+        put("Merchant_Armour", "Armour Merchant");
+        put("Merchant_Dungeon", "Dungeon Merchant");
+        put("Merchant_Horse", "Horse Merchant");
+        put("Merchant_KeyForge", "Key Forge Merchant");
+        put("Merchant_Liquid", "LE Merchant");
+        put("Merchant_Potion", "Potion Merchant");
+        put("Merchant_Powder", "Powder Merchant");
+        put("Merchant_Scroll", "Scroll Merchant");
+        put("Merchant_Seasail", "Seasail Merchant");
+        put("Merchant_Weapon", "Weapon Merchant");
+        put("NPC_Blacksmith", "Blacksmith");
+        put("NPC_GuildMaster", "Guild Master");
+        put("NPC_ItemIdentifier", "Item Identifier");
+        put("NPC_PowderMaster", "Powder Master");
+        put("Special_FastTravel", "Fast Travel");
+        put("tnt", "TNT Merchant");
+        put("painting", "Art Merchant");
+        put("Ore_Refinery", "Ore Refinery");
+        put("Fish_Refinery", "Fish Refinery");
+        put("Wood_Refinery", "Wood Refinery");
+        put("Crop_Refinery", "Crop Refinery");
+        put("NPC_TradeMarket", "Marketplace");
+        put("Content_Quest", "Quests");
+        put("Special_Rune", "Runes");
+        put("Special_RootsOfCorruption", "Nether Portal");
+        put("Content_UltimateDiscovery", "Ultimate Discovery");
+        put("Content_Cave", "Caves");
+        put("Content_GrindSpot", "Grind Spots");
+        put("Merchant_Other", "Other Merchants");
+        put("Special_LightRealm", "Light's Secret");
+        put("Merchant_Emerald", "Emerald Merchant");
+    }};
 
     private ScreenRenderer renderer = new ScreenRenderer();
 
@@ -64,7 +101,7 @@ public class WorldMapUI extends GuiScreen {
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
         for(MapMarkerProfile mmp : WebManager.getMapMarkers()) {
-            if (MapConfig.INSTANCE.enabledMapIcons.containsKey(mmp.getIcon()) && !MapConfig.INSTANCE.enabledMapIcons.get(mmp.getIcon())) continue;
+            if (MapConfig.INSTANCE.enabledMapIcons.containsKey(MAPMARKERNAME_TRANSLATION.get(mmp.getIcon())) && !MapConfig.INSTANCE.enabledMapIcons.get(MAPMARKERNAME_TRANSLATION.get(mmp.getIcon()))) continue;
             if(!Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().has(mmp.getIcon()) || !Mappings.Map.map_icons_mappings.get("MEDIVAL").getAsJsonObject().has(mmp.getIcon())) continue;
 
             JsonObject iconMapping;
@@ -97,13 +134,9 @@ public class WorldMapUI extends GuiScreen {
 
         //HeyZeer0: Handles all waypoints
         for(WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
-            if(waypoint.getType() == null) continue;
+            if(waypoint == null || waypoint.getType() == null) continue;
 
-            int texPosX = 0;
-            int texPosZ = 0;
-            int texSizeX = 16;
-            int texSizeZ = 16;
-
+            int texPosX, texPosZ, texSizeX, texSizeZ;
             switch (waypoint.getType()) {
                 case LOOTCHEST_T1:
                     texPosX = 136; texPosZ = 35;

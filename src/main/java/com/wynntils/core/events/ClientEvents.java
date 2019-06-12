@@ -65,8 +65,6 @@ public class ClientEvents {
 
         String message = e.getMessage().getUnformattedText();
 
-        if(message.contains("Quest")) System.out.println(message);
-
         GameEvent toDispatch = null;
         if(message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
         else if(message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();

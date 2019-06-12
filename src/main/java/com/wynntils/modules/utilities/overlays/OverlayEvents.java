@@ -73,7 +73,7 @@ public class OverlayEvents implements Listener {
     private static final char PROF_ALCHEMISM = 'Ⓛ';
 
     /* Toasts */
-    private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge|Close|Far";
+    private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge|Close|Far |-";
     private static final String[] blackList = new String[]{"Transition", "to "};
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
