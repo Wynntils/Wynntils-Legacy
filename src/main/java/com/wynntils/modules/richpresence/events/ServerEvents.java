@@ -51,7 +51,7 @@ public class ServerEvents implements Listener {
 
             for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                 if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
-                    RichPresenceModule.getModule().getData().setLocation(pf.getName());
+                    RichPresenceModule.getModule().getData().setLocation(pf.getFriendlyName());
                     RichPresenceModule.getModule().getData().setUnknownLocation(false);
 
                     classUpdate = false;

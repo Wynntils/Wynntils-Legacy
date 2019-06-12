@@ -70,7 +70,7 @@ public class MapTerritory {
         float ppY = initY + ((endY - initY)/2f);
 
         if(MapConfig.WorldMap.INSTANCE.showTerritoryName && alpha > 0)
-            renderer.drawString(territory.getName(), ppX, ppY, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            renderer.drawString(territory.getFriendlyName(), ppX, ppY, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if(MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         if(alpha <= 0) return;
