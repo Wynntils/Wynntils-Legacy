@@ -10,6 +10,8 @@ import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.ModuleManager;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
+import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -81,6 +83,11 @@ public class ModCore {
             Textures.loadTextures();
             Mappings.loadMappings();
         });
+
+        if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {
+            MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
+            MapConfig.INSTANCE.saveSettings(MapModule.getModule());
+        }
     }
 
     public static Minecraft mc() {

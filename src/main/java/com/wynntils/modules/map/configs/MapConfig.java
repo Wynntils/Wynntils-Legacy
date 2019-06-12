@@ -144,39 +144,39 @@ public class MapConfig extends SettingsClass {
 
     public HashMap<String, Boolean> resetMapIcons() {
         return new HashMap<String, Boolean>() {{
-            put("Content_Dungeon", true);
-            put("Merchant_Accessory", true);
-            put("Merchant_Armour", true);
-            put("Merchant_Dungeon", true);
-            put("Merchant_Horse", true);
-            put("Merchant_KeyForge", true);
-            put("Merchant_Liquid", true);
-            put("Merchant_Potion", true);
-            put("Merchant_Powder", true);
-            put("Merchant_Scroll", true);
-            put("Merchant_Seasail", true);
-            put("Merchant_Weapon", true);
-            put("NPC_Blacksmith", true);
-            put("NPC_GuildMaster", true);
-            put("NPC_ItemIdentifier", true);
-            put("NPC_PowderMaster", true);
-            put("Special_FastTravel", true);
-            put("tnt", true);
-            put("painting", true);
-            put("Ore_Refinery", true);
-            put("Fish_Refinery", true);
-            put("Wood_Refinery", true);
-            put("Crop_Refinery", true);
-            put("MarketPlace", true);
-            put("Content_Quest", false);
-            put("Special_Rune", false);
-            put("Special_RootsOfCorruption", true);
-            put("Content_UltimateDiscovery", false);
-            put("Content_Cave", false);
-            put("Content_GrindSpot", false);
-            put("Merchant_Other", false);
-            put("Special_LightRealm", true);
-            put("Merchant_Emerald", true);
+            put("Dungeons", true);
+            put("Accessory Merchant", true);
+            put("Armour Merchant", true);
+            put("Dungeon Merchant", true);
+            put("Horse Merchant", true);
+            put("Key Forge Merchant", true);
+            put("LE Merchant", true);
+            put("Emerald Merchant", true);
+            put("TNT Merchant", true);
+            put("Ore Refinery", true);
+            put("Potion Merchant", true);
+            put("Powder Merchant", true);
+            put("Scroll Merchant", true);
+            put("Seasail Merchant", true);
+            put("Weapon Merchant", true);
+            put("Blacksmith", true);
+            put("Guild Master", true);
+            put("Item Identifier", true);
+            put("Powder Master", true);
+            put("Fast Travel", true);
+            put("Fish Refinery", true);
+            put("Wood Refinery", true);
+            put("Crop Refinery", true);
+            put("Marketplace", true);
+            put("Quests", false);
+            put("Runes", false);
+            put("Nether Portal", true);
+            put("Ultimate Discovery", false);
+            put("Caves", false);
+            put("Grind Spots", false);
+            put("Other Merchants", false);
+            put("Light's Secret", true);
+
         }};
     }
 
