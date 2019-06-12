@@ -127,7 +127,7 @@ public class TerritoryProfile {
                 endX = location.get("endX").getAsInt();
                 endZ = location.get("endY").getAsInt();
             }
-            String territoryName = territory.get("territory").getAsString();
+            String territoryName = territory.get("territory").getAsString().replace('’', '\'');
 
             String guild;
             if(territory.get("guild").isJsonNull()) guild = "Unknown";
