@@ -240,7 +240,7 @@ public class NametagManager {
                 default: color = CommonColors.RAINBOW;
             }
 
-            labels.add(new NametagLabel(color, is.getDisplayName(), 0.4f));
+            labels.add(new NametagLabel(color, Utils.stripColor(is.getDisplayName()), 0.4f));
         }
 
         return labels;

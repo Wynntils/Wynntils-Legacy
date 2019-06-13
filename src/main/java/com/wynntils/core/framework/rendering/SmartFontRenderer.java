@@ -179,7 +179,7 @@ public class SmartFontRenderer extends FontRenderer {
         float charLength = renderChar(text.charAt(0));
         posX += charLength + CHAR_SPACING;
 
-        return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
+        return charLength + CHAR_SPACING + drawChars(text.substring(1), color, forceColor);
     }
 
     private CustomColor decodeCommonColor(String text, CustomColor baseColor) {
