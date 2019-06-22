@@ -5,7 +5,6 @@
 package com.wynntils.modules.questbook.managers;
 
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Delay;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.questbook.QuestBookModule;
@@ -16,8 +15,7 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
@@ -43,27 +41,35 @@ public class QuestManager {
     private static boolean secretDiscoveries = false;
     private static FakeInventory currentInventory = null;
 
-    private static boolean clicksAllowed = false;
+    private static boolean analyseRequested = false;
+    private static boolean bookOpened = false;
+
+    /**
+     * Queue a full QuestBook analyse
+     */
+    public static void requestAnalyse() {
+        analyseRequested = true;
+    }
+
+    public static void executeQueue() {
+        if(!analyseRequested || (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
+
+        analyseRequested = false;
+        readQuestBook();
+    }
 
     /**
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
-    public static void requestQuestBookReading() {
+    private static void readQuestBook() {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook) return;
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Was unable to analyze Questbook due to an open inventory.\n" + TextFormatting.DARK_RED + "A retry will occur in 30 seconds..."));
-            new Delay(QuestManager::requestQuestBookReading, 600);
-            return;
-        }
 
         if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
-            requestQuestBookReading();
+            readQuestBook();
             return;
         }
-
-        clicksAllowed = true;
 
         FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
         secretDiscoveries = false;
@@ -162,7 +168,6 @@ public class QuestManager {
         });
         fakeInventory.onClose(c -> {
             currentInventory = null;
-            clicksAllowed = false;
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
         });
         currentInventory = fakeInventory;
@@ -198,22 +203,35 @@ public class QuestManager {
         return currentDiscoveryData;
     }
 
+    /**
+     * Defines the current tracked quest
+     *
+     * @param selected the quest that you want to track
+     */
     public static void setTrackedQuest(QuestInfo selected) {
         trackedQuest = selected;
     }
 
-    public static boolean isClicksAllowed() {
-        if(clicksAllowed) {
-            clicksAllowed = false;
-            return true;
-        }
+    /**
+     * Check if the book was already opened before, if false it will request a read
+     */
+    public static void wasBookOpened() {
+        if(bookOpened) return;
 
-        return false;
+        bookOpened = true;
+        requestAnalyse();
     }
 
+    /**
+     * Clears the entire collected book data
+     */
     public static void clearData() {
         currentQuestsData.clear();
         currentDiscoveryData.clear();
+        trackedQuest = null;
+        analyseRequested = false;
+        bookOpened = false;
+        currentInventory = null;
     }
 
 }

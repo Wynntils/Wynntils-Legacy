@@ -28,4 +28,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analysed by the quest book?\n\n§8Disabling this will cause the quest book to not show the Discoveries tab but will make the quest book analyse faster.")
     public boolean scanDiscoveries = true;
 
+    @Setting(displayName = "Hide Mini QUests", description = "Should miniquests be hided from the QuestBook?")
+    public boolean hideMiniQuests = false;
+
 }

@@ -552,6 +552,8 @@ public class QuestBookGUI extends GuiScreen {
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());
 
+        if(QuestBookConfig.INSTANCE.hideMiniQuests) questSearch.removeIf(c -> c.getName().contains("Mini-Quest"));
+
         questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
         questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }

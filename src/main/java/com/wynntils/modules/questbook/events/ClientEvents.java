@@ -24,7 +24,15 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(GameEvent e)  {
-        QuestManager.requestQuestBookReading();
+        QuestManager.requestAnalyse();
+    }
+
+
+    @SubscribeEvent
+    public void onClassChange(WynnClassChangeEvent e) {
+        if(e.getCurrentClass() == ClassType.NONE) return;
+
+        QuestManager.clearData();
     }
 
     @SubscribeEvent
@@ -41,10 +49,7 @@ public class ClientEvents implements Listener {
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
         openQuestBook = true;
-        if(!QuestManager.isClicksAllowed()) {
-            e.setCanceled(true);
-            if(QuestManager.getCurrentQuestsData().size() <= 0) QuestManager.requestQuestBookReading();
-        }
+        e.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -54,7 +59,7 @@ public class ClientEvents implements Listener {
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
         openQuestBook = true;
-        if(!QuestManager.isClicksAllowed()) e.setCanceled(true);
+        e.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -64,7 +69,7 @@ public class ClientEvents implements Listener {
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
         openQuestBook = true;
-        if(!QuestManager.isClicksAllowed()) e.setCanceled(true);
+        e.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -72,17 +77,12 @@ public class ClientEvents implements Listener {
         if(!Reference.onWorld || Reference.onNether || Reference.onWars) return;
         if(Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
+        QuestManager.executeQueue();
         if(openQuestBook) {
             openQuestBook = false;
-            QuestBookModule.gui.open();
-        }
-    }
 
-    @SubscribeEvent
-    public void onClassChange(WynnClassChangeEvent e) {
-        if(e.getCurrentClass() != ClassType.NONE) {
-            QuestManager.setTrackedQuest(null);
-            QuestManager.clearData();
+            QuestBookModule.gui.open();
+            QuestManager.wasBookOpened(); //request the first reading if possible
         }
     }
 

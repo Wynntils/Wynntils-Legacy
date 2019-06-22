@@ -40,6 +40,8 @@ import java.util.function.Consumer;
  */
 public class FakeInventory {
 
+    public static boolean ignoreNextUserClick = false;
+
     String windowTitle;
     int itemSlot;
 
@@ -84,11 +86,12 @@ public class FakeInventory {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
+        ignoreNextUserClick = true;
         if(slot == itemSlot) {
             mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
             return this;
         }
-
+        
         mc.getConnection().sendPacket(new CPacketHeldItemChange(itemSlot));
         mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
         mc.getConnection().sendPacket(new CPacketHeldItemChange(slot));
