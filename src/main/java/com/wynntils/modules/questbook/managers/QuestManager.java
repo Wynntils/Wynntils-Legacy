@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.managers;
 
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.utils.Delay;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.questbook.QuestBookModule;
@@ -15,10 +16,13 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +50,13 @@ public class QuestManager {
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
     public static void requestQuestBookReading() {
+        if (!QuestBookConfig.INSTANCE.allowCustomQuestbook) return;
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiInventory || Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Was unable to analyze Questbook due to an open inventory.\n" + TextFormatting.DARK_RED + "A retry will occur in 30 seconds..."));
+            new Delay(QuestManager::requestQuestBookReading, 600);
+            return;
+        }
+
         if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
