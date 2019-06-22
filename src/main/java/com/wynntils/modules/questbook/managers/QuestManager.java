@@ -22,7 +22,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
