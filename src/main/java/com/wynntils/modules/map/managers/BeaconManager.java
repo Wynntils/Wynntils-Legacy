@@ -24,6 +24,8 @@ public class BeaconManager {
 
     public static void drawBeam(Location loc, CustomColor color) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        if(renderManager == null || renderManager.renderViewEntity == null) return;
+        
         float alpha = 1f;
 
         Vec3d positionVec = new Vec3d(loc.getX(), loc.getY() + 0.118D, loc.getZ());
