@@ -7,6 +7,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.google.gson.JsonObject;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -18,6 +19,7 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
+import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
@@ -89,6 +91,7 @@ public class WorldMapUI extends GuiScreen {
     private int zoom = 0;
 
     private ArrayList<MapIcon> mapIcons = new ArrayList<>();
+    private MapIcon compassMapIcon;
     private ArrayList<MapTerritory> territories = new ArrayList<>();
 
     boolean holdingMapKey = false;
@@ -126,6 +129,8 @@ public class WorldMapUI extends GuiScreen {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
 
                     CompassManager.setCompassLocation(new Location(mmp.getX(), 0, mmp.getZ()));
+
+                    resetCompassMapIcon();
                 }
             });
 
@@ -184,6 +189,8 @@ public class WorldMapUI extends GuiScreen {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
 
                     CompassManager.setCompassLocation(new Location(waypoint.getX(), 0, waypoint.getZ()));
+
+                    resetCompassMapIcon();
                 }
             });
 
@@ -195,11 +202,19 @@ public class WorldMapUI extends GuiScreen {
             territories.add(new MapTerritory(territory).setRenderer(renderer));
         }
 
+        mapIcons.add(compassMapIcon = new MapIcon(Textures.Map.map_icons, "Compass Beacon", Integer.MAX_VALUE, Integer.MAX_VALUE, 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
         if (CompassManager.getCompassLocation() != null) {
-            mapIcons.add(new MapIcon(Textures.Map.map_icons, "Compass Beacon", (int)CompassManager.getCompassLocation().getX(), (int)CompassManager.getCompassLocation().getZ(), 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
+            resetCompassMapIcon();
         }
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
+    }
+
+    private void resetCompassMapIcon() {
+        if (compassMapIcon != null) {
+            compassMapIcon.setPosition((int) CompassManager.getCompassLocation().getX(), (int) CompassManager.getCompassLocation().getZ());
+            compassMapIcon.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ, zoom);
+        }
     }
 
     @Override
@@ -232,6 +247,16 @@ public class WorldMapUI extends GuiScreen {
 
     int lastMouseX = -Integer.MAX_VALUE;
     int lastMouseY = -Integer.MAX_VALUE;
+
+    // Returns the x coordinate in the world from the x coordinate on the screen
+    public int getMouseWorldX(int mouseScreenX, MapProfile map) {
+        return map.getWorldXPosition(((float) mouseScreenX / width) * (maxX - minX) + minX);
+    }
+
+    // Returns the z coordinate in the world from the y coordinate on the screen
+    public int getMouseWorldZ(int mouseScreenY, MapProfile map) {
+        return map.getWorldZPosition(((float) mouseScreenY / height) * (maxZ - minZ) + minZ);
+    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -319,6 +344,12 @@ public class WorldMapUI extends GuiScreen {
         mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
         renderer.clearMask();
 
+        // Render coordinate mouse is over
+        int worldX = getMouseWorldX(mouseX, map);
+        int worldZ = getMouseWorldZ(mouseY, map);
+
+        renderer.drawString(worldX + ", " + worldZ, width / 2, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+
         ScreenRenderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -326,23 +357,20 @@ public class WorldMapUI extends GuiScreen {
 
     boolean clicking = false;
 
+    private void zoomBy(int by) {
+        zoom = Math.max(MapConfig.WorldMap.INSTANCE.minZoom, Math.min(MapConfig.WorldMap.INSTANCE.maxZoom, zoom - by));
+        updateCenterPosition(centerPositionX, centerPositionZ);
+    }
+
     @Override
     public void handleMouseInput() throws IOException {
         clicking = Mouse.isButtonDown(0);
 
         int mDwehll = Mouse.getEventDWheel();
         if(mDwehll >= 1) {
-            if(zoom -5 < 0) return;
-            else {
-                zoom-=5;
-                updateCenterPosition(centerPositionX, centerPositionZ);
-            }
+            zoomBy(+5);
         }else if(mDwehll <= -1) {
-            if(zoom+5 > 130) return;
-            else{
-                zoom+=5;
-                updateCenterPosition(centerPositionX, centerPositionZ);
-            }
+            zoomBy(-5);
         }
 
         super.handleMouseInput();
@@ -356,6 +384,15 @@ public class WorldMapUI extends GuiScreen {
         } else if (mouseButton == 1) {
             updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
             return;
+        } else if (mouseButton == 2) {
+            // Set compass to middle clicked location
+            MapProfile map = MapModule.getModule().getMainMap();
+            int worldX = getMouseWorldX(mouseX, map);
+            int worldZ = getMouseWorldZ(mouseY, map);
+            CompassManager.setCompassLocation(new Location(worldX, 0, worldZ));
+
+            resetCompassMapIcon();
+            return;
         }
 
         mapIcons.forEach(c -> c.mouseClicked(mouseX, mouseY, mouseButton));
@@ -366,6 +403,15 @@ public class WorldMapUI extends GuiScreen {
         if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
+
+        if (keyCode == KeyManager.getZoomInKey().getKeyBinding().getKeyCode()) {
+            zoomBy(+20);
+            return;  // Return early so it doesn't zoom the minimap
+        } else if (keyCode == KeyManager.getZoomOutKey().getKeyBinding().getKeyCode()) {
+            zoomBy(-20);
+            return;
+        }
+
         super.keyTyped(typedChar, keyCode);
     }
 
