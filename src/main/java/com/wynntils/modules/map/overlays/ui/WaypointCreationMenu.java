@@ -37,9 +37,23 @@ public class WaypointCreationMenu extends GuiScreen {
     private WaypointProfile wp;
     private GuiScreen previousGui;
 
+    private int initialX;
+    private int initialZ;
 
     public WaypointCreationMenu(GuiScreen previousGui) {
         this.previousGui = previousGui;
+
+        initialX = Minecraft.getMinecraft().player.getPosition().getX();
+        initialZ = Minecraft.getMinecraft().player.getPosition().getZ();
+    }
+
+    // Create a waypoint at a position other than the current player's position
+    // TODO: use this (Maybe double clicking somewhere on the main map would create a waypoint at that position?)
+    public WaypointCreationMenu(GuiScreen previousGui, int initialX, int initialZ) {
+        this.previousGui = previousGui;
+
+        this.initialX = initialX;
+        this.initialZ = initialZ;
     }
 
     public WaypointCreationMenu(WaypointProfile wp, GuiScreen previousGui) {
@@ -61,8 +75,8 @@ public class WaypointCreationMenu extends GuiScreen {
         buttonList.add(saveButton = new GuiButton(101, this.width/2 + 25, this.height - 80, 45, 18, "Save"));
         saveButton.enabled = false;
 
-        xCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getX()));
-        zCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getZ()));
+        xCoordField.setText(Integer.toString(initialX));
+        zCoordField.setText(Integer.toString(initialZ));
         yCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getY()));
         waypointType  = WaypointType.FLAG;
 

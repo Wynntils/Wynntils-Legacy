@@ -6,6 +6,7 @@ package com.wynntils.modules.map.overlays;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
@@ -184,6 +185,13 @@ public class MiniMapOverlay extends Overlay {
                         drawString("W", -2, mapCentre - 3, CommonColors.WHITE);
                     }
                 }
+            }
+
+            if (MapConfig.INSTANCE.showCoords) {
+                drawString(
+                        String.join(", ",Long.toString(Math.round(mc.player.posX)), Long.toString(Math.round(mc.player.posY)), Long.toString(Math.round(mc.player.posZ))),
+                        mapSize / 2f, mapSize + 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE
+                );
             }
 
             //GlStateManager.disableTexture2D();

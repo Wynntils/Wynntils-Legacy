@@ -39,6 +39,13 @@ public class MapIcon {
         this.sizeZ = (texSizeZ - texPosZ) / size;
     }
 
+    public MapIcon setPosition(int posX, int posZ) {
+        this.posX = posX;
+        this.posZ = posZ;
+
+        return this;
+    }
+
     public MapIcon setZoomNeded(int zoomNeded) {
         this.zoomNeded = zoomNeded;
 

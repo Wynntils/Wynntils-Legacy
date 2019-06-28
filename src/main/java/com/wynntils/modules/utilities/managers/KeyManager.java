@@ -21,6 +21,8 @@ public class KeyManager {
 
     private static KeyHolder lockInventoryKey;
     private static KeyHolder checkForUpdatesKey;
+    private static KeyHolder zoomInKey;
+    private static KeyHolder zoomOutKey;
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
@@ -42,13 +44,13 @@ public class KeyManager {
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
 
-        CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
+        zoomInKey = CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
             if (MapConfig.INSTANCE.mapZoom >= 5) {
                 MapConfig.INSTANCE.mapZoom -= 5;
             }
         });
 
-        CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
+        zoomOutKey = CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
             if (MapConfig.INSTANCE.mapZoom <= 95) {
                 MapConfig.INSTANCE.mapZoom += 5;
             }
@@ -68,5 +70,13 @@ public class KeyManager {
 
     public static KeyHolder getCheckForUpdatesKey() {
         return checkForUpdatesKey;
+    }
+
+    public static KeyHolder getZoomInKey() {
+        return zoomInKey;
+    }
+
+    public static KeyHolder getZoomOutKey() {
+        return zoomOutKey;
     }
 }

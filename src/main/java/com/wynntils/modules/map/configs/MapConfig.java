@@ -37,7 +37,10 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 6)
+    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    public boolean showCoords = false;
+
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 7)
     public boolean northOnly = false;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
@@ -66,6 +69,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
+        // If this ever needs to be configurable, make these into @Setting s.
+        final public int maxZoom = 150;  // Note that this is the most zoomed out
+        final public int minZoom = -10;  // And this is the most zoomed in
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
