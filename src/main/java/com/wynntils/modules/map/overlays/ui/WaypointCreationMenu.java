@@ -3,6 +3,8 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.ui.UI;
+import com.wynntils.core.framework.ui.elements.UIEColorWheel;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import com.wynntils.modules.map.MapModule;
@@ -13,9 +15,7 @@ import net.minecraft.client.gui.*;
 
 import java.io.IOException;
 
-public class WaypointCreationMenu extends GuiScreen {
-
-    private ScreenRenderer renderer = new ScreenRenderer();
+public class WaypointCreationMenu extends UI {
     private GuiLabel nameFieldLabel;
     private GuiTextField nameField;
     private GuiLabel xCoordFieldLabel;
@@ -28,10 +28,7 @@ public class WaypointCreationMenu extends GuiScreen {
     private GuiButton defaultVisibilityButton;
     private GuiButton alwaysVisibleButton;
     private GuiButton hiddenButton;
-    private GuiSlider redSlider;
-    private GuiSlider blueSlider;
-    private GuiSlider greenSlider;
-    private GuiSlider alphaSlider;
+    private UIEColorWheel colorWheel;
     private GuiButton saveButton;
     private GuiButton cancelButton;
     private GuiButton waypointTypeNext;
@@ -67,8 +64,13 @@ public class WaypointCreationMenu extends GuiScreen {
         isUpdatingExisting = true;
     }
 
-    @Override
-    public void initGui() {
+    @Override public void onInit() { }
+    @Override public void onClose() { }
+    @Override public void onTick() { }
+    @Override public void onWindowUpdate() {
+        buttonList.clear();
+        UIElements.clear();
+
         nameField = new GuiTextField(0, mc.fontRenderer, this.width/2 - 80, this.height/2 - 70, 160, 20);
         xCoordField = new GuiTextField(1, mc.fontRenderer, this.width/2 - 65, this.height/2 - 30, 40, 20);
         zCoordField = new GuiTextField(2, mc.fontRenderer, this.width/2 - 5, this.height/2 - 30, 40, 20);
@@ -76,52 +78,14 @@ public class WaypointCreationMenu extends GuiScreen {
         buttonList.add(waypointTypeNext = new GuiButton(97, this.width/2 - 40, this.height/2 + 10, 18, 18, ">"));
         buttonList.add(waypointTypeBack = new GuiButton(98, this.width/2 - 80, this.height/2 + 10, 18, 18, "<"));
 
-        GuiPageButtonList.GuiResponder sliderResponder = new GuiPageButtonList.GuiResponder() {
-            @Override
-            public void setEntryValue(int id, float value) {
-                CustomColor currentColour = getColor();
-                switch (id) {
-                    case 104:
-                        currentColour.r = value;
-                        break;
-                    case 105:
-                        currentColour.g = value;
-                        break;
-                    case 106:
-                        currentColour.b = value;
-                        break;
-                    case 107:
-                        currentColour.a = value;
-                        break;
-                }
-            }
-
-            @Override public void setEntryValue(int id, boolean value) { }
-            @Override public void setEntryValue(int id, String value) { }
-        };
-
-        GuiSlider.FormatHelper formatter = new GuiSlider.FormatHelper() {
-            @Override
-            public String getText(int id, String name, float value) {
-                return name + ": " + Math.round(value * 100f) + "%";
-            }
-        };
-
-        CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
-        buttonList.add(redSlider = new GuiSlider(sliderResponder, 104, this.width / 2, this.height / 2 + 9, "Red", 0, 1, color.r, formatter));
-        buttonList.add(greenSlider = new GuiSlider(sliderResponder, 105, this.width / 2, this.height / 2 + 9 + 21, "Green", 0, 1, color.g, formatter));
-        buttonList.add(blueSlider = new GuiSlider(sliderResponder, 106, this.width / 2, this.height / 2 + 9 + 21 * 2, "Blue", 0, 1, color.b, formatter));
-        buttonList.add(alphaSlider = new GuiSlider(sliderResponder, 107, this.width / 2, this.height / 2 + 9 + 21 * 3, "Alpha", 0, 1, color.a, formatter));
-
         int visibilityButtonWidth = 100;
-        int visibilityButtonHeight = this.height / 2 + 9 + 21 * 4 + 5;
+        int visibilityButtonHeight = this.height/2 + 40;
         buttonList.add(defaultVisibilityButton = new GuiButton(99, this.width/2 - 3 * visibilityButtonWidth / 2 - 2, visibilityButtonHeight, visibilityButtonWidth, 18, "Default"));
         buttonList.add(alwaysVisibleButton = new GuiButton(100, this.width/2 - visibilityButtonWidth / 2,visibilityButtonHeight, visibilityButtonWidth, 18, "Always Visible"));
         buttonList.add(hiddenButton = new GuiButton(101, this.width/2 + visibilityButtonWidth / 2 + 2,visibilityButtonHeight, visibilityButtonWidth, 18, "Hidden"));
 
-        int cancelButtonHeight = this.height / 2 + 45;
-        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 100, cancelButtonHeight, 45, 18, "Cancel"));
-        buttonList.add(saveButton = new GuiButton(103, this.width/2 - 50, cancelButtonHeight, 45, 18, "Save"));
+        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 71, this.height - 80, 45, 18, "Cancel"));
+        buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, this.height - 80, 45, 18, "Save"));
         saveButton.enabled = false;
 
         xCoordField.setText(Integer.toString(initialX));
@@ -138,6 +102,10 @@ public class WaypointCreationMenu extends GuiScreen {
         zCoordFieldLabel.addLine("Z");
         coordinatesLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 80,this.height/2 - 41,40,10,0xFFFFFF);
         coordinatesLabel.addLine("Coordinates:");
+
+        UIElements.add(colorWheel = new UIEColorWheel(0, 0, this.width / 2, this.height / 2 + 9, 20, 20, true, this::setColor, this));
+
+        CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
 
         if (wp == null) {
             setWpIcon(WaypointType.FLAG, 0, color);
@@ -172,6 +140,8 @@ public class WaypointCreationMenu extends GuiScreen {
             default:
                 defaultVisibilityButton.packedFGColour = enabledColour;
         }
+
+        colorWheel.setColor(colour);
     }
 
     private int getZoomNeeded() {
@@ -198,11 +168,17 @@ public class WaypointCreationMenu extends GuiScreen {
         setWpIcon(getWaypointType(), getZoomNeeded(), color);
     }
 
+    @Override public void onRenderPreUIE(ScreenRenderer renderer) {}
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void onRenderPostUIE(ScreenRenderer renderer) {
         if (nameField != null) nameField.drawTextBox();
         if (xCoordField != null) xCoordField.drawTextBox();
         if (yCoordField != null) yCoordField.drawTextBox();
@@ -216,14 +192,11 @@ public class WaypointCreationMenu extends GuiScreen {
 
         fontRenderer.drawString("Icon:", this.width/2 - 80,this.height/2,0xFFFFFF, true);
         fontRenderer.drawString("Colour:", this.width/2,this.height/2,0xFFFFFF, true);
-        ScreenRenderer.beginGL(0, 0);
 
         float centreX = this.width / 2f - 60 + 9;
         float centreZ = this.height / 2f + 10 + 9;
         float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
         wpIcon.renderAt(renderer, centreX, centreZ, multiplier);
-
-        ScreenRenderer.endGL();
     }
 
     @Override
