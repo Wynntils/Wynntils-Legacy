@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapApiIconInfo extends MapIconInfo {
+public class MapApiIcon extends MapIcon {
     private static final HashMap<String, String> MAPMARKERNAME_TRANSLATION = new HashMap<String, String>() {{
         put("Content_Dungeon", "Dungeons");
         put("Merchant_Accessory", "Accessory Merchant");
@@ -61,7 +61,7 @@ public class MapApiIconInfo extends MapIconInfo {
 
     private String translatedName;
 
-    MapApiIconInfo(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
+    MapApiIcon(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
         JsonObject iconMapping = Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIVAL").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
 
         this.mmp = mmp;
@@ -143,8 +143,8 @@ public class MapApiIconInfo extends MapIconInfo {
         );
     }
 
-    private static List<MapIconInfo> classicApiMarkers = null;
-    private static List<MapIconInfo> medievalApiMarkers = null;
+    private static List<MapIcon> classicApiMarkers = null;
+    private static List<MapIcon> medievalApiMarkers = null;
 
     public static void resetApiMarkers() {
         if (Textures.Map.map_icons == null) return;
@@ -159,14 +159,14 @@ public class MapApiIconInfo extends MapIconInfo {
             medievalApiMarkers.clear();
         }
         for (MapMarkerProfile mmp : WebManager.getMapMarkers()) {
-            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIconInfo(mmp, MapConfig.IconTexture.Classic));
-            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIconInfo(mmp, MapConfig.IconTexture.Medieval));
+            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
+            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Medieval));
         }
     }
 
     public static void resetApiMarkers(MapConfig.IconTexture iconTexture) {
         if (Textures.Map.map_icons == null) return;
-        List<MapIconInfo> markers;
+        List<MapIcon> markers;
         switch (iconTexture) {
             case Classic:
                 if (classicApiMarkers == null) {
@@ -188,11 +188,11 @@ public class MapApiIconInfo extends MapIconInfo {
                 return;
         }
         for (MapMarkerProfile mmp : WebManager.getMapMarkers()) {
-            if (isApiMarkerValid(mmp, iconTexture)) markers.add(new MapApiIconInfo(mmp, iconTexture));
+            if (isApiMarkerValid(mmp, iconTexture)) markers.add(new MapApiIcon(mmp, iconTexture));
         }
     }
 
-    public static List<MapIconInfo> getApiMarkers(MapConfig.IconTexture iconTexture) {
+    public static List<MapIcon> getApiMarkers(MapConfig.IconTexture iconTexture) {
         if (classicApiMarkers == null && medievalApiMarkers == null) resetApiMarkers();
         switch (iconTexture) {
             case Classic:

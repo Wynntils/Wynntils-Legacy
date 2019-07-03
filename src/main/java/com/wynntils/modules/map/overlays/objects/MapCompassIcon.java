@@ -8,15 +8,15 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
 
-public class MapCompassIconInfo extends MapIconInfo {
-    private static MapCompassIconInfo instance = null;
+public class MapCompassIcon extends MapIcon {
+    private static MapCompassIcon instance = null;
 
-    public static MapCompassIconInfo getCompass() {
-        if (instance == null && Textures.Map.map_icons != null) instance = new MapCompassIconInfo();
+    public static MapCompassIcon getCompass() {
+        if (instance == null && Textures.Map.map_icons != null) instance = new MapCompassIcon();
         return instance;
     }
 
-    private MapCompassIconInfo() {}
+    private MapCompassIcon() {}
 
     @Override public AssetsTexture getTexture() {
         return Textures.Map.map_icons;

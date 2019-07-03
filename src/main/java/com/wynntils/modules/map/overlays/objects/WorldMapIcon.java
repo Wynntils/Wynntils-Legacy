@@ -12,18 +12,18 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class WorldMapIcon {
 
-    MapIconInfo info;
+    MapIcon info;
 
     float axisX = 0; float axisZ = 0;
     boolean shouldRender = false;
 
     float alpha = 1;
 
-    public WorldMapIcon(MapIconInfo info) {
+    public WorldMapIcon(MapIcon info) {
         this.info = info;
     }
 
-    public MapIconInfo getInfo() {
+    public MapIcon getInfo() {
         return info;
     }
 
@@ -32,7 +32,7 @@ public class WorldMapIcon {
             shouldRender = false;
             return;
         }
-        if(info.getZoomNeeded() != MapIconInfo.ANY_ZOOM) {
+        if(info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
             alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
 
             if(alpha <= 0) {

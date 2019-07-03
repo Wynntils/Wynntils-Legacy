@@ -7,10 +7,9 @@ import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
-import com.wynntils.modules.map.overlays.objects.MapWaypointIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
 
@@ -40,7 +39,7 @@ public class WaypointCreationMenu extends GuiScreen {
 
     private boolean isUpdatingExisting;
     private WaypointProfile wp;
-    private MapWaypointIconInfo wpIcon;
+    private MapWaypointIcon wpIcon;
     private GuiScreen previousGui;
 
     private int initialX;
@@ -154,7 +153,7 @@ public class WaypointCreationMenu extends GuiScreen {
     }
 
     private void setWpIcon(WaypointType type, int zoomNeeded, CustomColor colour) {
-        wpIcon = new MapWaypointIconInfo(new WaypointProfile("", 0, 0, 0, colour, type, zoomNeeded));
+        wpIcon = new MapWaypointIcon(new WaypointProfile("", 0, 0, 0, colour, type, zoomNeeded));
 
         final int disabledColour = 10526880;
         final int enabledColour = 0;
@@ -164,10 +163,10 @@ public class WaypointCreationMenu extends GuiScreen {
         hiddenButton.packedFGColour = disabledColour;
 
         switch (zoomNeeded) {
-            case MapWaypointIconInfo.ANY_ZOOM:
+            case MapWaypointIcon.ANY_ZOOM:
                 alwaysVisibleButton.packedFGColour = enabledColour;
                 break;
-            case MapWaypointIconInfo.HIDDEN_ZOOM:
+            case MapWaypointIcon.HIDDEN_ZOOM:
                 hiddenButton.packedFGColour = enabledColour;
                 break;
             default:
@@ -271,9 +270,9 @@ public class WaypointCreationMenu extends GuiScreen {
         } else if (button == defaultVisibilityButton) {
             setZoomNeeded(0);
         } else if (button == alwaysVisibleButton) {
-            setZoomNeeded(MapWaypointIconInfo.ANY_ZOOM);
+            setZoomNeeded(MapWaypointIcon.ANY_ZOOM);
         } else if (button == hiddenButton) {
-            setZoomNeeded(MapWaypointIconInfo.HIDDEN_ZOOM);
+            setZoomNeeded(MapWaypointIcon.HIDDEN_ZOOM);
         }
     }
 

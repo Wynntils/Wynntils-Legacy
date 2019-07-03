@@ -1,16 +1,13 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
-import com.wynntils.modules.map.overlays.objects.MapWaypointIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -57,12 +54,12 @@ public class WaypointOverviewUI extends GuiScreen {
             if (wp == null || wp.getType() == null) continue;
 
             int colour = 0xFFFFFF;
-            boolean hidden = wp.getZoomNeeded() == MapWaypointIconInfo.HIDDEN_ZOOM;
+            boolean hidden = wp.getZoomNeeded() == MapWaypointIcon.HIDDEN_ZOOM;
             if (hidden) {
                 colour = 0x636363;
             }
 
-            MapWaypointIconInfo wpIcon = new MapWaypointIconInfo(wp);
+            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
             float centreX = this.width / 2f - 171;
             float centreZ = 60 + 25 * i;
             float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());

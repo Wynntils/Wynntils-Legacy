@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapWaypointIconInfo extends MapIconInfo {
+public class MapWaypointIcon extends MapIcon {
     public static final int HIDDEN_ZOOM = -1;
 
     private static int[] sizeMapping = null;
@@ -43,7 +43,7 @@ public class MapWaypointIconInfo extends MapIconInfo {
         setSize(WaypointProfile.WaypointType.LOOTCHEST_T3,  82, 35, 100, 53);
         setSize(WaypointProfile.WaypointType.LOOTCHEST_T4, 100, 35, 118, 53);
         setSize(WaypointProfile.WaypointType.DIAMOND, 172, 37, 190, 55);
-        setSize(WaypointProfile.WaypointType.FLAG, 154, 36, 172, 54);  // TODO: Handle colours
+        setSize(WaypointProfile.WaypointType.FLAG, 154, 36, 172, 54);
         setSize(WaypointProfile.WaypointType.SIGN, 190, 36, 208, 54);
         setSize(WaypointProfile.WaypointType.STAR, 208, 36, 226, 54);
         setSize(WaypointProfile.WaypointType.TURRET, 226, 36, 244, 54);
@@ -51,7 +51,7 @@ public class MapWaypointIconInfo extends MapIconInfo {
 
     private WaypointProfile wp;
 
-    public MapWaypointIconInfo(WaypointProfile wp) {
+    public MapWaypointIcon(WaypointProfile wp) {
         initialise();
 
         assert wp.getType().ordinal() < waypointTypesCount : "Invalid enum value in WaypointProfile.WaypointType: " + wp.getType().ordinal();
@@ -122,10 +122,10 @@ public class MapWaypointIconInfo extends MapIconInfo {
         return wp;
     }
 
-    private static List<MapIconInfo> waypoints = null;
+    private static List<MapIcon> waypoints = null;
 
 
-    public static List<MapIconInfo> getWaypoints() {
+    public static List<MapIcon> getWaypoints() {
         if (waypoints == null) {
             resetWaypoints();
         }
@@ -138,6 +138,6 @@ public class MapWaypointIconInfo extends MapIconInfo {
         } else {
             waypoints.clear();
         }
-        MapConfig.Waypoints.INSTANCE.waypoints.forEach(c -> waypoints.add(new MapWaypointIconInfo(c)));
+        MapConfig.Waypoints.INSTANCE.waypoints.forEach(c -> waypoints.add(new MapWaypointIcon(c)));
     }
 }

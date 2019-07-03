@@ -10,7 +10,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 
 import java.util.List;
 
-public abstract class MapIconInfo {
+public abstract class MapIcon {
     public static final int ANY_ZOOM = -1000;
 
     public abstract AssetsTexture getTexture();
@@ -37,15 +37,15 @@ public abstract class MapIconInfo {
         );
     }
 
-    public static List<MapIconInfo> getApiMarkers(MapConfig.IconTexture iconTexture) {
-        return MapApiIconInfo.getApiMarkers(iconTexture);
+    public static List<MapIcon> getApiMarkers(MapConfig.IconTexture iconTexture) {
+        return MapApiIcon.getApiMarkers(iconTexture);
     }
 
-    public static List<MapIconInfo> getWaypoints() {
-        return MapWaypointIconInfo.getWaypoints();
+    public static List<MapIcon> getWaypoints() {
+        return MapWaypointIcon.getWaypoints();
     }
 
-    public static MapIconInfo getCompass() {
-        return MapCompassIconInfo.getCompass();
+    public static MapIcon getCompass() {
+        return MapCompassIcon.getCompass();
     }
 }

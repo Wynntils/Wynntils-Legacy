@@ -14,8 +14,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.overlays.objects.MapApiIconInfo;
-import com.wynntils.modules.map.overlays.objects.MapIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -66,15 +65,15 @@ public class WorldMapUI extends GuiScreen {
         creationTime = System.currentTimeMillis();
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
-        apiMapIcons = MapIconInfo.getApiMarkers(MapConfig.INSTANCE.iconTexture)
+        apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture)
                 .stream()
                 .map(WorldMapIcon::new)
                 .collect(Collectors.toList());
 
         //HeyZeer0: Handles all waypoints
-        wpMapIcons = MapIconInfo.getWaypoints().stream().map(WorldMapIcon::new).collect(Collectors.toList());
+        wpMapIcons = MapIcon.getWaypoints().stream().map(WorldMapIcon::new).collect(Collectors.toList());
 
-        compassIcon = new WorldMapIcon(MapIconInfo.getCompass());
+        compassIcon = new WorldMapIcon(MapIcon.getCompass());
 
         //HeyZeer0: Handles the territories
         territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());

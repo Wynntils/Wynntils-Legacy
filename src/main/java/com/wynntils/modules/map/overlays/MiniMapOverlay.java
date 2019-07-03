@@ -14,7 +14,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.overlays.objects.MapIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -130,7 +130,7 @@ public class MiniMapOverlay extends Overlay {
                 int maxWorldX = (int) mc.player.posX + mapSize / 2 + zoom;
                 int maxWorldZ = (int) mc.player.posZ + mapSize / 2 + zoom;
 
-                Consumer<MapIconInfo> consumer = c -> {
+                Consumer<MapIcon> consumer = c -> {
                     int posX = c.getPosX();
                     int posZ = c.getPosZ();
                     float sizeX = c.getSizeX();
@@ -161,11 +161,11 @@ public class MiniMapOverlay extends Overlay {
                     c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
                 };
 
-                MapIconInfo.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
-                MapIconInfo.getWaypoints().forEach(consumer);
+                MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
+                MapIcon.getWaypoints().forEach(consumer);
 
                 if (CompassManager.getCompassLocation() != null) {
-                    MapIconInfo compassIcon = MapIconInfo.getCompass();
+                    MapIcon compassIcon = MapIcon.getCompass();
 
                     float dx = (float) (compassIcon.getPosX() - mc.player.posX) * scaleFactor;
                     float dz = (float) (compassIcon.getPosZ() - mc.player.posZ) * scaleFactor;
