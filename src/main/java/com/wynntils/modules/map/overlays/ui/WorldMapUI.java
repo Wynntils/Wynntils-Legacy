@@ -68,7 +68,6 @@ public class WorldMapUI extends GuiScreen {
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
         apiMapIcons = MapIconInfo.getApiMarkers(MapConfig.INSTANCE.iconTexture)
                 .stream()
-                .filter(c -> ((MapApiIconInfo) c).isEnabled())
                 .map(WorldMapIcon::new)
                 .collect(Collectors.toList());
 

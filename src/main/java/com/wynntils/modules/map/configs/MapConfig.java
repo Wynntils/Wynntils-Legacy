@@ -10,7 +10,7 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.WaypointProfile;
-import com.wynntils.modules.map.overlays.objects.MapIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIconInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,12 +136,12 @@ public class MapConfig extends SettingsClass {
         @Override
         public void saveSettings(Module m) {
             super.saveSettings(m);
-            MapIconInfo.resetWaypoints();
+            MapWaypointIconInfo.resetWaypoints();
         }
 
         @Override
         public void onSettingChanged(String name) {
-            MapIconInfo.resetWaypoints();
+            MapWaypointIconInfo.resetWaypoints();
         }
     }
 

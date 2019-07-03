@@ -12,6 +12,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.modules.map.overlays.objects.MapApiIconInfo;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
@@ -402,6 +403,7 @@ public class WebManager {
         }.getType();
 
         mapMarkers = gson.fromJson(jsonArray, type);
+        MapApiIconInfo.resetApiMarkers();
     }
 
     /**
@@ -433,6 +435,7 @@ public class WebManager {
         Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
         mapMarkers.addAll(gson.fromJson(jsonArray, type));
+        MapApiIconInfo.resetApiMarkers();
     }
 
     /**
