@@ -130,13 +130,10 @@ public class ClientEvents implements Listener {
         }
     }
 
-    long lastDetection = System.currentTimeMillis();
-
     @SubscribeEvent
     public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
         if(e.phase != TickEvent.Phase.END) return;
 
-        //lastDetection = System.currentTimeMillis();
         PacketQueue.proccessQueue();
     }
 
