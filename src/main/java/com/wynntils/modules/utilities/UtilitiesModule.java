@@ -12,7 +12,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.utilities.managers.QuickCastManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.modules.utilities.overlays.inventories.*;
@@ -30,7 +29,6 @@ public class UtilitiesModule extends Module {
         registerEvents(new ServerEvents());
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
-        registerEvents(new QuickCastManager());
 
         //Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());

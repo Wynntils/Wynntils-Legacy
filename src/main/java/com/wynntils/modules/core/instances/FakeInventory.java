@@ -11,15 +11,15 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketClickWindow;
-import net.minecraft.network.play.client.CPacketCloseWindow;
-import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.*;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -38,6 +38,9 @@ import java.util.function.Consumer;
  * everything will bug and catch fire.
  */
 public class FakeInventory {
+
+    private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
+    private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
     public static boolean ignoreNextUserClick = false;
 
@@ -87,13 +90,15 @@ public class FakeInventory {
 
         ignoreNextUserClick = true;
         if(slot == itemSlot) {
-            mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+            PacketQueue.queuePackets(rightClick, releaseClick);
             return this;
         }
-        
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(itemSlot));
-        mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(slot));
+
+        PacketQueue.queuePackets(
+                new CPacketHeldItemChange(itemSlot),
+                rightClick, releaseClick,
+                new CPacketHeldItemChange(slot)
+        );
         return this;
     }
 
