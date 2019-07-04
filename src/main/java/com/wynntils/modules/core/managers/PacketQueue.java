@@ -6,9 +6,9 @@ package com.wynntils.modules.core.managers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Queue;
 
 public class PacketQueue {
