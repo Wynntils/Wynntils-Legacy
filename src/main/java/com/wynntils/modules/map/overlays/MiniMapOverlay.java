@@ -14,8 +14,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.overlays.objects.MapCompassIconInfo;
-import com.wynntils.modules.map.overlays.objects.MapIconInfo;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -114,6 +113,8 @@ public class MiniMapOverlay extends Overlay {
                 final float scaleFactor = mapSize / (mapSize + 2f * zoom);
                 final float sizeMultiplier = 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier * (1 - (1 - scaleFactor) * (1 - scaleFactor));
                 final double rotationRadians = mc.player.rotationYaw * Math.PI / 180;
+                final float sinRotationRadians = (float) Math.sin(rotationRadians);
+                final float cosRotationRadians = (float) -Math.cos(rotationRadians);
 
                 // These two points for a box bigger than the actual minimap so the icons outside
                 // can quickly be filtered out
@@ -129,60 +130,49 @@ public class MiniMapOverlay extends Overlay {
                 int maxWorldX = (int) mc.player.posX + mapSize / 2 + zoom;
                 int maxWorldZ = (int) mc.player.posZ + mapSize / 2 + zoom;
 
-                Consumer<MapIconInfo> consumer = c -> {
+                Consumer<MapIcon> consumer = c -> {
+                    int posX = c.getPosX();
+                    int posZ = c.getPosZ();
+                    float sizeX = c.getSizeX();
+                    float sizeZ = c.getSizeZ();
                     if (
-                            !(minFastWorldX <= c.getPosX() + c.getSizeX() && c.getPosX() - c.getSizeX() <= maxFastWorldX) ||
-                            !(minFastWorldZ <= c.getPosZ() + c.getSizeZ() && c.getPosZ() - c.getSizeZ() <= maxFastWorldZ)
+                            c.isEnabled() &&
+                            !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
+                            !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
                     ) {
                         return;
                     }
-                    float dx = (float) (c.getPosX() - mc.player.posX) * scaleFactor;
-                    float dz = (float) (c.getPosZ() - mc.player.posZ) * scaleFactor;
+                    float dx = (float) (posX - mc.player.posX) * scaleFactor;
+                    float dz = (float) (posZ - mc.player.posZ) * scaleFactor;
 
                     if (MapConfig.INSTANCE.followPlayerRotation) {
                         // Rotate dx and dz
-                        float sin = (float) Math.sin(rotationRadians);
-                        float cos = (float) -Math.cos(rotationRadians);
-
-                        float new_dx = dx * cos - dz * sin;
-                        dz = dx * sin + dz * cos;
-                        dx = new_dx;
+                        float temp = dx * cosRotationRadians - dz * sinRotationRadians;
+                        dz = dx * sinRotationRadians + dz * cosRotationRadians;
+                        dx = temp;
                     }
 
-                    float cornerX = Math.abs(dx) - c.getSizeX() * sizeMultiplier * 2;
-                    float cornerZ = Math.abs(dz) - c.getSizeZ() * sizeMultiplier * 2;
+                    float cornerX = Math.abs(dx) - sizeX * sizeMultiplier * 2;
+                    float cornerZ = Math.abs(dz) - sizeZ * sizeMultiplier * 2;
                     if (cornerX * cornerX + cornerZ * cornerZ > maxDistance) {
                         return;
                     }
 
-                    dx += halfMapSize;
-                    dz += halfMapSize;
-
-                    drawRectF(
-                            c.getTexture(),
-                            dx - c.getSizeX() * sizeMultiplier,
-                            dz - c.getSizeZ() * sizeMultiplier,
-                            dx + c.getSizeX() * sizeMultiplier,
-                            dz + c.getSizeZ() * sizeMultiplier,
-                            c.getTexPosX(), c.getTexPosZ(), c.getTexSizeX(), c.getTexSizeZ()
-                    );
+                    c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
                 };
 
-                MapIconInfo.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
-                MapIconInfo.getWaypoints().forEach(consumer);
+                MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
+                MapIcon.getWaypoints().forEach(consumer);
 
                 if (CompassManager.getCompassLocation() != null) {
-                    MapIconInfo compassIcon = MapCompassIconInfo.getInstance();
+                    MapIcon compassIcon = MapIcon.getCompass();
 
                     float dx = (float) (compassIcon.getPosX() - mc.player.posX) * scaleFactor;
                     float dz = (float) (compassIcon.getPosZ() - mc.player.posZ) * scaleFactor;
 
                     if (MapConfig.INSTANCE.followPlayerRotation) {
-                        float sin = (float) Math.sin(rotationRadians);
-                        float cos = (float) -Math.cos(rotationRadians);
-
-                        float temp = dx * cos - dz * sin;
-                        dz = dx * sin + dz * cos;
+                        float temp = dx * cosRotationRadians - dz * sinRotationRadians;
+                        dz = dx * sinRotationRadians + dz * cosRotationRadians;
                         dx = temp;
                     }
 
@@ -194,7 +184,7 @@ public class MiniMapOverlay extends Overlay {
                     if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
                         newDx = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dx));
                         newDz = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dz));
-                        scaled = newDx != dx || newDz != dz;
+                        scaled = (newDx != dx) || (newDz != dz);
                         if (!scaled) {
                             dx = newDx;
                             dz = newDz;
@@ -244,18 +234,7 @@ public class MiniMapOverlay extends Overlay {
 
                         GlStateManager.popMatrix();
                     } else {
-                        dx += halfMapSize;
-                        dz += halfMapSize;
-
-                        drawRectF(
-                                compassIcon.getTexture(),
-                                dx - compassIcon.getSizeX() * sizeMultiplier,
-                                dz - compassIcon.getSizeZ() * sizeMultiplier,
-                                dx + compassIcon.getSizeX() * sizeMultiplier,
-                                dz + compassIcon.getSizeZ() * sizeMultiplier,
-                                compassIcon.getTexPosX(), compassIcon.getTexPosZ(),
-                                compassIcon.getTexSizeX(), compassIcon.getTexSizeZ()
-                        );
+                        compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
                     }
                 }
             }

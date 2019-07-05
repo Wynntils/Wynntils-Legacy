@@ -12,24 +12,28 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class WorldMapIcon {
 
-    MapIconInfo info;
+    MapIcon info;
 
     float axisX = 0; float axisZ = 0;
     boolean shouldRender = false;
 
     float alpha = 1;
 
-    public WorldMapIcon(MapIconInfo info) {
+    public WorldMapIcon(MapIcon info) {
         this.info = info;
     }
 
-    public MapIconInfo getInfo() {
+    public MapIcon getInfo() {
         return info;
     }
 
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
-        if(info.zoomNeeded != -1000) {
-            alpha = 1 - ((zoom - info.zoomNeeded) / 40.0f);
+        if (!info.isEnabled()) {
+            shouldRender = false;
+            return;
+        }
+        if(info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
+            alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
 
             if(alpha <= 0) {
                 shouldRender = false;
@@ -50,7 +54,9 @@ public class WorldMapIcon {
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
-        return mouseX >= (axisX - info.sizeX) && mouseX <= (axisX + info.sizeX) && mouseY >= (axisZ - info.sizeZ) && mouseY <= (axisZ + info.sizeZ);
+        float sizeX = info.getSizeX();
+        float sizeZ = info.getSizeZ();
+        return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
@@ -60,7 +66,9 @@ public class WorldMapIcon {
         GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
-        renderer.drawRectF(info.texture, axisX - info.sizeX * multi, axisZ - info.sizeZ * multi, axisX + info.sizeX * multi, axisZ + info.sizeZ * multi, info.texPosX, info.texPosZ, info.texSizeX, info.texSizeZ);
+
+        info.renderAt(renderer, axisX, axisZ, multi);
+
         GlStateManager.color(1,1,1,1);
 
         GlStateManager.popMatrix();
@@ -70,6 +78,6 @@ public class WorldMapIcon {
         if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
-        renderer.drawString(info.name, (int)(axisX), (int)(axisZ)-20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.drawString(info.getName(), (int)(axisX), (int)(axisZ)-20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 }
