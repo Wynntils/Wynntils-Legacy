@@ -69,13 +69,15 @@ public class MapTerritory {
         float ppX = initX + ((endX - initX)/2f);
         float ppY = initY + ((endY - initY)/2f);
 
-        if(MapConfig.WorldMap.INSTANCE.showTerritoryName && alpha > 0)
-            renderer.drawString(territory.getFriendlyName(), ppX, ppY, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        boolean Hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+
+        if((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
+            renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if(MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         if(alpha <= 0) return;
 
-        renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY + (MapConfig.WorldMap.INSTANCE.showTerritoryName ? 10 : 0), color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
 }
