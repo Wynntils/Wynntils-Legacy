@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -215,15 +216,21 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId) {
+        ITextComponent chatComponentCopy = chatComponent.createCopy();
+
+        // message processor
+        Pair<ITextComponent, Boolean> proccessed = ChatManager.proccessRealMessage(chatComponentCopy);
+        chatComponentCopy = proccessed.a;
+
         //spam filter
         if(tab.getLastMessage() != null) {
-            if (ChatConfig.INSTANCE.blockChatSpamFilter && stripTimestamp(tab.getLastMessage()).getFormattedText().equals(stripTimestamp(chatComponent).getFormattedText()) && chatLineId == 0) {
+            if (ChatConfig.INSTANCE.blockChatSpamFilter && stripTimestamp(tab.getLastMessage()).getFormattedText().equals(stripTimestamp(chatComponentCopy).getFormattedText()) && chatLineId == 0) {
                 try {
                     List<ChatLine> lines = tab.getCurrentMessages();
                     if (lines != null && lines.size() > 0) {
                         // Delete all the lines with the previous group id found
 
-                        int thisGroupId = groupId - 1;
+                        int thisGroupId = tab.getCurrentGroupId() - 1;
                         for (int i = 0; i < lines.size(); ++i) {
                             if (lines.get(i) instanceof GroupedChatLine && ((GroupedChatLine) lines.get(i)).getGroupId() == thisGroupId) {
                                 lines.remove(0);
@@ -232,7 +239,7 @@ public class ChatOverlay extends GuiNewChat {
                         }
 
                         // Add a new set of lines (reusing the same id, since it is no longer used)
-                        ITextComponent chatWithCounter = chatComponent.createCopy();
+                        ITextComponent chatWithCounter = chatComponentCopy.createCopy();
 
                         ITextComponent counter = new TextComponentString(" [" + (tab.getLastAmount()) + "x]");
                         counter.getStyle().setColor(TextFormatting.GRAY);
@@ -252,29 +259,24 @@ public class ChatOverlay extends GuiNewChat {
                         while (tab.getCurrentMessages().size() > 100) {
                             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
                         }
-                        tab.updateLastMessageAndAmount(chatComponent.createCopy(), tab.getLastAmount() + 1);
+                        tab.updateLastMessageAndAmount(chatComponentCopy, tab.getLastAmount() + 1);
                         refreshChat();
                         return;
                     }
                 } catch (Exception ex) { ex.printStackTrace(); }
             } else {
-                tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
+                tab.updateLastMessageAndAmount(chatComponentCopy, 2);
             }
         }else{
-            tab.updateLastMessageAndAmount(chatComponent.createCopy(), 2);
+            tab.updateLastMessageAndAmount(chatComponentCopy, 2);
         }
 
         //push mention
         if(ChatManager.proccessUserMention(chatComponent)) tab.pushMention();
 
-        ITextComponent chatComponentCopy = chatComponent.createCopy();
-
-        //message processor
-        Pair<ITextComponent, Boolean> c = ChatManager.proccessRealMessage(chatComponentCopy);
-        chatComponentCopy = c.a;
         //continue mc code
 
-        int thisGroupId = groupId++;
+        int thisGroupId = tab.increaseCurrentGroupId();
         int chatWidth = MathHelper.floor((float)getChatWidth() / getChatScale());
         List<ITextComponent> list = GuiUtilRenderComponents.splitText(chatComponentCopy, chatWidth, mc.fontRenderer, false, false);
         boolean flag = getChatOpen();
@@ -446,11 +448,9 @@ public class ChatOverlay extends GuiNewChat {
 
     public ITextComponent stripTimestamp(ITextComponent component) {
         return new TextComponentString(component.getFormattedText()
-                .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.GRAY + ChatConfig.INSTANCE.timestampFormat + TextFormatting.DARK_GRAY + "] ", "")
-                .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RED + "Invalid Format" + TextFormatting.DARK_GRAY + "] ", ""));
+            .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RESET + TextFormatting.GRAY + "(\\d{2}:){2}\\d{2}" + TextFormatting.RESET + TextFormatting.DARK_GRAY + "]", "")
+            .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RESET + TextFormatting.RED + "Invalid Format" + TextFormatting.RESET + TextFormatting.DARK_GRAY + "] ", ""));
     }
-
-    static private int groupId = 0;
 
     public class GroupedChatLine extends ChatLine {
         int groupId;
