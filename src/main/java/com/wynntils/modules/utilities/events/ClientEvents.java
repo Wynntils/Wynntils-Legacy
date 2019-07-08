@@ -10,17 +10,22 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ReflectionFields;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.ChatType;
@@ -98,6 +103,38 @@ public class ClientEvents implements Listener {
 
             }else if(value.contains("farming")) {
 
+            }
+        }
+    }
+
+
+    private static int lastHorseId = -1;
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+
+    @SubscribeEvent
+    public void onHorseSpawn(PacketEvent.EntityMetadata e) {
+        if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
+
+        int thisId = e.getPacket().getEntityId();
+        if (thisId == lastHorseId) return;
+        Entity entity = ModCore.mc().world.getEntityByID(thisId);
+        if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
+            return;
+        }
+        if (entity == ModCore.mc().player.getRidingEntity()) {
+            lastHorseId = thisId;
+            return;
+        }
+        String horseName = MountHorseManager.getHorseNameForPlayer();
+        assert nameKey != null;
+        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            if (nameKey.equals(entry.getKey())) {
+                if (horseName.equals(entry.getValue())) {
+                    lastHorseId = thisId;
+                    MountHorseManager.mountHorseAndLogMessage();
+                }
+                return;
             }
         }
     }
