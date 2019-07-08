@@ -44,7 +44,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
-    @Setting(displayName = "Auto mount horse", description = "Should you mount your horse automatically when it is spawned?")
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
     public boolean autoMount = false;
 
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
