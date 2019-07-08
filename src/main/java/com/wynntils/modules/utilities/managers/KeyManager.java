@@ -61,7 +61,7 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Cast Third Spell", Keyboard.KEY_C, "Wynntils", true, QuickCastManager::castThirdSpell);
         CoreModule.getModule().registerKeyBinding("Cast Fourth Spell", Keyboard.KEY_V, "Wynntils", true, QuickCastManager::castFourthSpell);
 
-        CoreModule.getModule().registerKeyBinding("Mount horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
+        CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
 
         CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
     }
