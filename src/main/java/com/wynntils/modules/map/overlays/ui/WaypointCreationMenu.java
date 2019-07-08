@@ -42,6 +42,8 @@ public class WaypointCreationMenu extends UI {
     private int initialX;
     private int initialZ;
 
+    private WaypointCreationMenuState state;
+
     public WaypointCreationMenu(GuiScreen previousGui) {
         this.previousGui = previousGui;
 
@@ -69,7 +71,6 @@ public class WaypointCreationMenu extends UI {
     @Override public void onTick() { }
     @Override public void onWindowUpdate() {
         buttonList.clear();
-        UIElements.clear();
 
         nameField = new GuiTextField(0, mc.fontRenderer, this.width/2 - 80, this.height/2 - 70, 160, 20);
         xCoordField = new GuiTextField(1, mc.fontRenderer, this.width/2 - 65, this.height/2 - 30, 40, 20);
@@ -103,21 +104,34 @@ public class WaypointCreationMenu extends UI {
         coordinatesLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 80,this.height/2 - 41,40,10,0xFFFFFF);
         coordinatesLabel.addLine("Coordinates:");
 
-        UIElements.add(colorWheel = new UIEColorWheel(0, 0, this.width / 2, this.height / 2 + 9, 20, 20, true, this::setColor, this));
+        boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
 
+        if (!returning) {
+            UIElements.add(colorWheel = new UIEColorWheel(0, 0, this.width / 2, this.height / 2 + 9, 20, 20, true, this::setColor, this));
+        }
+
+        WaypointProfile wp = returning ? wpIcon.getWaypointProfile() : this.wp;
         CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
 
         if (wp == null) {
             setWpIcon(WaypointType.FLAG, 0, color);
-        } else {
+        } else if (!returning) {
             nameField.setText(wp.getName());
             xCoordField.setText(Integer.toString((int) wp.getX()));
             yCoordField.setText(Integer.toString((int) wp.getY()));
             zCoordField.setText(Integer.toString((int) wp.getZ()));
 
             setWpIcon(wp.getType(), wp.getZoomNeeded(), color);
-            isAllValidInformation();
         }
+
+        if (returning) {
+            state.resetState(this);
+        } else {
+            state = new WaypointCreationMenuState();
+            state.putState(this);
+        }
+
+        isAllValidInformation();
     }
 
     private void setWpIcon(WaypointType type, int zoomNeeded, CustomColor colour) {
@@ -140,8 +154,6 @@ public class WaypointCreationMenu extends UI {
             default:
                 defaultVisibilityButton.packedFGColour = enabledColour;
         }
-
-        colorWheel.setColor(colour);
     }
 
     private int getZoomNeeded() {
@@ -201,6 +213,8 @@ public class WaypointCreationMenu extends UI {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        state.putState(this);
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
         nameField.mouseClicked(mouseX, mouseY, mouseButton);
@@ -257,6 +271,27 @@ public class WaypointCreationMenu extends UI {
             saveButton.enabled = true;
         } else {
             saveButton.enabled = false;
+        }
+    }
+
+    private class WaypointCreationMenuState {
+        String nameField;
+        String xCoordField;
+        String yCoordField;
+        String zCoordField;
+
+        void putState(WaypointCreationMenu menu) {
+            nameField = menu.nameField.getText();
+            xCoordField = menu.xCoordField.getText();
+            yCoordField = menu.yCoordField.getText();
+            zCoordField = menu.zCoordField.getText();
+        }
+
+        void resetState(WaypointCreationMenu menu) {
+            menu.nameField.setText(nameField);
+            menu.xCoordField.setText(xCoordField);
+            menu.yCoordField.setText(yCoordField);
+            menu.zCoordField.setText(zCoordField);
         }
     }
 }

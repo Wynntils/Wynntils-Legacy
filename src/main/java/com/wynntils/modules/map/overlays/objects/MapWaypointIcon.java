@@ -6,14 +6,17 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
-import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapWaypointIcon extends MapIcon {
     public static final int HIDDEN_ZOOM = -1;
 
+    private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
     private static int[] sizeMapping = null;
     private static int waypointTypesCount;
     private static final int texPosXIndex = 0;
@@ -111,11 +114,11 @@ public class MapWaypointIcon extends MapIcon {
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier) {
-        GlStateManager.pushMatrix();
         CustomColor color = wp.getColor();
-        GlStateManager.color(color.r, color.g, color.b, color.a);
+        GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
+        GL11.glColor4f(color.r, color.g, color.b, color.a);
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier);
-        GlStateManager.popMatrix();
+        GL11.glColor4f(currentColorBuf.get(0), currentColorBuf.get(1), currentColorBuf.get(2), currentColorBuf.get(3));
     }
 
     public WaypointProfile getWaypointProfile() {
