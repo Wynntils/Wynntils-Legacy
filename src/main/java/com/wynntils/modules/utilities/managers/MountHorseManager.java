@@ -78,11 +78,11 @@ public class MountHorseManager {
                         ridingEntityType = name;
                     }
                 }
-                return "Already riding " + ridingEntityType;
+                return "You are already riding your horse" + ridingEntityType;
             case NO_HORSE:
-                return "Could not find your horse";
+                return "Your horse was unable to be found";
             case HORSE_TOO_FAR:
-                return "Horse is too far away";
+                return "Your horse is too far away";
             default:
                 return null;
         }
