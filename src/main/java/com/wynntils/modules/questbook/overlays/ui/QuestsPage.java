@@ -57,15 +57,10 @@ public class QuestsPage extends QuestBookPage {
         super.drawScreen(mouseX, mouseY, partialTicks);
         int x = width / 2; int y = height / 2;
         int posX = (x - mouseX); int posY = (y - mouseY);
-
         List<String> hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
-
-            render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
-            render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
-
             render.drawString("Here you can see all quests", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("available for you. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -127,7 +122,7 @@ public class QuestsPage extends QuestBookPage {
 
             //calculating pages
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-
+//            System.out.println(QuestManager.getCurrentQuestsData());
             //drawing all quests
             int currentY = 12;
             if (questSearch.size() > 0) {
@@ -221,6 +216,14 @@ public class QuestsPage extends QuestBookPage {
                     currentY += 13;
                 }
             }
+        }
+        ScreenRenderer.endGL();
+
+
+        ScreenRenderer.beginGL(0, 0);
+        {
+            GlStateManager.disableLighting();
+            if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
         }
         ScreenRenderer.endGL();
     }

@@ -15,7 +15,7 @@ public class QuestBookHandler {
     }
 
     public static void openQuestBook() {
-        openQuestBookOnPage("MainMap");
+        openQuestBookOnPage("MainPage");
     }
 
     public static void openQuestBookOnPage(String ID) {

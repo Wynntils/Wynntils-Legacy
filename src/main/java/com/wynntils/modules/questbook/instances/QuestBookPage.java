@@ -12,9 +12,11 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.List;
 
 public class QuestBookPage extends GuiScreen {
 
@@ -97,8 +99,9 @@ public class QuestBookPage extends GuiScreen {
             render.drawString(title, (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
-            /*Render search ban when needed*/
+            /*Render search bar when needed*/
             if (showSearchBar) {
+                render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
                 //searchBar
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
                     render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);

@@ -32,7 +32,7 @@ public class QuestBookModule extends Module {
         QuestBookHandler.registerPage("QuestsPage", QuestsPage.class);
 
         registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> {
-            QuestManager.requestQuestBookReading();
+            //QuestManager.requestQuestBookReading();
             QuestBookHandler.openQuestBookOnPage("QuestsPage");
         });
         registerKeyBinding("Open Item Guide", Keyboard.KEY_I, "Wynntils", true, gui::openAtItemGuide);
