@@ -18,6 +18,7 @@ import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
+import com.wynntils.modules.utilities.overlays.ui.GuiQuickCast;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
@@ -264,6 +265,11 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.hidePotionGui && e.getType() == RenderGameOverlayEvent.ElementType.POTION_ICONS) {
             e.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public void onClick(MouseEvent e) {
+        GuiQuickCast.handleClick(e);
     }
 
     private boolean checkDropState(int slot, int key) {

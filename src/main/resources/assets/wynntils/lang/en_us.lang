@@ -1,3 +1,5 @@
+#PARSE_ESCAPES
+
 language.name=English
 language.region= United States
 language.code=en_us
@@ -60,3 +62,124 @@ config.expansion.items.powders.tier3=Tier III
 config.expansion.items.powders.tier4=Tier IV
 config.expansion.items.powders.tier5=Tier V
 config.expansion.items.powders.tier6=Tier VI
+
+#############
+# UTILITIES #
+#############
+
+## QUICK CAST UI ##
+
+wynntils.utilities.ui.quick_cast.locked_spell=Locked
+wynntils.utilities.ui.quick_cast.locked_spell.unlock_condition=Unlock at level %s
+
+wynntils.utilities.ui.quick_cast.mage.spell_1.name=Heal
+wynntils.utilities.ui.quick_cast.mage.spell_1.combo=R - L - R
+wynntils.utilities.ui.quick_cast.mage.spell_1.description=Heal allies and yourself. Water damage bonus will affect the heal amount
+wynntils.utilities.ui.quick_cast.mage.spell_1.grade_1=§b✺§f 8\nHeal: 40%%
+wynntils.utilities.ui.quick_cast.mage.spell_1.grade_2=§b✺§f 7\nHeal: 35%%\n§9Purification, remove all negative effects and fire
+wynntils.utilities.ui.quick_cast.mage.spell_1.grade_3=§b✺§f 6\nHeal: 70%%\n§9Pulse, gives 2 hearts back after a few seconds
+
+wynntils.utilities.ui.quick_cast.mage.spell_2.name=Teleport
+wynntils.utilities.ui.quick_cast.mage.spell_2.combo=R - R - R
+wynntils.utilities.ui.quick_cast.mage.spell_2.description=Teleport to another location
+wynntils.utilities.ui.quick_cast.mage.spell_2.grade_1=§b✺§f 3
+wynntils.utilities.ui.quick_cast.mage.spell_2.grade_2=§b✺§f 3\nDamage: 100%%\n§e✦§f 40%%\n§9Slash, hit enemies you cross while teleporting
+wynntils.utilities.ui.quick_cast.mage.spell_2.grade_3=§b✺§f 3\nDamage: 100%%\n§e✦§f 40%%\n§9Eye Piercing, blinds mobs you damage for 5 seconds
+
+wynntils.utilities.ui.quick_cast.mage.spell_3.name=Meteor
+wynntils.utilities.ui.quick_cast.mage.spell_3.combo=R - L - L
+wynntils.utilities.ui.quick_cast.mage.spell_3.description=Cast a powerful spell that explodes on contact
+wynntils.utilities.ui.quick_cast.mage.spell_3.grade_1=§b✺§f 6\nDamage: 400%%\n§2✤§f 20%%  §c✹§f 20%%
+wynntils.utilities.ui.quick_cast.mage.spell_3.grade_2=§b✺§f 6\nDamage: 400%%\n§2✤§f 30%%  §c✹§f 20%%\n§9Mesosphere Fall, the meteor now falls much faster
+wynntils.utilities.ui.quick_cast.mage.spell_3.grade_3=§b✺§f 6\nDamage: 400%%\n§2✤§f 30%%  §c✹§f 30%%\n§9Burning Ground, burn the ground for a few seconds, damaging anyone who enters the area 100%% damage
+
+wynntils.utilities.ui.quick_cast.mage.spell_4.name=Ice Snake
+wynntils.utilities.ui.quick_cast.mage.spell_4.combo=R - R - L
+wynntils.utilities.ui.quick_cast.mage.spell_4.description=Freeze your enemies and hurt them over long distances
+wynntils.utilities.ui.quick_cast.mage.spell_4.grade_1=§b✺§f 6\n§9Slow down enemies for 5 seconds
+wynntils.utilities.ui.quick_cast.mage.spell_4.grade_2=§b✺§f 5\nDamage: 70%%\n§b❉§f 50%%\n§9Freezing, freezes the enemies for 2 seconds
+wynntils.utilities.ui.quick_cast.mage.spell_4.grade_3=§b✺§f 4\nDamage: 70%%\n§b❉§f 50%%\n§9Mind Control, you can control the snake by moving your head left or right
+
+wynntils.utilities.ui.quick_cast.archer.spell_1.name=Arrow Storm
+wynntils.utilities.ui.quick_cast.archer.spell_1.description=Shoot a lot of arrows really quickly
+wynntils.utilities.ui.quick_cast.archer.spell_1.combo=L - R - L
+wynntils.utilities.ui.quick_cast.archer.spell_1.grade_1=§b✺§f 4\nDamage: 30%% §oper arrow§r§f\n§c✹§f 10%%\nArrows: 10
+wynntils.utilities.ui.quick_cast.archer.spell_1.grade_2=§b✺§f 4\nDamage: 25%% §oper arrow§r§f\n§c✹§f 10%%  §e✦§f 25%%\nArrows: 20\n§9Haste, double the amount of arrows and the speed
+wynntils.utilities.ui.quick_cast.archer.spell_1.grade_3=§b✺§f 4\nDamage: 20%% §oper arrow§r§f\n§c✹§f 10%%  §e✦§f 25%%\nArrows: 60\n§9Triple Shot, triple the amount of arrows you shoot at the same time
+
+wynntils.utilities.ui.quick_cast.archer.spell_2.name=Escape
+wynntils.utilities.ui.quick_cast.archer.spell_2.description=Boost yourself and your party with speed and backflip: to escape from danger
+wynntils.utilities.ui.quick_cast.archer.spell_2.combo=L - L - L
+wynntils.utilities.ui.quick_cast.archer.spell_2.grade_1=§b✺§f 2
+wynntils.utilities.ui.quick_cast.archer.spell_2.grade_2=§b✺§f 2\n§9Speed, adds speed to the caster and people around for 3 minutes
+wynntils.utilities.ui.quick_cast.archer.spell_2.grade_3=§b✺§f 2\n§f❋§f 25%%\n§9Surprise Strike, holding shift while falling will now attack enemies for 100%% damage and blind them for 2 seconds
+
+wynntils.utilities.ui.quick_cast.archer.spell_3.name=Bomb arrow
+wynntils.utilities.ui.quick_cast.archer.spell_3.description=Fire an arrow that explodes on contact
+wynntils.utilities.ui.quick_cast.archer.spell_3.combo=L - R - R
+wynntils.utilities.ui.quick_cast.archer.spell_3.grade_1=§b✺§f 8\nDamage: 250%%\n§c✹§f 15%%  §2✤§f 15%%
+wynntils.utilities.ui.quick_cast.archer.spell_3.grade_2=§b✺§f 8\nDamage: 250%%\n§c✹§f 15%%  §2✤§f 25%%\n§9Leg Breaking, slows down and prevents the enemy from jumping for 10 seconds
+wynntils.utilities.ui.quick_cast.archer.spell_3.grade_3=§b✺§f 8\nDamage: 250%%\n§c✹§f 15%%  §2✤§f 25%%\n§9Bounce, the arrow will now bounce up to five times
+
+wynntils.utilities.ui.quick_cast.archer.spell_4.name=Arrow Shield
+wynntils.utilities.ui.quick_cast.archer.spell_4.description=Create a shield to defend yourself from attack
+wynntils.utilities.ui.quick_cast.archer.spell_4.combo=L - L - R
+wynntils.utilities.ui.quick_cast.archer.spell_4.grade_1=§b✺§f 10\nDamage: 250%%\n§b❉§f 40%%
+wynntils.utilities.ui.quick_cast.archer.spell_4.grade_2=§b✺§f 10\nDamage: 250%%\n§b❉§f 40%%  §f❋§f 25%%\n§9Dragon Foot, knockback enemies far and blind them for 2 seconds
+wynntils.utilities.ui.quick_cast.archer.spell_4.grade_3=§b✺§f 10\nDamage: 150%%\n§b❉§f 40%%  §f❋§f 25%%\n§9Arrow Rain, throw a bunch of arrows in the sky, damaging everything around you by 100%%
+
+wynntils.utilities.ui.quick_cast.warrior.spell_1.name=Bash
+wynntils.utilities.ui.quick_cast.warrior.spell_1.description=Violent attack in front of the player, hitting lots of enemies and knocking them back
+wynntils.utilities.ui.quick_cast.warrior.spell_1.combo=R - L - R
+wynntils.utilities.ui.quick_cast.warrior.spell_1.grade_1=§b✺§f 5\nDamage: 170%%\n§2✤§f 20%%
+wynntils.utilities.ui.quick_cast.warrior.spell_1.grade_2=§b✺§f 5\nDamage: 130%%\n§2✤§f 20%%\n§9Double Explosion, causing twice the amount of damage
+wynntils.utilities.ui.quick_cast.warrior.spell_1.grade_3=§b✺§f 5\nDamage: 130%%\n§2✤§f 40%%\n§9Earthquake, breaking the legs of your enemies therefore preventing them from jumping and slows them down for 10 seconds
+
+wynntils.utilities.ui.quick_cast.warrior.spell_2.name=Charge
+wynntils.utilities.ui.quick_cast.warrior.spell_2.description=Make the player charge quickly in one direction
+wynntils.utilities.ui.quick_cast.warrior.spell_2.combo=R - R - R
+wynntils.utilities.ui.quick_cast.warrior.spell_2.grade_1=§b✺§f 4
+wynntils.utilities.ui.quick_cast.warrior.spell_2.grade_2=§b✺§f 4\nDamage: 150%%\n§c✹§f 40%%\n§9Smash, hit every enemies in the way with 100%% damage
+wynntils.utilities.ui.quick_cast.warrior.spell_2.grade_3=§b✺§f 4\nDamage: 150%%\n§c✹§f 40%%\n§9Aerodynamics, you can now control your character while charging
+
+wynntils.utilities.ui.quick_cast.warrior.spell_3.name=Uppercut
+wynntils.utilities.ui.quick_cast.warrior.spell_3.description=Uppercut an enemy, causing them to rocket in the sky
+wynntils.utilities.ui.quick_cast.warrior.spell_3.combo=R - L - L
+wynntils.utilities.ui.quick_cast.warrior.spell_3.grade_1=§b✺§f 5\nDamage: 200%%\n§2✤§f 15%% §e✦§f 15%%
+wynntils.utilities.ui.quick_cast.warrior.spell_3.grade_2=§b✺§f 5\nDamage: 200%%\n§2✤§f 15%% §e✦§f 20%%\n§9Fireworks, your opponent will explode midair, hurting them again for 100%% damage
+wynntils.utilities.ui.quick_cast.warrior.spell_3.grade_3=§b✺§f 5\nDamage: 200%%\n§2✤§f 15%% §e✦§f 25%%\n§9Comet, your opponent will crash into the ground after the fireworks effect, hurting them again for 75%% damage
+
+wynntils.utilities.ui.quick_cast.warrior.spell_4.name=War Scream
+wynntils.utilities.ui.quick_cast.warrior.spell_4.description=Make the player scream, which boosts everyone around him and scares the enemy
+wynntils.utilities.ui.quick_cast.warrior.spell_4.combo=R - R - L
+wynntils.utilities.ui.quick_cast.warrior.spell_4.grade_1=§b✺§f 7\nDamage: 30%% §oper hit§r§f\n§f❋§f 25%%\n§915%% Defense bonus for 3 minutes
+wynntils.utilities.ui.quick_cast.warrior.spell_4.grade_2=§b✺§f 6\nDamage: 30%% §oper hit§r§f\n§f❋§f 25%%  §c✹§f 75%%\n§915%% Defense bonus for 3 minutes§f\n§9Air Shout, throw a projectile with high knockback that can go through walls, dealing 20%% damage multiple times
+wynntils.utilities.ui.quick_cast.warrior.spell_4.grade_3=§b✺§f 5\nDamage: 30%% §oper hit§r§f\n§f❋§f 25%%  §c✹§f 75%%\n§920%% Defense bonus for 4 minutes§f\n§9Strength, adding 10%% damage for 4 minutes
+
+wynntils.utilities.ui.quick_cast.assassin.spell_1.name=Spin Attack
+wynntils.utilities.ui.quick_cast.assassin.spell_1.combo=R - L - R
+wynntils.utilities.ui.quick_cast.assassin.spell_1.description=Attack all the enemies around you
+wynntils.utilities.ui.quick_cast.assassin.spell_1.grade_1=§b✺§f 4\nDamage: 200%%\n§e✦§f 30%%
+wynntils.utilities.ui.quick_cast.assassin.spell_1.grade_2=§b✺§f 4\nDamage: 200%%\n§e✦§f 30%%\n§9Disease, freeze, blind, slow down and prevent enemies from jumping for a short amount of time
+wynntils.utilities.ui.quick_cast.assassin.spell_1.grade_3=§b✺§f 4\nDamage: 200%%\n§e✦§f 35%%\n§9Vampire, steals all the positive effects your opponent has, and clean all the negative ones you have
+
+wynntils.utilities.ui.quick_cast.assassin.spell_2.name=Vanish
+wynntils.utilities.ui.quick_cast.assassin.spell_2.combo=R - R - R
+wynntils.utilities.ui.quick_cast.assassin.spell_2.description=Make yourself invisible for a short amount of time
+wynntils.utilities.ui.quick_cast.assassin.spell_2.grade_1=§b✺§f 4\nDuration: 10 seconds
+wynntils.utilities.ui.quick_cast.assassin.spell_2.grade_2=§b✺§f 3\nDuration: 13 seconds\n§9Stealth, 30%% damage bonus while vanished and 15%% defense bonus
+wynntils.utilities.ui.quick_cast.assassin.spell_2.grade_3=§b✺§f 3\nDuration: 13 seconds\n§9Shadow Travel, gives speed and jump boost while vanished
+
+wynntils.utilities.ui.quick_cast.assassin.spell_3.name=Multihits
+wynntils.utilities.ui.quick_cast.assassin.spell_3.combo=R - L - L
+wynntils.utilities.ui.quick_cast.assassin.spell_3.description=Throw multiple hits on your enemy, really quickly
+wynntils.utilities.ui.quick_cast.assassin.spell_3.grade_1=§b✺§f 7\nDamage: 15%% §oper hit§r§f\n§e✦§f 15%%  §b❉§f 10%%\nHits: 10
+wynntils.utilities.ui.quick_cast.assassin.spell_3.grade_2=§b✺§f 7\nDamage: 15%% §oper hit§r§f\n§e✦§f 20%%  §b❉§f 10%%\nHits: 10\n§9Fatality, hit another time at the end, knockbacking the enemy and causing 100%% Damage
+wynntils.utilities.ui.quick_cast.assassin.spell_3.grade_3=§b✺§f 7\nDamage: 15%% §oper hit§r§f\n§e✦§f 20%%  §b❉§f 20%%\nHits: 10\n§9Force, you can control the enemies trapped in your multihits by moving your head left or right
+
+wynntils.utilities.ui.quick_cast.assassin.spell_4.name=Smoke Bomb
+wynntils.utilities.ui.quick_cast.assassin.spell_4.combo=R - R - L
+wynntils.utilities.ui.quick_cast.assassin.spell_4.description=Throw a smoke bomb to your enemies, damaging them as long as they remain in the cloud
+wynntils.utilities.ui.quick_cast.assassin.spell_4.grade_1=§b✺§f 7\nDamage: 60%% §oevery half second for 5 seconds§f\n§2✤§f 15%%  §f❋§f 20%%
+wynntils.utilities.ui.quick_cast.assassin.spell_4.grade_2=§b✺§f 7\nDamage: 60%% §oevery half second for 5 seconds§f\n§2✤§f 25%%  §f❋§f 20%%\n§9Choke, greatly slow down the enemies while they are in the smoke
+wynntils.utilities.ui.quick_cast.assassin.spell_4.grade_3=§b✺§f 7\nDamage: 60%% §oevery half second for 5 seconds§f\n§2✤§f 25%%  §f❋§f 25%%\n§9Wall of Smoke, throw 3 smoke bomb at the same time, creating a large wall of smoke
