@@ -42,8 +42,8 @@ public class MiniMapOverlay extends Overlay {
         MapProfile map = MapModule.getModule().getMainMap();
 
         //calculates the extra size to avoid rotation overpass
-        int extraSize = 0;
-        if(MapConfig.INSTANCE.followPlayerRotation && MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) extraSize = 100;
+        float extraFactor = 1;
+        if (MapConfig.INSTANCE.followPlayerRotation && MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) extraFactor = 1.5f;
 
         //updates the map size
         int mapSize = MapConfig.INSTANCE.mapSize;
@@ -52,11 +52,11 @@ public class MiniMapOverlay extends Overlay {
         zoom = MapConfig.INSTANCE.mapZoom;
 
         //texture position
-        float minX = map.getTextureXPosition(mc.player.posX) - ((mapSize + extraSize)/2) - zoom; // <--- min texture x point
-        float minZ = map.getTextureZPosition(mc.player.posZ) - ((mapSize + extraSize)/2) - zoom; // <--- min texture z point
+        float minX = map.getTextureXPosition(mc.player.posX) - extraFactor * (mapSize/2f + zoom); // <--- min texture x point
+        float minZ = map.getTextureZPosition(mc.player.posZ) - extraFactor * (mapSize/2f + zoom); // <--- min texture z point
 
-        float maxX = map.getTextureXPosition(mc.player.posX) + ((mapSize + extraSize)/2) + zoom; // <--- max texture x point
-        float maxZ = map.getTextureZPosition(mc.player.posZ) + ((mapSize + extraSize)/2) + zoom; // <--- max texture z point
+        float maxX = map.getTextureXPosition(mc.player.posX) + extraFactor * (mapSize/2f + zoom); // <--- max texture x point
+        float maxZ = map.getTextureZPosition(mc.player.posZ) + extraFactor * (mapSize/2f + zoom); // <--- max texture z point
 
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
         minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
@@ -86,6 +86,7 @@ public class MiniMapOverlay extends Overlay {
             if(MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
             //map quad
+            float extraSize = (extraFactor - 1f) * mapSize/2f;  // How many extra pixels multiplying by extraFactor added on each side
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 
             GlStateManager.enableBlend();
@@ -94,10 +95,10 @@ public class MiniMapOverlay extends Overlay {
             {
                 bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
 
-                bufferbuilder.pos(position.getDrawingX() - extraSize/2.0f, position.getDrawingY() + mapSize + extraSize/2, 0).tex(minX, maxZ).endVertex();
-                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() + mapSize + extraSize/2, 0).tex(maxX, maxZ).endVertex();
-                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize/2, position.getDrawingY() - extraSize/2.0f, 0).tex(maxX, minZ).endVertex();
-                bufferbuilder.pos(position.getDrawingX() - extraSize/2.0f, position.getDrawingY() - extraSize/2.0f, 0).tex(minX, minZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() - extraSize, position.getDrawingY() + mapSize + extraSize, 0).tex(minX, maxZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize, position.getDrawingY() + mapSize + extraSize, 0).tex(maxX, maxZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize, position.getDrawingY() - extraSize, 0).tex(maxX, minZ).endVertex();
+                bufferbuilder.pos(position.getDrawingX() - extraSize, position.getDrawingY() - extraSize, 0).tex(minX, minZ).endVertex();
                 tessellator.draw();
             }
 
@@ -107,9 +108,6 @@ public class MiniMapOverlay extends Overlay {
             // Draw map icons
             if (MapConfig.INSTANCE.minimapIcons) {
                 final float halfMapSize = mapSize / 2f;
-                final int maxDistance = (int) ((
-                        (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) ? 1 : 2
-                ) * ((halfMapSize + 5) * (halfMapSize + 5)));
                 final float scaleFactor = mapSize / (mapSize + 2f * zoom);
                 final float sizeMultiplier = 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier * (1 - (1 - scaleFactor) * (1 - scaleFactor));
                 final double rotationRadians = mc.player.rotationYaw * Math.PI / 180;
@@ -118,17 +116,11 @@ public class MiniMapOverlay extends Overlay {
 
                 // These two points for a box bigger than the actual minimap so the icons outside
                 // can quickly be filtered out
-                int minFastWorldX = (int) mc.player.posX - ((mapSize + extraSize)/2) - zoom;
-                int minFastWorldZ = (int) mc.player.posZ - ((mapSize + extraSize)/2) - zoom;
+                final int minFastWorldX = (int) (mc.player.posX - extraFactor * (mapSize/2f + zoom));
+                final int minFastWorldZ = (int) (mc.player.posZ - extraFactor * (mapSize/2f + zoom));
 
-                int maxFastWorldX = (int) mc.player.posX + ((mapSize + extraSize)/2) + zoom;
-                int maxFastWorldZ = (int) mc.player.posZ + ((mapSize + extraSize)/2) + zoom;
-
-                int minWorldX = (int) mc.player.posX - mapSize / 2 - zoom;
-                int minWorldZ = (int) mc.player.posZ - mapSize / 2 - zoom;
-
-                int maxWorldX = (int) mc.player.posX + mapSize / 2 + zoom;
-                int maxWorldZ = (int) mc.player.posZ + mapSize / 2 + zoom;
+                final int maxFastWorldX = (int) (mc.player.posX + extraFactor * (mapSize/2f + zoom)) + 1;
+                final int maxFastWorldZ = (int) (mc.player.posZ + extraFactor * (mapSize/2f + zoom)) + 1;
 
                 Consumer<MapIcon> consumer = c -> {
                     int posX = c.getPosX();
@@ -150,12 +142,6 @@ public class MiniMapOverlay extends Overlay {
                         float temp = dx * cosRotationRadians - dz * sinRotationRadians;
                         dz = dx * sinRotationRadians + dz * cosRotationRadians;
                         dx = temp;
-                    }
-
-                    float cornerX = Math.abs(dx) - sizeX * sizeMultiplier * 2;
-                    float cornerZ = Math.abs(dz) - sizeZ * sizeMultiplier * 2;
-                    if (cornerX * cornerX + cornerZ * cornerZ > maxDistance) {
-                        return;
                     }
 
                     c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
