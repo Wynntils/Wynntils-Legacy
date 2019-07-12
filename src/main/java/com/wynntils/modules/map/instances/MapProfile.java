@@ -76,6 +76,14 @@ public class MapProfile {
         return (float)(posZ - centerZ + imageHeight);
     }
 
+    public int getWorldXPosition(double textureX) {
+        return (int) Math.round(textureX + centerX - imageWidth);
+    }
+
+    public int getWorldZPosition(double textureY) {
+        return (int) Math.round(textureY + centerZ - imageHeight);
+    }
+
     public boolean isReadyToUse() {
         return readyToUse;
     }

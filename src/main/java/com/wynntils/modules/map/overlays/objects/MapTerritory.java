@@ -42,7 +42,7 @@ public class MapTerritory {
         float endX = ((mp.getTextureXPosition(territory.getEndX()) - minX) / (maxX - minX));
         float endY = ((mp.getTextureZPosition(territory.getEndZ()) - minZ) / (maxZ - minZ));
 
-        if(initX > 0 && initX < 1 && initY > 0 && initY < 1 && endX > 0 && endX < 1 && endY > 0 && endY < 1) {
+        if((initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1)) {
             shouldRender = true;
 
             initX*=width; initY*=height;
@@ -69,13 +69,15 @@ public class MapTerritory {
         float ppX = initX + ((endX - initX)/2f);
         float ppY = initY + ((endY - initY)/2f);
 
-        if(MapConfig.WorldMap.INSTANCE.showTerritoryName && alpha > 0)
-            renderer.drawString(territory.getFriendlyName(), ppX, ppY, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        boolean Hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+
+        if((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
+            renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, CommonColors.WHITE.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if(MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         if(alpha <= 0) return;
 
-        renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY + (MapConfig.WorldMap.INSTANCE.showTerritoryName ? 10 : 0), color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
 }

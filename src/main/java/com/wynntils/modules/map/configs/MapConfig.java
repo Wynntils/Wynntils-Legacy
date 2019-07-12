@@ -4,11 +4,13 @@
 
 package com.wynntils.modules.map.configs;
 
+import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,8 +39,18 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 6)
+    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    public boolean showCoords = false;
+
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 7)
     public boolean northOnly = false;
+
+    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
+    public boolean minimapIcons = true;
+
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 9)
+    @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
+    public float minimapIconSizeMultiplier = 1f;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
@@ -66,6 +78,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
+        // If this ever needs to be configurable, make these into @Setting s.
+        public int maxZoom = 150;  // Note that this is the most zoomed out
+        public int minZoom = -10;  // And this is the most zoomed in
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
@@ -117,6 +132,17 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
         public boolean compassMarker = true;
+
+        @Override
+        public void saveSettings(Module m) {
+            super.saveSettings(m);
+            MapWaypointIcon.resetWaypoints();
+        }
+
+        @Override
+        public void onSettingChanged(String name) {
+            MapWaypointIcon.resetWaypoints();
+        }
     }
 
 

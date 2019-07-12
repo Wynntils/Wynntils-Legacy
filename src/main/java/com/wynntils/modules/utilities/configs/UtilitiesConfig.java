@@ -47,6 +47,10 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Disable FOV changes with speed effect", description = "Should the FOV don't change while you are with speed effects?")
     public boolean disableFovChanges = false;
 
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
+    public boolean autoMount = false;
+
+
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();

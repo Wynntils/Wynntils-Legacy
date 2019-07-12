@@ -4,23 +4,21 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
-import com.google.gson.JsonObject;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
+import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.MapMarkerProfile;
-import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -37,46 +35,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class WorldMapUI extends GuiScreen {
-
-    private static final HashMap<String, String> MAPMARKERNAME_TRANSLATION = new HashMap<String, String>() {{
-        put("Content_Dungeon", "Dungeons");
-        put("Merchant_Accessory", "Accessory Merchant");
-        put("Merchant_Armour", "Armour Merchant");
-        put("Merchant_Dungeon", "Dungeon Merchant");
-        put("Merchant_Horse", "Horse Merchant");
-        put("Merchant_KeyForge", "Key Forge Merchant");
-        put("Merchant_Liquid", "LE Merchant");
-        put("Merchant_Potion", "Potion Merchant");
-        put("Merchant_Powder", "Powder Merchant");
-        put("Merchant_Scroll", "Scroll Merchant");
-        put("Merchant_Seasail", "Seasail Merchant");
-        put("Merchant_Weapon", "Weapon Merchant");
-        put("NPC_Blacksmith", "Blacksmith");
-        put("NPC_GuildMaster", "Guild Master");
-        put("NPC_ItemIdentifier", "Item Identifier");
-        put("NPC_PowderMaster", "Powder Master");
-        put("Special_FastTravel", "Fast Travel");
-        put("tnt", "TNT Merchant");
-        put("painting", "Art Merchant");
-        put("Ore_Refinery", "Ore Refinery");
-        put("Fish_Refinery", "Fish Refinery");
-        put("Wood_Refinery", "Wood Refinery");
-        put("Crop_Refinery", "Crop Refinery");
-        put("NPC_TradeMarket", "Marketplace");
-        put("Content_Quest", "Quests");
-        put("Special_Rune", "Runes");
-        put("Special_RootsOfCorruption", "Nether Portal");
-        put("Content_UltimateDiscovery", "Ultimate Discovery");
-        put("Content_Cave", "Caves");
-        put("Content_GrindSpot", "Grind Spots");
-        put("Merchant_Other", "Other Merchants");
-        put("Special_LightRealm", "Light's Secret");
-        put("Merchant_Emerald", "Emerald Merchant");
-    }};
 
     private ScreenRenderer renderer = new ScreenRenderer();
 
@@ -88,8 +51,10 @@ public class WorldMapUI extends GuiScreen {
     private float centerPositionZ;
     private int zoom = 0;
 
-    private ArrayList<MapIcon> mapIcons = new ArrayList<>();
-    private ArrayList<MapTerritory> territories = new ArrayList<>();
+    private List<WorldMapIcon> apiMapIcons;
+    private List<WorldMapIcon> wpMapIcons;
+    private WorldMapIcon compassIcon;
+    private List<MapTerritory> territories;
 
     boolean holdingMapKey = false;
     long creationTime;
@@ -100,106 +65,24 @@ public class WorldMapUI extends GuiScreen {
         creationTime = System.currentTimeMillis();
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
-        for(MapMarkerProfile mmp : WebManager.getMapMarkers()) {
-            if (MapConfig.INSTANCE.enabledMapIcons.containsKey(MAPMARKERNAME_TRANSLATION.get(mmp.getIcon())) && !MapConfig.INSTANCE.enabledMapIcons.get(MAPMARKERNAME_TRANSLATION.get(mmp.getIcon()))) continue;
-            if(!Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().has(mmp.getIcon()) || !Mappings.Map.map_icons_mappings.get("MEDIVAL").getAsJsonObject().has(mmp.getIcon())) continue;
-
-            JsonObject iconMapping;
-            if (MapConfig.INSTANCE.iconTexture == MapConfig.IconTexture.Classic) {
-                iconMapping = Mappings.Map.map_icons_mappings.get("CLASSIC").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
-            } else {
-                iconMapping = Mappings.Map.map_icons_mappings.get("MEDIVAL").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
-            }
-
-            MapIcon mp = new MapIcon(Textures.Map.map_icons, mmp.getName(), mmp.getX(), mmp.getZ(),
-                    iconMapping.get("size").getAsFloat(),
-                    iconMapping.get("texPosX").getAsInt(),
-                    iconMapping.get("texPosZ").getAsInt(),
-                    iconMapping.get("texSizeX").getAsInt(),
-                    iconMapping.get("texSizeZ").getAsInt())
-
-                    .setRenderer(renderer)
-                    .setZoomNeded(iconMapping.get("zoomNeeded").getAsInt());
-
-            mp.setOnClick(c -> {
-                if(c == 0) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
-
-                    CompassManager.setCompassLocation(new Location(mmp.getX(), 0, mmp.getZ()));
-                }
-            });
-
-            mapIcons.add(mp);
-        }
+        apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture)
+                .stream()
+                .map(WorldMapIcon::new)
+                .collect(Collectors.toList());
 
         //HeyZeer0: Handles all waypoints
-        for(WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
-            if(waypoint == null || waypoint.getType() == null) continue;
+        wpMapIcons = MapIcon.getWaypoints().stream().map(WorldMapIcon::new).collect(Collectors.toList());
 
-            int texPosX, texPosZ, texSizeX, texSizeZ;
-            switch (waypoint.getType()) {
-                case LOOTCHEST_T1:
-                    texPosX = 136; texPosZ = 35;
-                    texSizeX = 154; texSizeZ = 53;
-                    break;
-                case LOOTCHEST_T2:
-                    texPosX = 118; texPosZ = 35;
-                    texSizeX = 136; texSizeZ = 53;
-                    break;
-                case LOOTCHEST_T3:
-                    texPosX = 82; texPosZ = 35;
-                    texSizeX = 100; texSizeZ = 53;
-                    break;
-                case LOOTCHEST_T4:
-                    texPosX = 100; texPosZ = 35;
-                    texSizeX = 118; texSizeZ = 53;
-                    break;
-                default:
-                case DIAMOND:
-                    texPosX = 172; texPosZ = 37;
-                    texSizeX = 190; texSizeZ = 55;
-                    break;
-                case FLAG:
-                    //TODO handle colours
-                    texPosX = 154; texPosZ = 36;
-                    texSizeX = 172; texSizeZ = 54;
-                    break;
-                case SIGN:
-                    texPosX = 190; texPosZ = 36;
-                    texSizeX = 208; texSizeZ = 54;
-                    break;
-                case STAR:
-                    texPosX = 208; texPosZ = 36;
-                    texSizeX = 226; texSizeZ = 54;
-                    break;
-                case TURRET:
-                    texPosX = 226; texPosZ = 36;
-                    texSizeX = 244; texSizeZ = 54;
-                    break;
-            }
-
-            MapIcon mp = new MapIcon(Textures.Map.map_icons, waypoint.getName(), (int)waypoint.getX(), (int)waypoint.getZ(), 2.5f, texPosX, texPosZ, texSizeX, texSizeZ).setRenderer(renderer).setZoomNeded(waypoint.getZoomNeeded());
-            mp.setOnClick(c -> {
-                if(c == 0) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
-
-                    CompassManager.setCompassLocation(new Location(waypoint.getX(), 0, waypoint.getZ()));
-                }
-            });
-
-            mapIcons.add(mp);
-        }
+        compassIcon = new WorldMapIcon(MapIcon.getCompass());
 
         //HeyZeer0: Handles the territories
-        for(TerritoryProfile territory : WebManager.getTerritories().values()) {
-            territories.add(new MapTerritory(territory).setRenderer(renderer));
-        }
-
-        if (CompassManager.getCompassLocation() != null) {
-            mapIcons.add(new MapIcon(Textures.Map.map_icons, "Compass Beacon", (int)CompassManager.getCompassLocation().getX(), (int)CompassManager.getCompassLocation().getZ(), 2.5f, 0, 53, 14, 71).setRenderer(renderer).setZoomNeded(-1000));
-        }
+        territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
+    }
+
+    private void resetCompassMapIcon() {
+        compassIcon.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ, zoom);
     }
 
     @Override
@@ -215,6 +98,13 @@ public class WorldMapUI extends GuiScreen {
     float minX = 0; float maxX = 0;
     float minZ = 0; float maxZ = 0;
 
+    private void forEachIcon(Consumer<WorldMapIcon> c) {
+        apiMapIcons.forEach(c);
+        wpMapIcons.forEach(c);
+        if (CompassManager.getCompassLocation() != null)
+            c.accept(compassIcon);
+    }
+
     private void updateCenterPosition(float centerPositionX, float centerPositionZ) {
         this.centerPositionX = centerPositionX; this.centerPositionZ = centerPositionZ;
 
@@ -226,12 +116,22 @@ public class WorldMapUI extends GuiScreen {
         maxX = map.getTextureXPosition(centerPositionX) + ((width)/2.0f) + (width*zoom/100.0f); // <--- max texture x point
         maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2.0f) + (height*zoom/100.0f); // <--- max texture z point
 
-        mapIcons.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
+        forEachIcon(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
         territories.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
     }
 
     int lastMouseX = -Integer.MAX_VALUE;
     int lastMouseY = -Integer.MAX_VALUE;
+
+    // Returns the x coordinate in the world from the x coordinate on the screen
+    public int getMouseWorldX(int mouseScreenX, MapProfile map) {
+        return map.getWorldXPosition(((float) mouseScreenX / width) * (maxX - minX) + minX);
+    }
+
+    // Returns the z coordinate in the world from the y coordinate on the screen
+    public int getMouseWorldZ(int mouseScreenY, MapProfile map) {
+        return map.getWorldZPosition(((float) mouseScreenY / height) * (maxZ - minZ) + minZ);
+    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -289,7 +189,7 @@ public class WorldMapUI extends GuiScreen {
         }catch (Exception ignored) {}
 
         //draw map icons
-        mapIcons.forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks));
+        forEachIcon(c -> c.drawScreen(mouseX, mouseY, partialTicks, renderer));
 
         minX = minX*map.getImageWidth(); maxX = maxX*map.getImageWidth();
         minZ = minZ*map.getImageHeight(); maxZ = maxZ*map.getImageHeight();
@@ -316,8 +216,14 @@ public class WorldMapUI extends GuiScreen {
             territories.forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks));
         }
 
-        mapIcons.forEach(c -> c.drawHovering(mouseX, mouseY, partialTicks));
+        forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
         renderer.clearMask();
+
+        // Render coordinate mouse is over
+        int worldX = getMouseWorldX(mouseX, map);
+        int worldZ = getMouseWorldZ(mouseY, map);
+
+        renderer.drawString(worldX + ", " + worldZ, width / 2, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         ScreenRenderer.endGL();
 
@@ -326,23 +232,20 @@ public class WorldMapUI extends GuiScreen {
 
     boolean clicking = false;
 
+    private void zoomBy(int by) {
+        zoom = Math.max(MapConfig.WorldMap.INSTANCE.minZoom, Math.min(MapConfig.WorldMap.INSTANCE.maxZoom, zoom - by));
+        updateCenterPosition(centerPositionX, centerPositionZ);
+    }
+
     @Override
     public void handleMouseInput() throws IOException {
         clicking = Mouse.isButtonDown(0);
 
         int mDwehll = Mouse.getEventDWheel();
         if(mDwehll >= 1) {
-            if(zoom -5 < 0) return;
-            else {
-                zoom-=5;
-                updateCenterPosition(centerPositionX, centerPositionZ);
-            }
+            zoomBy(+5);
         }else if(mDwehll <= -1) {
-            if(zoom+5 > 130) return;
-            else{
-                zoom+=5;
-                updateCenterPosition(centerPositionX, centerPositionZ);
-            }
+            zoomBy(-5);
         }
 
         super.handleMouseInput();
@@ -356,9 +259,31 @@ public class WorldMapUI extends GuiScreen {
         } else if (mouseButton == 1) {
             updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
             return;
+        } else if (mouseButton == 2) {
+            // Set compass to middle clicked location
+            MapProfile map = MapModule.getModule().getMainMap();
+            int worldX = getMouseWorldX(mouseX, map);
+            int worldZ = getMouseWorldZ(mouseY, map);
+            CompassManager.setCompassLocation(new Location(worldX, 0, worldZ));
+
+            resetCompassMapIcon();
+            return;
         }
 
-        mapIcons.forEach(c -> c.mouseClicked(mouseX, mouseY, mouseButton));
+        if (mouseButton == 0) {
+            Consumer<WorldMapIcon> consumer = c -> {
+                if (c.mouseOver(mouseX, mouseY)) {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
+
+                    CompassManager.setCompassLocation(new Location(c.getInfo().getPosX(), 0, c.getInfo().getPosZ()));
+                    resetCompassMapIcon();
+                }
+            };
+
+            apiMapIcons.forEach(consumer);
+            wpMapIcons.forEach(consumer);
+            // Don't try to set compass to the current compass icon
+        }
     }
 
     @Override
@@ -366,6 +291,15 @@ public class WorldMapUI extends GuiScreen {
         if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
         }
+
+        if (keyCode == KeyManager.getZoomInKey().getKeyBinding().getKeyCode()) {
+            zoomBy(+20);
+            return;  // Return early so it doesn't zoom the minimap
+        } else if (keyCode == KeyManager.getZoomOutKey().getKeyBinding().getKeyCode()) {
+            zoomBy(-20);
+            return;
+        }
+
         super.keyTyped(typedChar, keyCode);
     }
 

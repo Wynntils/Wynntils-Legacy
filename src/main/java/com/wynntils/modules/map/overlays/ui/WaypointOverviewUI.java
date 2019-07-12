@@ -1,10 +1,10 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -53,51 +53,26 @@ public class WaypointOverviewUI extends GuiScreen {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
             if (wp == null || wp.getType() == null) continue;
 
-            int tx1 = 0; int tx2 = 0; int ty1 = 0; int ty2 = 0;
-            switch (wp.getType()) {
-                case LOOTCHEST_T1:
-                    tx1 = 136; ty1 = 35;
-                    tx2 = 154; ty2 = 53;
-                    break;
-                case LOOTCHEST_T2:
-                    tx1 = 118; ty1 = 35;
-                    tx2 = 136; ty2 = 53;
-                    break;
-                case LOOTCHEST_T3:
-                    tx1 = 82; ty1 = 35;
-                    tx2 = 100; ty2 = 53;
-                    break;
-                case LOOTCHEST_T4:
-                    tx1 = 100; ty1 = 35;
-                    tx2 = 118; ty2 = 53;
-                    break;
-                case DIAMOND:
-                    tx1 = 172; ty1 = 37;
-                    tx2 = 190; ty2 = 55;
-                    break;
-                case FLAG:
-                    //TODO handle colours
-                    tx1 = 154; ty1 = 36;
-                    tx2 = 172; ty2 = 54;
-                    break;
-                case SIGN:
-                    tx1 = 190; ty1 = 36;
-                    tx2 = 208; ty2 = 54;
-                    break;
-                case STAR:
-                    tx1 = 208; ty1 = 36;
-                    tx2 = 226; ty2 = 54;
-                    break;
-                case TURRET:
-                    tx1 = 226; ty1 = 36;
-                    tx2 = 244; ty2 = 54;
-                    break;
+            int colour = 0xFFFFFF;
+            boolean hidden = wp.getZoomNeeded() == MapWaypointIcon.HIDDEN_ZOOM;
+            if (hidden) {
+                colour = 0x636363;
             }
-            renderer.drawRect(Textures.Map.map_icons, this.width/2 - 180, 51 + 25 * i, this.width/2 - 162,69 + 25 * i, tx1, ty1, tx2, ty2);
-            fontRenderer.drawString(wp.getName(), this.width/2 - 150, 56 + 25 * i, 0xFFFFFF);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 35, 56 + 25 * i, 0xFFFFFF);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 20, 56 + 25 * i, 0xFFFFFF);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 60, 56 + 25 * i, 0xFFFFFF);
+
+            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
+            float centreX = this.width / 2f - 171;
+            float centreZ = 60 + 25 * i;
+            float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
+            wpIcon.renderAt(renderer, centreX, centreZ, multiplier);
+
+            fontRenderer.drawString(wp.getName(), this.width/2 - 150, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 35, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 20, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 60, 56 + 25 * i, colour);
+
+            if (hidden) {
+                drawHorizontalLine(this.width / 2 - 155, this.width / 2 + 75, (int) centreZ - 1, colour | 0xFF000000);
+            }
         }
         ScreenRenderer.endGL();
     }

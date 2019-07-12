@@ -552,6 +552,8 @@ public class QuestBookGUI extends GuiScreen {
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());
 
+        if(QuestBookConfig.INSTANCE.hideMiniQuests) questSearch.removeIf(c -> c.getName().contains("Mini-Quest"));
+
         questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
         questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
     }
@@ -566,8 +568,7 @@ public class QuestBookGUI extends GuiScreen {
         discoverySearch = (ArrayList<DiscoveryInfo>) discoverySearch.stream().filter(c -> {
             if (territory && c.getType() == DiscoveryType.TERRITORY) return true;
             if (world && c.getType() == DiscoveryType.WORLD) return true;
-            if (secret && c.getType() == DiscoveryType.SECRET) return true;
-            return false;
+            return secret && c.getType() == DiscoveryType.SECRET;
         }).collect(Collectors.toList());
     }
 

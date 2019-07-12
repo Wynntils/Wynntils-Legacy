@@ -12,6 +12,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ReflectionFields;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
@@ -27,6 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents implements Listener {
 
@@ -127,4 +129,12 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         }
     }
+
+    @SubscribeEvent
+    public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
+        if(e.phase != TickEvent.Phase.END) return;
+
+        PacketQueue.proccessQueue();
+    }
+
 }

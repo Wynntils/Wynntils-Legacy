@@ -17,6 +17,7 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
+
     /**
      * Dispatch a bunch of packet outgoing events to be checked before actually being sent
      * @see PacketEvent for more information about these events
@@ -37,7 +38,8 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
         }else if(msg instanceof CPacketPlayerTryUseItemOnBlock) {
             e = new PacketEvent.PlayerUseItemOnBlockEvent((CPacketPlayerTryUseItemOnBlock)msg, ModCore.mc().getConnection());
         }else if(msg instanceof CPacketPlayerTryUseItem) {
-            e = new PacketEvent.PlayerUseItemEvent((CPacketPlayerTryUseItem)msg, ModCore.mc().getConnection());
+            if(FakeInventory.ignoreNextUserClick) FakeInventory.ignoreNextUserClick = false;
+            else e = new PacketEvent.PlayerUseItemEvent((CPacketPlayerTryUseItem)msg, ModCore.mc().getConnection());
         } else if (msg instanceof CPacketUseEntity) {
             e = new PacketEvent.UseEntityEvent((CPacketUseEntity) msg, ModCore.mc().getConnection());
         }

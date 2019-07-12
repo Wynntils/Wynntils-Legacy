@@ -32,7 +32,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -492,15 +491,15 @@ public class Utils {
 
         FakeInventory serverSelector = new FakeInventory("Wynncraft Servers", 0);
         serverSelector.onReceiveItems(c -> {
-            Map.Entry<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
-            if(world != null) {
-                c.clickItem(world.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            if (world != null) {
+                c.clickItem(world.a, 1, ClickType.PICKUP);
                 c.close();
                 return;
             }
 
-            Map.Entry<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
-            if(nextPage != null) serverSelector.clickItem(nextPage.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
+            if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
         });
         
