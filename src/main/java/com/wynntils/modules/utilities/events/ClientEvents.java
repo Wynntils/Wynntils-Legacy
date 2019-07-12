@@ -25,8 +25,6 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
@@ -75,6 +73,13 @@ public class ClientEvents implements Listener {
         }
 
         lastPosition = currentPosition;
+    }
+
+    @SubscribeEvent
+    public void onFovUpdate(FOVUpdateEvent e) {
+        if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
+
+        e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
