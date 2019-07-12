@@ -25,6 +25,8 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
@@ -89,26 +91,6 @@ public class ClientEvents implements Listener {
         }
         if(e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
-        }
-    }
-
-    @SubscribeEvent
-    public void onArmorStandSpawn(PacketEvent.EntityMetadata e) {
-        if(e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-
-        for(EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if(entry.getValue() == null) continue;
-            
-            String value = entry.getValue().toString().toLowerCase();
-            if(value.contains("woodcutting")) {
-
-            }else if(value.contains("fishing")) {
-
-            }else if (value.contains("mining")) {
-
-            }else if(value.contains("farming")) {
-
-            }
         }
     }
 
