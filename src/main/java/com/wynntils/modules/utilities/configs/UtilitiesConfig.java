@@ -44,6 +44,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Disable FOV changes with speed effect", description = "Should the FOV don't change while you are with speed effects?")
+    public boolean disableFovChanges = false;
+
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
