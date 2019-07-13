@@ -74,7 +74,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void updateQuestBook(TickEvent.ClientTickEvent e) {
-        if(!Reference.onWorld || Reference.onNether || Reference.onWars || Minecraft.getMinecraft().player.inventory == null) return;
+        if(e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || Minecraft.getMinecraft().player.inventory == null) return;
         if(Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
         QuestManager.executeQueue();

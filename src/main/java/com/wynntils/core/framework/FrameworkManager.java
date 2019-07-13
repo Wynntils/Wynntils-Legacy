@@ -195,6 +195,8 @@ public class FrameworkManager {
     }
 
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
+        if(e.phase == TickEvent.Phase.START) return;
+
         if (Reference.onServer) {
             tick++;
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
