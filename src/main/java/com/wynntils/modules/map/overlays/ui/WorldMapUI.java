@@ -60,8 +60,6 @@ public class WorldMapUI extends GuiMovementScreen {
     long creationTime;
 
     public WorldMapUI() {
-        super();
-
         mc = Minecraft.getMinecraft();
 
         creationTime = System.currentTimeMillis();
@@ -93,8 +91,6 @@ public class WorldMapUI extends GuiMovementScreen {
         this.buttonList.add(settingsBtn = new GuiButton(1,22,23,60,18, "Markers"));
         this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
         this.buttonList.add(addWaypointBtn = new GuiButtonImage(2,24,69,14,14,0,0, 0, Textures.Map.map_options.resourceLocation));
-
-        allowUserInput = true;
 
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
