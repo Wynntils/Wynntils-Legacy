@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.reflections;
 
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiChat;

@@ -10,6 +10,8 @@ import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
@@ -554,4 +556,28 @@ public class Utils {
 
         return String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
     }
+
+    /**
+     * Opens a guiScreen without cleaning the users keys/mouse movents
+     *
+     * @param screen the provided screen
+     */
+    public static void displayGuiScreen(GuiScreen screen) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        mc.currentScreen = screen;
+        if (screen != null) {
+            Minecraft.getMinecraft().setIngameNotInFocus();
+
+            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            screen.setWorldAndResolution(mc, i, j);
+            mc.skipRenderWorld = false;
+        } else {
+            mc.getSoundHandler().resumeSounds();
+            mc.setIngameFocus();
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -66,7 +67,7 @@ public class WorldMapSettingsUI extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || // DEFAULT: E
                 keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) { //DEFAULT: M
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         }
         super.keyTyped(typedChar, keyCode);
     }
@@ -76,7 +77,7 @@ public class WorldMapSettingsUI extends GuiScreen {
         if (button.id == 99) {
             button.displayString = MapConfig.IconTexture.values()[(MapConfig.IconTexture.valueOf(button.displayString).ordinal() + 1) % MapConfig.IconTexture.values().length].name();
         } else if (button.id == 100) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         } else if (button.id == 102) {
             MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton cb: this.buttonList) {
@@ -87,7 +88,7 @@ public class WorldMapSettingsUI extends GuiScreen {
                 }
             }
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         } else if (button.id == 101) {
             this.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton b: this.buttonList) {

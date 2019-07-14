@@ -1,6 +1,7 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
@@ -88,7 +89,7 @@ public class WaypointOverviewUI extends GuiScreen {
             checkAvailablePages();
             setEditButtons();
         } else if (b == exitBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         } else if (b.id % 10 == 3) {
             Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(waypoints.get(b.id / 10 + page * pageHeight), this));
         } else if (b.id %10 == 5) {

@@ -5,13 +5,17 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
-import com.wynntils.modules.map.instances.WaypointProfile;
-import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 
 import java.io.IOException;
 
@@ -247,9 +251,9 @@ public class WaypointCreationMenu extends UI {
                 MapConfig.Waypoints.INSTANCE.waypoints.add(newWp);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
+            Utils.displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
         } else if (button == cancelButton) {
-            Minecraft.getMinecraft().displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
+            Utils.displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
         } else if (button == waypointTypeNext) {
             setWaypointType(WaypointType.values()[(getWaypointType().ordinal() + 1) % WaypointType.values().length]);
         } else if (button == waypointTypeBack) {
