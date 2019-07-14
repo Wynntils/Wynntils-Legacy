@@ -3,6 +3,7 @@ package com.wynntils.core.framework.enums;
 import com.wynntils.core.framework.instances.GuiMovementScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.client.settings.KeyConflictContext;
 
 public enum WynntilsConflictContext implements IKeyConflictContext {
 
@@ -14,7 +15,7 @@ public enum WynntilsConflictContext implements IKeyConflictContext {
 
         @Override
         public boolean conflicts(IKeyConflictContext other) {
-            return this == other;
+            return this == other || other == KeyConflictContext.IN_GAME;
         }
     }
 
