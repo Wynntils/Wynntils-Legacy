@@ -34,20 +34,20 @@ public class Delay {
 
     public boolean pause() {
         if (!onPause && isRunning) {
-            onPause = false;
+            onPause = true;
             return true; //success
-        } else {
-            return false; //failed
         }
+
+        return false;
     }
 
     public boolean resume() {
         if (onPause && isRunning) {
             onPause = false;
             return true; //success
-        } else {
-            return false; //failed
         }
+
+        return false;
     }
 
     public void start() {
