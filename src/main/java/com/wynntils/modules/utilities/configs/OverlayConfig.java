@@ -31,11 +31,11 @@ public class OverlayConfig extends SettingsClass {
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
-        @Setting(displayName = "Health Bar Width", description = "How wide the Health Bar is in pixels (Adjusted using Minecraft's scaling)")
+        @Setting(displayName = "Health Bar Width", description = "How wide should the health bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
         @Setting.Limitations.IntLimit(min = 0, max = 81)
         public int width = 81;
 
-        @Setting(displayName = "Rotation Health Bar", description = "This is the rotation of the Health Bar in degrees. (Accompanied text will be removed)")
+        @Setting(displayName = "Health Bar Orientation", description = "How orientated in degrees should the health bar be?\n\n§8Accompanied text will be removed.")
         public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
         @Setting(displayName = "Low Health Vignette", description = "Should a red vignette be displayed when you're low on health?")
@@ -84,11 +84,11 @@ public class OverlayConfig extends SettingsClass {
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
 
-        @Setting(displayName = "Mana Bar Width", description = "How wide the Mana Bar is in pixels (Adjusted using Minecraft's scaling)")
+        @Setting(displayName = "Mana Bar Width", description = "How wide should the mana bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
         @Setting.Limitations.IntLimit(min = 0, max = 81)
         public int width = 81;
 
-        @Setting(displayName = "Rotation Mana Bar", description = "This is the rotation of the Mana Bar in degrees. (Accompanied text will be removed)")
+        @Setting(displayName = "Mana Bar Orientation", description = "How orientated in degrees should the mana bar be?\n\n§8Accompanied text will be removed.")
         public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
         @Setting(displayName = "Mana Texture", description = "What texture should be used for the mana bar?")
