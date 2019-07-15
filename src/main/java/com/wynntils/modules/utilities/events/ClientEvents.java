@@ -171,7 +171,7 @@ public class ClientEvents implements Listener {
                 if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString())) {
-                            TextComponentString text = new TextComponentString("You cannot close this loot chest while there is mythic in it!");
+                            TextComponentString text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                             text.getStyle().setColor(TextFormatting.RED);
                             Minecraft.getMinecraft().player.sendMessage(text);
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
@@ -295,7 +295,7 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
     }
 
     @SubscribeEvent
@@ -307,7 +307,7 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
     }
 
     @SubscribeEvent
@@ -319,7 +319,7 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
     }
 
     @SubscribeEvent
