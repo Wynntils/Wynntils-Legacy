@@ -50,6 +50,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
     public boolean autoMount = false;
 
+    @Setting(displayName = "Block Health Potions while with Max HP", description = "Should you be blocked from using health potions while with Max Health?")
+    public boolean blockHealingPots = true;
+
 
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)

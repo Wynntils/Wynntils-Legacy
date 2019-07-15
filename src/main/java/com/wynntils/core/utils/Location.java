@@ -54,6 +54,12 @@ public class Location {
         this.z -= z;
     }
 
+    public void substract(double amount) {
+        this.x -= amount;
+        this.y -= amount;
+        this.z -= amount;
+    }
+
     public void multiply(Location loc) {
         x *= loc.getX();
         y *= loc.getY();
@@ -64,6 +70,12 @@ public class Location {
         this.x *= x;
         this.y *= y;
         this.z *= z;
+    }
+
+    public void multiply(double amount) {
+        this.x *= amount;
+        this.y *= amount;
+        this.z *= amount;
     }
 
     public BlockPos toBlockPos() {

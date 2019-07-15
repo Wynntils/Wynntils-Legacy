@@ -18,20 +18,25 @@ import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -278,6 +283,51 @@ public class ClientEvents implements Listener {
         }
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+    }
+
+    //blocking healing pots below
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.PlayerUseItemEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.PlayerUseItemOnBlockEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.UseEntityEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You're already with max health!");
+    }
+
+    @SubscribeEvent
+    public void rightClickItem(PlayerInteractEvent.RightClickItem e) {
+        if(!e.getItemStack().hasDisplayName() || !e.getItemStack().getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if(e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
+
+        e.setCanceled(true);
     }
 
 }
