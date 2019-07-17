@@ -200,17 +200,16 @@ public class NametagManager {
                 depthMask(true);
 
                 //draws the label
-                if(!isSneaking && color != null){
-                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                    if(UtilitiesConfig.INSTANCE.hideNametags) return;
+                if(!isSneaking && color != null) {
+                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                        renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                     //renders twice to replace the areas that are overlaped by tile entities
                     enableDepth();
                     renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                }
-                else {
-                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
-                    if(UtilitiesConfig.INSTANCE.hideNametags) return;
+                } else {
+                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                        fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
 
                     //renders twice to replace the areas that are overlaped by tile entities
                     enableDepth();
