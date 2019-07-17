@@ -48,7 +48,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
-        registerOverlay(new GameUpdateOverlay(), Priority.LOW);
+        registerOverlay(new GameUpdateOverlay(), Priority.NORMAL);
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);

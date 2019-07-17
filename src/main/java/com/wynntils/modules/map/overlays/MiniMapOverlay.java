@@ -325,8 +325,6 @@ public class MiniMapOverlay extends Overlay {
                 );
             }
 
-            //GlStateManager.disableTexture2D();
-
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 
