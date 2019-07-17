@@ -12,7 +12,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.Iterator;
@@ -34,17 +33,11 @@ public class GameUpdateOverlay extends Overlay {
     public int offsetY = 0;
 
     /* Message Management */
-    public static List<MessageContainer> messageQueue = new LinkedList<>();
+    private static List<MessageContainer> messageQueue = new LinkedList<>();
 
     /* Rendering */
-    public static final int LINE_HEIGHT = 12;
-
+    private static final int LINE_HEIGHT = 12;
     private static CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
-
-    @Override
-    public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE) return;
-    }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
