@@ -171,7 +171,7 @@ public class NametagManager {
                     if(Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth(); //this limit this feature to 7.5 blocks
                 }
 
-                int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input)/2;
+                int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input) / 2;
 
                 //Nametag Box
                 if(!UtilitiesConfig.INSTANCE.hideNametagBox) {
@@ -198,9 +198,24 @@ public class NametagManager {
                 }
 
                 depthMask(true);
+
                 //draws the label
-                if(!isSneaking && color != null) renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                else fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+                if(!isSneaking && color != null){
+                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    if(UtilitiesConfig.INSTANCE.hideNametags) return;
+
+                    //renders twice to replace the areas that are overlaped by tile entities
+                    enableDepth();
+                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                }
+                else {
+                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+                    if(UtilitiesConfig.INSTANCE.hideNametags) return;
+
+                    //renders twice to replace the areas that are overlaped by tile entities
+                    enableDepth();
+                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+                }
 
                 //returns back to normal
                 enableDepth();
