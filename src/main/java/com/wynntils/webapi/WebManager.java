@@ -257,7 +257,8 @@ public class WebManager {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
         Gson gson = builder.create();
-        
+
+        territories.clear();
         territories.putAll(gson.fromJson(json.get("territories"), type));
     }
 
