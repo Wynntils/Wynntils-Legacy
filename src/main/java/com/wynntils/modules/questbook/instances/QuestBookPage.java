@@ -11,8 +11,12 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -24,12 +28,12 @@ public class QuestBookPage extends GuiScreen {
     private long time;
 
     //Page specific information
-    protected String title;
+    protected String title = "";
     protected IconContainer icon;
     protected boolean requestOpening;
 
     protected boolean showSearchBar;
-    protected String searchBarText;
+    private String searchBarText;
     private boolean searchBarFocused;
     protected int currentPage;
     protected boolean acceptNext, acceptBack;
@@ -53,7 +57,9 @@ public class QuestBookPage extends GuiScreen {
 
     @Override
     public void initGui() {
+        currentPage = 1;
         searchBarText = "";
+        searchUpdate("");
         time = Minecraft.getSystemTime();
         text_flicker = Minecraft.getSystemTime();
         lastTick = Minecraft.getMinecraft().world.getWorldTime();
@@ -136,15 +142,61 @@ public class QuestBookPage extends GuiScreen {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
 
+        int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
+
+        if (showSearchBar) {
+            if (posX >= -145 && posX <= -13 && posY >= 86 && posY <= 100) {
+                searchBarFocused = true;
+                if (mouseButton == 1) {
+                    searchBarText = "";
+                    searchUpdate(searchBarText);
+                }
+            } else {
+                searchBarFocused = false;
+            }
+        }
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) {
-        if (keyCode == Keyboard.KEY_ESCAPE) Minecraft.getMinecraft().displayGuiScreen(null);
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
+        if (!QuestBookConfig.INSTANCE.searchBoxClickRequired || searchBarFocused) {
+            if (keyCode == Keyboard.KEY_BACK) {
+                if (searchBarText.length() <= 0) {
+                    return;
+                }
+
+                if (Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
+                    searchBarText = "";
+                else searchBarText = searchBarText.substring(0, searchBarText.length() - 1);
+
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
+                text_flicker = System.currentTimeMillis();
+                keepForTime = false;
+            } else if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+                searchBarText = searchBarText + typedChar;
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_HAT, 1f));
+                text_flicker = System.currentTimeMillis();
+                keepForTime = true;
+            }
+            currentPage = 1;
+            searchUpdate(searchBarText);
+        }
+        super.keyTyped(typedChar, keyCode);
     }
 
-    public void searchUpdate(String currentText) { }
+    protected void renderHoveredText(List<String> hoveredText, int mouseX, int mouseY) {
+        ScreenRenderer.beginGL(0, 0);
+        {
+            GlStateManager.disableLighting();
+            if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
+        }
+        ScreenRenderer.endGL();
+    }
+
+    protected void searchUpdate(String currentText) { }
 
     protected boolean doesSearchMatch(String toCheck, String searchText) {
         if (QuestBookConfig.INSTANCE.useFuzzySearch) {

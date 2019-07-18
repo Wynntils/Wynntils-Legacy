@@ -10,6 +10,7 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.instances.QuestInfo;
+import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -35,21 +36,15 @@ public class QuestsPage extends QuestBookPage {
     private ArrayList<QuestInfo> questSearch;
     private QuestInfo overQuest;
 
-    public QuestsPage() {
+    public QuestsPage(boolean requestOpening) {
+        this.requestOpening = requestOpening;
         this.title = "Quests";
         this.showSearchBar = true;
         this.icon = IconContainer.questPageIcon;
     }
 
-    public QuestsPage(boolean requestOpening) {
-        this();
-        this.requestOpening = requestOpening;
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-        updateQuestSearch();
+    public QuestsPage() {
+        this(false);
     }
 
     @Override
@@ -122,7 +117,7 @@ public class QuestsPage extends QuestBookPage {
 
             //calculating pages
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-//            System.out.println(QuestManager.getCurrentQuestsData());
+
             //drawing all quests
             int currentY = 12;
             if (questSearch.size() > 0) {
@@ -218,14 +213,7 @@ public class QuestsPage extends QuestBookPage {
             }
         }
         ScreenRenderer.endGL();
-
-
-        ScreenRenderer.beginGL(0, 0);
-        {
-            GlStateManager.disableLighting();
-            if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
-        }
-        ScreenRenderer.endGL();
+        renderHoveredText(hoveredText, mouseX, mouseY);
     }
 
     @Override
@@ -286,22 +274,43 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
         }
+
+        if(acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            currentPage++;
+            return;
+        }
+        if(acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            currentPage--;
+            return;
+        }
+        if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestBookHandler.goToQuestBookPage("MainPage", false);
+            return;
+        }/*
+        if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            updateDiscoverySearch();
+            page = com.wynntils.modules.questbook.enums.QuestBookPage.DISCOVERIES;
+            return;
+        }*/
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    public void keyTyped(char typedChar, int keyCode) {
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        overQuest = null;
         super.keyTyped(typedChar, keyCode);
     }
 
+    @Override
     public void searchUpdate(String currentText) {
-
-    }
-
-    private void updateQuestSearch() {
         HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
-        questSearch = !searchBarText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
-                .filter(c -> doesSearchMatch(c.getName().toLowerCase(), searchBarText.toLowerCase()))
+        questSearch = !currentText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
+                .filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase()))
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());
 
