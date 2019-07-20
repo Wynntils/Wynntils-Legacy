@@ -6,7 +6,9 @@ package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -38,6 +40,9 @@ public class ServerEvents implements Listener {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
 
+            boolean forceUpdate = ServerEvents.forceUpdate;
+            forceUpdate |= currentLevel != ModCore.mc().player.experienceLevel;
+
             if (!forceUpdate) {
                 if (!RichPresenceModule.getModule().getData().getLocation().equals("Waiting")) {
                     if (WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocation()).insideArea((int) pl.posX, (int) pl.posZ) && !classUpdate) {
@@ -46,7 +51,7 @@ public class ServerEvents implements Listener {
                 }
             }
             
-            boolean forceUpdate = ServerEvents.forceUpdate;
+            currentLevel = ModCore.mc().player.experienceLevel;
             ServerEvents.forceUpdate = false;
 
             for (TerritoryProfile pf : WebManager.getTerritories().values()) {
@@ -83,6 +88,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         RichPresenceModule.getModule().getRichPresence().stopRichPresence();
+        currentLevel = 0;
 
         if (updateTimer != null && !updateTimer.isCancelled()) {
             updateTimer.cancel(true);
@@ -119,11 +125,14 @@ public class ServerEvents implements Listener {
     
     public static boolean forceUpdate = false;
 
+    public static int currentLevel = 0;
+
     @SubscribeEvent
     public void onWorldLeft(WynnWorldEvent.Leave e) {
         if (updateTimer != null) {
             updateTimer.cancel(true);
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
+            currentLevel = 0;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
         }
     }
@@ -144,10 +153,11 @@ public class ServerEvents implements Listener {
             classUpdate = true;
         } else if (Reference.onWorld) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
+            currentLevel = 0;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
         }
     }
-    
+
     public static void onEnableSettingChange() {
         if (RichPresenceConfig.INSTANCE.enableRichPresence) {
             if (Reference.onLobby) {
