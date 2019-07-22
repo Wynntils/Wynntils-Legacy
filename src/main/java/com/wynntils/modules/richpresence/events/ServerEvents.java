@@ -45,7 +45,7 @@ public class ServerEvents implements Listener {
 
             if (!forceUpdate) {
                 if (!RichPresenceModule.getModule().getData().getLocation().equals("Waiting")) {
-                    if (WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocation()).insideArea((int) pl.posX, (int) pl.posZ) && !classUpdate) {
+                    if (WebManager.getTerritories().get(RichPresenceModule.getModule().getData().getLocation().replace('\'', '’')).insideArea((int) pl.posX, (int) pl.posZ) && !classUpdate) {
                         return;
                     }
                 }
