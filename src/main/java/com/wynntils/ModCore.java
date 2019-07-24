@@ -34,7 +34,6 @@ import java.util.HashMap;
 )
 public class ModCore {
 
-    public static final boolean DEBUG = false;
     public static File jarFile = null;
 
     @Mod.EventHandler

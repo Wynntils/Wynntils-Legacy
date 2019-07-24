@@ -23,6 +23,7 @@ public class KeyManager {
     private static KeyHolder checkForUpdatesKey;
     private static KeyHolder zoomInKey;
     private static KeyHolder zoomOutKey;
+    private static KeyHolder stopwatchKey;
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
@@ -63,7 +64,7 @@ public class KeyManager {
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
 
-        CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+        stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
     }
 
     public static KeyHolder getLockInventoryKey() {
@@ -81,4 +82,9 @@ public class KeyManager {
     public static KeyHolder getZoomOutKey() {
         return zoomOutKey;
     }
+
+    public static KeyHolder getStopwatchKey() {
+        return stopwatchKey;
+    }
+
 }
