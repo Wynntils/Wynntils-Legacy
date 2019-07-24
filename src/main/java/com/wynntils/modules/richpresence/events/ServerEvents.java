@@ -6,6 +6,7 @@ package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -141,20 +142,36 @@ public class ServerEvents implements Listener {
     public void onClassChange(WynnClassChangeEvent e) {
         if (Reference.onWars && e.getCurrentClass() != ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
+            currentLevel = 0;
             if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
             } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
             }
         } else if (Reference.onNether && e.getCurrentClass() != ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
         } else if (e.getCurrentClass() != ClassType.NONE) {
             classUpdate = true;
         } else if (Reference.onWorld) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = 0;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
+        }
+    }
+
+    @SubscribeEvent
+    public void onSetExperience(PacketEvent.SetExperience e) {
+        if (Reference.onWars && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE && currentLevel == 0 && e.getPacket().getLevel() != 0) {
+            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
+            currentLevel = e.getPacket().getLevel();
+            Minecraft mc = Minecraft.getMinecraft();
+            String userInformation = RichPresenceConfig.INSTANCE.showUserInformation ? mc.player.getName() + " | Level " + currentLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() : null;
+            if (WarTimerOverlay.getTerritory() != null) {
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), userInformation, OffsetDateTime.now());
+            } else {
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), userInformation, OffsetDateTime.now());
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
@@ -62,7 +63,7 @@ public class ServerEvents implements Listener {
      *
      * @param e Represents the event
      */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
         if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
         if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);

@@ -313,4 +313,31 @@ public class PacketEvent extends Event {
         }
 
     }
+
+    /**
+     * Triggered when a {@link SPacketSetExperience is sent to the client
+     */
+    public static class SetExperience extends PacketEvent {
+
+        SPacketSetExperience packet;
+        NetHandlerPlayClient playClient;
+
+        public SetExperience(SPacketSetExperience packet, NetHandlerPlayClient playClient) {
+            this.packet = packet;
+            this.playClient = playClient;
+        }
+
+        public SPacketSetExperience getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
 }
