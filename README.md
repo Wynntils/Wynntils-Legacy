@@ -4,6 +4,7 @@
 <a href="https://discord.gg/ve49m9J"><img src="https://discordapp.com/api/guilds/394189072635133952/widget.png"></a>
 <a href="http://ci.wynntils.com/job/Wynntils/"><img src="http://ci.wynntils.com/buildStatus/icon?job=Wynntils"></a>
 <a href="https://github.com/Wynntils/Wynntils/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-AGLP%203.0-green.svg"></a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2FWynntils%2FWynntils?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2FWynntils%2FWynntils.svg?type=shield"/></a>
 </p>
 
 About Wynntils
@@ -31,3 +32,7 @@ License
 
 Wynntils is licensed over the license [GNU Affero General Public License v3.0](https://github.com/Wynntils/Wynntils/blob/master/LICENSE)<br>
 All the assets **are over Wynntils domain © Wynntils**.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWynntils%2FWynntils.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FWynntils%2FWynntils?ref=badge_large)
