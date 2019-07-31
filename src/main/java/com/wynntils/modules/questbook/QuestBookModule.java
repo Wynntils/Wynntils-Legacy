@@ -15,6 +15,7 @@ import com.wynntils.modules.questbook.overlays.ui.MainPage;
 import com.wynntils.modules.questbook.overlays.ui.QuestBookGUIold;
 import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.overlays.ui.QuestsPage;
+import com.wynntils.modules.questbook.overlays.ui.SettingsPage;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "quest_book", displayName = "Quest Book")
@@ -28,12 +29,12 @@ public class QuestBookModule extends Module {
         registerSettings(QuestBookConfig.class);
         registerOverlay(new TrackedQuestOverlay(), Priority.HIGHEST);
 
-        QuestBookHandler.registerPage("MainPage", MainPage.class);
-        QuestBookHandler.registerPage("QuestsPage", QuestsPage.class);
+        QuestBookHandler.registerPage(new MainPage());
+        QuestBookHandler.registerPage(new QuestsPage());
+        QuestBookHandler.registerPage(new SettingsPage());
 
         registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> {
-            //QuestManager.requestQuestBookReading();
-            QuestBookHandler.openQuestBookOnPage("QuestsPage");
+            QuestBookHandler.openQuestBookPage(true, QuestsPage.class);
         });
         registerKeyBinding("Open Item Guide", Keyboard.KEY_I, "Wynntils", true, gui::openAtItemGuide);
     }

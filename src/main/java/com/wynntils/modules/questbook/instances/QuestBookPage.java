@@ -7,6 +7,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Easing;
+import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
+import scala.collection.parallel.ParIterableLike;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +33,7 @@ public class QuestBookPage extends GuiScreen {
     protected String title = "";
     protected IconContainer icon;
     protected boolean requestOpening;
+    protected int slotNb;
 
     protected boolean showSearchBar;
     private String searchBarText;
@@ -55,6 +58,23 @@ public class QuestBookPage extends GuiScreen {
     protected static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
     protected static final CustomColor selected_cube_2 = CustomColor.fromString("#adf8b3", 0.3f);
 
+    /**
+     * Base class for all questbook pages
+     * @param title a string displayed on the left page
+     * @param showSearchBar boolean of whether there is a searchbar needed for that page
+     * @param slotNb The icon number of the page (e.g. 1 is the 1st of the 1st page. 6 is the 2nd of the 2nd page) will be ignored if icon = null
+     * @param icon the icon that corresponds to the page
+     */
+    public QuestBookPage(String title, boolean showSearchBar, int slotNb, IconContainer icon) {
+        this.title = title;
+        this.showSearchBar = showSearchBar;
+        this.slotNb = slotNb;
+        this.icon = icon;
+    }
+
+    /**
+     * Resets all basic information needed for various features on all pages
+     */
     @Override
     public void initGui() {
         currentPage = 1;
@@ -218,6 +238,11 @@ public class QuestBookPage extends GuiScreen {
         }
     }
 
+    public void open(boolean requestOpening) {
+        this.requestOpening = requestOpening;
+        Minecraft.getMinecraft().displayGuiScreen(this);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -228,5 +253,11 @@ public class QuestBookPage extends GuiScreen {
 
     public IconContainer getIcon() {
         return icon;
+    }
+
+    public List<String> getHoveredDescription() { return null; }
+
+    public int getSlotNb() {
+        return slotNb;
     }
 }

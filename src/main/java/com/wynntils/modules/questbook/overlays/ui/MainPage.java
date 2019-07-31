@@ -24,15 +24,8 @@ import java.util.List;
 
 public class MainPage extends QuestBookPage {
 
-    public MainPage(boolean requestOpening) {
-        this.requestOpening = requestOpening;
-        this.title = "User Profile";
-        this.showSearchBar = false;
-        this.icon = null;
-    }
-
     public MainPage() {
-        this(false);
+        super("User Profile", false, 0, null);
     }
 
     @Override
@@ -69,52 +62,67 @@ public class MainPage extends QuestBookPage {
             render.drawString(PlayerInfo.getPlayerInfo().getCurrentClass().toString() + " Level " + PlayerInfo.getPlayerInfo().getLevel(), x + 80, y + 40, CommonColors.PURPLE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("In Development", x + 80, y + 50, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
+            for (QuestBookPage qbp: QuestBookHandler.getQuestBookPages()) {
+                if (qbp.getIcon() == null || !(qbp.getSlotNb() > (currentPage - 1) * 4 && qbp.getSlotNb() <= (currentPage) * 4)) continue;
 
-            if (posX >= 120 && posX <= 150 && posY >= -14 && posY <= 15) {
-                selected = 1;
-                render.drawRect(selected_cube, x - 150, y - 15, x - 120, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 239, 26, 17);
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.",  "", TextFormatting.GREEN + "Left click to select");
-            } else {
-                if (selected == 1) selected = 0;
-                render.drawRect(unselected_cube, x - 150, y - 15, x - 120, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 221, 26, 17);
+                boolean hovering = posX >= (120 - 35 * (qbp.getSlotNb() % 4)) && posX <= (150 - 35 * (qbp.getSlotNb() % 4)) && posY >= -14 && posY <= 15;
+                if (hovering) {
+                    render.drawRect(selected_cube, x - 150 + 35 * (qbp.getSlotNb() % 4), y - 15, x - 120, y + 15);
+                } else {
+                    render.drawRect(unselected_cube, x - 150 + 35 * (qbp.getSlotNb() % 4), y - 15, x - 120, y + 15);
+                }
+                render.drawRect(Textures.UIs.quest_book, x - 150 + 35 * (qbp.getSlotNb() % 4), y - 15, qbp.getIcon().getX1(), qbp.getIcon().getY1(hovering), qbp.getIcon().getWidth(), qbp.getIcon().getHeight());
+                if (hovering) {
+                    hoveredText = qbp.getHoveredDescription();
+                    selected = qbp.getSlotNb();
+                }
             }
 
-            if (posX >= 85 && posX <= 115 && posY >= -14 && posY <= 15) {
-                selected = 2;
-                render.drawRect(selected_cube, x - 115, y - 15, x - 85, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 243, 21, 21);
-
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Configuration", TextFormatting.GRAY + "Change the settings", TextFormatting.GRAY + "to the way you want.",  "", TextFormatting.RED + "BETA VERSION", TextFormatting.GREEN + "Left click to select");
-            } else {
-                if (selected == 2) selected = 0;
-                render.drawRect(unselected_cube, x - 115, y - 15, x - 85, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 221, 21, 21);
-            }
-
-            if (posX >= 50 && posX <= 80 && posY >= -14 && posY <= 15) {
-                selected = 3;
-                render.drawRect(selected_cube, x - 80, y - 15, x - 50, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 242, 18, 20);
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.",  "", TextFormatting.GREEN + "Left click to select");
-            } else {
-                if (selected == 3) selected = 0;
-                render.drawRect(unselected_cube, x - 80, y - 15, x - 50, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 221, 18, 20);
-            }
-
-            if (posX >= 15 && posX <= 45 && posY >= -14 && posY <= 15) {
-                selected = 4;
-                render.drawRect(selected_cube, x - 45, y - 15, x - 15, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 282, 21, 21);
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various",  TextFormatting.GRAY + "Wynntils overlays.", "",  TextFormatting.GREEN + "Left click to select");
-            } else {
-                if (selected == 4)
-                    selected = 0;
-                render.drawRect(unselected_cube, x - 45, y - 15, x - 15, y + 15);
-                render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 261, 21, 21);
-            }
+//            if (posX >= 120 && posX <= 150 && posY >= -14 && posY <= 15) {
+//                selected = 1;
+//                render.drawRect(selected_cube, x - 150, y - 15, x - 120, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 239, 26, 17);
+//                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.",  "", TextFormatting.GREEN + "Left click to select");
+//            } else {
+//                if (selected == 1) selected = 0;
+//                render.drawRect(unselected_cube, x - 150, y - 15, x - 120, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 150, y - 8, 0, 221, 26, 17);
+//            }
+//
+//            if (posX >= 85 && posX <= 115 && posY >= -14 && posY <= 15) {
+//                selected = 2;
+//                render.drawRect(selected_cube, x - 115, y - 15, x - 85, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 243, 21, 21);
+//
+//                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Configuration", TextFormatting.GRAY + "Change the settings", TextFormatting.GRAY + "to the way you want.",  "", TextFormatting.RED + "BETA VERSION", TextFormatting.GREEN + "Left click to select");
+//            } else {
+//                if (selected == 2) selected = 0;
+//                render.drawRect(unselected_cube, x - 115, y - 15, x - 85, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 110, y - 10, 283, 221, 21, 21);
+//            }
+//
+//            if (posX >= 50 && posX <= 80 && posY >= -14 && posY <= 15) {
+//                selected = 3;
+//                render.drawRect(selected_cube, x - 80, y - 15, x - 50, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 242, 18, 20);
+//                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.",  "", TextFormatting.GREEN + "Left click to select");
+//            } else {
+//                if (selected == 3) selected = 0;
+//                render.drawRect(unselected_cube, x - 80, y - 15, x - 50, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 74, y - 10, 307, 221, 18, 20);
+//            }
+//
+//            if (posX >= 15 && posX <= 45 && posY >= -14 && posY <= 15) {
+//                selected = 4;
+//                render.drawRect(selected_cube, x - 45, y - 15, x - 15, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 282, 21, 21);
+//                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various",  TextFormatting.GRAY + "Wynntils overlays.", "",  TextFormatting.GREEN + "Left click to select");
+//            } else {
+//                if (selected == 4)
+//                    selected = 0;
+//                render.drawRect(unselected_cube, x - 45, y - 15, x - 15, y + 15);
+//                render.drawRect(Textures.UIs.quest_book, x - 40, y - 10, 262, 261, 21, 21);
+//            }
 
             render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Welcome to Wynntils. You can", x - 155, y + 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -139,12 +147,10 @@ public class MainPage extends QuestBookPage {
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (selected == 1) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookHandler.goToQuestBookPage("QuestsPage", false);
+            QuestBookHandler.openQuestBookPage(false, QuestsPage.class);
         } else if(selected == 2) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            SettingsUI ui = new SettingsUI(ModCore.mc().currentScreen);
-            UI.setupUI(ui);
-            ModCore.mc().displayGuiScreen(ui);
+            QuestBookHandler.openQuestBookPage(false, SettingsPage.class);
         } else if(selected == 3) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             //page = com.wynntils.modules.questbook.enums.QuestBookPage.ITEM_GUIDE;

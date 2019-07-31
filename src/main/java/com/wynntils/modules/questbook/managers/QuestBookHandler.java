@@ -4,33 +4,25 @@ import com.wynntils.modules.questbook.instances.QuestBookPage;
 import net.minecraft.client.Minecraft;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class QuestBookHandler {
 
-    private static HashMap<String, Class<? extends QuestBookPage>> questBookPages = new HashMap<>();
+    private static ArrayList<QuestBookPage> questBookPages = new ArrayList<>();
 
-    public static void registerPage(String ID, Class<? extends QuestBookPage> questBookPage) {
-        questBookPages.put(ID, questBookPage);
+    public static void registerPage(QuestBookPage questBookPage) {
+        questBookPages.add(questBookPage);
     }
 
-    public static void openQuestBook() {
-        openQuestBookOnPage("MainPage");
+    public static void openQuestBookPage(boolean requestOpening, Class<? extends QuestBookPage> instance) {
+        questBookPages.stream().filter(instance::isInstance).findAny().ifPresent(qbp -> {
+            qbp.open(requestOpening);
+        });
     }
 
-    public static void openQuestBookOnPage(String ID) {
-        goToQuestBookPage(ID, true);
-    }
-
-    public static void goToQuestBookPage(String ID, boolean requestOpening) {
-        try {
-            Minecraft.getMinecraft().displayGuiScreen(questBookPages.get(ID).getConstructor(boolean.class).newInstance(requestOpening));
-        } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public static HashMap<String, Class<? extends QuestBookPage>> getQuestBookPages() {
+    public static ArrayList<QuestBookPage> getQuestBookPages() {
         return questBookPages;
     }
 }

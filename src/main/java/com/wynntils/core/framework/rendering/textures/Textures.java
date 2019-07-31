@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.rendering.textures;
 
 import com.wynntils.Reference;
+import com.wynntils.modules.questbook.instances.IconContainer;
 import net.minecraft.util.ResourceLocation;
 
 import java.lang.reflect.Field;

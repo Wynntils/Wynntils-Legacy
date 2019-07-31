@@ -36,15 +36,8 @@ public class QuestsPage extends QuestBookPage {
     private ArrayList<QuestInfo> questSearch;
     private QuestInfo overQuest;
 
-    public QuestsPage(boolean requestOpening) {
-        this.requestOpening = requestOpening;
-        this.title = "Quests";
-        this.showSearchBar = true;
-        this.icon = IconContainer.questPageIcon;
-    }
-
     public QuestsPage() {
-        this(false);
+        super("Quests", true, 1, IconContainer.questPageIcon);
     }
 
     @Override
@@ -287,7 +280,7 @@ public class QuestsPage extends QuestBookPage {
         }
         if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookHandler.goToQuestBookPage("MainPage", false);
+            QuestBookHandler.openQuestBookPage(false, MainPage.class);
             return;
         }/*
         if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
@@ -316,5 +309,10 @@ public class QuestsPage extends QuestBookPage {
 
         questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
         questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
+    }
+
+    @Override
+    public List<String> getHoveredDescription() {
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.",  "", TextFormatting.GREEN + "Left click to select");
     }
 }
