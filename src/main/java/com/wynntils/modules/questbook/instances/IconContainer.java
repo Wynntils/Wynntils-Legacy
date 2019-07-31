@@ -25,7 +25,7 @@ public enum IconContainer {
     }
 
     public int getWidth() {
-        return (x2 - x1)/2;
+        return x2 - x1;
     }
 
     public int getHeight() {
