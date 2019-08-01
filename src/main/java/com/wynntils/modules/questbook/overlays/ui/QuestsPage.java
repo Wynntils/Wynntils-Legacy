@@ -206,7 +206,12 @@ public class QuestsPage extends QuestBookPage {
             }
 
             //Reload Quest Data button
-            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 282 , 261, 303);
+            if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+                hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
+                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 219, 282, 240, 303);
+            } else {
+                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 282, 261, 303);
+            }
         }
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
