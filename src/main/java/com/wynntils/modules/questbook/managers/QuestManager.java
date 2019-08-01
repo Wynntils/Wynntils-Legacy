@@ -10,6 +10,7 @@ import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
@@ -100,7 +101,7 @@ public class QuestManager {
                     }
                 }
 
-                QuestBookHandler.getQuestBookpage(QuestsPage.class).updateSearch();
+                QuestBookPages.QUESTS.getPage().updateSearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
@@ -139,7 +140,7 @@ public class QuestManager {
                     currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
                 }
 
-                QuestBookHandler.getQuestBookpage(DiscoveriesPage.class).updateSearch();
+                QuestBookPages.DISCOVERIES.getPage().updateSearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(!secretDiscoveries && sDiscoveries != null) {

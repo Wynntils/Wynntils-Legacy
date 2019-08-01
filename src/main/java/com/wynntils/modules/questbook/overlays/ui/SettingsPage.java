@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SettingsPage extends QuestBookPage {
     public SettingsPage() {
-        super("", false, 2, IconContainer.settingsPageIcon);
+        super("", false, IconContainer.settingsPageIcon);
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.managers.QuestBookHandler;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.questbook.overlays.ui.MainPage;
 import net.minecraft.client.Minecraft;
@@ -74,7 +74,7 @@ public class ClientEvents implements Listener {
 
         if (openQuestBook) {
             openQuestBook = false;
-            QuestBookHandler.openQuestBookPage(true, MainPage.class);
+            QuestBookPages.MAIN.getPage().open(true);
         }
     }
 

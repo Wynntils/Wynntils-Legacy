@@ -5,12 +5,11 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.instances.QuestInfo;
-import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -37,7 +36,7 @@ public class QuestsPage extends QuestBookPage {
     private QuestInfo overQuest;
 
     public QuestsPage() {
-        super("Quests", true, 1, IconContainer.questPageIcon);
+        super("Quests", true, IconContainer.questPageIcon);
     }
 
     @Override
@@ -281,11 +280,11 @@ public class QuestsPage extends QuestBookPage {
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookHandler.openQuestBookPage(false, MainPage.class);
+            QuestBookPages.MAIN.getPage().open(false);
             return;
         } else if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookHandler.openQuestBookPage(false, DiscoveriesPage.class);
+            QuestBookPages.DISCOVERIES.getPage().open(false);
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));

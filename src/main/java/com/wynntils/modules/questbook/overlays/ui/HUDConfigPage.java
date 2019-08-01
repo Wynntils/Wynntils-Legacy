@@ -12,7 +12,7 @@ import java.util.List;
 
 public class HUDConfigPage extends QuestBookPage {
     public HUDConfigPage() {
-        super("", false, 4, IconContainer.hudConfigIcon);
+        super("", false, IconContainer.hudConfigIcon);
     }
 
     @Override

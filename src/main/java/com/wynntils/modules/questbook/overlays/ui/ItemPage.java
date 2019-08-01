@@ -4,9 +4,9 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
-import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
@@ -57,7 +57,7 @@ public class ItemPage extends QuestBookPage {
     private final ItemStack ringsIcon = new ItemStack(Blocks.STAINED_GLASS);
 
     public ItemPage() {
-        super("Item Guide", true, 3, IconContainer.itemGuideIcon);
+        super("Item Guide", true, IconContainer.itemGuideIcon);
     }
 
     @Override
@@ -316,7 +316,7 @@ public class ItemPage extends QuestBookPage {
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookHandler.openQuestBookPage(false, MainPage.class);
+            QuestBookPages.MAIN.getPage().open(false);
             return;
         } else if (selected == 1) {
             if (!byAlphabetical) {

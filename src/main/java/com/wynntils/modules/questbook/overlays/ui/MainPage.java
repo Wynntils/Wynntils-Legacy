@@ -5,8 +5,8 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
-import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -15,13 +15,14 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 public class MainPage extends QuestBookPage {
 
     public MainPage() {
-        super("User Profile", false, 0, null);
+        super("User Profile", false, null);
     }
 
     @Override
@@ -61,14 +62,15 @@ public class MainPage extends QuestBookPage {
             int boxTop = y - 18;
             int boxBottom = y + 12;
             selected = 0;
-            for (QuestBookPage qbp: QuestBookHandler.getQuestBookPages()) {
-                if (qbp.getIcon() == null || !(qbp.getSlotNb() > (currentPage - 1) * 4 && qbp.getSlotNb() <= (currentPage) * 4)) continue;
+            for (QuestBookPages val: QuestBookPages.values()) {
+                QuestBookPage qbp = val.getPage();
+                if (qbp.getIcon() == null || !(val.getSlotNb() > (currentPage - 1) * 4 && val.getSlotNb() <= (currentPage) * 4)) continue;
 
-                boolean hovering = posX >= (120 - 35 * ((qbp.getSlotNb() - 1) % 4)) && posX <= (150 - 35 * ((qbp.getSlotNb() - 1) % 4)) && posY >= -10 && posY <= 20;
-                int leftX = x - 150 + 35 * ((qbp.getSlotNb() - 1) % 4);
+                boolean hovering = posX >= (120 - 35 * ((val.getSlotNb() - 1) % 4)) && posX <= (150 - 35 * ((val.getSlotNb() - 1) % 4)) && posY >= -10 && posY <= 20;
+                int leftX = x - 150 + 35 * ((val.getSlotNb() - 1) % 4);
 
                 if (hovering) {
-                    selected = qbp.getSlotNb();
+                    selected = val.getSlotNb();
                     render.drawRect(selected_cube, leftX, boxTop, leftX + 30, boxBottom);
                 } else {
                     render.drawRect(unselected_cube, leftX, boxTop, leftX + 30, boxBottom);
@@ -79,7 +81,7 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            int pages = (int) Math.ceil(QuestBookHandler.getQuestBookPages().stream().max(Comparator.comparingInt(QuestBookPage::getSlotNb)).get().getSlotNb() / 4d);
+            int pages = (int) Math.ceil(Arrays.stream(QuestBookPages.values()).max(Comparator.comparingInt(QuestBookPages::getSlotNb)).get().getSlotNb() / 4d);
             if (pages < currentPage) {
                 currentPage = pages;
             }
@@ -133,10 +135,8 @@ public class MainPage extends QuestBookPage {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (selected > 0) {
-            QuestBookHandler.getQuestBookPages().stream().filter(qbp -> qbp.getSlotNb() == selected).findFirst().ifPresent(qbp -> {
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                qbp.open(false);
-            });
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestBookPages.getPageBySlot(selected).open(false);
         } else if (selected == -1) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             currentPage--;

@@ -32,7 +32,6 @@ public class QuestBookPage extends GuiScreen {
     private String title = "";
     private IconContainer icon;
     protected boolean requestOpening;
-    private int slotNb;
 
     private boolean showSearchBar;
     private String searchBarText;
@@ -62,13 +61,11 @@ public class QuestBookPage extends GuiScreen {
      * Base class for all questbook pages
      * @param title a string displayed on the left page
      * @param showSearchBar boolean of whether there is a searchbar needed for that page
-     * @param slotNb The icon number of the page (e.g. 1 is the 1st of the 1st page. 6 is the 2nd of the 2nd page) will be ignored if icon = null
      * @param icon the icon that corresponds to the page
      */
-    public QuestBookPage(String title, boolean showSearchBar, int slotNb, IconContainer icon) {
+    public QuestBookPage(String title, boolean showSearchBar, IconContainer icon) {
         this.title = title;
         this.showSearchBar = showSearchBar;
-        this.slotNb = slotNb;
         this.icon = icon;
     }
 
@@ -277,8 +274,4 @@ public class QuestBookPage extends GuiScreen {
      * @return a list of strings - each index representing a new line.
      */
     public List<String> getHoveredDescription() { return null; }
-
-    public int getSlotNb() {
-        return slotNb;
-    }
 }
