@@ -26,7 +26,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void renderBeacon(RenderWorldLastEvent e) {
-        if(!MapConfig.INSTANCE.showCompassBeam || CompassManager.getCompassLocation() == null) return;
+        if (!MapConfig.INSTANCE.showCompassBeam || CompassManager.getCompassLocation() == null) return;
 
         Location compass = CompassManager.getCompassLocation();
         BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), CommonColors.RED);

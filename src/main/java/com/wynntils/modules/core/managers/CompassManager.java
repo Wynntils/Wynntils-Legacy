@@ -23,4 +23,8 @@ public class CompassManager {
         Minecraft.getMinecraft().world.setSpawnPoint(compassLocation.toBlockPos());
     }
 
+    public static void reset() {
+        compassLocation = null;
+    }
+
 }

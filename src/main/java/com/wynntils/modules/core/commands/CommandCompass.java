@@ -52,13 +52,22 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "compass [<x> <z> | <direction>]";
+        return "compass [<x> <z> | <direction> | clear]";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
         if (args.length == 0) {
-            throw new WrongUsageException("/compass [<x> <z> | <direction>]");
+            throw new WrongUsageException("/compass [<x> <z> | <direction> | clear]");
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
+            if (CompassManager.getCompassLocation() != null) {
+                CompassManager.reset();
+                TextComponentString text = new TextComponentString("The beacon and icon of your desired coordinates have been cleared.");
+                text.getStyle().setColor(TextFormatting.GREEN);
+                sender.sendMessage(text);
+            } else {
+                throw new CommandException("There is nothing to be cleared as you have not set any coordinates to be displayed as a beacon and icon.");
+            }
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = { 0, 0 };
             //check for north/south
@@ -175,7 +184,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(").");
             sender.sendMessage(text);
         } else {
-            throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction>]");
+            throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
         }
     }
     
@@ -190,7 +199,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     "southeast",
                     "southwest",
                     "east",
-                    "west");
+                    "west",
+                    "clear");
         }
         return Collections.emptyList();
     }
