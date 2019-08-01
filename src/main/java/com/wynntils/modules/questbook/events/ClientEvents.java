@@ -11,8 +11,8 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
@@ -81,7 +81,7 @@ public class ClientEvents implements Listener {
         if(openQuestBook) {
             openQuestBook = false;
 
-            QuestBookModule.gui.open();
+            QuestBookPages.MAIN.getPage().open(true);
             QuestManager.wasBookOpened(); //request the first reading if possible
         }
     }
