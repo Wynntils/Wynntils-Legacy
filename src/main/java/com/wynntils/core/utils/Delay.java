@@ -1,5 +1,7 @@
 package com.wynntils.core.utils;
 
+import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
