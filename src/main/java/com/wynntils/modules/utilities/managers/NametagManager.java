@@ -45,7 +45,7 @@ public class NametagManager {
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
-    private static final NametagLabel contentTeamLabel = new NametagLabel(MinecraftChatColors.BLUE, "Wynntils CT", 0.7f);
+    private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
@@ -91,6 +91,7 @@ public class NametagManager {
      * Check if the nametag should be rendered, used over checkForNametags
      */
     private static boolean canRender(Entity entity, RenderManager manager) {
+        if(entity.isBeingRidden()) return false;
         if(!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -170,7 +171,7 @@ public class NametagManager {
                     if(Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth(); //this limit this feature to 7.5 blocks
                 }
 
-                int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input)/2;
+                int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input) / 2;
 
                 //Nametag Box
                 if(!UtilitiesConfig.INSTANCE.hideNametagBox) {
@@ -197,9 +198,23 @@ public class NametagManager {
                 }
 
                 depthMask(true);
+
                 //draws the label
-                if(!isSneaking && color != null) renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                else fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+                if(!isSneaking && color != null) {
+                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                        renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                    //renders twice to replace the areas that are overlaped by tile entities
+                    enableDepth();
+                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                } else {
+                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                        fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+
+                    //renders twice to replace the areas that are overlaped by tile entities
+                    enableDepth();
+                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+                }
 
                 //returns back to normal
                 enableDepth();
@@ -239,7 +254,7 @@ public class NametagManager {
                 default: color = CommonColors.RAINBOW;
             }
 
-            labels.add(new NametagLabel(color, is.getDisplayName(), 0.4f));
+            labels.add(new NametagLabel(color, Utils.stripColor(is.getDisplayName()), 0.4f));
         }
 
         return labels;

@@ -10,6 +10,8 @@ import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
@@ -32,7 +34,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -492,15 +493,15 @@ public class Utils {
 
         FakeInventory serverSelector = new FakeInventory("Wynncraft Servers", 0);
         serverSelector.onReceiveItems(c -> {
-            Map.Entry<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
-            if(world != null) {
-                c.clickItem(world.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            if (world != null) {
+                c.clickItem(world.a, 1, ClickType.PICKUP);
                 c.close();
                 return;
             }
 
-            Map.Entry<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
-            if(nextPage != null) serverSelector.clickItem(nextPage.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
+            if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
         });
         
@@ -545,6 +546,38 @@ public class Utils {
         registeredColors.put(hex, color);
 
         return color;
+    }
+
+    public static String millisToString(long duration) {
+        long millis = duration % 1000,
+             second = (duration / 1000) % 60,
+             minute = (duration / (1000 * 60)) % 60,
+             hour = (duration / (1000 * 60 * 60)) % 24;
+
+        return String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+    }
+
+    /**
+     * Opens a guiScreen without cleaning the users keys/mouse movents
+     *
+     * @param screen the provided screen
+     */
+    public static void displayGuiScreen(GuiScreen screen) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        mc.currentScreen = screen;
+        if (screen != null) {
+            Minecraft.getMinecraft().setIngameNotInFocus();
+
+            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            screen.setWorldAndResolution(mc, i, j);
+            mc.skipRenderWorld = false;
+        } else {
+            mc.getSoundHandler().resumeSounds();
+            mc.setIngameFocus();
+        }
     }
 
 }

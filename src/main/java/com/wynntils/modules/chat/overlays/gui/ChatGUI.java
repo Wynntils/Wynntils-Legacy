@@ -32,7 +32,7 @@ public class ChatGUI extends GuiChat {
         else if(ChatOverlay.getChat().getOverTabId() == -2) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             mc.displayGuiScreen(new TabGUI(-2)) ;
-        };
+        }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }

@@ -7,7 +7,7 @@ package com.wynntils.modules.chat.events;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Pair;
-import com.wynntils.core.utils.ReflectionFields;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;

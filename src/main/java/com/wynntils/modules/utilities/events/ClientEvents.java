@@ -11,25 +11,32 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -42,11 +49,6 @@ public class ClientEvents implements Listener {
     boolean isAfk = false;
     int lastPosition = 0;
     long lastMovement = 0;
-
-    @SubscribeEvent
-    public void worldTick(TickEvent.WorldTickEvent e) {
-        if(Minecraft.getSystemTime() % 1000 != 0) return;
-    }
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
@@ -80,6 +82,13 @@ public class ClientEvents implements Listener {
         lastPosition = currentPosition;
     }
 
+    @SubscribeEvent
+    public void onFovUpdate(FOVUpdateEvent e) {
+        if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
+
+        e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
         if(e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
@@ -90,22 +99,34 @@ public class ClientEvents implements Listener {
         }
     }
 
+
+    private static int lastHorseId = -1;
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+
     @SubscribeEvent
-    public void onArmorStandSpawn(PacketEvent.EntityMetadata e) {
-        if(e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
+    public void onHorseSpawn(PacketEvent.EntityMetadata e) {
+        if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
 
-        for(EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if(entry.getValue() == null) continue;
-            
-            String value = entry.getValue().toString().toLowerCase();
-            if(value.contains("woodcutting")) {
-
-            }else if(value.contains("fishing")) {
-
-            }else if (value.contains("mining")) {
-
-            }else if(value.contains("farming")) {
-
+        int thisId = e.getPacket().getEntityId();
+        if (thisId == lastHorseId) return;
+        Entity entity = ModCore.mc().world.getEntityByID(thisId);
+        if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
+            return;
+        }
+        if (entity == ModCore.mc().player.getRidingEntity()) {
+            lastHorseId = thisId;
+            return;
+        }
+        String horseName = MountHorseManager.getHorseNameForPlayer();
+        assert nameKey != null;
+        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            if (nameKey.equals(entry.getKey())) {
+                if (horseName.equals(entry.getValue())) {
+                    lastHorseId = thisId;
+                    MountHorseManager.mountHorseAndLogMessage();
+                }
+                return;
             }
         }
     }
@@ -150,7 +171,7 @@ public class ClientEvents implements Listener {
                 if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         if(inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString())) {
-                            TextComponentString text = new TextComponentString("You cannot close this loot chest while there is mythic in it!");
+                            TextComponentString text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                             text.getStyle().setColor(TextFormatting.RED);
                             Minecraft.getMinecraft().player.sendMessage(text);
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
@@ -262,6 +283,51 @@ public class ClientEvents implements Listener {
         }
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+    }
+
+    //blocking healing pots below
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.PlayerUseItemEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.PlayerUseItemOnBlockEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItem(PacketEvent.UseEntityEvent e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void rightClickItem(PlayerInteractEvent.RightClickItem e) {
+        if(!e.getItemStack().hasDisplayName() || !e.getItemStack().getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if(e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
+
+        e.setCanceled(true);
     }
 
 }

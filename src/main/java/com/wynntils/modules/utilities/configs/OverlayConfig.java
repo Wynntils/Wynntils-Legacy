@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.util.text.TextFormatting;
@@ -29,6 +30,13 @@ public class OverlayConfig extends SettingsClass {
     @SettingsInfo(name = "health_settings", displayPath = "Overlays/Health")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
+
+        @Setting(displayName = "Health Bar Width", description = "How wide should the health bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Health Bar Orientation", description = "How orientated in degrees should the health bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
         @Setting(displayName = "Low Health Vignette", description = "Should a red vignette be displayed when you're low on health?")
         public boolean healthVignette = true;
@@ -75,6 +83,13 @@ public class OverlayConfig extends SettingsClass {
     @SettingsInfo(name = "mana_settings", displayPath = "Overlays/Mana")
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
+
+        @Setting(displayName = "Mana Bar Width", description = "How wide should the mana bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Mana Bar Orientation", description = "How orientated in degrees should the mana bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
         @Setting(displayName = "Mana Texture", description = "What texture should be used for the mana bar?")
         public ManaTextures manaTexture = ManaTextures.a;

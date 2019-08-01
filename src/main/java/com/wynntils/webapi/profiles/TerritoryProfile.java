@@ -20,6 +20,7 @@ public class TerritoryProfile {
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     String name;
+    String friendlyName;
     int startX;
     int startZ;
     int endX;
@@ -33,8 +34,9 @@ public class TerritoryProfile {
 
     int level;
 
-    public TerritoryProfile(String name, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
+    public TerritoryProfile(String name, String friendlyName, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
         this.name = name;
+        this.friendlyName = friendlyName;
 
         this.level = level;
 
@@ -65,6 +67,10 @@ public class TerritoryProfile {
 
     public String getName() {
         return name;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
     }
 
     public String getGuildColor() {
@@ -128,6 +134,7 @@ public class TerritoryProfile {
                 endZ = location.get("endY").getAsInt();
             }
             String territoryName = territory.get("territory").getAsString();
+            String friendlyName = territoryName.replace('’', '\'');
 
             String guild;
             if(territory.get("guild").isJsonNull()) guild = "Unknown";
@@ -154,7 +161,7 @@ public class TerritoryProfile {
             if(territory.get("guildColor").isJsonNull()) guildColor = null;
             else guildColor = territory.get("guildColor").getAsString();
 
-            return new TerritoryProfile(territoryName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
+            return new TerritoryProfile(territoryName, friendlyName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
         }
 
     }

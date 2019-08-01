@@ -159,7 +159,7 @@ public class SmartFontRenderer extends FontRenderer {
                 String[] colorSplit = withoutSelector.substring(1).split("]");
                 if (colorSplit.length == 1) {
                     textToRender = withoutSelector;
-                    colorToRender = ChatCommonColorCodes.color_f.color.setA(color.a);
+                    colorToRender = ChatCommonColorCodes.color_f.color;
                 } else {
                     textToRender = colorSplit[1];
                     colorToRender = decodeCustomColor(colorSplit[0], color);
@@ -167,19 +167,21 @@ public class SmartFontRenderer extends FontRenderer {
             } else {
                 colorToRender = decodeCommonColor(withoutSelector, color);
                 if (colorToRender == null) {
-                    colorToRender = ChatCommonColorCodes.color_f.color.setA(color.a);
+                    colorToRender = ChatCommonColorCodes.color_f.color;
                     textToRender = withoutSelector;
                 } else {
                     textToRender = withoutSelector.substring(1);
                 }
             }
+
+            colorToRender.setA(color.a);
             return drawChars(textToRender, forceColor ? color : colorToRender, forceColor);
         }
         color.applyColor();
         float charLength = renderChar(text.charAt(0));
         posX += charLength + CHAR_SPACING;
 
-        return charLength + CHAR_SPACING + drawChars(text.substring(1),color, forceColor);
+        return charLength + CHAR_SPACING + drawChars(text.substring(1), color, forceColor);
     }
 
     private CustomColor decodeCommonColor(String text, CustomColor baseColor) {

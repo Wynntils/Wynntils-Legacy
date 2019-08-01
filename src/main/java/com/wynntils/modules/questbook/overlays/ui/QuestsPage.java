@@ -288,7 +288,7 @@ public class QuestsPage extends QuestBookPage {
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestManager.requestQuestBookReading();
+            QuestManager.requestAnalyse();
             return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);

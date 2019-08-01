@@ -51,7 +51,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         String territoryName = StringUtils.join(args, " ");
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
 
-        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getName().equalsIgnoreCase(territoryName)).findFirst();
+        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(territoryName)).findFirst();
         if(!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
@@ -87,8 +87,8 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         if (args.length >= 1) {
             String temp = String.join(" ", args).toLowerCase();
             List<String> result = getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map(territoryProfile -> {
-                if (args.length <= territoryProfile.getName().split(" ").length && territoryProfile.getName().toLowerCase().startsWith(temp)) {
-                    return territoryProfile.getName().split(" ")[args.length - 1];
+                if (args.length <= territoryProfile.getFriendlyName().split(" ").length && territoryProfile.getFriendlyName().toLowerCase().startsWith(temp)) {
+                    return territoryProfile.getFriendlyName().split(" ")[args.length - 1];
                 }
                 return "";
             }).collect(Collectors.toList()));

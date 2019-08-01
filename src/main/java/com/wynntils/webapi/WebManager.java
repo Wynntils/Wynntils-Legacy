@@ -4,6 +4,7 @@
 
 package com.wynntils.webapi;
 
+import com.google.common.base.Charsets;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
@@ -11,6 +12,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
@@ -232,39 +234,31 @@ public class WebManager {
      */
     public static void updateTerritories() {
         Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
-        JsonObject json = null;
-        boolean useCache = false;
+        JsonObject json;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "territories.json"))).getAsJsonObject();
-            } else {
-                useCache = true;
-            }
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            useCache = true;
+            Reference.LOGGER.warn("Error updating territory list - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error captured while trying to download territories data - attempting to load cached data");
-            try {
-                FileInputStream stream = recallApiResult("territories.json");
-                json = new JsonParser().parse(IOUtils.toString(stream)).getAsJsonObject();
-                Reference.LOGGER.info("Successfully loaded cached territory data!");
-            } catch (Exception ex2) {
-                Reference.LOGGER.warn("Unable to load backup territories data", ex2);
-                return;
-            }
+        try {
+            json = handleCache(stream, "territories.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return;
         }
-        
+
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
         Gson gson = builder.create();
-        
+
+        territories.clear();
         territories.putAll(gson.fromJson(json.get("territories"), type));
     }
 
@@ -274,38 +268,31 @@ public class WebManager {
      * @return a {@link ArrayList} containing all guild names
      * @throws Exception
      */
-    public static ArrayList<String> getGuilds() throws Exception {
-        ArrayList<String> guilds = new ArrayList<>();
-        JsonObject json = null;
-        boolean useCache = false;
-
+    public static ArrayList<String> getGuilds()  {
+        JsonObject json;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                json = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "guilds.json"))).getAsJsonObject();
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating guild list - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error captured while trying to download guild data - attempting to load cached data");
-            json = new JsonParser().parse(IOUtils.toString(recallApiResult("guilds.json"))).getAsJsonObject();
-            Reference.LOGGER.warn("Successfully loaded cached guild data!");
+        try {
+            json = handleCache(stream, "guilds.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return new ArrayList<>();
         }
 
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
 
-        guilds.addAll(gson.fromJson(json.get("guilds"), type));
-
-        return guilds;
+        return gson.fromJson(json.get("guilds"), type);
     }
 
     /**
@@ -357,28 +344,25 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateItemList() throws Exception {
-        JsonArray main = null;
-        boolean useCache = false;
+    public static void updateItemList() {
+        JsonArray main;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "items.json"))).getAsJsonObject().getAsJsonArray("items");
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating item list - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading item data - attempting to use cached data");
-            main = new JsonParser().parse(IOUtils.toString(recallApiResult("items.json"))).getAsJsonObject().getAsJsonArray("items");
-            Reference.LOGGER.info("Successfully loaded cached item data!");
+        try {
+            main = handleCache(stream, "items.json", forceRecall).getAsJsonObject().getAsJsonArray("items");
+        } catch (NullPointerException ex) {
+            return;
         }
 
         Type type = new TypeToken<HashMap<String, ItemProfile>>() {
@@ -395,38 +379,32 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateMapMarkers() throws Exception {
-        JsonArray jsonArray = null;
-        ArrayList<MapMarkerProfile> markers = new ArrayList<>();
-        boolean useCache = false;
-
+    public static void updateMapMarkers() {
+        JsonArray jsonArray;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_markers.json"))).getAsJsonObject().getAsJsonArray("locations");
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating map markers - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading map marker data - attempting to use cached data");
-            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("map_markers.json"))).getAsJsonObject().getAsJsonArray("locations");
-            Reference.LOGGER.info("Successfully loaded cached map marker data!");
+        try {
+            jsonArray = handleCache(stream, "map_markers.json", forceRecall).getAsJsonObject().getAsJsonArray("locations");
+        } catch (NullPointerException ex) {
+            return;
         }
 
         Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
         }.getType();
 
-        markers.addAll(gson.fromJson(jsonArray, type));
-
-        mapMarkers = markers;
+        mapMarkers = gson.fromJson(jsonArray, type);
+        MapApiIcon.resetApiMarkers();
     }
 
     /**
@@ -434,30 +412,31 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateMapRefineries() throws Exception {
-        JsonArray jsonArray = null;
-        boolean useCache = false;
-
+    public static void updateMapRefineries() {
+        JsonArray jsonArray;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("RefineryLocations")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            jsonArray = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "map_refineries.json"))).getAsJsonArray();
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating refinery locations - attempting to use cache", ex);
+            forceRecall = true;
         }
-
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading map marker data - attempting to use cached data");
-            jsonArray = new JsonParser().parse(IOUtils.toString(recallApiResult("map_refineries.json"))).getAsJsonArray();
-            Reference.LOGGER.info("Successfully loaded cached map marker data!");
+        try {
+            jsonArray = handleCache(stream, "map_refineries.json", forceRecall).getAsJsonArray();
+        } catch (NullPointerException ex) {
+            return;
         }
 
         Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
         mapMarkers.addAll(gson.fromJson(jsonArray, type));
+        MapApiIcon.resetApiMarkers();
     }
 
     /**
@@ -465,29 +444,25 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateItemGuesses() throws Exception {
-        HashMap<String, ItemGuessProfile> guessers = new HashMap<>();
-        String json = null;
-        boolean useCache = false;
+    public static void updateItemGuesses() {
+        JsonObject json;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                json = IOUtils.toString(cacheApiResult(st.getInputStream(), "item_guesses.json"));
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating item guesses - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading item guesses - attempting to use cached data");
-            json = IOUtils.toString(recallApiResult("item_guesses.json"));
-            Reference.LOGGER.info("Successfully loaded cached item guesses data!");
+        try {
+            json = handleCache(stream, "item_guesses.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return;
         }
 
         Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
@@ -497,33 +472,28 @@ public class WebManager {
         gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
         Gson gson = gsonBuilder.create();
 
-        guessers.putAll(gson.fromJson(json, type));
-
-        itemGuesses = guessers;
+        itemGuesses = new HashMap<>(gson.fromJson(json, type));
     }
 
-    public static void updatePlayerProfile() throws Exception {
-        String json = null;
-        boolean useCache = false;
+    public static void updatePlayerProfile() {
+        JsonObject json;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
-            URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getUsername() + "/stats").openConnection();
+            URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                json = IOUtils.toString(cacheApiResult(st.getInputStream(), "player_stats.json"));
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating player profile - attempting to use cache", ex);
+            forceRecall = true;
         }
-
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading player stats - attempting to use cached data");
-            json = IOUtils.toString(recallApiResult("player_stats.json"));
-            Reference.LOGGER.info("Successfully loaded cached player stats data!");
+        try {
+            json = handleCache(stream, "player_stats.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return;
         }
 
         Type type = new TypeToken<PlayerStatsProfile>() {
@@ -536,28 +506,25 @@ public class WebManager {
         playerProfile = gson.fromJson(json, type);
     }
 
-    public static void updateUsersRoles() throws Exception {
-        JsonObject main = null;
-        boolean useCache = false;
+    public static void updateUsersRoles() {
+        JsonObject main;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_roles.json"))).getAsJsonObject();
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating user roles - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading user roles - attempting to use cached data");
-            main = new JsonParser().parse(IOUtils.toString(recallApiResult("user_roles.json"))).getAsJsonObject();
-            Reference.LOGGER.info("Successfully loaded cached user role data!");
+        try {
+            main = handleCache(stream, "user_roles.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return;
         }
 
         GsonBuilder builder = new GsonBuilder();
@@ -580,28 +547,25 @@ public class WebManager {
         donators = gson.fromJson(donator, type);
     }
 
-    public static void updateUsersModels() throws Exception {
-        JsonObject main = null;
-        boolean useCache = false;
+    public static void updateUsersModels() {
+        JsonObject main;
+        boolean forceRecall;
+        InputStream stream = null;
         try {
             URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                main = new JsonParser().parse(IOUtils.toString(cacheApiResult(st.getInputStream(), "user_models.json"))).getAsJsonObject();
-            } else {
-                useCache = true;
-            }
-        } catch (IOException | NullPointerException ex) {
-            ex.printStackTrace();
-            useCache = true;
+            stream = st.getInputStream();
+            forceRecall = !st.getContentType().contains("application/json");
+        } catch (Exception ex) {
+            Reference.LOGGER.warn("Error updating user models - attempting to use cache", ex);
+            forceRecall = true;
         }
-        
-        if (useCache) {
-            Reference.LOGGER.warn("Error downloading user models - attempting to use cached data");
-            main = new JsonParser().parse(IOUtils.toString(recallApiResult("user_models.json"))).getAsJsonObject();
-            Reference.LOGGER.info("Successfully loaded cached user model data!");
+        try {
+            main = handleCache(stream, "user_models.json", forceRecall).getAsJsonObject();
+        } catch (NullPointerException ex) {
+            return;
         }
 
         GsonBuilder builder = new GsonBuilder();
@@ -705,46 +669,38 @@ public class WebManager {
      * @param stream The {@link InputStream} to read
      * @param fileName The filename to save to (file saved in /apicache directory)
      * @return A {@link InputStream} for the saved result
-     * @throws IOException
      */
-    public static FileInputStream cacheApiResult(InputStream stream, String fileName) throws IOException {
-        try {
-            File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
-            File apiCacheFileTemp = new File(apiCacheFolder.getPath() + "/" + fileName + ".temp");
-            File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
-            if (!apiCacheFolder.exists())
-                apiCacheFolder.mkdirs();
-            if (!apiCacheFileTemp.exists())
-                apiCacheFileTemp.createNewFile();
-            if (!apiCacheFile.exists())
-                apiCacheFile.createNewFile();
-            FileOutputStream cacheOutputStream = new FileOutputStream(apiCacheFileTemp);
-            IOUtils.copy(stream, cacheOutputStream);
-            cacheOutputStream.close();
-            stream.close();
-            FileUtils.copyFile(apiCacheFileTemp, apiCacheFile);
-            apiCacheFileTemp.delete();
-            return new FileInputStream(apiCacheFile);
-        } catch (IOException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Attempt to store an {@link InputStream} to a file on disk
-     *
-     * @param fileName The filename to load from - returns null if the file doesn't exist
-     * @return A {@link InputStream} for the saved result
-     * @throws IOException
-     */
-    public static FileInputStream recallApiResult(String fileName) throws IOException {
+    public static JsonElement handleCache(InputStream stream, String fileName, boolean forceRecall) {
         File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
         File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
-        if (!apiCacheFolder.exists() || !apiCacheFolder.isDirectory())
+        if (!forceRecall) {
+            try {
+                if (!apiCacheFolder.exists())
+                    apiCacheFolder.mkdirs();
+                if (!apiCacheFile.exists())
+                    apiCacheFile.createNewFile();
+                String raw = IOUtils.toString(stream, Charsets.UTF_8);
+                stream.close();
+                JsonElement element = new JsonParser().parse(raw);
+                FileUtils.writeStringToFile(apiCacheFile, raw, Charsets.UTF_8);
+                return element;
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error running API request result for file " + fileName + " - attempting to use cache", ex);
+            }
+        }
+        if (!apiCacheFolder.exists() || !apiCacheFolder.isDirectory() || !apiCacheFile.exists() || apiCacheFile.isDirectory()) {
+            Reference.LOGGER.error("API cache file " + fileName + " doesn't exist");
             return null;
-        if (!apiCacheFile.exists() || apiCacheFile.isDirectory())
+        }
+        try {
+            FileInputStream inputStream = new FileInputStream(apiCacheFile);
+            JsonElement element = new JsonParser().parse(IOUtils.toString(inputStream, Charsets.UTF_8));
+            Reference.LOGGER.info("Successfully loaded cache file " + fileName);
+            return element;
+        } catch (Exception ex) {
+            Reference.LOGGER.error("Unable to load cache file " + fileName, ex);
             return null;
-        return new FileInputStream(apiCacheFile);
+        }
     }
 
     public static class TerritoryUpdateThread extends Thread {
@@ -763,11 +719,11 @@ public class WebManager {
                     for (TerritoryProfile prevTerritory : prevList.values()) {
                         TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
                         if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
-                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.CAPTURED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.CAPTURED));
                         } else if (prevTerritory.getAttacker() == null && currentTerritory.getAttacker() != null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.ATTACKED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.ATTACKED));
                         } else if (prevTerritory.getAttacker() != null && currentTerritory.getAttacker() == null) {
-                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.DEFENDED));
+                            FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.DEFENDED));
                         }
                     }
                 }

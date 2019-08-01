@@ -18,7 +18,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.wynntils.core.utils.ReflectionFields;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.commands.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -30,6 +30,8 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static net.minecraft.client.gui.Gui.ICONS;
 
 public class FrameworkManager {
 
@@ -169,6 +171,7 @@ public class FrameworkManager {
                 }
             }
             Minecraft.getMinecraft().profiler.endSection();
+            Minecraft.getMinecraft().getTextureManager().bindTexture(ICONS);
         }
     }
 
@@ -178,20 +181,6 @@ public class FrameworkManager {
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if(!overlay.active) continue;
-
-                    if (overlay.overrideElements.length != 0) {
-                        boolean contained = false;
-                        for (RenderGameOverlayEvent.ElementType type : overlay.overrideElements) {
-                            if (e.getType() == type) {
-                                contained = true;
-                                break;
-                            }
-                        }
-                        if (contained)
-                            e.setCanceled(true);
-                        else
-                            continue;
-                    }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
@@ -206,6 +195,8 @@ public class FrameworkManager {
     }
 
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
+        if(e.phase == TickEvent.Phase.START) return;
+
         if (Reference.onServer) {
             tick++;
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {

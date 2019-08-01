@@ -4,11 +4,13 @@
 
 package com.wynntils.modules.map.configs;
 
+import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,24 +20,37 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 0)
-    public boolean enabled = true;
+    @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
+    public boolean showCompassBeam = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 2)
-    public MapFormat mapFormat = MapFormat.CIRCLE;
-
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 3)
-    public boolean followPlayerRotation = true;
-
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 4)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 1)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 1)
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
+    public boolean enabled = true;
+
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 3)
+    public MapFormat mapFormat = MapFormat.CIRCLE;
+
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 4)
+    public boolean followPlayerRotation = true;
+
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 5)
+    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    public boolean showCoords = false;
+
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 7)
     public boolean northOnly = false;
+
+    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
+    public boolean minimapIcons = true;
+
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 9)
+    @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
+    public float minimapIconSizeMultiplier = 1f;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
@@ -53,16 +68,19 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Short Names", description = "Should be guild names be replaced by their short name?")
+        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
-        @Setting(displayName = "Territory Color Transparency", description = "How much the color transparency should for territories?")
+        @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
 
-        @Setting(displayName = "Show Territory Area", description = "Should the territory rectangle be visible?")
+        @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
+        // If this ever needs to be configurable, make these into @Setting s.
+        public int maxZoom = 150;  // Note that this is the most zoomed out
+        public int minZoom = -10;  // And this is the most zoomed in
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
@@ -114,6 +132,17 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
         public boolean compassMarker = true;
+
+        @Override
+        public void saveSettings(Module m) {
+            super.saveSettings(m);
+            MapWaypointIcon.resetWaypoints();
+        }
+
+        @Override
+        public void onSettingChanged(String name) {
+            MapWaypointIcon.resetWaypoints();
+        }
     }
 
 
@@ -141,39 +170,39 @@ public class MapConfig extends SettingsClass {
 
     public HashMap<String, Boolean> resetMapIcons() {
         return new HashMap<String, Boolean>() {{
-            put("Content_Dungeon", true);
-            put("Merchant_Accessory", true);
-            put("Merchant_Armour", true);
-            put("Merchant_Dungeon", true);
-            put("Merchant_Horse", true);
-            put("Merchant_KeyForge", true);
-            put("Merchant_Liquid", true);
-            put("Merchant_Potion", true);
-            put("Merchant_Powder", true);
-            put("Merchant_Scroll", true);
-            put("Merchant_Seasail", true);
-            put("Merchant_Weapon", true);
-            put("NPC_Blacksmith", true);
-            put("NPC_GuildMaster", true);
-            put("NPC_ItemIdentifier", true);
-            put("NPC_PowderMaster", true);
-            put("Special_FastTravel", true);
-            put("tnt", true);
-            put("painting", true);
-            put("Ore_Refinery", true);
-            put("Fish_Refinery", true);
-            put("Wood_Refinery", true);
-            put("Crop_Refinery", true);
-            put("MarketPlace", true);
-            put("Content_Quest", false);
-            put("Special_Rune", false);
-            put("Special_RootsOfCorruption", true);
-            put("Content_UltimateDiscovery", false);
-            put("Content_Cave", false);
-            put("Content_GrindSpot", false);
-            put("Merchant_Other", false);
-            put("Special_LightRealm", true);
-            put("Merchant_Emerald", true);
+            put("Dungeons", true);
+            put("Accessory Merchant", true);
+            put("Armour Merchant", true);
+            put("Dungeon Merchant", true);
+            put("Horse Merchant", true);
+            put("Key Forge Merchant", true);
+            put("LE Merchant", true);
+            put("Emerald Merchant", true);
+            put("TNT Merchant", true);
+            put("Ore Refinery", true);
+            put("Potion Merchant", true);
+            put("Powder Merchant", true);
+            put("Scroll Merchant", true);
+            put("Seasail Merchant", true);
+            put("Weapon Merchant", true);
+            put("Blacksmith", true);
+            put("Guild Master", true);
+            put("Item Identifier", true);
+            put("Powder Master", true);
+            put("Fast Travel", true);
+            put("Fish Refinery", true);
+            put("Wood Refinery", true);
+            put("Crop Refinery", true);
+            put("Marketplace", true);
+            put("Quests", false);
+            put("Runes", false);
+            put("Nether Portal", true);
+            put("Ultimate Discovery", false);
+            put("Caves", false);
+            put("Grind Spots", false);
+            put("Other Merchants", false);
+            put("Light's Secret", true);
+
         }};
     }
 

@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.Pair;
+import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -83,7 +84,10 @@ public class ManaBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
-        drawProgressBar(Textures.Overlays.bars_mana, 81, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
-        drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a, textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
+        if (OverlayConfig.Mana.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
+            drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a - (81-OverlayConfig.Mana.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
+        }
+        rotate(OverlayConfig.Mana.INSTANCE.overlayRotation.getDegrees());
+        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
     }
 }

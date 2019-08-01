@@ -9,13 +9,13 @@ import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "map", displayName = "Map")
@@ -41,7 +41,7 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI()); });
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WorldMapUI()); });
     }
 
     public static MapModule getModule() {

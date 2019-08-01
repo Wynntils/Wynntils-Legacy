@@ -48,6 +48,8 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
             e = new PacketEvent.TabListChangeEvent((SPacketPlayerListItem) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketTitle) {
             e = new PacketEvent.TitleEvent((SPacketTitle) msg, ModCore.mc().getConnection());
+        } else if (msg instanceof SPacketSetExperience) {
+            e = new PacketEvent.SetExperience((SPacketSetExperience) msg, ModCore.mc().getConnection());
         } else if (msg instanceof SPacketEntityVelocity) {
             SPacketEntityVelocity velocity = (SPacketEntityVelocity) msg;
             if (mc.world != null) {

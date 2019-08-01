@@ -1,5 +1,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -31,7 +32,7 @@ public class WorldMapSettingsUI extends GuiScreen {
         int rightAlign = 10 + (this.width-369)/2;
 
         for (Map.Entry<String, Boolean> icon: availableMapIcons.entrySet()) {
-            this.buttonList.add(new GuiCheckBox(i, rightAlign + (i%3) * 122, 35 + (i/3) * 15, stripJargon(icon.getKey()), enabledMapIcons.containsKey(icon.getKey()) ? enabledMapIcons.get(icon.getKey()) : icon.getValue()));
+            this.buttonList.add(new GuiCheckBox(i, rightAlign + (i%3) * 122, 35 + (i/3) * 15, icon.getKey(), enabledMapIcons.containsKey(icon.getKey()) ? enabledMapIcons.get(icon.getKey()) : icon.getValue()));
             i++;
         }
 
@@ -66,7 +67,7 @@ public class WorldMapSettingsUI extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || // DEFAULT: E
                 keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) { //DEFAULT: M
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         }
         super.keyTyped(typedChar, keyCode);
     }
@@ -76,23 +77,23 @@ public class WorldMapSettingsUI extends GuiScreen {
         if (button.id == 99) {
             button.displayString = MapConfig.IconTexture.values()[(MapConfig.IconTexture.valueOf(button.displayString).ordinal() + 1) % MapConfig.IconTexture.values().length].name();
         } else if (button.id == 100) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         } else if (button.id == 102) {
             MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton cb: this.buttonList) {
-                if (cb instanceof GuiCheckBox && MapConfig.INSTANCE.enabledMapIcons.containsKey(addJargon(cb.displayString))) {
-                    MapConfig.INSTANCE.enabledMapIcons.replace(addJargon(cb.displayString), ((GuiCheckBox) cb).isChecked());
+                if (cb instanceof GuiCheckBox && MapConfig.INSTANCE.enabledMapIcons.containsKey(cb.displayString)) {
+                    MapConfig.INSTANCE.enabledMapIcons.replace(cb.displayString, ((GuiCheckBox) cb).isChecked());
                 } else if (cb.id == 99) {
                     MapConfig.INSTANCE.iconTexture = MapConfig.IconTexture.values()[MapConfig.IconTexture.valueOf(cb.displayString).ordinal()];
                 }
             }
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new WorldMapUI());
         } else if (button.id == 101) {
             this.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
             for (GuiButton b: this.buttonList) {
-                if (b instanceof GuiCheckBox && this.enabledMapIcons.containsKey(addJargon(b.displayString))) {
-                    ((GuiCheckBox) b).setIsChecked(this.enabledMapIcons.get(addJargon(b.displayString)));
+                if (b instanceof GuiCheckBox && this.enabledMapIcons.containsKey(b.displayString)) {
+                    ((GuiCheckBox) b).setIsChecked(this.enabledMapIcons.get(b.displayString));
                 } else if (b.id == 99) {
                     b.displayString = "Classic";
                 }
@@ -111,21 +112,5 @@ public class WorldMapSettingsUI extends GuiScreen {
                 offsetY = 0;
             }
         }
-    }
-
-    private  String stripJargon(String s) {
-        s = s.replace("Special_",TextFormatting.RESET.toString() + TextFormatting.RESET.toString());
-        s = s.replace("Content_",TextFormatting.RESET.toString());
-        s = s.replace("NPC_",TextFormatting.WHITE.toString());
-        s = s.replace("_", " ");
-        return s;
-    }
-
-    private String addJargon(String s) {
-        s = s.replace(TextFormatting.RESET.toString() + TextFormatting.RESET.toString(), "Special_");
-        s = s.replace(TextFormatting.RESET.toString(), "Content_");
-        s = s.replace(TextFormatting.WHITE.toString(), "NPC_");
-        s = s.replace(" ", "_");
-        return s;
     }
 }

@@ -44,6 +44,16 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Disable FOV Changes with Speed Effect", description = "Should your FOV remain unchanged when you have speed?")
+    public boolean disableFovChanges = false;
+
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
+    public boolean autoMount = false;
+
+    @Setting(displayName = "Block Health Potions When at Full Health", description = "Should the mod prevent you from using your health potions when you are at full health?")
+    public boolean blockHealingPots = true;
+
+
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();

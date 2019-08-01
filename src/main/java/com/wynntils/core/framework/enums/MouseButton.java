@@ -5,5 +5,7 @@
 package com.wynntils.core.framework.enums;
 
 public enum MouseButton {
-    LEFT,RIGHT,MIDDLE,UNKNOWN
+
+    LEFT, RIGHT, MIDDLE, UNKNOWN
+
 }
