@@ -17,9 +17,11 @@ public class QuestBookHandler {
     }
 
     public static void openQuestBookPage(boolean requestOpening, Class<? extends QuestBookPage> instance) {
-        questBookPages.stream().filter(instance::isInstance).findAny().ifPresent(qbp -> {
-            qbp.open(requestOpening);
-        });
+        getQuestBookpage(instance).open(requestOpening);
+    }
+
+    public static QuestBookPage getQuestBookpage(Class<? extends QuestBookPage> instance) {
+        return questBookPages.stream().filter(instance::isInstance).findFirst().get();
     }
 
     public static ArrayList<QuestBookPage> getQuestBookPages() {

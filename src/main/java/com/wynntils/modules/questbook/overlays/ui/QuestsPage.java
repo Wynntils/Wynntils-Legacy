@@ -69,7 +69,8 @@ public class QuestsPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x - 86, y - 100, 206, 252, 15, 15);
             if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
                 if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-                    hoveredText = QuestManager.secretdiscoveryLore;
+                    hoveredText = new ArrayList<>(QuestManager.secretdiscoveryLore);
+                    hoveredText.add(0, "Secret Discoveries:");
                 } else {
                     hoveredText = new ArrayList<>(QuestManager.discoveryLore);
                     hoveredText.add(" ");
@@ -204,6 +205,9 @@ public class QuestsPage extends QuestBookPage {
                     currentY += 13;
                 }
             }
+
+            //Reload Quest Data button
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 282 , 261, 303);
         }
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
@@ -211,11 +215,10 @@ public class QuestsPage extends QuestBookPage {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-
+        ScaledResolution res = new ScaledResolution(mc);
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
-        if(overQuest != null) {
+        if (overQuest != null) {
             if (mouseButton != 1) {
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
@@ -268,27 +271,27 @@ public class QuestsPage extends QuestBookPage {
             }
         }
 
-        if(acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             currentPage++;
             return;
-        }
-        if(acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             currentPage--;
             return;
-        }
-        if(posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestBookHandler.openQuestBookPage(false, MainPage.class);
             return;
-        }/*
-        if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
+        } else if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            updateDiscoverySearch();
-            page = com.wynntils.modules.questbook.enums.QuestBookPage.DISCOVERIES;
+            QuestBookHandler.openQuestBookPage(false, DiscoveriesPage.class);
             return;
-        }*/
+        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestManager.requestQuestBookReading();
+            return;
+        }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -302,7 +305,7 @@ public class QuestsPage extends QuestBookPage {
     public void searchUpdate(String currentText) {
         HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
-        questSearch = !currentText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
+        questSearch = currentText != null && !currentText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
                 .filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase()))
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());

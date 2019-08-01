@@ -14,16 +14,15 @@ import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
+import com.wynntils.modules.questbook.overlays.ui.DiscoveriesPage;
+import com.wynntils.modules.questbook.overlays.ui.QuestsPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -58,7 +57,10 @@ public class QuestManager {
                 Map.Entry<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.EQUALS);
 
                 //lore
-                if(discoveries != null) discoveryLore = Utils.getLore(discoveries.getValue());
+                if(discoveries != null) {
+                    discoveryLore = Utils.getLore(discoveries.getValue());
+                    discoveryLore.removeAll(Arrays.asList("", null));
+                }
 
                 //parsing
                 for(ItemStack item : i.getItems()) {
@@ -98,19 +100,22 @@ public class QuestManager {
                     }
                 }
 
-                QuestBookModule.gui.updateQuestSearch();
+                QuestBookHandler.getQuestBookpage(QuestsPage.class).updateSearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) i.clickItem(discoveries.getKey(), 1, ClickType.PICKUP);
                 else i.close();
-            }else if(i.getWindowTitle().contains("Discoveries")) { //Discoveries
+            } else if(i.getWindowTitle().contains("Discoveries")) { //Discoveries
                 Map.Entry<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
                 Map.Entry<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
 
                 //lore
-                if (sDiscoveries != null) secretdiscoveryLore = Utils.getLore(sDiscoveries.getValue());
+                if (sDiscoveries != null) {
+                    secretdiscoveryLore = Utils.getLore(sDiscoveries.getValue());
+                    secretdiscoveryLore.removeAll(Arrays.asList("", null));
+                }
 
-                for(ItemStack item : i.getItems()) { //parsing discoveries
+                for (ItemStack item : i.getItems()) { //parsing discoveries
                     if(!item.hasDisplayName()) continue; //not a valid discovery
 
                     List<String> lore = Utils.getLore(item);
@@ -127,14 +132,14 @@ public class QuestManager {
                     int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
                     String description = "";
-                    for(int x = 2; x < lore.size(); x ++) {
+                    for (int x = 2; x < lore.size(); x ++) {
                         description = description + Utils.stripColor(lore.get(x));
                     }
 
                     currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
                 }
 
-                QuestBookModule.gui.updateDiscoverySearch();
+                QuestBookHandler.getQuestBookpage(DiscoveriesPage.class).updateSearch();
                 //pagination
                 if(next != null) i.clickItem(next.getKey(), 1, ClickType.PICKUP);
                 else if(!secretDiscoveries && sDiscoveries != null) {

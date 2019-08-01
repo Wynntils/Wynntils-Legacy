@@ -7,7 +7,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Easing;
-import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -19,7 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ChatAllowedCharacters;
 import org.lwjgl.input.Keyboard;
-import scala.collection.parallel.ParIterableLike;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,12 +29,12 @@ public class QuestBookPage extends GuiScreen {
     private long time;
 
     //Page specific information
-    protected String title = "";
-    protected IconContainer icon;
+    private String title = "";
+    private IconContainer icon;
     protected boolean requestOpening;
-    protected int slotNb;
+    private int slotNb;
 
-    protected boolean showSearchBar;
+    private boolean showSearchBar;
     private String searchBarText;
     private boolean searchBarFocused;
     protected int currentPage;
@@ -48,6 +47,7 @@ public class QuestBookPage extends GuiScreen {
 
     private boolean keepForTime;
     private long text_flicker;
+    private long delay = Minecraft.getSystemTime();
 
     //Colours
     protected static final CustomColor background_1 = CustomColor.fromString("000000", 0.3f);
@@ -78,6 +78,7 @@ public class QuestBookPage extends GuiScreen {
     @Override
     public void initGui() {
         currentPage = 1;
+        selected = 0;
         searchBarText = "";
         searchUpdate("");
         time = Minecraft.getSystemTime();
@@ -180,6 +181,26 @@ public class QuestBookPage extends GuiScreen {
     }
 
     @Override
+    public void handleMouseInput() throws IOException {
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+
+        if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 100)) {
+            if (acceptNext) {
+                delay = Minecraft.getSystemTime();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage++;
+            }
+        } else if(mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 100)) {
+            if (acceptBack) {
+                delay = Minecraft.getSystemTime();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                currentPage--;
+            }
+        }
+        super.handleMouseInput();
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_LSHIFT || keyCode == Keyboard.KEY_RSHIFT || keyCode == Keyboard.KEY_LCONTROL || keyCode == Keyboard.KEY_RCONTROL) return;
         if (!QuestBookConfig.INSTANCE.searchBoxClickRequired || searchBarFocused) {
@@ -243,18 +264,18 @@ public class QuestBookPage extends GuiScreen {
         Minecraft.getMinecraft().displayGuiScreen(this);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public boolean isShowSearchBar() {
-        return showSearchBar;
+    public void updateSearch() {
+        searchUpdate(searchBarText);
     }
 
     public IconContainer getIcon() {
         return icon;
     }
 
+    /**
+     * Can be null
+     * @return a list of strings - each index representing a new line.
+     */
     public List<String> getHoveredDescription() { return null; }
 
     public int getSlotNb() {

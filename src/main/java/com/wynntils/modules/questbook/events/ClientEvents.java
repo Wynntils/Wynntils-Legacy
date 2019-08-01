@@ -11,7 +11,9 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.managers.QuestManager;
+import com.wynntils.modules.questbook.overlays.ui.MainPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.util.text.TextFormatting;
@@ -69,11 +71,11 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void updateQuestBook(TickEvent.ClientTickEvent e) {
         if(!Reference.onWorld || Reference.onNether || Reference.onWars) return;
-        if(Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
+        if (Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
-        if(openQuestBook) {
+        if (openQuestBook) {
             openQuestBook = false;
-            QuestBookModule.gui.open();
+            QuestBookHandler.openQuestBookPage(true, MainPage.class);
         }
     }
 
