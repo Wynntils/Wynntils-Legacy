@@ -6,7 +6,6 @@ package com.wynntils.modules.core.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.managers.QuestBookHandler;
 import com.wynntils.modules.questbook.overlays.ui.MainPage;
 import net.minecraft.client.gui.GuiButton;
