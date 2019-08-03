@@ -315,7 +315,7 @@ public class PacketEvent extends Event {
     }
 
     /**
-     * Triggered when a {@link SPacketSetExperience is sent to the client
+     * Triggered when a {@link SPacketSetExperience} is sent to the client
      */
     public static class SetExperience extends PacketEvent {
 
@@ -328,6 +328,33 @@ public class PacketEvent extends Event {
         }
 
         public SPacketSetExperience getPacket() {
+            return packet;
+        }
+
+        public NetHandlerPlayClient getPlayClient() {
+            return playClient;
+        }
+
+        public boolean isCancelable() {
+            return true;
+        }
+
+    }
+
+    /**
+     * Triggered when a {@link SPacketSpawnPosition} is sent to the client
+     */
+    public static class SpawnPosition extends PacketEvent {
+
+        SPacketSpawnPosition packet;
+        NetHandlerPlayClient playClient;
+
+        public SpawnPosition(SPacketSpawnPosition packet, NetHandlerPlayClient playClient) {
+            this.packet = packet;
+            this.playClient = playClient;
+        }
+
+        public SPacketSpawnPosition getPacket() {
             return packet;
         }
 

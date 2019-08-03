@@ -6,6 +6,7 @@ package com.wynntils.modules.core.managers;
 
 
 import com.wynntils.core.utils.Location;
+import com.wynntils.modules.core.events.ServerEvents;
 import net.minecraft.client.Minecraft;
 
 public class CompassManager {
@@ -25,6 +26,8 @@ public class CompassManager {
 
     public static void reset() {
         compassLocation = null;
+
+        Minecraft.getMinecraft().world.setSpawnPoint(ServerEvents.getCurrentSpawnPosition());
     }
 
 }

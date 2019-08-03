@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -14,11 +15,13 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -156,6 +159,20 @@ public class ServerEvents implements Listener {
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
             Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
         }
+    }
+
+    static BlockPos currentSpawn = null;
+
+    @SubscribeEvent
+    public void onCompassChange(PacketEvent.SpawnPosition e) {
+        currentSpawn = e.getPacket().getSpawnPos();
+        if (CompassManager.getCompassLocation() != null) {
+            e.setCanceled(true);
+        }
+    }
+
+    public static BlockPos getCurrentSpawnPosition() {
+        return currentSpawn;
     }
 
 }
