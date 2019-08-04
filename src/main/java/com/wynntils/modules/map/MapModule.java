@@ -14,6 +14,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
+import com.wynntils.modules.map.overlays.ui.WaypointOverviewUI;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
 import org.lwjgl.input.Keyboard;
@@ -42,6 +43,7 @@ public class MapModule extends Module {
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WorldMapUI()); });
+        mapKey = registerKeyBinding("New waypoint", Keyboard.KEY_C, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WaypointOverviewUI()); });
     }
 
     public static MapModule getModule() {
