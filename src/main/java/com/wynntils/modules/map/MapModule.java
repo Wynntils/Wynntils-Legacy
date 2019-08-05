@@ -43,7 +43,7 @@ public class MapModule extends Module {
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WorldMapUI()); });
-        mapKey = registerKeyBinding("New waypoint", Keyboard.KEY_C, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WaypointOverviewUI()); });
+        mapKey = registerKeyBinding("New waypoint", Keyboard.KEY_B, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WaypointOverviewUI()); });
     }
 
     public static MapModule getModule() {
