@@ -10,6 +10,8 @@ import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.managers.WarManager;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
+import net.minecraft.network.play.server.SPacketResourcePackSend;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ServerEvents implements Listener {
@@ -22,7 +24,7 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onResourcePackReceive(PacketEvent.ResourcePackReceived e) {
+    public void onResourcePackReceive(PacketEvent<SPacketResourcePackSend> e) {
         if(!Reference.onServer) return;
 
         if(loadedResourcePack) {
@@ -37,7 +39,7 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onSpawnObject(PacketEvent.SpawnObject e) {
+    public void onSpawnObject(PacketEvent<SPacketSpawnObject> e) {
         if(WarManager.filterMob(e)) e.setCanceled(true);
     }
 

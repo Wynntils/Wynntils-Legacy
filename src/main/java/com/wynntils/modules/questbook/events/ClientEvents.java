@@ -16,6 +16,9 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -43,7 +46,7 @@ public class ClientEvents implements Listener {
     boolean openQuestBook = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void clickOnQuestBook(PacketEvent.PlayerUseItemEvent e) {
+    public void clickOnQuestBookItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
@@ -53,7 +56,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void clickOnQuestBook(PacketEvent.PlayerUseItemOnBlockEvent e) {
+    public void clickOnQuestBookItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
@@ -63,7 +66,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void clickOnQuestBook(PacketEvent.UseEntityEvent e) {
+    public void clickOnQuestBookEntity(PacketEvent<CPacketUseEntity> e) {
         if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;

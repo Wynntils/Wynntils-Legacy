@@ -20,6 +20,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.time.OffsetDateTime;
@@ -164,7 +165,7 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onSetExperience(PacketEvent.SetExperience e) {
+    public void onSetExperience(PacketEvent<SPacketSetExperience> e) {
         if (Reference.onWars && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE && currentLevel == 0 && e.getPacket().getLevel() != 0) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = e.getPacket().getLevel();

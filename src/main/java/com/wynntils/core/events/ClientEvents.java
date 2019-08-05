@@ -101,7 +101,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onTabListChange(PacketEvent.TabListChangeEvent e) {
+    public void onTabListChange(PacketEvent<SPacketPlayerListItem> e) {
         if (!Reference.onServer) return;
         if(e.getPacket().getAction() != Action.UPDATE_DISPLAY_NAME && e.getPacket().getAction() != Action.REMOVE_PLAYER) return;
 

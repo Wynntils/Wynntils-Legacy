@@ -15,6 +15,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -140,6 +141,17 @@ public class WarTimerOverlay extends Overlay {
                 startTimer = true;
                 lastTimeChanged = System.currentTimeMillis();
             }
+        } else if (message.startsWith("The war for ") && message.endsWith(" is not responding.")) {
+            if (territory != null) {
+                territory = message.substring(12, message.indexOf(" is not responding."));
+            }
+            stage = WarStage.WAITING_FOR_TIMER;
+        } else if (message.equals("Trying again in 30 seconds.")) {
+            timer = 30;
+            afterSecond = System.currentTimeMillis() % 1000;
+            lastTimeChanged = System.currentTimeMillis();
+            startTimer = true;
+            stage = WarStage.WAR_STARTING;
         } else if (message.startsWith("You have taken control of ") && Reference.onWars && lastTerritory == null) {
             lastTerritory = message.substring(26, message.indexOf(" from "));
         }
@@ -172,7 +184,7 @@ public class WarTimerOverlay extends Overlay {
         }
     }
     
-    public static void onTitle(PacketEvent.TitleEvent event) {
+    public static void onTitle(PacketEvent<SPacketTitle> event) {
         if (event.getPacket().getType() == Type.SUBTITLE && event.getPacket().getMessage().getUnformattedText().equals(TextFormatting.GOLD + "0 Mobs Left")) {
             lastTimer = timer;
             lastTerritory = territory;

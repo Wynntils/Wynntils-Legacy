@@ -22,13 +22,13 @@ import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class OverlayEvents implements Listener {
     }
     
     @SubscribeEvent
-    public void onTitle(PacketEvent.TitleEvent e) {
+    public void onTitle(PacketEvent<SPacketTitle> e) {
         WarTimerOverlay.onTitle(e);
     }
 
