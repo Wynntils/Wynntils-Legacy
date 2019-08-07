@@ -119,6 +119,75 @@ public class RichProfile {
 
         rpc.Discord_UpdatePresence(richPresence);
     }
+    
+    /**
+     * update user RichPresence
+     *
+     * @param state
+     *        RichPresence state string
+     * @param details
+     *        RichPresence details string
+     * @param largText
+     *        RichPresence large Text
+     * @param date
+     *        RichPresence End Date
+     */
+    public void updateRichPresenceEndDate(String state, String details, String largText, OffsetDateTime date) {
+        if (disabled) return;
+        DiscordRichPresence.DiscordRichPresenceStructure richPresence = new DiscordRichPresence.DiscordRichPresenceStructure();
+        richPresence.state = state;
+        richPresence.details = details;
+        richPresence.largeImageText = largText;
+        richPresence.endTimestamp = date.toInstant().getEpochSecond();
+        richPresence.largeImageKey = "wynn";
+
+        if(joinSecret != null) {
+            richPresence.joinSecret = joinSecret.toString();
+            richPresence.partyId = joinSecret.id;
+            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partyMax = 15;
+        }
+
+        lastStructure = richPresence;
+
+        rpc.Discord_UpdatePresence(richPresence);
+    }
+
+    /**
+     * update user RichPresence
+     *
+     * @param state
+     *        RichPresence state string
+     * @param details
+     *        RichPresence details string
+     * @param largText
+     *        RichPresence large Text
+     * @param largeImg
+     *        RichPresence large image key
+     * @param date
+     *        RichPresence End Date
+     */
+    public void updateRichPresenceEndDate(String state, String details, String largeImg, String largText, OffsetDateTime date) {
+        if (disabled) return;
+        DiscordRichPresence.DiscordRichPresenceStructure richPresence = new DiscordRichPresence.DiscordRichPresenceStructure();
+        richPresence.state = state;
+        richPresence.details = details;
+        richPresence.largeImageKey = largeImg;
+        richPresence.largeImageText = largText;
+        richPresence.endTimestamp = date.toInstant().getEpochSecond();
+        richPresence.smallImageKey = "wynn";
+
+        if(joinSecret != null) {
+            richPresence.joinSecret = joinSecret.toString();
+            richPresence.partyId = joinSecret.id;
+            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partyMax = 15;
+        }
+
+        lastStructure = richPresence;
+
+        rpc.Discord_UpdatePresence(richPresence);
+    }
 
     /**
      * Runs all the callbacks from the RPC
