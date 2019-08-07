@@ -44,6 +44,12 @@ public class WorldMapIcon {
         float axisX = ((mp.getTextureXPosition(info.getPosX()) - minX) / (maxX - minX));
         float axisZ = ((mp.getTextureZPosition(info.getPosZ()) - minZ) / (maxZ - minZ));
 
+        if (info instanceof MapPathWaypointIcon) {
+            shouldRender = true;
+            this.axisX = width * axisX; this.axisZ = height * axisZ;
+            return;
+        }
+
         if(axisX > 0 && axisX < 1 && axisZ > 0 && axisZ < 1) {
             shouldRender = true;
             axisX = width * axisX;
@@ -54,12 +60,15 @@ public class WorldMapIcon {
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
+        if (info instanceof MapPathWaypointIcon) {
+            return false;
+        }
         float sizeX = info.getSizeX();
         float sizeZ = info.getSizeZ();
         return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
         if(!shouldRender || renderer == null) return;
 
         GlStateManager.pushMatrix();
@@ -67,7 +76,7 @@ public class WorldMapIcon {
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
 
-        info.renderAt(renderer, axisX, axisZ, multi);
+        info.renderAt(renderer, axisX, axisZ, multi, blockScale);
 
         GlStateManager.color(1,1,1,1);
 
@@ -78,6 +87,9 @@ public class WorldMapIcon {
         if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
-        renderer.drawString(info.getName(), (int)(axisX), (int)(axisZ)-20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        String name = info.getName();
+        if (name != null) {
+            renderer.drawString(name, (int) (axisX), (int) (axisZ) - 20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        }
     }
 }

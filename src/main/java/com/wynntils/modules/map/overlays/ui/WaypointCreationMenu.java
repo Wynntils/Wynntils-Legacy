@@ -212,7 +212,7 @@ public class WaypointCreationMenu extends UI {
         float centreX = this.width / 2f - 60 + 9;
         float centreZ = this.height / 2f + 10 + 9;
         float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-        wpIcon.renderAt(renderer, centreX, centreZ, multiplier);
+        wpIcon.renderAt(renderer, centreX, centreZ, multiplier, 1);
     }
 
     @Override
@@ -251,9 +251,9 @@ public class WaypointCreationMenu extends UI {
                 MapConfig.Waypoints.INSTANCE.waypoints.add(newWp);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            Utils.displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
+            Utils.displayGuiScreen(previousGui == null ? new MainWorldMapUI() : previousGui);
         } else if (button == cancelButton) {
-            Utils.displayGuiScreen(previousGui == null ? new WorldMapUI() : previousGui);
+            Utils.displayGuiScreen(previousGui == null ? new MainWorldMapUI() : previousGui);
         } else if (button == waypointTypeNext) {
             setWaypointType(WaypointType.values()[(getWaypointType().ordinal() + 1) % WaypointType.values().length]);
         } else if (button == waypointTypeBack) {

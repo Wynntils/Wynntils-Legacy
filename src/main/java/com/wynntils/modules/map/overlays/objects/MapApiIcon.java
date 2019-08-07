@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapApiIcon extends MapIcon {
+public class MapApiIcon extends MapTextureIcon {
     private static final HashMap<String, String> MAPMARKERNAME_TRANSLATION = new HashMap<String, String>() {{
         put("Content_Dungeon", "Dungeons");
         put("Merchant_Accessory", "Accessory Merchant");
@@ -132,7 +132,7 @@ public class MapApiIcon extends MapIcon {
 
     // As an optimisation, so methods don't need to be called all the time
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier) {
+    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         float sizeX = this.sizeX * sizeMultiplier;
         float sizeZ = this.sizeZ * sizeMultiplier;
         renderer.drawRectF(

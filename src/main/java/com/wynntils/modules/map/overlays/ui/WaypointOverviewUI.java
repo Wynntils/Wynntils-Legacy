@@ -64,7 +64,7 @@ public class WaypointOverviewUI extends GuiScreen {
             float centreX = this.width / 2f - 171;
             float centreZ = 60 + 25 * i;
             float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-            wpIcon.renderAt(renderer, centreX, centreZ, multiplier);
+            wpIcon.renderAt(renderer, centreX, centreZ, multiplier, 1);
 
             fontRenderer.drawString(wp.getName(), this.width/2 - 150, 56 + 25 * i, colour);
             drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 35, 56 + 25 * i, colour);
@@ -89,7 +89,7 @@ public class WaypointOverviewUI extends GuiScreen {
             checkAvailablePages();
             setEditButtons();
         } else if (b == exitBtn) {
-            Utils.displayGuiScreen(new WorldMapUI());
+            Utils.displayGuiScreen(new MainWorldMapUI());
         } else if (b.id % 10 == 3) {
             Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(waypoints.get(b.id / 10 + page * pageHeight), this));
         } else if (b.id %10 == 5) {

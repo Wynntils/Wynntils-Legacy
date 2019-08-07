@@ -115,7 +115,7 @@ public class ClientEvents implements Listener {
         if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
-        if (thisId == lastHorseId) return;
+        if (thisId == lastHorseId || ModCore.mc().world == null) return;
         Entity entity = ModCore.mc().world.getEntityByID(thisId);
         if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
             return;
