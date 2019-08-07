@@ -8,7 +8,7 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
 
-public class MapCompassIcon extends MapIcon {
+public class MapCompassIcon extends MapTextureIcon {
     private static MapCompassIcon instance = null;
 
     public static MapCompassIcon getCompass() {
@@ -23,10 +23,12 @@ public class MapCompassIcon extends MapIcon {
     }
 
     @Override public int getPosX() {
+        if (!isEnabled()) return Integer.MIN_VALUE;
         return (int) CompassManager.getCompassLocation().getX();
     }
 
     @Override public int getPosZ() {
+        if (!isEnabled()) return Integer.MIN_VALUE;
         return (int) CompassManager.getCompassLocation().getZ();
     }
 
@@ -65,7 +67,7 @@ public class MapCompassIcon extends MapIcon {
     }
 
     @Override public boolean isEnabled() {
-        return true;
+        return CompassManager.getCompassLocation() != null;
     }
 
 }

@@ -9,7 +9,9 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 import java.util.ArrayList;
@@ -106,6 +108,9 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
+        @Setting(upload = true)
+        public ArrayList<PathWaypointProfile> pathWaypoints = new ArrayList<>();
+
 
         @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§8Tiers higher than the specified value will also be recorded.", order = 6)
         public ChestTiers chestTiers = ChestTiers.TIER_3;
@@ -137,11 +142,14 @@ public class MapConfig extends SettingsClass {
         public void saveSettings(Module m) {
             super.saveSettings(m);
             MapWaypointIcon.resetWaypoints();
+            MapPathWaypointIcon.resetPathWaypoints();
         }
 
         @Override
         public void onSettingChanged(String name) {
+            super.onSettingChanged(name);
             MapWaypointIcon.resetWaypoints();
+            MapPathWaypointIcon.resetPathWaypoints();
         }
     }
 
