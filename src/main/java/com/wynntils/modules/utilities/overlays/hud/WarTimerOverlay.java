@@ -144,7 +144,7 @@ public class WarTimerOverlay extends Overlay {
                 lastTimeChanged = System.currentTimeMillis();
             }
         } else if (message.startsWith("The war for ") && message.endsWith(" is not responding.")) {
-            if (territory != null) {
+            if (territory == null) {
                 territory = message.substring(12, message.indexOf(" is not responding."));
             }
             changeWarStage(WarStage.WAITING_FOR_TIMER);
