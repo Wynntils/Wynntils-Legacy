@@ -21,13 +21,13 @@ public class MountHorseManager {
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
 
-    public static String getHorseNameForPlayer() {
-        return getHorseNameForPlayer(ModCore.mc().player);
+    public static String getHorsePrefix(String playerName) {
+        return TextFormatting.WHITE + playerName + TextFormatting.GRAY + "'s ";
     }
 
-    public static String getHorseNameForPlayer(EntityPlayerSP player) {
-        String playerName = player == null ? "" : player.getName();
-        return TextFormatting.WHITE + playerName + TextFormatting.GRAY + "'s horse";
+    public static String getHorsePrefix() {
+        EntityPlayerSP player = ModCore.mc().player;
+        return player == null ? "\uFFFE" : getHorsePrefix(player.getName());
     }
 
     public static MountHorseStatus mountHorse() {
@@ -40,10 +40,10 @@ public class MountHorseManager {
                 player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
                 player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
         ));
-        String horseName = getHorseNameForPlayer(player);
+        String prefix = getHorsePrefix();
         Entity playersHorse = null;
         for (Entity horse : horses) {
-            if (horse instanceof AbstractHorse && horseName.equals(horse.getCustomNameTag()))   {
+            if (horse instanceof AbstractHorse && horse.getCustomNameTag().startsWith(prefix)) {
                 playersHorse = horse;
                 break;
             }
