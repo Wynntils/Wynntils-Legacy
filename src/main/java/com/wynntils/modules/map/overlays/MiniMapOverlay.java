@@ -10,7 +10,6 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -128,31 +127,45 @@ public class MiniMapOverlay extends Overlay {
                     float sizeX = c.getSizeX();
                     float sizeZ = c.getSizeZ();
                     if (
-                            c.isEnabled() &&
-                            !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
-                            !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
+                        !c.isEnabled() ||
+                        !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
+                        !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
                     ) {
                         return;
                     }
                     float dx = (float) (posX - mc.player.posX) * scaleFactor;
                     float dz = (float) (posZ - mc.player.posZ) * scaleFactor;
 
+                    boolean followRotation = false;
+
                     if (MapConfig.INSTANCE.followPlayerRotation) {
                         // Rotate dx and dz
-                        float temp = dx * cosRotationRadians - dz * sinRotationRadians;
-                        dz = dx * sinRotationRadians + dz * cosRotationRadians;
-                        dx = temp;
+                        if (followRotation = c.followRotation()) {
+                            GlStateManager.pushMatrix();
+                            Point drawingOrigin = MiniMapOverlay.drawingOrigin();
+                            GlStateManager.translate(drawingOrigin.x + halfMapSize, drawingOrigin.y + halfMapSize, 0);
+                            GlStateManager.rotate(180 - mc.player.rotationYaw, 0, 0, 1);
+                            GlStateManager.translate(-drawingOrigin.x - halfMapSize, -drawingOrigin.y - halfMapSize, 0);
+                        } else {
+                            float temp = dx * cosRotationRadians - dz * sinRotationRadians;
+                            dz = dx * sinRotationRadians + dz * cosRotationRadians;
+                            dx = temp;
+                        }
                     }
 
-                    c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
+                    c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
+                    if (followRotation) {
+                        GlStateManager.popMatrix();
+                    }
                 };
 
                 MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
                 MapIcon.getWaypoints().forEach(consumer);
+                MapIcon.getPathWaypoints().forEach(consumer);
 
-                if (CompassManager.getCompassLocation() != null) {
-                    MapIcon compassIcon = MapIcon.getCompass();
+                MapIcon compassIcon = MapIcon.getCompass();
 
+                if (compassIcon.isEnabled()) {
                     float dx = (float) (compassIcon.getPosX() - mc.player.posX) * scaleFactor;
                     float dz = (float) (compassIcon.getPosZ() - mc.player.posZ) * scaleFactor;
 
@@ -166,8 +179,13 @@ public class MiniMapOverlay extends Overlay {
                     float newDx = 0;
                     float newDz = 0;
                     final float compassSize = Math.max(compassIcon.getSizeX(), compassIcon.getSizeZ()) * 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier;
+                    boolean rendering = true;
 
-                    if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
+                    float distance_sq = dx * dx + dz * dz;
+
+                    if (distance_sq > 16000000f) {
+                        rendering = false;
+                    } if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
                         newDx = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dx));
                         newDz = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dz));
                         scaled = (newDx != dx) || (newDz != dz);
@@ -176,7 +194,6 @@ public class MiniMapOverlay extends Overlay {
                             dz = newDz;
                         }
                     } else {
-                        float distance_sq = dx * dx + dz * dz;
                         float max_distance = halfMapSize - compassSize;
                         if (distance_sq > max_distance * max_distance) {
                             // Scale it down back into the circle
@@ -187,7 +204,7 @@ public class MiniMapOverlay extends Overlay {
                         }
                     }
 
-                    if (scaled) {
+                    if (rendering && scaled) {
                         float angle = (float) (Math.atan2(dz, dx) * 180f / Math.PI) + 90f;
 
                         dx = newDx + halfMapSize;
@@ -219,8 +236,8 @@ public class MiniMapOverlay extends Overlay {
                         );
 
                         GlStateManager.popMatrix();
-                    } else {
-                        compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier);
+                    } else if (rendering) {
+                        compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
                     }
                 }
             }

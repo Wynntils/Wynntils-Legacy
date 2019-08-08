@@ -30,6 +30,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -105,11 +111,11 @@ public class ClientEvents implements Listener {
     private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
 
     @SubscribeEvent
-    public void onHorseSpawn(PacketEvent.EntityMetadata e) {
+    public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
         if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
-        if (thisId == lastHorseId) return;
+        if (thisId == lastHorseId || ModCore.mc().world == null) return;
         Entity entity = ModCore.mc().world.getEntityByID(thisId);
         if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
             return;
@@ -244,8 +250,8 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void keyPress(PacketEvent.PlayerDropItemEvent e) {
-        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+    public void keyPress(PacketEvent<CPacketPlayerDigging> e) {
+        if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS) || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
         if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
             e.setCanceled(true);
@@ -287,7 +293,7 @@ public class ClientEvents implements Listener {
 
     //blocking healing pots below
     @SubscribeEvent
-    public void onUseItem(PacketEvent.PlayerUseItemEvent e) {
+    public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
         if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
@@ -299,7 +305,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onUseItem(PacketEvent.PlayerUseItemOnBlockEvent e) {
+    public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
         if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
@@ -311,7 +317,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onUseItem(PacketEvent.UseEntityEvent e) {
+    public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
         if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 

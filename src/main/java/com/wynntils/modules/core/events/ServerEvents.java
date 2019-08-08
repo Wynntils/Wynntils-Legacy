@@ -21,6 +21,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -164,7 +165,7 @@ public class ServerEvents implements Listener {
     static BlockPos currentSpawn = null;
 
     @SubscribeEvent
-    public void onCompassChange(PacketEvent.SpawnPosition e) {
+    public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
         if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);

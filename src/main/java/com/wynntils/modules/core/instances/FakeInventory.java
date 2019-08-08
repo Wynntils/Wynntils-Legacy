@@ -16,6 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
@@ -223,7 +225,7 @@ public class FakeInventory {
 
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
-    public void onInventoryReceive(PacketEvent.InventoryReceived e) {
+    public void onInventoryReceive(PacketEvent<SPacketOpenWindow> e) {
         if(!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !e.getPacket().getWindowTitle().getUnformattedText().contains(windowTitle)) {
             windowId = -1;
             close();
@@ -239,7 +241,7 @@ public class FakeInventory {
 
     //handles the items, calls onReceiveItems
     @SubscribeEvent
-    public void onItemsReceive(PacketEvent.InventoryItemsReceived e) {
+    public void onItemsReceive(PacketEvent<SPacketWindowItems> e) {
         if(e.getPacket().getWindowId() != windowId) {
             windowId = -1;
             close();
@@ -260,7 +262,7 @@ public class FakeInventory {
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
-    public void cancelInteract(PacketEvent.PlayerUseItemEvent e) {
+    public void cancelInteractItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         if(!open || isCrashed()) return;
 
         if(!e.isCanceled())
@@ -271,7 +273,7 @@ public class FakeInventory {
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
-    public void cancelInteract(PacketEvent.PlayerUseItemOnBlockEvent e) {
+    public void cancelInteractItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         if(!open || isCrashed()) return;
 
         if(!e.isCanceled())

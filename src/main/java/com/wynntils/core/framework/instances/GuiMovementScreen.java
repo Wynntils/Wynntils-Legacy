@@ -9,9 +9,14 @@ import org.lwjgl.input.Mouse;
 import java.io.IOException;
 
 public class GuiMovementScreen extends GuiScreen {
+    protected boolean allowMovement = true;
 
     @Override
     public void handleInput() throws IOException {
+        if (!allowMovement) {
+            super.handleInput();
+            return;
+        }
         if(Mouse.isCreated()) {
             while (Mouse.next()) {
                 this.handleMouseInput();

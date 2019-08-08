@@ -7,7 +7,9 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WarStageEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -15,6 +17,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketTitle.Type;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -98,12 +101,12 @@ public class WarTimerOverlay extends Overlay {
                 afterWar = true;
             }
             territory = message.substring(12, message.indexOf(" will start soon!"));
-            stage = WarStage.WAITING_FOR_TIMER;
+            changeWarStage(WarStage.WAITING_FOR_TIMER);
         } else if (message.equals("You were not in the territory.") && stage == WarStage.WAR_STARTING) {
             timer = -1;
             startTimer = false;
             territory = null;
-            stage = WarStage.WAITING;
+            changeWarStage(WarStage.WAITING);
         } else if (message.startsWith("The war will start in ") && (stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING || stage == WarStage.WAITING)) {
             Matcher secondsMatcher = secondsPattern.matcher(message);
             timer = 0;
@@ -117,7 +120,7 @@ public class WarTimerOverlay extends Overlay {
             afterSecond = (System.currentTimeMillis() % 1000);
             lastTimeChanged = System.currentTimeMillis();
             startTimer = true;
-            stage = WarStage.WAR_STARTING;
+            changeWarStage(WarStage.WAR_STARTING);
         } else if (message.endsWith("...") && message.length() == 4 && (stage == WarStage.WAR_STARTING || stage == WarStage.WAITING)) {
             String timerString = message.substring(0, 1);
             if (timerString.matches("\\d")) {
@@ -131,7 +134,7 @@ public class WarTimerOverlay extends Overlay {
             afterSecond = (System.currentTimeMillis() % 1000);
             lastTimeChanged = System.currentTimeMillis();
             startTimer = true;
-            stage = WarStage.WAITING_FOR_MOBS;
+            changeWarStage(WarStage.WAITING_FOR_MOBS);
         } else if (message.endsWith("...") && message.length() == 4 && stage == WarStage.WAITING_FOR_MOBS) {
             String timerString = message.substring(0, 1);
             if (timerString.matches("\\d")) {
@@ -140,6 +143,17 @@ public class WarTimerOverlay extends Overlay {
                 startTimer = true;
                 lastTimeChanged = System.currentTimeMillis();
             }
+        } else if (message.startsWith("The war for ") && message.endsWith(" is not responding.")) {
+            if (territory == null) {
+                territory = message.substring(12, message.indexOf(" is not responding."));
+            }
+            changeWarStage(WarStage.WAITING_FOR_TIMER);
+        } else if (message.equals("Trying again in 30 seconds.")) {
+            timer = 30;
+            afterSecond = System.currentTimeMillis() % 1000;
+            lastTimeChanged = System.currentTimeMillis();
+            startTimer = true;
+            changeWarStage(WarStage.WAR_STARTING);
         } else if (message.startsWith("You have taken control of ") && Reference.onWars && lastTerritory == null) {
             lastTerritory = message.substring(26, message.indexOf(" from "));
         }
@@ -148,7 +162,7 @@ public class WarTimerOverlay extends Overlay {
     public static void onWorldJoin(WynnWorldEvent.Join event) {
         if (Reference.onWars) {
             if (stage == WarStage.WAR_STARTING) {
-                stage = WarStage.WAITING_FOR_MOB_TIMER;
+                changeWarStage(WarStage.WAITING_FOR_MOB_TIMER);
                 startTimer = false;
                 timer = -1;
                 if (territory == null) {
@@ -163,7 +177,7 @@ public class WarTimerOverlay extends Overlay {
             }
         } else {
             if (afterWar) {
-                stage = WarStage.WAR_STARTING;
+                changeWarStage(WarStage.WAR_STARTING);
                 afterWar = false;
             } else if (timer == 0) {
                 resetTimer();
@@ -172,7 +186,7 @@ public class WarTimerOverlay extends Overlay {
         }
     }
     
-    public static void onTitle(PacketEvent.TitleEvent event) {
+    public static void onTitle(PacketEvent<SPacketTitle> event) {
         if (event.getPacket().getType() == Type.SUBTITLE && event.getPacket().getMessage().getUnformattedText().equals(TextFormatting.GOLD + "0 Mobs Left")) {
             lastTimer = timer;
             lastTerritory = territory;
@@ -197,7 +211,7 @@ public class WarTimerOverlay extends Overlay {
             timer = 0;
             afterSecond = (int) (System.currentTimeMillis() % 1000);
             startTimer = true;
-            stage = WarStage.IN_WAR;
+            changeWarStage(WarStage.IN_WAR);
             lastTimeChanged = System.currentTimeMillis();
         } else if (startTimer && currentTime >= 1000 + lastTimeChanged) {
             if (timer > 0 && stage != WarStage.IN_WAR) {
@@ -210,7 +224,7 @@ public class WarTimerOverlay extends Overlay {
     }
     
     private static void resetTimer() {
-        stage = WarStage.WAITING;
+        changeWarStage(WarStage.WAITING);
         timer = -1;
         startTimer = false;
         afterSecond = 0;
@@ -227,6 +241,13 @@ public class WarTimerOverlay extends Overlay {
 
     public static WarStage getStage() {
         return stage;
+    }
+
+    private static void changeWarStage(WarStage newStage) {
+        if (stage != newStage) {
+            stage = newStage;
+            FrameworkManager.getEventBus().post(new WarStageEvent(newStage, stage));
+        }
     }
 
     public enum WarStage {

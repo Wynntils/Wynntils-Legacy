@@ -13,7 +13,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapWaypointIcon extends MapIcon {
+public class MapWaypointIcon extends MapTextureIcon {
     public static final int HIDDEN_ZOOM = -1;
 
     private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
@@ -113,11 +113,11 @@ public class MapWaypointIcon extends MapIcon {
     }
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier) {
+    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         CustomColor color = wp.getColor();
         GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
         GL11.glColor4f(color.r, color.g, color.b, color.a);
-        super.renderAt(renderer, centreX, centreZ, sizeMultiplier);
+        super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
         GL11.glColor4f(currentColorBuf.get(0), currentColorBuf.get(1), currentColorBuf.get(2), currentColorBuf.get(3));
     }
 

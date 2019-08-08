@@ -14,7 +14,10 @@ import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
-import com.wynntils.webapi.profiles.*;
+import com.wynntils.webapi.profiles.MapMarkerProfile;
+import com.wynntils.webapi.profiles.MusicProfile;
+import com.wynntils.webapi.profiles.TerritoryProfile;
+import com.wynntils.webapi.profiles.UpdateProfile;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
@@ -23,7 +26,9 @@ import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
@@ -254,12 +259,16 @@ public class WebManager {
             return;
         }
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
-        Gson gson = builder.create();
+        // TODO: remove when server issue is fixed
+        if (json.has("territories")) {
 
-        territories.clear();
-        territories.putAll(gson.fromJson(json.get("territories"), type));
+            GsonBuilder builder = new GsonBuilder();
+            builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+            Gson gson = builder.create();
+
+            territories.clear();
+            territories.putAll(gson.fromJson(json.get("territories"), type));
+        }
     }
 
     /**
