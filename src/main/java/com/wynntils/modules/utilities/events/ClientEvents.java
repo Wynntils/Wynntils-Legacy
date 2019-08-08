@@ -124,11 +124,12 @@ public class ClientEvents implements Listener {
             lastHorseId = thisId;
             return;
         }
-        String horseName = MountHorseManager.getHorseNameForPlayer();
+        String horsePrefix = MountHorseManager.getHorsePrefix();
         assert nameKey != null;
         for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
             if (nameKey.equals(entry.getKey())) {
-                if (horseName.equals(entry.getValue())) {
+                Object value = entry.getValue();
+                if (value instanceof String && ((String) value).startsWith(horsePrefix)) {
                     lastHorseId = thisId;
                     MountHorseManager.mountHorseAndLogMessage();
                 }
