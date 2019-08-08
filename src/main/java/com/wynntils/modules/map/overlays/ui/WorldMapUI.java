@@ -48,7 +48,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected WorldMapIcon compassIcon;
     protected List<MapTerritory> territories;
 
-    protected WorldMapUI() {
+    public WorldMapUI() {
         mc = Minecraft.getMinecraft();
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
