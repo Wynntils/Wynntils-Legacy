@@ -10,6 +10,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -54,7 +55,7 @@ public class ActionBarOverlay extends Overlay {
             int y = 0;
 
             String lCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posX;
-            String middleCoord = TextFormatting.GREEN + getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+            String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
             String rCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posZ;
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
@@ -91,34 +92,6 @@ public class ActionBarOverlay extends Overlay {
                 drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
                 drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             }
-        }
-    }
-
-    private static String getPlayerDirection(float yaw) {
-        double num = (yaw + 202.5) / 45.0;
-        while (num < 0.0) {
-            num += 360.0;
-        }
-        int dir = (int) (num);
-        dir = dir % 8;
-
-        switch (dir) {
-            case 1:
-                return "NE";
-            case 2:
-                return "E";
-            case 3:
-                return "SE";
-            case 4:
-                return "S";
-            case 5:
-                return "SW";
-            case 6:
-                return "W";
-            case 7:
-                return "NW";
-            default:
-                return "N";
         }
     }
 

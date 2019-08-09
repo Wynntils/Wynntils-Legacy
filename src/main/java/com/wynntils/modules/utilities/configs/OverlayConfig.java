@@ -13,6 +13,9 @@ import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.util.text.TextFormatting;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+
 @SettingsInfo(name = "overlays", displayPath = "Overlays")
 public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
@@ -403,6 +406,69 @@ public class OverlayConfig extends SettingsClass {
             NORMAL,
             DISTINGUISH_OWN_GUILD,
             ONLY_OWN_GUILD
+        }
+    }
+
+    @SettingsInfo(name = "info_overlays_settings", displayPath = "Overlays/Info")
+    public static class InfoOverlays extends SettingsClass {
+        public static InfoOverlays INSTANCE;
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info1Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 2)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info2Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 3)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info3Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 4)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info4Format = "";
+
+        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
+        public Presets preset = Presets.COORDS;
+
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int opacity = 0;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if ("preset".equals(name)) {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(preset.getValue()), null);
+            }
+        }
+
+        public enum Presets {
+            COORDS("Coords", "%x% %z% (%y%)"),
+            ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
+            FPS("FPS Counter", "FPS: %fps%"),
+            CLASS("Class", "%Class%\\nLevel %lvl%");
+
+            private String name;
+            private String value;
+
+            Presets(String name, String value) {
+                this.name = name;
+                this.value = value;
+            }
+
+            @Override
+            public String toString() {
+                return name;
+            }
+
+            public String getValue() {
+                return value;
+            }
         }
     }
 }
