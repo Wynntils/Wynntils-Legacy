@@ -3,6 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -23,6 +24,8 @@ public class MainWorldMapUI extends WorldMapUI {
 
     private boolean holdingMapKey = false;
     private long creationTime;
+    private long lastClickTime = Integer.MAX_VALUE;
+    private static final long doubleClickTime = (long) Utils.getDoubleClickTime();
 
     public MainWorldMapUI() {
         super();
@@ -86,7 +89,17 @@ public class MainWorldMapUI extends WorldMapUI {
 
         if (mouseButton == 0) {
             forEachIcon(c -> {
-                if (c.mouseOver(mouseX, mouseY)) {
+                if (c == compassIcon) {
+                    if (c.mouseOver(mouseX, mouseY)) {
+                        long currentTime = System.currentTimeMillis();
+                        if (currentTime - lastClickTime < doubleClickTime) {
+                            Location location = CompassManager.getCompassLocation();
+                            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));
+                        } else {
+                            lastClickTime = currentTime;
+                        }
+                    }
+                } else if (c.mouseOver(mouseX, mouseY)) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
 
                     CompassManager.setCompassLocation(new Location(c.getInfo().getPosX(), 0, c.getInfo().getPosZ()));

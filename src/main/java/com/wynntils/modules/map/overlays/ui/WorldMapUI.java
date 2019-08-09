@@ -29,6 +29,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
@@ -211,8 +212,12 @@ public class WorldMapUI extends GuiMovementScreen {
             playerPostionX = width * playerPostionX;
             playerPostionZ = height * playerPostionZ;
 
-            ScreenRenderer.transformationOrigin((int) playerPostionX, (int) playerPostionZ);
-            ScreenRenderer.rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
+            Point drawingOrigin = ScreenRenderer.drawingOrigin();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(drawingOrigin.x + playerPostionX, drawingOrigin.y + playerPostionZ, 0);
+            GlStateManager.rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw), 0, 0, 1);
+            GlStateManager.translate(-drawingOrigin.x - playerPostionX, -drawingOrigin.y - playerPostionZ, 0);
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
 
@@ -220,7 +225,7 @@ public class WorldMapUI extends GuiMovementScreen {
             renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth * 1.5f, playerPostionZ - type.dHeight * 1.5f, playerPostionX + type.dWidth * 1.5f, playerPostionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
             GlStateManager.color(1, 1, 1, 1);
 
-            ScreenRenderer.resetRotation();
+            GlStateManager.popMatrix();
         }
 
         if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {

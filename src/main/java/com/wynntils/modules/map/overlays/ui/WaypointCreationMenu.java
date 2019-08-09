@@ -56,7 +56,6 @@ public class WaypointCreationMenu extends UI {
     }
 
     // Create a waypoint at a position other than the current player's position
-    // TODO: use this (Maybe double clicking somewhere on the main map would create a waypoint at that position?)
     public WaypointCreationMenu(GuiScreen previousGui, int initialX, int initialZ) {
         this.previousGui = previousGui;
 
@@ -111,7 +110,7 @@ public class WaypointCreationMenu extends UI {
         boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
 
         if (!returning) {
-            UIElements.add(colorWheel = new UIEColorWheel(0, 0, this.width / 2, this.height / 2 + 9, 20, 20, true, this::setColor, this));
+            UIElements.add(colorWheel = new UIEColorWheel(0.5f, 0.5f, 0, 9, 20, 20, true, this::setColor, this));
         }
 
         WaypointProfile wp = returning ? wpIcon.getWaypointProfile() : this.wp;

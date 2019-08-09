@@ -23,6 +23,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -566,4 +567,18 @@ public class Utils {
         }
     }
 
+    private static int doubleClickTime = -1;
+
+    public static int getDoubleClickTime() {
+        if (doubleClickTime < 0) {
+            Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+            if (prop instanceof Integer) {
+                doubleClickTime = (Integer) prop;
+            }
+            if (doubleClickTime < 0) {
+                doubleClickTime = 500;
+            }
+        }
+        return doubleClickTime;
+    }
 }
