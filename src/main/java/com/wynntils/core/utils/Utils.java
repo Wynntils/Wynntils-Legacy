@@ -38,12 +38,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 public class Utils {
 
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
@@ -61,18 +59,6 @@ public class Utils {
 
     public static ScheduledFuture runTaskTimer(Runnable r, TimeUnit timeUnit, long amount) {
         return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
-    }
-
-    /**
-     * Removes all registeredColors codes from a string
-     *
-     * @param input
-     *        Input string
-     *
-     * @return input string without colored chars
-     */
-    public static String stripColor(String input) {
-        return input == null ? null : STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
     /**
@@ -102,7 +88,7 @@ public class Utils {
      * @return input string without the "Perfect"-rainbow
      */
     public static String stripPerfect(String input) {
-        return stripColor(input).replace("Perfect ", "");
+        return TextFormatting.getTextWithoutFormattingCodes(input).replace("Perfect ", "");
     }
 
     /**
@@ -126,7 +112,7 @@ public class Utils {
             case 2:
                 input = stripInvisibleChar(input);
             case 3:
-                return stripColor(input);
+                return TextFormatting.getTextWithoutFormattingCodes(input);
         }
     }
 

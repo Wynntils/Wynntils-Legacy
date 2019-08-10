@@ -20,6 +20,7 @@ import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -141,8 +142,8 @@ public class ClientEvents {
             String formatedName = player.getDisplayName().getFormattedText();
 
             if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
-                if(formatedName.startsWith("§e")) partyMembers.add(Utils.stripColor(formatedName));
-                else if(formatedName.startsWith("§c")) { partyOwner = Utils.stripColor(formatedName); }
+                if(formatedName.startsWith("§e")) partyMembers.add(TextFormatting.getTextWithoutFormattingCodes(formatedName));
+                else if(formatedName.startsWith("§c")) { partyOwner = TextFormatting.getTextWithoutFormattingCodes(formatedName); }
             }
         }
 

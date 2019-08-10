@@ -8,7 +8,6 @@ import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
-import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
@@ -16,8 +15,6 @@ import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
-import com.wynntils.modules.questbook.overlays.ui.DiscoveriesPage;
-import com.wynntils.modules.questbook.overlays.ui.QuestsPage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ClickType;
@@ -25,7 +22,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -93,7 +93,7 @@ public class QuestManager {
                     List<String> lore = Utils.getLore(item);
                     if(lore.isEmpty()) continue; //not a valid quest
 
-                    List<String> realLore = lore.stream().map(Utils::stripColor).collect(Collectors.toList());
+                    List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
                     if(!realLore.contains("Right click to track")) continue; //not a valid quest
 
                     QuestStatus status = null;
@@ -103,18 +103,18 @@ public class QuestManager {
                     else if(lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
                     if(status == null) continue;
 
-                    int minLevel = Integer.valueOf(Utils.stripColor(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
-                    QuestSize size = QuestSize.valueOf(Utils.stripColor(lore.get(3)).replace("- Length: ", "").toUpperCase());
+                    int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
+                    QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase());
 
                     String description = "";
                     for(int x = 5; x < lore.size(); x++) {
                         if(lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
                             break;
                         }
-                        description = description + Utils.stripColor(lore.get(x));
+                        description = description + TextFormatting.getTextWithoutFormattingCodes(lore.get(x));
                     }
 
-                    String displayName = Utils.stripColor(item.getDisplayName());
+                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName());
                     QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description, lore);
                     currentQuestsData.put(displayName, quest);
 
@@ -143,7 +143,7 @@ public class QuestManager {
                     if(!item.hasDisplayName()) continue; //not a valid discovery
 
                     List<String> lore = Utils.getLore(item);
-                    if(lore.isEmpty() || !Utils.stripColor(lore.get(0)).contains("✔ Combat Lv")) continue; //not a valid discovery
+                    if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
 
                     String displayName = item.getDisplayName();
                     displayName = displayName.substring(0, displayName.length() - 1);
@@ -153,11 +153,11 @@ public class QuestManager {
                     else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
                     else if (displayName.charAt(1) == 'b') discoveryType = DiscoveryType.SECRET;
 
-                    int minLevel = Integer.valueOf(Utils.stripColor(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+                    int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
                     String description = "";
                     for (int x = 2; x < lore.size(); x ++) {
-                        description = description + Utils.stripColor(lore.get(x));
+                        description = description + TextFormatting.getTextWithoutFormattingCodes(lore.get(x));
                     }
 
                     currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));

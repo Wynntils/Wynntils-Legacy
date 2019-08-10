@@ -10,7 +10,6 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -74,7 +73,7 @@ public class ActionBarOverlay extends Overlay {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
                 preference = true;
-            } else if (Utils.stripColor(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
+            } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
             } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
