@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.managers;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
@@ -56,21 +57,24 @@ public class QuestManager {
         if(!analyseRequested || (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
 
         analyseRequested = false;
-        readQuestBook();
+        readQuestBook(!bookOpened);
+        bookOpened = true;
     }
 
     /**
      * Requests a full QuestBook re-read, when the player is not with the book in hand
      */
-    private static void readQuestBook() {
+    private static void readQuestBook(boolean fullSearch) {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook) return;
 
         if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
-            readQuestBook();
+            readQuestBook(fullSearch);
             return;
         }
+
+        long ms = System.currentTimeMillis();
 
         FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
         secretDiscoveries = false;
@@ -102,6 +106,12 @@ public class QuestManager {
                     else if(lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
                     else if(lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
                     if(status == null) continue;
+
+                    //this avoids double checking quests that are already completed
+                    if(status == QuestStatus.COMPLETED && !fullSearch) {
+                        next = null;
+                        break;
+                    }
 
                     int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
                     QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase());
@@ -175,6 +185,10 @@ public class QuestManager {
         });
         fakeInventory.onClose(c -> {
             currentInventory = null;
+            if(Reference.developmentEnvironment) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed in " + (System.currentTimeMillis() - ms) + "ms]"));
+                return;
+            }
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
         });
         currentInventory = fakeInventory;
@@ -225,7 +239,6 @@ public class QuestManager {
     public static void wasBookOpened() {
         if(bookOpened) return;
 
-        bookOpened = true;
         requestAnalyse();
     }
 
