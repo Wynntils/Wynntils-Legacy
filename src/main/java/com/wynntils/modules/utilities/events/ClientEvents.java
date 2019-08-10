@@ -124,12 +124,13 @@ public class ClientEvents implements Listener {
             lastHorseId = thisId;
             return;
         }
-        String horsePrefix = MountHorseManager.getHorsePrefix();
+        String playerName = ModCore.mc().player.getName();
+
         assert nameKey != null;
         for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
             if (nameKey.equals(entry.getKey())) {
                 Object value = entry.getValue();
-                if (value instanceof String && ((String) value).startsWith(horsePrefix)) {
+                if (value instanceof String && MountHorseManager.isPlayersHorse((String) value, playerName)) {
                     lastHorseId = thisId;
                     MountHorseManager.mountHorseAndLogMessage();
                 }

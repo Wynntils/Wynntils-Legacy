@@ -21,13 +21,15 @@ public class MountHorseManager {
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
 
-    public static String getHorsePrefix(String playerName) {
-        return TextFormatting.WHITE + playerName + TextFormatting.GRAY + "'s ";
+    public static boolean isPlayersHorse(Entity horse, String playerName) {
+        return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
     }
 
-    public static String getHorsePrefix() {
-        EntityPlayerSP player = ModCore.mc().player;
-        return player == null ? "\uFFFE" : getHorsePrefix(player.getName());
+    public static boolean isPlayersHorse(String horseName, String playerName) {
+        String defaultName = TextFormatting.WHITE + playerName + TextFormatting.GRAY + "'s horse";
+        String customSuffix = " " + TextFormatting.GRAY + "[" + playerName + "]";
+
+        return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
 
     public static MountHorseStatus mountHorse() {
@@ -36,25 +38,31 @@ public class MountHorseManager {
         if (player.isRiding()) {
             return MountHorseStatus.ALREADY_RIDING;
         }
+
         List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
                 player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
                 player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
         ));
-        String prefix = getHorsePrefix();
+
         Entity playersHorse = null;
+        String playerName = player.getName();
+
         for (Entity horse : horses) {
-            if (horse instanceof AbstractHorse && horse.getCustomNameTag().startsWith(prefix)) {
+            if (isPlayersHorse(horse, playerName)) {
                 playersHorse = horse;
                 break;
             }
         }
+
         if (playersHorse == null) {
             return MountHorseStatus.NO_HORSE;
         }
+
         double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
         if (player.getDistanceSq(playersHorse) > maxDistance) {
             return MountHorseStatus.HORSE_TOO_FAR;
         }
+
         mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
         return MountHorseStatus.SUCCESS;
     }
