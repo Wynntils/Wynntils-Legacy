@@ -27,7 +27,7 @@ public class MountHorseManager {
 
     public static boolean isPlayersHorse(String horseName, String playerName) {
         String defaultName = TextFormatting.WHITE + playerName + TextFormatting.GRAY + "'s horse";
-        String customSuffix = " " + TextFormatting.GRAY + "[" + playerName + "]";
+        String customSuffix = TextFormatting.GRAY  + " [" + playerName + "]";
 
         return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
