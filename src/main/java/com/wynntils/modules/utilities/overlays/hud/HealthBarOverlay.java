@@ -14,11 +14,8 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Quaternion;
 
 public class HealthBarOverlay extends Overlay {
 

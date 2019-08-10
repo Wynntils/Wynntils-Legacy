@@ -16,6 +16,7 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.WebReader;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "map", displayName = "Map")
@@ -29,7 +30,8 @@ public class MapModule extends Module {
     public void onEnable() {
         module = this;
 
-        mainMap = new MapProfile(WebManager.getApiUrls().get("MainMap"), "main-map");
+        WebReader webApi = WebManager.getApiUrls();
+        mainMap = new MapProfile(webApi == null ? null : webApi.get("MainMap"), "main-map");
         mainMap.updateMap();
 
         registerEvents(new ClientEvents());

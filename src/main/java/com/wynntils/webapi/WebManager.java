@@ -4,7 +4,6 @@
 
 package com.wynntils.webapi;
 
-import com.google.common.base.Charsets;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
@@ -26,6 +25,7 @@ import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -33,13 +33,14 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class WebManager {
 
-    public static WebReader apiUrls;
+    private static @Nullable WebReader apiUrls;
 
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
@@ -94,9 +95,9 @@ public class WebManager {
     public static void setupWebApi() {
         try{
             apiUrls = new WebReader("https://api.wynntils.com/webapi");
-        }catch (Exception ex) { ex.printStackTrace(); return; }
+        }catch (Exception ex) { ex.printStackTrace(); apiUrls = null; }
 
-        ProgressManager.ProgressBar progressBar = ProgressManager.push("Loading data from APIs", 7);
+        ProgressManager.ProgressBar progressBar = ProgressManager.push(apiUrls != null ? "Loading data from APIs" : "Loading data from cache", 7);
 
         progressBar.step("Territories");
         long ms = System.currentTimeMillis();
@@ -242,16 +243,20 @@ public class WebManager {
         JsonObject json;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating territory list - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating territory list - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             json = handleCache(stream, "territories.json", forceRecall).getAsJsonObject();
@@ -281,16 +286,20 @@ public class WebManager {
         JsonObject json;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating guild list - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating guild list - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             json = handleCache(stream, "guilds.json", forceRecall).getAsJsonObject();
@@ -318,7 +327,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
         if(obj.has("error")) {
             return null;
@@ -339,7 +348,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         main.remove("request");
 
         Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
@@ -357,16 +366,20 @@ public class WebManager {
         JsonArray main;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating item list - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating item list - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             main = handleCache(stream, "items.json", forceRecall).getAsJsonObject().getAsJsonArray("items");
@@ -392,16 +405,20 @@ public class WebManager {
         JsonArray jsonArray;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating map markers - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating map markers - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             jsonArray = handleCache(stream, "map_markers.json", forceRecall).getAsJsonObject().getAsJsonArray("locations");
@@ -425,16 +442,20 @@ public class WebManager {
         JsonArray jsonArray;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("RefineryLocations")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating refinery locations - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("RefineryLocations")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating refinery locations - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             jsonArray = handleCache(stream, "map_refineries.json", forceRecall).getAsJsonArray();
@@ -457,16 +478,20 @@ public class WebManager {
         JsonObject json;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating item guesses - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating item guesses - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             json = handleCache(stream, "item_guesses.json", forceRecall).getAsJsonObject();
@@ -488,16 +513,20 @@ public class WebManager {
         JsonObject json;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats").openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating player profile - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats").openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating player profile - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             json = handleCache(stream, "player_stats.json", forceRecall).getAsJsonObject();
@@ -519,16 +548,20 @@ public class WebManager {
         JsonObject main;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating user roles - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating user roles - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             main = handleCache(stream, "user_roles.json", forceRecall).getAsJsonObject();
@@ -560,16 +593,20 @@ public class WebManager {
         JsonObject main;
         boolean forceRecall;
         InputStream stream = null;
-        try {
-            URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-            st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            stream = st.getInputStream();
-            forceRecall = !st.getContentType().contains("application/json");
-        } catch (Exception ex) {
-            Reference.LOGGER.warn("Error updating user models - attempting to use cache", ex);
+        if (apiUrls == null) {
             forceRecall = true;
+        } else {
+            try {
+                URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
+                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
+                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
+                stream = st.getInputStream();
+                forceRecall = !st.getContentType().contains("application/json");
+            } catch (Exception ex) {
+                Reference.LOGGER.warn("Error updating user models - attempting to use cache", ex);
+                forceRecall = true;
+            }
         }
         try {
             main = handleCache(stream, "user_models.json", forceRecall).getAsJsonObject();
@@ -600,7 +637,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
@@ -610,7 +647,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
     }
 
@@ -620,7 +657,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return main.getAsJsonObject().get("artifacts").getAsJsonArray().get(0).getAsJsonObject().get("fileName").getAsString().split("_")[0].split("-")[1];
     }
 
@@ -630,7 +667,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return apiUrls.get("DevJars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
@@ -640,7 +677,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
     }
 
@@ -650,7 +687,7 @@ public class WebManager {
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+        JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         return main.getAsJsonObject().get("number").getAsInt();
     }
 
@@ -661,7 +698,7 @@ public class WebManager {
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         ArrayList<MusicProfile> result = new ArrayList<>();
-        JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonArray();
+        JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonArray();
         for(int i = 0; i < array.size(); i++) {
             JsonObject obj = array.get(i).getAsJsonObject();
             if(!obj.has("name") || !obj.has("download_url") || !obj.has("size")) continue;
@@ -688,10 +725,10 @@ public class WebManager {
                     apiCacheFolder.mkdirs();
                 if (!apiCacheFile.exists())
                     apiCacheFile.createNewFile();
-                String raw = IOUtils.toString(stream, Charsets.UTF_8);
+                String raw = IOUtils.toString(stream, StandardCharsets.UTF_8);
                 stream.close();
                 JsonElement element = new JsonParser().parse(raw);
-                FileUtils.writeStringToFile(apiCacheFile, raw, Charsets.UTF_8);
+                FileUtils.writeStringToFile(apiCacheFile, raw, StandardCharsets.UTF_8);
                 return element;
             } catch (Exception ex) {
                 Reference.LOGGER.warn("Error running API request result for file " + fileName + " - attempting to use cache", ex);
@@ -703,7 +740,7 @@ public class WebManager {
         }
         try {
             FileInputStream inputStream = new FileInputStream(apiCacheFile);
-            JsonElement element = new JsonParser().parse(IOUtils.toString(inputStream, Charsets.UTF_8));
+            JsonElement element = new JsonParser().parse(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
             Reference.LOGGER.info("Successfully loaded cache file " + fileName);
             return element;
         } catch (Exception ex) {
@@ -748,6 +785,8 @@ public class WebManager {
      * @return an ArrayList of ChangelogProfile's
      */
     public static ArrayList<String> getChangelog(boolean major) {
+        if (apiUrls == null) return null;
+
         JsonObject main = null;
         boolean failed = false;
 
@@ -757,7 +796,7 @@ public class WebManager {
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
                 st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 failed = true;
@@ -779,7 +818,7 @@ public class WebManager {
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
             if (st.getContentType().contains("application/json")) {
-                main = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
                 JsonArray changesArray = main.getAsJsonObject().get("changeSet").getAsJsonObject().get("items").getAsJsonArray();
                 for(int i = 0; i < changesArray.size(); i++) {
@@ -798,7 +837,7 @@ public class WebManager {
     /**
      * @return all api locations
      */
-    public static WebReader getApiUrls() {
+    public static @Nullable WebReader getApiUrls() {
         return apiUrls;
     }
 }

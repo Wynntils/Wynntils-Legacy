@@ -12,6 +12,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -91,7 +92,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 case "discord":
                     TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
                     msg.getStyle().setColor(TextFormatting.GOLD);
-                    TextComponentString link = new TextComponentString(WebManager.getApiUrls().get("DiscordInvite"));
+                    WebReader apiUrls = WebManager.getApiUrls();
+                    TextComponentString link = new TextComponentString(apiUrls == null ? "<Wynntils servers are down>" : apiUrls.get("DiscordInvite"));
                     link.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
                             .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")))

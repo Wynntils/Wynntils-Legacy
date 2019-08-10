@@ -38,6 +38,8 @@ public class MapProfile {
     }
 
     public void updateMap() {
+        if (url == null) return;
+
         try {
             WebReader reader = new WebReader(url);
 
