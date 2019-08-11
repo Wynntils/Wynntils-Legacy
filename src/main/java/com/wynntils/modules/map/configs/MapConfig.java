@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class MapConfig extends SettingsClass {
     public static MapConfig INSTANCE;
 
-    @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
+    @Setting(displayName = "wynntils.config.map.compass_beam.display_name", description = "wynntils.config.map.compass_beam.description", order = 0)
     public boolean showCompassBeam = true;
 
     @Setting(displayName = "wynntils.config.map.compass_directions.display_name", description = "wynntils.config.map.compass_directions.description", order = 4)
@@ -37,20 +37,20 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.map.minimap_rotation.display_name", description = "wynntils.config.map.minimap_rotation.description", order = 4)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
+    @Setting(displayName = "wynntils.config.map.minimap_size.display_name", description = "wynntils.config.map.minimap_size.description", order = 5)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    @Setting(displayName = "wynntils.config.map.minimap_coords.display_name", description = "wynntils.config.map.minimap_coords.description", order = 6)
     public boolean showCoords = false;
 
     @Setting(displayName = "wynntils.config.map.only_north.display_name", description = "wynntils.config.map.only_north.description", order = 7)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
+    @Setting(displayName = "wynntils.config.map.minimap_icons.display_name", description = "wynntils.config.map.minimap_icons.description", order = 8)
     public boolean minimapIcons = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 9)
+    @Setting(displayName = "wynntils.config.map.minimap_icons_size.display_name", description = "wynntils.config.map.minimap_icons_size.description", order = 9)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
@@ -60,24 +60,24 @@ public class MapConfig extends SettingsClass {
 
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
 
-    @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
+    @SettingsInfo(name = "map_worldmap", displayPath = "wynntils.config.map.world_map.display_path")
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
 
-        @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
+        @Setting(displayName = "wynntils.config.map.world_map.territory_visible.display_name", description = "wynntils.config.map.world_map.territory_visible.description")
         public boolean keepTerritoryVisible = false;
 
-        @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
+        @Setting(displayName = "wynntils.config.map.world_map.territory_names.display_name", description = "wynntils.config.map.world_map.territory_names.description")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
+        @Setting(displayName = "wynntils.config.map.world_map.territory_guild_tags.display_name", description = "wynntils.config.map.world_map.territory_guild_tags.description")
         public boolean useGuildShortNames = true;
 
-        @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
+        @Setting(displayName = "wynntils.config.map.world_map.territory_color_transparency.display_name", description = "wynntils.config.map.world_map.territory_color_transparency.description")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
 
-        @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
+        @Setting(displayName = "wynntils.config.map.world_map.territory_area.display_name", description = "wynntils.config.map.world_map.territory_area.description")
         public boolean territoryArea = true;
 
         // If this ever needs to be configurable, make these into @Setting s.
@@ -239,7 +239,7 @@ public class MapConfig extends SettingsClass {
     public IconTexture iconTexture = IconTexture.Classic;
     public enum IconTexture {
         Classic("wynntils.map.enum.icon_texutre.classic"),
-        Medival("wynntils.map.enum.icon_texutre.medival");
+        Medieval("wynntils.map.enum.icon_texutre.medieval");
 
         public String displayName;
 

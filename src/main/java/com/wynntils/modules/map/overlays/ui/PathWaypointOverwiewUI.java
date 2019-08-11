@@ -9,6 +9,7 @@ import com.wynntils.modules.map.instances.PathWaypointProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
 
         pageHeight = (this.height - 100) / 25;
         setEditButtons();
-        this.buttonList.add(newBtn = new GuiButton(-1, this.width/2 - 20, this.height - 45, 40, 20, "NEW"));
+        this.buttonList.add(newBtn = new GuiButton(-1, this.width/2 - 20, this.height - 45, 40, 20, I18n.format("wynntils.map.ui.waypoints.button.new")));
         this.buttonList.add(nextPageBtn = new GuiButton(0, this.width/2 + 24, this.height - 45, 20, 20, ">"));
         this.buttonList.add(previousPageBtn = new GuiButton(1, this.width/2 - 44, this.height - 45, 20, 20, "<"));
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
@@ -43,8 +44,8 @@ public class PathWaypointOverwiewUI extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 185, 39, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width/2 - 150, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + I18n.format("wynntils.map.ui.waypoints.floating.icon"), this.width/2 - 185, 39, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + I18n.format("wynntils.map.ui.waypoints.floating.name"), this.width/2 - 150, 39, 0xFFFFFF);
         drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 + 20, 39, 0xFFFFFF);
         drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 60, 39, 0xFFFFFF);
         drawRect(this.width/2 - 185, 48,this.width/2 + 170,49, 0xFFFFFFFF);
@@ -105,8 +106,8 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         this.buttonList.removeAll(editButtons);
         editButtons.clear();
         for (int i = 0; i < Math.min(pageHeight, paths.size() - pageHeight * page); i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85,50 + 25 * i,40,20,"Edit..."));
-            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130, 50 + 25 * i, 40, 20, "Delete"));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85,50 + 25 * i,40,20,I18n.format("wynntils.map.ui.waypoints.button.edit")));
+            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130, 50 + 25 * i, 40, 20, I18n.format("wynntils.chat.tabgui.button.delete")));
         }
         this.buttonList.addAll(editButtons);
     }

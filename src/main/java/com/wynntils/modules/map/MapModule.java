@@ -43,7 +43,7 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
+        mapKey = registerKeyBinding("wynntils.map.keybind.open_map", Keyboard.KEY_M, "Wynntils", true, () -> {
             if (Reference.onWorld && WebManager.getApiUrls() != null) {
                 // If ApiUrls is null, Wynntils server is down and map
                 // will never be loaded

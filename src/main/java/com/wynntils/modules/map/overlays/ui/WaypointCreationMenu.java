@@ -86,11 +86,11 @@ public class WaypointCreationMenu extends UI {
         int visibilityButtonWidth = 100;
         int visibilityButtonHeight = this.height/2 + 40;
         buttonList.add(defaultVisibilityButton = new GuiButton(99, this.width/2 - 3 * visibilityButtonWidth / 2 - 2, visibilityButtonHeight, visibilityButtonWidth, 18, "Default"));
-        buttonList.add(alwaysVisibleButton = new GuiButton(100, this.width/2 - visibilityButtonWidth / 2,visibilityButtonHeight, visibilityButtonWidth, 18, I18n.format("wynntils.map.ui.waypoint_creation.buttons.always_visible"));
+        buttonList.add(alwaysVisibleButton = new GuiButton(100, this.width/2 - visibilityButtonWidth / 2,visibilityButtonHeight, visibilityButtonWidth, 18, I18n.format("wynntils.map.ui.waypoint_creation.buttons.always_visible")));
         buttonList.add(hiddenButton = new GuiButton(101, this.width/2 + visibilityButtonWidth / 2 + 2,visibilityButtonHeight, visibilityButtonWidth, 18, "Hidden"));
 
-        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 71, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.waypoint_creation.buttons.cancel"));
-        buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.waypoint_creation.buttons.save"));
+        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 71, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel")));
+        buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, this.height - 80, 45, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.save")));
         saveButton.enabled = false;
 
         xCoordField.setText(Integer.toString(initialX));

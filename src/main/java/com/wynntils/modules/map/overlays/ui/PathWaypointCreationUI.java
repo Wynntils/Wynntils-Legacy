@@ -13,6 +13,7 @@ import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 import java.io.IOException;
@@ -71,10 +72,10 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
         super.initGui();
 
-        buttonList.add(saveButton = new GuiButton(1, 22, 23, 60, 18, "Save"));
-        buttonList.add(cancelButton = new GuiButton(3, 22, 46, 60, 18, "Cancel"));
-        buttonList.add(resetButton = new GuiButton(3, 22, 69, 60, 18, "Reset"));
-        buttonList.add(clearButton = new GuiButton(4, 22, 92, 60, 18, "Clear"));
+        buttonList.add(saveButton = new GuiButton(1, 22, 23, 60, 18, I18n.format("wynntils.chat.tabgui.button.save")));
+        buttonList.add(cancelButton = new GuiButton(3, 22, 46, 60, 18, I18n.format("wynntils.map.ui.world_map_settings.buttons.cancel")));
+        buttonList.add(resetButton = new GuiButton(3, 22, 69, 60, 18, I18n.format("wynntils.config.other.reset")));
+        buttonList.add(clearButton = new GuiButton(4, 22, 92, 60, 18, I18n.format("wynntils.map.ui.path_creation.buttons.clear")));
 
         boolean returning = nameField != null;
         String name = returning ? nameField.getText() : profile.name;
@@ -82,22 +83,22 @@ public class PathWaypointCreationUI extends WorldMapUI {
         nameField = new GuiTextField(0, mc.fontRenderer, this.width - 183, 23, 160, 20);
         nameField.setText(name);
         nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width - 218, 30, 40, 10, 0xFFFFFF);
-        nameFieldLabel.addLine("Name");
+        nameFieldLabel.addLine(I18n.format("wynntils.map.ui.waypoints.floating.name"));
 
         if (!returning) {
             colorWheel = new UIEColorWheel(1, 0, -168, 46, 20, 20, true, profile::setColor, this);
             colorWheel.setColor(profile.getColor());
         }
 
-        buttonList.add(hiddenBox = new GuiCheckBox(5, this.width - 143,  72, "Hidden", hidden));  // TODO: check align
-        buttonList.add(circularBox = new GuiCheckBox(6, this.width - 83, 72, "Circular", profile.isCircular));
+        buttonList.add(hiddenBox = new GuiCheckBox(5, this.width - 143,  72, I18n.format("wynntils.map.ui.path_creation.buttons.hidden"), hidden));  // TODO: check align
+        buttonList.add(circularBox = new GuiCheckBox(6, this.width - 83, 72, I18n.format("wynntils.map.ui.path_creation.buttons.circular"), profile.isCircular));
 
         helpText = new GuiLabel(mc.fontRenderer, 1, 22, this.height - 36, 120, 10, 0xFFFFFF);
-        helpText.addLine("Shift + drag to pan");
-        helpText.addLine("Right click to remove points");
+        helpText.addLine(I18n.format("wynntils.map.ui.path_creation.floating.line_1"));
+        helpText.addLine(I18n.format("wynntils.map.ui.path_creation.floating.line_2"));
 
-        buttonList.add(addToFirst = new GuiCheckBox(7, this.width - 100, this.height - 47, "Add to start", false));
-        buttonList.add(showIconsBox = new GuiCheckBox(8, this.width - 100, this.height - 34, "Show icons", true));
+        buttonList.add(addToFirst = new GuiCheckBox(7, this.width - 100, this.height - 47, I18n.format("wynntils.map.ui.path_creation.buttons.add_to_start"), false));
+        buttonList.add(showIconsBox = new GuiCheckBox(8, this.width - 100, this.height - 34, I18n.format("wynntils.map.ui.path_creation.buttons.show_icons"), true));
 
     }
 

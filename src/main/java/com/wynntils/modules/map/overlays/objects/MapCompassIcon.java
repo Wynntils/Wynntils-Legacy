@@ -7,6 +7,7 @@ package com.wynntils.modules.map.overlays.objects;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
+import net.minecraft.client.resources.I18n;
 
 public class MapCompassIcon extends MapTextureIcon {
     private static MapCompassIcon instance = null;
@@ -33,7 +34,7 @@ public class MapCompassIcon extends MapTextureIcon {
     }
 
     @Override public String getName() {
-        return "Compass Beacon";
+        return I18n.format("wynntils.map.ui.world_map.marker.beacon");
     }
 
     @Override public int getTexPosX() {

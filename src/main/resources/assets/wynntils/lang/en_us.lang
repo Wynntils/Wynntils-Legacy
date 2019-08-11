@@ -69,6 +69,29 @@ wynntils.config.map.record_chest_tier.display_name=Recording Chest Waypoints
 wynntils.config.map.record_chest_tier.description=Which chest tiers should be recorded as waypoints as you discover them?\n\n§8The mod will also record higher tiers than the specified tier.
 wynntils.config.map.minimap_zoom.display_name=Minimap Zoom
 wynntils.config.map.minimap_zoom.description=How far zoomed out should the minimap be?
+wynntils.config.map.compass_beam.display_name=Show Compass Beam
+wynntils.config.map.compass_beam.description=Should a beacon beam be displayed at your compass position?
+wynntils.config.map.minimap_size.display_name=Minimap Size
+wynntils.config.map.minimap_size.description=How large should the minimap be?
+wynntils.config.map.minimap_coords.display_name=Minimap Coordinates
+wynntils.config.map.minimap_coords.description=Should your coordinates be displayed below the minimap?
+wynntils.config.map.minimap_icons.display_name=Display Minimap Icons
+wynntils.config.map.minimap_icons.description=Should map icons be displayed on the minimap?
+wynntils.config.map.minimap_icons_size.display_name=Minimap Icons Size
+wynntils.config.map.minimap_icons_size.description=How big should minimap icons be?
+
+## MAP WORLD MAP CONFIG ##
+wynntils.config.map.world_map.display_path=Map/World Map
+wynntils.config.map.world_map.territory_visible.display_name=Keep Territory Visible
+wynntils.config.map.world_map.territory_visible.description=Should territory names always be displayed rather than only when you hold CTRL?
+wynntils.config.map.world_map.territory_names.display_name=Territory Names
+wynntils.config.map.world_map.territory_names.description=Should territory names be displayed?
+wynntils.config.map.world_map.territory_guild_tags.display_name=Territory Guild Tags
+wynntils.config.map.world_map.territory_guild_tags.description=Should be guild names be replaced by their guild tags?
+wynntils.config.map.world_map.territory_color_transparency.display_name=Territory Colour Transparency
+wynntils.config.map.world_map.territory_color_transparency.description=How transparent should the colour of territories be?
+wynntils.config.map.world_map.territory_area.display_name=Territory Colour Transparency
+wynntils.config.map.world_map.territory_area.description=How transparent should the colour of territories be?
 
 ## MAP MAP FORMAT ENUM CONFIG ##
 wynntils.config.map.enum.map_format.square=Square
@@ -660,6 +683,14 @@ wynntils.map.toasts.new_map_entry.body=You found a tier %s chest!
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Markers
 wynntils.map.ui.world_map.button.waypoints=Waypoints
+wynntils.map.ui.world_map.button.paths=Paths
+wynntils.map.ui.world_map.marker.beacon=Compass Beacon
+wynntils.map.ui.world_map.help.title=Help
+wynntils.map.ui.world_map.help.line_1=CTRL to show territories
+wynntils.map.ui.world_map.help.line_2=Left click on waypoint to place compass beacon there
+wynntils.map.ui.world_map.help.line_3=Middle click to place compass beacon
+wynntils.map.ui.world_map.help.line_4=Double click on compass beacon to create waypoint there
+wynntils.map.ui.world_map.help.line_5=Right click to centre on player
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Cancel
@@ -670,8 +701,7 @@ wynntils.map.ui.world_map_settings.floating.textures=Map Icon Textures:
 
 ## ICON TEXTURE ENUM ##
 wynntils.map.enum.icon_texutre.classic=Classic
-# Spell error in code replicated for consistency
-wynntils.map.enum.icon_texutre.medival=Medieval
+wynntils.map.enum.icon_texutre.medieval=Medieval
 
 ## MINIMAP OVERLAY ##
 wynntils.map.overlays.minimap.display_name=Minimap
@@ -690,11 +720,22 @@ wynntils.map.ui.waypoint_creation.floating.waypoint_name=Waypoint Name:
 wynntils.map.ui.waypoint_creation.floating.coordinates=Coordinates:
 wynntils.map.ui.world_map_settings.floating.icon=Icon:
 wynntils.map.ui.world_map_settings.floating.color=Color:
+wynntils.map.ui.path_creation.buttons.clear=Clear
+wynntils.map.ui.path_creation.buttons.hidden=Hidden
+wynntils.map.ui.path_creation.buttons.circular=Circular
+wynntils.map.ui.path_creation.buttons.add_to_start=Add to start
+wynntils.map.ui.path_creation.buttons.show_icons=Show icons
+wynntils.map.ui.path_creation.floating.line_1=Shift + drag to pan
+wynntils.map.ui.path_creation.floating.line_2=Right click to remove points
 
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=Icon
 wynntils.map.ui.waypoints.floating.name=Name
 wynntils.map.ui.waypoints.button.edit=Edit...
+wynntils.map.ui.waypoints.button.new=NEW
+
+## KEYBINDS ##
+wynntils.map.keybind.open_map=Open Map
 
 #########
 # MUSIC #
@@ -891,3 +932,9 @@ wynntils.utilities.overlays.war_timer.message.mob_spawn=The mobs for %s will sta
 wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=The mobs will start spawning in
 wynntils.utilities.overlays.war_timer.message.in_war=You have been at war in %s for
 wynntils.utilities.overlays.war_timer.message.in_war.no_territory=You have been at war for
+
+## STOPWATCH OVERLAY ##
+wynntils.utilities.overlays.stopwatch.display_name=Stopwatch
+
+## INFO OVERLAY ##
+wynntils.utilities.overlays.info.display_name=Info

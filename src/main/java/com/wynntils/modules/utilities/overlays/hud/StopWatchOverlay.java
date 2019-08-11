@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.LongPress;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class StopWatchOverlay extends Overlay {
@@ -38,7 +39,7 @@ public class StopWatchOverlay extends Overlay {
     }
 
     public StopWatchOverlay() {
-        super("Stop Watch", 60, 10, true, 0, 1f, 10, -15, OverlayGrowFrom.BOTTOM_LEFT, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
+        super("Stop Watch", I18n.format("wynntils.utilities.overlays.stopwatch.display_name"), 60, 10, true, 0, 1f, 10, -15, OverlayGrowFrom.BOTTOM_LEFT, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 
     @Override

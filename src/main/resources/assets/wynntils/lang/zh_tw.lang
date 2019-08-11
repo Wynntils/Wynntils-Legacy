@@ -45,6 +45,7 @@ wynntils.config.chat.clickable_invite.display_name=組隊邀請點擊
 wynntils.config.chat.clickable_invite.description=組隊邀請指令是否可點擊？
 wynntils.config.chat.clickable_coordinate.display_name=座標點擊標記
 wynntils.config.chat.clickable_coordinate.description=顯示在聊天欄的座標是否與'/compass'指令一樣可點擊？
+
 ## CHAT PRESET ENUM CONFIG ##
 wynntils.config.chat.enum.preset.a=A
 wynntils.config.chat.enum.preset.b=B
@@ -68,6 +69,29 @@ wynntils.config.map.record_chest_tier.display_name=箱子記錄點
 wynntils.config.map.record_chest_tier.description=你要在地圖上標記哪一階級的箱子呢？\n\n§8這個模組也會順便紀錄比它的階級還要高的箱子。
 wynntils.config.map.minimap_zoom.display_name=小地圖縮放
 wynntils.config.map.minimap_zoom.description=小地圖的縮放程度要多少？
+wynntils.config.map.compass_beam.display_name=Show Compass Beam ##TODO
+wynntils.config.map.compass_beam.description=Should a beacon beam be displayed at your compass position? ##TODO
+wynntils.config.map.minimap_size.display_name=Minimap Size ##TODO
+wynntils.config.map.minimap_size.description=How large should the minimap be? ##TODO
+wynntils.config.map.minimap_coords.display_name=Minimap Coordinates ##TODO
+wynntils.config.map.minimap_coords.description=Should your coordinates be displayed below the minimap? ##TODO
+wynntils.config.map.minimap_icons.display_name=Display Minimap Icons ##TODO
+wynntils.config.map.minimap_icons.description=Should map icons be displayed on the minimap? ##TODO
+wynntils.config.map.minimap_icons_size.display_name=Minimap Icons Size ##TODO
+wynntils.config.map.minimap_icons_size.description=How big should minimap icons be? ##TODO
+
+## MAP WORLD MAP CONFIG ##
+wynntils.config.map.world_map.display_path=Map/World Map ##TODO
+wynntils.config.map.world_map.territory_visible.display_name=Keep Territory Visible ##TODO
+wynntils.config.map.world_map.territory_visible.description=Should territory names always be displayed rather than only when you hold CTRL? ##TODO
+wynntils.config.map.world_map.territory_names.display_name=Territory Names ##TODO
+wynntils.config.map.world_map.territory_names.description=Should territory names be displayed? ##TODO
+wynntils.config.map.world_map.territory_guild_tags.display_name=Territory Guild Tags ##TODO
+wynntils.config.map.world_map.territory_guild_tags.description=Should be guild names be replaced by their guild tags? ##TODO
+wynntils.config.map.world_map.territory_color_transparency.display_name=Territory Colour Transparency ##TODO
+wynntils.config.map.world_map.territory_color_transparency.description=How transparent should the colour of territories be? ##TODO
+wynntils.config.map.world_map.territory_area.display_name=Territory Colour Transparency ##TODO
+wynntils.config.map.world_map.territory_area.description=How transparent should the colour of territories be? ##TODO
 
 ## MAP MAP FORMAT ENUM CONFIG ##
 wynntils.config.map.enum.map_format.square=正方形
@@ -194,7 +218,7 @@ wynntils.config.utils.item_highlights.highlight_normal.display_name=一般物品
 wynntils.config.utils.item_highlights.highlight_normal.description=是否讓一般物品(Normal)更加顯眼？
 wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=黑市飾物(Black Market)強調顯示
 wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=是否讓黑市飾物(Black Market)更加顯眼？
-wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name神級(Godly)裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name=神級(Godly)裝備強調顯示
 wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description=是否讓神級(Godly)裝備更加顯眼？
 wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name=史詩級(Epic)裝備強調顯示
 wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description=是否讓史詩級(Epic)裝備更加顯眼？
@@ -659,6 +683,14 @@ wynntils.map.toasts.new_map_entry.body=找到了一個  %s 階的箱子!
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=標記
 wynntils.map.ui.world_map.button.waypoints=標記點
+wynntils.map.ui.world_map.button.paths=Paths ##TODO
+wynntils.map.ui.world_map.marker.beacon=Compass Beacon ##TODO
+wynntils.map.ui.world_map.help.title=Help ##TODO
+wynntils.map.ui.world_map.help.line_1=CTRL to show territories ##TODO
+wynntils.map.ui.world_map.help.line_2=Left click on waypoint to place compass beacon there ##TODO
+wynntils.map.ui.world_map.help.line_3=Middle click to place compass beacon ##TODO
+wynntils.map.ui.world_map.help.line_4=Double click on compass beacon to create waypoint there ##TODO
+wynntils.map.ui.world_map.help.line_5=Right click to centre on player ##TODO
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=取消
@@ -669,8 +701,7 @@ wynntils.map.ui.world_map_settings.floating.textures=地圖圖標材質：
 
 ## ICON TEXTURE ENUM ##
 wynntils.map.enum.icon_texutre.classic=經典
-# Spell error in code replicated for consistency
-wynntils.map.enum.icon_texutre.medival=中世紀
+wynntils.map.enum.icon_texutre.medieval=中世紀
 
 ## MINIMAP OVERLAY ##
 wynntils.map.overlays.minimap.display_name=小地圖
@@ -689,11 +720,22 @@ wynntils.map.ui.waypoint_creation.floating.waypoint_name=標記點名稱:
 wynntils.map.ui.waypoint_creation.floating.coordinates=座標:
 wynntils.map.ui.world_map_settings.floating.icon=圖標:
 wynntils.map.ui.world_map_settings.floating.color=顏色:
+wynntils.map.ui.path_creation.buttons.clear=Clear ##TODO
+wynntils.map.ui.path_creation.buttons.hidden=Hidden ##TODO
+wynntils.map.ui.path_creation.buttons.circular=Circular ##TODO
+wynntils.map.ui.path_creation.buttons.add_to_start=Add to start ##TODO
+wynntils.map.ui.path_creation.buttons.show_icons=Show icons ##TODO
+wynntils.map.ui.path_creation.floating.line_1=Shift + drag to pan ##TODO
+wynntils.map.ui.path_creation.floating.line_2=Right click to remove points ##TODO
 
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=圖標
 wynntils.map.ui.waypoints.floating.name=名稱
 wynntils.map.ui.waypoints.button.edit=編輯...
+wynntils.map.ui.waypoints.button.new=NEW ##TODO
+
+## KEYBINDS ##
+wynntils.map.keybind.open_map=Open Map ##TODO
 
 #########
 # MUSIC #
@@ -890,3 +932,9 @@ wynntils.utilities.overlays.war_timer.message.mob_spawn=怪物將於 %s 後生�
 wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=怪物即將生成
 wynntils.utilities.overlays.war_timer.message.in_war=你於 %s 戰鬥中
 wynntils.utilities.overlays.war_timer.message.in_war.no_territory=你已於戰鬥中
+
+## STOPWATCH OVERLAY ##
+wynntils.utilities.overlays.stopwatch.display_name=Stopwatch ##TODO
+
+## INFO OVERLAY ##
+wynntils.utilities.overlays.info.display_name=Info ##TODO

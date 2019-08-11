@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 
 public abstract class InfoOverlay extends Overlay {
     private InfoOverlay(int index) {
-        super("Info " + index, 100, 9, true,0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
+        super("Info " + index, I18n.format("wynntils.utilities.overlays.info.display_name"), 100, 9, true,0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
     }
 
     public abstract int getIndex();

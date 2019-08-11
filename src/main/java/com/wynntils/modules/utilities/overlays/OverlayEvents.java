@@ -190,17 +190,17 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
-                String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
+                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.strength_pot", inMessage[0].replace("[+", ""), inMessage[4], "✤")));
                 e.setCanceled(true);
                 return;
             } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
-                String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
+                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.agility_pot", inMessage[0].replace("[+", ""), inMessage[4], "❋")));
                 e.setCanceled(true);
                 return;
             } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
-                String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
+                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot", inMessage[0].replace("[+", ""), inMessage[4], "✦")));
                 e.setCanceled(true);
                 return;
@@ -210,7 +210,7 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✹ Defense for \\d+ seconds]")) {
-                String[] inMessage = Utils.stripColor(e.getMessage().getFormattedText()).split(" ");
+                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.defense_pot", inMessage[0].replace("[+", ""), inMessage[4], "✹")));
                 e.setCanceled(true);
                 return;
@@ -332,7 +332,7 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ Soul Points?\\]")) {
                 e.setCanceled(true);
-                String[] res = Utils.stripColor(e.getMessage().getFormattedText()).replace("[", "").replace("]", "").split(" ");
+                String[] res = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).replace("[", "").replace("]", "").split(" ");
                 if (res[2].equals("Point")) {
                     GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.soul_point.single"));
                 } else {
