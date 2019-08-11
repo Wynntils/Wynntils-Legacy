@@ -34,10 +34,11 @@ const translated = fs
 let lastProgress = -1;
 
 /*the regex used for matching special codes together with spacing
-these are found in the original and the translation,
+that are found in the original and the translation,
 then the instances in the translation are replaced with
-the instances from the original at the same count index,
-explanation at https://regex101.com/r/vq5Xuk/6, choose the latest saved version*/
+the instances from the original at the same count index.
+This is not a perfect heuristic and / in particular might get messed up.
+see at https://regex101.com/r/vq5Xuk/7, choose the latest saved version*/
 const specialCodesRegex = /(?:^|["' ([\{])\/ ?\w+ ?| ?(?<!%)(?:§\w|% ?\w|\$ ?\w|\( ?.? ?\/ ?.? ?\)|\\+(?!n)|[<>\[\]|:+\/\(\)]) ?(?!\/ ?\w+)/gu;
 
 //format the file line by line
