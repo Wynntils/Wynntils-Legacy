@@ -10,14 +10,13 @@ import com.wynntils.core.framework.FrameworkManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraft.network.Packet;
 
 public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
+
     /**
-     * Dispatch a bunch of packet outgoing events to be checked before actually being sent
+     * Dispatch a packet outgoing event to be checked before actually being sent
+     * 
      * @see PacketEvent for more information about these events
      *
      *
@@ -27,19 +26,15 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
      */
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        Event e = null;
 
-        if(msg instanceof CPacketPlayerDigging) {
-            CPacketPlayerDigging packet = (CPacketPlayerDigging) msg;
-            if(packet.getAction() == CPacketPlayerDigging.Action.DROP_ITEM || packet.getAction() == CPacketPlayerDigging.Action.DROP_ALL_ITEMS)
-                e = new PacketEvent.PlayerDropItemEvent(packet, ModCore.mc().getConnection());
-        }else if(msg instanceof CPacketPlayerTryUseItemOnBlock) {
-            e = new PacketEvent.PlayerUseItemOnBlockEvent((CPacketPlayerTryUseItemOnBlock)msg, ModCore.mc().getConnection());
-        }else if(msg instanceof CPacketPlayerTryUseItem) {
-            e = new PacketEvent.PlayerUseItemEvent((CPacketPlayerTryUseItem)msg, ModCore.mc().getConnection());
+        boolean noEvent = false;
+
+        if (FakeInventory.ignoreNextUserClick) {
+            FakeInventory.ignoreNextUserClick = false;
+            noEvent = true;
         }
 
-        if(e != null && FrameworkManager.getEventBus().post(e)) return;
+        if (!noEvent && FrameworkManager.getEventBus().post(new PacketEvent<Packet<?>>((Packet<?>) msg, ModCore.mc().getConnection()))) return;
 
         super.write(ctx, msg, promise);
     }

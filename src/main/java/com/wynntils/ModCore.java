@@ -9,15 +9,21 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.ModuleManager;
+import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
+import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
+import java.util.HashMap;
 
 @Mod(
         name = Reference.NAME,
@@ -28,7 +34,6 @@ import java.io.File;
 )
 public class ModCore {
 
-    public static final boolean DEBUG = false;
     public static File jarFile = null;
 
     @Mod.EventHandler
@@ -57,6 +62,16 @@ public class ModCore {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
+
+        HashMap<String, String> conflicts = new HashMap<>();
+        for(ModContainer mod : Loader.instance().getActiveModList()) {
+            if(!mod.getModId().equalsIgnoreCase("labymod")) continue;
+
+            conflicts.put(mod.getName(), mod.getVersion());
+        }
+
+        if(!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
+
         FrameworkManager.postEnableModules();
         FrameworkManager.registerCommands();
         Textures.loadTextures();
@@ -67,6 +82,11 @@ public class ModCore {
             Textures.loadTextures();
             Mappings.loadMappings();
         });
+
+        if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {
+            MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
+            MapConfig.INSTANCE.saveSettings(MapModule.getModule());
+        }
     }
 
     public static Minecraft mc() {

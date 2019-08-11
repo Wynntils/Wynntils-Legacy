@@ -12,6 +12,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -94,7 +95,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     TextComponentTranslation msg = new TextComponentTranslation("wynntils.commands.wynntils.discord.basic_text");
                     msg.appendText("\n");
                     msg.getStyle().setColor(TextFormatting.GOLD);
-                    TextComponentString link = new TextComponentString(WebManager.getApiUrls().get("DiscordInvite"));
+                    WebReader apiUrls = WebManager.getApiUrls();
+                    TextComponentString link = new TextComponentString(apiUrls == null ? "<Wynntils servers are down>" : apiUrls.get("DiscordInvite"));
                     link.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
                             .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("wynntils.commands.wynntils.discord.discord_link_hover")))
@@ -120,7 +122,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 case "debug":
-                    QuestManager.requestQuestBookReading();
+                    QuestManager.requestAnalyse();
                     break;
                 default:
                     throw new CommandException("wynntils.commands.wynntils.error.invalid_argument");
@@ -193,7 +195,11 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "reloadapi", "donate");
+            return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "changelog", "reloadapi", "donate");
+        } else if (args.length == 2) {
+            if (args[0].equals("changelog")) {
+                return getListOfStringsMatchingLastWord(args, "major");
+            }
         }
         return Collections.emptyList();
     }

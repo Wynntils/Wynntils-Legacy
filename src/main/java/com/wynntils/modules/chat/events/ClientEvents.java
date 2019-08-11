@@ -7,7 +7,7 @@ package com.wynntils.modules.chat.events;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Pair;
-import com.wynntils.core.utils.ReflectionFields;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -35,7 +35,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatRecieved(ClientChatReceivedEvent e) {
-        if (e.getMessage().getFormattedText().startsWith(TextFormatting.DARK_RED + "[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        if (e.getMessage().getUnformattedText().startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
         } else if (e.getMessage().getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);

@@ -10,13 +10,12 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,45 +34,44 @@ public class GameUpdateOverlay extends Overlay {
     public int offsetY = 0;
 
     /* Message Management */
-    public static List<MessageContainer> messageQueue = new LinkedList<>();
+    private static List<MessageContainer> messageQueue = new LinkedList<>();
 
     /* Rendering */
-    public static final int LINE_HEIGHT = 12;
-
-    private static final CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
-
-    @Override
-    public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE)
-            return;
-        List<MessageContainer> updatedList = new LinkedList<>();
-        for (MessageContainer message : messageQueue) {
-            if(message.getTime() == 0.0f) continue;
-
-            message.updateTime();
-            updatedList.add(message);
-        }
-        messageQueue = updatedList;
-        staticSize.y = LINE_HEIGHT * OverlayConfig.GameUpdate.INSTANCE.messageLimit;
-    }
+    private static final int LINE_HEIGHT = 12;
+    private static CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE)
-            return;
+        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
+        staticSize.y = LINE_HEIGHT * OverlayConfig.GameUpdate.INSTANCE.messageLimit;
 
         int lines = 0;
-        for (MessageContainer message : new LinkedList<>(messageQueue)) {
-            if (lines < OverlayConfig.GameUpdate.INSTANCE.messageLimit) {
-                if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
-                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines), alphaColor.setA(message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
-                } else {
-                    drawString(message.getMessage(), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100), 0 - (LINE_HEIGHT * lines), alphaColor.setA(message.getTime()), (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT), OverlayConfig.GameUpdate.INSTANCE.textShadow);
-                }
-                lines++;
-            } else
-                return;
+
+        Iterator<MessageContainer> messages = messageQueue.iterator();
+        while(messages.hasNext()) {
+            MessageContainer message = messages.next();
+
+            if(message.getRemainingTime() <= 0.0f) messages.remove(); //remove the message if the time has come
+            if(lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break; //breaks the loop if the limit was reached
+
+            if(OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
+                drawString(message.getMessage(),
+                        (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
+                        (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
+                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
+                        OverlayConfig.GameUpdate.INSTANCE.textShadow);
+            else
+                drawString(message.getMessage(),
+                        (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
+                        0 - (LINE_HEIGHT * lines),
+                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
+                        OverlayConfig.GameUpdate.INSTANCE.textShadow);
+
+            lines++;
         }
+
     }
 
     public static boolean queueMessage(String message) {
@@ -101,20 +99,20 @@ public class GameUpdateOverlay extends Overlay {
     private static class MessageContainer {
 
         final String message;
-        float time;
+        long endTime;
 
-        private MessageContainer(String message) { this.message = message; this.time = OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 20f; }
+        private MessageContainer(String message) {
+            this.message = message;
+            this.endTime = System.currentTimeMillis() + (long)(OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 1000);
+        }
 
-        public float getTime() {
-            return time >= 1 ? 1 : time;
+        public long getRemainingTime() {
+            return endTime - System.currentTimeMillis();
         }
 
         public String getMessage() {
             return message;
         }
 
-        public void updateTime() {
-            time = Utils.easeOut(time, 0, 0.2f, OverlayConfig.GameUpdate.INSTANCE.messageFadeOut);
-        }
     }
 }

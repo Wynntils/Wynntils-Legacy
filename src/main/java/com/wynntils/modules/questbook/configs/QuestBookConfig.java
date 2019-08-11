@@ -28,4 +28,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.questbook.scan_discoveries.display_name", description = "wynntils.config.questbook.scan_discoveries.description")
     public boolean scanDiscoveries = true;
 
+    @Setting(displayName = "Hide Mini Quests", description = "Should mini quests be hidden from the quest book?")
+    public boolean hideMiniQuests = false;
+
 }

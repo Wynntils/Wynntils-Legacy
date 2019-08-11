@@ -1,7 +1,6 @@
 package com.wynntils.core.utils;
 
 import com.wynntils.core.framework.FrameworkManager;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -21,7 +20,7 @@ public class Delay {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent e) {
-        if (e.phase == TickEvent.Phase.END && !onPause) {
+        if (e.phase == TickEvent.Phase.END && !onPause && isRunning) {
             if (delay < 0) {
                 start();
             }
@@ -35,20 +34,20 @@ public class Delay {
 
     public boolean pause() {
         if (!onPause && isRunning) {
-            onPause = false;
+            onPause = true;
             return true; //success
-        } else {
-            return false; //failed
         }
+
+        return false;
     }
 
     public boolean resume() {
         if (onPause && isRunning) {
             onPause = false;
             return true; //success
-        } else {
-            return false; //failed
         }
+
+        return false;
     }
 
     public void start() {
@@ -59,6 +58,6 @@ public class Delay {
 
     public void end() {
         isRunning = false;
-        MinecraftForge.EVENT_BUS.unregister(this);
+        FrameworkManager.getEventBus().unregister(this);
     }
 }

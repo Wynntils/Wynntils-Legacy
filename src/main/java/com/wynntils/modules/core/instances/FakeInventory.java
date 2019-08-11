@@ -9,25 +9,25 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.Pair;
+import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketClickWindow;
-import net.minecraft.network.play.client.CPacketCloseWindow;
-import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -40,6 +40,11 @@ import java.util.function.Consumer;
  */
 public class FakeInventory {
 
+    private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
+    private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
+
+    public static boolean ignoreNextUserClick = false;
+
     String windowTitle;
     int itemSlot;
 
@@ -49,7 +54,7 @@ public class FakeInventory {
     private short transactionId = 0;
     private String realWindowTitle = "";
 
-    private HashMap<Integer, ItemStack> items = new HashMap<>();
+    private NonNullList<ItemStack> items = NonNullList.create();
 
     boolean open = false;
     long openTime = System.currentTimeMillis();
@@ -84,14 +89,17 @@ public class FakeInventory {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
+        ignoreNextUserClick = true;
         if(slot == itemSlot) {
-            mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+            PacketQueue.queuePackets(rightClick, releaseClick);
             return this;
         }
 
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(itemSlot));
-        mc.getConnection().sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        mc.getConnection().sendPacket(new CPacketHeldItemChange(slot));
+        PacketQueue.queuePackets(
+                new CPacketHeldItemChange(itemSlot),
+                rightClick, releaseClick,
+                new CPacketHeldItemChange(slot)
+        );
         return this;
     }
 
@@ -107,8 +115,8 @@ public class FakeInventory {
         FrameworkManager.getEventBus().unregister(this);
         open = false;
 
-        if(onClose != null) onClose.accept(this);
         if(windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        if(onClose != null) onClose.accept(this);
     }
 
     /**
@@ -133,7 +141,7 @@ public class FakeInventory {
      * @return the ItemStack at the slot
      */
     public ItemStack getItem(int slot) {
-        if(!open || !items.containsKey(slot)) return null;
+        if (!open || items.size() >= slot) return ItemStack.EMPTY;
 
         return items.get(slot);
     }
@@ -146,22 +154,42 @@ public class FakeInventory {
     public List<ItemStack> getItems() {
         if(!open) return null;
 
-        return new ArrayList<>(items.values());
+        return items;
     }
 
     /**
-     * Find an specific item at the inventory
+     * Find a specific item at the inventory
      *
-     * @param name the item name
+     * @param name       the item name
      * @param filterType the type of the filter
-     * @return An entry with the slot number and the ItemStack
+     * @return A pair with the slot number and the ItemStack
      */
-    public Map.Entry<Integer, ItemStack> findItem(String name, FilterType filterType) {
-        if(!open) return null;
+    public Pair<Integer, ItemStack> findItem(String name, FilterType filterType) {
+        if (!open) return null;
 
-        if(filterType == FilterType.CONTAINS) return items.entrySet().stream().filter(c -> c.getValue() != null && !c.getValue().isEmpty() && c.getValue().hasDisplayName() && Utils.stripColor(c.getValue().getDisplayName()).contains(name)).findFirst().orElse(null);
-        else if(filterType == FilterType.EQUALS) return items.entrySet().stream().filter(c -> c.getValue() != null && !c.getValue().isEmpty() && c.getValue().hasDisplayName() && Utils.stripColor(c.getValue().getDisplayName()).equals(name)).findFirst().orElse(null);
-        else return items.entrySet().stream().filter(c -> c.getValue() != null && !c.getValue().isEmpty() && c.getValue().hasDisplayName() && Utils.stripColor(c.getValue().getDisplayName()).equalsIgnoreCase(name)).findFirst().orElse(null);
+        if (filterType == FilterType.CONTAINS) {
+            for (int slot = 0; slot < items.size(); slot++) {
+                ItemStack item = items.get(slot);
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).contains(name)) {
+                    return new Pair<>(slot, item);
+                }
+            }
+        } else if (filterType == FilterType.EQUALS) {
+            for (int slot = 0; slot < items.size(); slot++) {
+                ItemStack item = items.get(slot);
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equals(name)) {
+                    return new Pair<>(slot, item);
+                }
+            }
+        } else {
+            for (int slot = 0; slot < items.size(); slot++) {
+                ItemStack item = items.get(slot);
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equalsIgnoreCase(name)) {
+                    return new Pair<>(slot, item);
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -196,7 +224,7 @@ public class FakeInventory {
 
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
-    public void onInventoryReceive(PacketEvent.InventoryReceived e) {
+    public void onInventoryReceive(PacketEvent<SPacketOpenWindow> e) {
         if(!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !e.getPacket().getWindowTitle().getUnformattedText().contains(windowTitle)) {
             windowId = -1;
             close();
@@ -212,7 +240,7 @@ public class FakeInventory {
 
     //handles the items, calls onReceiveItems
     @SubscribeEvent
-    public void onItemsReceive(PacketEvent.InventoryItemsReceived e) {
+    public void onItemsReceive(PacketEvent<SPacketWindowItems> e) {
         if(e.getPacket().getWindowId() != windowId) {
             windowId = -1;
             close();
@@ -223,7 +251,7 @@ public class FakeInventory {
 
         List<ItemStack> stacks = e.getPacket().getItemStacks();
         for(int i = 0; i < stacks.size(); i++) {
-            items.put(i, stacks.get(i));
+            items.add(stacks.get(i));
         }
 
         if(onReceiveItems != null) onReceiveItems.accept(this);
@@ -233,7 +261,7 @@ public class FakeInventory {
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
-    public void cancelInteract(PacketEvent.PlayerUseItemEvent e) {
+    public void cancelInteractItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         if(!open || isCrashed()) return;
 
         if(!e.isCanceled())
@@ -244,7 +272,7 @@ public class FakeInventory {
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
-    public void cancelInteract(PacketEvent.PlayerUseItemOnBlockEvent e) {
+    public void cancelInteractItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         if(!open || isCrashed()) return;
 
         if(!e.isCanceled())

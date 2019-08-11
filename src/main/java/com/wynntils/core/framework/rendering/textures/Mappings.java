@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.IOUtils;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Mappings {
                     if(f.get(null) != null || !f.getType().isAssignableFrom(JsonObject.class)) continue;
 
                     ResourceLocation rc = new ResourceLocation(mainPath + f.getName() + ".json");
-                    f.set(null, new JsonParser().parse(IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(rc).getInputStream())));
+                    f.set(null, new JsonParser().parse(IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8)));
 
                 }catch (Exception ex) {
                     ex.printStackTrace();

@@ -51,6 +51,14 @@ public class CustomColor {
                 float b = ((float) Integer.parseInt(string.substring(4, 6), 16) / 255f);
                 return new CustomColor(r,g,b,a);
             } catch(Exception ignored) { }
+        } else if (string.length() == 3) {
+            // "rgb" -> "rrggbb"
+            try {
+                float r = (Integer.parseInt(string.substring(0, 1), 16) * 0x11 / 255f);
+                float g = (Integer.parseInt(string.substring(1, 2), 16) * 0x11 / 255f);
+                float b = (Integer.parseInt(string.substring(2, 3), 16) * 0x11 / 255f);
+                return new CustomColor(r,g,b,a);
+            } catch(Exception ignored) { }
         }
         return fromString(DigestUtils.sha1Hex(string).substring(0,6),a);
     }

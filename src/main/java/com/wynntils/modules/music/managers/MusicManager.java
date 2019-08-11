@@ -74,11 +74,11 @@ public class MusicManager {
                 while(mc.find()) {
                     String value = mc.group(1).replace("(", "").replace(")", "");
                     String toSearch = location.contains(" ") ? location.split(" ")[0] : location;
-                    if(value.equalsIgnoreCase(location)) {
+                    if(value.equalsIgnoreCase(location)) { //perfect match
                         direct = Optional.of(mp);
-                    }else if(value.startsWith(toSearch)) {
+                    }else if(value.startsWith(toSearch)) { //match by first word
                         firstWord = Optional.of(mp);
-                    }else if(value.startsWith(location)) {
+                    }else if(value.startsWith(location)) { //match by entire location
                         lessPossible = Optional.of(mp);
                     }
                 }

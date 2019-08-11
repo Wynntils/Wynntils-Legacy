@@ -184,7 +184,7 @@
       "zoomNeeded": 0,
       "size": 3
     },
-    "MarketPlace": {
+    "NPC_TradeMarket": {
       "texPosX": 78,
       "texPosZ": 17,
       "texSizeX": 96,
@@ -458,7 +458,7 @@
       "zoomNeeded": 0,
        "size": 2
     },
-     "MarketPlace": {
+     "NPC_TradeMarket": {
       "texPosX": 102,
       "texPosZ": 225,
       "texSizeX": 116,

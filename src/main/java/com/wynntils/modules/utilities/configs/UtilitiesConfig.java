@@ -44,6 +44,24 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.utils.prevent_slot_click.display_name", description = "wynntils.config.utils.prevent_slot_click.description")
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Disable FOV Changes with Speed Effect", description = "Should your FOV remain unchanged when you have speed?")
+    public boolean disableFovChanges = false;
+
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
+    public boolean autoMount = false;
+
+    @Setting(displayName = "Block Health Potions When at Full Health", description = "Should the mod prevent you from using your health potions when you are at full health?")
+    public boolean blockHealingPots = true;
+
+    @Setting(displayName = "Apply Wynncraft resource pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
+    public boolean autoResource = true;
+
+    @Setting(upload = false)
+    public String lastServerResourcePack = "";
+
+    @Setting(upload = false)
+    public String lastServerResourcePackHash = "";
+
     //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
     @Setting(upload = true)
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
