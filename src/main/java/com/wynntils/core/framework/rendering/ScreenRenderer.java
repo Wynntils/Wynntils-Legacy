@@ -6,7 +6,7 @@ package com.wynntils.core.framework.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
-import com.wynntils.core.utils.ReflectionFields;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -530,6 +530,27 @@ public class ScreenRenderer {
               yMin  = Math.min(y1, y2) + drawingOrigin.y,
               yMax  = Math.max(y1, y2) + drawingOrigin.y;
         GlStateManager.glBegin(GL_QUADS);
+        GlStateManager.glVertex3f(xMin, yMin, 0);
+        GlStateManager.glVertex3f(xMin, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMax, 0);
+        GlStateManager.glVertex3f(xMax, yMin, 0);
+        GlStateManager.glEnd();
+        GlStateManager.enableTexture2D();
+    }
+
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
+        if(!rendering) return;
+        GlStateManager.enableAlpha();
+        GlStateManager.disableTexture2D();
+        color.applyColor();
+
+        GlStateManager.glLineWidth(lineWidth);
+
+        float xMin  = Math.min(x1, x2) + drawingOrigin.x,
+                xMax  = Math.max(x1, x2) + drawingOrigin.x,
+                yMin  = Math.min(y1, y2) + drawingOrigin.y,
+                yMax  = Math.max(y1, y2) + drawingOrigin.y;
+        GlStateManager.glBegin(GL_LINE_LOOP);
         GlStateManager.glVertex3f(xMin, yMin, 0);
         GlStateManager.glVertex3f(xMin, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMax, 0);

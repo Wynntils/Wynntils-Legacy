@@ -5,107 +5,83 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.textures.AssetsTexture;
-import com.wynntils.modules.map.instances.MapProfile;
-import net.minecraft.client.renderer.GlStateManager;
+import com.wynntils.modules.map.configs.MapConfig;
 
-import java.util.function.Consumer;
+import java.util.List;
 
-public class MapIcon {
+/**
+ * Represents something drawn on the main map or minimap
+ */
+public abstract class MapIcon {
+    /**
+     * If {@link #getZoomNeeded()} returns this, the icon will always be visible
+     */
+    public static final int ANY_ZOOM = -1000;
 
-    ScreenRenderer renderer;
+    /**
+     * @return The x coordinate in the Minecraft world of this icon
+     */
+    public abstract int getPosX();
 
-    AssetsTexture texture;
-    int posX, posZ;
-    String name;
-    int texPosX, texPosZ, texSizeX, texSizeZ;
+    /**
+     * @return The z coordinate in the Minecraft world of this icon
+     */
+    public abstract int getPosZ();
 
-    float sizeX, sizeZ;
+    /**
+     * @return The name rendered above this icon when hovering over it in the main map
+     */
+    public abstract String getName();
 
-    float axisX = 0; float axisZ = 0;
-    boolean shouldRender = false;
+    /**
+     * @return The width of the icon when rendered 1:1 (px)
+     */
+    public abstract float getSizeX();
 
-    Consumer<Integer> onClick;
+    /**
+     * @return The height of the icon when rendered 1:1 (px)
+     */
+    public abstract float getSizeZ();
 
-    int zoomNeded = -1000;
-    float alpha = 1;
+    /**
+     * @return The zoom amount needed in the main map to render this icon. (Icons are always rendered)
+     */
+    public abstract int getZoomNeeded();
 
-    public MapIcon(AssetsTexture texture, String name, int posX, int posZ, float size, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
-        this.texture = texture; this.name = name;
-        this.posX = posX; this.posZ = posZ; this.texPosX = texPosX; this.texPosZ = texPosZ; this.texSizeX = texSizeX; this.texSizeZ = texSizeZ;
-        this.sizeX = (texSizeX - texPosX) / size;
-        this.sizeZ = (texSizeZ - texPosZ) / size;
+    /**
+     * @return Whether this icon should be rendered or not (Usually based on a config)
+     */
+    public abstract boolean isEnabled();
+
+    /**
+     * Render this icon
+     *
+     * @param renderer What to use to render
+     * @param centreX The x position of centre of the icon (on the screen)
+     * @param centreZ As centreX, but for z position
+     * @param sizeMultiplier The width should be {@link #getSizeX()} * sizeMultiplier, and the height {@link #getSizeZ()} * sizeMultiplier
+     * @param blockScale The number of pixels on screen that represent one Minecraft block. Used for icons that span multiple blocks.
+     */
+    public abstract void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale);
+
+    /**
+     * If true, this icon should be rendered rotated (e.g. in a rotated minimap)
+     */
+    public abstract boolean followRotation();
+
+    public static List<MapIcon> getApiMarkers(MapConfig.IconTexture iconTexture) {
+        return MapApiIcon.getApiMarkers(iconTexture);
     }
 
-    public MapIcon setZoomNeded(int zoomNeded) {
-        this.zoomNeded = zoomNeded;
-
-        return this;
+    public static List<MapIcon> getWaypoints() {
+        return MapWaypointIcon.getWaypoints();
     }
 
-    public MapIcon setRenderer(ScreenRenderer renderer) {
-        this.renderer = renderer;
-
-        return this;
+    public static MapIcon getCompass() {
+        return MapCompassIcon.getCompass();
     }
 
-    public MapIcon setOnClick(Consumer<Integer> onClick) {
-        this.onClick = onClick;
-
-        return this;
+    public static List<MapIcon> getPathWaypoints() {
+        return MapPathWaypointIcon.getPathWaypoints();
     }
-
-    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
-        if(zoomNeded != -1000) {
-            alpha = 1 - ((zoom - zoomNeded) / 40.0f);
-
-            if(alpha <= 0) {
-                shouldRender = false;
-                return;
-            }
-        }
-
-        float axisX = ((mp.getTextureXPosition(posX) - minX) / (maxX - minX));
-        float axisZ = ((mp.getTextureZPosition(posZ) - minZ) / (maxZ - minZ));
-
-        if(axisX > 0 && axisX < 1 && axisZ > 0 && axisZ < 1) {
-            shouldRender = true;
-            axisX = width * axisX;
-            axisZ = height * axisZ;
-
-            this.axisX = axisX; this.axisZ = axisZ;
-        }else shouldRender = false;
-    }
-
-    public boolean mouseOver(int mouseX, int mouseY) {
-        return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
-    }
-
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if(!shouldRender || renderer == null) return;
-
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
-        GlStateManager.color(1, 1, 1, alpha);
-        float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
-        renderer.drawRectF(texture, axisX - sizeX * multi, axisZ - sizeZ * multi, axisX + sizeX * multi, axisZ + sizeZ * multi, texPosX, texPosZ, texSizeX, texSizeZ);
-        GlStateManager.color(1,1,1,1);
-
-        GlStateManager.popMatrix();
-    }
-
-    public void drawHovering(int mouseX, int mouseY, float partialTicks) {
-        if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
-
-        GlStateManager.color(1, 1, 1, 1);
-        renderer.drawString(name, (int)(axisX), (int)(axisZ)-20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-    }
-
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if(onClick != null && mouseOver(mouseX, mouseY))
-            onClick.accept(mouseButton);
-    }
-
 }

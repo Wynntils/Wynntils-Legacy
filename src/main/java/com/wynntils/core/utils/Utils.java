@@ -7,8 +7,11 @@ package com.wynntils.core.utils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
@@ -20,6 +23,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,16 +35,14 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 public class Utils {
 
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '\u00A7' + "[0-9A-FK-OR]");
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
@@ -61,15 +63,58 @@ public class Utils {
     }
 
     /**
-     * Removes all color codes from a string
+     * Removes the invisible character À
      *
      * @param input
-     *        Input string
-     *
-     * @return input string without colored chars
+     * @return input string without the invisible character
      */
-    public static String stripColor(String input) {
-        return input == null ? null : STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    public static String stripInvisibleChar(String input) {
+        return input.replace("À", "");
+    }
+
+    /**
+     * Removes the percentage box (e.g. [96%])
+     *
+     * @param input
+     * @return input string without the percentage box
+     */
+    public static String stripPercentage(String input) {
+        return input.replaceAll(" \\[\\d{1,3}%\\]", "");
+    }
+
+    /**
+     * Removes the "Perfect"-rainbow from input string
+     *
+     * @param input
+     * @return input string without the "Perfect"-rainbow
+     */
+    public static String stripPerfect(String input) {
+        return TextFormatting.getTextWithoutFormattingCodes(input).replace("Perfect ", "");
+    }
+
+    /**
+     * Removes characters from input string based on extended.
+     *
+     * @param input
+     * @param extended
+     *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
+     *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
+     *      2 - Removes invisible characters and colours.
+     *      3 - Removes colours.
+     * @return input string with removed characters
+     */
+    public static String stripExtended(String input, int extended) {
+        switch (extended) {
+            default:
+            case 0:
+                input = stripPercentage(input);
+            case 1:
+                input = stripPerfect(input);
+            case 2:
+                input = stripInvisibleChar(input);
+            case 3:
+                return TextFormatting.getTextWithoutFormattingCodes(input);
+        }
     }
 
     /**
@@ -435,19 +480,105 @@ public class Utils {
 
         FakeInventory serverSelector = new FakeInventory("Wynncraft Servers", 0);
         serverSelector.onReceiveItems(c -> {
-            Map.Entry<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
-            if(world != null) {
-                c.clickItem(world.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            if (world != null) {
+                c.clickItem(world.a, 1, ClickType.PICKUP);
                 c.close();
                 return;
             }
 
-            Map.Entry<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
-            if(nextPage != null) serverSelector.clickItem(nextPage.getKey(), 1, ClickType.PICKUP);
+            Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
+            if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
         });
         
         serverSelector.open();
     }
 
+    private static HashMap<String, CustomColor> registeredColors = new HashMap<>();
+
+    /**
+     * Generates a Color based in the input string
+     * The color will be always the same if the string is the same
+     *
+     * @param input the input stream
+     * @return the color
+     */
+    public static CustomColor colorFromString(String input) {
+        if(registeredColors.containsKey(input)) return registeredColors.get(input);
+
+        CRC32 crc32 = new CRC32();
+        crc32.update(input.getBytes());
+
+        String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
+
+        int r = Integer.valueOf(hex.substring(1, 3), 16);
+        int g = Integer.valueOf(hex.substring(3, 5), 16);
+        int b = Integer.valueOf(hex.substring(5, 7), 16);
+
+        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
+        registeredColors.put(input, color);
+
+        return color;
+    }
+
+    public static CustomColor colorFromHex(String hex) {
+        if(registeredColors.containsKey(hex)) return registeredColors.get(hex);
+
+        int r = Integer.valueOf(hex.substring(1, 3), 16);
+        int g = Integer.valueOf(hex.substring(3, 5), 16);
+        int b = Integer.valueOf(hex.substring(5, 7), 16);
+
+        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
+        registeredColors.put(hex, color);
+
+        return color;
+    }
+
+    public static String millisToString(long duration) {
+        long millis = duration % 1000,
+             second = (duration / 1000) % 60,
+             minute = (duration / (1000 * 60)) % 60,
+             hour = (duration / (1000 * 60 * 60)) % 24;
+
+        return String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+    }
+
+    /**
+     * Opens a guiScreen without cleaning the users keys/mouse movents
+     *
+     * @param screen the provided screen
+     */
+    public static void displayGuiScreen(GuiScreen screen) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        mc.currentScreen = screen;
+        if (screen != null) {
+            Minecraft.getMinecraft().setIngameNotInFocus();
+
+            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            screen.setWorldAndResolution(mc, i, j);
+            mc.skipRenderWorld = false;
+        } else {
+            mc.getSoundHandler().resumeSounds();
+            mc.setIngameFocus();
+        }
+    }
+
+    private static int doubleClickTime = -1;
+
+    public static int getDoubleClickTime() {
+        if (doubleClickTime < 0) {
+            Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+            if (prop instanceof Integer) {
+                doubleClickTime = (Integer) prop;
+            }
+            if (doubleClickTime < 0) {
+                doubleClickTime = 500;
+            }
+        }
+        return doubleClickTime;
+    }
 }

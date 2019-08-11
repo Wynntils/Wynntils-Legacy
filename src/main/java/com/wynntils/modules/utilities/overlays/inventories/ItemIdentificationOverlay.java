@@ -98,7 +98,7 @@ public class ItemIdentificationOverlay implements Listener {
             return;
         }
 
-        String displayWC = Utils.stripColor(stack.getDisplayName());
+        String displayWC = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         String itemType = displayWC.split(" ")[1];
         String level = null;
 
@@ -106,7 +106,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         for (String aLore : lore) {
             if (aLore.contains("Lv. Range")) {
-                level = Utils.stripColor(aLore).replace("- Lv. Range: ", "");
+                level = TextFormatting.getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }
@@ -164,38 +164,19 @@ public class ItemIdentificationOverlay implements Listener {
 
     public static void drawHoverItem(ItemStack stack, IInventory inventory) {
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("rainbowTitle")) {
+            stack.setStackDisplayName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
             stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + stack.getTagCompound().getString("rainbowTitle"), false));
+            if (stack.getTagCompound().hasKey("rainbowTitleExtra"))
+                stack.setStackDisplayName(stack.getDisplayName() + stack.getTagCompound().getString("rainbowTitleExtra"));
         }
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && stack.getTagCompound().getBoolean("showChances") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && stack.getTagCompound().getBoolean("showRanges") == Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) return;
         boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
         boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
-        if (!WebManager.getItems().containsKey(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))))) {
-            if (inventory != null && Utils.stripColor(inventory.getDisplayName().getUnformattedText()).matches("\\[Pg\\. \\d+\\] Marketplace")) {
-                List<String> actualLore = Utils.getLore(stack);
-                if (actualLore.size() < 3)
-                    return;
-                String lore = actualLore.get(2);
-                if (!lore.startsWith(TextFormatting.GOLD + " - "))
-                    return;
-                String wColor = Utils.stripColor(lore);
-
-                actualLore.set(2, getMarketPlaceLore(lore));
-
-                NBTTagCompound nbt = stack.getTagCompound();
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                nbt.setBoolean("verifiedWynntils", true);
-                nbt.setBoolean("showChances", Keyboard.isKeyDown(Keyboard.KEY_LCONTROL));
-                nbt.setBoolean("showRanges", Keyboard.isKeyDown(Keyboard.KEY_LSHIFT));
-                NBTTagList tag = new NBTTagList();
-                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-                display.setTag("Lore", tag);
-                nbt.setTag("display", display);
-                stack.setTagCompound(nbt);
-            }
+        if (!WebManager.getItems().containsKey(Utils.stripExtended(cleanse(stack.getDisplayName()), 1)))
             return;
-        }
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripColor(cleanse(stack.getDisplayName().replace("À", ""))));
+
+        ItemProfile wItem = WebManager.getItems().get(Utils.stripExtended(cleanse(stack.getDisplayName()), 1));
 
         if (wItem.isIdentified()) {
             return;
@@ -212,12 +193,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         for (int i = 0; i < actualLore.size(); i++) {
             String lore = cleanse(actualLore.get(i));
-            String wColor = Utils.stripColor(lore);
-
-            if (i == 2 && inventory != null && Utils.stripColor(inventory.getDisplayName().getUnformattedText()).matches("\\[Pg\\. \\d+\\] Marketplace")) {
-                actualLore.set(i, getMarketPlaceLore(lore));
-                continue;
-            }
+            String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
             if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
@@ -372,17 +348,9 @@ public class ItemIdentificationOverlay implements Listener {
                     lore += " " + (amount < 0 ? TextFormatting.DARK_RED + "[" + TextFormatting.RED + max + TextFormatting.DARK_RED + "," + TextFormatting.RED + " " + min + TextFormatting.DARK_RED + "]" : TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + min + TextFormatting.DARK_GREEN + "," + TextFormatting.GREEN +" " + max + TextFormatting.DARK_GREEN + "]");
                     switch (fieldName) {
                         case "agilityPoints":
-                            totalSP += amount;
-                            break;
                         case "intelligencePoints":
-                            totalSP += amount;
-                            break;
                         case "defensePoints":
-                            totalSP += amount;
-                            break;
                         case "strengthPoints":
-                            totalSP += amount;
-                            break;
                         case "dexterityPoints":
                             totalSP += amount;
                             break;
@@ -395,7 +363,7 @@ public class ItemIdentificationOverlay implements Listener {
                     double pVal = (double) (amount - min);
                     int percent = (int) ((pVal / intVal) * 100);
 
-                    TextFormatting color = null;
+                    TextFormatting color;
 
                     if (amount < 0) percent = 100 - percent;
 
@@ -449,6 +417,8 @@ public class ItemIdentificationOverlay implements Listener {
         nbt.setBoolean("showRanges", showRanges);
 
         if (identifications > 0) {
+            int average = total / identifications;
+            if (average >= 100) nbt.setString("rainbowTitle", "");
             if (showChances) {
 
                 NBTTagCompound display = nbt.getCompoundTag("display");
@@ -456,10 +426,19 @@ public class ItemIdentificationOverlay implements Listener {
 
                 actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
-                String name = cleanse(display.getString("Name"));
+                String name;
+                if (nbt.hasKey("rainbowTitle")) {
+                    name = Utils.stripPerfect(cleanse(display.getString("Name")));
+                } else {
+                    name = cleanse(display.getString("Name"));
+                }
 
                 display.setTag("Lore", tag);
-                display.setString("Name", name + " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                if (!nbt.hasKey("rainbowTitle")) {
+                    display.setString("Name", name + " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                } else {
+                    nbt.setString("rainbowTitleExtra", " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
+                }
                 nbt.setTag("display", display);
             } else if (showRanges) {
                 String Extra = "";
@@ -475,14 +454,22 @@ public class ItemIdentificationOverlay implements Listener {
 
                 actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
-                String name = cleanse(display.getString("Name"));
+                String name;
+                if (nbt.hasKey("rainbowTitle")) {
+                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
+                } else {
+                    name = cleanse(display.getString("Name"));
+                }
 
                 display.setTag("Lore", tag);
-                display.setString("Name", name + Extra);
+                if (!nbt.hasKey("rainbowTitle")) {
+                    display.setString("Name", name + Extra);
+                } else {
+                    nbt.setString("rainbowTitleExtra", Extra);
+                }
                 nbt.setTag("display", display);
             } else {
-                int average = total / identifications;
-                TextFormatting color = null;
+                TextFormatting color;
                 if (average >= 97) {
                     color = TextFormatting.AQUA;
                 } else if (average >= 80) {
@@ -498,14 +485,20 @@ public class ItemIdentificationOverlay implements Listener {
 
                 actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
-                String name = cleanse(display.getString("Name"));
+                String name;
+                if (nbt.hasKey("rainbowTitle")) {
+                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
+                } else {
+                    name = cleanse(display.getString("Name"));
+                }
 
                 display.setTag("Lore", tag);
                 display.setString("Name", name + color + " [" + average + "%]");
 
-                if(average >= 100) nbt.setString("rainbowTitle", name.substring(2));
+                if(average >= 100) nbt.setString("rainbowTitle", name);
 
                 nbt.setTag("display", display);
+                nbt.setString("rainbowTitleExtra", "");
             }
         }
 
@@ -514,21 +507,5 @@ public class ItemIdentificationOverlay implements Listener {
 
     private static String cleanse(String str){
         return ID_PERCENTAGES.matcher(str).replaceAll("");
-    }
-
-    private static String getMarketPlaceLore(String prevLore) {
-        String wColor = Utils.stripColor(prevLore);
-        String[] splitLore = wColor.split(" ");
-        if (splitLore.length > 4)
-            return prevLore;
-        int splitNum = 2;
-        if (prevLore.contains("x")) {
-            splitNum = 3;
-        }
-        int priceNum = Integer.valueOf(splitLore[splitNum].replace(",", "").replace(E, ""));
-        int emeralds = priceNum % 64;
-        int blocks = (priceNum % 4096) / 64;
-        int liquid = (int) Math.floor((float) priceNum / 4096f);
-        return prevLore + " (" + TextFormatting.WHITE + liquid + TextFormatting.GRAY + L + E + " " + TextFormatting.WHITE + blocks + TextFormatting.GRAY + E + B + " " + TextFormatting.WHITE + emeralds + TextFormatting.GRAY + E + ")";
     }
 }

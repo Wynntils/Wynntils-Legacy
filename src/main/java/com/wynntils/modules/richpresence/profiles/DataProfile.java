@@ -5,7 +5,7 @@
 package com.wynntils.modules.richpresence.profiles;
 
 import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
-import net.minecraftforge.common.MinecraftForge;
+import com.wynntils.core.framework.FrameworkManager;
 
 public class DataProfile {
 
@@ -24,7 +24,7 @@ public class DataProfile {
     }
 
     public void setLocation(String value) {
-        MinecraftForge.EVENT_BUS.post(new WynnTerritoryChangeEvent(location, value));
+        FrameworkManager.getEventBus().post(new WynnTerritoryChangeEvent(location, value));
         location = value;
     }
 

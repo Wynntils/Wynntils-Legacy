@@ -6,6 +6,7 @@ package com.wynntils.core.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -13,12 +14,12 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -58,6 +59,23 @@ public class ClientEvents {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void triggerGameEvents(ClientChatReceivedEvent e) {
+        if(e.getType() == ChatType.GAME_INFO) return;
+
+        String message = e.getMessage().getUnformattedText();
+
+        GameEvent toDispatch = null;
+        if(message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
+        else if(message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
+        else if(message.contains("[Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
+        else if(message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
+        else if(message.contains("You are now combat level") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
+
+        if(toDispatch == null) return;
+        FrameworkManager.getEventBus().post(toDispatch);
+    }
+
     @SubscribeEvent
     public void updateActionBar(ClientChatReceivedEvent event) {
         if(Reference.onServer && event.getType() == ChatType.GAME_INFO) {
@@ -83,7 +101,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onTabListChange(PacketEvent.TabListChangeEvent e) {
+    public void onTabListChange(PacketEvent<SPacketPlayerListItem> e) {
         if (!Reference.onServer) return;
         if(e.getPacket().getAction() != Action.UPDATE_DISPLAY_NAME && e.getPacket().getAction() != Action.REMOVE_PLAYER) return;
 
@@ -123,8 +141,8 @@ public class ClientEvents {
             String formatedName = player.getDisplayName().getFormattedText();
 
             if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
-                if(formatedName.startsWith("§e")) partyMembers.add(Utils.stripColor(formatedName));
-                else if(formatedName.startsWith("§c")) { partyOwner = Utils.stripColor(formatedName); }
+                if(formatedName.startsWith("§e")) partyMembers.add(TextFormatting.getTextWithoutFormattingCodes(formatedName));
+                else if(formatedName.startsWith("§c")) { partyOwner = TextFormatting.getTextWithoutFormattingCodes(formatedName); }
             }
         }
 
@@ -148,6 +166,8 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTick(TickEvent.ClientTickEvent e) {
+        if(e.phase == TickEvent.Phase.START) return;
+
         ScreenRenderer.refresh();
         if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);

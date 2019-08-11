@@ -32,6 +32,7 @@ public class ChatTab implements Comparable<ChatTab> {
     //spam filter
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
+    transient int groupId = 0;
 
     public ChatTab(String name, String regexFinder, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
@@ -61,6 +62,14 @@ public class ChatTab implements Comparable<ChatTab> {
 
     public int getLastAmount() {
         return lastAmount;
+    }
+
+    public int getCurrentGroupId() {
+        return groupId;
+    }
+
+    public int increaseCurrentGroupId() {
+        return groupId++;
     }
 
     public String getRegex() {

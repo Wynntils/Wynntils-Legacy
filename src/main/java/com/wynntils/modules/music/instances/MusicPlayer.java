@@ -39,6 +39,7 @@ public class MusicPlayer {
             GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
                     .replace("%np%", f.getName().replace(".mp3", "")));
         }
+
         nextMusic = f;
         setupController();
     }
@@ -92,6 +93,7 @@ public class MusicPlayer {
 
     public void setupController() {
         active = true;
+
         if(nextMusic != null) {
             if(currentMusic == null) {
                 currentMusic = nextMusic;

@@ -3,9 +3,9 @@
  */
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.ModCore;
+import com.wynntils.core.utils.Location;
 import net.minecraft.client.resources.I18n;
-import com.wynntils.modules.map.overlays.ui.WorldMapUI;
+import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -54,13 +54,22 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]";
+        return "compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + "> | clear]";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            throw new WrongUsageException("/compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]");
+            throw new WrongUsageException("/compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + "> | clear]");
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
+            if (CompassManager.getCompassLocation() != null) {
+                CompassManager.reset();
+                TextComponentString text = new TextComponentString("The beacon and icon of your desired coordinates have been cleared.");
+                text.getStyle().setColor(TextFormatting.GREEN);
+                sender.sendMessage(text);
+            } else {
+                throw new CommandException("There is nothing to be cleared as you have not set any coordinates to be displayed as a beacon and icon.");
+            }
         } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = { 0, 0 };
             //check for north/south
@@ -110,7 +119,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     }
                     break;
             }
-            ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(newPos[0]), 0, Integer.valueOf(newPos[1])));
+
+            CompassManager.setCompassLocation(new Location(newPos[0], 0, newPos[1]));
+
             String dir = args[0];
             if (dir.length() <= 2) {
                 //dir = dir.toUpperCase();
@@ -156,9 +167,9 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(".");
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
-            ModCore.mc().world.setSpawnPoint(new BlockPos(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
             TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.now_pointing");
-            WorldMapUI.setCompassCoordinates(new int[] {Integer.valueOf(args[0]), Integer.valueOf(args[1])});
+            CompassManager.setCompassLocation(new Location(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
+
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText(" (");
             
@@ -175,7 +186,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(").");
             sender.sendMessage(text);
         } else {
-            throw new CommandException("Invalid arguments: /compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + ">]");
+            throw new CommandException("Invalid arguments: /compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + "> | clear]");
         }
     }
     
@@ -190,7 +201,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     "southeast",
                     "southwest",
                     "east",
-                    "west");
+                    "west",
+                    "clear");
         }
         return Collections.emptyList();
     }

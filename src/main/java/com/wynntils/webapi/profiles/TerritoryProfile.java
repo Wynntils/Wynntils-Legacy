@@ -20,18 +20,28 @@ public class TerritoryProfile {
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     String name;
+    String friendlyName;
     int startX;
     int startZ;
     int endX;
     int endZ;
 
     String guild;
+    String guildPrefix;
+    String guildColor;
     String attacker;
     Date acquired;
 
-    public TerritoryProfile(String name, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
-        this.name = name;
+    int level;
 
+    public TerritoryProfile(String name, String friendlyName, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
+        this.name = name;
+        this.friendlyName = friendlyName;
+
+        this.level = level;
+
+        this.guildPrefix = guildPrefix;
+        this.guildColor = guildColor;
         this.guild = guild;
         this.attacker = attacker;
 
@@ -59,6 +69,14 @@ public class TerritoryProfile {
         return name;
     }
 
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    public String getGuildColor() {
+        return guildColor;
+    }
+
     public int getStartX() {
         return startX;
     }
@@ -77,6 +95,14 @@ public class TerritoryProfile {
 
     public String getGuild() {
         return guild;
+    }
+
+    public String getGuildPrefix() {
+        return guildPrefix;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public String getAttacker() {
@@ -108,7 +134,12 @@ public class TerritoryProfile {
                 endZ = location.get("endY").getAsInt();
             }
             String territoryName = territory.get("territory").getAsString();
-            String guild = territory.get("guild").getAsString();
+            String friendlyName = territoryName.replace('’', '\'');
+
+            String guild;
+            if(territory.get("guild").isJsonNull()) guild = "Unknown";
+            else guild = territory.get("guild").getAsString();
+
             Date acquired = null;
             try {
                 acquired = dateFormat.parse(territory.get("acquired").getAsString());
@@ -119,7 +150,18 @@ public class TerritoryProfile {
             if (!territory.get("attacker").isJsonNull()) {
                 attacker = territory.get("attacker").getAsString();
             }
-            return new TerritoryProfile(territoryName, startX, startZ, endX, endZ, guild, attacker, acquired);
+
+            String guildPrefix;
+            if(territory.get("guildPrefix").isJsonNull()) guildPrefix = "UNK";
+            else guildPrefix= territory.get("guildPrefix").getAsString();
+
+            int level = territory.get("level").getAsInt();
+
+            String guildColor;
+            if(territory.get("guildColor").isJsonNull()) guildColor = null;
+            else guildColor = territory.get("guildColor").getAsString();
+
+            return new TerritoryProfile(territoryName, friendlyName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
         }
 
     }

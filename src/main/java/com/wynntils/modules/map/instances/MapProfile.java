@@ -38,6 +38,8 @@ public class MapProfile {
     }
 
     public void updateMap() {
+        if (url == null) return;
+
         try {
             WebReader reader = new WebReader(url);
 
@@ -74,6 +76,14 @@ public class MapProfile {
 
     public float getTextureZPosition(double posZ) {
         return (float)(posZ - centerZ + imageHeight);
+    }
+
+    public int getWorldXPosition(double textureX) {
+        return (int) Math.round(textureX + centerX - imageWidth);
+    }
+
+    public int getWorldZPosition(double textureY) {
+        return (int) Math.round(textureY + centerZ - imageHeight);
     }
 
     public boolean isReadyToUse() {

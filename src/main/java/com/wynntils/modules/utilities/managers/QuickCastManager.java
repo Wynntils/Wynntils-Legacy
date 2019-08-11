@@ -7,93 +7,63 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.interfaces.Listener;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
+import static com.wynntils.modules.core.managers.PacketQueue.queuePackets;
 
-public class QuickCastManager implements Listener {
+public class QuickCastManager {
 
-    public static ArrayList<Packet> packetQueue = new ArrayList<>();
+    private static final CPacketAnimation leftClick = new CPacketAnimation(EnumHand.MAIN_HAND);
+    private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
+    private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
     public static void castFirstSpell() {
         if(!canCastSpell()) return;
 
-        NetHandlerPlayClient client = Minecraft.getMinecraft().getConnection();
         if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
+            queuePackets(leftClick, rightClick, releaseClick, leftClick);
             return;
         }
 
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
+        queuePackets(rightClick, releaseClick, leftClick, rightClick, releaseClick);
     }
 
     public static void castSecondSpell() {
         if(!canCastSpell()) return;
 
-        NetHandlerPlayClient client = Minecraft.getMinecraft().getConnection();
         if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
+            queuePackets(leftClick, leftClick, leftClick);
             return;
         }
 
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
+        queuePackets(rightClick, releaseClick, rightClick, releaseClick, rightClick, releaseClick);
     }
 
     public static void castThirdSpell() {
         if(!canCastSpell()) return;
 
-        NetHandlerPlayClient client = Minecraft.getMinecraft().getConnection();
         if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-            packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
+            queuePackets(leftClick, rightClick, releaseClick, rightClick, releaseClick);
             return;
         }
 
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-        packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
+        queuePackets(rightClick, releaseClick, leftClick, leftClick);
     }
 
     public static void castFourthSpell() {
         if(!canCastSpell()) return;
 
-        NetHandlerPlayClient client = Minecraft.getMinecraft().getConnection();
         if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-            packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
+            queuePackets(leftClick, leftClick, rightClick, releaseClick);
             return;
         }
 
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND)); //right
-        packetQueue.add(new CPacketAnimation(EnumHand.MAIN_HAND)); //left
-    }
-
-    //TODO find a way to make the time follow the player ping to avoid clicks not being triggered correctly
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent e) {
-        if(packetQueue.size() == 0 || Minecraft.getSystemTime() % 7 != 0) return;
-
-        Minecraft.getMinecraft().getConnection().sendPacket(packetQueue.get(0));
-        packetQueue.remove(0);
+        queuePackets(rightClick, releaseClick, rightClick, releaseClick, leftClick);
     }
 
     private static boolean canCastSpell() {

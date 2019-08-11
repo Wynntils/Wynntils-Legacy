@@ -7,7 +7,7 @@
 ## CORE CONFIG ##
 wynntils.config.core.display_path=Core
 wynntils.config.core.update_stream.display_name=Update Stream
-wynntils.config.core.update_stream.description=Which update stream should the mod be on?\n\n§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.
+wynntils.config.core.update_stream.description=Which update stream should the mod be on?\n\n§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n§4Cutting Edge: §rThe mod will update whenever a new build is released. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.
 wynntils.config.core.scroll_direction.display_name=Scroll Direction
 wynntils.config.core.scroll_direction.description=Which direction should your mouse scroll for the page to scroll down?
 wynntils.config.core.enable_changelog_on_update.display_name=Show Changelog
@@ -69,6 +69,27 @@ wynntils.config.map.record_chest_tier.display_name=Recording Chest Waypoints
 wynntils.config.map.record_chest_tier.description=Which chest tiers should be recorded as waypoints as you discover them?\n\n§8The mod will also record higher tiers than the specified tier.
 wynntils.config.map.minimap_zoom.display_name=Minimap Zoom
 wynntils.config.map.minimap_zoom.description=How far zoomed out should the minimap be?
+wynntils.config.map.compass_beam.display_name=Show Compass Beam
+wynntils.config.map.compass_beam.description=Should a beacon beam be displayed at your compass position?
+wynntils.config.map.minimap_coords.display_name=Minimap Coordinates
+wynntils.config.map.minimap_coords.description=Should your coordinates be displayed below the minimap?
+wynntils.config.map.minimap_icons.display_name=Display Minimap Icons
+wynntils.config.map.minimap_icons.description=Should map icons be displayed on the minimap?
+wynntils.config.map.minimap_icons_size.display_name=Minimap Icons Size
+wynntils.config.map.minimap_icons_size.description=How big should minimap icons be?
+
+## MAP WORLD MAP CONFIG ##
+wynntils.config.map.world_map.display_path=Map/World Map
+wynntils.config.map.world_map.territory_visible.display_name=Keep Territory Visible
+wynntils.config.map.world_map.territory_visible.description=Should territory names always be displayed rather than only when you hold CTRL?
+wynntils.config.map.world_map.territory_names.display_name=Territory Names
+wynntils.config.map.world_map.territory_names.description=Should territory names be displayed?
+wynntils.config.map.world_map.territory_guild_tags.display_name=Territory Guild Tags
+wynntils.config.map.world_map.territory_guild_tags.description=Should be guild names be replaced by their guild tags?
+wynntils.config.map.world_map.territory_color_transparency.display_name=Territory Color Transparency
+wynntils.config.map.world_map.territory_color_transparency.description=How transparent should the color of territories be?
+wynntils.config.map.world_map.territory_area.display_name=Territory Color Transparency
+wynntils.config.map.world_map.territory_area.description=How transparent should the color of territories be?
 
 ## MAP MAP FORMAT ENUM CONFIG ##
 wynntils.config.map.enum.map_format.square=Square
@@ -87,8 +108,8 @@ wynntils.config.map.textures.minimap_style.display_name=Minimap Texture Style
 wynntils.config.map.textures.minimap_style.description=What should the texture of the minimap be?
 wynntils.config.map.textures.pointer_style.display_name=Pointer Style
 wynntils.config.map.textures.pointer_style.description=What should the texture of the pointer be?
-wynntils.config.map.textures.pointer_color.display_name=Pointer Colour
-wynntils.config.map.textures.pointer_color.description=What should the colour of the pointer be?\n\n§aClick the coloured box to open the colour wheel.
+wynntils.config.map.textures.pointer_color.display_name=Pointer Color
+wynntils.config.map.textures.pointer_color.description=What should the color of the pointer be?\n\n§aClick the colored box to open the color wheel.
 
 ## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
 wynntils.config.map.textures.enum.texture_type.paper=Paper
@@ -128,7 +149,7 @@ wynntils.config.questbook.search_click.description=Should you be required to cli
 wynntils.config.questbook.fuzzy_search.display_name=Fuzzy Search
 wynntils.config.questbook.fuzzy_search.description=Should a different search algorithm be used that allows searching for acronyms and abbreviations?
 wynntils.config.questbook.scan_discoveries.display_name=Scan Discoveries
-wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyses faster
+wynntils.config.questbook.scan_discoveries.description=Should discoveries be analyzed by the QuestBook?\nDisabling this will make the QuestBook not show the discoveries tab but will make the QuestBook analyzes faster
 
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Rich Presence
@@ -149,8 +170,8 @@ wynntils.config.utils.hide_nametags_through_blocks.display_name=Hide Nametags Th
 wynntils.config.utils.hide_nametags_through_blocks.description=Should nametags be hidden when behind opaque blocks?
 wynntils.config.utils.hide_nametag_box.display_name=Hide Nametags' Box
 wynntils.config.utils.hide_nametag_box.description=Should the box around nametags be hidden?
-wynntils.config.utils.show_armor.display_name=Show Players' Armour
-wynntils.config.utils.show_armor.description=Should the worn armour of players be listed underneath their nametag?\n\n§8Crafted armour cannot be displayed.
+wynntils.config.utils.show_armor.display_name=Show Players' armor
+wynntils.config.utils.show_armor.description=Should the worn armor of players be listed underneath their nametag?\n\n§8Crafted armor cannot be displayed.
 wynntils.config.utils.prevent_mythic.display_name=Prevent Mythic Loot Chest Closing
 wynntils.config.utils.prevent_mythic.description=Should the closing of loot chests be prevented when they contain mythics?
 wynntils.config.utils.prevent_slot_click.display_name=Prevent Slot Click on Locked Items
@@ -215,26 +236,26 @@ wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name=Highl
 wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Should duplicate cosmetics be highlighted on the scrap menu?
 wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Minimum Powder Tier Highlight
 wynntils.config.utils.item_highlights.minimum_powder_tier.description=What should the minimum tier of powders be for it to be highlighted? This setting has no effect if powder highlighting is disabled.
-wynntils.config.utils.item_highlights.legendary_color.display_name=Legendary Item Highlight Colour
-wynntils.config.utils.item_highlights.legendary_color.description=What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Item Highlight Colour
-wynntils.config.utils.item_highlights.mythic_color.description=What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.rare_color.display_name=Rare Item Highlight Colour
-wynntils.config.utils.item_highlights.rare_color.description=What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.unique_color.display_name=Unique Item Highlight Colour
-wynntils.config.utils.item_highlights.unique_color.description=What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.set_color.display_name=Set Item Highlight Colour
-wynntils.config.utils.item_highlights.set_color.description=What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.normal_color.display_name=Normal Item Highlight Colour
-wynntils.config.utils.item_highlights.normal_color.description=What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.crafted_color.display_name=Crafted Armor & Weapon Highlight Colour
-wynntils.config.utils.item_highlights.crafted_color.description=What colour should the highlight for crafted armor and weapons be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.onestar_color.display_name=Ingredient Highlight Colour (1 star)
-wynntils.config.utils.item_highlights.onestar_color.description=What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.twostar_color.display_name=Ingredient Highlight Colour (2 stars)
-wynntils.config.utils.item_highlights.twostar_color.description=What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.
-wynntils.config.utils.item_highlights.threestar_color.display_name=Ingredient Highlight Colour (3 stars)
-wynntils.config.utils.item_highlights.threestar_color.description=What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.
+wynntils.config.utils.item_highlights.legendary_color.display_name=Legendary Item Highlight Color
+wynntils.config.utils.item_highlights.legendary_color.description=What color should the highlight for legendary items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Item Highlight Color
+wynntils.config.utils.item_highlights.mythic_color.description=What color should the highlight for mythic items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.rare_color.display_name=Rare Item Highlight Color
+wynntils.config.utils.item_highlights.rare_color.description=What color should the highlight for rare items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.unique_color.display_name=Unique Item Highlight Color
+wynntils.config.utils.item_highlights.unique_color.description=What color should the highlight for unique items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.set_color.display_name=Set Item Highlight Color
+wynntils.config.utils.item_highlights.set_color.description=What color should the highlight for set items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.normal_color.display_name=Normal Item Highlight Color
+wynntils.config.utils.item_highlights.normal_color.description=What color should the highlight for normal items be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.crafted_color.display_name=Crafted Armor & Weapon Highlight Color
+wynntils.config.utils.item_highlights.crafted_color.description=What color should the highlight for crafted armor and weapons be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.onestar_color.display_name=Ingredient Highlight Color (1 star)
+wynntils.config.utils.item_highlights.onestar_color.description=What color should the highlight for ingredients with one star be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.twostar_color.display_name=Ingredient Highlight Color (2 stars)
+wynntils.config.utils.item_highlights.twostar_color.description=What color should the highlight for ingredients with two stars be?\n\n§aClick the colored box to open the color wheel.
+wynntils.config.utils.item_highlights.threestar_color.display_name=Ingredient Highlight Color (3 stars)
+wynntils.config.utils.item_highlights.threestar_color.description=What color should the highlight for ingredients with three stars be?\n\n§aClick the colored box to open the color wheel.
 
 ## OVERLAYS CONFIG ##
 wynntils.config.overlay.display_path=Overlays
@@ -311,13 +332,13 @@ wynntils.config.overlay.toast.display_path=Overlays/Toasts
 wynntils.config.overlay.toast.enable.display_name=Enable Toast Messages
 wynntils.config.overlay.toast.enable.description=Should certain messages be displayed in the form of rolling parchment?
 wynntils.config.overlay.toast.territory_enter.display_name=Enable Territory Enter Messages
-wynntils.config.overlay.toast.territory_enter.description=Should a toast be displayed to inform that you are entering a territory?
+wynntils.config.overlay.toast.territory_enter.description=Should a toast be displayed to inform you that you are entering a territory?
 wynntils.config.overlay.toast.area_discovered.display_name=Enable Area Discovered Messages
-wynntils.config.overlay.toast.area_discovered.description=Should a toast be displayed to inform that you have discovered an area?
+wynntils.config.overlay.toast.area_discovered.description=Should a toast be displayed to inform you that you have discovered an area?
 wynntils.config.overlay.toast.quest_completed.display_name=Enable Quest Completed Messages
-wynntils.config.overlay.toast.quest_completed.description=Should a toast be displayed to inform that you have completed a quest?
+wynntils.config.overlay.toast.quest_completed.description=Should a toast be displayed to inform you that you have completed a quest?
 wynntils.config.overlay.toast.discovery_found.display_name=Enable Discovery Found Messages
-wynntils.config.overlay.toast.discovery_found.description=Should a toast be displayed to inform that you have found a secret discovery?
+wynntils.config.overlay.toast.discovery_found.description=Should a toast be displayed to inform you that you have found a secret discovery?
 wynntils.config.overlay.toast.flip.display_name=Flip Toast Messages
 wynntils.config.overlay.toast.flip.description=Should a toast display from the left to right?\n\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.
 
@@ -594,7 +615,7 @@ wynntils.commands.territory.compass_warning=\nPlease be sure you know that this 
 ## /token ##
 wynntils.commands.token.usage=Returns your Wynntils auth token
 wynntils.commands.token.token_text=Wynntils Token
-wynntils.commands.token.token_link_hover=Click me to register account
+wynntils.commands.token.token_link_hover=Click me to register your account
 
 ## /wynntils ##
 wynntils.commands.wynntils.usage=/wynntils <command>
@@ -660,6 +681,14 @@ wynntils.map.toasts.new_map_entry.body=You found a tier %s chest!
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers=Markers
 wynntils.map.ui.world_map.button.waypoints=Waypoints
+wynntils.map.ui.world_map.button.paths=Paths
+wynntils.map.ui.world_map.marker.beacon=Compass Beacon
+wynntils.map.ui.world_map.help.title=Help
+wynntils.map.ui.world_map.help.line_1=CTRL to show territories
+wynntils.map.ui.world_map.help.line_2=Left click on waypoint to place compass beacon there
+wynntils.map.ui.world_map.help.line_3=Middle click to place compass beacon
+wynntils.map.ui.world_map.help.line_4=Double click on compass beacon to create waypoint there
+wynntils.map.ui.world_map.help.line_5=Right click to center on player
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Cancel
@@ -670,8 +699,7 @@ wynntils.map.ui.world_map_settings.floating.textures=Map Icon Textures:
 
 ## ICON TEXTURE ENUM ##
 wynntils.map.enum.icon_texutre.classic=Classic
-# Spell error in code replicated for consistency
-wynntils.map.enum.icon_texutre.medival=Medieval
+wynntils.map.enum.icon_texutre.medieval=Medieval
 
 ## MINIMAP OVERLAY ##
 wynntils.map.overlays.minimap.display_name=Minimap
@@ -690,11 +718,22 @@ wynntils.map.ui.waypoint_creation.floating.waypoint_name=Waypoint Name:
 wynntils.map.ui.waypoint_creation.floating.coordinates=Coordinates:
 wynntils.map.ui.world_map_settings.floating.icon=Icon:
 wynntils.map.ui.world_map_settings.floating.color=Color:
+wynntils.map.ui.path_creation.buttons.clear=Clear
+wynntils.map.ui.path_creation.buttons.hidden=Hidden
+wynntils.map.ui.path_creation.buttons.circular=Circular
+wynntils.map.ui.path_creation.buttons.add_to_start=Add to start
+wynntils.map.ui.path_creation.buttons.show_icons=Show icons
+wynntils.map.ui.path_creation.floating.line_1=Shift + drag to pan
+wynntils.map.ui.path_creation.floating.line_2=Right click to remove points
 
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=Icon
 wynntils.map.ui.waypoints.floating.name=Name
 wynntils.map.ui.waypoints.button.edit=Edit...
+wynntils.map.ui.waypoints.button.new=NEW
+
+## KEYBINDS ##
+wynntils.map.keybind.open_map=Open Map
 
 #########
 # MUSIC #
@@ -792,7 +831,7 @@ wynntils.questbook.ui.questbook.version.cutting_edge=CE Build %s
 #############
 
 ## CLIENT EVENTS ##
-wynntils.utilities.events.prevent_mythic_close=You cannot close this loot chest while there is mythic in it!
+wynntils.utilities.events.prevent_mythic_close=You cannot close this loot chest while there is a mythic in it!
 wynntils.utilities.events.check_daily=§7Daily rewards §fare available to claim!
 
 ## ACTIONBAR HELPER OVERLAY ##
@@ -891,3 +930,9 @@ wynntils.utilities.overlays.war_timer.message.mob_spawn=The mobs for %s will sta
 wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=The mobs will start spawning in
 wynntils.utilities.overlays.war_timer.message.in_war=You have been at war in %s for
 wynntils.utilities.overlays.war_timer.message.in_war.no_territory=You have been at war for
+
+## STOPWATCH OVERLAY ##
+wynntils.utilities.overlays.stopwatch.display_name=Stopwatch
+
+## INFO OVERLAY ##
+wynntils.utilities.overlays.info.display_name=Info

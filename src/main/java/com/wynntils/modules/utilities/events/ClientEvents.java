@@ -11,26 +11,39 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.managers.NametagManager;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
+import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -76,6 +89,13 @@ public class ClientEvents implements Listener {
         lastPosition = currentPosition;
     }
 
+    @SubscribeEvent
+    public void onFovUpdate(FOVUpdateEvent e) {
+        if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
+
+        e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
         if(e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
@@ -86,22 +106,36 @@ public class ClientEvents implements Listener {
         }
     }
 
+
+    private static int lastHorseId = -1;
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+
     @SubscribeEvent
-    public void onArmorStandSpawn(PacketEvent.EntityMetadata e) {
-        if(e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
+    public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
+        if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
 
-        for(EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if(entry.getValue() == null) continue;
-            
-            String value = entry.getValue().toString().toLowerCase();
-            if(value.contains("woodcutting")) {
+        int thisId = e.getPacket().getEntityId();
+        if (thisId == lastHorseId || ModCore.mc().world == null) return;
+        Entity entity = ModCore.mc().world.getEntityByID(thisId);
+        if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
+            return;
+        }
+        if (entity == ModCore.mc().player.getRidingEntity()) {
+            lastHorseId = thisId;
+            return;
+        }
+        String playerName = ModCore.mc().player.getName();
 
-            }else if(value.contains("fishing")) {
-
-            }else if (value.contains("mining")) {
-
-            }else if(value.contains("farming")) {
-
+        assert nameKey != null;
+        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            if (nameKey.equals(entry.getKey())) {
+                Object value = entry.getValue();
+                if (value instanceof String && MountHorseManager.isPlayersHorse((String) value, playerName)) {
+                    lastHorseId = thisId;
+                    MountHorseManager.mountHorseAndLogMessage();
+                }
+                return;
             }
         }
     }
@@ -219,8 +253,8 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void keyPress(PacketEvent.PlayerDropItemEvent e) {
-        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+    public void keyPress(PacketEvent<CPacketPlayerDigging> e) {
+        if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS) || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
         if(UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
             e.setCanceled(true);
@@ -258,6 +292,51 @@ public class ClientEvents implements Listener {
         }
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+    }
+
+    //blocking healing pots below
+    @SubscribeEvent
+    public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
+        ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+        if(!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if(player.getHealth() != player.getMaxHealth()) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+    }
+
+    @SubscribeEvent
+    public void rightClickItem(PlayerInteractEvent.RightClickItem e) {
+        if(!e.getItemStack().hasDisplayName() || !e.getItemStack().getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if(e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
+
+        e.setCanceled(true);
     }
 
 }

@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.reflections;
 
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiChat;
@@ -11,6 +11,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -25,6 +26,7 @@ public enum ReflectionFields {
     NetHandlerPlayClient_profile(NetHandlerPlayClient.class, "profile", "field_175107_d"),
     ChatLine_lineString(ChatLine.class, "lineString", "field_74541_b"),
     GuiChest_lowerChestInventory(GuiChest.class, "lowerChestInventory", "field_147015_w"),
+    Entity_CUSTOM_NAME(Entity.class, "CUSTOM_NAME", "field_184242_az"),
     Event_phase(Event.class, "phase"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
     GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w"),

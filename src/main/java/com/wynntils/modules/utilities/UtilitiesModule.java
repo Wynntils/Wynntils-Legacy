@@ -12,7 +12,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.utilities.managers.QuickCastManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.modules.utilities.overlays.inventories.*;
@@ -30,7 +29,6 @@ public class UtilitiesModule extends Module {
         registerEvents(new ServerEvents());
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
-        registerEvents(new QuickCastManager());
 
         //Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
@@ -50,13 +48,19 @@ public class UtilitiesModule extends Module {
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
-        registerOverlay(new GameUpdateOverlay(), Priority.LOW);
+        registerOverlay(new GameUpdateOverlay(), Priority.NORMAL);
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
+        registerOverlay(new InfoOverlay._1(), Priority.LOW);
+        registerOverlay(new InfoOverlay._2(), Priority.LOW);
+        registerOverlay(new InfoOverlay._3(), Priority.LOW);
+        registerOverlay(new InfoOverlay._4(), Priority.LOW);
+
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
+        registerOverlay(new StopWatchOverlay(), Priority.LOW);
 
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.Data.class);
@@ -74,6 +78,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Bubbles.class);
         registerSettings(OverlayConfig.GameUpdate.class);
         registerSettings(OverlayConfig.TerritoryFeed.class);
+        registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
