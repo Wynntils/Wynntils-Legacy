@@ -43,7 +43,13 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new MainWorldMapUI()); });
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
+            if (Reference.onWorld && WebManager.getApiUrls() != null) {
+                // If ApiUrls is null, Wynntils server is down and map
+                // will never be loaded
+                Utils.displayGuiScreen(new MainWorldMapUI());
+            }
+        });
     }
 
     public static MapModule getModule() {

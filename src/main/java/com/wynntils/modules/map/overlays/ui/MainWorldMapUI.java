@@ -15,12 +15,14 @@ import net.minecraft.init.SoundEvents;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class MainWorldMapUI extends WorldMapUI {
     private GuiButton settingsBtn;
     private GuiButton waypointMenuBtn;
     private GuiButton pathWaypointMenuBtn;
     private GuiButtonImage addWaypointBtn;
+    private GuiButtonImage helpBtn;
 
     private boolean holdingMapKey = false;
     private long creationTime;
@@ -41,6 +43,7 @@ public class MainWorldMapUI extends WorldMapUI {
         this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
         this.buttonList.add(pathWaypointMenuBtn = new GuiButton(3, 22, 69, 60, 18, "Paths"));
         this.buttonList.add(addWaypointBtn = new GuiButtonImage(2, 24, 92, 14, 14, 0, 0, 0, Textures.Map.map_options.resourceLocation));
+        this.buttonList.add(helpBtn = new GuiButtonImage(3, 24, height - 34, 11, 16, 0, 72, 0, Textures.Map.map_options.resourceLocation));
     }
 
     @Override
@@ -66,6 +69,17 @@ public class MainWorldMapUI extends WorldMapUI {
         ScreenRenderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        if (helpBtn.isMouseOver()) {
+            drawHoveringText(Arrays.asList(
+                "Help",
+                "CTRL to show territories",
+                "Left click on waypoint to place compass beacon there",
+                "Middle click to place compass beacon",
+                "Double click on compass beacon to create waypoint there",
+                "Right click to centre on player"
+            ), mouseX, mouseY, fontRenderer);
+        }
     }
 
     @Override
