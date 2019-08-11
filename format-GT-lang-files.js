@@ -37,8 +37,8 @@ let lastProgress = -1;
 these are found in the original and the translation,
 then the instances in the translation are replaced with
 the instances from the original at the same count index,
-explanation at https://regex101.com/r/vq5Xuk, choose the latest saved version*/
-const specialCodesRegex = /(?:^|["' ([\{])\/\w+ ?| ?(?<!%)(?:§\w|% ?\w|\$ ?\w|\( ?.? ?\/ ?.? ?\)|\\+(?!n)|[<>\[\]|:+\/\(\)]) ?(?!\/\w+)/gu;
+explanation at https://regex101.com/r/vq5Xuk/6, choose the latest saved version*/
+const specialCodesRegex = /(?:^|["' ([\{])\/ ?\w+ ?| ?(?<!%)(?:§\w|% ?\w|\$ ?\w|\( ?.? ?\/ ?.? ?\)|\\+(?!n)|[<>\[\]|:+\/\(\)]) ?(?!\/ ?\w+)/gu;
 
 //format the file line by line
 console.log("Formatting Lines...");

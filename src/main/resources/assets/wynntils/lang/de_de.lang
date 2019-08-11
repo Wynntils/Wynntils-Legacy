@@ -69,6 +69,27 @@ wynntils.config.map.record_chest_tier.display_name = Brustwegpunkte aufzeichnen
 wynntils.config.map.record_chest_tier.description = Welche Truhen sollten als Wegpunkte aufgezeichnet werden, wenn Sie sie entdecken? \ n \ n§8Der Mod zeichnet auch höhere Stufen als die angegebene Stufe auf.
 wynntils.config.map.minimap_zoom.display_name = Minimap Zoom
 wynntils.config.map.minimap_zoom.description = Wie weit soll die Minikarte herausgezoomt sein?
+wynntils.config.map.compass_beam.display_name = Kompassstrahl anzeigen
+wynntils.config.map.compass_beam.description = Soll an Ihrer Kompassposition ein Bakenstrahl angezeigt werden?
+wynntils.config.map.minimap_coords.display_name = Minimap-Koordinaten
+wynntils.config.map.minimap_coords.description = Sollen Ihre Koordinaten unterhalb der Minikarte angezeigt werden?
+wynntils.config.map.minimap_icons.display_name = Minikartensymbole anzeigen
+wynntils.config.map.minimap_icons.description = Sollen Kartensymbole auf der Minikarte angezeigt werden?
+wynntils.config.map.minimap_icons_size.display_name = Minimap Icons Size
+wynntils.config.map.minimap_icons_size.description = Wie gro \ u00FCs sollten Minikartensymbole sein?
+
+## KARTE WELTKARTE KONFIG ##
+wynntils.config.map.world_map.display_path = Karte / Weltkarte
+wynntils.config.map.world_map.territory_visible.display_name = Gebiet sichtbar halten
+wynntils.config.map.world_map.territory_visible.description = Sollen Gebietsnamen immer angezeigt werden, anstatt nur, wenn Sie die STRG-Taste gedrückt halten?
+wynntils.config.map.world_map.territory_names.display_name = Gebietsnamen
+wynntils.config.map.world_map.territory_names.description = Sollen Gebietsnamen angezeigt werden?
+wynntils.config.map.world_map.territory_guild_tags.display_name = Territory Guild Tags
+wynntils.config.map.world_map.territory_guild_tags.description = Sollen Gildennamen durch ihre Gilden-Tags ersetzt werden?
+wynntils.config.map.world_map.territory_color_transparency.display_name = Transparenz der Gebietsfarbe
+wynntils.config.map.world_map.territory_color_transparency.description = Wie transparent soll die Farbe der Gebiete sein?
+wynntils.config.map.world_map.territory_area.display_name = Transparenz der Gebietsfarbe
+wynntils.config.map.world_map.territory_area.description = Wie transparent soll die Farbe der Gebiete sein?
 
 ## MAP MAP FORMAT ENUM CONFIG ##
 wynntils.config.map.enum.map_format.square = Quadrat
@@ -260,7 +281,7 @@ wynntils.config.overlay.health.health_vignette_threshold.description = Bei wie v
 wynntils.config.overlay.health.health_vignette_effect.display_name = Animation mit niedrigem Gesundheitszustand
 wynntils.config.overlay.health.health_vignette_effect.description = Welche Animation sollte für den Indikator für niedrigen Gesundheitszustand verwendet werden?
 
-## OVERLAYS GESUNDHEIT GESUNDHEIT TEXTUR ENUM KONFIG ##
+## OVERLAYS GESUNDHEIT GESUNDHEITSBESCHAFFENHEIT ENUM CONFIG ##
 wynntils.config.overlay.health.enum.health_texture.wynn = Wynn
 wynntils.config.overlay.health.enum.health_texture.grune = Grune
 wynntils.config.overlay.health.enum.health_texture.aether = Äther
@@ -285,7 +306,7 @@ wynntils.config.overlay.mana.animation_speed.description = Wie schnell soll die 
 wynntils.config.overlay.mana.text_shadow.display_name = Textschatten
 wynntils.config.overlay.mana.text_shadow.description = Wie soll der Textschatten aussehen?
 
-## OVERLAYS GESUNDHEIT GESUNDHEIT TEXTUR ENUM KONFIG ##
+## OVERLAYS GESUNDHEIT GESUNDHEITSBESCHAFFENHEIT ENUM CONFIG ##
 wynntils.config.overlay.mana.enum.mana_texture.wynn = Wynn
 wynntils.config.overlay.mana.enum.mana_texture.brune = Brune
 wynntils.config.overlay.mana.enum.mana_texture.aether = Aether
@@ -311,13 +332,13 @@ wynntils.config.overlay.toast.display_path = Overlays / Toasts
 wynntils.config.overlay.toast.enable.display_name = Toast-Nachrichten aktivieren
 wynntils.config.overlay.toast.enable.description = Sollen bestimmte Nachrichten in Form eines rollenden Pergaments angezeigt werden?
 wynntils.config.overlay.toast.territory_enter.display_name = Gebietsangaben aktivieren
-wynntils.config.overlay.toast.territory_enter.description = Soll ein Toast angezeigt werden, um darauf hinzuweisen, dass Sie ein Gebiet betreten?
+wynntils.config.overlay.toast.territory_enter.description = Soll ein Toast angezeigt werden, um Sie darüber zu informieren, dass Sie ein Gebiet betreten?
 wynntils.config.overlay.toast.area_discovered.display_name = Bereich erkannte Nachrichten aktivieren
-wynntils.config.overlay.toast.area_discovered.description = Soll ein Toast angezeigt werden, um mitzuteilen, dass Sie ein Gebiet entdeckt haben?
+wynntils.config.overlay.toast.area_discovered.description = Soll ein Toast angezeigt werden, um Sie darüber zu informieren, dass Sie ein Gebiet entdeckt haben?
 wynntils.config.overlay.toast.quest_completed.display_name = Quest erledigte Nachrichten aktivieren
 wynntils.config.overlay.toast.quest_completed.description = Soll ein Toast angezeigt werden, um Sie darüber zu informieren, dass Sie eine Quest abgeschlossen haben?
 wynntils.config.overlay.toast.discovery_found.display_name = Erkennungsnachrichten aktivieren
-wynntils.config.overlay.toast.discovery_found.description = Soll ein Toast angezeigt werden, um mitzuteilen, dass Sie eine geheime Entdeckung gefunden haben?
+wynntils.config.overlay.toast.discovery_found.description = Soll ein Toast angezeigt werden, um Sie darüber zu informieren, dass Sie eine geheime Entdeckung gefunden haben?
 wynntils.config.overlay.toast.flip.display_name = Toast-Nachrichten spiegeln
 wynntils.config.overlay.toast.flip.description = Sollte ein Toast von links nach rechts angezeigt werden? \ n \ n§8Einige visuelle Störungen können auftreten, wenn das Toast-Overlay nicht auf eine der Seiten Ihres Bildschirms verschoben wird.
 
@@ -594,7 +615,7 @@ wynntils.commands.territory.compass_warning = \ nBitte stellen Sie sicher, dass 
 ## /Zeichen ##
 wynntils.commands.token.usage = Liefert Ihr Wynntils-Authentifizierungstoken
 wynntils.commands.token.token_text = Wynntils-Token
-wynntils.commands.token.token_link_hover = Klicke auf mich, um ein Konto zu registrieren
+wynntils.commands.token.token_link_hover = Klicken Sie auf mich, um Ihr Konto zu registrieren
 
 ## / wynntils ##
 wynntils.commands.wynntils.usage = / wynntils <Befehl>
@@ -622,7 +643,7 @@ wynntils.commands.wynntils.version.build_unknown = Unbekannter Build
 wynntils.commands.wynntils.version.update_check_failed = Wynntils konnte nicht nach Updates suchen. Drücken Sie% s, um es erneut zu versuchen.
 wynntils.commands.wynntils.version.update_check_outdated = Wynntils ist derzeit veraltet. Drücken Sie% s, um jetzt zu aktualisieren.
 wynntils.commands.wynntils.version.update_check_up_to_date = Wynntils war bei der letzten Überprüfung auf dem neuesten Stand. Drücken Sie% s, um nach Updates zu suchen.
-wynntils.commands.wynntils.error.invalid_argument = Ungültiges Argument. Verwenden Sie die / wynntils-Hilfe, um weitere Informationen zu erhalten.
+wynntils.commands.wynntils.error.invalid_argument = Ungültiges Argument. Verwenden Sie die / wynntils-Hilfe für weitere Informationen.
 wynntils.commands.wynntils.error.missing_argument = Fehlende Argumente. Verwenden Sie die / wynntils-Hilfe, um weitere Informationen zu erhalten.
 
 #########
@@ -660,6 +681,14 @@ wynntils.map.toasts.new_map_entry.body = Du hast eine Truhe der Stufe% s gefunde
 ## WORLD MAP UI ##
 wynntils.map.ui.world_map.button.markers = Marker
 wynntils.map.ui.world_map.button.waypoints = Wegpunkte
+wynntils.map.ui.world_map.button.paths = Pfade
+wynntils.map.ui.world_map.marker.beacon = Kompassbake
+wynntils.map.ui.world_map.help.title = Hilfe
+wynntils.map.ui.world_map.help.line_1 = STRG, um Gebiete anzuzeigen
+wynntils.map.ui.world_map.help.line_2 = Klicken Sie mit der linken Maustaste auf den Wegpunkt, um das Kompasssignal dort zu platzieren
+wynntils.map.ui.world_map.help.line_3 = Klicken Sie mit der mittleren Maustaste, um das Kompasssignal zu platzieren
+wynntils.map.ui.world_map.help.line_4 = Doppelklicken Sie auf das Kompasssignal, um dort einen Wegpunkt zu erstellen
+wynntils.map.ui.world_map.help.line_5 = Rechtsklick um den Spieler zu zentrieren
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel = Abbrechen
@@ -670,8 +699,7 @@ wynntils.map.ui.world_map_settings.floating.textures = Kartensymboltexturen:
 
 ## ICON TEXTURE ENUM ##
 wynntils.map.enum.icon_texutre.classic = Klassisch
-# Rechtschreibfehler im aus Konsistenzgründen replizierten Code
-wynntils.map.enum.icon_texutre.medival = Mittelalter
+wynntils.map.enum.icon_texutre.medieval = Mittelalter
 
 ## MINIMAP OVERLAY ##
 wynntils.map.overlays.minimap.display_name = Minikarte
@@ -690,11 +718,22 @@ wynntils.map.ui.waypoint_creation.floating.waypoint_name = Wegpunktname:
 wynntils.map.ui.waypoint_creation.floating.coordinates = Koordinaten:
 wynntils.map.ui.world_map_settings.floating.icon = Symbol:
 wynntils.map.ui.world_map_settings.floating.color = Farbe:
+wynntils.map.ui.path_creation.buttons.clear = Löschen
+wynntils.map.ui.path_creation.buttons.hidden = Versteckt
+wynntils.map.ui.path_creation.buttons.circular = Rundschreiben
+wynntils.map.ui.path_creation.buttons.add_to_start = Zum Start hinzufügen
+wynntils.map.ui.path_creation.buttons.show_icons = Symbole anzeigen
+wynntils.map.ui.path_creation.floating.line_1 = Umschalt + Ziehen zum Schwenken
+wynntils.map.ui.path_creation.floating.line_2 = Klicken Sie mit der rechten Maustaste, um Punkte zu entfernen
 
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon = Symbol
 wynntils.map.ui.waypoints.floating.name = Name
 wynntils.map.ui.waypoints.button.edit = Bearbeiten ...
+wynntils.map.ui.waypoints.button.new = NEU
+
+## KEYBINDS ##
+wynntils.map.keybind.open_map = Karte öffnen
 
 #########
 # MUSIK #
@@ -725,7 +764,7 @@ wynntils.questbook.ui.questbook.button.back_to_menu = Zurück zum Menü
 wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1 = Klicken Sie hier, um fortzufahren
 wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2 = zurück zur Hauptseite
 wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3 =
-wynntils.questbook.ui.questbook.search_bar.type = Zu suchender Typ
+wynntils.questbook.ui.questbook.search_bar.type = Geben Sie ein, um zu suchen
 wynntils.questbook.ui.questbook.search_bar.click = Zum Suchen klicken
 wynntils.questbook.ui.questbook.available_items = Verfügbare Elemente
 wynntils.questbook.ui.questbook.item_guide = Item Guide
@@ -792,7 +831,7 @@ wynntils.questbook.ui.questbook.version.cutting_edge = CE Build% s
 ##############
 
 ## CLIENT EVENTS ##
-wynntils.utilities.events.prevent_mythic_close = Sie k \ u00f6nnen diese Beutekiste nicht sch \ u00f6n, solange sie mythisch ist!
+wynntils.utilities.events.prevent_mythic_close = Sie k \ u00f6nnen diese Beutekiste nicht sch \ u00f6n, solange sich in ihr ein Mythos befindet!
 wynntils.utilities.events.check_daily = §7Tägliche Prämien §Preis verfügbar!
 
 ## ACTIONBAR HELPER OVERLAY ##
@@ -891,3 +930,9 @@ wynntils.utilities.overlays.war_timer.message.mob_spawn = Die Mobs für% s begin
 wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory = Die Mobs fangen an zu laichen
 wynntils.utilities.overlays.war_timer.message.in_war = Sie haben in% s für Krieg geführt
 wynntils.utilities.overlays.war_timer.message.in_war.no_territory = Sie haben Krieg geführt
+
+## STOPPUHR ÜBERLAGERUNG ##
+wynntils.utilities.overlays.stopwatch.display_name = Stoppuhr
+
+## INFO OVERLAY ##
+wynntils.utilities.overlays.info.display_name = Info
