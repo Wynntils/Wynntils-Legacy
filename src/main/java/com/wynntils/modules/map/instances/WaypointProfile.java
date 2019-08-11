@@ -6,6 +6,8 @@ package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 
+import javax.annotation.Nullable;
+
 public class WaypointProfile {
 
     String name;
@@ -13,6 +15,7 @@ public class WaypointProfile {
     int zoomNeeded;
     CustomColor color;
     WaypointType type;
+    WaypointType group = null;
 
     public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded) {
         this.name = name; this.x = x; this.y = y; this.z = z; this.color = color; this.type = type; this.zoomNeeded = zoomNeeded;
@@ -44,6 +47,15 @@ public class WaypointProfile {
 
     public WaypointType getType() {
         return type;
+    }
+
+    public @Nullable WaypointType getGroup() {
+        return group;
+    }
+
+    // Remember to save settings after calling
+    public void setGroup(@Nullable WaypointType group) {
+        this.group = group;
     }
 
     public enum WaypointType {

@@ -42,6 +42,8 @@ public class MainWorldMapUI extends WorldMapUI {
         this.buttonList.add(settingsBtn = new GuiButton(1, 22, 23, 60, 18, "Markers"));
         this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
         this.buttonList.add(pathWaypointMenuBtn = new GuiButton(3, 22, 69, 60, 18, "Paths"));
+        // Fake button to prevent highlight leaking from above to image buttons
+        this.buttonList.add(new GuiButton(-100, -100, -100, 0, 0, ""));
         this.buttonList.add(addWaypointBtn = new GuiButtonImage(2, 24, 92, 14, 14, 0, 0, 0, Textures.Map.map_options.resourceLocation));
         this.buttonList.add(helpBtn = new GuiButtonImage(3, 24, height - 34, 11, 16, 0, 72, 0, Textures.Map.map_options.resourceLocation));
     }

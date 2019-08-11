@@ -1,6 +1,7 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -60,6 +61,17 @@ public class MapWaypointIcon extends MapTextureIcon {
         assert wp.getType().ordinal() < waypointTypesCount : "Invalid enum value in WaypointProfile.WaypointType: " + wp.getType().ordinal();
 
         this.wp = wp;
+    }
+
+    /**
+     * Return a MapWaypointIcon that can render a WaypointType being free from position information
+     */
+    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type) {
+        return getFree(type, CommonColors.WHITE);
+    }
+
+    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type, CustomColor color) {
+        return new MapWaypointIcon(new WaypointProfile("", 0, 0, 0, color, type, 0));
     }
 
     @Override public AssetsTexture getTexture() {
