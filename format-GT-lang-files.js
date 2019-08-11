@@ -3,10 +3,10 @@ requires Node.js 12.0.0 or higher to run
 example: node format-GT-lang-files.js de_de
 
 This script is supposed to be used after passing the english
-source file through Google Translate file translation.
+source file through Google Translate (document) translation.
 (you might need to split the file into pieces)
-It's still necessary to translate manually,
-GT and this script just make it a little less boring
+It's still necessary to clean it up manually afterwards.
+GT and this script just make it a little less boring.
 */
 console.log("Starting...");
 
