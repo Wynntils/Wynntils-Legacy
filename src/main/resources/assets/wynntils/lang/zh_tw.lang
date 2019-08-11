@@ -1,0 +1,892 @@
+## CHINESE (TRADITIONAL)
+# Translated by: xWeiKuOuO,Dexmio,Tezzi_Ja,patyhank
+#################
+# CONFIGURATION #
+#################
+
+## CORE CONFIG ##
+wynntils.config.core.display_path=核心
+wynntils.config.core.update_stream.display_name=更新狀態
+wynntils.config.core.update_stream.description=此模組要使用哪個狀態更新呢？\n\n§2穩定版: §r模組只會在有新版本時更新。穩定版通常比先發版更加穩定。\n\n§4先發版: §r只要有新的版本發布模組就會更新。先發版會包含還未在穩定版且正在開發的功能，但可能較穩定版更不穩定。
+wynntils.config.core.scroll_direction.display_name=滑鼠滾動方向
+wynntils.config.core.scroll_direction.description=您在滾動頁面時滑鼠是向哪個方向滾動？
+wynntils.config.core.enable_changelog_on_update.display_name=更新日誌顯示
+wynntils.config.core.enable_changelog_on_update.description=是否在更新並登入後顯示最近的更新日誌？
+wynntils.config.core.selected_language.display_name=語言
+wynntils.config.core.selected_language.description=您要使用哪語言呢？
+
+## CORE UPDATE STREAM ENUM CONFIG ##
+wynntils.config.core.enum.update_stream.stable=穩定版
+wynntils.config.core.enum.update_stream.cutting_edge=先發版
+
+## CORE SCROLL DIRECTION ENUM CONFIG ##
+wynntils.config.core.enum.scroll_direction.up=上
+wynntils.config.core.enum.scroll_direction.down=下
+
+## CHAT CONFIG ##
+wynntils.config.chat.display_path=聊天室
+wynntils.config.chat.add_timestamps_to_chat.display_name=聊天室時間軸
+wynntils.config.chat.add_timestamps_to_chat.description=是否在訊息開頭顯示時間？
+wynntils.config.chat.transparent.display_name=聊天室透明化
+wynntils.config.chat.transparent.description=聊天室是否透明化？
+wynntils.config.chat.timestamp_format.display_name=聊天室時間軸格式
+wynntils.config.chat.timestamp_format.description=聊天室時間軸要如何顯示？( 如果聊天室時間軸關閉則不會影響到 )
+wynntils.config.chat.chat_mentions.display_name=聊天室提及
+wynntils.config.chat.chat_mentions.description=聊天室出現你的名字時是否要出現提示音？
+wynntils.config.chat.spam_filter.display_name=洗版過濾
+wynntils.config.chat.spam_filter.description=是否堆疊重複訊息且不洗版？
+wynntils.config.chat.filter_info.display_name=情報訊息過濾
+wynntils.config.chat.filter_info.description=是否過濾 Wynncraft 的情報訊息？\n\n§8 §4[Info]§8 開頭的文字將不會出現在訊息中
+wynntils.config.chat.filter_territory_enter.display_name=地區進入訊息過濾
+wynntils.config.chat.filter_territory_enter.description=聊天室是否顯示地區進入訊息？\n\n§8地區進入訊息看起來會像是 §7[您正進入Detlas]§8.
+wynntils.config.chat.preset.display_name=改變預設聊天頻道
+wynntils.config.chat.preset.description=為是否使用預先設置的聊天頻道？\n\na - 全域、公會、隊伍\n\nb - 全域、公廣、公會/隊伍，私訊\n\n原版 - 全域
+wynntils.config.chat.clickable_invite.display_name=組隊邀請點擊
+wynntils.config.chat.clickable_invite.description=組隊邀請指令是否可點擊？
+wynntils.config.chat.clickable_coordinate.display_name=座標點擊標記
+wynntils.config.chat.clickable_coordinate.description=顯示在聊天欄的座標是否與'/compass'指令一樣可點擊？
+## CHAT PRESET ENUM CONFIG ##
+wynntils.config.chat.enum.preset.a=A
+wynntils.config.chat.enum.preset.b=B
+wynntils.config.chat.enum.preset.vanilla=原版
+
+## MAP CONFIG ##
+wynntils.config.map.display_path=小地圖
+wynntils.config.map.enable_minimap.display_name=開啟小地圖
+wynntils.config.map.enable_minimap.description=是否顯示小地圖？
+wynntils.config.map.minimap_shape.display_name=小地圖形狀
+wynntils.config.map.minimap_shape.description=你的小地圖要是圓形還是方形？
+wynntils.config.map.minimap_rotation.display_name=小地圖轉動
+wynntils.config.map.minimap_rotation.description=要將小地圖鎖面向北還是跟隨您的面向旋轉？
+wynntils.config.map.compass_directions.display_name=方位顯示
+wynntils.config.map.compass_directions.description=是否顯示方位 (N, E, S, W) 在小地圖上？
+wynntils.config.map.minimap_size.display_name=小地圖尺寸
+wynntils.config.map.minimap_size.description=你的小地圖要多大呢？
+wynntils.config.map.only_north.display_name=只顯示北方
+wynntils.config.map.only_north.description=是否只在小地圖上顯示北方？
+wynntils.config.map.record_chest_tier.display_name=箱子記錄點
+wynntils.config.map.record_chest_tier.description=你要在地圖上標記哪一階級的箱子呢？\n\n§8這個模組也會順便紀錄比它的階級還要高的箱子。
+wynntils.config.map.minimap_zoom.display_name=小地圖縮放
+wynntils.config.map.minimap_zoom.description=小地圖的縮放程度要多少？
+
+## MAP MAP FORMAT ENUM CONFIG ##
+wynntils.config.map.enum.map_format.square=正方形
+wynntils.config.map.enum.map_format.circle=圓形
+
+## MAP CHEST TIER ENUM CONFIG ##
+wynntils.config.map.enum.chest_tier.tier_1=一階
+wynntils.config.map.enum.chest_tier.tier_2=二階
+wynntils.config.map.enum.chest_tier.tier_3=三階
+wynntils.config.map.enum.chest_tier.tier_4=四階
+wynntils.config.map.enum.chest_tier.none=不做標記
+
+## MAP TEXTURES CONFIG ##
+wynntils.config.map.textures.display_path=地圖/材質
+wynntils.config.map.textures.minimap_style.display_name=小地圖材質
+wynntils.config.map.textures.minimap_style.description=你想要讓地圖用甚麼樣的材質？
+wynntils.config.map.textures.pointer_style.display_name=標記點樣式
+wynntils.config.map.textures.pointer_style.description=你想要為你的標記點用甚麼材質呢？
+wynntils.config.map.textures.pointer_color.display_name=標記點顏色
+wynntils.config.map.textures.pointer_color.description=你想要為你的標記點用什麼顏色呢？\n\n§a點擊顏色箱子在色相環中選擇.
+
+## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.texture_type.paper=紙張
+wynntils.config.map.textures.enum.texture_type.wynn=Wynn
+wynntils.config.map.textures.enum.texture_type.gilded=鍍金
+
+## MAP TEXTURES POINTER TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.pointer_type.arrow=箭頭
+wynntils.config.map.textures.enum.pointer_type.cursor=圓點
+wynntils.config.map.textures.enum.pointer_type.narrow=窄箭頭
+wynntils.config.map.textures.enum.pointer_type.round=橢圓點
+wynntils.config.map.textures.enum.pointer_type.straight=直條
+wynntils.config.map.textures.enum.pointer_type.triangle=三角形
+
+## MAP WAYPOINTS CONFIG ##
+wynntils.config.map.waypoints.display_path=地圖/記錄點
+wynntils.config.map.waypoints.compass_marker.display_name=羅盤標記
+wynntils.config.map.waypoints.compass_marker.description=是否在地圖上顯示羅盤當前指向的圖標？
+
+## MUSIC CONFIG ##
+wynntils.config.music.display_path=音樂
+wynntils.config.music.allow_music.display_name=音樂系統
+wynntils.config.music.allow_music.description=是否使用Wynntils覆蓋Wynncraft原有的音樂系統？
+wynntils.config.music.volume.display_name=基礎音量
+wynntils.config.music.volume.description=背景音量要多大？
+wynntils.config.music.background_volume.display_name=背景音量
+wynntils.config.music.background_volume.description=當個創世神音樂如果不是唯一音樂時音量要多大呢？
+
+## QUESTBOOK CONFIG ##
+wynntils.config.questbook.display_path=任務書
+wynntils.config.questbook.allow_questbook.display_name=允許使用Wynntils任務書
+wynntils.config.questbook.allow_questbook.description=是否讓Wynntils取代WynnCraft的任務書？
+wynntils.config.questbook.compass_follow.display_name=設定任務座標到羅盤上
+wynntils.config.questbook.compass_follow.description=羅盤需要指向任務給予座標的方向嗎？
+wynntils.config.questbook.search_click.display_name=搜尋欄位點擊
+wynntils.config.questbook.search_click.description=是否要點擊搜尋欄才能打字，還是要能夠開啟任物書後直接在搜尋欄中輸入？
+wynntils.config.questbook.fuzzy_search.display_name=模糊檢索
+wynntils.config.questbook.fuzzy_search.description=是否使用能搜尋簡寫的不同搜尋演算法嗎？
+wynntils.config.questbook.scan_discoveries.display_name=檢查探索區域
+wynntils.config.questbook.scan_discoveries.description=是否要任務書分析探索區域？\n取消此項會導致任務書不顯示探索區域標籤，但會使任務書分析速度更快
+
+## RICH PRESENCE CONFIG ##
+wynntils.config.richpresence.display_path=Discord遊玩資訊
+wynntils.config.richpresence.show_information.display_name=顯示角色名稱
+wynntils.config.richpresence.show_information.description=是否讓 Discord 遊玩資訊顯示角色等基本訊息？
+wynntils.config.richpresence.enable.display_name=顯示Discord遊玩資訊
+wynntils.config.richpresence.enable.description=是否在 Discord 上啟用遊玩資訊？
+
+## UTILITIES CONFIG ##
+wynntils.config.utils.display_path=實用類
+wynntils.config.utils.daily_reminder.display_name=每日箱子提示
+wynntils.config.utils.daily_reminder.description=是否在進入世界後提示您能領取每日箱子？
+wynntils.config.utils.hide_potion.display_name=隱藏原版藥水效果指示
+wynntils.config.utils.hide_potion.description=您要隱藏原版藥水效果指示(黑色方框)嗎？
+wynntils.config.utils.add_class_server.display_name=主選單 Class & Server 按鍵
+wynntils.config.utils.add_class_server.description=是否顯示 Class 和 Server 按鈕在主選單？
+wynntils.config.utils.hide_nametags_through_blocks.display_name=隱藏牆後名稱
+wynntils.config.utils.hide_nametags_through_blocks.description=是否隱藏方塊後的名稱？
+wynntils.config.utils.hide_nametag_box.display_name=隱藏名稱標籤
+wynntils.config.utils.hide_nametag_box.description=是否隱藏名字旁的名稱標籤？
+wynntils.config.utils.show_armor.display_name=顯示玩家裝備
+wynntils.config.utils.show_armor.description=是否在玩家名稱底下顯示該玩家的裝備？\n\n§8無法顯示合成裝備
+wynntils.config.utils.prevent_mythic.display_name=避免含神話的箱子關閉
+wynntils.config.utils.prevent_mythic.description=是否要避免有神話裝(Mythic)的箱子關閉？
+wynntils.config.utils.prevent_slot_click.display_name=預防上鎖欄位點擊
+wynntils.config.utils.prevent_slot_click.description=是否防止上鎖物品在背包中移動？
+wynntils.config.utils.afk_collision_block.display_name=在掛機時防止玩家相撞
+wynntils.config.utils.afk_collision_block.description=是否防止玩家在掛機時的相撞？
+wynntils.config.utils.highlight_on_hotbar.display_name=顯示物品標記於快捷欄中
+wynntils.config.utils.highlight_on_hotbar.description=是否讓物品稀有度在快捷欄中標記？
+
+## UTILITIES WAR CONFIG ##
+wynntils.config.utils.war.display_path=公會戰
+wynntils.config.utils.war.entity_filter.display_name=實體過濾器
+wynntils.config.utils.war.entity_filter.description=是否隱藏公會戰中的怪物名稱？
+wynntils.config.utils.war.warrer_health_bar.display_name=玩家生命條顯示
+wynntils.config.utils.war.warrer_health_bar.description=是否在公會戰時在其他玩家頭上顯示他們的生命條？
+
+## UTILITIES ITEM HIGHLIGHTS CONFIG ##
+wynntils.config.utils.item_highlights.display_path=實用類/物品強調顯示
+wynntils.config.utils.item_highlights.ingredient_filter.display_name=素材過濾器
+wynntils.config.utils.item_highlights.ingredient_filter.description=是否顯示素材和合成物品的過濾器？
+wynntils.config.utils.item_highlights.highlight_container.display_name=容器內物品強調顯示
+wynntils.config.utils.item_highlights.highlight_container.description=是否讓容器內(箱子、銀行等)的物品根據稀有度標記？
+wynntils.config.utils.item_highlights.highlight_inventory.display_name=背包物品強調顯示
+wynntils.config.utils.item_highlights.highlight_inventory.description=是否讓快捷欄的物品根據稀有度標記？
+wynntils.config.utils.item_highlights.highlight_accessory.display_name=飾品強調顯示
+wynntils.config.utils.item_highlights.highlight_accessory.description=是否你的飾品根據稀有度標記？
+wynntils.config.utils.item_highlights.highlight_hotbar.display_name=快捷欄強調顯示
+wynntils.config.utils.item_highlights.highlight_hotbar.description=是否讓快捷欄的物品根據稀有度而更加顯眼？
+wynntils.config.utils.item_highlights.highlight_armor.display_name=裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_armor.description=是否讓你穿上的裝備根據稀有度而更加顯眼？
+wynntils.config.utils.item_highlights.highlight_mythic.display_name=神話物品(Mythic)強調顯示
+wynntils.config.utils.item_highlights.highlight_mythic.description=是否讓神話物品(Mythic)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_legendary.display_name=傳奇物品(Legendary)強調顯示
+wynntils.config.utils.item_highlights.highlight_legendary.description=是否讓傳奇物品(Legendary)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_rare.display_name=稀有物品(Rare)強調顯示
+wynntils.config.utils.item_highlights.highlight_rare.description=是否讓稀有物品(Rare)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_unique.display_name=罕見物品(Unique)強調顯示
+wynntils.config.utils.item_highlights.highlight_unique.description=是否讓罕見物品(Unique)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_set.display_name=套裝物品(Set)強調顯示
+wynntils.config.utils.item_highlights.highlight_set.description=是否讓套裝物品(Set)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_normal.display_name=一般物品(Normal)強調顯示
+wynntils.config.utils.item_highlights.highlight_normal.description=是否讓一般物品(Normal)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=黑市飾物(Black Market)強調顯示
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=是否讓黑市飾物(Black Market)更加顯眼？
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name神級(Godly)裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description=是否讓神級(Godly)裝備更加顯眼？
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name=史詩級(Epic)裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description=是否讓史詩級(Epic)裝備更加顯眼？
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.display_name=稀有級(Rare)裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.description=是否讓稀有級(Rare)裝備更加顯眼？
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.display_name=常見(Common)裝備強調顯示
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.description=是否讓常見(Common)裝備更加顯眼？
+wynntils.config.utils.item_highlights.emeralds_container.display_name=在儲藏箱中顯示綠寶石數量
+wynntils.config.utils.item_highlights.emeralds_container.description=是否要在儲藏箱中顯示您的綠寶石數量？(箱子、銀行等...)
+wynntils.config.utils.item_highlights.emeralds_inventory.display_name=在背包中顯示綠寶石數量
+wynntils.config.utils.item_highlights.emeralds_inventory.description=是否要在背包中顯示您的綠寶石數量？
+wynntils.config.utils.item_highlights.highlight_powder.display_name=強調顯示元素粉
+wynntils.config.utils.item_highlights.highlight_powder.description=是否要根據元素屬性使元素粉更加顯眼？
+wynntils.config.utils.item_highlights.highlight_crafting.display_name=強調顯示素材(合成用)
+wynntils.config.utils.item_highlights.highlight_crafting.description=是否要根據素材的等級使素材(合成用)使其更加顯眼？
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name=強調顯示重複的裝備
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=是否要讓重複的裝備在回收頁面更加顯眼？
+wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=最低等級元素粉強調顯示
+wynntils.config.utils.item_highlights.minimum_powder_tier.description=使最低哪一等級的元素粉更佳顯眼？此設定效果不會因強調顯示元素粉被取消而影響。
+wynntils.config.utils.item_highlights.legendary_color.display_name=傳奇物品(Legendary)強調顯示顏色
+wynntils.config.utils.item_highlights.legendary_color.description=傳奇物品(Legendary)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.mythic_color.display_name=神話物品(Mythic)強調顯示顏色
+wynntils.config.utils.item_highlights.mythic_color.description=神話物品(Mythic)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.rare_color.display_name=稀有物品(Rare)強調顯示顏色
+wynntils.config.utils.item_highlights.rare_color.description=稀有物品(Rare)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.unique_color.display_name=罕見物品(Unique)強調顯示顏色
+wynntils.config.utils.item_highlights.unique_color.description=罕見物品(Unique)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.set_color.display_name=套裝物品(Set)強調顯示顏色
+wynntils.config.utils.item_highlights.set_color.description=套裝物品(Set)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.normal_color.display_name=一般物品(Normal)強調顯示顏色
+wynntils.config.utils.item_highlights.normal_color.description=一般物品(Normal)的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.crafted_color.display_name=合成裝備 & 武器強調顯示顏色
+wynntils.config.utils.item_highlights.crafted_color.description=合成裝備和武器的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.onestar_color.display_name=素材強調顯示顏色(1星)
+wynntils.config.utils.item_highlights.onestar_color.description=一星素材的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.twostar_color.display_name=素材強調顯示顏色(2星)
+wynntils.config.utils.item_highlights.twostar_color.description=二星素材的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+wynntils.config.utils.item_highlights.threestar_color.display_name=素材強調顯示顏色(3星)
+wynntils.config.utils.item_highlights.threestar_color.description=三星素材的強調標記要用什麼顏色呢？\n\n§a點擊色塊開啟調色環。
+
+## OVERLAYS CONFIG ##
+wynntils.config.overlay.display_path=外觀
+wynntils.config.overlay.text_shadow.display_name=文字陰影
+wynntils.config.overlay.text_shadow.description=文字陰影該如何顯示？
+wynntils.config.overlay.actionbar_coords.display_name=動作條座標
+wynntils.config.overlay.actionbar_coords.description=是否在動作條沒有其他訊息顯示時顯示你的座標？
+wynntils.config.overlay.split_coords.display_name=座標分隔
+wynntils.config.overlay.split_coords.description=座標與動作條是否分開顯示？
+
+## OVERLAYS HEALTH CONFIG ##
+wynntils.config.overlay.health.display_path=外觀/生命值
+wynntils.config.overlay.health.texture.display_name=生命條材質
+wynntils.config.overlay.health.texture.description=生命條要用什麼材質呢？
+wynntils.config.overlay.health.animation_speed.display_name=動畫速度
+wynntils.config.overlay.health.animation_speed.description=動畫播放要多快呢？\n\n§8設至 0 可快速顯示
+wynntils.config.overlay.health.text_shadow.display_name=文字陰影
+wynntils.config.overlay.health.text_shadow.description=文字陰影看起來要如何呢？
+wynntils.config.overlay.health.health_vignette.display_name=低血量暈影
+wynntils.config.overlay.health.health_vignette.description=是否在你低血量時放置紅色暈影？
+wynntils.config.overlay.health.health_vignette_threshold.display_name=低血量臨界值
+wynntils.config.overlay.health.health_vignette_threshold.description=要血量在多少百分比時放置紅色暈影？
+wynntils.config.overlay.health.health_vignette_effect.display_name=低生命值動畫
+wynntils.config.overlay.health.health_vignette_effect.description=要使用哪一個動畫作為你的低生命值動畫？
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
+wynntils.config.overlay.health.enum.health_texture.grune=綠條
+wynntils.config.overlay.health.enum.health_texture.aether=迷霧
+wynntils.config.overlay.health.enum.health_texture.skull=龍頭
+wynntils.config.overlay.health.enum.health_texture.skyrim=天界
+wynntils.config.overlay.health.enum.health_texture.a=A
+wynntils.config.overlay.health.enum.health_texture.b=B
+wynntils.config.overlay.health.enum.health_texture.c=C
+wynntils.config.overlay.health.enum.health_texture.d=D
+
+## OVERLAYS HEALTH HEALTH VIGNETTE EFFECT ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_vignette_effect.pulse=脈衝
+wynntils.config.overlay.health.enum.health_vignette_effect.static=靜態
+wynntils.config.overlay.health.enum.health_vignette_effect.growing=漸變
+
+## OVERLAYS MANA CONFIG ##
+wynntils.config.overlay.mana.display_path=外觀/魔力
+wynntils.config.overlay.mana.texture.display_name=魔力條材質
+wynntils.config.overlay.mana.texture.description=生命條要用什麼材質呢？
+wynntils.config.overlay.mana.animation_speed.display_name=動畫速度
+wynntils.config.overlay.mana.animation_speed.description=動畫播放要多快呢？\n\n§8設至 0 可快速顯示
+wynntils.config.overlay.mana.text_shadow.display_name=文字陰影
+wynntils.config.overlay.mana.text_shadow.description=文字陰影看起來要如何呢？
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.mana.enum.mana_texture.wynn=Wynn
+wynntils.config.overlay.mana.enum.mana_texture.brune=棕條
+wynntils.config.overlay.mana.enum.mana_texture.aether=迷霧
+wynntils.config.overlay.mana.enum.mana_texture.skull=龍頭
+wynntils.config.overlay.mana.enum.mana_texture.inverse=對比
+wynntils.config.overlay.mana.enum.mana_texture.skyrim=天界
+wynntils.config.overlay.mana.enum.mana_texture.a=A
+wynntils.config.overlay.mana.enum.mana_texture.b=B
+wynntils.config.overlay.mana.enum.mana_texture.c=C
+wynntils.config.overlay.mana.enum.mana_texture.d=D
+
+## OVERLAYS HOTBAR CONFIG ##
+wynntils.config.overlay.hotbar.display_path=外觀/快捷欄
+wynntils.config.overlay.hotbar.texture.display_name=快捷欄材質
+wynntils.config.overlay.hotbar.texture.description=快捷欄要用什麼材質呢？
+
+## OVERLAYS HOTBAR HOTBAR TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=材質包
+wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn=Wynn
+
+## OVERLAYS TOAST CONFIG ##
+wynntils.config.overlay.toast.display_path=外觀/通知
+wynntils.config.overlay.toast.enable.display_name=啟用訊息通知
+wynntils.config.overlay.toast.enable.description=是否將一些訊息放入羊皮卷軸顯示？
+wynntils.config.overlay.toast.territory_enter.display_name=啟用區域進入的訊息
+wynntils.config.overlay.toast.territory_enter.description=是否顯示你正在進入地點的通知？
+wynntils.config.overlay.toast.area_discovered.display_name=啟用區域發現的消息
+wynntils.config.overlay.toast.area_discovered.description=是否顯示區域發現的通知？
+wynntils.config.overlay.toast.quest_completed.display_name=啟用任務完成的訊息
+wynntils.config.overlay.toast.quest_completed.description=是否顯示任務完成的通知？
+wynntils.config.overlay.toast.discovery_found.display_name=啟用地點發現的訊息
+wynntils.config.overlay.toast.discovery_found.description=是否顯示秘密地點發現的通知？
+wynntils.config.overlay.toast.flip.display_name=訊息通知反轉
+wynntils.config.overlay.toast.flip.description=是否讓通知訊息有左至右顯示？\n\n§8當通知不是由你螢幕的邊框顯示出來的時候，可能會有一些視覺問題
+
+## OVERLAYS EXP CONFIG ##
+wynntils.config.overlay.exp.display_path=外觀/經驗值
+wynntils.config.overlay.exp.texture.display_name=經驗條材質
+wynntils.config.overlay.exp.texture.description=經驗條要用什麼材質呢？
+wynntils.config.overlay.exp.animation_speed.display_name=動畫速度
+wynntils.config.overlay.exp.animation_speed.description=動畫播放要多快呢？\n\n§8設至 0 可快速顯示
+wynntils.config.overlay.exp.text_shadow.display_name=文字陰影
+wynntils.config.overlay.exp.text_shadow.description=文字陰影看起來要如何呢？
+
+## OVERLAYS EXP EXP TEXTURES ENUM CONFIG ##
+wynntils.config.overlay.exp.enum.exp_texture.wynn=Wynn
+wynntils.config.overlay.exp.enum.exp_texture.liquid=液態
+wynntils.config.overlay.exp.enum.exp_texture.emerald=綠寶石
+wynntils.config.overlay.exp.enum.exp_texture.a=A
+wynntils.config.overlay.exp.enum.exp_texture.b=B
+wynntils.config.overlay.exp.enum.exp_texture.c=C
+
+## OVERLAYS BUBBLES CONFIG ##
+wynntils.config.overlay.bubbles.display_path=外觀/水下氣泡
+wynntils.config.overlay.bubbles.texture.display_name=氣泡條材質
+wynntils.config.overlay.bubbles.texture.description=當經驗條顯示成氣泡條時要使用何種材質？
+wynntils.config.overlay.bubbles.animation_speed.display_name=動畫速度
+wynntils.config.overlay.bubbles.animation_speed.description=動畫播放要多快呢？\n\n§8設至 0 可快速顯示
+wynntils.config.overlay.bubbles.text_shadow.display_name=文字陰影
+wynntils.config.overlay.bubbles.text_shadow.description=文字陰影看起來要如何呢？
+wynntils.config.overlay.bubbles.drowning_vignette.display_name=氣泡暈影
+wynntils.config.overlay.bubbles.drowning_vignette.description=是否在水下時使用藍色暈影？
+
+## OVERLAYS BUBBLES BUBBLE TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.bubbles.enum.bubble_texture.wynn=Wynn
+wynntils.config.overlay.bubbles.enum.bubble_texture.liquid=液態
+# Misspelling in code is replicated here for consistency
+wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=藍寶石
+wynntils.config.overlay.bubbles.enum.bubble_texture.a=A
+wynntils.config.overlay.bubbles.enum.bubble_texture.b=B
+wynntils.config.overlay.bubbles.enum.bubble_texture.c=C
+
+## OVERLAYS LEVELING CONFIG ##
+wynntils.config.overlay.leveling.display_path=外觀/升級
+wynntils.config.overlay.leveling.text.display_name=當前文字
+wynntils.config.overlay.leveling.text.description=升級要顯示什麼文字呢？
+wynntils.config.overlay.leveling.text_shadow.display_name=文字陰影
+wynntils.config.overlay.leveling.text_shadow.description=文字陰影看起來要如何呢？
+
+## OVERLAYS TICKER CONFIG ##
+wynntils.config.overlay.ticker.display_path=外觀/狀態更新欄
+wynntils.config.overlay.ticker.message_limit.display_name=訊息上限
+wynntils.config.overlay.ticker.message_limit.description=狀態更新欄表要以幾條訊息為上限？
+wynntils.config.overlay.ticker.align_right.display_name=文字 - 靠右
+wynntils.config.overlay.ticker.align_right.description=文字是否要靠右對齊？
+wynntils.config.overlay.ticker.expiry_time.display_name=文字消失間隔
+wynntils.config.overlay.ticker.expiry_time.description=狀態訊息要在螢幕上停留多久？(以秒計)
+wynntils.config.overlay.ticker.fadeout_time.display_name=訊息淡出動畫
+wynntils.config.overlay.ticker.fadeout_time.description=淡出動畫要播放多長呢？
+wynntils.config.overlay.ticker.invert_growth.display_name=出現方向反轉
+wynntils.config.overlay.ticker.invert_growth.description=是否將狀態訊息出現的方向反轉？
+wynntils.config.overlay.ticker.max_message_length.display_name=訊息長度上限
+wynntils.config.overlay.ticker.max_message_length.description=狀態更新欄的訊息長度上限要為多少？\n\n§8超過此數值的訊息會被截除，設至 0 可設為無長度限制。
+wynntils.config.overlay.ticker.text_shadow.display_name=文字陰影
+wynntils.config.overlay.ticker.text_shadow.description=文字陰影看起來要如何呢？
+wynntils.config.overlay.ticker.new_message_override.display_name=新訊息覆蓋
+wynntils.config.overlay.ticker.new_message_override.description=是否讓新訊息覆蓋最早的訊息？\n\n§8如果將此關閉，狀態訊息會在舊訊息消失時排列顯示。
+
+## OVERLAYS TICKER EXP CONFIG ##
+wynntils.config.overlay.ticker.exp.display_path=外觀/狀態更新欄/經驗值
+wynntils.config.overlay.ticker.exp.enable.display_name=啟用經驗值訊息
+wynntils.config.overlay.ticker.exp.enable.description=要在狀態更新欄顯示經驗值訊息嗎？
+wynntils.config.overlay.ticker.exp.update_rate.display_name=經驗值訊息更新速率？
+wynntils.config.overlay.ticker.exp.update_rate.description=要多常在狀態更新欄增加經驗值訊息(以秒計)？
+wynntils.config.overlay.ticker.exp.format.display_name=經驗值訊息格式
+wynntils.config.overlay.ticker.exp.format.description=經驗值訊息要以何種格式來顯示？
+
+## OVERLAYS TICKER INVENTORY CONFIG ##
+wynntils.config.overlay.ticker.inv.display_path=外觀/狀態更新欄/背包
+wynntils.config.overlay.ticker.inv.enable.display_name=啟用背已滿包訊息
+wynntils.config.overlay.ticker.inv.enable.description=當背包已滿時要在狀態更新欄嗎？
+wynntils.config.overlay.ticker.inv.update_rate.display_name=背包已滿更新速率
+wynntils.config.overlay.ticker.inv.update_rate.description=要多常在狀態更新欄顯示背包已滿訊息(以秒計)？
+wynntils.config.overlay.ticker.inv.format.display_name=背包已滿訊息格式
+wynntils.config.overlay.ticker.inv.format.description=背包已滿訊息要以何種格式來顯示？
+
+## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
+wynntils.config.overlay.ticker.redir.display_path=外觀/狀態更新欄/重新導向訊息
+wynntils.config.overlay.ticker.redir.combat.display_name=重新導向戰鬥訊息
+wynntils.config.overlay.ticker.redir.combat.description=要將戰鬥訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.horse.display_name=重新導向馬匹訊息
+wynntils.config.overlay.ticker.redir.horse.description=要將有關馬匹訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.local_login.display_name=重新導向地區登入訊息
+wynntils.config.overlay.ticker.redir.local_login.description=要將地區登入訊息(給有階級的人)重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.friend_login.display_name=重新導向好友登入訊息
+wynntils.config.overlay.ticker.redir.friend_login.description=要將好友的登入訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.guild_login.display_name=重新導向公會成員登入訊息
+wynntils.config.overlay.ticker.redir.guild_login.description=要將公會成員登入重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.merchant.display_name=重新導向商人訊息
+wynntils.config.overlay.ticker.redir.merchant.description=要將物品商人及鑑定師的訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.other.display_name=重新導向其他訊息
+wynntils.config.overlay.ticker.redir.other.description=要將技能點數、鑑定物品價格及其他玩家升級的訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.server.display_name=重新導向伺服器狀態
+wynntils.config.overlay.ticker.redir.server.description=要將伺服器關閉的訊息重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.quest.display_name=重新導向任務資訊
+wynntils.config.overlay.ticker.redir.quest.description=要將有關任務進展的資訊重新導向至狀態更新欄？
+wynntils.config.overlay.ticker.redir.soul_point.display_name=重新導向靈魂點訊息
+wynntils.config.overlay.ticker.redir.soul_point.description=要將有關靈魂點的訊息重新導向至狀態更新欄？
+
+## OVERLAYS TICKER TERRITORY CONFIG ##
+wynntils.config.overlay.ticker.territory.display_path=外觀/狀態更新欄/地區變換
+wynntils.config.overlay.ticker.territory.enable.display_name=啟用地區變換
+wynntils.config.overlay.ticker.territory.enable.description=要在狀態更新欄顯示地區變換的訊息嗎？
+wynntils.config.overlay.ticker.territory.enter.display_name=啟用進入地區
+wynntils.config.overlay.ticker.territory.enter.description=要在狀態更新欄顯示進入地區的訊息嗎？
+wynntils.config.overlay.ticker.territory.leave.display_name=啟用離開地區
+wynntils.config.overlay.ticker.territory.leave.description=要在狀態更新欄顯示離開地區的訊息嗎？
+wynntils.config.overlay.ticker.territory.music_change.display_name=啟用音樂更換
+wynntils.config.overlay.ticker.territory.music_change.description=要在狀態更新欄顯示音樂更換的訊息嗎?\n\n§8如果音樂模組為關閉這並不會受到影響。
+wynntils.config.overlay.ticker.territory.enter_format.display_name=進入地區格式
+wynntils.config.overlay.ticker.territory.enter_format.description=進入地區訊息要以何種格式來顯示？
+wynntils.config.overlay.ticker.territory.leave_format.display_name=離開地區格式
+wynntils.config.overlay.ticker.territory.leave_format.description=離開地區訊息要以何種格式來顯示？
+wynntils.config.overlay.ticker.territory.music_change_format.display_name=音樂更換格式
+wynntils.config.overlay.ticker.territory.music_change_format.description=音樂更換訊息要以何種格式來顯示？
+
+## OVERLAYS WARTIMER CONFIG ##
+wynntils.config.overlay.wartimer.display_path=外觀/公會戰計時器
+wynntils.config.overlay.wartimer.text_shadow.display_name=文字陰影
+wynntils.config.overlay.wartimer.text_shadow.description=文字陰影看起來要如何呢？
+
+## OVERLAYS TERRITORY FEED CONFIG ##
+wynntils.config.overlay.territoryfeed.display_path=外觀/領地通知
+wynntils.config.overlay.territoryfeed.enabled.display_name=領地通知
+wynntils.config.overlay.territoryfeed.enabled.description=是否顯示領地通知？
+wynntils.config.overlay.territoryfeed.animation_length.display_name=動畫長度
+wynntils.config.overlay.territoryfeed.animation_length.description=領地通知要顯示多長的時間呢？(以秒計)
+wynntils.config.overlay.territoryfeed.display_mode.display_name=領地訊息的模式
+wynntils.config.overlay.territoryfeed.display_mode.description=領地通知要顯示什麼樣的訊息？\n\n一般：顯示所有領地訊息\n\n強調所在公會：顯示所有領地訊息，但用顏色標記與你的公會相關的訊息(§2佔領領地§r& §4失去領地§r)\n\n只有所在公會：只顯示與你的公會相關的訊息
+wynntils.config.overlay.territoryfeed.short_message.display_name=訊息簡寫
+wynntils.config.overlay.territoryfeed.short_message.description=是否簡寫領地訊息？
+wynntils.config.overlay.territoryfeed.guild_tag.display_name=使用公會縮寫
+wynntils.config.overlay.territoryfeed.guild_tag.description=是否使用公會縮寫取代全名？
+
+## OVERLAYS TERRITORY FEED DISPLAY MODE ENUM CONFIG ##
+wynntils.config.overlay.territoryfeed.enum.display_mode.normal=一般
+wynntils.config.overlay.territoryfeed.enum.display_mode.distinguish_own_guild=強調所在公會
+wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=只有所在公會
+
+## OTHER CONFIG TEXT SHADOW ENUM ##
+wynntils.config.other.enum.text_shadow.none=無
+wynntils.config.other.enum.text_shadow.normal=一般
+wynntils.config.other.enum.text_shadow.outline=外部
+
+## OTHER CONFIG ##
+wynntils.config.other.reset=重置
+wynntils.config.other.apply=儲存
+wynntils.config.other.enabled=已啟用
+wynntils.config.other.disabled=已關閉
+
+###########
+# MODULES #
+###########
+
+## MODULE DISPLAY NAMES ##
+wynntils.modules.capes.display_name=披風
+wynntils.modules.chat.display_name=聊天室
+wynntils.modules.core.display_name=核心
+wynntils.modules.map.display_name=地圖
+wynntils.modules.sounds.display_name=遊戲音效
+wynntils.modules.questbook.display_name=任務書
+wynntils.modules.richpresence.display_name=Discord遊玩資訊
+wynntils.modules.utilities.display_name=效能
+
+########
+# CHAT #
+########
+
+## TAB GUI ##
+wynntils.chat.tabgui.generic.required=必填
+wynntils.chat.tabgui.generic.optional=選填
+wynntils.chat.tabgui.button.save=儲存
+wynntils.chat.tabgui.button.save.tooltip_1=點此儲存聊天標籤
+wynntils.chat.tabgui.button.save.tooltip_2=設定
+wynntils.chat.tabgui.button.delete=刪除
+wynntils.chat.tabgui.button.delete.tooltip_1=點此刪除此聊天標籤
+wynntils.chat.tabgui.button.delete.tooltip_2=
+wynntils.chat.tabgui.button.delete.tooltip_3=
+wynntils.chat.tabgui.button.delete.tooltip_4=無法復原
+wynntils.chat.tabgui.button.close=關閉
+wynntils.chat.tabgui.button.advanced_show=顯示進階設定
+wynntils.chat.tabgui.button.advanced_hide=隱藏進階設定
+wynntils.chat.tabgui.button.low_priority=低優先
+wynntils.chat.tabgui.button.low_priority.tooltip_1=如果選用此選項，訊息
+wynntils.chat.tabgui.button.low_priority.tooltip_2=會優先發送至其他未選
+wynntils.chat.tabgui.button.low_priority.tooltip_3=擇此選項的頻道。
+wynntils.chat.tabgui.button.low_priority.tooltip_4=
+wynntils.chat.tabgui.button.low_priority.tooltip_5=此選項也會複製其他
+wynntils.chat.tabgui.button.low_priority.tooltip_6=選用此選項的頻道訊息
+wynntils.chat.tabgui.button.low_priority.tooltip_7=
+wynntils.chat.tabgui.button.message_types=訊息種類
+wynntils.chat.tabgui.button.message_type.all=全部
+wynntils.chat.tabgui.button.message_type.all.tooltip_1=訊息種類： 全部
+wynntils.chat.tabgui.button.message_type.all.tooltip_2=選用此選項會發送所
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=有類型的訊息，就算
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=你未選擇其他選項
+wynntils.chat.tabgui.button.message_type.local=本地
+wynntils.chat.tabgui.button.message_type.local.tooltip_1=訊息種類： 本地
+wynntils.chat.tabgui.button.message_type.local.tooltip_2=選用此選項會發送所有你
+wynntils.chat.tabgui.button.message_type.local.tooltip_3=身邊玩家的訊息至此頻道
+wynntils.chat.tabgui.button.message_type.local.tooltip_4=
+wynntils.chat.tabgui.button.message_type.guild=公會
+wynntils.chat.tabgui.button.message_type.guild.tooltip_1=訊息種類： 公會
+wynntils.chat.tabgui.button.message_type.guild.tooltip_2=選用此選項會發送所有你
+wynntils.chat.tabgui.button.message_type.guild.tooltip_3=公會玩家的訊息至此頻道
+wynntils.chat.tabgui.button.message_type.guild.tooltip_4=
+wynntils.chat.tabgui.button.message_type.party=組隊
+wynntils.chat.tabgui.button.message_type.party.tooltip_1=訊息種類： 組隊
+wynntils.chat.tabgui.button.message_type.party.tooltip_2=選用此選項會發送所有你
+wynntils.chat.tabgui.button.message_type.party.tooltip_3=組隊玩家的訊息至此頻道
+wynntils.chat.tabgui.button.message_type.party.tooltip_4=
+wynntils.chat.tabgui.button.message_type.shouts=公廣
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_1=訊息種類： 公廣
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_2=選用此選項會發送所有
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_3=公廣至此頻道
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_4=
+wynntils.chat.tabgui.button.message_type.pms=私訊
+wynntils.chat.tabgui.button.message_type.pms.tooltip_1=M訊息種類： 私訊
+wynntils.chat.tabgui.button.message_type.pms.tooltip_2=選用此選項會發送你的所
+wynntils.chat.tabgui.button.message_type.pms.tooltip_3=有私訊至此頻道
+wynntils.chat.tabgui.button.message_type.pms.tooltip_4=
+wynntils.chat.tabgui.button.name=名稱
+wynntils.chat.tabgui.button.name.tooltip_1=此處為你的頻道名稱
+wynntils.chat.tabgui.button.name.tooltip_2=
+wynntils.chat.tabgui.button.name.tooltip_3=
+wynntils.chat.tabgui.button.regex=正規表示法(Regex)
+wynntils.chat.tabgui.button.regex.tooltip_1=此處會解析聊天欄
+wynntils.chat.tabgui.button.regex.tooltip_2=
+wynntils.chat.tabgui.button.regex.tooltip_3=你可以在此學習正規表示法
+wynntils.chat.tabgui.button.regex.tooltip_4=https://regexr.com/
+wynntils.chat.tabgui.button.auto_command=自動輸入指令
+wynntils.chat.tabgui.button.auto_command.tooltip_1=此處可以設定此頻道發送訊息
+wynntils.chat.tabgui.button.auto_command.tooltip_2=前自動輸入的指令
+wynntils.chat.tabgui.button.auto_command.tooltip_3=
+wynntils.chat.tabgui.button.auto_command.tooltip_4=
+wynntils.chat.tabgui.button.order_number=排序 #
+wynntils.chat.tabgui.button.order_number_alt=數字順序
+wynntils.chat.tabgui.button.order_number.tooltip_1=此處可以設定此頻道
+wynntils.chat.tabgui.button.order_number.tooltip_2=在聊天室標籤的編排順序
+wynntils.chat.tabgui.button.order_number.tooltip_3=(由低到高排序)
+wynntils.chat.tabgui.button.order_number.tooltip_4=
+wynntils.chat.tabgui.menu.confirm_delete_main=確定刪除此標籤？
+wynntils.chat.tabgui.menu.confirm_delete_sub=此動作無法回復！
+
+############
+# COMMANDS #
+############
+# Note to translators: do not change the actual text of a command (for example, don't change /territory in "/territory [name] | Ex: /territory Detlas") or the arguments within those commands
+
+## /compass ##
+wynntils.commands.compass.error.generic=不可發生！
+wynntils.commands.compass.direction=方位
+wynntils.commands.compass.now_pointing=羅盤已指向
+
+## /forceupdate ##
+wynntils.commands.forceupdate.usage=Wynntils 強制更新
+wynntils.commands.forceupdate.running=強制更新中...
+
+## /territory ##
+wynntils.commands.territory.usage=重新定位羅盤至地區。
+wynntils.commands.territory.error.wrong_usage=/territory [名稱] | Ex: /territory Detlas
+wynntils.commands.territory.error.territory_not_valid=未知地點！ 請使用： /territory [名稱] | Ex: /territory Detlas
+wynntils.commands.territory.now_pointing=羅盤正在指向 %s (%o, %o)
+wynntils.commands.territory.compass_warning=\n這個指令會將你的羅盤重新定位並指向地點的中央。
+
+## /token ##
+wynntils.commands.token.usage=返還你原先的 Wynntils 飾品
+wynntils.commands.token.token_text=Wynntils 飾物
+wynntils.commands.token.token_link_hover=點擊這個超連結來註冊
+
+## /wynntils ##
+wynntils.commands.wynntils.usage=/wynntils <指令>
+wynntils.commands.wynntils.donate.donate_text=你可以在此支持我們：
+wynntils.commands.wynntils.donate.donate_link_hover=點此在瀏覽器上開啟
+wynntils.commands.wynntils.help.basic_text=Wynntils指令列表：
+wynntils.commands.wynntils.help.help=顯示wynntils的所有指令
+wynntils.commands.wynntils.help.discord=顯示wynntils的discord伺服器
+wynntils.commands.wynntils.help.version=顯示當前的wynntils版本
+wynntils.commands.wynntils.help.changelog=顯示你wynntils版本的更新日誌
+wynntils.commands.wynntils.help.reloadapi=重新載入所有介面
+wynntils.commands.wynntils.help.donate=顯示我們的Patreon連結
+wynntils.commands.wynntils.help.token=提供可點擊的標誌讓你建立你的Wynntils帳號來管理你的裝飾品
+wynntils.commands.wynntils.help.forceupdate=下載最新且較穩定的版本
+wynntils.commands.wynntils.help.compass=讓你的指南針指向一個方位(例如：北、東南)或一個X和Z的座標
+wynntils.commands.wynntils.help.territory=讓你的指南針指向一個特定地點
+wynntils.commands.wynntils.discord.basic_text=歡迎加入我們的 Discord：
+wynntils.commands.wynntils.discord.discord_link_hover=點此加入我們的Discord
+wynntils.commands.wynntils.version.development_environment=Wynntils 正在開發環境中運行.
+wynntils.commands.wynntils.version.using_stable=你正使用穩定版更新頻道：
+wynntils.commands.wynntils.version.using_cutting_edge=你正使用最新版更新頻道：
+wynntils.commands.wynntils.version.version=版本 %s
+wynntils.commands.wynntils.version.build=建構碼 %s
+wynntils.commands.wynntils.version.build_unknown=未知的建構號
+wynntils.commands.wynntils.version.update_check_failed=Wynntils 無法檢查更新， 按下 %s 來重試
+wynntils.commands.wynntils.version.update_check_outdated=你的 Wynntils 版本為舊版，按下 %s 來立即更新
+wynntils.commands.wynntils.version.update_check_up_to_date=上次檢查時，Wynntils 是最新的，按下 %s 來檢查更新
+wynntils.commands.wynntils.error.invalid_argument=輸入的指令有錯誤的參數，使用 /wynntils help 來獲取資訊
+wynntils.commands.wynntils.error.missing_argument=輸入的指令參數過少， 使用 /wynntils help 來獲取資訊
+
+########
+# CORE #
+########
+
+## CHANGELOG UI ##
+wynntils.core.ui.changelog.changelog=更新資訊
+
+## DOWNLOAD OVERLAY ##
+wynntils.core.ui.download.display_name=下載中...
+wynntils.core.ui.download.close_in=你的遊戲將在 %o 秒後關閉
+wynntils.core.ui.download.files_left=剩下 %o 個檔案
+
+## UPDATE OVERLAY ##
+wynntils.core.ui.update.display_name=更新
+wynntils.core.ui.update.upper_text=Wynntils §av%s - §f%ss 剩下
+wynntils.core.ui.update.build_is_avaliable=§e建構號 %s §f已可用
+wynntils.core.ui.update.version_is_avaliable=一個更新可用 §ev%s
+wynntils.core.ui.update.download_question=是否自動下載？ §a(y/n)
+wynntils.core.ui.update.yes=是 (y)
+wynntils.core.ui.update.no=否 (n)
+wynntils.core.ui.update.updating_to=更新至 %s
+wynntils.core.ui.update.update_downloaded_version=已下載一個 Wynntils 更新(%s 版)，此更新將於遊戲重啟後套用。
+wynntils.core.ui.update.update_downloaded_build=已下載一個 Wynntils 更新(建構號 %s)，此更新將於遊戲重啟後套用。
+
+#######
+# MAP #
+#######
+
+## TOASTS ##
+wynntils.map.toasts.new_map_entry.title=新地圖標記
+wynntils.map.toasts.new_map_entry.body=找到了一個  %s 階的箱子!
+
+## WORLD MAP UI ##
+wynntils.map.ui.world_map.button.markers=標記
+wynntils.map.ui.world_map.button.waypoints=標記點
+
+## WORLD MAP SETTINGS UI ##
+wynntils.map.ui.world_map_settings.buttons.cancel=取消
+wynntils.map.ui.world_map_settings.buttons.default=一般
+wynntils.map.ui.world_map_settings.buttons.save=儲存
+wynntils.map.ui.world_map_settings.floating.enable_or_disable=開啟/關閉 地圖圖標：
+wynntils.map.ui.world_map_settings.floating.textures=地圖圖標材質：
+
+## ICON TEXTURE ENUM ##
+wynntils.map.enum.icon_texutre.classic=經典
+# Spell error in code replicated for consistency
+wynntils.map.enum.icon_texutre.medival=中世紀
+
+## MINIMAP OVERLAY ##
+wynntils.map.overlays.minimap.display_name=小地圖
+wynntils.map.overlays.minimap.north_short=北方
+wynntils.map.overlays.minimap.north_east_short=東北方
+wynntils.map.overlays.minimap.east_short=東方
+wynntils.map.overlays.minimap.south_east_short=東南方
+wynntils.map.overlays.minimap.south_short=南方
+wynntils.map.overlays.minimap.south_west_short=西南方
+wynntils.map.overlays.minimap.west_short=西方
+wynntils.map.overlays.minimap.north_west_short=西北方
+
+## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.always_visible=永遠可見
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=標記點名稱:
+wynntils.map.ui.waypoint_creation.floating.coordinates=座標:
+wynntils.map.ui.world_map_settings.floating.icon=圖標:
+wynntils.map.ui.world_map_settings.floating.color=顏色:
+
+## WAYPOINT MENU ##
+wynntils.map.ui.waypoints.floating.icon=圖標
+wynntils.map.ui.waypoints.floating.name=名稱
+wynntils.map.ui.waypoints.button.edit=編輯...
+
+#########
+# MUSIC #
+#########
+
+## NOW PLAYING DISPLAY ##
+wynntils.music.overlays.now_playing.nothing_playing=沒有東西正在播放！
+wynntils.music.overlays.now_playing.play=播放
+wynntils.music.overlays.now_playing.pause=暫停
+
+##############
+# QUEST BOOK #
+##############
+
+## TRACKED QUEST OVERLAY ##
+wynntils.questbook.overlays.tracked_quest.display_name=任務追蹤
+wynntils.questbook.overlays.tracked_quest.title=追蹤任務資訊：
+
+## QUEST BOOK UI ##
+wynntils.questbook.ui.questbook.button.generic.left_to_select=點擊左鍵選擇
+wynntils.questbook.ui.questbook.link_error=開啟連結時發生錯誤，以將連結複製至你的剪貼簿。
+wynntils.questbook.ui.questbook.sort_type=排序依據：
+wynntils.questbook.ui.questbook.sort_type.alphabetical=英文字母 (A-Z)
+wynntils.questbook.ui.questbook.sort_type.level=等級 (100-0)
+wynntils.questbook.ui.questbook.sort_type.rarity=稀有度 (神話 - 一般)
+wynntils.questbook.ui.questbook.item_filter=物品過濾器
+wynntils.questbook.ui.questbook.button.back_to_menu=返回選單
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1=點此回
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2=到主選單
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3=
+wynntils.questbook.ui.questbook.search_bar.type=打字即可搜尋
+wynntils.questbook.ui.questbook.search_bar.click=點擊即可搜尋
+wynntils.questbook.ui.questbook.available_items=目前可用物品
+wynntils.questbook.ui.questbook.item_guide=物品指南
+wynntils.questbook.ui.questbook.item_guide.subtitle_1=查看目前遊戲
+wynntils.questbook.ui.questbook.item_guide.subtitle_2=內的所有可用物品
+wynntils.questbook.ui.questbook.item_guide.subtitle_3=
+wynntils.questbook.ui.questbook.item_guide.subtitle_4=
+wynntils.questbook.ui.questbook.quests.description_1=你可以在這看到所有你可以解
+wynntils.questbook.ui.questbook.quests.description_2=的任務，你也可以打出任務
+wynntils.questbook.ui.questbook.quests.description_3=名來搜尋特定的任務。
+wynntils.questbook.ui.questbook.quests.description_4=
+wynntils.questbook.ui.questbook.quests.description_5=點擊兩個按鍵或滾動
+wynntils.questbook.ui.questbook.quests.description_6=滑鼠滾輪至下一頁。
+wynntils.questbook.ui.questbook.quests.description_7=
+wynntils.questbook.ui.questbook.quests.description_8=點擊任務來追蹤/取消追蹤。
+wynntils.questbook.ui.questbook.quests.description_9=
+wynntils.questbook.ui.questbook.quests.discovery_hover_1=按住 shift 查看發現的秘密地點！
+wynntils.questbook.ui.questbook.quests.discovery_hover_2=點此查看你已發現的地點！
+wynntils.questbook.ui.questbook.quests.pin=點擊左鍵追蹤！
+wynntils.questbook.ui.questbook.quests.unpin=點擊左鍵取消追蹤！
+wynntils.questbook.ui.questbook.quests.open_on_wiki=點擊右鍵開啟任務維基頁面！
+wynntils.questbook.ui.questbook.quests=任務
+wynntils.questbook.ui.questbook.configs=設置
+wynntils.questbook.ui.questbook.class_and_level=%s Level %s
+wynntils.questbook.ui.questbook.in_development=開發中
+wynntils.questbook.ui.questbook.open_quests.subtitle_1=看及追蹤你當前可執
+wynntils.questbook.ui.questbook.open_quests.subtitle_2=行的任務。
+wynntils.questbook.ui.questbook.open_quests.subtitle_3=
+wynntils.questbook.ui.questbook.open_quests.subtitle_4=
+wynntils.questbook.ui.questbook.configuration=設置
+wynntils.questbook.ui.questbook.configuration.subtitle_1=更改設置成你想
+wynntils.questbook.ui.questbook.configuration.subtitle_2=看到的。
+wynntils.questbook.ui.questbook.configuration.subtitle_3=
+wynntils.questbook.ui.questbook.configuration.subtitle_4=測試版
+wynntils.questbook.ui.questbook.overlay_configuration=版面配置
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_1=更改並啟用/關閉
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_2=各種wynntils版面配置
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_3=
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_4=
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_5=
+wynntils.questbook.ui.questbook.select_to_continue_1=選擇一個選項以繼續
+wynntils.questbook.ui.questbook.select_to_continue_2=
+wynntils.questbook.ui.questbook.intro_1=歡迎使用 Wynntils ，你可以
+wynntils.questbook.ui.questbook.intro_2=在右方查看你的資訊或是選擇
+wynntils.questbook.ui.questbook.intro_3=一個選項查看更多功能。
+wynntils.questbook.ui.questbook.intro_4=
+wynntils.questbook.ui.questbook.intro_5=
+wynntils.questbook.ui.questbook.user_profile=玩家資訊
+wynntils.questbook.ui.questbook.discoveries.info_1=你可以在此查看所有你已
+wynntils.questbook.ui.questbook.discoveries.info_2=發現的地點。
+wynntils.questbook.ui.questbook.discoveries.info_3=
+wynntils.questbook.ui.questbook.discoveries.info_4=你也可以使用下方的過濾器查看。
+wynntils.questbook.ui.questbook.discoveries.info_5=
+wynntils.questbook.ui.questbook.discoveries.back_to_quests=回到任務列表
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1=點此回到任務列表。
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2=
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3=
+wynntils.questbook.ui.questbook.discoveries=Discoveries
+wynntils.questbook.ui.questbook.version.stable=穩定版 v%s
+wynntils.questbook.ui.questbook.version.cutting_edge=先發版 %s
+
+#############
+# UTILITIES #
+#############
+
+## CLIENT EVENTS ##
+wynntils.utilities.events.prevent_mythic_close=因此寶箱有神話(mythic)物品，無法關閉此寶箱！
+wynntils.utilities.events.check_daily=§7每日獎勵箱 §f已可領取！
+
+## ACTIONBAR HELPER OVERLAY ##
+wynntils.utilities.overlays.actionbar_helper.display_name=動作條
+
+## BUBBLES OVERLAY ##
+wynntils.utilities.overlays.bubbles.display_name=氣泡條外觀
+
+## EXPERIENCE BAR OVERLAY ##
+wynntils.utilities.overlays.experience_bar.display_name=經驗條
+
+## GAME UPDATE OVERLAY ##
+wynntils.utilities.overlays.game_update.display_name=遊戲更新間隔
+wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] 偵測到您使用 WynnExpansion 的聊天時間軸，請使用 Wynntils 的聊天時間軸以確保相容。
+wynntils.utilities.overlays.game_update.redir.horse.no_room=此處無空間召喚馬。
+wynntils.utilities.overlays.game_update.redir.horse.despawned=馬匹已召喚。
+wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs=四周怪物過多，馬匹無法召喚。
+wynntils.utilities.overlays.game_update.redir.combat.no_mana=魔力不足。
+wynntils.utilities.overlays.game_update.redir.combat.not_unlocked=此技能尚未解鎖。
+wynntils.utilities.overlays.game_update.redir.combat.mana_pot=[+%1$s %3$s 魔力恢復 %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.strength_pot=[+%1$s %3$s 力量(Strength) %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.agility_pot=[+%1$s %3$s 敏捷(Agility) %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot=[+%1$s %3$s 靈巧(Dexterity) %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot=[+%1$s %3$s 智慧(Intelligence) %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.defense_pot=[+%1$s %3$s 防禦(Defense) %2$s 秒]
+wynntils.utilities.overlays.game_update.redir.combat.pot_already_active=你已有此藥水效果...
+wynntils.utilities.overlays.game_update.redir.combat.cant_teleport=無法傳送，請離開此方塊。
+wynntils.utilities.overlays.game_update.redir.combat.cleared_effects=§b已移除 §7所有藥水效果。
+wynntils.utilities.overlays.game_update.redir.combat.removed_fire=§b已移除 §7火焰效果。
+wynntils.utilities.overlays.game_update.redir.combat.speed_boost=§b+3 分鐘 §7加速。
+wynntils.utilities.overlays.game_update.redir.combat.10_resistance=§b+10%% 抗性。
+wynntils.utilities.overlays.game_update.redir.combat.15_resistance=§b+15%% 抗性。
+wynntils.utilities.overlays.game_update.redir.combat.20_resistance=§b+20%% 抗性 §7& §b+10%% 力量。
+wynntils.utilities.overlays.game_update.redir.other.skill_points_available=§e%s §6技能點可使用。
+wynntils.utilities.overlays.game_update.redir.other.combat_level_up=§e%1$s §6現在 §e%2$s等了！
+wynntils.utilities.overlays.game_update.redir.other.profession_level_up=§e%1$s §6現在 §e%2$s %3$s §6 §e%4$s等了！
+wynntils.utilities.overlays.game_update.redir.other.not_identified=此物品無法鑑定。
+wynntils.utilities.overlays.game_update.redir.other.not_class=你的職業不適用此武器。
+wynntils.utilities.overlays.game_update.redir.other.too_low_level=等級不足，無法使用此物品。
+wynntils.utilities.overlays.game_update.redir.other.skill_too_low= %s 不足，無法使用此物品。
+wynntils.utilities.overlays.game_update.redir.other.too_low_level_potion=等級不足，無法使用此藥水。
+wynntils.utilities.overlays.game_update.redir.other.full_inventory=物品欄空間不足。
+wynntils.utilities.overlays.game_update.redir.other.not_visited=你還無法進入此區域！
+wynntils.utilities.overlays.game_update.redir.soul_point.single=+1 靈魂點
+wynntils.utilities.overlays.game_update.redir.soul_point.plural=%s 靈魂點
+wynntils.utilities.overlays.game_update.redir.server.minute.single=伺服器將在 1 分鐘後重置。
+wynntils.utilities.overlays.game_update.redir.server.minute.plural=伺服器將在 %s 分鐘後重置。
+wynntils.utilities.overlays.game_update.redir.server.second.single=伺服器將在 1 秒後重置。
+wynntils.utilities.overlays.game_update.redir.server.second.plural=伺服器將在 %s 秒後重置。
+wynntils.utilities.overlays.game_update.redir.quest.updated=任務書已更新。
+wynntils.utilities.overlays.game_update.redir.quest.started=新任務開始：
+wynntils.utilities.overlays.game_update.redir.merchant.identifying=鑑定中...
+wynntils.utilities.overlays.game_update.redir.merchant.identified=鑑定完成！
+wynntils.utilities.overlays.game_update.redir.merchant.sold=§d已販賣 %1$s 個物品獲得 §a%2$s§d.
+wynntils.utilities.overlays.game_update.redir.merchant.scrapped=§d已報廢 %1$s 個物品獲得 §e%2$s 個零件碎片§d.
+wynntils.utilities.overlays.game_update.redir.merchant.not_weapon=您只能在這販賣武器、飾品及防具。
+wynntils.utilities.overlays.game_update.redir.merchant.cant_scrap=此物品無法報廢。
+wynntils.utilities.overlays.game_update.redir.merchant.purchased=交易完成。
+wynntils.utilities.overlays.game_update.redir.merchant.cant_afford=無法購買此物品。
+
+## GAMMA OVERLAY ##
+wynntils.utilities.overlays.gamma.display_name=伽馬
+wynntils.utilities.overlays.gamma.text=伽馬燈
+
+## HEALTH BAR OVERLAY ##
+wynntils.utilities.overlays.health_bar.display_name=生命值
+
+## HOTBAR OVERLAY ##
+wynntils.utilities.overlays.hotbar.display_name=快捷欄
+
+## LEVELING OVERLAY ##
+wynntils.utilities.overlays.leveling.display_name=升級輔助器
+
+## MANA BAR OVERLAY ##
+wynntils.utilities.overlays.mana_bar.display_name=魔力條
+
+## TERRITORY FEED OVERLAY ##
+wynntils.utilities.overlays.territory_feed.display_name=領地通知
+wynntils.utilities.overlays.territory_feed.attacked=[%1$s] 的領地 %2$s 正被 [%3$s] 進攻中！
+wynntils.utilities.overlays.territory_feed.defended=[%1$s] 進攻 [%2$s] 的領地 %3$s 失敗！
+wynntils.utilities.overlays.territory_feed.captured=[%1$s] 已佔領 [%3$s] 的領地 %2$s ！
+
+## TOASTS OVERLAY ##
+wynntils.utilities.overlays.toasts.display_name=通知
+wynntils.utilities.overlays.toasts.now_entering=正在進入
+wynntils.utilities.overlays.toasts.quest_completed=任務完成！
+wynntils.utilities.overlays.toasts.area_discovered=區域發現！
+wynntils.utilities.overlays.toasts.discovery_found=探索點發現！
+
+## WAR TIMER OVERLAY ##
+wynntils.utilities.overlays.war_timer.display_name=公會戰時間顯示
+wynntils.utilities.overlays.war_timer.message.lasted_for=於 %s 的公會戰
+wynntils.utilities.overlays.war_timer.message.start_in=公會戰將於 %s 後開始。
+wynntils.utilities.overlays.war_timer.message.start_in.no_territory=公會戰即將開始。
+wynntils.utilities.overlays.war_timer.message.mob_spawn=怪物將於 %s 後生成。
+wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=怪物即將生成
+wynntils.utilities.overlays.war_timer.message.in_war=你於 %s 戰鬥中
+wynntils.utilities.overlays.war_timer.message.in_war.no_territory=你已於戰鬥中
