@@ -8,13 +8,13 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 
 @SettingsInfo(name = "overlays", displayPath = "Overlays")
 public class OverlayConfig extends SettingsClass {
@@ -442,12 +442,13 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if ("preset".equals(name)) {
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(preset.getValue()), null);
+            if ("preset".equals(name) && preset.getValue() != null && Minecraft.getMinecraft().currentScreen instanceof SettingsUI) {
+                Utils.copyToClipboard(preset.getValue());
             }
         }
 
         public enum Presets {
+            CLICK_ME("Click Me", null),
             COORDS("Coords", "%x% %z% (%y%)"),
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),

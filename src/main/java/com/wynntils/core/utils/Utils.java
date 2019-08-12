@@ -24,6 +24,10 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -580,5 +584,42 @@ public class Utils {
             }
         }
         return doubleClickTime;
+    }
+
+    public static void copyToClipboard(String s) {
+        if (s == null) {
+            clearClipboard();
+        } else {
+            copyToClipboard(new StringSelection(s));
+        }
+    }
+
+    public static void copyToClipboard(StringSelection s) {
+        if (s == null) {
+            clearClipboard();
+        } else {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
+        }
+    }
+
+    public static void clearClipboard() {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
+            public DataFlavor[] getTransferDataFlavors() { return new DataFlavor[0]; }
+            public boolean isDataFlavorSupported(DataFlavor flavor) { return false; }
+            public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException { throw new UnsupportedFlavorException(flavor); }
+        }, null);
+    }
+
+    public static String pasteFromClipboard() {
+        try {
+            return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (UnsupportedFlavorException | IOException e) {
+            return null;
+        }
+    }
+
+    public static int utf8Length(String s) {
+        if (s == null) return 0;
+        return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
     }
 }

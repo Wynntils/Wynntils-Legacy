@@ -1,7 +1,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
@@ -114,7 +113,7 @@ public class WaypointCreationMenu extends UI {
         }
 
         WaypointProfile wp = returning ? wpIcon.getWaypointProfile() : this.wp;
-        CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
+        CustomColor color = wp == null ? null: wp.getColor();
 
         if (wp == null) {
             setWpIcon(WaypointType.FLAG, 0, color);
@@ -245,8 +244,10 @@ public class WaypointCreationMenu extends UI {
                     getColor(), getWaypointType(), getZoomNeeded()
             );
             if (isUpdatingExisting) {
+                newWp.setGroup(wp.getGroup());
                 MapConfig.Waypoints.INSTANCE.waypoints.set(MapConfig.Waypoints.INSTANCE.waypoints.indexOf(wp), newWp);
             } else {
+                newWp.setGroup(newWp.getType());
                 MapConfig.Waypoints.INSTANCE.waypoints.add(newWp);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());

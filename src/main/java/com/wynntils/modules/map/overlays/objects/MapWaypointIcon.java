@@ -1,7 +1,6 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -67,7 +66,7 @@ public class MapWaypointIcon extends MapTextureIcon {
      * Return a MapWaypointIcon that can render a WaypointType being free from position information
      */
     public static MapWaypointIcon getFree(WaypointProfile.WaypointType type) {
-        return getFree(type, CommonColors.WHITE);
+        return getFree(type, null);
     }
 
     public static MapWaypointIcon getFree(WaypointProfile.WaypointType type, CustomColor color) {
@@ -127,10 +126,14 @@ public class MapWaypointIcon extends MapTextureIcon {
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         CustomColor color = wp.getColor();
-        GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
-        GL11.glColor4f(color.r, color.g, color.b, color.a);
+        if (color != null) {
+            GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
+            GL11.glColor4f(color.r, color.g, color.b, color.a);
+        }
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
-        GL11.glColor4f(currentColorBuf.get(0), currentColorBuf.get(1), currentColorBuf.get(2), currentColorBuf.get(3));
+        if (color != null) {
+            GL11.glColor4f(currentColorBuf.get(0), currentColorBuf.get(1), currentColorBuf.get(2), currentColorBuf.get(3));
+        }
     }
 
     public WaypointProfile getWaypointProfile() {

@@ -1,6 +1,8 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
+import com.wynntils.core.utils.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -14,6 +16,10 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 public class WaypointOverviewUI extends GuiScreen {
 
@@ -22,12 +28,13 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton nextGroupBtn;
     private GuiButton previousGroupBtn;
     private ArrayList<GuiButton> groupBtns = new ArrayList<>();
-    // If a GuiButton is rendered before a GuiImageButton, the greyed-out-ness carries over, so this makes fake buttons
-    // to grey out the next button properly
-    private ArrayList<GuiButton> groupHighlightFixBtns = new ArrayList<>();
     private GuiButton exitBtn;
+    private GuiButton exportBtn;
+    private GuiButton importBtn;
     private ArrayList<GuiButton> editButtons = new ArrayList<>();
 
+    private List<String> exportText;
+    private List<String> importText;
 
     private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
 
@@ -61,6 +68,9 @@ public class WaypointOverviewUI extends GuiScreen {
             this.buttonList.add(nextGroupBtn);
         }
 
+        this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
+        this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
+
         onWaypointChange();
     }
 
@@ -83,6 +93,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
         ScreenRenderer.beginGL(0,0);
         ArrayList<WaypointProfile> waypoints = getWaypoints();
+        int hovered = getHoveredWaypoint(mouseX, mouseY);
         for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
             if (wp == null || wp.getType() == null) continue;
@@ -99,6 +110,9 @@ public class WaypointOverviewUI extends GuiScreen {
             wpIcon.renderAt(renderer, this.width / 2f - 171 + groupShift, centreZ, multiplier, 1);
 
             if (group == ungroupedIndex) {
+                if (i == hovered) {
+                    GuiButtonImageBetter.setColour(true, true);
+                }
                 if (wp.getGroup() == null) {
                     String text = "NONE";
                     fontRenderer.drawString(text, (int) (this.width / 2f - 191 - fontRenderer.getStringWidth(text) / 2f), (int) centreZ, 0xFFFFFFFF);
@@ -106,6 +120,9 @@ public class WaypointOverviewUI extends GuiScreen {
                     MapWaypointIcon groupIcon = MapWaypointIcon.getFree(wp.getGroup());
                     float groupIconMultiplier = 9f / Math.max(groupIcon.getSizeX(), groupIcon.getSizeZ());
                     groupIcon.renderAt(renderer, this.width / 2f - 191, centreZ, groupIconMultiplier, 1);
+                }
+                if (i == hovered) {
+                    GuiButtonImageBetter.setColour(false, true);
                 }
             }
 
@@ -119,49 +136,63 @@ public class WaypointOverviewUI extends GuiScreen {
             }
         }
         ScreenRenderer.endGL();
+
+        if (exportBtn.isMouseOver()) {
+            drawHoveringText(exportText, mouseX, mouseY, fontRenderer);
+        } else if (importBtn.isMouseOver()) {
+            drawHoveringText(importText, mouseX, mouseY, fontRenderer);
+        }
+    }
+
+    // Returns the index of the waypoint (on the current page) that is being hovered over (Or -1 if no hover)
+    private int getHoveredWaypoint(int mouseX, int mouseY) {
+        if (group == ungroupedIndex && this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
+            int i = Math.round((mouseY - 64) / 25f);
+            int offset = mouseY - 25 * i - 64;
+            if (i >= 0 && -10 <= offset && offset <= 10 && i < Math.min(pageHeight, getWaypoints().size() - pageHeight * page)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if ((mouseButton == 0 || mouseButton == 1) && group == ungroupedIndex) {
-            if (this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
-                int i = Math.round((mouseY - 64) / 25f);
-                ArrayList<WaypointProfile> waypoints;
-                int offset = mouseY - 25 * i - 64;
-                if (i >= 0 && -10 <= offset && offset <= 10 && i < Math.min(pageHeight, (waypoints = getWaypoints()).size() - pageHeight * page)) {
-                    // Clicked on group button of ith waypoint on this page
-                    WaypointProfile wp = waypoints.get(page * pageHeight + i);
-                    if (wp != null) {
-                        final int maxWaypointTypeIndex = WaypointProfile.WaypointType.values().length - 1;
-                        if (mouseButton == 0) {
-                            // Left click; Move group up
-                            if (wp.getGroup() == null) {
-                                wp.setGroup(WaypointProfile.WaypointType.values()[0]);
-                            } else {
-                                int g = wp.getGroup().ordinal();
-                                if (g == maxWaypointTypeIndex) {
-                                    wp.setGroup(null);
-                                } else {
-                                    wp.setGroup(WaypointProfile.WaypointType.values()[g + 1]);
-                                }
-                            }
+            int i = getHoveredWaypoint(mouseX, mouseY);
+            if (i >= 0) {
+                // Clicked on group button of ith waypoint on this page
+                WaypointProfile wp = getWaypoints().get(page * pageHeight + i);
+                if (wp != null) {
+                    final int maxWaypointTypeIndex = WaypointProfile.WaypointType.values().length - 1;
+                    if (mouseButton == 0) {
+                        // Left click; Move group up
+                        if (wp.getGroup() == null) {
+                            wp.setGroup(WaypointProfile.WaypointType.values()[0]);
                         } else {
-                            // Right click; Move group down
-                            if (wp.getGroup() == null) {
-                                wp.setGroup(WaypointProfile.WaypointType.values()[maxWaypointTypeIndex]);
+                            int g = wp.getGroup().ordinal();
+                            if (g == maxWaypointTypeIndex) {
+                                wp.setGroup(null);
                             } else {
-                                int g = wp.getGroup().ordinal();
-                                if (g == 0) {
-                                    wp.setGroup(null);
-                                } else {
-                                    wp.setGroup(WaypointProfile.WaypointType.values()[g - 1]);
-                                }
+                                wp.setGroup(WaypointProfile.WaypointType.values()[g + 1]);
                             }
                         }
-                        onWaypointChange();
+                    } else {
+                        // Right click; Move group down
+                        if (wp.getGroup() == null) {
+                            wp.setGroup(WaypointProfile.WaypointType.values()[maxWaypointTypeIndex]);
+                        } else {
+                            int g = wp.getGroup().ordinal();
+                            if (g == 0) {
+                                wp.setGroup(null);
+                            } else {
+                                wp.setGroup(WaypointProfile.WaypointType.values()[g - 1]);
+                            }
+                        }
                     }
-                    return;
+                    onWaypointChange();
                 }
+                return;
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -179,6 +210,49 @@ public class WaypointOverviewUI extends GuiScreen {
             setEditButtons();
         } else if (b == exitBtn) {
             Utils.displayGuiScreen(new MainWorldMapUI());
+        } else if (b == exportBtn) {
+            Utils.copyToClipboard(WaypointProfile.encode(getWaypoints(), WaypointProfile.currentFormat));
+            exportText = Arrays.asList(
+                "Export  ==  SUCCESS",
+                "Copied to clipboard!"
+            );
+        } else if (b == importBtn) {
+            String data = Utils.pasteFromClipboard();
+            if (data != null) data = data.trim();
+            if (data == null || data.isEmpty()) {
+                importText = Arrays.asList(
+                    "Import  ==  ERROR",
+                    "Clipboard is empty"
+                );
+            }
+            ArrayList<WaypointProfile> imported;
+            try {
+                imported = WaypointProfile.decode(data);
+            } catch (IllegalArgumentException e) {
+                String[] lines = e.getMessage().split("\\\\n|\\n");
+                importText = new ArrayList<>(1 + lines.length);
+                importText.add("Import  ==  ERROR");
+                Collections.addAll(importText, lines);
+                return;
+            }
+            int newWaypoints = 0;
+            HashSet<Location> existing = new HashSet<>(waypoints.size());
+            for (WaypointProfile wp : waypoints) {
+                existing.add(new Location(wp.getX(), wp.getY(), wp.getZ()));
+            }
+            for (WaypointProfile wp : imported) {
+                if (!existing.contains(new Location(wp.getX(), wp.getY(), wp.getZ()))) {
+                    waypoints.add(wp);
+                    ++newWaypoints;
+                }
+            }
+            if (newWaypoints > 0) {
+                onWaypointChange();
+            }
+            importText = Arrays.asList(
+                "Import  ==  SUCCESS",
+                String.format("Imported %d waypoints", newWaypoints)
+            );
         } else if (b.id < 0) {
             // A group button
             if (b == nextGroupBtn) {
@@ -192,9 +266,9 @@ public class WaypointOverviewUI extends GuiScreen {
                 onWaypointChange();
             }
         } else if (b.id % 10 == 3) {
-            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(waypoints.get(b.id / 10 + page * pageHeight), this));
+            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(getWaypoints().get(b.id / 10 + page * pageHeight), this));
         } else if (b.id % 10 == 5) {
-            MapConfig.Waypoints.INSTANCE.waypoints.remove(waypoints.get(b.id / 10 + page * pageHeight));
+            MapConfig.Waypoints.INSTANCE.waypoints.remove(getWaypoints().get(b.id / 10 + page * pageHeight));
             onWaypointChange();
         } else if (b.id % 10 == 6 || b.id % 10 == 7) {
             int i = b.id / 10 + page * pageHeight;
@@ -244,6 +318,22 @@ public class WaypointOverviewUI extends GuiScreen {
         checkAvailablePages();
         setEditButtons();
         resetGroupButtons();
+
+        exportText = Arrays.asList(
+            "Export",
+            "Copy importable text to the clipboard",
+            "Will export current group only"
+        );
+        importText = Arrays.asList(
+            "Import",
+            "Import waypoints from text in the clipboard",
+            "Will not import waypoints with the same coordinates"
+        );
+
+        if (this.group != ungroupedIndex && !enabledGroups[this.group]) {
+            this.group = ungroupedIndex;
+            onWaypointChange();
+        }
     }
 
     private void checkAvailablePages() {
@@ -253,9 +343,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
     private void resetGroupButtons() {
         buttonList.removeAll(groupBtns);
-        buttonList.removeAll(groupHighlightFixBtns);
         groupBtns = new ArrayList<>();
-        groupHighlightFixBtns = new ArrayList<>();
         int buttonX = this.width / 2 - groupWidth * 11 + 2;
         final int buttonY = 20;
         int group = 0;
@@ -265,7 +353,6 @@ public class WaypointOverviewUI extends GuiScreen {
             if (i == -1) {
                 GuiButton btn = new GuiButton(-(ungroupedIndex + 1), buttonX, buttonY, 18, 18, "*");
                 groupBtns.add(btn);
-                buttonList.add(btn);
                 if (this.group == ungroupedIndex) {
                     btn.enabled = false;
                 }
@@ -279,20 +366,16 @@ public class WaypointOverviewUI extends GuiScreen {
                 MapWaypointIcon icon = MapWaypointIcon.getFree(WaypointProfile.WaypointType.values()[group]);
                 int texPosX = icon.getTexPosX();
                 int texPosZ = icon.getTexPosZ();
-                GuiButtonImage btn = new GuiButtonImage(-(group + 1), buttonX, buttonY, icon.getTexSizeX() - texPosX, icon.getTexSizeZ() - texPosZ, texPosX, texPosZ, 0, icon.getTexture().resourceLocation);
-                GuiButton fix = new GuiButton(-100 - group, -100, -100, 0, 0, "");
+                GuiButtonImage btn = new GuiButtonImageBetter(-(group + 1), buttonX, buttonY, icon.getTexSizeX() - texPosX, icon.getTexSizeZ() - texPosZ, texPosX, texPosZ, 0, icon.getTexture().resourceLocation);
                 groupBtns.add(btn);
-                groupHighlightFixBtns.add(fix);
-                buttonList.add(fix);
-                buttonList.add(btn);
                 if (this.group == group) {
                     btn.enabled = false;
-                    fix.enabled = false;
                 }
                 ++group;
             }
             buttonX += 22;
         }
+        this.buttonList.addAll(groupBtns);
         if (nextGroupBtn.enabled) {
             while (group < ungroupedIndex && !enabledGroups[group]) ++group;
             if (group == ungroupedIndex) {

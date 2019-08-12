@@ -5,6 +5,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -20,13 +21,14 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -264,9 +266,7 @@ public class QuestsPage extends QuestBookPage {
                     try {
                         Desktop.getDesktop().browse(new URI(url));
                     } catch (Exception ignored) {
-                        StringSelection selection = new StringSelection(url);
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(selection, null);
+                        Utils.copyToClipboard(url);
                         TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
                         text.getStyle().setColor(TextFormatting.DARK_RED);
                         ModCore.mc().player.sendMessage(text);

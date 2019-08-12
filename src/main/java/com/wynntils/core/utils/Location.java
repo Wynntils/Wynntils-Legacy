@@ -82,4 +82,17 @@ public class Location {
         return new BlockPos(x, y, z);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Location) {
+            Location loc = (Location) obj;
+            return x == loc.x && y == loc.y && z == loc.z;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Double.hashCode(x) ^ Double.hashCode(y) ^ Double.hashCode(z);
+    }
 }
