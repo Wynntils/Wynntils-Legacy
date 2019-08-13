@@ -42,9 +42,9 @@ wynntils.config.chat.filter_territory_enter.description=Sollen Gebietsnachrichte
 wynntils.config.chat.preset.display_name=Chat-Tab nach Voreinstellungen ändern
 wynntils.config.chat.preset.description=Welche vorgefertigte Auswahl von Chat-Tabs soll verwendet werden?\n\na - Global, Gilde, Party\n\nb - Global, Shouts, Gilde/Party, PMs\n\nvanilla - Alles
 wynntils.config.chat.clickable_invite.display_name=Klickbare Partyeinladungen
-wynntils.config.chat.clickable_invite.description=Sollen Partyeinladungen einen klickbar sein?
+wynntils.config.chat.clickable_invite.description=Sollen Partyeinladungen anklickbar sein?
 wynntils.config.chat.clickable_coordinate.display_name=Anklickbare Koordinaten
-wynntils.config.chat.clickable_coordinate.description=Sollen die im Chat angezeigten Koordinaten als "'/compass" -Befehl anklickbar sein?
+wynntils.config.chat.clickable_coordinate.description=Sollen die im Chat angezeigten Koordinaten als "/compass"-Befehl anklickbar sein?
 
 ## CHAT PRESET ENUM CONFIG ##
 wynntils.config.chat.enum.preset.a=A
