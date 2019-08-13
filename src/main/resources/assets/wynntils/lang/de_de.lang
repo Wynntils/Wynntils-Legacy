@@ -1,0 +1,938 @@
+## GERMAN
+# By: douira
+#################
+# CONFIGURATION #
+#################
+
+## CORE CONFIG ##
+wynntils.config.core.display_path=Core
+wynntils.config.core.update_stream.display_name=Update-Stream
+wynntils.config.core.update_stream.description=Auf welchem Update-Stream soll sich der Mod befinden?\n\n§2Stabil: §rDer Mod wird nur aktualisiert, wenn eine neue Version veröffentlicht wird. Stabile Versionen sind im Allgemeinen stabiler als Cutting Edge-Builds.\n\n§4Cutting Edge: §rDer Mod wird aktualisiert, sobald ein neuer Build veröffentlicht wird. Cutting Edge-Builds enthalten Funktionen, die noch nicht in stabilen Versionen enthalten sind und sich derzeit in der Entwicklung befinden, jedoch möglicherweise weniger stabil als stabile Versionen sind.
+wynntils.config.core.scroll_direction.display_name=Bildlaufrichtung
+wynntils.config.core.scroll_direction.description=In welche Richtung soll sich die Seite bewegen, wenn du mit der Maus nach unten scrollst?
+wynntils.config.core.enable_changelog_on_update.display_name=Änderungsprotokoll anzeigen
+wynntils.config.core.enable_changelog_on_update.description=Soll das Änderungsprotokoll des letzten Updates bei der folgenden Anmeldung angezeigt werden?
+wynntils.config.core.selected_language.display_name=Sprache
+wynntils.config.core.selected_language.description=Welche Sprache soll Wynntils verwenden?
+
+## CORE UPDATE STREAM ENUM CONFIG ##
+wynntils.config.core.enum.update_stream.stable=Stabil
+wynntils.config.core.enum.update_stream.cutting_edge=Cutting Edge
+
+## CORE SCROLL DIRECTION ENUM CONFIG ##
+wynntils.config.core.enum.scroll_direction.up=Hoch
+wynntils.config.core.enum.scroll_direction.down=Runter
+
+## CHAT CONFIG ##
+wynntils.config.chat.display_path=Chat
+wynntils.config.chat.add_timestamps_to_chat.display_name=Chat-Zeitstempel
+wynntils.config.chat.add_timestamps_to_chat.description=Sollen Chatnachrichten vor Beginn mit Zeitstempeln versehen sein?
+wynntils.config.chat.transparent.display_name=Transparenter Chat
+wynntils.config.chat.transparent.description=Soll das Chatfenster transparent sein?
+wynntils.config.chat.timestamp_format.display_name=Format des Chat-Zeitstempels
+wynntils.config.chat.timestamp_format.description=Wie sollen die Zeitstempel angezeigt werden? (Dies hat keine Auswirkung, wenn die Chat-Zeitstempel deaktiviert sind.)
+wynntils.config.chat.chat_mentions.display_name=Chat-Erwähnungen
+wynntils.config.chat.chat_mentions.description=Soll ein Sound abgespielt werden, wenn dein Benutzername im Chat erscheint?
+wynntils.config.chat.spam_filter.display_name=Chat Spam Filter
+wynntils.config.chat.spam_filter.description=Sollen sich wiederholende Nachrichten gestapelt werden, anstatt den Chat zu überfluten?
+wynntils.config.chat.filter_info.display_name=Infomeldungen filtern
+wynntils.config.chat.filter_info.description=Sollen Wynncraft-Infomeldungen gefiltert werden?\n\n§8Meldungen beginnend mit §4[Info]§8 erscheinen nicht mehr im Chat.
+wynntils.config.chat.filter_territory_enter.display_name=Gebietsfilter eingeben
+wynntils.config.chat.filter_territory_enter.description=Sollen Gebietsnachrichten im Chat angezeigt werden?\n\n§8Gebietsnachrichten sehen aus wie §7[Du betrittst jetzt Detlas]§8.
+wynntils.config.chat.preset.display_name=Chat-Tab nach Voreinstellungen ändern
+wynntils.config.chat.preset.description=Welche vorgefertigte Auswahl von Chat-Tabs soll verwendet werden?\n\na - Global, Gilde, Party\n\nb - Global, Shouts, Gilde/Party, PMs\n\nvanilla - Alles
+wynntils.config.chat.clickable_invite.display_name=Klickbare Partyeinladungen
+wynntils.config.chat.clickable_invite.description=Sollen Partyeinladungen einen klickbar sein?
+wynntils.config.chat.clickable_coordinate.display_name=Anklickbare Koordinaten
+wynntils.config.chat.clickable_coordinate.description=Sollen die im Chat angezeigten Koordinaten als "'/compass" -Befehl anklickbar sein?
+
+## CHAT PRESET ENUM CONFIG ##
+wynntils.config.chat.enum.preset.a=A
+wynntils.config.chat.enum.preset.b=B
+wynntils.config.chat.enum.preset.vanilla=Vanilla
+
+## MAP CONFIG ##
+wynntils.config.map.display_path=Minimap
+wynntils.config.map.enable_minimap.display_name=Minimap aktivieren
+wynntils.config.map.enable_minimap.description=Soll eine Minimap angezeigt werden?
+wynntils.config.map.minimap_shape.display_name=Form der Minimap
+wynntils.config.map.minimap_shape.description=Soll die Minimap ein Quadrat oder ein Kreis sein?
+wynntils.config.map.minimap_rotation.display_name=Minimap-Drehung
+wynntils.config.map.minimap_rotation.description=Soll die Minimap nach Norden ausgerichtet sein oder sich in die Richtung drehen, in die du blickst?
+wynntils.config.map.compass_directions.display_name=Kompassrichtungen anzeigen
+wynntils.config.map.compass_directions.description=Sollen die Hauptrichtungen (N, O, S, W) auf der Minimap angezeigt werden?
+wynntils.config.map.minimap_size.display_name=Minimap-Größe
+wynntils.config.map.minimap_size.description=Wie gross soll die Minimap sein?
+wynntils.config.map.only_north.display_name=Nur Norden anzeigen
+wynntils.config.map.only_north.description=Soll auf der Minimap nur Norden angezeigt werden?
+wynntils.config.map.record_chest_tier.display_name=Brustwegpunkte aufzeichnen
+wynntils.config.map.record_chest_tier.description=Welche Truhen sollen als Wegpunkte angezeigt werden, wenn du sie entdeckst?\n\n§8Der Mod zeichnet auch Truhen mit höherer Stufe als die angegebene Stufe auf.
+wynntils.config.map.minimap_zoom.display_name=Minimap Vergrößerung
+wynntils.config.map.minimap_zoom.description=Wie weit soll die Minimap vergrößert sein?
+wynntils.config.map.compass_beam.display_name=Kompassstrahl anzeigen
+wynntils.config.map.compass_beam.description=Soll an deiner Kompassposition ein Strahl angezeigt werden?
+wynntils.config.map.minimap_coords.display_name=Minimap-Koordinaten
+wynntils.config.map.minimap_coords.description=Sollen deine Koordinaten unterhalb der Minimap angezeigt werden?
+wynntils.config.map.minimap_icons.display_name=Minimapnsymbole anzeigen
+wynntils.config.map.minimap_icons.description=Sollen Kartensymbole auf der Minimap angezeigt werden?
+wynntils.config.map.minimap_icons_size.display_name=Kartensymbolgröße
+wynntils.config.map.minimap_icons_size.description=Wie groß sollen Kartenssymbole sein?
+
+## MAP WORLD MAP CONFIG ##
+wynntils.config.map.world_map.display_path=Karte/
+wynntils.config.map.world_map.territory_visible.display_name=Gebiet anzeigen
+wynntils.config.map.world_map.territory_visible.description=Sollen Gebietsnamen immer angezeigt werden, anstatt nur, wenn du die STRG-Taste gedrückt hälst?
+wynntils.config.map.world_map.territory_names.display_name=Gebietsnamen
+wynntils.config.map.world_map.territory_names.description=Sollen Gebietsnamen angezeigt werden?
+wynntils.config.map.world_map.territory_guild_tags.display_name=Gebiets Gilden-Tags
+wynntils.config.map.world_map.territory_guild_tags.description=Sollen Gildennamen durch ihre Gilden-Tags ersetzt werden?
+wynntils.config.map.world_map.territory_color_transparency.display_name=Transparenz der Gebietsfarbe
+wynntils.config.map.world_map.territory_color_transparency.description=Wie transparent soll die Farbe der Gebiete sein?
+wynntils.config.map.world_map.territory_area.display_name=Transparenz der Gebietsfarbe
+wynntils.config.map.world_map.territory_area.description=Wie transparent soll die Farbe der Gebiete sein?
+
+## MAP MAP FORMAT ENUM CONFIG ##
+wynntils.config.map.enum.map_format.square=Quadrat
+wynntils.config.map.enum.map_format.circle=Kreis
+
+## MAP CHEST TIER ENUM CONFIG ##
+wynntils.config.map.enum.chest_tier.tier_1=Stufe 1
+wynntils.config.map.enum.chest_tier.tier_2=Stufe 2
+wynntils.config.map.enum.chest_tier.tier_3=Stufe 3
+wynntils.config.map.enum.chest_tier.tier_4=Stufe 4
+wynntils.config.map.enum.chest_tier.none=Keine
+
+## MAP TEXTURES CONFIG ##
+wynntils.config.map.textures.display_path=Karte/Texturen
+wynntils.config.map.textures.minimap_style.display_name=Minimap-Texturstil
+wynntils.config.map.textures.minimap_style.description=Wie soll die Textur der Minimap sein?
+wynntils.config.map.textures.pointer_style.display_name=Zeigerstil
+wynntils.config.map.textures.pointer_style.description=Wie soll die Textur des Zeigers sein?
+wynntils.config.map.textures.pointer_color.display_name=Zeigerfarbe
+wynntils.config.map.textures.pointer_color.description=Welche Farbe soll der Zeiger haven?\n\n§aKlicke auf das Farbfeld, um das Farbrad zu öffnen.
+
+## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.texture_type.paper=Papier
+wynntils.config.map.textures.enum.texture_type.wynn=Wynn
+wynntils.config.map.textures.enum.texture_type.gilded=Vergoldet
+
+## MAP TEXTURES POINTER TYPE ENUM CONFIG ##
+wynntils.config.map.textures.enum.pointer_type.arrow=Pfeil
+wynntils.config.map.textures.enum.pointer_type.cursor=Cursor
+wynntils.config.map.textures.enum.pointer_type.narrow=Schmal
+wynntils.config.map.textures.enum.pointer_type.round=Rund
+wynntils.config.map.textures.enum.pointer_type.straight=Gerade
+wynntils.config.map.textures.enum.pointer_type.triangle=Dreieck
+
+## MAP WAYPOINTS CONFIG ##
+wynntils.config.map.waypoints.display_path=Karte/
+wynntils.config.map.waypoints.compass_marker.display_name=Kompassmarkierung
+wynntils.config.map.waypoints.compass_marker.description=Sollte auf der Karte markiert sein, wohin der Kompass gerade zeigt?
+
+## MUSIC CONFIG ##
+wynntils.config.music.display_path=Musik
+wynntils.config.music.allow_music.display_name=Musiksystem
+wynntils.config.music.allow_music.description=Sollte das Musiksystem von Wynncraft durch das von Wynntils ersetzt werden?
+wynntils.config.music.volume.display_name=Basislautstärke
+wynntils.config.music.volume.description=Wie laut sollen alle Soundtracks sein?
+wynntils.config.music.background_volume.display_name=Hintergrundvolumen
+wynntils.config.music.background_volume.description=Wie laut soll der Soundtrack sein, wenn Minecraft nicht fokussiert ist?
+
+## QUESTBOOK CONFIG ##
+wynntils.config.questbook.display_path=Questbuch
+wynntils.config.questbook.allow_questbook.display_name=Erlaube Questbuch von Wynntils
+wynntils.config.questbook.allow_questbook.description=Sollte das Questbuch von Wynncraft durch das von Wynntils ersetzt werden?
+wynntils.config.questbook.compass_follow.display_name=Zeige den Kompass auf den Queststandort
+wynntils.config.questbook.compass_follow.description=Soll der Kompass auf die angegebenen Koordinaten der Quests zeigen?
+wynntils.config.questbook.search_click.display_name=Suchfeld erfordert Klicken
+wynntils.config.questbook.search_click.description=Muss vor der Eingabe auf die Suchleiste geklickt werden oder ist die die Suchleiste unmittelbar nach dem Öffnen des Questbuchs aktiv?
+wynntils.config.questbook.fuzzy_search.display_name=Fuzzy-Suche
+wynntils.config.questbook.fuzzy_search.description=Soll ein anderer Suchalgorithmus verwendet werden, mit dem nach Akronymen und Abkürzungen gesucht werden kann?
+wynntils.config.questbook.scan_discoveries.display_name=Erkennungen scannen
+wynntils.config.questbook.scan_discoveries.description=Sollen Entdeckungen vom Questbuch analysiert werden?\nWenn dies deaktiviert ist, zeigt das Questbuch die Registerkarte Entdeckungen nicht an und beschleunigt Questbuch-Analysen
+
+## RICH PRESENCE CONFIG ##
+wynntils.config.richpresence.display_path=Rich Presence
+wynntils.config.richpresence.show_information.display_name=Klasseninfo anzeigen
+wynntils.config.richpresence.show_information.description=Soll Rich Presence grundlegende Informationen zu der von Ihnen verwendeten Klasse anzeigen?
+wynntils.config.richpresence.enable.display_name=Rich Presence aktivieren
+wynntils.config.richpresence.enable.description=Soll der Mod Rich Presence für Discord aktivieren?
+
+## UTILITIES CONFIG ##
+wynntils.config.utils.display_path=Dienstprogramme
+wynntils.config.utils.daily_reminder.display_name=Erinnerungen an die tägliche Truhe
+wynntils.config.utils.daily_reminder.description=Soll beim Beitritt zu einer Welt eine Benachrichtigung erscheinen, die daran erinnert, dass du deine tägliche Truhe öffnen kannst?
+wynntils.config.utils.hide_potion.display_name=Vanilla aktive Tränke-Indikatoren ausblenden
+wynntils.config.utils.hide_potion.description=Soll die Anzeige für aktive Trankeffekte (schwarze Felder) ausgeblendet werden?
+wynntils.config.utils.add_class_server.display_name=Klassen- und Serverschaltfläche zum Menü hinzufügen
+wynntils.config.utils.add_class_server.description=Sollen eine Klasse und eine Serverschaltfläche im Spielmenü angezeigt werden?
+wynntils.config.utils.hide_nametags_through_blocks.display_name=Namensschilder hinter Wänden verstecken
+wynntils.config.utils.hide_nametags_through_blocks.description=Sollen Namensschilder hinter undurchsichtigen Blöcken versteckt werden?
+wynntils.config.utils.hide_nametag_box.display_name=Namensschildrahmen verstecken
+wynntils.config.utils.hide_nametag_box.description=Soll der Rahmen um die Namensschilder ausgeblendet werden?
+wynntils.config.utils.show_armor.display_name=Spielerrüstung anzeigen
+wynntils.config.utils.show_armor.description=Soll die Rüstung von Spielern unter ihrem Namen aufgeführt werden?\n\n§8Gecraftete Rüstung kann nicht angezeigt werden.
+wynntils.config.utils.prevent_mythic.display_name=Verhindere das Schließen von Mythischen Truhen
+wynntils.config.utils.prevent_mythic.description=Soll das Schließen von Beutetruhen verhindert werden, wenn sie mythische Gegenstände enthalten?
+wynntils.config.utils.prevent_slot_click.display_name=Verhindere Klicken auf gesperrte Gegenstände
+wynntils.config.utils.prevent_slot_click.description=Soll das Verschieben von Gegenständen von und zu gesperrten Inventarplätzen blockiert werden?
+wynntils.config.utils.afk_collision_block.display_name=Spielerkollision bei AFK verhindern
+wynntils.config.utils.afk_collision_block.description=Soll die Spielerkollision verhindern werden, wenn du AFK bsit?
+wynntils.config.utils.highlight_on_hotbar.display_name=Gegenstände in der Hotbar markieren
+wynntils.config.utils.highlight_on_hotbar.description=Soll die Markierung von Raritäten auf der Hotbar angezeigt werden?
+
+## UTILITIES WAR CONFIG ##
+wynntils.config.utils.war.display_path=Krieg
+wynntils.config.utils.war.entity_filter.display_name=Entitätsfilter
+wynntils.config.utils.war.entity_filter.description=Sollte das Namensschild von Mobs in War Servern versteckt sein?
+wynntils.config.utils.war.warrer_health_bar.display_name=Should the health bar of other players in a war server be displayed above their heads? aktivieren
+wynntils.config.utils.war.warrer_health_bar.description=Soll die Gesundheitsleiste anderer Spieler in einem War-Server über ihren Köpfen angezeigt werden?
+
+## UTILITIES ITEM HIGHLIGHTS CONFIG ##
+wynntils.config.utils.item_highlights.display_path=Eigenschaften/Besonderheiten
+wynntils.config.utils.item_highlights.ingredient_filter.display_name=Nach Zutaten filtern
+wynntils.config.utils.item_highlights.ingredient_filter.description=Soll ein Filter für Zutaten und gecraftete Gegenstände angezeigt werden?
+wynntils.config.utils.item_highlights.highlight_container.display_name=Markierung in Containern
+wynntils.config.utils.item_highlights.highlight_container.description=Sollen Gegenstände in Containern nach ihrer Seltenheit markiert werden? (Truhen, Bank usw.)
+wynntils.config.utils.item_highlights.highlight_inventory.display_name=Markierung im Inventar
+wynntils.config.utils.item_highlights.highlight_inventory.description=Sollen Gegenstände entsprechend ihrer Seltenheit in deinem Inventar markiert werden?
+wynntils.config.utils.item_highlights.highlight_accessory.display_name=Zubehör markieren
+wynntils.config.utils.item_highlights.highlight_accessory.description=Soll getragenes Zubehör entsprechend ihrer Seltenheit markiert werden?
+wynntils.config.utils.item_highlights.highlight_hotbar.display_name=Markierung in der Hotbar
+wynntils.config.utils.item_highlights.highlight_hotbar.description=Sollen Gegenstände in der Hotbar entsprechend ihrer Seltenheit markiert werden?
+wynntils.config.utils.item_highlights.highlight_armor.display_name=Rüstungsgegenstände markieren
+wynntils.config.utils.item_highlights.highlight_armor.description=Soll deine Rüstung entsprechend ihrer Seltenheit markiert werden?
+wynntils.config.utils.item_highlights.highlight_mythic.display_name=Mythische Gegenstände markieren
+wynntils.config.utils.item_highlights.highlight_mythic.description=Sollen mythischen Gegenstände markiert werden?
+wynntils.config.utils.item_highlights.highlight_legendary.display_name=Legendäre Gegenstände markieren
+wynntils.config.utils.item_highlights.highlight_legendary.description=Sollen legendäre Gegenstände markiert werden?
+wynntils.config.utils.item_highlights.highlight_rare.display_name=Seltene Gegenstände markieren
+wynntils.config.utils.item_highlights.highlight_rare.description=Sollen seltene Gegenstände markiert werden?
+wynntils.config.utils.item_highlights.highlight_unique.display_name=Ungewöhnliche Gegenstände markieren
+wynntils.config.utils.item_highlights.highlight_unique.description=Sollen ungewöhnliche Gegenstände markiert werden?
+wynntils.config.utils.item_highlights.highlight_set.display_name=Reihen-Gegenstände markieren
+wynntils.config.utils.item_highlights.highlight_set.description=Sollen Gegenstände, die Teil einer Reihe sind, markiert werden?
+wynntils.config.utils.item_highlights.highlight_normal.display_name=Markiere normale Gegenstände
+wynntils.config.utils.item_highlights.highlight_normal.description=Sollen normale Gegenstände markiert werden?
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.display_name=Schwarzmarkt-Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_black_market_cosmetic.description=Sollen Schwarzmarkt-Kosmetikartikel markiert werden?
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.display_name=Göttliche Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_godly_cosmetic.description=Sollen Göttliche Kosmetikartikel markiert werden?
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.display_name=Epische Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_epic_cosmetic.description=Sollen epische Kosmetikartikel markiert werden?
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.display_name=Seltene Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_rare_cosmetic.description=Sollen seltene Kosmetikartikel markiert werden?
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.display_name=Normale Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_common_cosmetic.description=Sollen normale Kosmetikartikel markiert werden?
+wynntils.config.utils.item_highlights.emeralds_container.display_name=Smaragdanzahl in Containern anzeigen
+wynntils.config.utils.item_highlights.emeralds_container.description=Soll deine Smaragdanzahl in entfernten Containern angezeigt werden? (Truhen, Bank usw.)
+wynntils.config.utils.item_highlights.emeralds_inventory.display_name=Smaragdanzahl im Inventar anzeigen
+wynntils.config.utils.item_highlights.emeralds_inventory.description=Soll deine Smaragdanzahl in deinem Inventar angezeigt werden?
+wynntils.config.utils.item_highlights.highlight_powder.display_name=Pulver markieren
+wynntils.config.utils.item_highlights.highlight_powder.description=Sollen Pulver entsprechend ihres Elementes markiert werden?
+wynntils.config.utils.item_highlights.highlight_crafting.display_name=Craftingszutaten markieren
+wynntils.config.utils.item_highlights.highlight_crafting.description=Sollen Handwerkszutaten entsprechend ihrer Stufe markiert werden?
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.display_name=Doppelte Kosmetikartikel markieren
+wynntils.config.utils.item_highlights.highlight_dupe_cosmetic.description=Sollen doppelte Kosmetikartikel im Schrottmenü markiert werden?
+wynntils.config.utils.item_highlights.minimum_powder_tier.display_name=Minimum Powder Tier Highlight
+wynntils.config.utils.item_highlights.minimum_powder_tier.description=Ab welcher Stufe sollen Pulver markiert werden? Diese Einstellung hat keine Auswirkung, wenn die Markierung von Pulvern deaktiviert ist.
+wynntils.config.utils.item_highlights.legendary_color.display_name=Markierungsfarbe von legendären Gegenständen
+wynntils.config.utils.item_highlights.legendary_color.description=Welche Farbe soll die Markierung von legendären Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.mythic_color.display_name=Mythic Item Highlight Color
+wynntils.config.utils.item_highlights.mythic_color.description=Welche Farbe soll die Markierung von mythischen Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.rare_color.display_name=Seltene Farbe der Elementhervorhebung
+wynntils.config.utils.item_highlights.rare_color.description=Welche Farbe soll die Markierung von Reihen-Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.unique_color.display_name=Markierungsfarbe des eindeutigen Elements
+wynntils.config.utils.item_highlights.unique_color.description=Welche Farbe soll die Markierung von ungewöhnlichen Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.set_color.display_name=Elementhervorhebungsfarbe festlegen
+wynntils.config.utils.item_highlights.set_color.description=Welche Farbe soll die Markierung von Reihen-Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.normal_color.display_name=Markierungsfarbe von normalen Gegenständen
+wynntils.config.utils.item_highlights.normal_color.description=Welche Farbe soll die Markierung von normalen Gegenständen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.crafted_color.display_name=Markierungsfarbe von Rüstung und Waffen
+wynntils.config.utils.item_highlights.crafted_color.description=Welche Farbe soll die Markierung von gecrafteter Rüstung und Waffen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.onestar_color.display_name=Markierungsfarbe von Zutaten (1 Stern)
+wynntils.config.utils.item_highlights.onestar_color.description=Welche Farbe soll die Markierung von Zutaten mit einem Stern haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.twostar_color.display_name=Markierungsfarbe von Zutaten (2 Sterne)
+wynntils.config.utils.item_highlights.twostar_color.description=Welche Farbe soll die Markierung von Zutaten mit zwei Sternen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+wynntils.config.utils.item_highlights.threestar_color.display_name=Markierungsfarbe von Zutaten (3 Sterne)
+wynntils.config.utils.item_highlights.threestar_color.description=Welche Farbe soll die Markierung von Zutaten mit drei Sternen haben?\n\n§aKlicke auf das farbige Kästchen, um das Farbrad zu öffnen.
+
+## OVERLAYS CONFIG ##
+wynntils.config.overlay.display_path=Überlagerungen
+wynntils.config.overlay.text_shadow.display_name=Textschatten
+wynntils.config.overlay.text_shadow.description=Wie soll der Textschatten aussehen?
+wynntils.config.overlay.actionbar_coords.display_name=Koordinaten der Aktionsleiste
+wynntils.config.overlay.actionbar_coords.description=Soll die Aktionsleiste deine Koordinaten anzeigen, wenn nichts anderes zu sehen ist?
+wynntils.config.overlay.split_coords.display_name=Koordinaten teilen
+wynntils.config.overlay.split_coords.description=Sollen die Koordinaten separat in der Aktionsleiste angezeigt werden?
+
+## OVERLAYS HEALTH CONFIG ##
+wynntils.config.overlay.health.display_path=Überlagerungen/Gesundheitsleiste
+wynntils.config.overlay.health.texture.display_name=Textur der Gesundheitsleiste
+wynntils.config.overlay.health.texture.description=Welche Textur soll für die Gesundheitsleiste verwendet werden?
+wynntils.config.overlay.health.animation_speed.display_name=Animationsgeschwindigkeit
+wynntils.config.overlay.health.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
+wynntils.config.overlay.health.text_shadow.display_name=Textschatten
+wynntils.config.overlay.health.text_shadow.description=Wie soll der Textschatten aussehen?
+wynntils.config.overlay.health.health_vignette.display_name=Vignette mit niedriger Gesundheit
+wynntils.config.overlay.health.health_vignette.description=Sollte eine rote Vignette angezeigt werden, wenn deine Gesundheit niedrig ist?
+wynntils.config.overlay.health.health_vignette_threshold.display_name=Unterer Gesundheitsschwellenwert
+wynntils.config.overlay.health.health_vignette_threshold.description=Bei wie viel Prozent der Gesundheit soll eine rote Vignette angezeigt werden?
+wynntils.config.overlay.health.health_vignette_effect.display_name=Animation bei niedriger Gesundheit
+wynntils.config.overlay.health.health_vignette_effect.description=Welche Animation solle bei der Anzeige des niedriger Gesundheit verwendet werden?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_texture.wynn=Wynn
+wynntils.config.overlay.health.enum.health_texture.grune=Grune
+wynntils.config.overlay.health.enum.health_texture.aether=Äther
+wynntils.config.overlay.health.enum.health_texture.skull=Schädel
+wynntils.config.overlay.health.enum.health_texture.skyrim=Skyrim
+wynntils.config.overlay.health.enum.health_texture.a=A
+wynntils.config.overlay.health.enum.health_texture.b=B
+wynntils.config.overlay.health.enum.health_texture.c=C
+wynntils.config.overlay.health.enum.health_texture.d=D
+
+## OVERLAYS HEALTH HEALTH VIGNETTE EFFECT ENUM CONFIG ##
+wynntils.config.overlay.health.enum.health_vignette_effect.pulse=Puls
+wynntils.config.overlay.health.enum.health_vignette_effect.static=Statisch
+wynntils.config.overlay.health.enum.health_vignette_effect.growing=Wachsend
+
+## OVERLAYS MANA CONFIG ##
+wynntils.config.overlay.mana.display_path=Overlays/Manaanleiste
+wynntils.config.overlay.mana.texture.display_name=Textur der Manaanleiste
+wynntils.config.overlay.mana.texture.description=Welche Textur soll für die Manaanleiste verwendet werden?
+wynntils.config.overlay.mana.animation_speed.display_name=Animationsgeschwindigkeit
+wynntils.config.overlay.mana.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
+wynntils.config.overlay.mana.text_shadow.display_name=Textschatten
+wynntils.config.overlay.mana.text_shadow.description=Wie soll der Textschatten aussehen?
+
+## OVERLAYS HEALTH HEALTH TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.mana.enum.mana_texture.wynn=Wynn
+wynntils.config.overlay.mana.enum.mana_texture.brune=Brune
+wynntils.config.overlay.mana.enum.mana_texture.aether=Aether
+wynntils.config.overlay.mana.enum.mana_texture.skull=Schädel
+wynntils.config.overlay.mana.enum.mana_texture.inverse=Inverse
+wynntils.config.overlay.mana.enum.mana_texture.skyrim=Skyrim
+wynntils.config.overlay.mana.enum.mana_texture.a=A
+wynntils.config.overlay.mana.enum.mana_texture.b=B
+wynntils.config.overlay.mana.enum.mana_texture.c=C
+wynntils.config.overlay.mana.enum.mana_texture.d=D
+
+## OVERLAYS HOTBAR CONFIG ##
+wynntils.config.overlay.hotbar.display_path=Overlays/Hotbar
+wynntils.config.overlay.hotbar.texture.display_name=Hotbar-Textur
+wynntils.config.overlay.hotbar.texture.description=Welche Textur soll für die Hotbar verwendet werden?
+
+## OVERLAYS HOTBAR HOTBAR TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=Resource Pack
+wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn=Wynn
+
+## OVERLAYS TOAST CONFIG ##
+wynntils.config.overlay.toast.display_path=Overlays/Benachrichtigungen
+wynntils.config.overlay.toast.enable.display_name=Benachrichtigungen aktivieren
+wynntils.config.overlay.toast.enable.description=Sollen bestimmte Benachrichtigungen in Form eines rollenden Pergaments angezeigt werden?
+wynntils.config.overlay.toast.territory_enter.display_name=Nachricht bei Gebietseintritt
+wynntils.config.overlay.toast.territory_enter.description=Soll eine Nachricht angezeigt werden, wenn ein Gebiet betreten wird?
+wynntils.config.overlay.toast.area_discovered.display_name=Nachricht bei Gebietsendeckung
+wynntils.config.overlay.toast.area_discovered.description=Soll eine Nachricht angezeigt werden, wenn ein Gebiet entdeckt wurde?
+wynntils.config.overlay.toast.quest_completed.display_name=Nachricht bei erledigter Quest
+wynntils.config.overlay.toast.quest_completed.description=Soll eine Nachricht angezeigt werden, wenn ein Gebiet entdeckt wurde?
+wynntils.config.overlay.toast.discovery_found.display_name=Nachricht bei neuer Entdeckung
+wynntils.config.overlay.toast.discovery_found.description=Soll eine Nachricht angezeigt werden, wenn etwas neu entdeckt wurde?
+wynntils.config.overlay.toast.flip.display_name=Benachrichtigungen spiegeln
+wynntils.config.overlay.toast.flip.description=Sollen Benachrichtigungen von links nach rechts angezeigt werden?\n\n§8Visuelle Störungen können auftreten, wenn das Benachrichtigungennicht auf eine der Seiten deines Bildschirms ist.
+
+## OVERLAYS EXP CONFIG ##
+wynntils.config.overlay.exp.display_path=Overlays/Erfahrung
+wynntils.config.overlay.exp.texture.display_name=Erfahrungs-Textur
+wynntils.config.overlay.exp.texture.description=Welche Textur soll für die Erfahrungleiste verwendet werden?
+wynntils.config.overlay.exp.animation_speed.display_name=Animationsgeschwindigkeit
+wynntils.config.overlay.exp.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
+wynntils.config.overlay.exp.text_shadow.display_name=Textschatten
+wynntils.config.overlay.exp.text_shadow.description=Wie soll der Textschatten aussehen?
+
+## OVERLAYS EXP EXP TEXTURES ENUM CONFIG ##
+wynntils.config.overlay.exp.enum.exp_texture.wynn=Wynn
+wynntils.config.overlay.exp.enum.exp_texture.liquid=Liquid
+wynntils.config.overlay.exp.enum.exp_texture.emerald=Smaragd
+wynntils.config.overlay.exp.enum.exp_texture.a=A
+wynntils.config.overlay.exp.enum.exp_texture.b=B
+wynntils.config.overlay.exp.enum.exp_texture.c=C
+
+## OVERLAYS BUBBLES CONFIG ##
+wynntils.config.overlay.bubbles.display_path=Overlays/Luftblasen
+wynntils.config.overlay.bubbles.texture.display_name=Luftblasen-Textur
+wynntils.config.overlay.bubbles.texture.description=Welche Textur sollte für die Erfahrungleiste verwendet werden, wenn sie als Luftmesser fungiert?
+wynntils.config.overlay.bubbles.animation_speed.display_name=Animationsgeschwindigkeit
+wynntils.config.overlay.bubbles.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
+wynntils.config.overlay.bubbles.text_shadow.display_name=Textschatten
+wynntils.config.overlay.bubbles.text_shadow.description=Wie soll der Textschatten aussehen?
+wynntils.config.overlay.bubbles.drowning_vignette.display_name=Luftblasenvignette
+wynntils.config.overlay.bubbles.drowning_vignette.description=Soll eine blaue Vignette angezeigt werden, wenn du unter Wasser bist?
+
+## OVERLAYS BUBBLES BUBBLE TEXTURE ENUM CONFIG ##
+wynntils.config.overlay.bubbles.enum.bubble_texture.wynn=Wynn
+wynntils.config.overlay.bubbles.enum.bubble_texture.liquid=Flüssigkeit
+# Misspelling in code is replicated here for consistency
+wynntils.config.overlay.bubbles.enum.bubble_texture.saphire=Saphir
+wynntils.config.overlay.bubbles.enum.bubble_texture.a=A
+wynntils.config.overlay.bubbles.enum.bubble_texture.b=B
+wynntils.config.overlay.bubbles.enum.bubble_texture.c=C
+
+## OVERLAYS LEVELING CONFIG ##
+wynntils.config.overlay.leveling.display_path=Overlays/Level
+wynntils.config.overlay.leveling.text.display_name=Aktueller Text
+wynntils.config.overlay.leveling.text.description=Wie soll der Leveltext angezeigt werden?
+wynntils.config.overlay.leveling.text_shadow.display_name=Textschatten
+wynntils.config.overlay.leveling.text_shadow.description=Wie soll der Textschatten aussehen?
+
+## OVERLAYS TICKER CONFIG ##
+wynntils.config.overlay.ticker.display_path=Overlays/Nachrichtenticker
+wynntils.config.overlay.ticker.message_limit.display_name=Nachrichtenlimit
+wynntils.config.overlay.ticker.message_limit.description=Wieviele Tickernachrichten sollen maximal in der Spielupdateliste angezeigt werden?
+wynntils.config.overlay.ticker.align_right.display_name=Text rechsbündig
+wynntils.config.overlay.ticker.align_right.description=Soll der Text an der rechten Seite ausgerichtet werden?
+wynntils.config.overlay.ticker.expiry_time.display_name=Anzeigzeit der Nachricht
+wynntils.config.overlay.ticker.expiry_time.description=Wie lange (in Sekunden) soll eine Tickermeldung auf dem Bildschirm bleiben?
+wynntils.config.overlay.ticker.fadeout_time.display_name=Nachrichtenausblendeanimation
+wynntils.config.overlay.ticker.fadeout_time.description=Wie lange soll die Ausblendeanimation abgespielt werden?
+wynntils.config.overlay.ticker.invert_growth.display_name=Wachstum umkehren
+wynntils.config.overlay.ticker.invert_growth.description=Soll die Art und Weise, wie Ticker-Meldungen angezeigt werden, invertiert werden?
+wynntils.config.overlay.ticker.max_message_length.display_name=Maximale Nachrichtenlänge
+wynntils.config.overlay.ticker.max_message_length.description=Wie lang sollen die Nachrichten im Nachrichtenticker maximal sein?\n\n§8Nachrichten, die länger als dieser eingestellte Wert sind, werden abgeschnitten. Setze dies für eine unbeschränkte Länge auf 0.
+wynntils.config.overlay.ticker.text_shadow.display_name=Textschatten
+wynntils.config.overlay.ticker.text_shadow.description=Wie soll der Textschatten aussehen?
+wynntils.config.overlay.ticker.new_message_override.display_name=Neue Nachricht überschreiben
+wynntils.config.overlay.ticker.new_message_override.description=Sollen neue Nachrichten die ältesten vorherigen Nachrichten verdrängen?\n\n§8Wenn dies deaktiviert ist, werden Tickernachrichten in die Warteschlange gestellt und erscheinen, wenn eine vorherige Nachricht verschwindet.
+
+## OVERLAYS TICKER EXP CONFIG ##
+wynntils.config.overlay.ticker.exp.display_path=Overlays/Nachrichtenticker/Erfahrung
+wynntils.config.overlay.ticker.exp.enable.display_name=EXP-Nachrichten aktivieren
+wynntils.config.overlay.ticker.exp.enable.description=Sollen EXP-Meldungen im Nachrichtenticker angezeigt werden?
+wynntils.config.overlay.ticker.exp.update_rate.display_name=EXP-Updaterate
+wynntils.config.overlay.ticker.exp.update_rate.description=Wie oft sollen die EXP-Updates (in Sekunden) zum Nachrichtenticker hinzugefügt werden?
+wynntils.config.overlay.ticker.exp.format.display_name=EXP-Nachrichtenformat
+wynntils.config.overlay.ticker.exp.format.description=Wie soll das Format von EXP-Nachrichten angezeigt werden?
+
+## OVERLAYS TICKER INVENTORY CONFIG ##
+wynntils.config.overlay.ticker.inv.display_path=Overlays/Nachrichtenticker/Inventar
+wynntils.config.overlay.ticker.inv.enable.display_name=Inventar-voll Nachrichten aktivieren
+wynntils.config.overlay.ticker.inv.enable.description=Sollen Nachrichten im Game-Update-Ticker angezeigt werden, wenn dein Inventar voll ist?
+wynntils.config.overlay.ticker.inv.update_rate.display_name=Inventar-voll Nachrichtenrate
+wynntils.config.overlay.ticker.inv.update_rate.description=Wie oft soll die Meldung "Inventar voll" (in Sekunden) im Nachrichtenticker angezeigt werden?
+wynntils.config.overlay.ticker.inv.format.display_name=Inventar-voll Nachrichtenformat
+wynntils.config.overlay.ticker.inv.format.description=Welche Meldung sollte angezeigt werden, wenn dein Inventar voll ist?
+
+## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
+wynntils.config.overlay.ticker.redir.display_path=Overlays/Nachrichtenticker/Umleitung
+wynntils.config.overlay.ticker.redir.combat.display_name=Kampfmeldungen umleiten
+wynntils.config.overlay.ticker.redir.combat.description=Sollen Kampf-Chat-Nachrichten zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.horse.display_name=Pferdenachrichten umleiten
+wynntils.config.overlay.ticker.redir.horse.description=Sollen Nachrichten zu deinem Pferd zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.local_login.display_name=Lokale Login-Nachrichten umleiten
+wynntils.config.overlay.ticker.redir.local_login.description=Sollen lokale Login-Nachrichten (für Spieler mit Rängen) zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.friend_login.display_name=Login-Nachrichten von Freunden umleiten
+wynntils.config.overlay.ticker.redir.friend_login.description=Sollen Login-Nachrichten von Freunde zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.guild_login.display_name=Gildenmitglied-Login-Nachrichten umleiten
+wynntils.config.overlay.ticker.redir.guild_login.description=Sollen Login-Nachrichten von Gildenmitgliedern zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.merchant.display_name=Händlernachrichten umleiten
+wynntils.config.overlay.ticker.redir.merchant.description=Sollen Händler- und Identifizierungsnachrichten zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.other.display_name=Andere Nachrichten umleiten
+wynntils.config.overlay.ticker.redir.other.description=Sollen Nachrichten für Fertigkeitspunkte, der Preis für das Identifizieren von Gegenständen und Levelnachrichten anderer Benutzer zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.server.display_name=Serverstatusmeldungen umleiten
+wynntils.config.overlay.ticker.redir.server.description=Sollen Meldungen zum Herunterfahren des Servers zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.quest.display_name=Questnachrichten umleiten
+wynntils.config.overlay.ticker.redir.quest.description=Sollen Nachrichten zum Fortschritt einer Quest zum Nachrichtenticker umgeleitet werden?
+wynntils.config.overlay.ticker.redir.soul_point.display_name=Seelenpunktnachrichten umleiten
+wynntils.config.overlay.ticker.redir.soul_point.description=Sollen Meldungen zum Erhalten von Seelenpunkten zum Nachrichtenticker umgeleitet werden?
+
+## OVERLAYS TICKER TERRITORY CONFIG ##
+wynntils.config.overlay.ticker.territory.display_path=Überlagerungen/Nachrichtenticker/änderung
+wynntils.config.overlay.ticker.territory.enable.display_name=Gebietsänderung aktivieren
+wynntils.config.overlay.ticker.territory.enable.description=Sollen Gebietsänderungsmeldungen im Spiel-Update-Ticker angezeigt werden?
+wynntils.config.overlay.ticker.territory.enter.display_name=Gebietseintrag aktivieren
+wynntils.config.overlay.ticker.territory.enter.description=Sollen Gebietsnachrichten im Spiel-Update-Ticker angezeigt werden?
+wynntils.config.overlay.ticker.territory.leave.display_name=Territory Leave aktivieren
+wynntils.config.overlay.ticker.territory.leave.description=Soll das Territorium im Spiel-Update-Ticker Nachrichten hinterlassen?
+wynntils.config.overlay.ticker.territory.music_change.display_name=Musikänderung aktivieren
+wynntils.config.overlay.ticker.territory.music_change.description=Sollen im Game-Update-Ticker Meldungen zu Musikänderungen angezeigt werden?\n\n§8Dies hat keine Auswirkung, wenn das Musikmodul deaktiviert ist.
+wynntils.config.overlay.ticker.territory.enter_format.display_name=Gebiet betreten Nachrichtenformat
+wynntils.config.overlay.ticker.territory.enter_format.description=Was soll das Format von Nachrichten beim Betreten eines Gebietes sein?
+wynntils.config.overlay.ticker.territory.leave_format.display_name=Gebiet verlassen Nachrichtenformat
+wynntils.config.overlay.ticker.territory.leave_format.description=Was soll das Format von Nachrichten beim Verlassen eines Gebietes sein?
+wynntils.config.overlay.ticker.territory.music_change_format.display_name=Musikänderung Nachrichtenformat
+wynntils.config.overlay.ticker.territory.music_change_format.description=Welches Format sollen Nachrichten über die Änderung der Musik haben?
+
+## OVERLAYS WARTIMER CONFIG ##
+wynntils.config.overlay.wartimer.display_path=Überlagerungen/Stoppuhr
+wynntils.config.overlay.wartimer.text_shadow.display_name=Textschatten
+wynntils.config.overlay.wartimer.text_shadow.description=Wie soll der Textschatten aussehen?
+
+## OVERLAYS TERRITORY FEED CONFIG ##
+wynntils.config.overlay.territoryfeed.display_path=Überlagerungen/Gebietsnachrichten
+wynntils.config.overlay.territoryfeed.enabled.display_name=Gebietsnachrichten
+wynntils.config.overlay.territoryfeed.enabled.description=Soll der Gebietsfeed angezeigt werden?
+wynntils.config.overlay.territoryfeed.animation_length.display_name=Animationslänge
+wynntils.config.overlay.territoryfeed.animation_length.description=Wie lange (in Sekunden) sollen Nachrichten im Gebiets-Feed angezeigt werden?
+wynntils.config.overlay.territoryfeed.display_mode.display_name=Territory Messages Mode
+wynntils.config.overlay.territoryfeed.display_mode.description=Welche Nachrichten sollen im Gebiets-Feed angezeigt werden?\n\nNormal: Alle Gebietsnachrichten anzeigen.\n\nEigene Gilde unterscheiden: Alle Gebietsnachrichten, aber Nachrichten zu deiner Gilde anzeigen wird in verschiedenen Farben angezeigt. (§2Gewonnenes Gebiet §r& §4Verlorenes Gebiet§r)\n\nNur eigene Gilde: Zeigt nur Gebietsnachrichten an, die deine Gilde betreffen.
+wynntils.config.overlay.territoryfeed.short_message.display_name=Shorten Messages
+wynntils.config.overlay.territoryfeed.short_message.description=Sollen Gebiets-Feed-Nachrichten gekürzt werden?
+wynntils.config.overlay.territoryfeed.guild_tag.display_name=Gilden-Tags verwenden
+wynntils.config.overlay.territoryfeed.guild_tag.description=Sollen Gilden-Tags anstelle von Namen angezeigt werden?
+
+## OVERLAYS TERRITORY FEED DISPLAY MODE ENUM CONFIG ##
+wynntils.config.overlay.territoryfeed.enum.display_mode.normal=Normal
+wynntils.config.overlay.territoryfeed.enum.display_mode.distinguish_own_guild=Eigene Gilde hervorheben
+wynntils.config.overlay.territoryfeed.enum.display_mode.only_own_guild=Nur eigene Gilde anzeigen
+
+## OTHER CONFIG TEXT SHADOW ENUM ##
+wynntils.config.other.enum.text_shadow.none=Keine
+wynntils.config.other.enum.text_shadow.normal=Normal
+wynntils.config.other.enum.text_shadow.outline=Umrandung
+
+## OTHER CONFIG ##
+wynntils.config.other.reset=Zurücksetzen
+wynntils.config.other.apply=Übernehmen
+wynntils.config.other.enabled=Aktiviert
+wynntils.config.other.disabled=Deaktiviert
+
+###########
+# MODULES #
+###########
+
+## MODULE DISPLAY NAMES ##
+wynntils.modules.capes.display_name=Umhänge
+wynntils.modules.chat.display_name=Chat
+wynntils.modules.core.display_name=Core
+wynntils.modules.map.display_name=Karte
+wynntils.modules.sounds.display_name=WynnSounds
+wynntils.modules.questbook.display_name=Questbuch
+wynntils.modules.richpresence.display_name=Rich Presence
+wynntils.modules.utilities.display_name=Werkzeuge
+
+########
+# CHAT #
+########
+
+## TAB GUI ##
+wynntils.chat.tabgui.generic.required=Erforderlich
+wynntils.chat.tabgui.generic.optional=Optional
+wynntils.chat.tabgui.button.save=Speichern
+wynntils.chat.tabgui.button.save.tooltip_1=Zum Speichern hier klicken
+wynntils.chat.tabgui.button.save.tooltip_2=dieser Chat-Tab.
+wynntils.chat.tabgui.button.delete=Löschen
+wynntils.chat.tabgui.button.delete.tooltip_1=Zum Löschen hier klicken
+wynntils.chat.tabgui.button.delete.tooltip_2=dieser Chat-Tab.
+wynntils.chat.tabgui.button.delete.tooltip_3=
+wynntils.chat.tabgui.button.delete.tooltip_4=Irreversible Aktion
+wynntils.chat.tabgui.button.close=Schließen
+wynntils.chat.tabgui.button.advanced_show=Erweiterte Einstellungen anzeigen
+wynntils.chat.tabgui.button.advanced_hide=Erweiterte Einstellungen verstecken
+wynntils.chat.tabgui.button.low_priority=Niedrige Priorität
+wynntils.chat.tabgui.button.low_priority.tooltip_1=Wenn diese Option ausgewählt ist,
+wynntils.chat.tabgui.button.low_priority.tooltip_2=werden Nachrichten zuerst
+wynntils.chat.tabgui.button.low_priority.tooltip_3=mit anderen Tabs
+wynntils.chat.tabgui.button.low_priority.tooltip_4=auf Übereinstimmung überprüft.
+wynntils.chat.tabgui.button.low_priority.tooltip_5=Dies wird auch Nachrichten in
+wynntils.chat.tabgui.button.low_priority.tooltip_6=anderen Tabs mit
+wynntils.chat.tabgui.button.low_priority.tooltip_7=niedriger Priorität duplizieren.
+wynntils.chat.tabgui.button.message_types=Nachrichtentypen
+wynntils.chat.tabgui.button.message_type.all=Alle
+wynntils.chat.tabgui.button.message_type.all.tooltip_1=Nachrichtentyp: Alle
+wynntils.chat.tabgui.button.message_type.all.tooltip_2=Alle außer auf diesem Tab
+wynntils.chat.tabgui.button.message_type.all.tooltip_3=deaktivierten Nachrichten
+wynntils.chat.tabgui.button.message_type.all.tooltip_4=werden hier angezeigt.
+wynntils.chat.tabgui.button.message_type.local=Lokal
+wynntils.chat.tabgui.button.message_type.local.tooltip_1=Nachrichtentyp: Lokal
+wynntils.chat.tabgui.button.message_type.local.tooltip_2=Nur Nachrichten von 
+wynntils.chat.tabgui.button.message_type.local.tooltip_3=Spielern in der Nähre 
+wynntils.chat.tabgui.button.message_type.local.tooltip_4=werden hier angezeigt.
+wynntils.chat.tabgui.button.message_type.guild=Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_1=Nachrichtentyp: Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_2=Nur Nachrichten von 
+wynntils.chat.tabgui.button.message_type.guild.tooltip_3=Mitgliedern deiner Gilde
+wynntils.chat.tabgui.button.message_type.guild.tooltip_4=werden hier angezeigt.
+wynntils.chat.tabgui.button.message_type.party=Party
+wynntils.chat.tabgui.button.message_type.party.tooltip_1=Nachrichtentyp: Party
+wynntils.chat.tabgui.button.message_type.party.tooltip_2=Nur Nachrichten von 
+wynntils.chat.tabgui.button.message_type.party.tooltip_3=Mitgliedern deiner Party
+wynntils.chat.tabgui.button.message_type.party.tooltip_4=werden hier angezeigt.
+wynntils.chat.tabgui.button.message_type.shouts=Rufe
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_1=Nachrichtentyp: Rufe
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_2=Nur Ruf-Nachrichten 
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_3=werden hier angezeigt.
+wynntils.chat.tabgui.button.message_type.shouts.tooltip_4=
+wynntils.chat.tabgui.button.message_type.pms=Direktnachrichten
+wynntils.chat.tabgui.button.message_type.pms.tooltip_1=Nachrichtentyp: Direktnachrichten
+wynntils.chat.tabgui.button.message_type.pms.tooltip_2=Direktnachrichten werden
+wynntils.chat.tabgui.button.message_type.pms.tooltip_3=hier angezeigt.
+wynntils.chat.tabgui.button.message_type.pms.tooltip_4=
+wynntils.chat.tabgui.button.name=Name
+wynntils.chat.tabgui.button.name.tooltip_1=So wird dein Tab
+wynntils.chat.tabgui.button.name.tooltip_2=bennant werden
+wynntils.chat.tabgui.button.name.tooltip_3=
+wynntils.chat.tabgui.button.regex=Regex (Rgulärer Ausdruck)
+wynntils.chat.tabgui.button.regex.tooltip_1=Dies wird Nachrichten
+wynntils.chat.tabgui.button.regex.tooltip_2=benutzerdefiniert filtern
+wynntils.chat.tabgui.button.regex.tooltip_3=Du kannst RegEx unter
+wynntils.chat.tabgui.button.regex.tooltip_4=https://regexr.com/ lernen
+wynntils.chat.tabgui.button.auto_command=Automatischer Befehl
+wynntils.chat.tabgui.button.auto_command.tooltip_1=Dies stellt einen Befehl
+wynntils.chat.tabgui.button.auto_command.tooltip_2=vor jede Nachricht
+wynntils.chat.tabgui.button.auto_command.tooltip_3=
+wynntils.chat.tabgui.button.auto_command.tooltip_4=
+wynntils.chat.tabgui.button.order_number=Ordnungsnr.
+wynntils.chat.tabgui.button.order_number_alt=Ordnungsnummer
+wynntils.chat.tabgui.button.order_number.tooltip_1=Dies bestimmt die
+wynntils.chat.tabgui.button.order_number.tooltip_2=Anordnung der
+wynntils.chat.tabgui.button.order_number.tooltip_3=Chat-Tabs.
+wynntils.chat.tabgui.button.order_number.tooltip_4=(aufsteigend sortiert)
+wynntils.chat.tabgui.menu.confirm_delete_main=Wollst du diesen Chat-Tab wirklich löschen?
+wynntils.chat.tabgui.menu.confirm_delete_sub=Diese Aktion ist irreversibel!
+
+############
+# COMMANDS #
+############
+# Note to translators: do not change the actual text of a command (for example, don't change /territory in "/territory [name] | Ex: /territory Detlas") or the arguments within those commands
+
+## /compass ##
+wynntils.commands.compass.error.generic=Das sollte nicht passieren!
+wynntils.commands.compass.direction=Richtung
+wynntils.commands.compass.now_pointing=Der Kompass zeigt jetzt in Richtung
+
+## /forceupdate ##
+wynntils.commands.forceupdate.usage=Update von Wynntils erzwingen
+wynntils.commands.forceupdate.running=Update von Wynntils erzwingen...
+
+## /territory ##
+wynntils.commands.territory.usage=Zeigt deinen Kompass auf ein bestimmtes Gebiet
+wynntils.commands.territory.error.wrong_usage=/territory [name] | zB: /territory Detlas
+wynntils.commands.territory.error.territory_not_valid=Ungültiges Gebiet! Verwende: /territory [name] | zB: /territory Detlas
+wynntils.commands.territory.now_pointing=Der Kompass zeigt jetzt in Richtung %s (%o, %o)
+wynntils.commands.territory.compass_warning=\nBitte beachte, dass dein Kompass mit diesem Befehl in die Mittle des Gebiets zeigt.
+
+## /token ##
+wynntils.commands.token.usage=Liefert dein Wynntils-Authentifizierungstoken
+wynntils.commands.token.token_text=Wynntils-Authentifizierungstoken
+wynntils.commands.token.token_link_hover=Klicke hier, um dein Konto zu registrieren
+
+## /wynntils ##
+wynntils.commands.wynntils.usage=/wynntils <Befehl>
+wynntils.commands.wynntils.donate.donate_text=Du kannst an Wynntils spenden unter:
+wynntils.commands.wynntils.donate.donate_link_hover=Klicke hier, um im Browser zu öffnen.
+wynntils.commands.wynntils.help.basic_text=Befehlsliste von Wynntils:
+wynntils.commands.wynntils.help.help=Dies zeigt eine Liste aller Befehle von Wynntils an.
+wynntils.commands.wynntils.help.discord=Hiermit erhälst du eine Einladung zu unserem Discord-Server.
+wynntils.commands.wynntils.help.version=Dies zeigt die installierte Wynntils-Version an.
+wynntils.commands.wynntils.help.changelog=Dies zeigt das aktuellste Änderungsprotokoll deiner Version.
+wynntils.commands.wynntils.help.reloadapi=Lädt alle API-Daten neu.
+wynntils.commands.wynntils.help.donate=Dies liefert unseren Patreon-Link.
+wynntils.commands.wynntils.help.token=Hiermit erhälst du ein anklickbaren Token, um ein Wynntils-Konto zur Verwaltung von Kosmetikartikeln zu erstellen.
+wynntils.commands.wynntils.help.forceupdate=Hiermit wird der neueste erfolgreiche Build von Wynntils heruntergeladen und installiert.
+wynntils.commands.wynntils.help.compass=Damit richtet dein Kompass auf ein x und z aus oder zeigt ihn in eine Richtung (z. B. Nord, Südost...).
+wynntils.commands.wynntils.help.territory=Dies zeigt dein Kompass auf ein bestimmtes Gebiet.
+wynntils.commands.wynntils.discord.basic_text=Gerne kannst du unserem Discord-Server beitreten unter:
+wynntils.commands.wynntils.discord.discord_link_hover=Klicke hier, um unserem Discord-Server beizutreten.
+wynntils.commands.wynntils.version.development_environment=Wynntils wird in einer Entwicklungsumgebung ausgeführt.
+wynntils.commands.wynntils.version.using_stable=Du verwendest den stabilen Release-Stream:
+wynntils.commands.wynntils.version.using_cutting_edge=Du verwendestden Cutting Edge-Release-Stream:
+wynntils.commands.wynntils.version.version=Version %s
+wynntils.commands.wynntils.version.build=Build %s
+wynntils.commands.wynntils.version.build_unknown=Unbekannter Build
+wynntils.commands.wynntils.version.update_check_failed=Wynntils konnte nicht nach Updates suchen. Klicke %s, um es erneut zu versuchen.
+wynntils.commands.wynntils.version.update_check_outdated=Wynntils ist derzeit veraltet. Klicke %s, um jetzt zu aktualisieren.
+wynntils.commands.wynntils.version.update_check_up_to_date=Wynntils war bei der letzten Überprüfung auf dem neuesten Stand. Klicke %s, um nach Updates zu suchen.
+wynntils.commands.wynntils.error.invalid_argument=Ungültiges Argument. Verwende /wynntils -help, um weitere Informationen zu erhalten.
+wynntils.commands.wynntils.error.missing_argument=Fehlende Argumente. Verwende /wynntils -help, um weitere Informationen zu erhalten.
+
+########
+# CORE #
+########
+
+## CHANGELOG UI ##
+wynntils.core.ui.changelog.changelog=Änderungsprotokoll
+
+## DOWNLOAD OVERLAY ##
+wynntils.core.ui.download.display_name=Wird heruntergeladen
+wynntils.core.ui.download.close_in=Dein Spiel wird in %o Sekunden geschlossen
+wynntils.core.ui.download.files_left=%o Dateien übrig
+
+## UPDATE OVERLAY ##
+wynntils.core.ui.update.display_name=Update
+wynntils.core.ui.update.upper_text=Wynntils §av%s - §f%ss übrig
+wynntils.core.ui.update.build_is_avaliable=§eBuild %s §fist verfügbar
+wynntils.core.ui.update.version_is_avaliable=Eine neues Update ist verfügbar §ev%s
+wynntils.core.ui.update.download_question=Automatisch herunterladen? §a(y/n)
+wynntils.core.ui.update.yes=Ja (y)
+wynntils.core.ui.update.no=Nein (n)
+wynntils.core.ui.update.updating_to=Aktualisiere auf %s
+wynntils.core.ui.update.update_downloaded_version=Ein Update auf Wynntils (Version %s) wurde heruntergeladen und wird beim Neustart des Spiels durchgeführt.
+wynntils.core.ui.update.update_downloaded_build=Ein Update auf Wynntils (Build %s) wurde heruntergeladen und wird beim Neustart des Spiels durchgeführt.
+
+#######
+# MAP #
+#######
+
+## TOASTS ##
+wynntils.map.toasts.new_map_entry.title=Neuer Karteneintrag
+wynntils.map.toasts.new_map_entry.body=Du hast eine Truhe der Stufe %s gefunden!
+
+## WORLD MAP UI ##
+wynntils.map.ui.world_map.button.markers=Markierung
+wynntils.map.ui.world_map.button.waypoints=Wegpunkte
+wynntils.map.ui.world_map.button.paths=Pfade
+wynntils.map.ui.world_map.marker.beacon=Kompass Zielpunkt
+wynntils.map.ui.world_map.help.title=Hilfe
+wynntils.map.ui.world_map.help.line_1=STRG, um Gebiete anzuzeigen
+wynntils.map.ui.world_map.help.line_2=Klicke mit der linken Maustaste auf den Wegpunkt, um den Kompass Zielpunkt dort zu platzieren
+wynntils.map.ui.world_map.help.line_3=Klicke mit der mittleren Maustaste, um den Kompass Zielpunkt zu platzieren
+wynntils.map.ui.world_map.help.line_4=Doppelklicke auf den Kompass Zielpunkt, um dort einen Wegpunkt zu erstellen
+wynntils.map.ui.world_map.help.line_5=Rechtsklick, um die Ansicht auf den den Spieler zu zentrieren
+
+## WORLD MAP SETTINGS UI ##
+wynntils.map.ui.world_map_settings.buttons.cancel=Abbrechen
+wynntils.map.ui.world_map_settings.buttons.default=Standard
+wynntils.map.ui.world_map_settings.buttons.save=Speichern
+wynntils.map.ui.world_map_settings.floating.enable_or_disable=Kartensymbole aktivieren/deaktivieren:
+wynntils.map.ui.world_map_settings.floating.textures=Kartensymboltexturen:
+
+## ICON TEXTURE ENUM ##
+wynntils.map.enum.icon_texutre.classic=Klassisch
+wynntils.map.enum.icon_texutre.medieval=Mittelalterlich
+
+## MINIMAP OVERLAY ##
+wynntils.map.overlays.minimap.display_name=Minimap
+wynntils.map.overlays.minimap.north_short=N
+wynntils.map.overlays.minimap.north_east_short=NO
+wynntils.map.overlays.minimap.east_short=O
+wynntils.map.overlays.minimap.south_east_short=SO
+wynntils.map.overlays.minimap.south_short=S
+wynntils.map.overlays.minimap.south_west_short=SW
+wynntils.map.overlays.minimap.west_short=W
+wynntils.map.overlays.minimap.north_west_short=NW
+
+## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.always_visible=Immer sichtbar
+wynntils.map.ui.waypoint_creation.floating.waypoint_name=Wegpunktname:
+wynntils.map.ui.waypoint_creation.floating.coordinates=Koordinaten:
+wynntils.map.ui.world_map_settings.floating.icon=Symbol:
+wynntils.map.ui.world_map_settings.floating.color=Farbe:
+wynntils.map.ui.path_creation.buttons.clear=Löschen
+wynntils.map.ui.path_creation.buttons.hidden=Versteckt
+wynntils.map.ui.path_creation.buttons.circular=Krisförmig
+wynntils.map.ui.path_creation.buttons.add_to_start=Zum Start hinzufügen
+wynntils.map.ui.path_creation.buttons.show_icons=Symbole anzeigen
+wynntils.map.ui.path_creation.floating.line_1=Umschalt + Ziehen zum Bewegen
+wynntils.map.ui.path_creation.floating.line_2=Rechtsklick zum Entfernen von Punkten
+
+## WAYPOINT MENU ##
+wynntils.map.ui.waypoints.floating.icon=Symbol
+wynntils.map.ui.waypoints.floating.name=Name
+wynntils.map.ui.waypoints.button.edit=Bearbeiten...
+wynntils.map.ui.waypoints.button.new=NEU
+
+## KEYBINDS ##
+wynntils.map.keybind.open_map=Karte öffnen
+
+#########
+# MUSIC #
+#########
+
+## NOW PLAYING DISPLAY ##
+wynntils.music.overlays.now_playing.nothing_playing=Es wird nichts gespielt!
+wynntils.music.overlays.now_playing.play=Play
+wynntils.music.overlays.now_playing.pause=Pause
+
+##############
+# QUEST BOOK #
+##############
+
+## TRACKED QUEST OVERLAY ##
+wynntils.questbook.overlays.tracked_quest.display_name=Aktuelle Quest
+wynntils.questbook.overlays.tracked_quest.title=Aktuelle Quest Informationen:
+
+## QUEST BOOK UI ##
+wynntils.questbook.ui.questbook.button.generic.left_to_select=Linksklick zur Auswahl
+wynntils.questbook.ui.questbook.link_error=Beim Öffnen des Links ist ein Fehler aufgetreten. Er wurde in deine Zwischenablage kopiert.
+wynntils.questbook.ui.questbook.sort_type=Ordne die Liste nach
+wynntils.questbook.ui.questbook.sort_type.alphabetical=Alphabetischer Reihenfolge (A-Z)
+wynntils.questbook.ui.questbook.sort_type.level=Level (100-0)
+wynntils.questbook.ui.questbook.sort_type.rarity=Seltenheit (MYTHISCH-NORMAL)
+wynntils.questbook.ui.questbook.item_filter=Gegenstandsfilter
+wynntils.questbook.ui.questbook.button.back_to_menu=Zurück zum Menü
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_1=Klicke hier, um zurück
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_2=zur Hauptseite gelangen
+wynntils.questbook.ui.questbook.button.back_to_menu.subtitle_3=
+wynntils.questbook.ui.questbook.search_bar.type=Gebe Text ein, um zu suchen
+wynntils.questbook.ui.questbook.search_bar.click=Zum Suchen klicken
+wynntils.questbook.ui.questbook.available_items=Verfügbare Gegenstände
+wynntils.questbook.ui.questbook.item_guide=Gegenständshandbuch
+wynntils.questbook.ui.questbook.item_guide.subtitle_1=Alle Gegenstände anzeigen,
+wynntils.questbook.ui.questbook.item_guide.subtitle_2=die derzeit im Spiel
+wynntils.questbook.ui.questbook.item_guide.subtitle_3=verfügbar sind.
+wynntils.questbook.ui.questbook.item_guide.subtitle_4=
+wynntils.questbook.ui.questbook.quests.description_1=Hier kannst du alle Quests
+wynntils.questbook.ui.questbook.quests.description_2=sehen, die dir zur verfügung
+wynntils.questbook.ui.questbook.quests.description_3=stehen. Du kannst auch nach
+wynntils.questbook.ui.questbook.quests.description_4=einer bestimmten Quest suchen,
+wynntils.questbook.ui.questbook.quests.description_5=indem du den Namen eingibst.
+wynntils.questbook.ui.questbook.quests.description_6=Mit den beiden Knöpfen oder
+wynntils.questbook.ui.questbook.quests.description_7=durch Scrollen kommst du auf die
+wynntils.questbook.ui.questbook.quests.description_8=nächste Seite. Druch Anklicken
+wynntils.questbook.ui.questbook.quests.description_9=kannst du eine Quest anheften.
+wynntils.questbook.ui.questbook.quests.discovery_hover_1=Umschalttaste halten, um geheime Entdeckungen zu sehen!
+wynntils.questbook.ui.questbook.quests.discovery_hover_2=Klicke hier, um alle deine Entdeckungen zu sehen!
+wynntils.questbook.ui.questbook.quests.pin=Zum Anheften linksklicken!
+wynntils.questbook.ui.questbook.quests.unpin=Zum Abheften nochmal linksklicken!
+wynntils.questbook.ui.questbook.quests.open_on_wiki=Rechtsklick zum Öffnen des Wikis!
+wynntils.questbook.ui.questbook.quests=Quests
+wynntils.questbook.ui.questbook.configs=Einstellungen
+wynntils.questbook.ui.questbook.class_and_level=%s Level %s
+wynntils.questbook.ui.questbook.in_development=Aktuell noch in Entwicklung
+wynntils.questbook.ui.questbook.open_quests.subtitle_1=Betrachte und hefte 
+wynntils.questbook.ui.questbook.open_quests.subtitle_2=deine verfügbaren 
+wynntils.questbook.ui.questbook.open_quests.subtitle_3=Quests an.
+wynntils.questbook.ui.questbook.open_quests.subtitle_4=
+wynntils.questbook.ui.questbook.configuration=Einstellung
+wynntils.questbook.ui.questbook.configuration.subtitle_1=Ändere die Einstellungen
+wynntils.questbook.ui.questbook.configuration.subtitle_2=wie du willst.
+wynntils.questbook.ui.questbook.configuration.subtitle_3=
+wynntils.questbook.ui.questbook.configuration.subtitle_4=BETA VERSION
+wynntils.questbook.ui.questbook.overlay_configuration=Überlagerungseinstellungen
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_1=Ändere und Aktiviere/
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_2=Deaktiviere
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_3=die verschiedenen
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_4=Wynntils-Überlagerungen.
+wynntils.questbook.ui.questbook.overlay_configuration.subtitle_5=
+wynntils.questbook.ui.questbook.select_to_continue_1=Wähle eine Option aus,
+wynntils.questbook.ui.questbook.select_to_continue_2=um fortzufahren
+wynntils.questbook.ui.questbook.intro_1=Willkommen bei Wynntils. Betrachte
+wynntils.questbook.ui.questbook.intro_2=deine Statistiken auf der rechten
+wynntils.questbook.ui.questbook.intro_3=Seite oder wähle eine der Optionen
+wynntils.questbook.ui.questbook.intro_4=oben aus für mehr Funktionen.
+wynntils.questbook.ui.questbook.intro_5=
+wynntils.questbook.ui.questbook.user_profile=Benutzerprofil
+wynntils.questbook.ui.questbook.discoveries.info_1=Hier siehst du alle
+wynntils.questbook.ui.questbook.discoveries.info_2=Entdeckungen, die du bereits
+wynntils.questbook.ui.questbook.discoveries.info_3=gefunden hast.
+wynntils.questbook.ui.questbook.discoveries.info_4=Du kannst unten auch Filter
+wynntils.questbook.ui.questbook.discoveries.info_5=anwenden.
+wynntils.questbook.ui.questbook.discoveries.back_to_quests=Zurück zu den Quests
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_1=Klicke hier, um zurück
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_2=zu den Quests zu gehen
+wynntils.questbook.ui.questbook.discoveries.back_to_quests.subtitle_3=
+wynntils.questbook.ui.questbook.discoveries=Entdeckungen
+wynntils.questbook.ui.questbook.version.stable=Stabil v%s
+wynntils.questbook.ui.questbook.version.cutting_edge=CE Build %s
+
+#############
+# UTILITIES #
+#############
+
+## CLIENT EVENTS ##
+wynntils.utilities.events.prevent_mythic_close=Du darfst diese Truhe nicht schließen, solange sie einen mythischen Gegenstand enthält.
+wynntils.utilities.events.check_daily=§7Tägliche Belohnungen §fsind verfügbar!
+
+## ACTIONBAR HELPER OVERLAY ##
+wynntils.utilities.overlays.actionbar_helper.display_name=ActionBar Hilfe
+
+## BUBBLES OVERLAY ##
+wynntils.utilities.overlays.bubbles.display_name=Luftblasenüberlagerung
+
+## EXPERIENCE BAR OVERLAY ##
+wynntils.utilities.overlays.experience_bar.display_name=Erfahrungsleiste
+
+## GAME UPDATE OVERLAY ##
+wynntils.utilities.overlays.game_update.display_name=Nachrichtenticker
+wynntils.utilities.overlays.game_update.wrong_timestamp=[Wynntils] Die Chat-Zeitstempel von WynnExpansion wurden erkannt. Bitte verwende die Chat-Zeitstempel von Wynntils, um vollständige Kompatibilität zu gewährleisten.
+wynntils.utilities.overlays.game_update.redir.horse.no_room=Es ist kein Platz für ein Pferd.
+wynntils.utilities.overlays.game_update.redir.horse.despawned=Dein Pferd ist despawned.
+wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs=Es sind für dein Pferd zu viele Mobs in der Nähe.
+wynntils.utilities.overlays.game_update.redir.combat.no_mana=Nicht genug Mana.
+wynntils.utilities.overlays.game_update.redir.combat.not_unlocked=Zauber nicht freigeschaltet
+wynntils.utilities.overlays.game_update.redir.combat.mana_pot=[+%1$s %3$s Mana auf %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.strength_pot=[+%1$s %3$s Stärke für %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.agility_pot=[+%1$s %3$s Beweglichkeit für %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot=[+%1$s %3$s Geschicklichkeit für %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot=[+%1$s %3$s Intelligenz für %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.defense_pot=[+%1$s %3$s Verteidigung für %2$s Sekunden]
+wynntils.utilities.overlays.game_update.redir.combat.pot_already_active=Du hast diesen Trank bereits aktiviert...
+wynntils.utilities.overlays.game_update.redir.combat.cant_teleport=Kann nicht teleportieren - entferne dich von Blöcken.
+wynntils.utilities.overlays.game_update.redir.combat.cleared_effects=§7alle Trankeffekte §bbeseitigt
+wynntils.utilities.overlays.game_update.redir.combat.removed_fire=§7Feuer §bgelöscht
+wynntils.utilities.overlays.game_update.redir.combat.speed_boost=§b+3 Minuten §7Geschwindigkeits-Boost
+wynntils.utilities.overlays.game_update.redir.combat.10_resistance=§b+10 %% Resistenz
+wynntils.utilities.overlays.game_update.redir.combat.15_resistance=§b+15 %% Resistenz
+wynntils.utilities.overlays.game_update.redir.combat.20_resistance=§b+20 %% Resistenz §7& §b+10 %% Stärke
+wynntils.utilities.overlays.game_update.redir.other.skill_points_available=§e%s §6Fähigkeitspunkte verfügbar.
+wynntils.utilities.overlays.game_update.redir.other.combat_level_up=§e%1$s §6ist jetzt Level §e%2$s
+wynntils.utilities.overlays.game_update.redir.other.profession_level_up=§e%1$s §6ist jetzt §e%2$s %3$s §6level §e%4$s
+wynntils.utilities.overlays.game_update.redir.other.not_identified=Gegenstand nicht identifiziert.
+wynntils.utilities.overlays.game_update.redir.other.not_class=Diese Waffe gehört nicht zu deiner Klasse.
+wynntils.utilities.overlays.game_update.redir.other.too_low_level=Du hast kein ausreichendes Level, um diesen Gegenstand zu benutzen.
+wynntils.utilities.overlays.game_update.redir.other.skill_too_low=Du hast nicht genug %s um diesen Gegenstand zu benutzen.
+wynntils.utilities.overlays.game_update.redir.other.too_low_level_potion=Du hast kein ausreichendes Level, um diesen Trank zu benutzen.
+wynntils.utilities.overlays.game_update.redir.other.full_inventory=Nicht genügend Inventarplatz.
+wynntils.utilities.overlays.game_update.redir.other.not_visited=Du warst noch nie in diesem Bereich!
+wynntils.utilities.overlays.game_update.redir.soul_point.single=+1 Seelenpunkt
+wynntils.utilities.overlays.game_update.redir.soul_point.plural=%s Seelenpunkte
+wynntils.utilities.overlays.game_update.redir.server.minute.single=1 Minute bis zum Neustart des Servers
+wynntils.utilities.overlays.game_update.redir.server.minute.plural=%s Minuten bis zum Neustart des Servers
+wynntils.utilities.overlays.game_update.redir.server.second.single=1 Sekunde bis zum Neustart des Servers
+wynntils.utilities.overlays.game_update.redir.server.second.plural=%s Sekunden bis zum Neustart des Servers
+wynntils.utilities.overlays.game_update.redir.quest.updated=Questbuch aktualisiert.
+wynntils.utilities.overlays.game_update.redir.quest.started=Neue Quest gestartet:
+wynntils.utilities.overlays.game_update.redir.merchant.identifying=Gegenstände werden identifiziert...
+wynntils.utilities.overlays.game_update.redir.merchant.identified=Gegenstände identifiziert!
+wynntils.utilities.overlays.game_update.redir.merchant.sold=§d %1$s Artikel für()  §a%2verkauft.
+wynntils.utilities.overlays.game_update.redir.merchant.scrapped=§dScrapped %1$s Element(e) für §e%2$s Scrap§d.
+wynntils.utilities.overlays.game_update.redir.merchant.not_weapon=Hier kannst du nur Waffen, Zubehör und Rüstung verkaufen.
+wynntils.utilities.overlays.game_update.redir.merchant.cant_scrap=Dieser Gegenstand kann nicht verschrottet werden.
+wynntils.utilities.overlays.game_update.redir.merchant.purchased=Kauf abgeschlossen.
+wynntils.utilities.overlays.game_update.redir.merchant.cant_afford=Du kannst dir diesen Gegenstand nicht leisten.
+
+## GAMMA OVERLAY ##
+wynntils.utilities.overlays.gamma.display_name=Gamma
+wynntils.utilities.overlays.gamma.text=GammaBright
+
+## HEALTH BAR OVERLAY ##
+wynntils.utilities.overlays.health_bar.display_name=Gesundheitsleiste
+
+## HOTBAR OVERLAY ##
+wynntils.utilities.overlays.hotbar.display_name=Hotbar
+
+## LEVELING OVERLAY ##
+wynntils.utilities.overlays.leveling.display_name=Leveling Helfer
+
+## MANA BAR OVERLAY ##
+wynntils.utilities.overlays.mana_bar.display_name=Manaanleiste
+
+## TERRITORY FEED OVERLAY ##
+wynntils.utilities.overlays.territory_feed.display_name=Gebietsupdates
+wynntils.utilities.overlays.territory_feed.attacked=Das Gebiet %2$s von [%1$s] wird von [%3$s] angegriffen.
+wynntils.utilities.overlays.territory_feed.defended=Der Angriff von [%1$s] auf das Gebiet %3$s von [%2$s] wurde verteidigt!
+wynntils.utilities.overlays.territory_feed.captured=[%1$s] hat %2$s von [%3$s] erobert
+
+## TOASTS OVERLAY ##
+wynntils.utilities.overlays.toasts.display_name=Benachrichtigungen
+wynntils.utilities.overlays.toasts.now_entering=Betrete nun
+wynntils.utilities.overlays.toasts.quest_completed=Quest abgeschlossen!
+wynntils.utilities.overlays.toasts.area_discovered=Bereich entdeckt!
+wynntils.utilities.overlays.toasts.discovery_found=Entdeckung gefunden!
+
+## WAR TIMER OVERLAY ##
+wynntils.utilities.overlays.war_timer.display_name=Krieg Stoppuhr-Overlay
+wynntils.utilities.overlays.war_timer.message.lasted_for=Der Krieg für %s hat gedauert
+wynntils.utilities.overlays.war_timer.message.start_in=Der Krieg für %s beginnt in
+wynntils.utilities.overlays.war_timer.message.start_in.no_territory=Der Krieg beginnt in
+wynntils.utilities.overlays.war_timer.message.mob_spawn=Die Mobs für %s werden anfangen zu erscheinen in
+wynntils.utilities.overlays.war_timer.message.mob_spawn.no_territory=Die Mobs werden anfangen zu erscheinen in
+wynntils.utilities.overlays.war_timer.message.in_war=Du führst in %s Krieg seit
+wynntils.utilities.overlays.war_timer.message.in_war.no_territory=Du führst Krieg seit
+
+## STOPWATCH OVERLAY ##
+wynntils.utilities.overlays.stopwatch.display_name=Stoppuhr
+
+## INFO OVERLAY ##
+wynntils.utilities.overlays.info.display_name=Info
