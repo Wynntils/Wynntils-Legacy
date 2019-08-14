@@ -6,6 +6,7 @@ package com.wynntils.modules.core.overlays;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -21,7 +22,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +33,13 @@ public class UpdateOverlay extends Overlay {
     private static CustomColor yes = CustomColor.fromString("80fd80",1);
     private static CustomColor no = CustomColor.fromString("fd8080",1);
 
-    public UpdateOverlay() {
+    private KeyHolder acceptUpdateKey;
+    private KeyHolder cancelUpdateKey;
+
+    public UpdateOverlay(KeyHolder accept, KeyHolder cancel) {
         super("Update", 20, 20, true, 1f, 0f, 0, 0, null);
+        acceptUpdateKey = accept;
+        cancelUpdateKey = cancel;
     }
 
     static boolean disappear = false;
@@ -72,13 +77,16 @@ public class UpdateOverlay extends Overlay {
             drawString("A new update is available " + TextFormatting.YELLOW + "v" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
         }
 
-        drawString("Download automagically? " + TextFormatting.GREEN + "(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
+        String acceptKeyName = acceptUpdateKey.getKeyBinding().getDisplayName().toLowerCase();
+        String cancelKeyName = cancelUpdateKey.getKeyBinding().getDisplayName().toLowerCase();
+        
+        drawString("Download automagically? " + TextFormatting.GREEN + "(" + acceptKeyName + "/" + cancelKeyName + ")", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
         drawRect(yes, -155,40 - size, -95, 55 - size);
         drawRect(no, -75 ,40 - size, -15, 55 - size);
 
-        drawString("Yes (y)", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        drawString("No (n)", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString("Yes (" + acceptKeyName + ")", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString("No (" + cancelKeyName + ")", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (size > 0 && System.currentTimeMillis() - timeout < 35000) {
             size--;
@@ -107,6 +115,27 @@ public class UpdateOverlay extends Overlay {
         disappear = true;
         acceptYesOrNo = false;
         download = true;
+    }
+
+    public static void triggerStartUpdate() {
+        System.out.println(acceptYesOrNo);
+        if (acceptYesOrNo) {
+            disappear = true;
+            acceptYesOrNo = false;
+            download = true;
+
+            CoreDBConfig.INSTANCE.showChangelogs = true;
+            CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+        }
+    }
+
+    public static void triggerCancelUpdate() {
+        if (acceptYesOrNo) {
+            timeout = 35000;
+            acceptYesOrNo = false;
+            download = false;
+        }
     }
 
     @Override
@@ -144,21 +173,6 @@ public class UpdateOverlay extends Overlay {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
-            }
-        }
-        if(acceptYesOrNo) {
-            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
-                disappear = true;
-                acceptYesOrNo = false;
-                download = true;
-
-                CoreDBConfig.INSTANCE.showChangelogs = true;
-                CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
-                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-            }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
-                timeout = 35000;
-                acceptYesOrNo = false;
-                download = false;
             }
         }
     }
