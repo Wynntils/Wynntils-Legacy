@@ -52,6 +52,7 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
+        WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdates();
         DownloaderManager.startDownloading();
     }

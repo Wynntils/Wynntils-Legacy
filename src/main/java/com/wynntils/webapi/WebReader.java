@@ -4,12 +4,14 @@
 
 package com.wynntils.webapi;
 
-import java.io.BufferedReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,8 +20,8 @@ public class WebReader {
     String url;
     File file;
 
-    private HashMap<String, String> values = new HashMap<>();
-    private HashMap<String, ArrayList<String>> lists = new HashMap<>();
+    private HashMap<String, String> values;
+    private HashMap<String, ArrayList<String>> lists;
 
     public WebReader(String url) throws Exception {
         this.url = url;
@@ -33,58 +35,41 @@ public class WebReader {
         parseFile();
     }
 
+    private WebReader() {}
+
+    public static WebReader fromString(String data) {
+        WebReader result = new WebReader();
+        if (!result.parseData(data)) {
+            return null;
+        }
+        return result;
+    }
+
     public HashMap<String, String> getValues() {
         return values;
     }
 
     private void parseFile() throws Exception {
         FileReader fr = new FileReader(file);
-        BufferedReader bf = new BufferedReader(fr);
 
-        String str;
-        while ((str = bf.readLine()) != null) {
-            if(str.contains("[") && str.contains("]")) {
-                String[] split;
-                if(str.contains(" = ")) {
-                    split = str.split(" = ");
-                }else if(str.contains("=")) {
-                    split = str.split("=");
-                }else{
-                    break;
-                }
-
-                values.put(split[0].replace("[", "").replace("]", ""), split[1]);
-
-                if(split[1].contains(",")) {
-                    String[] array = split[1].split(",");
-
-                    ArrayList<String> values = new ArrayList<>();
-                    for(String x : array) {
-                        if(x.startsWith(" ")) {
-                            x = x.substring(1);
-                        }
-                        values.add(x);
-                    }
-
-                    lists.put(split[0], values);
-                }
-
-            }
+        if (!parseData(FileUtils.readFileToString(file, StandardCharsets.UTF_8))) {
+            throw new Exception("Invalid WebReader result");
         }
-
-        fr.close();
-        bf.close();
     }
 
     private void parseWebsite() throws Exception {
         URLConnection st = new URL(url).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
-        InputStreamReader isr = new InputStreamReader(st.getInputStream());
-        BufferedReader bf = new BufferedReader(isr);
+        if (!parseData(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8))) {
+            throw new Exception("Invalid WebReader result");
+        }
+    }
 
-        String str;
-        while ((str = bf.readLine()) != null) {
+    private boolean parseData(String data) {
+        values = new HashMap<>();
+        lists = new HashMap<>();
+        for (String str : data.split("\\r?\\n")) {
             if(str.contains("[") && str.contains("]")) {
                 String[] split;
                 if(str.contains(" = ")) {
@@ -92,7 +77,7 @@ public class WebReader {
                 }else if(str.contains("=")) {
                     split = str.split("=");
                 }else{
-                    break;
+                    return false;
                 }
 
                 values.put(split[0].replace("[", "").replace("]", ""), split[1]);
@@ -114,12 +99,9 @@ public class WebReader {
                     values.add(split[1]);
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
                 }
-
             }
         }
-
-        isr.close();
-        bf.close();
+        return true;
     }
 
     public String get(String key) {

@@ -218,7 +218,7 @@ public class WaypointOverviewUI extends GuiScreen {
             );
         } else if (b == importBtn) {
             String data = Utils.pasteFromClipboard();
-            if (data != null) data = data.trim();
+            if (data != null) data = data.replaceAll("\\s+", "");
             if (data == null || data.isEmpty()) {
                 importText = Arrays.asList(
                     "Import  ==  ERROR",

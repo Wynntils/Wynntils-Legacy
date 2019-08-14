@@ -11,6 +11,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
@@ -65,8 +66,10 @@ public class WebManager {
     private static Gson gson = new Gson();
 
     private static Thread territoryUpdateThread;
+    private static WebRequestHandler handler = new WebRequestHandler();
 
     private static final int REQUEST_TIMEOUT_MILLIS = 16000;
+    private static final File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath(), "apicache");
 
     public static void reset() {
         apiUrls = null;
@@ -92,50 +95,26 @@ public class WebManager {
         updateTerritoryThreadStatus(false);
     }
 
-    public static void setupWebApi() {
-        try{
-            apiUrls = new WebReader("https://api.wynntils.com/webapi");
-        }catch (Exception ex) { ex.printStackTrace(); apiUrls = null; }
-
-        ProgressManager.ProgressBar progressBar = ProgressManager.push(apiUrls != null ? "Loading data from APIs" : "Loading data from cache", 7);
-
-        progressBar.step("Territories");
-        long ms = System.currentTimeMillis();
-        updateTerritories();
-        Reference.LOGGER.info("Territory list loaded in " + (System.currentTimeMillis() - ms) + "ms");
-
-        try{
-            progressBar.step("User roles");
-            updateUsersRoles();
-            progressBar.step("User models");
-            updateUsersModels();
-
-            progressBar.step("Items");
-            ms = System.currentTimeMillis();
-            updateItemList();
-            Reference.LOGGER.info("Loaded " + items.size() + " items in " + (System.currentTimeMillis() - ms) + "ms");
-
-            progressBar.step("Map Markers");
-            ms = System.currentTimeMillis();
-            updateMapMarkers();
-            updateMapRefineries();
-            Reference.LOGGER.info("Loaded " + mapMarkers.size() + " MapMarkers in " + (System.currentTimeMillis() - ms) + "ms");
-
-            progressBar.step("Item Guesses");
-            ms = System.currentTimeMillis();
-            updateItemGuesses();
-            Reference.LOGGER.info("Loaded " + itemGuesses.size() + " ItemGuesses in " + (System.currentTimeMillis() - ms) + "ms");
-
-            progressBar.step("Player Stats");
-            ms = System.currentTimeMillis();
-            updatePlayerProfile();
-            Reference.LOGGER.info("Loaded player stats in " + (System.currentTimeMillis() - ms) + "ms");
-        } catch (Exception ex) {
-            for (int i = progressBar.getStep(); i < progressBar.getSteps(); i++)
-                progressBar.step("Error loading data from APIs");
-            ex.printStackTrace();
+    public static void setupWebApi(boolean withProgress) {
+        if (apiUrls == null) {
+            tryReloadApiUrls(false, true);
         }
-        ProgressManager.pop(progressBar);
+
+
+        ProgressManager.ProgressBar progressBar = withProgress ? ProgressManager.push(apiUrls != null ? "Loading data from APIs" : "Loading data from cache", 0) : null;
+
+        updateTerritories(handler);
+        updateUsersRoles(handler);
+        updateUsersModels(handler);
+        updateItemList(handler);
+        updateMapMarkers(handler);
+        updateMapRefineries(handler);
+        updateItemGuesses(handler);
+        updatePlayerProfile(handler);
+
+        handler.dispatchAsync();
+
+        if (withProgress) ProgressManager.pop(progressBar);
 
         updateTerritoryThreadStatus(true);
     }
@@ -238,79 +217,54 @@ public class WebManager {
     /**
      * Request a update to territories {@link ArrayList}
      */
-    public static void updateTerritories() {
-        Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
-        JsonObject json;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("Territory")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating territory list - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            json = handleCache(stream, "territories.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateTerritories(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("Territory");
+        handler.addRequest(new WebRequestHandler.Request(url, "territory")
+            .cacheTo(new File(apiCacheFolder, "territories.json"))
+            .handleJsonObject(json -> {
+                if (!json.has("territories")) return false;
 
-        // TODO: remove when server issue is fixed
-        if (json.has("territories")) {
+                Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
 
-            GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
-            Gson gson = builder.create();
+                GsonBuilder builder = new GsonBuilder();
+                builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+                Gson gson = builder.create();
 
-            territories.clear();
-            territories.putAll(gson.fromJson(json.get("territories"), type));
-        }
+                territories.clear();
+                territories.putAll(gson.fromJson(json.get("territories"), type));
+                return true;
+            })
+        );
     }
 
     /**
      * Request all guild names to WynnAPI
      *
-     * @return a {@link ArrayList} containing all guild names
-     * @throws Exception
+     * @return a {@link ArrayList} containing all guild names, or an empty list if an error occurred
      */
     public static ArrayList<String> getGuilds()  {
-        JsonObject json;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("GuildList")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating guild list - attempting to use cache", ex);
-                forceRecall = true;
-            }
+        class ResultHolder {
+            private ArrayList<String> result;
         }
-        try {
-            json = handleCache(stream, "guilds.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
+        ResultHolder resultHolder = new ResultHolder();
+
+        String url = apiUrls == null ? null : apiUrls.get("GuildList");
+        handler.addRequest(new WebRequestHandler.Request(url, "guild_list")
+            .cacheTo(new File(apiCacheFolder, "guilds.json"))
+            .handleJsonObject(json -> {
+                if (!json.has("guilds")) return false;
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                resultHolder.result = gson.fromJson(json.get("guilds"), type);
+                return true;
+            })
+        );
+        handler.dispatch();
+
+        if (resultHolder.result == null) {
             return new ArrayList<>();
         }
-
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-
-        return gson.fromJson(json.get("guilds"), type);
+        return resultHolder.result;
     }
 
     /**
@@ -362,38 +316,24 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateItemList() {
-        JsonArray main;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("ItemList")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating item list - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            main = handleCache(stream, "items.json", forceRecall).getAsJsonObject().getAsJsonArray("items");
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateItemList(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("ItemList");
+        handler.addRequest(new WebRequestHandler.Request(url, "item_list")
+            .cacheTo(new File(apiCacheFolder, "items.json"))
+            .handleJsonObject(j -> {
+                if (!j.has("items") || !j.get("items").isJsonArray()) return false;
+                JsonArray main = j.getAsJsonArray("items");
 
-        Type type = new TypeToken<HashMap<String, ItemProfile>>() {
-        }.getType();
+                Type type = new TypeToken<HashMap<String, ItemProfile>>() {
+                }.getType();
 
-        HashMap<String, ItemProfile> citems = ItemProfile.GSON.fromJson(main, type);
-        directItems.addAll(citems.values());
+                HashMap<String, ItemProfile> citems = ItemProfile.GSON.fromJson(main, type);
+                directItems.addAll(citems.values());
 
-        items = citems;
+                items = citems;
+                return true;
+            })
+        );
     }
 
     /**
@@ -401,36 +341,20 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateMapMarkers() {
-        JsonArray jsonArray;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("MapMarkers")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating map markers - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            jsonArray = handleCache(stream, "map_markers.json", forceRecall).getAsJsonObject().getAsJsonArray("locations");
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateMapMarkers(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
+        handler.addRequest(new WebRequestHandler.Request(url, "map_markers")
+            .cacheTo(new File(apiCacheFolder, "map_markers.json"))
+            .handleJsonObject(main -> {
+                JsonArray jsonArray = main.getAsJsonArray("locations");
+                Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                }.getType();
 
-        Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
-        }.getType();
-
-        mapMarkers = gson.fromJson(jsonArray, type);
-        MapApiIcon.resetApiMarkers();
+                mapMarkers = gson.fromJson(jsonArray, type);
+                MapApiIcon.resetApiMarkers();
+                return true;
+            })
+        );
     }
 
     /**
@@ -438,35 +362,21 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateMapRefineries() {
-        JsonArray jsonArray;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("RefineryLocations")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating refinery locations - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            jsonArray = handleCache(stream, "map_refineries.json", forceRecall).getAsJsonArray();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateMapRefineries(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("RefineryLocations");
+        handler.addRequest(new WebRequestHandler.Request(url, "map_markers.refineries")
+            .cacheTo(new File(apiCacheFolder, "map_refineries.json"))
+            .handleJson(j -> {
+                if (!j.isJsonArray()) return false;
+                JsonArray jsonArray = j.getAsJsonArray();
 
-        Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
+                Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
-        mapMarkers.addAll(gson.fromJson(jsonArray, type));
-        MapApiIcon.resetApiMarkers();
+                mapMarkers.addAll(gson.fromJson(jsonArray, type));
+                MapApiIcon.resetApiMarkers();
+                return true;
+            })
+        );
     }
 
     /**
@@ -474,161 +384,93 @@ public class WebManager {
      *
      * @throws Exception
      */
-    public static void updateItemGuesses() {
-        JsonObject json;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("ItemGuesses")).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating item guesses - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            json = handleCache(stream, "item_guesses.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateItemGuesses(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("ItemGuesses");
+        handler.addRequest(new WebRequestHandler.Request(url, "item_guesses")
+            .cacheTo(new File(apiCacheFolder, "item_guesses.json"))
+            .handleJsonObject(json -> {
+                Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
+                }.getType();
 
-        Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
-        }.getType();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
+                Gson gson = gsonBuilder.create();
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
-        Gson gson = gsonBuilder.create();
-
-        itemGuesses = new HashMap<>(gson.fromJson(json, type));
+                itemGuesses = new HashMap<>(gson.fromJson(json, type));
+                return true;
+            })
+        );
     }
 
-    public static void updatePlayerProfile() {
-        JsonObject json;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats").openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating player profile - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            json = handleCache(stream, "player_stats.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updatePlayerProfile(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
+        handler.addRequest(new WebRequestHandler.Request(url, "player_profile")
+            .cacheTo(new File(apiCacheFolder, "player_stats.json"))
+            .handleJsonObject(json -> {
+                Type type = new TypeToken<PlayerStatsProfile>() {
+                }.getType();
 
-        Type type = new TypeToken<PlayerStatsProfile>() {
-        }.getType();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerStatsProfileDeserializer());
+                Gson gson = gsonBuilder.create();
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerStatsProfileDeserializer());
-        Gson gson = gsonBuilder.create();
-
-        playerProfile = gson.fromJson(json, type);
+                playerProfile = gson.fromJson(json, type);
+                return true;
+            })
+        );
     }
 
-    public static void updateUsersRoles() {
-        JsonObject main;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("UserAccount") + "getUsersRoles").openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating user roles - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            main = handleCache(stream, "user_roles.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateUsersRoles(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUsersRoles";
+        handler.addRequest(new WebRequestHandler.Request(url, "user_account.roles")
+            .cacheTo(new File(apiCacheFolder, "user_roles.json"))
+            .handleJsonObject(main -> {
+                GsonBuilder builder = new GsonBuilder();
+                builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
+                Gson gson = builder.create();
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
-        Gson gson = builder.create();
+                Type type = new TypeToken<ArrayList<UUID>>() {
+                }.getType();
 
-        Type type = new TypeToken<ArrayList<UUID>>() {
-        }.getType();
+                JsonArray helper = main.getAsJsonArray("helperUsers");
+                helpers = gson.fromJson(helper, type);
 
-        JsonArray helper = main.getAsJsonArray("helperUsers");
-        helpers = gson.fromJson(helper, type);
+                JsonArray moderator = main.getAsJsonArray("moderatorUsers");
+                moderators = gson.fromJson(moderator, type);
 
-        JsonArray moderator = main.getAsJsonArray("moderatorUsers");
-        moderators = gson.fromJson(moderator, type);
+                JsonArray contentTeam = main.getAsJsonArray("contentTeamUsers");
+                content_team = gson.fromJson(contentTeam, type);
 
-        JsonArray contentTeam = main.getAsJsonArray("contentTeamUsers");
-        content_team = gson.fromJson(contentTeam, type);
-
-        JsonArray donator = main.getAsJsonArray("donatorUsers");
-        donators = gson.fromJson(donator, type);
+                JsonArray donator = main.getAsJsonArray("donatorUsers");
+                donators = gson.fromJson(donator, type);
+                return true;
+            })
+        );
     }
 
-    public static void updateUsersModels() {
-        JsonObject main;
-        boolean forceRecall;
-        InputStream stream = null;
-        if (apiUrls == null) {
-            forceRecall = true;
-        } else {
-            try {
-                URLConnection st = new URL(apiUrls.get("UserAccount") + "getUserModels").openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                stream = st.getInputStream();
-                forceRecall = !st.getContentType().contains("application/json");
-            } catch (Exception ex) {
-                Reference.LOGGER.warn("Error updating user models - attempting to use cache", ex);
-                forceRecall = true;
-            }
-        }
-        try {
-            main = handleCache(stream, "user_models.json", forceRecall).getAsJsonObject();
-        } catch (NullPointerException ex) {
-            return;
-        }
+    public static void updateUsersModels(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUserModels";
+        handler.addRequest(new WebRequestHandler.Request(url, "user_account.models")
+            .cacheTo(new File(apiCacheFolder, "user_models.json"))
+            .handleJsonObject(main -> {
+                GsonBuilder builder = new GsonBuilder();
+                builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
+                Gson gson = builder.create();
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
-        Gson gson = builder.create();
+                Type type = new TypeToken<ArrayList<UUID>>() {
+                }.getType();
 
-        Type type = new TypeToken<ArrayList<UUID>>() {
-        }.getType();
+                JsonArray ear = main.getAsJsonArray("earsActive");
+                ears = gson.fromJson(ear, type);
 
-        JsonArray ear = main.getAsJsonArray("earsActive");
-        ears = gson.fromJson(ear, type);
+                JsonArray elytra = main.getAsJsonArray("elytraActive");
+                elytras = gson.fromJson(elytra, type);
 
-        JsonArray elytra = main.getAsJsonArray("elytraActive");
-        elytras = gson.fromJson(elytra, type);
-
-        JsonArray cape = main.getAsJsonArray("capeActive");
-        capes = gson.fromJson(cape, type);
+                JsonArray cape = main.getAsJsonArray("capeActive");
+                capes = gson.fromJson(cape, type);
+                return true;
+            })
+        );
     }
 
     public static String getStableJarFileUrl() throws Exception {
@@ -750,18 +592,20 @@ public class WebManager {
     }
 
     public static class TerritoryUpdateThread extends Thread {
-
         public TerritoryUpdateThread(String name) {
             super(name);
         }
 
         @Override
         public void run() {
+            WebRequestHandler handler = new WebRequestHandler();
+
             try {
+                Thread.sleep(30000);
                 while (!isInterrupted()) {
-                    Thread.sleep(30000);
                     HashMap<String, TerritoryProfile> prevList = new HashMap<>(territories);
-                    updateTerritories();
+                    updateTerritories(handler);
+                    handler.dispatch();
                     for (TerritoryProfile prevTerritory : prevList.values()) {
                         TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
                         if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
@@ -772,6 +616,7 @@ public class WebManager {
                             FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), prevTerritory.getAttacker(), currentTerritory.getGuild(), getGuildTagFromName(prevTerritory.getAttacker()), getGuildTagFromName(currentTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.DEFENDED));
                         }
                     }
+                    Thread.sleep(30000);
                 }
             } catch (InterruptedException ignored) {}
             Reference.LOGGER.info("Terminating territory update thread.");
@@ -832,6 +677,37 @@ public class WebManager {
         }
 
         return changelog;
+    }
+
+    /**
+     * Tries to reload apiUrls if it was null
+     */
+    public static void tryReloadApiUrls(boolean async) {
+        tryReloadApiUrls(async, false);
+    }
+
+    private static void tryReloadApiUrls(boolean async, boolean inSetup) {
+        if (apiUrls == null) {
+            handler.addRequest(new WebRequestHandler.Request("https://api.wynntils.com/webapi", "webapi")
+                .cacheTo(new File(apiCacheFolder, "webapi.txt"))
+                .handleString(s -> {
+                    WebReader reader = WebReader.fromString(s);
+                    if (reader == null) return false;
+                    WebManager.apiUrls = reader;
+                    if (!inSetup) {
+                        WebManager.setupWebApi(false);
+                        MapModule.getModule().getMainMap().updateMap();
+                    }
+                    return true;
+                })
+            );
+            if (async) {
+                handler.dispatchAsync();
+            } else {
+                handler.dispatch();
+            }
+        }
+
     }
 
     /**
