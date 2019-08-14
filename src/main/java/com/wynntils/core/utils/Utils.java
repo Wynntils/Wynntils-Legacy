@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -621,5 +622,24 @@ public class Utils {
     public static int utf8Length(String s) {
         if (s == null) return 0;
         return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
+    }
+
+    public static void tab(List<GuiTextField> tabList) {
+        int focusIndex = -1;
+        for (int i = 0; i < tabList.size(); ++i) {
+            GuiTextField field = tabList.get(i);
+            if (field.isFocused()) {
+                focusIndex = i;
+                field.setCursorPosition(0);
+                field.setSelectionPos(0);
+                field.setFocused(false);
+                break;
+            }
+        }
+        focusIndex = (focusIndex + 1) % tabList.size();
+        GuiTextField selected = tabList.get(focusIndex);
+        selected.setFocused(true);
+        selected.setCursorPosition(0);
+        selected.setSelectionPos(selected.getText().length());
     }
 }

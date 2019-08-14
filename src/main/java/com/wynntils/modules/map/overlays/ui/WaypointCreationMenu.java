@@ -15,8 +15,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class WaypointCreationMenu extends UI {
     private GuiLabel nameFieldLabel;
@@ -227,6 +230,13 @@ public class WaypointCreationMenu extends UI {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_TAB) {
+            List<GuiTextField> tabList = Arrays.asList(
+                nameField, xCoordField, zCoordField, yCoordField, colorWheel.textBox.textField
+            );
+            Utils.tab(tabList);
+            return;
+        }
         super.keyTyped(typedChar, keyCode);
         nameField.textboxKeyTyped(typedChar, keyCode);
         xCoordField.textboxKeyTyped(typedChar, keyCode);
