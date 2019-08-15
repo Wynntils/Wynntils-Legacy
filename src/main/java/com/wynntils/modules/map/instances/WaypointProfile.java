@@ -53,6 +53,7 @@ public class WaypointProfile {
     }
 
     public WaypointType getType() {
+        if (type == null) type = WaypointType.FLAG;
         return type;
     }
 

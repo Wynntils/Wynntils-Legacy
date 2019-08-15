@@ -168,7 +168,9 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
-        if (CompassManager.getCompassLocation() != null) {
+        if (Minecraft.getMinecraft().player == null) {
+            CompassManager.reset();
+        } else if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }
     }
