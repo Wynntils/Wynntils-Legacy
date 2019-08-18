@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,6 +22,11 @@ import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
 public class WebRequestHandler {
+    /**
+     * If set to true, will not make HTTP requests.
+     */
+    public static boolean cacheOnly = false;
+
     public WebRequestHandler() {}
 
     public static class Request {
@@ -186,8 +192,8 @@ public class WebRequestHandler {
         for (Request req : requests) {
             tasks.add(() -> {
                 byte[] toCache = null;
-                if (req.url != null) {
-                    boolean sockTimeout = false;
+                if (req.url != null && !cacheOnly) {
+                    Throwable readException = null;
                     try {
                         URLConnection st = new URL(req.url).openConnection();
                         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
@@ -196,8 +202,8 @@ public class WebRequestHandler {
                         byte[] data;
                         try {
                             data = IOUtils.toByteArray(st.getInputStream());
-                        } catch (SocketTimeoutException e) {
-                            sockTimeout = true;
+                        } catch (IOException e) {
+                            readException = e;
                             throw e;
                         }
                         if (req.handler.test(data)) {
@@ -206,8 +212,8 @@ public class WebRequestHandler {
                             Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + ": Invalid data received" + (req.cacheFile == null ? "" : "; Attempting to use cache"));
                         }
                     } catch (Exception e) {
-                        if (sockTimeout) {
-                            Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + ": Timed out (server might be down)" + (req.cacheFile == null ? "" : "; Attempting to use cache"));
+                        if (readException != null) {
+                            Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + ": " + (e instanceof SocketTimeoutException ? "Socket timeout (server may be down)" : e.getMessage()) + (req.cacheFile == null ? "" : "; Attempting to use cache"));
                         } else {
                             Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + (req.cacheFile == null ? "" : "; Attempting to use cache"));
                             e.printStackTrace();

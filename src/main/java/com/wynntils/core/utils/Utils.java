@@ -16,6 +16,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -176,6 +177,22 @@ public class Utils {
     }
 
     /**
+     * Get the lore NBT tag from an item
+     */
+    public static NBTTagList getLoreTag(ItemStack item) {
+        if (item == null) return null;
+        NBTTagCompound display = item.getSubCompound("display");
+        if (display != null && display.hasKey("Lore")) {
+            NBTBase loreBase = display.getTag("Lore");
+            NBTTagList lore;
+            if (loreBase.getId() == 9 && (lore = (NBTTagList) loreBase).getTagType() == 8) {
+                return lore;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get the lore from an item
      *
      * @param item
@@ -184,20 +201,13 @@ public class Utils {
      */
     public static List<String> getLore(ItemStack item) {
         List<String> lore = new ArrayList<>();
-        if(item.isEmpty() || !item.hasTagCompound()) {
+        if(item.isEmpty()) {
             return lore;
         }
-        if (item.getTagCompound().hasKey("display", 10)) {
-            NBTTagCompound nbttagcompound = item.getTagCompound().getCompoundTag("display");
-
-            if (nbttagcompound.getTagId("Lore") == 9) {
-                NBTTagList nbttaglist3 = nbttagcompound.getTagList("Lore", 8);
-
-                if (!nbttaglist3.isEmpty()) {
-                    for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
-                        lore.add(nbttaglist3.getStringTagAt(l1));
-                    }
-                }
+        NBTTagList loreTag = getLoreTag(item);
+        if (loreTag != null) {
+            for (int i = 0; i < loreTag.tagCount(); ++i) {
+                lore.add(loreTag.getStringTagAt(i));
             }
         }
         return lore;

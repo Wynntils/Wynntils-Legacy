@@ -298,7 +298,8 @@ public class SettingsUI extends UI {
             try {
                 Object value = registeredSettings.get(currentSettingsPath).getValues().get(field);
                 if (value instanceof String) {
-                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, ((String) value).replace("§", "&"), false, (ui, oldString) -> {
+                    String text = ((String) value).replace("§", "&");
+                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, text, false, (ui, oldString) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText().replace("&", "§"), false);
                             changedSettings.add(currentSettingsPath);
@@ -311,6 +312,8 @@ public class SettingsUI extends UI {
                     if(limit != null)
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
                     else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
+                    // Set text again in case it was over default max length of 32
+                    ((UIETextBox) valueElement).setText(text);
                 } else if (field.getType().isAssignableFrom(boolean.class)) {
                     valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {

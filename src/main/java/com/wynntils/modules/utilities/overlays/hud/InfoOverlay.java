@@ -1,6 +1,7 @@
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -29,7 +30,7 @@ public abstract class InfoOverlay extends Overlay {
 
         String format = getFormat();
         if (format != null && !format.isEmpty()) {
-            String formatted = format_info(format);
+            String formatted = doFormat(format);
             if (!formatted.isEmpty()) {
                 float center = staticSize.x / 2f;
                 if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
@@ -72,76 +73,111 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info4Format; }
     }
 
-    private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z]*|%)%|\\\\\\\\|\\\\n");
+    private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z_]+|%)%|\\\\(\\\\|n|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})");
 
-    public String format_info(String format) {
-        StringBuffer sb = new StringBuffer(format.length() + 10);
-        Matcher m = formatRegex.matcher(format);
+    private static class InfoFormatter {
+        int money = -1;
+        PlayerInfo.UnprocessedAmount unprocessed;
 
-        while (m.find()) {
-            String name = m.group(1);
-            if (name != null) {
-                switch (name.toLowerCase()) {
-                    case "x":
-                        m.appendReplacement(sb, Integer.toString((int) mc.player.posX));
-                        break;
-                    case "y":
-                        m.appendReplacement(sb, Integer.toString((int) mc.player.posY));
-                        break;
-                    case "z":
-                        m.appendReplacement(sb, Integer.toString((int) mc.player.posZ));
-                        break;
-                    case "dir":
-                        m.appendReplacement(sb, Utils.getPlayerDirection(mc.player.rotationYaw));
-                        break;
-                    case "fps":
-                        m.appendReplacement(sb, Integer.toString(Minecraft.getDebugFPS()));
-                        break;
-                    case "class":
-                        String className;
-                        switch (getPlayerInfo().getCurrentClass()) {
-                            case MAGE: className = "mage"; break;
-                            case ARCHER: className = "archer"; break;
-                            case WARRIOR: className = "warrior"; break;
-                            case ASSASSIN: className = "assassin"; break;
-                            default: className = null; break;
-                        }
+        int getMoney() {
+            if (money == -1) money = PlayerInfo.getPlayerInfo().getMoney();
+            return money;
+        }
 
-                        if (className != null) {
-                            if (name.equals("Class")) {  // %Class% is title case
-                                className = className.substring(0, 1).toUpperCase() + className.substring(1);
-                            } else if (name.equals("CLASS")) {  // %CLASS% is all caps
-                                className = className.toUpperCase();
-                            }
-                            m.appendReplacement(sb, className);
+        PlayerInfo.UnprocessedAmount getUnprocessed() {
+            if (unprocessed == null) unprocessed = PlayerInfo.getPlayerInfo().getUnprocessedAmount();
+            return unprocessed;
+        }
+
+        String doSingleFormat(String name) {
+            String lowerName = name.toLowerCase();
+            switch (lowerName) {
+                case "x": return Integer.toString((int) mc.player.posX);
+                case "y": return Integer.toString((int) mc.player.posY);
+                case "z": return Integer.toString((int) mc.player.posZ);
+                case "dir": return Utils.getPlayerDirection(mc.player.rotationYaw);
+                case "fps": return Integer.toString(Minecraft.getDebugFPS());
+                case "class":
+                    String className;
+                    switch (PlayerInfo.getPlayerInfo().getCurrentClass()) {
+                        case MAGE: className = "mage"; break;
+                        case ARCHER: className = "archer"; break;
+                        case WARRIOR: className = "warrior"; break;
+                        case ASSASSIN: className = "assassin"; break;
+                        default: className = null; break;
+                    }
+
+                    if (className != null) {
+                        if (name.equals("Class")) {  // %Class% is title case
+                            className = className.substring(0, 1).toUpperCase() + className.substring(1);
+                        } else if (name.equals("CLASS")) {  // %CLASS% is all caps
+                            className = className.toUpperCase();
                         }
-                        break;
-                    case "lvl":
-                        int lvl = getPlayerInfo().getLevel();
-                        if (lvl != -1) {
-                            m.appendReplacement(sb, Integer.toString(lvl));
-                        }
-                        break;
-                    case "%":
-                        m.appendReplacement(sb, "%");
-                    default:
-                        m.appendReplacement(sb, m.group(0));
-                }
-            } else {
-                String match = m.group(0);
-                switch (match) {
-                    case "\\n":
-                        m.appendReplacement(sb, "\n");
-                        break;
-                    case "\\\\":
-                        m.appendReplacement(sb, "\\");
-                    default:
-                        m.appendReplacement(sb, match);
-                }
+                        return className;
+                    }
+                    return null;
+                case "lvl":
+                    int lvl = PlayerInfo.getPlayerInfo().getLevel();
+                    if (lvl != -1) {
+                        return Integer.toString(lvl);
+                    }
+                    return null;
+                case "money":
+                    return Integer.toString(getMoney());
+                case "emeralds":
+                    return Integer.toString(getMoney() % 64);
+                case "blocks": case "emeraldblocks": case "emerald_blocks":
+                    return Integer.toString((getMoney() / 64) % 64);
+                case "le": case "lightemeralds": case "light_emeralds":
+                    return Integer.toString(getMoney() / (64 * 64));
+                case "unprocessed":
+                    return Integer.toString(getUnprocessed().current);
+                case "unprocessed_max": case "unprocessedmax":
+                    int max = getUnprocessed().maximum;
+                    if (max == -1) {
+                        return "??";
+                    }
+                    return Integer.toString(max);
+                case "%":
+                    return "%";
+                default:
+                    return null;
             }
         }
-        m.appendTail(sb);
 
-        return sb.toString();
+        String doFormat(String format) {
+            StringBuffer sb = new StringBuffer(format.length() + 10);
+            Matcher m = formatRegex.matcher(format);
+            while (m.find()) {
+                String name = m.group(1);
+                if (name != null) {
+                    String replacement = doSingleFormat(name);
+                    if (replacement == null) {
+                        replacement = m.group(0);
+                    }
+                    m.appendReplacement(sb, replacement);
+                } else {
+                    // \escape
+                    String escaped = m.group(2);
+                    switch (escaped) {
+                        case "n":
+                            m.appendReplacement(sb, "\n");
+                            break;
+                        case "\\":
+                            m.appendReplacement(sb, "\\");
+                        default:
+                            // xXX, uXXXX, UXXXXXXXX
+                            m.appendReplacement(sb, new String(new int[]{ Integer.parseInt(escaped.substring(1), 16) }, 0, 1));
+                    }
+                }
+            }
+            m.appendTail(sb);
+
+            return sb.toString();
+        }
+    }
+
+    public String doFormat(String format) {
+        return new InfoFormatter().doFormat(format);
     }
 }

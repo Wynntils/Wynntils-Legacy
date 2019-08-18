@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
@@ -133,6 +134,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 155 + groupShift, this.width / 2 + 75 + groupShift, (int) centreZ - 1, colour | 0xFF000000);
+                GlStateManager.color(1, 1, 1, 1);
             }
         }
         ScreenRenderer.endGL();

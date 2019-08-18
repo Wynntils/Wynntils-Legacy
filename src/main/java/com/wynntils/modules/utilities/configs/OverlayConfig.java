@@ -452,7 +452,9 @@ public class OverlayConfig extends SettingsClass {
             COORDS("Coords", "%x% %z% (%y%)"),
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),
-            CLASS("Class", "%Class%\\nLevel %lvl%");
+            CLASS("Class", "%Class%\\nLevel %lvl%"),
+            BALANCE("Balance", "%le%\\xBC\\xB2 %blocks%\\xB2\\xBD %emeralds%\\xB2 (%money%\\xB2)"),
+            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%");
 
             private String name;
             private String value;

@@ -12,10 +12,17 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PlayerInfo {
 
@@ -177,4 +184,72 @@ public class PlayerInfo {
             return instance;
     }
 
+    /**
+     * @return Total number of emeralds in inventory (Including blocks and LE)
+     */
+    public int getMoney() {
+        int money = 0;
+
+        for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
+            ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
+            if (it == null || it.isEmpty()) {
+                continue;
+            }
+
+            if (it.getItem() == Items.EMERALD) {
+                money += it.getCount();
+                continue;
+            }
+            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
+                money += it.getCount() * 64;
+                continue;
+            }
+            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                money += it.getCount() * (64 * 64);
+            }
+        }
+
+        return money;
+    }
+
+    private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
+    private static final Pattern unprocessedLoreRegex = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
+
+    public static class UnprocessedAmount {
+        public int current;
+        public int maximum;
+        public UnprocessedAmount(int current, int maximum) {
+            this.current = current;
+            this.maximum = maximum;
+        }
+    }
+    /**
+     * @return UnprocessedAmount((total weight of unprocessed materials), (maximum weight that can be held)).
+     *
+     * If there are no unprocessed materials, maximum will be -1.
+     */
+    public UnprocessedAmount getUnprocessedAmount() {
+        int maximum = -1;
+        int amount = 0;
+        for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
+            ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
+            if (it != null && !it.isEmpty()) {
+                Matcher nameMatcher = unprocessedNameRegex.matcher(it.getDisplayName());
+                if (nameMatcher.matches()) {
+                    NBTTagList lore = Utils.getLoreTag(it);
+                    if (lore != null && lore.tagCount() != 0) {
+                        Matcher loreMatcher = unprocessedLoreRegex.matcher(lore.getStringTagAt(0));
+                        if (loreMatcher.matches()) {
+                            // Found an unprocessed item
+                            if (maximum == -1) {
+                                maximum = Integer.valueOf(nameMatcher.group(1));
+                            }
+                            amount += Integer.valueOf(loreMatcher.group(1)) * it.getCount();
+                        }
+                    }
+                }
+            }
+        }
+        return new UnprocessedAmount(amount, maximum);
+    }
 }
