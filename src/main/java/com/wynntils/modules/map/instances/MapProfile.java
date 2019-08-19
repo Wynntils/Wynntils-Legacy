@@ -73,7 +73,7 @@ public class MapProfile {
         BufferedImage img = ImageIO.read(mapFile);
         imageHeight = img.getHeight(); imageWidth = img.getWidth();
 
-        textureId = TextureUtil.uploadTextureImageAllocate(TextureUtil.glGenTextures(), ImageIO.read(mapFile), false, false);
+        textureId = TextureUtil.uploadTextureImageAllocate(TextureUtil.glGenTextures(), img, false, false);
     }
 
     public void bindTexture() throws Exception {

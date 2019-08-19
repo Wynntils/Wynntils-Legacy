@@ -109,7 +109,7 @@ public class MiniMapOverlay extends Overlay {
                 final float halfMapSize = mapSize / 2f;
                 final float scaleFactor = mapSize / (mapSize + 2f * zoom);
                 final float sizeMultiplier = 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier * (1 - (1 - scaleFactor) * (1 - scaleFactor));
-                final double rotationRadians = mc.player.rotationYaw * Math.PI / 180;
+                final double rotationRadians = Math.toRadians(mc.player.rotationYaw);
                 final float sinRotationRadians = (float) Math.sin(rotationRadians);
                 final float cosRotationRadians = (float) -Math.cos(rotationRadians);
 
@@ -205,7 +205,7 @@ public class MiniMapOverlay extends Overlay {
                     }
 
                     if (rendering && scaled) {
-                        float angle = (float) (Math.atan2(dz, dx) * 180f / Math.PI) + 90f;
+                        float angle = (float) Math.toDegrees(Math.atan2(dz, dx)) + 90f;
 
                         dx = newDx + halfMapSize;
                         dz = newDz + halfMapSize;
@@ -278,51 +278,23 @@ public class MiniMapOverlay extends Overlay {
             }
 
             // Direction Text
-            // TODO: Optimise
             if (MapConfig.INSTANCE.showCompass) {
                 if (MapConfig.INSTANCE.followPlayerRotation) {
                     float mapCentre = (float) mapSize / 2f;
-                    float mapCentreSquare = mapCentre * MathHelper.SQRT_2;
-                    if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                        drawString("N", mapCentre - 2 + mapCentre * MathHelper.cos((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) - (Math.PI / 2))), mapCentre - 3 + mapCentre * MathHelper.sin((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) - (Math.PI / 2))), CommonColors.WHITE);
-                        if (!MapConfig.INSTANCE.northOnly) {
-                            drawString("E", mapCentre - 2 + mapCentre * MathHelper.cos((float) Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw))), mapCentre - 3 + mapCentre * MathHelper.sin((float) Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw))), CommonColors.WHITE);
-                            drawString("S", mapCentre - 2 + mapCentre * MathHelper.cos((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) + (Math.PI / 2))), mapCentre - 3 + mapCentre * MathHelper.sin((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) + (Math.PI / 2))), CommonColors.WHITE);
-                            drawString("W", mapCentre - 2 + mapCentre * MathHelper.cos((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) + Math.PI)), mapCentre - 3 + mapCentre * MathHelper.sin((float) (Math.toRadians(180 - MathHelper.fastFloor(mc.player.rotationYaw)) + Math.PI)), CommonColors.WHITE);
-                        }
-                    } else {
-                        int limitedDeg = (180 - MathHelper.fastFloor(mc.player.rotationYaw)) % 360;
-                        if (limitedDeg < 0)
-                            limitedDeg += 360;
-                        if (limitedDeg <= 45 || limitedDeg > 315) {
-                            drawString("N", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) - (Math.PI / 2))), -3, CommonColors.WHITE);
-                            if (!MapConfig.INSTANCE.northOnly) {
-                                drawString("E", mapSize - 2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) Math.toRadians(limitedDeg)), CommonColors.WHITE);
-                                drawString("S", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) + (Math.PI / 2))), mapSize - 3, CommonColors.WHITE);
-                                drawString("W", -2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) + Math.PI)), CommonColors.WHITE);
-                            }
-                        } else if (limitedDeg <= 135) {
-                            drawString("N", mapSize - 2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) - (Math.PI / 2))), CommonColors.WHITE);
-                            if (!MapConfig.INSTANCE.northOnly) {
-                                drawString("E", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) Math.toRadians(limitedDeg)), mapSize - 3, CommonColors.WHITE);
-                                drawString("S", -2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) + (Math.PI / 2))), CommonColors.WHITE);
-                                drawString("W", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) + Math.PI)), -3, CommonColors.WHITE);
-                            }
-                        } else if (limitedDeg <= 225) {
-                            drawString("N", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) - (Math.PI / 2))), mapSize - 3, CommonColors.WHITE);
-                            if (!MapConfig.INSTANCE.northOnly) {
-                                drawString("E", -2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) Math.toRadians(limitedDeg)), CommonColors.WHITE);
-                                drawString("S", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) + (Math.PI / 2))), -3, CommonColors.WHITE);
-                                drawString("W", mapSize - 2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) + Math.PI)), CommonColors.WHITE);
-                            }
-                        } else {
-                            drawString("N", -2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) - (Math.PI / 2))), CommonColors.WHITE);
-                            if (!MapConfig.INSTANCE.northOnly) {
-                                drawString("E", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) Math.toRadians(limitedDeg)), -3, CommonColors.WHITE);
-                                drawString("S", mapSize - 2, mapCentre - 3 + mapCentreSquare * MathHelper.sin((float) (Math.toRadians(limitedDeg) + (Math.PI / 2))), CommonColors.WHITE);
-                                drawString("W", mapCentre - 2 + mapCentreSquare * MathHelper.cos((float) (Math.toRadians(limitedDeg) + Math.PI)), mapSize - 3, CommonColors.WHITE);
-                            }
-                        }
+                    float yawRadians = (float) Math.toRadians(mc.player.rotationYaw);
+                    float northDX = mapCentre * MathHelper.sin(yawRadians);
+                    float northDY = mapCentre * MathHelper.cos(yawRadians);
+                    if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
+                        // Scale by sec((offset from 90 degree angle)) to map to tangent from offset point
+                        float circleToSquareScale = MathHelper.cos((float) Math.toRadians(((mc.player.rotationYaw + 45f) % 90f + 90f) % 90f - 45f));
+                        northDX /= circleToSquareScale;
+                        northDY /= circleToSquareScale;
+                    }
+                    drawString("N", mapCentre - 2 + northDX, mapCentre - 3 + northDY, CommonColors.WHITE);
+                    if (!MapConfig.INSTANCE.northOnly) {
+                        drawString("E", mapCentre - 2 - northDY, mapCentre - 3 + northDX, CommonColors.WHITE);
+                        drawString("S", mapCentre - 2 - northDX, mapCentre - 3 - northDY, CommonColors.WHITE);
+                        drawString("W", mapCentre - 2 + northDY, mapCentre - 3 - northDX, CommonColors.WHITE);
                     }
                 } else {
                     float mapCentre = (float) mapSize / 2f;

@@ -30,7 +30,7 @@ public abstract class InfoOverlay extends Overlay {
 
         String format = getFormat();
         if (format != null && !format.isEmpty()) {
-            String formatted = doFormat(format);
+            String formatted = doFormat(format, formatter);
             if (!formatted.isEmpty()) {
                 float center = staticSize.x / 2f;
                 if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
@@ -53,6 +53,10 @@ public abstract class InfoOverlay extends Overlay {
         public _1() { super(1); }
         @Override public final int getIndex() { return 1; }
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info1Format; }
+        @Override public void render(RenderGameOverlayEvent.Pre e) {
+            formatter.clear();
+            super.render(e);
+        }
     }
 
     public static class _2 extends InfoOverlay {
@@ -75,9 +79,16 @@ public abstract class InfoOverlay extends Overlay {
 
     private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z_]+|%)%|\\\\(\\\\|n|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})");
 
+    private static InfoFormatter formatter = new InfoFormatter();
+
     private static class InfoFormatter {
         int money = -1;
         PlayerInfo.UnprocessedAmount unprocessed;
+
+        void clear() {
+            money = -1;
+            unprocessed = null;
+        }
 
         int getMoney() {
             if (money == -1) money = PlayerInfo.getPlayerInfo().getMoney();
@@ -178,6 +189,10 @@ public abstract class InfoOverlay extends Overlay {
     }
 
     public String doFormat(String format) {
-        return new InfoFormatter().doFormat(format);
+        return doFormat(format, new InfoFormatter());
+    }
+
+    private String doFormat(String format, InfoFormatter formatter) {
+        return formatter.doFormat(format);
     }
 }
