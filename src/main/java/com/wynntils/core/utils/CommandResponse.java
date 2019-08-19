@@ -62,8 +62,6 @@ public class CommandResponse {
         if(e.getType() != chatType) return;
 
         String message = formattedText ? e.getMessage().getFormattedText() : e.getMessage().getUnformattedText();
-
-        e.getMessage().getSiblings().forEach(c -> System.out.println(c.getFormattedText().replace("§", "&")));
         Matcher matcher = regex.matcher(message);
 
         if(!matcher.find()) return;

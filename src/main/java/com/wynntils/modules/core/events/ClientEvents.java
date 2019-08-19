@@ -17,6 +17,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -133,6 +134,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
         if(e.phase != TickEvent.Phase.END) return;
+        if(Minecraft.getSystemTime() % 2 != 0) return; //checks if the time is even
 
         PacketQueue.proccessQueue();
     }

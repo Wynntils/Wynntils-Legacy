@@ -20,7 +20,6 @@ public class PacketQueue {
     }
 
     public static void queuePackets(Packet<?>... packets) {
-        ;
         packetQueue.addAll(Arrays.asList(packets));
     }
 
