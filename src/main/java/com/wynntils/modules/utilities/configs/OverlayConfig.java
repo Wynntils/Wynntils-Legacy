@@ -454,7 +454,8 @@ public class OverlayConfig extends SettingsClass {
             FPS("FPS Counter", "FPS: %fps%"),
             CLASS("Class", "%Class%\\nLevel %lvl%"),
             BALANCE("Balance", "%le%\\xBC\\xB2 %blocks%\\xB2\\xBD %emeralds%\\xB2 (%money%\\xB2)"),
-            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%");
+            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB");
 
             private String name;
             private String value;

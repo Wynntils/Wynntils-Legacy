@@ -77,17 +77,21 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info4Format; }
     }
 
-    private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z_]+|%)%|\\\\(\\\\|n|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})");
+    private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z_]+|%)%|\\\\(\\\\|n|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}|%)");
 
     private static InfoFormatter formatter = new InfoFormatter();
 
     private static class InfoFormatter {
         int money = -1;
+        long maxMemory;
+        long usedMemory;
+        int memoryPct = -1;
         PlayerInfo.UnprocessedAmount unprocessed;
 
         void clear() {
             money = -1;
             unprocessed = null;
+            memoryPct = -1;
         }
 
         int getMoney() {
@@ -98,6 +102,16 @@ public abstract class InfoOverlay extends Overlay {
         PlayerInfo.UnprocessedAmount getUnprocessed() {
             if (unprocessed == null) unprocessed = PlayerInfo.getPlayerInfo().getUnprocessedAmount();
             return unprocessed;
+        }
+
+        void setMemory() {
+            if (memoryPct == -1) {
+                long maxMemory = Runtime.getRuntime().maxMemory();
+                long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                memoryPct = (int) (((float) usedMemory / maxMemory) * 100f);
+                this.maxMemory = maxMemory / (1024 * 1024);
+                this.usedMemory = usedMemory / (1024 * 1024);
+            }
         }
 
         String doSingleFormat(String name) {
@@ -149,6 +163,15 @@ public abstract class InfoOverlay extends Overlay {
                         return "??";
                     }
                     return Integer.toString(max);
+                case "mem_pct": case "mempct":
+                    setMemory();
+                    return Integer.toString(memoryPct);
+                case "mem_used": case "memused":
+                    setMemory();
+                    return Long.toString(usedMemory);
+                case "mem_max": case "memmax":
+                    setMemory();
+                    return Long.toString(maxMemory);
                 case "%":
                     return "%";
                 default:
@@ -176,6 +199,10 @@ public abstract class InfoOverlay extends Overlay {
                             break;
                         case "\\":
                             m.appendReplacement(sb, "\\");
+                            break;
+                        case "%":
+                            m.appendReplacement(sb, "%");
+                            break;
                         default:
                             // xXX, uXXXX, UXXXXXXXX
                             m.appendReplacement(sb, new String(new int[]{ Integer.parseInt(escaped.substring(1), 16) }, 0, 1));
