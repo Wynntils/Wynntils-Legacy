@@ -8,11 +8,11 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.overlays.objects.MapCompassIcon;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -181,23 +181,26 @@ public class MiniMapOverlay extends Overlay {
                     final float compassSize = Math.max(compassIcon.getSizeX(), compassIcon.getSizeZ()) * 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier;
                     boolean rendering = true;
 
-                    float distance_sq = dx * dx + dz * dz;
+                    float distanceSq = dx * dx + dz * dz;
+                    float maxDistance = halfMapSize - compassSize;
 
-                    if (distance_sq > 16000000f) {
+                    if (distanceSq > 16000000f) {
                         rendering = false;
                     } if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
-                        newDx = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dx));
-                        newDz = Math.max(-halfMapSize + compassSize, Math.min(halfMapSize - compassSize, dz));
-                        scaled = (newDx != dx) || (newDz != dz);
-                        if (!scaled) {
-                            dx = newDx;
-                            dz = newDz;
+                        if (!(
+                                -maxDistance <= dx && dx <= maxDistance &&
+                                -maxDistance <= dz && dz <= maxDistance
+                        )) {
+                            // Scale them in so that `|newDx| <= maxDistance && |newDz| <= maxDistance`
+                            scaled = true;
+                            float scale = maxDistance / Math.max(Math.abs(dx), Math.abs(dz));
+                            newDx = dx * scale;
+                            newDz = dz * scale;
                         }
                     } else {
-                        float max_distance = halfMapSize - compassSize;
-                        if (distance_sq > max_distance * max_distance) {
+                        if (distanceSq > maxDistance * maxDistance) {
                             // Scale it down back into the circle
-                            float multiplier = max_distance / (float) Math.sqrt(distance_sq);
+                            float multiplier = maxDistance / (float) Math.sqrt(distanceSq);
                             newDx = dx * multiplier;
                             newDz = dz * multiplier;
                             scaled = true;
@@ -210,14 +213,6 @@ public class MiniMapOverlay extends Overlay {
                         dx = newDx + halfMapSize;
                         dz = newDz + halfMapSize;
 
-                        final AssetsTexture pointerTexture = Textures.Map.map_icons;
-                        final int pointerSizeX = 5;
-                        final int pointerSizeZ = 4;
-                        final int pointerTexPosX = 14;
-                        final int pointerTexPosZ = 53;
-                        final int pointerTexSizeX = 24;
-                        final int pointerTexSizeZ = 61;
-
                         Point drawingOrigin = MiniMapOverlay.drawingOrigin();
 
                         GlStateManager.pushMatrix();
@@ -225,15 +220,7 @@ public class MiniMapOverlay extends Overlay {
                         GlStateManager.rotate(angle,0,0,1);
                         GlStateManager.translate(-drawingOrigin.x - dx, -drawingOrigin.y - dz, 0);
 
-                        drawRectF(
-                                pointerTexture,
-                                dx - pointerSizeX * sizeMultiplier,
-                                dz - pointerSizeZ * sizeMultiplier,
-                                dx + pointerSizeX * sizeMultiplier,
-                                dz + pointerSizeZ * sizeMultiplier,
-                                pointerTexPosX, pointerTexPosZ,
-                                pointerTexSizeX, pointerTexSizeZ
-                        );
+                        MapCompassIcon.pointer.renderAt(this, dx, dz, sizeMultiplier, 1f);
 
                         GlStateManager.popMatrix();
                     } else if (rendering) {
@@ -286,7 +273,7 @@ public class MiniMapOverlay extends Overlay {
                     float northDY = mapCentre * MathHelper.cos(yawRadians);
                     if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
                         // Scale by sec((offset from 90 degree angle)) to map to tangent from offset point
-                        float circleToSquareScale = MathHelper.cos((float) Math.toRadians(((mc.player.rotationYaw + 45f) % 90f + 90f) % 90f - 45f));
+                        float circleToSquareScale = MathHelper.cos((float) Math.toRadians((mc.player.rotationYaw % 360f + 405f) % 90f - 45f));
                         northDX /= circleToSquareScale;
                         northDY /= circleToSquareScale;
                     }
