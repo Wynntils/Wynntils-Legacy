@@ -19,7 +19,6 @@ import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -128,25 +127,8 @@ public class ClientEvents {
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Leave());
                     PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                 }
-                continue;
-            }
-            if(player.getDisplayName() == null) continue;
-
-            //party handling below
-            if(player.getDisplayName().getUnformattedText().contains("/party create")) {
-                PlayerInfo.getPlayerInfo().getPlayerParty().closeParty();
-                continue;
-            }
-
-            String formatedName = player.getDisplayName().getFormattedText();
-
-            if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
-                if(formatedName.startsWith("§e")) partyMembers.add(TextFormatting.getTextWithoutFormattingCodes(formatedName));
-                else if(formatedName.startsWith("§c")) { partyOwner = TextFormatting.getTextWithoutFormattingCodes(formatedName); }
             }
         }
-
-        if(!partyOwner.isEmpty() || !partyMembers.isEmpty()) PlayerInfo.getPlayerInfo().getPlayerParty().updateParty(partyOwner, partyMembers);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -16,6 +16,7 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
@@ -80,6 +81,8 @@ public class ServerEvents implements Listener {
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+
+        PartyManager.handlePartyList(); //party list here
     }
 
     /**
@@ -95,6 +98,8 @@ public class ServerEvents implements Listener {
         if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
+        PartyManager.handleMessages(e.getMessage()); //party messages here
+
         if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
             String[] splited = e.getMessage().getUnformattedText().split(":");
 
