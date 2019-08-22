@@ -62,7 +62,7 @@ wynntils.config.map.minimap_rotation.description=Soll die Minimap nach Norden au
 wynntils.config.map.compass_directions.display_name=Kompassrichtungen anzeigen
 wynntils.config.map.compass_directions.description=Sollen die Hauptrichtungen (N, O, S, W) auf der Minimap angezeigt werden?
 wynntils.config.map.minimap_size.display_name=Minimap-Größe
-wynntils.config.map.minimap_size.description=Wie gross soll die Minimap sein?
+wynntils.config.map.minimap_size.description=Wie groß soll die Minimap sein?
 wynntils.config.map.only_north.display_name=Nur Norden anzeigen
 wynntils.config.map.only_north.description=Soll auf der Minimap nur Norden angezeigt werden?
 wynntils.config.map.record_chest_tier.display_name=Brustwegpunkte aufzeichnen
@@ -73,10 +73,10 @@ wynntils.config.map.compass_beam.display_name=Kompassstrahl anzeigen
 wynntils.config.map.compass_beam.description=Soll an deiner Kompassposition ein Strahl angezeigt werden?
 wynntils.config.map.minimap_coords.display_name=Minimap-Koordinaten
 wynntils.config.map.minimap_coords.description=Sollen deine Koordinaten unterhalb der Minimap angezeigt werden?
-wynntils.config.map.minimap_icons.display_name=Minimapnsymbole anzeigen
+wynntils.config.map.minimap_icons.display_name=Minimapsymbole anzeigen
 wynntils.config.map.minimap_icons.description=Sollen Kartensymbole auf der Minimap angezeigt werden?
 wynntils.config.map.minimap_icons_size.display_name=Kartensymbolgröße
-wynntils.config.map.minimap_icons_size.description=Wie groß sollen Kartenssymbole sein?
+wynntils.config.map.minimap_icons_size.description=Wie groß sollen Kartensymbole sein?
 
 ## MAP WORLD MAP CONFIG ##
 wynntils.config.map.world_map.display_path=Karte/
@@ -109,7 +109,7 @@ wynntils.config.map.textures.minimap_style.description=Wie soll die Textur der M
 wynntils.config.map.textures.pointer_style.display_name=Zeigerstil
 wynntils.config.map.textures.pointer_style.description=Wie soll die Textur des Zeigers sein?
 wynntils.config.map.textures.pointer_color.display_name=Zeigerfarbe
-wynntils.config.map.textures.pointer_color.description=Welche Farbe soll der Zeiger haven?\n\n§aKlicke auf das Farbfeld, um das Farbrad zu öffnen.
+wynntils.config.map.textures.pointer_color.description=Welche Farbe soll der Zeiger haben?\n\n§aKlicke auf das Farbfeld, um das Farbrad zu öffnen.
 
 ## MAP TEXTURES TEXTURE TYPE ENUM CONFIG ##
 wynntils.config.map.textures.enum.texture_type.paper=Papier
@@ -127,7 +127,7 @@ wynntils.config.map.textures.enum.pointer_type.triangle=Dreieck
 ## MAP WAYPOINTS CONFIG ##
 wynntils.config.map.waypoints.display_path=Karte/
 wynntils.config.map.waypoints.compass_marker.display_name=Kompassmarkierung
-wynntils.config.map.waypoints.compass_marker.description=Sollte auf der Karte markiert sein, wohin der Kompass gerade zeigt?
+wynntils.config.map.waypoints.compass_marker.description=Soll auf der Karte markiert sein, wohin der Kompass gerade zeigt?
 
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Musik
@@ -154,7 +154,7 @@ wynntils.config.questbook.scan_discoveries.description=Sollen Entdeckungen vom Q
 ## RICH PRESENCE CONFIG ##
 wynntils.config.richpresence.display_path=Rich Presence
 wynntils.config.richpresence.show_information.display_name=Klasseninfo anzeigen
-wynntils.config.richpresence.show_information.description=Soll Rich Presence grundlegende Informationen zu der von Ihnen verwendeten Klasse anzeigen?
+wynntils.config.richpresence.show_information.description=Soll Rich Presence grundlegende Informationen zu deiner aktuellen Klasse anzeigen?
 wynntils.config.richpresence.enable.display_name=Rich Presence aktivieren
 wynntils.config.richpresence.enable.description=Soll der Mod Rich Presence für Discord aktivieren?
 
@@ -185,7 +185,7 @@ wynntils.config.utils.highlight_on_hotbar.description=Soll die Markierung von Ra
 wynntils.config.utils.war.display_path=Krieg
 wynntils.config.utils.war.entity_filter.display_name=Entitätsfilter
 wynntils.config.utils.war.entity_filter.description=Sollte das Namensschild von Mobs in War Servern versteckt sein?
-wynntils.config.utils.war.warrer_health_bar.display_name=Should the health bar of other players in a war server be displayed above their heads? aktivieren
+wynntils.config.utils.war.warrer_health_bar.display_name=Gesundheit anderer Spieler
 wynntils.config.utils.war.warrer_health_bar.description=Soll die Gesundheitsleiste anderer Spieler in einem War-Server über ihren Köpfen angezeigt werden?
 
 ## UTILITIES ITEM HIGHLIGHTS CONFIG ##
@@ -193,7 +193,7 @@ wynntils.config.utils.item_highlights.display_path=Eigenschaften/Besonderheiten
 wynntils.config.utils.item_highlights.ingredient_filter.display_name=Nach Zutaten filtern
 wynntils.config.utils.item_highlights.ingredient_filter.description=Soll ein Filter für Zutaten und gecraftete Gegenstände angezeigt werden?
 wynntils.config.utils.item_highlights.highlight_container.display_name=Markierung in Containern
-wynntils.config.utils.item_highlights.highlight_container.description=Sollen Gegenstände in Containern nach ihrer Seltenheit markiert werden? (Truhen, Bank usw.)
+wynntils.config.utils.item_highlights.highlight_container.description=Sollen Gegenstände in Containern entsprechend ihrer Seltenheit markiert werden? (Truhen, Bank usw.)
 wynntils.config.utils.item_highlights.highlight_inventory.display_name=Markierung im Inventar
 wynntils.config.utils.item_highlights.highlight_inventory.description=Sollen Gegenstände entsprechend ihrer Seltenheit in deinem Inventar markiert werden?
 wynntils.config.utils.item_highlights.highlight_accessory.display_name=Zubehör markieren
@@ -298,9 +298,9 @@ wynntils.config.overlay.health.enum.health_vignette_effect.static=Statisch
 wynntils.config.overlay.health.enum.health_vignette_effect.growing=Wachsend
 
 ## OVERLAYS MANA CONFIG ##
-wynntils.config.overlay.mana.display_path=Overlays/Manaanleiste
-wynntils.config.overlay.mana.texture.display_name=Textur der Manaanleiste
-wynntils.config.overlay.mana.texture.description=Welche Textur soll für die Manaanleiste verwendet werden?
+wynntils.config.overlay.mana.display_path=Overlays/Manaleiste
+wynntils.config.overlay.mana.texture.display_name=Textur der Manaleiste
+wynntils.config.overlay.mana.texture.description=Welche Textur soll für die Manaleiste verwendet werden?
 wynntils.config.overlay.mana.animation_speed.display_name=Animationsgeschwindigkeit
 wynntils.config.overlay.mana.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
 wynntils.config.overlay.mana.text_shadow.display_name=Textschatten
@@ -324,7 +324,7 @@ wynntils.config.overlay.hotbar.texture.display_name=Hotbar-Textur
 wynntils.config.overlay.hotbar.texture.description=Welche Textur soll für die Hotbar verwendet werden?
 
 ## OVERLAYS HOTBAR HOTBAR TEXTURE ENUM CONFIG ##
-wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=Resource Pack
+wynntils.config.overlay.hotbar.enum.hotbar_texture.resource_pack=Resourcen-Paket
 wynntils.config.overlay.hotbar.enum.hotbar_texture.wynn=Wynn
 
 ## OVERLAYS TOAST CONFIG ##
@@ -450,12 +450,12 @@ wynntils.config.overlay.ticker.redir.soul_point.description=Sollen Meldungen zum
 wynntils.config.overlay.ticker.territory.display_path=Überlagerungen/Nachrichtenticker/änderung
 wynntils.config.overlay.ticker.territory.enable.display_name=Gebietsänderung aktivieren
 wynntils.config.overlay.ticker.territory.enable.description=Sollen Gebietsänderungsmeldungen im Spiel-Update-Ticker angezeigt werden?
-wynntils.config.overlay.ticker.territory.enter.display_name=Gebietseintrag aktivieren
-wynntils.config.overlay.ticker.territory.enter.description=Sollen Gebietsnachrichten im Spiel-Update-Ticker angezeigt werden?
-wynntils.config.overlay.ticker.territory.leave.display_name=Territory Leave aktivieren
-wynntils.config.overlay.ticker.territory.leave.description=Soll das Territorium im Spiel-Update-Ticker Nachrichten hinterlassen?
+wynntils.config.overlay.ticker.territory.enter.display_name=Gebiet betreten aktivieren
+wynntils.config.overlay.ticker.territory.enter.description=Sollen "Gebiet betreten" Nachrichten im Spiel-Update-Ticker angezeigt werden?
+wynntils.config.overlay.ticker.territory.leave.display_name=Gebiet verlassen aktivieren
+wynntils.config.overlay.ticker.territory.leave.description=Sollen "Gebiet verlassen" Nachrichten im Spiel-Update-Ticker angezeigt werden?
 wynntils.config.overlay.ticker.territory.music_change.display_name=Musikänderung aktivieren
-wynntils.config.overlay.ticker.territory.music_change.description=Sollen im Game-Update-Ticker Meldungen zu Musikänderungen angezeigt werden?\n\n§8Dies hat keine Auswirkung, wenn das Musikmodul deaktiviert ist.
+wynntils.config.overlay.ticker.territory.music_change.description=Sollen im Spiel-Update-Ticker Meldungen zu Musikänderungen angezeigt werden?\n\n§8Dies hat keine Auswirkung, wenn das Musikmodul deaktiviert ist.
 wynntils.config.overlay.ticker.territory.enter_format.display_name=Gebiet betreten Nachrichtenformat
 wynntils.config.overlay.ticker.territory.enter_format.description=Was soll das Format von Nachrichten beim Betreten eines Gebietes sein?
 wynntils.config.overlay.ticker.territory.leave_format.display_name=Gebiet verlassen Nachrichtenformat
@@ -474,9 +474,9 @@ wynntils.config.overlay.territoryfeed.enabled.display_name=Gebietsnachrichten
 wynntils.config.overlay.territoryfeed.enabled.description=Soll der Gebietsfeed angezeigt werden?
 wynntils.config.overlay.territoryfeed.animation_length.display_name=Animationslänge
 wynntils.config.overlay.territoryfeed.animation_length.description=Wie lange (in Sekunden) sollen Nachrichten im Gebiets-Feed angezeigt werden?
-wynntils.config.overlay.territoryfeed.display_mode.display_name=Territory Messages Mode
+wynntils.config.overlay.territoryfeed.display_mode.display_name=Gebietsnachrichtenmodus
 wynntils.config.overlay.territoryfeed.display_mode.description=Welche Nachrichten sollen im Gebiets-Feed angezeigt werden?\n\nNormal: Alle Gebietsnachrichten anzeigen.\n\nEigene Gilde unterscheiden: Alle Gebietsnachrichten, aber Nachrichten zu deiner Gilde anzeigen wird in verschiedenen Farben angezeigt. (§2Gewonnenes Gebiet §r& §4Verlorenes Gebiet§r)\n\nNur eigene Gilde: Zeigt nur Gebietsnachrichten an, die deine Gilde betreffen.
-wynntils.config.overlay.territoryfeed.short_message.display_name=Shorten Messages
+wynntils.config.overlay.territoryfeed.short_message.display_name=Nachrichten kürzen
 wynntils.config.overlay.territoryfeed.short_message.description=Sollen Gebiets-Feed-Nachrichten gekürzt werden?
 wynntils.config.overlay.territoryfeed.guild_tag.display_name=Gilden-Tags verwenden
 wynntils.config.overlay.territoryfeed.guild_tag.description=Sollen Gilden-Tags anstelle von Namen angezeigt werden?
@@ -906,7 +906,7 @@ wynntils.utilities.overlays.hotbar.display_name=Hotbar
 wynntils.utilities.overlays.leveling.display_name=Leveling Helfer
 
 ## MANA BAR OVERLAY ##
-wynntils.utilities.overlays.mana_bar.display_name=Manaanleiste
+wynntils.utilities.overlays.mana_bar.display_name=Manaleiste
 
 ## TERRITORY FEED OVERLAY ##
 wynntils.utilities.overlays.territory_feed.display_name=Gebietsupdates
