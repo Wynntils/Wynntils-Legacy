@@ -132,7 +132,7 @@ wynntils.config.map.waypoints.compass_marker.description=Soll auf der Karte mark
 ## MUSIC CONFIG ##
 wynntils.config.music.display_path=Musik
 wynntils.config.music.allow_music.display_name=Musiksystem
-wynntils.config.music.allow_music.description=Sollte das Musiksystem von Wynncraft durch das von Wynntils ersetzt werden?
+wynntils.config.music.allow_music.description=Soll das Musiksystem von Wynncraft durch das von Wynntils ersetzt werden?
 wynntils.config.music.volume.display_name=Basislautstärke
 wynntils.config.music.volume.description=Wie laut sollen alle Soundtracks sein?
 wynntils.config.music.background_volume.display_name=Hintergrundvolumen
@@ -141,7 +141,7 @@ wynntils.config.music.background_volume.description=Wie laut soll der Soundtrack
 ## QUESTBOOK CONFIG ##
 wynntils.config.questbook.display_path=Questbuch
 wynntils.config.questbook.allow_questbook.display_name=Erlaube Questbuch von Wynntils
-wynntils.config.questbook.allow_questbook.description=Sollte das Questbuch von Wynncraft durch das von Wynntils ersetzt werden?
+wynntils.config.questbook.allow_questbook.description=Soll das Questbuch von Wynncraft durch das von Wynntils ersetzt werden?
 wynntils.config.questbook.compass_follow.display_name=Zeige den Kompass auf den Queststandort
 wynntils.config.questbook.compass_follow.description=Soll der Kompass auf die angegebenen Koordinaten der Quests zeigen?
 wynntils.config.questbook.search_click.display_name=Suchfeld erfordert Klicken
@@ -184,7 +184,7 @@ wynntils.config.utils.highlight_on_hotbar.description=Soll die Markierung von Ra
 ## UTILITIES WAR CONFIG ##
 wynntils.config.utils.war.display_path=Krieg
 wynntils.config.utils.war.entity_filter.display_name=Entitätsfilter
-wynntils.config.utils.war.entity_filter.description=Sollte das Namensschild von Mobs in War Servern versteckt sein?
+wynntils.config.utils.war.entity_filter.description=Soll das Namensschild von Mobs in War Servern versteckt sein?
 wynntils.config.utils.war.warrer_health_bar.display_name=Gesundheit anderer Spieler
 wynntils.config.utils.war.warrer_health_bar.description=Soll die Gesundheitsleiste anderer Spieler in einem War-Server über ihren Köpfen angezeigt werden?
 
@@ -275,7 +275,7 @@ wynntils.config.overlay.health.animation_speed.description=Wie schnell soll die 
 wynntils.config.overlay.health.text_shadow.display_name=Textschatten
 wynntils.config.overlay.health.text_shadow.description=Wie soll der Textschatten aussehen?
 wynntils.config.overlay.health.health_vignette.display_name=Vignette mit niedriger Gesundheit
-wynntils.config.overlay.health.health_vignette.description=Sollte eine rote Vignette angezeigt werden, wenn deine Gesundheit niedrig ist?
+wynntils.config.overlay.health.health_vignette.description=Soll eine rote Vignette angezeigt werden, wenn deine Gesundheit niedrig ist?
 wynntils.config.overlay.health.health_vignette_threshold.display_name=Unterer Gesundheitsschwellenwert
 wynntils.config.overlay.health.health_vignette_threshold.description=Bei wie viel Prozent der Gesundheit soll eine rote Vignette angezeigt werden?
 wynntils.config.overlay.health.health_vignette_effect.display_name=Animation bei niedriger Gesundheit
@@ -362,7 +362,7 @@ wynntils.config.overlay.exp.enum.exp_texture.c=C
 ## OVERLAYS BUBBLES CONFIG ##
 wynntils.config.overlay.bubbles.display_path=Overlays/Luftblasen
 wynntils.config.overlay.bubbles.texture.display_name=Luftblasen-Textur
-wynntils.config.overlay.bubbles.texture.description=Welche Textur sollte für die Erfahrungleiste verwendet werden, wenn sie als Luftmesser fungiert?
+wynntils.config.overlay.bubbles.texture.description=Welche Textur soll für die Erfahrungleiste verwendet werden, wenn sie als Luftmesser fungiert?
 wynntils.config.overlay.bubbles.animation_speed.display_name=Animationsgeschwindigkeit
 wynntils.config.overlay.bubbles.animation_speed.description=Wie schnell soll die Animation abgespielt werden?\n\n§8Bei 0 wird sie sofort angezeigt.
 wynntils.config.overlay.bubbles.text_shadow.display_name=Textschatten
@@ -421,7 +421,7 @@ wynntils.config.overlay.ticker.inv.enable.description=Sollen Nachrichten im Game
 wynntils.config.overlay.ticker.inv.update_rate.display_name=Inventar-voll Nachrichtenrate
 wynntils.config.overlay.ticker.inv.update_rate.description=Wie oft soll die Meldung "Inventar voll" (in Sekunden) im Nachrichtenticker angezeigt werden?
 wynntils.config.overlay.ticker.inv.format.display_name=Inventar-voll Nachrichtenformat
-wynntils.config.overlay.ticker.inv.format.description=Welche Meldung sollte angezeigt werden, wenn dein Inventar voll ist?
+wynntils.config.overlay.ticker.inv.format.description=Welche Meldung soll angezeigt werden, wenn dein Inventar voll ist?
 
 ## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
 wynntils.config.overlay.ticker.redir.display_path=Overlays/Nachrichtenticker/Umleitung
