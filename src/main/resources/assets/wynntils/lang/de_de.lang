@@ -145,7 +145,7 @@ wynntils.config.questbook.allow_questbook.description=Sollte das Questbuch von W
 wynntils.config.questbook.compass_follow.display_name=Zeige den Kompass auf den Queststandort
 wynntils.config.questbook.compass_follow.description=Soll der Kompass auf die angegebenen Koordinaten der Quests zeigen?
 wynntils.config.questbook.search_click.display_name=Suchfeld erfordert Klicken
-wynntils.config.questbook.search_click.description=Muss vor der Eingabe auf die Suchleiste geklickt werden oder ist die die Suchleiste unmittelbar nach dem Öffnen des Questbuchs aktiv?
+wynntils.config.questbook.search_click.description=Muss vor der Eingabe auf die Suchleiste geklickt werden oder ist die Suchleiste unmittelbar nach dem Öffnen des Questbuchs aktiv?
 wynntils.config.questbook.fuzzy_search.display_name=Fuzzy-Suche
 wynntils.config.questbook.fuzzy_search.description=Soll ein anderer Suchalgorithmus verwendet werden, mit dem nach Akronymen und Abkürzungen gesucht werden kann?
 wynntils.config.questbook.scan_discoveries.display_name=Erkennungen scannen
@@ -688,7 +688,7 @@ wynntils.map.ui.world_map.help.line_1=STRG, um Gebiete anzuzeigen
 wynntils.map.ui.world_map.help.line_2=Klicke mit der linken Maustaste auf den Wegpunkt, um den Kompass Zielpunkt dort zu platzieren
 wynntils.map.ui.world_map.help.line_3=Klicke mit der mittleren Maustaste, um den Kompass Zielpunkt zu platzieren
 wynntils.map.ui.world_map.help.line_4=Doppelklicke auf den Kompass Zielpunkt, um dort einen Wegpunkt zu erstellen
-wynntils.map.ui.world_map.help.line_5=Rechtsklick, um die Ansicht auf den den Spieler zu zentrieren
+wynntils.map.ui.world_map.help.line_5=Rechtsklick, um die Ansicht auf den Spieler zu zentrieren
 
 ## WORLD MAP SETTINGS UI ##
 wynntils.map.ui.world_map_settings.buttons.cancel=Abbrechen
