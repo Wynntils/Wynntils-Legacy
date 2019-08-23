@@ -28,7 +28,6 @@ public enum ReflectionFields {
 
     ReflectionFields(Class<?> holdingClass, String... values) {
         this.field = ReflectionHelper.findField(holdingClass, values);
-        this.field.setAccessible(true);
     }
 
     public Object getValue(Object parent) {

@@ -452,7 +452,7 @@ public class ChatOverlay extends GuiNewChat {
             .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RESET + TextFormatting.RED + "Invalid Format" + TextFormatting.RESET + TextFormatting.DARK_GRAY + "] ", ""));
     }
 
-    public class GroupedChatLine extends ChatLine {
+    public static class GroupedChatLine extends ChatLine {
         int groupId;
         public GroupedChatLine(int updateCounterCreatedIn, ITextComponent lineStringIn, int chatLineIDIn, int groupId) {
             super(updateCounterCreatedIn, lineStringIn, chatLineIDIn);
