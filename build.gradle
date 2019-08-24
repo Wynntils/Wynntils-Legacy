@@ -43,7 +43,7 @@ configurations {
 }
 
 dependencies {
-    embed fileTree(dir: 'lib', include: ['*.jar'])
+    embed "javazoom:jlayer:1.0.1"
 }
 
 processResources {
