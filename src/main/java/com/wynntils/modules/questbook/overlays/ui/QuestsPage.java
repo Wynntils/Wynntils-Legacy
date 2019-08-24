@@ -239,30 +239,25 @@ public class QuestsPage extends QuestBookPage {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     String url = "https://wynncraft.gamepedia.com/";
+                    String path = overQuest.getName().replace("À", "").trim();
                     //Link Overrides
-                    if (overQuest.getName().equals("The House of Twain")) {
-                        url += "The_House_of_Twain_(Quest)";
-                    } else if (overQuest.getName().equals("Tower of Ascension")) {
-                        url += "Tower_of_Ascension_(Quest)";
-                    } else if (overQuest.getName().equals("The Qira Hive")) {
-                        url += "The_Qira_Hive_(Quest)";
-                    } else if (overQuest.getName().equals("The Realm of Light")) {
-                        url += "The_Realm_of_Light_(Quest)";
-                    } else if (overQuest.getName().equals("Temple of the Legends")) {
-                        url += "Temple_of_the_Legends_(Quest)";
-                    } else if (overQuest.getName().equals("Taproot")) {
-                        url += "Taproot_(Quest)";
-                    } else if (overQuest.getName().equals("The Passage")) {
-                        url += "The_Passage_(Quest)";
-                    } else if (overQuest.getName().equals("Zhight Island")) {
-                        url += "Zhight_Island_(Quest)";
-                    } else if (overQuest.getName().equals("The Tower of Amnesia")) {
-                        url += "The_Tower_of_Amnesia_(Quest)";
-                    } else if (overQuest.getName().equals("Pit of the Dead")) {
-                        url += "Pit_of_the_Dead_(Quest)";
-                    } else {
-                        url += URLEncoder.encode(overQuest.getName().replace(" ", "_").replace("À", ""), "UTF-8");
+                    switch (path) {
+                        case "The House of Twain":
+                        case "Tower of Ascension":
+                        case "The Qira Hive":
+                        case "The Realm of Light":
+                        case "Temple of the Legends":
+                        case "Taproot":
+                        case "The Passage":
+                        case "Zhight Island":
+                        case "The Tower of Amnesia":
+                        case "Pit of the Dead":
+                            path += " (Quest)";
+                            break;
+                        default:
+                            break;
                     }
+                    url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
                     try {
                         Desktop.getDesktop().browse(new URI(url));
                     } catch (Exception ignored) {
