@@ -239,10 +239,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_TAB) {
-            List<GuiTextField> tabList = Arrays.asList(
-                    nameField, colorWheel.textBox.textField
-            );
-            Utils.tab(tabList);
+            Utils.tab(nameField, colorWheel.textBox.textField);
             return;
         }
         super.keyTyped(typedChar, keyCode);

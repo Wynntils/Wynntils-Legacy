@@ -50,7 +50,7 @@ public class ChangelogUI extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        renderer.beginGL(0, 0);
+        ScreenRenderer.beginGL(0, 0);
 
         float middleX = width/2f; float middleY = height/2f;
 
@@ -62,7 +62,7 @@ public class ChangelogUI extends GuiScreen {
         renderer.drawRect(new CustomColor(0.917f, 0.8666f, 0.760f), (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
 
         //text area
-        renderer.createMask(Textures.Masks.full, middleX - 110, middleY - 71, middleX + 95, middleY + 84, 10, 10, 11, 11);
+        ScreenRenderer.createMask(Textures.Masks.full, middleX - 110, middleY - 71, middleX + 95, middleY + 84, 10, 10, 11, 11);
         float scrollPercent = scrollbarPosition/(118f - scrollbarSize);
 
         int textX = (int)middleX - 105;
@@ -75,7 +75,7 @@ public class ChangelogUI extends GuiScreen {
             baseY += 10;
         }
 
-        renderer.endGL();
+        ScreenRenderer.endGL();
     }
 
     public void updateScrollbarPosition(boolean down) {

@@ -15,7 +15,7 @@ public class RichPresenceConfig extends SettingsClass {
 
     @Setting(displayName = "Show Class Info", description = "Should Rich Presence display basic information about the class you're using?")
     public boolean showUserInformation = true;
-    
+
     @Setting(displayName = "Enable Rich Presence", description = "Should the mod enable Rich Presence on Discord?")
     public boolean enableRichPresence = true;
 

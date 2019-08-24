@@ -32,7 +32,7 @@ public class CommandResponse {
     public CommandResponse(String command, BiConsumer<Matcher, ITextComponent> whenReceive, Pattern regex) {
         this.command = command; this.whenReceive = whenReceive; this.regex = regex;
     }
-    
+
     public CommandResponse setChatType(ChatType chatType) {
         this.chatType = chatType;
 

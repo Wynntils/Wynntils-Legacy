@@ -249,10 +249,7 @@ public class FakeInventory {
 
         items.clear();
 
-        List<ItemStack> stacks = e.getPacket().getItemStacks();
-        for(int i = 0; i < stacks.size(); i++) {
-            items.add(stacks.get(i));
-        }
+        items.addAll(e.getPacket().getItemStacks());
 
         if(onReceiveItems != null) onReceiveItems.accept(this);
 

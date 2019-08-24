@@ -51,7 +51,7 @@ public class ServerEvents implements Listener {
                     }
                 }
             }
-            
+
             currentLevel = ModCore.mc().player.experienceLevel;
             ServerEvents.forceUpdate = false;
 
@@ -61,7 +61,7 @@ public class ServerEvents implements Listener {
                     RichPresenceModule.getModule().getData().setUnknownLocation(false);
 
                     classUpdate = false;
-                    
+
                     if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
 
                     if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
@@ -124,7 +124,7 @@ public class ServerEvents implements Listener {
     }
 
     public static boolean classUpdate = false;
-    
+
     public static boolean forceUpdate = false;
 
     public static int currentLevel = 0;

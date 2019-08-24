@@ -172,7 +172,7 @@ public class NametagManager {
             if(scale != 1) scale(scale, scale, scale);
             verticalShift = (int)(verticalShift/scale);
 
-            renderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
+            ScreenRenderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
             {
                 //positions
                 translate(x / scale, y / scale, z / scale); //translates to the correct postion
@@ -239,7 +239,7 @@ public class NametagManager {
                 disableBlend();
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
-            renderer.endGL();
+            ScreenRenderer.endGL();
         }
         popMatrix();
     }

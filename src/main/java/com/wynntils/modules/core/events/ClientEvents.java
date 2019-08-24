@@ -121,8 +121,6 @@ public class ClientEvents implements Listener {
 
     /**
      * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
-     * 
-     * @param e
      */
     @SubscribeEvent
     public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {

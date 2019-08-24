@@ -123,7 +123,7 @@ public class SettingsManager {
                 return new CustomColor(obj.get("r").getAsFloat(), obj.get("g").getAsFloat(), obj.get("b").getAsFloat(), obj.get("a").getAsFloat());
             }
 
-            String rgba[] = json.getAsString().replace("rgba(", "").replace(")", "").split(",");
+            String[] rgba = json.getAsString().replace("rgba(", "").replace(")", "").split(",");
 
             return new CustomColor(Float.valueOf(rgba[0]), Float.valueOf(rgba[1]), Float.valueOf(rgba[2]), Float.valueOf(rgba[3]));
         }

@@ -130,7 +130,7 @@ public class MapConfig extends SettingsClass {
             }
 
             public boolean isTierAboveThis(String testTier) {
-                ArrayList<String> allowedTiers = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                ArrayList<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
                 return allowedTiers.contains(testTier);
             }
         }

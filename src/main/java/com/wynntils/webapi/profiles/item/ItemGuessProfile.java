@@ -36,7 +36,7 @@ public class ItemGuessProfile {
     public void addItems(String part, HashMap<String, String> rarity) {
         items.put(part, rarity);
     }
-    
+
     public static class ItemGuessDeserializer implements JsonDeserializer<HashMap<?, ?>> {
 
         @Override
@@ -53,7 +53,7 @@ public class ItemGuessProfile {
             }
             return hashMap;
         }
-        
+
     }
 
 }

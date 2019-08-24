@@ -116,16 +116,16 @@ public class QuestManager {
                     int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
                     QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase());
 
-                    String description = "";
+                    StringBuilder description = new StringBuilder();
                     for(int x = 5; x < lore.size(); x++) {
                         if(lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
                             break;
                         }
-                        description = description + TextFormatting.getTextWithoutFormattingCodes(lore.get(x));
+                        description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
                     }
 
                     String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName());
-                    QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description, lore);
+                    QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description.toString(), lore);
                     currentQuestsData.put(displayName, quest);
 
                     if(trackedQuest != null && trackedQuest.getName().equals(displayName)) {
@@ -165,12 +165,12 @@ public class QuestManager {
 
                     int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
-                    String description = "";
+                    StringBuilder description = new StringBuilder();
                     for (int x = 2; x < lore.size(); x ++) {
-                        description = description + TextFormatting.getTextWithoutFormattingCodes(lore.get(x));
+                        description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
                     }
 
-                    currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description, lore, discoveryType));
+                    currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description.toString(), lore, discoveryType));
                 }
 
                 QuestBookPages.DISCOVERIES.getPage().updateSearch();
@@ -214,7 +214,7 @@ public class QuestManager {
     public static QuestInfo getTrackedQuest() {
         return trackedQuest;
     }
-    
+
     /**
      * Returns the current discoveries data
      *

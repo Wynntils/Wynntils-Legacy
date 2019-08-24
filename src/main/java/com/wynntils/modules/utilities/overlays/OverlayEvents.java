@@ -40,12 +40,12 @@ public class OverlayEvents implements Listener {
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
     }
-    
+
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
     }
-    
+
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
         WarTimerOverlay.onTitle(e);

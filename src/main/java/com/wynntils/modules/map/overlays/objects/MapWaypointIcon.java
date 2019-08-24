@@ -6,6 +6,7 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -24,7 +25,7 @@ public class MapWaypointIcon extends MapTextureIcon {
     private static final int texSizeXIndex = 2;
     private static final int texSizeZIndex = 3;
 
-    private static void setSize(WaypointProfile.WaypointType type, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
+    private static void setSize(WaypointType type, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
         assert type.ordinal() < waypointTypesCount;
         int i = type.ordinal() * 4;
         sizeMapping[i + texPosXIndex] = texPosX;
@@ -33,31 +34,29 @@ public class MapWaypointIcon extends MapTextureIcon {
         sizeMapping[i + texSizeZIndex] = texSizeZ;
     }
 
-    private static void initialise() {
-        if (sizeMapping != null) return;
-        waypointTypesCount = WaypointProfile.WaypointType.class.getEnumConstants().length;
+    static {
+        waypointTypesCount = WaypointType.class.getEnumConstants().length;
 
         assert waypointTypesCount == 9 : "If you added a new waypoint type, specify the dimensions here";
 
         sizeMapping = new int[waypointTypesCount * 4];
 
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T1, 136, 35, 154, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T2, 118, 35, 136, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T3,  82, 35, 100, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T4, 100, 35, 118, 53);
-        setSize(WaypointProfile.WaypointType.DIAMOND, 172, 37, 190, 55);
-        setSize(WaypointProfile.WaypointType.FLAG, 154, 36, 172, 54);
-        setSize(WaypointProfile.WaypointType.SIGN, 190, 36, 208, 54);
-        setSize(WaypointProfile.WaypointType.STAR, 208, 36, 226, 54);
-        setSize(WaypointProfile.WaypointType.TURRET, 226, 36, 244, 54);
+        setSize(WaypointType.LOOTCHEST_T1, 136, 35, 154, 53);
+        setSize(WaypointType.LOOTCHEST_T2, 118, 35, 136, 53);
+        setSize(WaypointType.LOOTCHEST_T3,  82, 35, 100, 53);
+        setSize(WaypointType.LOOTCHEST_T4, 100, 35, 118, 53);
+        setSize(WaypointType.DIAMOND, 172, 37, 190, 55);
+        setSize(WaypointType.FLAG, 154, 36, 172, 54);
+        setSize(WaypointType.SIGN, 190, 36, 208, 54);
+        setSize(WaypointType.STAR, 208, 36, 226, 54);
+        setSize(WaypointType.TURRET, 226, 36, 244, 54);
     }
 
     private WaypointProfile wp;
 
     public MapWaypointIcon(WaypointProfile wp) {
-        initialise();
-
-        assert wp.getType().ordinal() < waypointTypesCount : "Invalid enum value in WaypointProfile.WaypointType: " + wp.getType().ordinal();
+        WaypointType type = wp.getType();
+        assert type.ordinal() < waypointTypesCount : "Invalid enum value in WaypointType: " + wp.getType().ordinal();
 
         this.wp = wp;
     }
@@ -65,11 +64,11 @@ public class MapWaypointIcon extends MapTextureIcon {
     /**
      * Return a MapWaypointIcon that can render a WaypointType being free from position information
      */
-    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type) {
+    public static MapWaypointIcon getFree(WaypointType type) {
         return getFree(type, null);
     }
 
-    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type, CustomColor color) {
+    public static MapWaypointIcon getFree(WaypointType type, CustomColor color) {
         return new MapWaypointIcon(new WaypointProfile("", 0, 0, 0, color, type, 0));
     }
 

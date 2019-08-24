@@ -119,7 +119,7 @@ public class RichProfile {
 
         rpc.Discord_UpdatePresence(richPresence);
     }
-    
+
     /**
      * update user RichPresence
      *

@@ -48,11 +48,7 @@ public class WorldMapSettingsUI extends GuiScreen {
         for (GuiButton b: this.buttonList) {
             if (b.id < 100) {
                 b.y += offsetY;
-                if (b.y < 10 || b.y > this.height - 50) {
-                    b.visible = false;
-                } else {
-                    b.visible = true;
-                }
+                b.visible = 10 <= b.y && b.y <= this.height - 50;
             }
         }
         int topY = this.buttonList.get(0).y;

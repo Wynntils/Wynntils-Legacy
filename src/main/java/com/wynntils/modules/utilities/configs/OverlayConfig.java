@@ -362,11 +362,11 @@ public class OverlayConfig extends SettingsClass {
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
-    
+
     @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
-        
+
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }

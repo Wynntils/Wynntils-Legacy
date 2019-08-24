@@ -412,7 +412,7 @@ public class ItemProfile {
             } else {
                 Item result = null;
                 Block resultBlock = null;
-                
+
                 if(accessoryType != null) {
                     if (accessoryType.equalsIgnoreCase("Necklace")) {
                         resultBlock = Blocks.GLASS_PANE;
@@ -636,7 +636,7 @@ public class ItemProfile {
                 default:
                     break;
             }
-            
+
             if (description.get(description.size() - 1).equals(" ")) {
                 description.remove(description.size() - 1);
             }
@@ -727,7 +727,7 @@ public class ItemProfile {
 
     }
 
-    public static enum ItemRarity {
+    public enum ItemRarity {
 
         NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), MYTHIC(5);
 

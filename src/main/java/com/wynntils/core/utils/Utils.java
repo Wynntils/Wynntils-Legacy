@@ -39,6 +39,7 @@ import java.math.BigInteger;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -431,19 +432,19 @@ public class Utils {
 
     public static String[] wrapText(String s, int max) {
         String[] stringArray = s.split(" ");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int length = 0;
 
         for (String string: stringArray) {
             if (length + string.length() >= max) {
-                result += "|";
+                result.append("|");
                 length = 0;
             }
-            result += string + " ";
+            result.append(string).append(" ");
             length += string.length() + 1; //+1 for the space following
         }
 
-        return result.split("\\|");
+        return result.toString().split("\\|");
     }
 
     public static String getPlayerHPBar(EntityPlayer entityPlayer) {
@@ -506,7 +507,7 @@ public class Utils {
             if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
         });
-        
+
         serverSelector.open();
     }
 
@@ -632,6 +633,10 @@ public class Utils {
     public static int utf8Length(String s) {
         if (s == null) return 0;
         return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
+    }
+
+    public static void tab(GuiTextField... tabList) {
+        tab(Arrays.asList(tabList));
     }
 
     public static void tab(List<GuiTextField> tabList) {

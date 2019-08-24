@@ -61,7 +61,7 @@ public class ItemLockOverlay implements Listener {
 
             ScreenRenderer r = new ScreenRenderer();
             RenderHelper.disableStandardItemLighting();
-            r.scale(0.5f);
+            ScreenRenderer.scale(0.5f);
             r.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
             ScreenRenderer.endGL();
         }
