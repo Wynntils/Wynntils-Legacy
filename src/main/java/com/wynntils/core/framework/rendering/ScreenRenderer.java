@@ -6,7 +6,6 @@ package com.wynntils.core.framework.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
-import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,7 +13,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -63,7 +62,7 @@ public class ScreenRenderer {
                 fontRenderer.onResourceManagerReload(mc.getResourceManager());
             }
         if(itemRenderer == null)
-            itemRenderer = (RenderItem)ReflectionFields.ItemRenderer_itemRenderer.getValue(Minecraft.getMinecraft().getItemRenderer());
+            itemRenderer = Minecraft.getMinecraft().getRenderItem();
     }
 
     /** void beginGL
