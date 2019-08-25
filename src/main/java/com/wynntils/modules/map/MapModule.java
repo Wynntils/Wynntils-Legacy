@@ -14,6 +14,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointOverviewUI;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
