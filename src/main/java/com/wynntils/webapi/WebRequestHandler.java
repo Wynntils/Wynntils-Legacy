@@ -30,6 +30,7 @@ public class WebRequestHandler {
     public WebRequestHandler() {}
 
     public static class Request {
+
         private String url;
         private String id;
         private int parallelGroup = 0;
@@ -128,6 +129,7 @@ public class WebRequestHandler {
                 }
             }
             requests.add(req);
+
             if (req.parallelGroup > maxParallelGroup) {
                 maxParallelGroup = req.parallelGroup;
             }
@@ -151,34 +153,36 @@ public class WebRequestHandler {
     private Thread dispatch(boolean async) {
         ArrayList<Request>[] groupedRequests;
         boolean anyRequests = false;
+
         synchronized (this) {
-            @SuppressWarnings("unchecked")
-            ArrayList<Request>[] suppressWarning = (ArrayList<Request>[]) new ArrayList[maxParallelGroup + 1];
-            groupedRequests = suppressWarning;
+            groupedRequests = (ArrayList<Request>[]) new ArrayList[maxParallelGroup + 1];
 
             for (int i = 0; i < maxParallelGroup + 1; ++i) {
                 groupedRequests[i] = new ArrayList<>();
             }
 
             for (Request request : requests) {
-                if (request.currentlyHandling == 0) {
-                    anyRequests = true;
-                    request.currentlyHandling = 1;
-                    groupedRequests[request.parallelGroup].add(request);
-                }
+                if(request.currentlyHandling != 0) continue;
+
+                anyRequests = true;
+                request.currentlyHandling = 1;
+                groupedRequests[request.parallelGroup].add(request);
             }
+
             maxParallelGroup = 0;
         }
 
         if (anyRequests) {
             if (!async) {
                 handleDispatch(++dispatchId, groupedRequests, 0);
-            } else {
-                Thread t = new Thread(() -> handleDispatch(++dispatchId, groupedRequests, 0));
-                t.start();
-                return t;
+                return null;
             }
+
+            Thread t = new Thread(() -> handleDispatch(++dispatchId, groupedRequests, 0));
+            t.start();
+            return t;
         }
+
         return null;
     }
 
@@ -196,7 +200,7 @@ public class WebRequestHandler {
                     Throwable readException = null;
                     try {
                         URLConnection st = new URL(req.url).openConnection();
-                        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                        st.setRequestProperty("User-Agent", "WynntilsClient v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
                         st.setConnectTimeout(req.timeout);
                         st.setReadTimeout(req.timeout);
                         byte[] data;
@@ -269,15 +273,17 @@ public class WebRequestHandler {
                     return false;
                 });
             }
-        } else {
-            nextDispatch(dispatchId, groupedRequests, currentGroupIndex);
+
+            return;
         }
 
+        nextDispatch(dispatchId, groupedRequests, currentGroupIndex);
     }
 
     private static void moveInvalidCache(File from) {
         File invalid = new File(from.getAbsolutePath() + ".invalid");
         FileUtils.deleteQuietly(invalid);
+
         try {
             from.renameTo(invalid);
         } catch (Exception ignore) {}
@@ -286,15 +292,16 @@ public class WebRequestHandler {
     private void nextDispatch(int dispatchId, ArrayList<Request>[] groupedRequests, int currentGroupIndex) {
         if (currentGroupIndex != groupedRequests.length - 1) {
             handleDispatch(dispatchId, groupedRequests, currentGroupIndex + 1);
-        } else {
-            // Last group; Remove handled requests
-            HashSet<String> ids = new HashSet<>();
-            for (ArrayList<Request> requests : groupedRequests) for (Request request : requests) {
-                ids.add(request.id);
-            }
-            synchronized (this) {
-                requests.removeIf(req -> ids.contains(req.id));
-            }
+            return;
+        }
+
+        // Last group; Remove handled requests
+        HashSet<String> ids = new HashSet<>();
+        for (ArrayList<Request> requests : groupedRequests) for (Request request : requests) {
+            ids.add(request.id);
+        }
+        synchronized (this) {
+            requests.removeIf(req -> ids.contains(req.id));
         }
     }
 
