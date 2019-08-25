@@ -434,7 +434,7 @@ public class OverlayConfig extends SettingsClass {
         public String info4Format = "";
 
         @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
-        public Presets preset = Presets.COORDS;
+        public Presets preset = Presets.CLICK_ME;
 
         @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
@@ -442,36 +442,31 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if ("preset".equals(name) && preset.getValue() != null && Minecraft.getMinecraft().currentScreen instanceof SettingsUI) {
-                Utils.copyToClipboard(preset.getValue());
+            if ("preset".equals(name)) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
             }
         }
 
         public enum Presets {
-            CLICK_ME("Click Me", null),
-            COORDS("Coords", "%x% %z% (%y%)"),
+            CLICK_ME("Click me to copy to clipboard", null),
+            COORDS("Coordinates", "%x% %z% (%y%)"),
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),
             CLASS("Class", "%Class%\\nLevel %lvl%"),
-            BALANCE("Balance", "%le%\\xBC\\xB2 %blocks%\\xB2\\xBD %emeralds%\\xB2 (%money%\\xB2)"),
+            BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
             UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB");
 
-            private String name;
-            private String value;
+            public final String displayName;
+            public final String value;
 
-            Presets(String name, String value) {
-                this.name = name;
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
                 this.value = value;
-            }
-
-            @Override
-            public String toString() {
-                return name;
-            }
-
-            public String getValue() {
-                return value;
             }
         }
     }

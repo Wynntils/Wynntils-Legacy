@@ -585,6 +585,9 @@ public class Utils {
 
     private static int doubleClickTime = -1;
 
+    /**
+     * @return Maximum milliseconds between clicks to count as a double click
+     */
     public static int getDoubleClickTime() {
         if (doubleClickTime < 0) {
             Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
@@ -598,6 +601,9 @@ public class Utils {
         return doubleClickTime;
     }
 
+    /**
+     * Write a String, `s`, to the clipboard. Clears if `s` is null.
+     */
     public static void copyToClipboard(String s) {
         if (s == null) {
             clearClipboard();
@@ -622,6 +628,9 @@ public class Utils {
         }, null);
     }
 
+    /**
+     * @return A String read from the clipboard, or null if the clipboard does not contain a string
+     */
     public static String pasteFromClipboard() {
         try {
             return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
@@ -630,15 +639,30 @@ public class Utils {
         }
     }
 
+    /**
+     * @return `s.getBytes("UTF-8").length`, but without encoding the string
+     */
     public static int utf8Length(String s) {
         if (s == null) return 0;
         return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
+    }
+
+    /**
+     * @return `true` if `c` is a valid Unicode code point (in [0, 0x10FFFF] and not a surrogate)
+     */
+    public static boolean isValidCodePoint(int c) {
+                                           /* low surrogates */             /* high surrogates */
+        return 0 <= c && c <= 0x10FFFF && !(0xD800 <= c && c <= 0xDBFF) && !(0xDC00 <= c && c <= 0xDFFF);
     }
 
     public static void tab(GuiTextField... tabList) {
         tab(Arrays.asList(tabList));
     }
 
+    /**
+     * Given a list of text fields, blur the currently focused field and focus the
+     * next one. Focuses the first one if there is no focused field or the last field is focused.
+     */
     public static void tab(List<GuiTextField> tabList) {
         int focusIndex = -1;
         for (int i = 0; i < tabList.size(); ++i) {

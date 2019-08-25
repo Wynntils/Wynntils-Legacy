@@ -77,7 +77,9 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info4Format; }
     }
 
-    private static final Pattern formatRegex = Pattern.compile("%([a-zA-Z_]+|%)%|\\\\(\\\\|n|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}|%)");
+    private static final Pattern formatRegex = Pattern.compile(
+            "%([a-zA-Z_]+|%)%|\\\\([\\\\n%§EBL]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})"
+    );
 
     private static InfoFormatter formatter = new InfoFormatter();
 
@@ -114,7 +116,7 @@ public abstract class InfoOverlay extends Overlay {
             }
         }
 
-        String doSingleFormat(String name) {
+        String doPctFormat(String name) {
             String lowerName = name.toLowerCase();
             switch (lowerName) {
                 case "x": return Integer.toString((int) mc.player.posX);
@@ -179,35 +181,42 @@ public abstract class InfoOverlay extends Overlay {
             }
         }
 
+        String doEscapeFormat(String escaped) {
+            switch (escaped) {
+                case "\\": return "\\";
+                case "n": return "\n";
+                case "%": return "%";
+                case "§": return "&";
+                case "E": return "\u00B2";
+                case "B": return "\u00BD";
+                case "L": return "\u00BC";
+                default:
+                    // xXX, uXXXX, UXXXXXXXX
+                    int codePoint = Integer.parseInt(escaped.substring(1), 16);
+                    if (Utils.isValidCodePoint(codePoint)) {
+                        return new String(new int[]{ codePoint }, 0, 1);
+                    }
+                    return null;
+            }
+        }
+
         String doFormat(String format) {
             StringBuffer sb = new StringBuffer(format.length() + 10);
             Matcher m = formatRegex.matcher(format);
             while (m.find()) {
-                String name = m.group(1);
-                if (name != null) {
-                    String replacement = doSingleFormat(name);
-                    if (replacement == null) {
-                        replacement = m.group(0);
-                    }
-                    m.appendReplacement(sb, replacement);
-                } else {
+                String replacement = null;
+                String group;
+                if ((group = m.group(1)) != null) {
+                    // %name%
+                    replacement = doPctFormat(group);
+                } else if ((group = m.group(2)) != null) {
                     // \escape
-                    String escaped = m.group(2);
-                    switch (escaped) {
-                        case "n":
-                            m.appendReplacement(sb, "\n");
-                            break;
-                        case "\\":
-                            m.appendReplacement(sb, "\\");
-                            break;
-                        case "%":
-                            m.appendReplacement(sb, "%");
-                            break;
-                        default:
-                            // xXX, uXXXX, UXXXXXXXX
-                            m.appendReplacement(sb, new String(new int[]{ Integer.parseInt(escaped.substring(1), 16) }, 0, 1));
-                    }
+                    replacement = doEscapeFormat(group);
                 }
+                if (replacement == null) {
+                    replacement = m.group(0);
+                }
+                m.appendReplacement(sb, replacement);
             }
             m.appendTail(sb);
 
