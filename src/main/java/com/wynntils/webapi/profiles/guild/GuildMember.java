@@ -38,7 +38,7 @@ public class GuildMember {
         return joinedFriendly;
     }
 
-    public static enum Rank {
+    public enum Rank {
 
         RECRUIT,
 

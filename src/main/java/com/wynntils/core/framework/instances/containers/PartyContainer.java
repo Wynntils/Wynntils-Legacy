@@ -6,6 +6,7 @@ package com.wynntils.core.framework.instances.containers;
 
 import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,16 +14,11 @@ import java.util.List;
 /**
  * Contains all the player currently party status
  * also can be called if the player is not on a party
- *
- * BE AWARE THAT THIS THING IS NOT PERFECT SINCE THE DATA IS COLLECTED
- * FROM THE TAB LIST, AND TAB LIST CAN BE INCOMPLETE/MISSING SOME LETTERS
  */
 public class PartyContainer {
 
     HashSet<String> partyMembers = new HashSet<>();
     String owner = "";
-
-    boolean inParty = false;
 
     public PartyContainer() {}
 
@@ -32,38 +28,63 @@ public class PartyContainer {
      * @return if the player is at a party
      */
     public boolean isPartying() {
-        return inParty;
+        return partyMembers.size() != 0;
     }
 
     /**
-     * Don't call this anyways, this is just for framework handling
-     */
-    public void closeParty() {
-        if(!inParty) return;
-
-        partyMembers.clear();
-        owner = "";
-        inParty = false;
-
-        FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyLeave());
-    }
-
-    /**
-     * Add a member to the party
+     * Add a member to the party list
      *
-     * @param username the party username
+     * @param userName the member userName
      */
-    public void addMember(String username) {
-        partyMembers.add(username);
+    public void addMember(String userName) {
+        partyMembers.add(userName);
+
+        FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin(userName, partyMembers.size() == 1));
     }
 
     /**
      * Add multiple members to the party
      *
-     * @param members the list with all the members
+     * @param members the list with all the members that you want to add
      */
     public void addMembers(List<String> members) {
         partyMembers.addAll(members);
+
+        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin(userName, partyMembers.size() == 1)));
+    }
+
+    /**
+     * Remove a member from the party list
+     *
+     * @param userName  the member userName
+     */
+    public void removeMember(String userName) {
+        FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyLeave(userName));
+
+        if (userName.equalsIgnoreCase(Minecraft.getMinecraft().player.getName())) {
+            partyMembers.clear();
+            owner = "";
+            return;
+        }
+
+        partyMembers.remove(userName);
+    }
+
+    /**
+     * Remove multiple members from the party list
+     *
+     * @param members the list with all the members that you want to remove
+     */
+    public void removeMembers(List<String> members) {
+        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyLeave(userName)));
+
+        if (members.contains(Minecraft.getMinecraft().player.getName())) {
+            partyMembers.clear();
+            owner = "";
+            return;
+        }
+
+        partyMembers.removeAll(members);
     }
 
     /**
@@ -73,24 +94,6 @@ public class PartyContainer {
      */
     public void setOwner(String owner) {
         this.owner = owner;
-
-        if(!owner.isEmpty() && !inParty) {
-            inParty = true;
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin());
-        }
-    }
-
-    /**
-     * Used for handling over the framework
-     *
-     * @param owner party owner name
-     * @param members party members list
-     */
-    public void updateParty(String owner, List<String> members) {
-        partyMembers.clear();
-        addMembers(members);
-
-        setOwner(owner);
     }
 
     /**

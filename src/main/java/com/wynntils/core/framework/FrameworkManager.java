@@ -49,7 +49,7 @@ public class FrameworkManager {
         registeredOverlays.put(Priority.HIGH, new ArrayList<>());
         registeredOverlays.put(Priority.HIGHEST, new ArrayList<>());
     }
-    
+
     public static void registerModule(Module module) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
         if(info == null) {

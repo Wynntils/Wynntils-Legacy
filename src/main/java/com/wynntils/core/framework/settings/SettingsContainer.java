@@ -35,8 +35,10 @@ public class SettingsContainer {
                 fields.add(f);
             }
         }
-        if (holder instanceof Overlay) {
-            for(Field f : holder.getClass().getSuperclass().getDeclaredFields()) {
+
+        // Iterate over superclasses until Overlay.class is passed
+        for (Class superclass = holder.getClass().getSuperclass(); Overlay.class.isAssignableFrom(superclass); superclass = superclass.getSuperclass()) {
+            for(Field f : superclass.getDeclaredFields()) {
                 if (!Modifier.isStatic(f.getModifiers())) {
                     fields.add(f);
                 }

@@ -52,6 +52,11 @@ public class UtilitiesModule extends Module {
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
+        registerOverlay(new InfoOverlay._1(), Priority.LOW);
+        registerOverlay(new InfoOverlay._2(), Priority.LOW);
+        registerOverlay(new InfoOverlay._3(), Priority.LOW);
+        registerOverlay(new InfoOverlay._4(), Priority.LOW);
+
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -73,6 +78,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Bubbles.class);
         registerSettings(OverlayConfig.GameUpdate.class);
         registerSettings(OverlayConfig.TerritoryFeed.class);
+        registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);

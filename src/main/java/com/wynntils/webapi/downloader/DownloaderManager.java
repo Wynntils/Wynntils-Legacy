@@ -92,7 +92,7 @@ public class DownloaderManager {
                     pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
                     return;
                 }
-                
+
                 if(!pf.getLocation().exists()) {
                     pf.getLocation().mkdirs();
                 }
@@ -106,7 +106,7 @@ public class DownloaderManager {
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);
 
-                byte data[] = new byte[1024];
+                byte[] data = new byte[1024];
                 long total = 0;
                 int count;
 
@@ -124,7 +124,7 @@ public class DownloaderManager {
                 if(pf.getAction() == DownloadAction.UNZIP) {
                     currentPhase = DownloadPhase.UNZIPPING;
 
-                    byte buffer[] = new byte[1024];
+                    byte[] buffer = new byte[1024];
                     FileInputStream fin = new FileInputStream(fileSaved);
                     ZipInputStream zin = new ZipInputStream(fin);
                     FileChannel channel = fin.getChannel();

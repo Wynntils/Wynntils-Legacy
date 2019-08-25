@@ -14,7 +14,6 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
@@ -128,25 +127,8 @@ public class ClientEvents {
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Leave());
                     PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                 }
-                continue;
-            }
-            if(player.getDisplayName() == null) continue;
-
-            //party handling below
-            if(player.getDisplayName().getUnformattedText().contains("/party create")) {
-                PlayerInfo.getPlayerInfo().getPlayerParty().closeParty();
-                continue;
-            }
-
-            String formatedName = player.getDisplayName().getFormattedText();
-
-            if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
-                if(formatedName.startsWith("§e")) partyMembers.add(Utils.stripColor(formatedName));
-                else if(formatedName.startsWith("§c")) { partyOwner = Utils.stripColor(formatedName); }
             }
         }
-
-        if(!partyOwner.isEmpty() || !partyMembers.isEmpty()) PlayerInfo.getPlayerInfo().getPlayerParty().updateParty(partyOwner, partyMembers);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

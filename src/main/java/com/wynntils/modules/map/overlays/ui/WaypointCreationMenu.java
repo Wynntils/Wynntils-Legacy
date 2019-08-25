@@ -1,7 +1,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
@@ -16,8 +15,12 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class WaypointCreationMenu extends UI {
     private GuiLabel nameFieldLabel;
@@ -56,7 +59,6 @@ public class WaypointCreationMenu extends UI {
     }
 
     // Create a waypoint at a position other than the current player's position
-    // TODO: use this (Maybe double clicking somewhere on the main map would create a waypoint at that position?)
     public WaypointCreationMenu(GuiScreen previousGui, int initialX, int initialZ) {
         this.previousGui = previousGui;
 
@@ -86,11 +88,12 @@ public class WaypointCreationMenu extends UI {
         int visibilityButtonWidth = 100;
         int visibilityButtonHeight = this.height/2 + 40;
         buttonList.add(defaultVisibilityButton = new GuiButton(99, this.width/2 - 3 * visibilityButtonWidth / 2 - 2, visibilityButtonHeight, visibilityButtonWidth, 18, "Default"));
-        buttonList.add(alwaysVisibleButton = new GuiButton(100, this.width/2 - visibilityButtonWidth / 2,visibilityButtonHeight, visibilityButtonWidth, 18, "Always Visible"));
-        buttonList.add(hiddenButton = new GuiButton(101, this.width/2 + visibilityButtonWidth / 2 + 2,visibilityButtonHeight, visibilityButtonWidth, 18, "Hidden"));
+        buttonList.add(alwaysVisibleButton = new GuiButton(100, this.width/2 - visibilityButtonWidth / 2, visibilityButtonHeight, visibilityButtonWidth, 18, "Always Visible"));
+        buttonList.add(hiddenButton = new GuiButton(101, this.width/2 + visibilityButtonWidth / 2 + 2, visibilityButtonHeight, visibilityButtonWidth, 18, "Hidden"));
 
-        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 71, this.height - 80, 45, 18, "Cancel"));
-        buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, this.height - 80, 45, 18, "Save"));
+        int saveButtonHeight = this.height - 80 > visibilityButtonHeight + 20 ? this.height - 80 : this.height - 60;
+        buttonList.add(cancelButton = new GuiButton(102, this.width/2 - 71, saveButtonHeight, 45, 18, "Cancel"));
+        buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, saveButtonHeight, 45, 18, "Save"));
         saveButton.enabled = false;
 
         xCoordField.setText(Integer.toString(initialX));
@@ -111,11 +114,11 @@ public class WaypointCreationMenu extends UI {
         boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
 
         if (!returning) {
-            UIElements.add(colorWheel = new UIEColorWheel(0, 0, this.width / 2, this.height / 2 + 9, 20, 20, true, this::setColor, this));
+            UIElements.add(colorWheel = new UIEColorWheel(0.5f, 0.5f, 0, 9, 20, 20, true, this::setColor, this));
         }
 
         WaypointProfile wp = returning ? wpIcon.getWaypointProfile() : this.wp;
-        CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
+        CustomColor color = wp == null ? null: wp.getColor();
 
         if (wp == null) {
             setWpIcon(WaypointType.FLAG, 0, color);
@@ -229,6 +232,10 @@ public class WaypointCreationMenu extends UI {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_TAB) {
+            Utils.tab(nameField, xCoordField, zCoordField, yCoordField, colorWheel.textBox.textField);
+            return;
+        }
         super.keyTyped(typedChar, keyCode);
         nameField.textboxKeyTyped(typedChar, keyCode);
         xCoordField.textboxKeyTyped(typedChar, keyCode);
@@ -246,8 +253,10 @@ public class WaypointCreationMenu extends UI {
                     getColor(), getWaypointType(), getZoomNeeded()
             );
             if (isUpdatingExisting) {
+                newWp.setGroup(wp.getGroup());
                 MapConfig.Waypoints.INSTANCE.waypoints.set(MapConfig.Waypoints.INSTANCE.waypoints.indexOf(wp), newWp);
             } else {
+                newWp.setGroup(newWp.getType());
                 MapConfig.Waypoints.INSTANCE.waypoints.add(newWp);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
@@ -267,18 +276,18 @@ public class WaypointCreationMenu extends UI {
         }
     }
 
+    private static final Pattern numberRegex = Pattern.compile("0|-?[1-9][0-9]*");
     private void isAllValidInformation() {
-        if (!xCoordField.getText().trim().matches("(-?(?!0)\\d+)|0")) { xCoordField.setTextColor(0xFF6666); } else { xCoordField.setTextColor(0xFFFFFF); }
-        if (!yCoordField.getText().trim().matches("(-?(?!0)\\d+)|0")) { yCoordField.setTextColor(0xFF6666); } else { yCoordField.setTextColor(0xFFFFFF); }
-        if (!zCoordField.getText().trim().matches("(-?(?!0)\\d+)|0")) { zCoordField.setTextColor(0xFF6666); } else { zCoordField.setTextColor(0xFFFFFF); }
-        if (xCoordField.getText().trim().matches("(-?(?!0)\\d+)|0") && yCoordField.getText().trim().matches("(-?(?!0)\\d+)|0") && zCoordField.getText().trim().matches("(-?(?!0)\\d+)|0") && !nameField.getText().isEmpty() && getWaypointType() != null){
-            saveButton.enabled = true;
-        } else {
-            saveButton.enabled = false;
-        }
+        boolean xValid = numberRegex.matcher(xCoordField.getText().trim()).matches();
+        boolean yValid = numberRegex.matcher(yCoordField.getText().trim()).matches();
+        boolean zValid = numberRegex.matcher(zCoordField.getText().trim()).matches();
+        xCoordField.setTextColor(xValid ? 0xFFFFFF : 0xFF6666);
+        yCoordField.setTextColor(yValid ? 0xFFFFFF : 0xFF6666);
+        zCoordField.setTextColor(zValid ? 0xFFFFFF : 0xFF6666);
+        saveButton.enabled = xValid && yValid && zValid && !nameField.getText().isEmpty() && getWaypointType() != null;
     }
 
-    private class WaypointCreationMenuState {
+    private static class WaypointCreationMenuState {
         String nameField;
         String xCoordField;
         String yCoordField;

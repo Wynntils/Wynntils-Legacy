@@ -3,6 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -14,8 +15,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class PathWaypointCreationUI extends WorldMapUI {
@@ -76,14 +80,15 @@ public class PathWaypointCreationUI extends WorldMapUI {
         buttonList.add(resetButton = new GuiButton(3, 22, 69, 60, 18, "Reset"));
         buttonList.add(clearButton = new GuiButton(4, 22, 92, 60, 18, "Clear"));
 
-        if (nameField == null) {
-            nameField = new GuiTextField(0, mc.fontRenderer, this.width - 183, 23, 160, 20);
-            nameField.setText(profile.name);
-            nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width - 218, 30, 40, 10, 0xFFFFFF);
-            nameFieldLabel.addLine("Name");
-        }
+        boolean returning = nameField != null;
+        String name = returning ? nameField.getText() : profile.name;
 
-        if (colorWheel == null) {
+        nameField = new GuiTextField(0, mc.fontRenderer, this.width - 183, 23, 160, 20);
+        nameField.setText(name);
+        nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width - 218, 30, 40, 10, 0xFFFFFF);
+        nameFieldLabel.addLine("Name");
+
+        if (!returning) {
             colorWheel = new UIEColorWheel(1, 0, -168, 46, 20, 20, true, profile::setColor, this);
             colorWheel.setColor(profile.getColor());
         }
@@ -91,12 +96,9 @@ public class PathWaypointCreationUI extends WorldMapUI {
         buttonList.add(hiddenBox = new GuiCheckBox(5, this.width - 143,  72, "Hidden", hidden));  // TODO: check align
         buttonList.add(circularBox = new GuiCheckBox(6, this.width - 83, 72, "Circular", profile.isCircular));
 
-        if (helpText == null) {
-            helpText = new GuiLabel(mc.fontRenderer, 1, 22, this.height - 36, 120, 10, 0xFFFFFF);
-            helpText.addLine("Shift + drag to pan");
-            helpText.addLine("Right click to remove points");
-        }
-
+        helpText = new GuiLabel(mc.fontRenderer, 1, 22, this.height - 36, 120, 10, 0xFFFFFF);
+        helpText.addLine("Shift + drag to pan");
+        helpText.addLine("Right click to remove points");
 
         buttonList.add(addToFirst = new GuiCheckBox(7, this.width - 100, this.height - 47, "Add to start", false));
         buttonList.add(showIconsBox = new GuiCheckBox(8, this.width - 100, this.height - 34, "Show icons", true));
@@ -236,6 +238,10 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_TAB) {
+            Utils.tab(nameField, colorWheel.textBox.textField);
+            return;
+        }
         super.keyTyped(typedChar, keyCode);
         colorWheel.keyTyped(typedChar, keyCode, null);
         nameField.textboxKeyTyped(typedChar, keyCode);

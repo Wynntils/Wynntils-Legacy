@@ -51,7 +51,7 @@ public class ModCore {
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
-        WebManager.setupWebApi();
+        WebManager.setupWebApi(true);
         WebManager.setupUserAccount();
 
         CoreManager.setupCore();

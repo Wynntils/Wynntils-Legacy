@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.GenericEvent;
  *
  */
 public class PacketEvent<T extends Packet<?>> extends GenericEvent<T> {
-    
+
     T packet;
     NetHandlerPlayClient playClient;
 

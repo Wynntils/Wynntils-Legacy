@@ -98,7 +98,7 @@ public class ItemIdentificationOverlay implements Listener {
             return;
         }
 
-        String displayWC = Utils.stripColor(stack.getDisplayName());
+        String displayWC = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         String itemType = displayWC.split(" ")[1];
         String level = null;
 
@@ -106,7 +106,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         for (String aLore : lore) {
             if (aLore.contains("Lv. Range")) {
-                level = Utils.stripColor(aLore).replace("- Lv. Range: ", "");
+                level = TextFormatting.getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }
@@ -164,7 +164,7 @@ public class ItemIdentificationOverlay implements Listener {
 
     public static void drawHoverItem(ItemStack stack, IInventory inventory) {
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("rainbowTitle")) {
-            stack.setStackDisplayName(Utils.stripColor(stack.getDisplayName()));
+            stack.setStackDisplayName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
             stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + stack.getTagCompound().getString("rainbowTitle"), false));
             if (stack.getTagCompound().hasKey("rainbowTitleExtra"))
                 stack.setStackDisplayName(stack.getDisplayName() + stack.getTagCompound().getString("rainbowTitleExtra"));
@@ -193,7 +193,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         for (int i = 0; i < actualLore.size(); i++) {
             String lore = cleanse(actualLore.get(i));
-            String wColor = Utils.stripColor(lore);
+            String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
             if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
@@ -428,7 +428,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                 String name;
                 if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(Utils.stripColor(cleanse(display.getString("Name"))));
+                    name = Utils.stripPerfect(cleanse(display.getString("Name")));
                 } else {
                     name = cleanse(display.getString("Name"));
                 }
@@ -456,7 +456,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                 String name;
                 if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(Utils.stripColor(cleanse(display.getString("Name"))));
+                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
                 } else {
                     name = cleanse(display.getString("Name"));
                 }
@@ -487,7 +487,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                 String name;
                 if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(Utils.stripColor(cleanse(display.getString("Name"))));
+                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
                 } else {
                     name = cleanse(display.getString("Name"));
                 }

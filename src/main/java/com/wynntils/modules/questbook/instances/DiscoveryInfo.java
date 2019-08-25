@@ -70,7 +70,7 @@ public class DiscoveryInfo {
     public ArrayList<String> getSplittedDescription() {
         return splittedDescription;
     }
-    
+
     public DiscoveryType getType() {
         return type;
     }

@@ -9,10 +9,9 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
 
 public class MapCompassIcon extends MapTextureIcon {
-    private static MapCompassIcon instance = null;
+    private static final MapCompassIcon instance = new MapCompassIcon();
 
     public static MapCompassIcon getCompass() {
-        if (instance == null && Textures.Map.map_icons != null) instance = new MapCompassIcon();
         return instance;
     }
 
@@ -70,4 +69,5 @@ public class MapCompassIcon extends MapTextureIcon {
         return CompassManager.getCompassLocation() != null;
     }
 
+    public static final MapTextureIcon pointer = createStaticIcon(Textures.Map.map_icons, 14, 53, 24, 61, 5, 4);
 }

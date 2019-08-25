@@ -10,12 +10,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wynntils.Reference;
 import com.wynntils.webapi.WebManager;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +44,7 @@ public class CloudConfigurations {
     }
 
     private void startUploadQueue() {
-        if(runningTask != null && !runningTask.isDone() && !runningTask.isCancelled()) return;
+        if(runningTask != null && !runningTask.isDone() && !runningTask.isCancelled() || WebManager.getApiUrls() == null) return;
 
         runningTask = service.scheduleAtFixedRate(() -> {
             if(toUpload.size() == 0) return;
@@ -57,9 +57,9 @@ public class CloudConfigurations {
             }
 
             try{
-                URLConnection st = new URL(WebManager.apiUrls.get("UserAccount") + "uploadConfig/" + token).openConnection();
+                URLConnection st = new URL(WebManager.getApiUrls().get("UserAccount") + "uploadConfig/" + token).openConnection();
 
-                byte[] bodyBytes = body.toString().getBytes(Charsets.UTF_8);
+                byte[] bodyBytes = body.toString().getBytes(StandardCharsets.UTF_8);
                 st.setRequestProperty("User-Agent", "WynntilsClient/v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
                 st.setRequestProperty("Content-Length", "" + bodyBytes.length);
                 st.setRequestProperty("Content-Type", "application/json");
@@ -75,7 +75,7 @@ public class CloudConfigurations {
                     IOUtils.closeQuietly(outputStream);
                 }
 
-                JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream())).getAsJsonObject();
+                JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
                 if(finalResult.has("result")) {
                     Reference.LOGGER.info("Configuration upload complete!");
                 }else{

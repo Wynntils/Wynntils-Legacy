@@ -55,7 +55,7 @@ public class ActionBarOverlay extends Overlay {
             int y = 0;
 
             String lCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posX;
-            String middleCoord = TextFormatting.GREEN + getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+            String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
             String rCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posZ;
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
@@ -74,7 +74,7 @@ public class ActionBarOverlay extends Overlay {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
                 preference = true;
-            } else if (Utils.stripColor(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
+            } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
                 String[] spaces = lastActionBar.split(" ");
                 middle = spaces[5];
             } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
@@ -92,34 +92,6 @@ public class ActionBarOverlay extends Overlay {
                 drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
                 drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             }
-        }
-    }
-
-    private static String getPlayerDirection(float yaw) {
-        double num = (yaw + 202.5) / 45.0;
-        while (num < 0.0) {
-            num += 360.0;
-        }
-        int dir = (int) (num);
-        dir = dir % 8;
-
-        switch (dir) {
-            case 1:
-                return "NE";
-            case 2:
-                return "E";
-            case 3:
-                return "SE";
-            case 4:
-                return "S";
-            case 5:
-                return "SW";
-            case 6:
-                return "W";
-            case 7:
-                return "NW";
-            default:
-                return "N";
         }
     }
 

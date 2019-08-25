@@ -157,11 +157,11 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards ");
-            
+
             TextComponentString directionText = new TextComponentString(dir);
             directionText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(directionText);
-            
+
             text.appendText(".");
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
@@ -170,24 +170,24 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards (");
-            
+
             TextComponentString xCoordinateText = new TextComponentString(args[0]);
             xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(xCoordinateText);
-            
+
             text.appendText(", ");
-            
+
             TextComponentString zCoordinateText = new TextComponentString(args[1]);
             zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(zCoordinateText);
-            
+
             text.appendText(").");
             sender.sendMessage(text);
         } else {
             throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
         }
     }
-    
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {

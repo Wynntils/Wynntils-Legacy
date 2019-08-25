@@ -8,9 +8,12 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
 @SettingsInfo(name = "overlays", displayPath = "Overlays")
@@ -359,11 +362,11 @@ public class OverlayConfig extends SettingsClass {
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
-    
+
     @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
-        
+
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
@@ -403,6 +406,68 @@ public class OverlayConfig extends SettingsClass {
             NORMAL,
             DISTINGUISH_OWN_GUILD,
             ONLY_OWN_GUILD
+        }
+    }
+
+    @SettingsInfo(name = "info_overlays_settings", displayPath = "Overlays/Info")
+    public static class InfoOverlays extends SettingsClass {
+        public static InfoOverlays INSTANCE;
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info1Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 2)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info2Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 3)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info3Format = "";
+
+        @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
+        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 4)
+        @Setting.Limitations.StringLimit(maxLength = 200)
+        public String info4Format = "";
+
+        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
+        public Presets preset = Presets.CLICK_ME;
+
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int opacity = 0;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if ("preset".equals(name)) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
+            }
+        }
+
+        public enum Presets {
+            CLICK_ME("Click me to copy to clipboard", null),
+            COORDS("Coordinates", "%x% %z% (%y%)"),
+            ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
+            FPS("FPS Counter", "FPS: %fps%"),
+            CLASS("Class", "%Class%\\nLevel %lvl%"),
+            BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
+            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB");
+
+            public final String displayName;
+            public final String value;
+
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
         }
     }
 }

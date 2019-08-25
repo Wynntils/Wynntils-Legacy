@@ -18,11 +18,11 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 
 import java.awt.Color;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -412,7 +412,7 @@ public class ItemProfile {
             } else {
                 Item result = null;
                 Block resultBlock = null;
-                
+
                 if(accessoryType != null) {
                     if (accessoryType.equalsIgnoreCase("Necklace")) {
                         resultBlock = Blocks.GLASS_PANE;
@@ -477,7 +477,7 @@ public class ItemProfile {
 
                 if (skin != null && type.equalsIgnoreCase("Helmet")) {
                     original.setItemDamage(3);
-                    MinecraftTexturesPayload deserializedSkin = GSON.fromJson(new String(Base64.decodeBase64(skin), Charsets.UTF_8), MinecraftTexturesPayload.class);
+                    MinecraftTexturesPayload deserializedSkin = GSON.fromJson(new String(Base64.decodeBase64(skin), StandardCharsets.UTF_8), MinecraftTexturesPayload.class);
                     UUID uuid = deserializedSkin.getProfileId();
                     if (uuid == null) uuid = UUID.randomUUID();
                     GameProfile profile = new GameProfile(uuid, deserializedSkin.getProfileName());
@@ -636,7 +636,7 @@ public class ItemProfile {
                 default:
                     break;
             }
-            
+
             if (description.get(description.size() - 1).equals(" ")) {
                 description.remove(description.size() - 1);
             }
@@ -727,7 +727,7 @@ public class ItemProfile {
 
     }
 
-    public static enum ItemRarity {
+    public enum ItemRarity {
 
         NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), MYTHIC(5);
 

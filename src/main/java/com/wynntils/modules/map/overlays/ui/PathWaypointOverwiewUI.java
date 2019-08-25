@@ -63,8 +63,8 @@ public class PathWaypointOverwiewUI extends GuiScreen {
             renderer.drawRect(wp.getColor(), this.width / 2 - 179, 52 + 25 * i, this.width / 2 - 163, 68 + 25 * i);
 
             fontRenderer.drawString(wp.name, this.width/2 - 150, 56 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getPosX()), this.width/2 + 20, 56 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getPosZ()), this.width/2 + 60, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString(wp.getPosX()), this.width/2 + 20, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString(wp.getPosZ()), this.width/2 + 60, 56 + 25 * i, colour);
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 155, this.width / 2 + 75, 60 + 25 * i - 1, colour | 0xFF000000);

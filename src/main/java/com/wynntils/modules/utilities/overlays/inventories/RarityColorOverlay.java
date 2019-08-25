@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -14,7 +15,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -109,30 +109,9 @@ public class RarityColorOverlay implements Listener {
         }
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-            final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
+            final String E = "\u00B2", B = "\u00BD", L = "\u00BC";
 
-            int blocks = 0, liquid = 0, emeralds = 0;
-
-            for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
-                ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
-                if (it == null || it.isEmpty()) {
-                    continue;
-                }
-
-                if (it.getItem() == Items.EMERALD) {
-                    emeralds += it.getCount();
-                    continue;
-                }
-                if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                    blocks += it.getCount();
-                    continue;
-                }
-                if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                    liquid += it.getCount();
-                }
-            }
-
-            int money = (liquid * 4096) + (blocks * 64) + emeralds, leAmount = 0, blockAmount = 0;
+            int money = PlayerInfo.getPlayerInfo().getMoney(), leAmount = 0, blockAmount = 0;
 
             GlStateManager.disableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -360,7 +339,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private boolean isPowder(ItemStack is) {
-        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && Utils.stripColor(Utils.getStringLore(is)).contains("Effect on Weapons"));
+        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(Utils.getStringLore(is)).contains("Effect on Weapons"));
     }
 
     private int getPowderTier(ItemStack is) {

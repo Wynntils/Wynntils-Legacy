@@ -41,6 +41,7 @@ public class PathWaypointProfile {
 
         name = other.name;
         isCircular = other.isCircular;
+        isEnabled = other.isEnabled;
         color = other.color;
         ((ArrayList<PathPoint>) points).ensureCapacity(other.points.size());
         other.points.forEach(c -> points.add(new PathPoint(c.x, c.z)));

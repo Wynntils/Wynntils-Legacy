@@ -20,12 +20,12 @@ public class CapeManager {
     public static ArrayList<String> downloaded = new ArrayList<>();
 
     public static void downloadCape(UUID uuid) {
-        if (!WebManager.hasCape(uuid) && !WebManager.hasElytra(uuid)) {
+        if (!WebManager.hasCape(uuid) && !WebManager.hasElytra(uuid) || WebManager.getApiUrls() == null) {
             return;
         }
 
         String url; ResourceLocation rl;
-        url = WebManager.apiUrls.get("Capes") + "/user/" + uuid.toString().replace("-", "");
+        url = WebManager.getApiUrls().get("Capes") + "/user/" + uuid.toString().replace("-", "");
         rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
 
         //avoid extra downloading

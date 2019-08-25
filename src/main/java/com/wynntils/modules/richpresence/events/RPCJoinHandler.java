@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -123,8 +124,8 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
 
             if(!m.matches()) return;
 
-            String content = Utils.stripColor(m.group(4).substring(1));
-            String user = Utils.stripColor(m.group(2));
+            String content = TextFormatting.getTextWithoutFormattingCodes(m.group(4).substring(1));
+            String user = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
 
             if(!RichPresenceModule.getModule().getRichPresence().validSecrent(content.substring(0, content.length() -1))) return;
 

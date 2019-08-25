@@ -16,7 +16,7 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
 
     /**
      * Dispatch a packet outgoing event to be checked before actually being sent
-     * 
+     *
      * @see PacketEvent for more information about these events
      *
      *

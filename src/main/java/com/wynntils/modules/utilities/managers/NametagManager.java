@@ -35,7 +35,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.alphaFunc;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.depthMask;
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.disableDepth;
+import static net.minecraft.client.renderer.GlStateManager.disableLighting;
+import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableDepth;
+import static net.minecraft.client.renderer.GlStateManager.enableLighting;
+import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.glNormal3f;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+import static net.minecraft.client.renderer.GlStateManager.tryBlendFuncSeparate;
 
 public class NametagManager {
 
@@ -155,7 +172,7 @@ public class NametagManager {
             if(scale != 1) scale(scale, scale, scale);
             verticalShift = (int)(verticalShift/scale);
 
-            renderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
+            ScreenRenderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
             {
                 //positions
                 translate(x / scale, y / scale, z / scale); //translates to the correct postion
@@ -222,7 +239,7 @@ public class NametagManager {
                 disableBlend();
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
-            renderer.endGL();
+            ScreenRenderer.endGL();
         }
         popMatrix();
     }
@@ -240,9 +257,9 @@ public class NametagManager {
         if(Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
         for(ItemStack is : player.getEquipmentAndArmor()) {
-            if(!is.hasDisplayName() || !WebManager.getItems().containsKey(Utils.stripColor(is.getDisplayName()))) continue;
+            if (!is.hasDisplayName() || !WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) continue;
 
-            ItemProfile itemProfile = WebManager.getItems().get(Utils.stripColor(is.getDisplayName()));
+            ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
             CustomColor color;
             switch (itemProfile.getTier()) {
                 case MYTHIC: color = MinecraftChatColors.PURPLE; break;
@@ -254,7 +271,7 @@ public class NametagManager {
                 default: color = CommonColors.RAINBOW;
             }
 
-            labels.add(new NametagLabel(color, Utils.stripColor(is.getDisplayName()), 0.4f));
+            labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()), 0.4f));
         }
 
         return labels;

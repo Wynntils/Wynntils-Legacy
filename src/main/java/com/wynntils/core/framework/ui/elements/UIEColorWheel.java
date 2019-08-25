@@ -29,7 +29,7 @@ public class UIEColorWheel extends UIEClickZone {
     CustomColor color = new CustomColor(1, 1, 1);
     GuiScreen backGui;
     Consumer<CustomColor> onAccept;
-    UIETextBox textBox;
+    public UIETextBox textBox;
 
     public UIEColorWheel(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, Consumer<CustomColor> onAccept, GuiScreen backGui) {
         super(anchorX, anchorY, offsetX, offsetY, width, height, active, (ui, mouse) -> {});

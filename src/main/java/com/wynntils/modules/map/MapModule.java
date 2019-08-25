@@ -17,6 +17,7 @@ import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.ui.WaypointOverviewUI;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.WebReader;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "map", displayName = "Map")
@@ -30,7 +31,8 @@ public class MapModule extends Module {
     public void onEnable() {
         module = this;
 
-        mainMap = new MapProfile(WebManager.getApiUrls().get("MainMap"), "main-map");
+        WebReader webApi = WebManager.getApiUrls();
+        mainMap = new MapProfile(webApi == null ? null : webApi.get("MainMap"), "main-map");
         mainMap.updateMap();
 
         registerEvents(new ClientEvents());
@@ -42,8 +44,17 @@ public class MapModule extends Module {
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WorldMapUI()); });
         mapKey = registerKeyBinding("New waypoint", Keyboard.KEY_B, "Wynntils", true, () -> { if(Reference.onWorld) Utils.displayGuiScreen(new WaypointOverviewUI()); });
+
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
+            if (Reference.onWorld) {
+                if (WebManager.getApiUrls() == null) {
+                    WebManager.tryReloadApiUrls(true);
+                } else {
+                    Utils.displayGuiScreen(new MainWorldMapUI());
+                }
+            }
+        });
     }
 
     public static MapModule getModule() {

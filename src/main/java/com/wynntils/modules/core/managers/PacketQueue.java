@@ -26,7 +26,7 @@ public class PacketQueue {
     public static void proccessQueue() {
         if(packetQueue.isEmpty()) return;
 
-        Minecraft.getMinecraft().getConnection().sendPacket(packetQueue.poll());
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getConnection().sendPacket(packetQueue.poll()));
     }
 
 }

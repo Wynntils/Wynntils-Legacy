@@ -12,6 +12,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -91,7 +92,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 case "discord":
                     TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
                     msg.getStyle().setColor(TextFormatting.GOLD);
-                    TextComponentString link = new TextComponentString(WebManager.getApiUrls().get("DiscordInvite"));
+                    WebReader apiUrls = WebManager.getApiUrls();
+                    TextComponentString link = new TextComponentString(apiUrls == null ? "<Wynntils servers are down>" : apiUrls.get("DiscordInvite"));
                     link.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
                             .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")))
@@ -103,7 +105,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     break;
                 case "reloadapi":
                     WebManager.reset();
-                    WebManager.setupWebApi();
+                    WebManager.setupWebApi(false);
                     break;
                 case "changelog":
                     new Delay(() -> {
@@ -126,18 +128,18 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             throw new CommandException("Missing arguments. Use /wynntils help for more info.");
         }
     }
-    
+
     private void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
         TextComponentString prefixText = new TextComponentString(prefix);
         prefixText.getStyle().setColor(TextFormatting.DARK_GRAY);
         text.appendSibling(prefixText);
-        
+
         TextComponentString nameText = new TextComponentString(name);
         nameText.getStyle().setColor(TextFormatting.RED);
         text.appendSibling(nameText);
-        
+
         text.appendText(" ");
-        
+
         TextComponentString descriptionText = new TextComponentString(description);
         descriptionText.getStyle().setColor(TextFormatting.GRAY);
         text.appendSibling(descriptionText);
@@ -150,7 +152,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             sender.sendMessage(text);
             return;
         }
-        
+
         TextComponentString releaseStreamText = null;
         TextComponentString buildText = null;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
@@ -169,7 +171,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString versionText = new TextComponentString("");
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
-        
+
         TextComponentString updateCheckText = null;
         TextFormatting color = null;
         if (WebManager.getUpdate().updateCheckFailed()) {
@@ -185,7 +187,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         updateCheckText.getStyle().setColor(color);
         sender.sendMessage(updateCheckText);
     }
-    
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {

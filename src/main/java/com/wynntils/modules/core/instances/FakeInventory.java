@@ -10,7 +10,6 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Pair;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
@@ -171,21 +170,21 @@ public class FakeInventory {
         if (filterType == FilterType.CONTAINS) {
             for (int slot = 0; slot < items.size(); slot++) {
                 ItemStack item = items.get(slot);
-                if (!item.isEmpty() && item.hasDisplayName() && Utils.stripColor(item.getDisplayName()).contains(name)) {
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).contains(name)) {
                     return new Pair<>(slot, item);
                 }
             }
         } else if (filterType == FilterType.EQUALS) {
             for (int slot = 0; slot < items.size(); slot++) {
                 ItemStack item = items.get(slot);
-                if (!item.isEmpty() && item.hasDisplayName() && Utils.stripColor(item.getDisplayName()).equals(name)) {
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equals(name)) {
                     return new Pair<>(slot, item);
                 }
             }
         } else {
             for (int slot = 0; slot < items.size(); slot++) {
                 ItemStack item = items.get(slot);
-                if (!item.isEmpty() && item.hasDisplayName() && Utils.stripColor(item.getDisplayName()).equalsIgnoreCase(name)) {
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equalsIgnoreCase(name)) {
                     return new Pair<>(slot, item);
                 }
             }
@@ -250,10 +249,7 @@ public class FakeInventory {
 
         items.clear();
 
-        List<ItemStack> stacks = e.getPacket().getItemStacks();
-        for(int i = 0; i < stacks.size(); i++) {
-            items.add(stacks.get(i));
-        }
+        items.addAll(e.getPacket().getItemStacks());
 
         if(onReceiveItems != null) onReceiveItems.accept(this);
 

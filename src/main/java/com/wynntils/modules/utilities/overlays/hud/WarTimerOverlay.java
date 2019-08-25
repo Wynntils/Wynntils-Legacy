@@ -34,27 +34,27 @@ public class WarTimerOverlay extends Overlay {
     public WarTimerOverlay() {
         super("War Timer overlay", 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
-    
+
     private static int timer = -1;
-    
+
     private static String territory = null;
-    
+
     private static WarStage stage = WarStage.WAITING;
-    
+
     private static String lastTerritory = null;
-    
+
     private static int lastTimer = -1;
-    
+
     private static boolean afterWar = false;
-    
+
     private static boolean startTimer = false;
-    
+
     private static long lastTimeChanged = 0;
-    
+
     private static long afterSecond = 0;
-    
+
     private static final Pattern secondsPattern = Pattern.compile("(\\d+) second");
-    
+
     private static final Pattern minutesPattern = Pattern.compile("(\\d+) minute");
 
     @Override
@@ -62,25 +62,25 @@ public class WarTimerOverlay extends Overlay {
         if (!((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR))) return;
         if (Reference.onWars && (stage == WarStage.WAITING || stage == WarStage.WAITING_FOR_TIMER || stage == WarStage.WAR_STARTING)) {
             if (lastTerritory != null) {
-                drawString((int) (Math.floor(((double) lastTimer) / 60)) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + String.valueOf(lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+                drawString((int) (Math.floor(((double) lastTimer) / 60)) + ":" + (String.valueOf(lastTimer % 60).length() == 1 ? "0" + (lastTimer % 60) : String.valueOf(lastTimer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
                 drawString("The war for " + lastTerritory + " lasted for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if ((timer != 0 || !Reference.onLobby) && stage == WarStage.WAR_STARTING) {
-            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + (timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("The war for " + territory + " will start in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
                 drawString("The war will start in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.WAITING_FOR_MOBS) {
-            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + (timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("The mobs for " + territory + " will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
                 drawString("The mobs will start spawning in", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             }
         } else if (stage == WarStage.IN_WAR) {
-            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + String.valueOf(timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
+            drawString((int) (Math.floor(((double) timer) / 60)) + ":" + (String.valueOf(timer % 60).length() == 1 ? "0" + (timer % 60) : String.valueOf(timer % 60)) , 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             if (territory != null) {
                 drawString("You have been at war in " + territory + " for", 0, -6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
             } else {
@@ -88,10 +88,10 @@ public class WarTimerOverlay extends Overlay {
             }
         }
     }
-    
+
     public static void warMessage(ClientChatReceivedEvent event) {
         if (!Reference.onWorld || Reference.onNether) return;
-        
+
         String message = event.getMessage().getUnformattedText();
         if (message.startsWith("[WAR] ")) {
             message = message.replaceFirst("\\[WAR\\] ", "");
@@ -158,7 +158,7 @@ public class WarTimerOverlay extends Overlay {
             lastTerritory = message.substring(26, message.indexOf(" from "));
         }
     }
-    
+
     public static void onWorldJoin(WynnWorldEvent.Join event) {
         if (Reference.onWars) {
             if (stage == WarStage.WAR_STARTING) {
@@ -185,7 +185,7 @@ public class WarTimerOverlay extends Overlay {
             lastTerritory = null;
         }
     }
-    
+
     public static void onTitle(PacketEvent<SPacketTitle> event) {
         if (event.getPacket().getType() == Type.SUBTITLE && event.getPacket().getMessage().getUnformattedText().equals(TextFormatting.GOLD + "0 Mobs Left")) {
             lastTimer = timer;
@@ -193,14 +193,14 @@ public class WarTimerOverlay extends Overlay {
             resetTimer();
         }
     }
-    
+
     @Override
     public void tick(ClientTickEvent event, long ticks) {
         if (event.phase == Phase.END) {
             updateTimer();
         }
     }
-    
+
     private static void updateTimer() {
         long currentTime = System.currentTimeMillis();
         if (!Reference.onWars && stage != WarStage.WAITING && stage != WarStage.WAITING_FOR_TIMER && stage != WarStage.WAR_STARTING) {
@@ -222,7 +222,7 @@ public class WarTimerOverlay extends Overlay {
             lastTimeChanged = TimeUnit.MILLISECONDS.toSeconds(currentTime) * 1000 + afterSecond;
         }
     }
-    
+
     private static void resetTimer() {
         changeWarStage(WarStage.WAITING);
         timer = -1;
@@ -230,7 +230,7 @@ public class WarTimerOverlay extends Overlay {
         afterSecond = 0;
         territory = null;
     }
-    
+
     public static int getTimer() {
         return timer;
     }
