@@ -226,6 +226,7 @@ public class WaypointOverviewUI extends GuiScreen {
                     "Import  ==  ERROR",
                     "Clipboard is empty"
                 );
+                return;
             }
             ArrayList<WaypointProfile> imported;
             try {

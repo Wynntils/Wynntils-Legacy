@@ -199,10 +199,12 @@ public class WaypointProfile {
     }
 
     public static ArrayList<WaypointProfile> decode(String base64) throws IllegalArgumentException {
+        if (base64 == null) throw new IllegalArgumentException("Invalid waypoint list\\nWas null");
         return decode(Base64.getDecoder().decode(base64));
     }
 
     public static ArrayList<WaypointProfile> decode(byte[] data) throws IllegalArgumentException {
+        if (data == null) throw new IllegalArgumentException("Invalid waypoint list\\nWas null");
         ByteBuffer buf = ByteBuffer.wrap(data);
         ArrayList<WaypointProfile> result;
         try {
