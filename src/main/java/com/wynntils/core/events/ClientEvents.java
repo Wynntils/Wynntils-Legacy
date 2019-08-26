@@ -151,6 +151,10 @@ public class ClientEvents {
         if(e.phase == TickEvent.Phase.START) return;
 
         ScreenRenderer.refresh();
+        if (Reference.onServer && Minecraft.getMinecraft().getConnection() == null) {
+            Reference.onServer = false;
+            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
+        }
         if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
