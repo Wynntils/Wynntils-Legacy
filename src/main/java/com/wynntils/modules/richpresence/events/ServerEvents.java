@@ -159,7 +159,7 @@ public class ServerEvents implements Listener {
         } else if (Reference.onWorld) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = 0;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), currentTime);
         }
     }
 
