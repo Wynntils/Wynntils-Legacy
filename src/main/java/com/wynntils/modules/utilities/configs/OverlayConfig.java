@@ -459,7 +459,8 @@ public class OverlayConfig extends SettingsClass {
             CLASS("Class", "%Class%\\nLevel %lvl%"),
             BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
             UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
-            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB");
+            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
+            PING("Ping", "%ping%ms/15s");
 
             public final String displayName;
             public final String value;

@@ -38,6 +38,10 @@ public class PacketQueue {
         complexQueue.remove(0);
     }
 
+    public static boolean hasQueuedPacket() {
+        return !complexQueue.isEmpty();
+    }
+
     public static void proccessQueue() {
         if(complexQueue.isEmpty()) return;
 

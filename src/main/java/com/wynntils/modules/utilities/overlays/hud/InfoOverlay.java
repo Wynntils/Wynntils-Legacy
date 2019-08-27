@@ -125,7 +125,9 @@ public abstract class InfoOverlay extends Overlay {
                 case "z": return Integer.toString((int) mc.player.posZ);
                 case "dir": return Utils.getPlayerDirection(mc.player.rotationYaw);
                 case "fps": return Integer.toString(Minecraft.getDebugFPS());
-                case "ping": return PingManager.getLastPing() + "ms/15s";
+                case "ping":
+                    PingManager.calculatePing();
+                    return Long.toString(PingManager.getLastPing());
                 case "class":
                     String className;
                     switch (PlayerInfo.getPlayerInfo().getCurrentClass()) {

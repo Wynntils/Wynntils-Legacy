@@ -17,7 +17,7 @@ public class PingManager {
     private static long lastCall = 0;
 
     public static void calculatePing() {
-        if(System.currentTimeMillis() - lastCall < 15000) return;
+        if(!Reference.onWorld || System.currentTimeMillis() - lastCall < 15000) return;
 
         CommandResponse response = new CommandResponse("/toggle", (m, t) -> {
             lastPing = System.currentTimeMillis() - lastCall;
