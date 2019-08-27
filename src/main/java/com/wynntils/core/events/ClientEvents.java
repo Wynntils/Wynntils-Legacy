@@ -24,6 +24,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -151,6 +152,10 @@ public class ClientEvents {
         if(e.phase == TickEvent.Phase.START) return;
 
         ScreenRenderer.refresh();
+        if (Reference.onServer && FMLClientHandler.instance().getClientPlayHandler() == null) {
+            Reference.onServer = false;
+            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
+        }
         if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();

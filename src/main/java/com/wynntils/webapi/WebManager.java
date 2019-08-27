@@ -4,6 +4,7 @@
 
 package com.wynntils.webapi;
 
+import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.mojang.util.UUIDTypeAdapter;
@@ -36,6 +37,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -48,6 +50,7 @@ public class WebManager {
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<ItemProfile> directItems = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
+    private static ArrayList<MapMarkerProfile> refineryMapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
@@ -78,6 +81,7 @@ public class WebManager {
         updateProfile = null;
         items = new HashMap<>();
         mapMarkers = new ArrayList<>();
+        refineryMapMarkers = new ArrayList<>();
         itemGuesses = new HashMap<>();
         playerProfile = null;
         guilds = new HashMap<>();
@@ -146,6 +150,14 @@ public class WebManager {
 
     public static ArrayList<MapMarkerProfile> getMapMarkers() {
         return mapMarkers;
+    }
+
+    public static ArrayList<MapMarkerProfile> getRefineryMapMarkers() {
+        return refineryMapMarkers;
+    }
+
+    public static Iterable<MapMarkerProfile> getApiMarkers() {
+        return Iterables.concat(mapMarkers, refineryMapMarkers);
     }
 
     public static UpdateProfile getUpdate() {
@@ -372,7 +384,7 @@ public class WebManager {
 
                 Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
-                mapMarkers.addAll(gson.fromJson(jsonArray, type));
+                refineryMapMarkers = gson.fromJson(jsonArray, type);
                 MapApiIcon.resetApiMarkers();
                 return true;
             })

@@ -153,6 +153,7 @@ public class WebRequestHandler {
     private Thread dispatch(boolean async) {
         ArrayList<Request>[] groupedRequests;
         boolean anyRequests = false;
+        int thisDispatch;
 
         synchronized (this) {
             groupedRequests = (ArrayList<Request>[]) new ArrayList[maxParallelGroup + 1];
@@ -170,15 +171,16 @@ public class WebRequestHandler {
             }
 
             maxParallelGroup = 0;
+            thisDispatch = ++dispatchId;
         }
 
         if (anyRequests) {
             if (!async) {
-                handleDispatch(++dispatchId, groupedRequests, 0);
+                handleDispatch(thisDispatch, groupedRequests, 0);
                 return null;
             }
 
-            Thread t = new Thread(() -> handleDispatch(++dispatchId, groupedRequests, 0));
+            Thread t = new Thread(() -> handleDispatch(thisDispatch, groupedRequests, 0));
             t.start();
             return t;
         }

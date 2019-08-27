@@ -14,6 +14,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -147,7 +148,7 @@ public class MapApiIcon extends MapTextureIcon {
     private static List<MapIcon> medievalApiMarkers = null;
 
     public static void resetApiMarkers() {
-        if (Textures.Map.map_icons == null) return;
+        if (Mappings.Map.map_icons_mappings == null) return;
         if (classicApiMarkers == null) {
             classicApiMarkers = new ArrayList<>();
         } else {
@@ -158,14 +159,14 @@ public class MapApiIcon extends MapTextureIcon {
         } else {
             medievalApiMarkers.clear();
         }
-        for (MapMarkerProfile mmp : WebManager.getMapMarkers()) {
+        for (MapMarkerProfile mmp : WebManager.getApiMarkers()) {
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Medieval));
         }
     }
 
     public static void resetApiMarkers(MapConfig.IconTexture iconTexture) {
-        if (Textures.Map.map_icons == null) return;
+        if (Mappings.Map.map_icons_mappings == null) return;
         List<MapIcon> markers;
         switch (iconTexture) {
             case Classic:
@@ -187,12 +188,13 @@ public class MapApiIcon extends MapTextureIcon {
             default:
                 return;
         }
-        for (MapMarkerProfile mmp : WebManager.getMapMarkers()) {
+        for (MapMarkerProfile mmp : WebManager.getApiMarkers()) {
             if (isApiMarkerValid(mmp, iconTexture)) markers.add(new MapApiIcon(mmp, iconTexture));
         }
     }
 
     public static List<MapIcon> getApiMarkers(MapConfig.IconTexture iconTexture) {
+        if (Mappings.Map.map_icons_mappings == null) return Collections.emptyList();
         if (classicApiMarkers == null && medievalApiMarkers == null) resetApiMarkers();
         switch (iconTexture) {
             case Classic:

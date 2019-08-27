@@ -245,6 +245,12 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "Removed " + TextFormatting.GRAY + "all fire (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❤\\]\\.")) {
+                String msg = e.getMessage().getUnformattedText();
+                msg = msg.substring(0, msg.length() - 1);
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + msg);
+                e.setCanceled(true);
+                return;
             // ARCHER
             } else if (e.getMessage().getUnformattedText().equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost");

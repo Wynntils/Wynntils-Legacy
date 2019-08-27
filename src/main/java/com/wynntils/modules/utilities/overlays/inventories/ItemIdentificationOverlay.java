@@ -187,6 +187,7 @@ public class ItemIdentificationOverlay implements Listener {
         double chanceUp = 0;
         double chanceDown = 0;
         int totalSP = 0;
+        boolean setBonusStart = false;
 
         List <String> actualLore = Utils.getLore(stack);
         List <Integer> statOrderMem = new ArrayList<>();
@@ -224,10 +225,11 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             if (lore.contains("Set") && lore.contains("Bonus")) {
-                break;
+                setBonusStart = true;
+                continue;
             }
 
-            if (!wColor.startsWith("+") && !wColor.startsWith("-")) {
+            if (!wColor.startsWith("+") && !wColor.startsWith("-") || setBonusStart) {
                 actualLore.set(i, lore);
                 continue;
             }
