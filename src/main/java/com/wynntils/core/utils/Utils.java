@@ -69,6 +69,10 @@ public class Utils {
         return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
+    public static void runAsync(Runnable r) {
+        executorService.submit(r);
+    }
+
     /**
      * Removes the invisible character À
      *

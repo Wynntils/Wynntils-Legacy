@@ -7,6 +7,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -124,6 +125,7 @@ public abstract class InfoOverlay extends Overlay {
                 case "z": return Integer.toString((int) mc.player.posZ);
                 case "dir": return Utils.getPlayerDirection(mc.player.rotationYaw);
                 case "fps": return Integer.toString(Minecraft.getDebugFPS());
+                case "ping": return PingManager.getLastPing() + "ms/15s";
                 case "class":
                     String className;
                     switch (PlayerInfo.getPlayerInfo().getCurrentClass()) {

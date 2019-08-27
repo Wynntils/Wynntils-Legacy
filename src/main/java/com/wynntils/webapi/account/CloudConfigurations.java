@@ -85,7 +85,7 @@ public class CloudConfigurations {
                 toUpload.clear();
             }catch (Exception ex) { ex.printStackTrace(); }
 
-        },0, 10, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
     }
 
     private class ConfigContainer {

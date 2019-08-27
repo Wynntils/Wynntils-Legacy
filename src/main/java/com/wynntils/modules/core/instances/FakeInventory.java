@@ -91,15 +91,13 @@ public class FakeInventory {
 
         ignoreNextUserClick = true;
         if(slot == itemSlot) {
-            PacketQueue.queuePackets(rightClick, releaseClick);
+            PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class);
             return this;
         }
 
-        PacketQueue.queuePackets(
-                new CPacketHeldItemChange(itemSlot),
-                rightClick, releaseClick,
-                new CPacketHeldItemChange(slot)
-        );
+        PacketQueue.queueSimplePacket(new CPacketHeldItemChange(itemSlot));
+        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class);
+        PacketQueue.queueSimplePacket(new CPacketHeldItemChange(slot));
         return this;
     }
 

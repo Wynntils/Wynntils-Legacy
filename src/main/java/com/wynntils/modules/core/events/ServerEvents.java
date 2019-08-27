@@ -16,13 +16,14 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -147,6 +148,15 @@ public class ServerEvents implements Listener {
         }else if(e.getMessage().startsWith("/guild list")) {
             waitingForGuildList = false;
         }
+    }
+
+    /**
+     * Verifies the response from packet queue
+     * @param e
+     */
+    @SubscribeEvent
+    public void onReceivePacket(PacketEvent e) {
+        PacketQueue.checkResponse(e.getPacket());
     }
 
     /**
