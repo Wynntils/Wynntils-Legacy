@@ -66,33 +66,44 @@ public class WebRequestHandler {
         }
 
         /**
-         * As {@link #handle(Predicate<byte[]>) handle}, but the data is converted into a String first using Charset
+         * As {@link #handle(Predicate) handle}, but the data is converted into a String first using Charset
          */
         public Request handleString(Predicate<String> handler, Charset charset) {
             return handle(data -> handler.test(new String(data, charset)));
         }
 
         /**
-         * As {@link #handle(Predicate<byte[]>) handle}, but the data is interpreted as UTF-8
+         * As {@link #handle(Predicate) handle}, but the data is interpreted as UTF-8
          */
         public Request handleString(Predicate<String> handler) {
             return handleString(handler, StandardCharsets.UTF_8);
         }
 
         /**
-         * As {@link #handle(Predicate<byte[]>) handle}, but the data is parsed as JSON
+         * As {@link #handle(Predicate) handle}, but the data is parsed as JSON
          */
         public Request handleJson(Predicate<JsonElement> handler) {
             return handleString(s -> handler.test(new JsonParser().parse(s)));
         }
 
         /**
-         * As {@link #handle(Predicate<byte[]>) handle}, but the data is parsed as JSON and converted into an Object
+         * As {@link #handle(Predicate) handle}, but the data is parsed as JSON and converted into an Object
          */
         public Request handleJsonObject(Predicate<JsonObject> handler) {
             return handleJson(j -> {
                 if (!j.isJsonObject()) return false;
                 return handler.test(j.getAsJsonObject());
+            });
+        }
+
+        /**
+         * As {@link #handle(Predicate) handle}, but the data is parsed by {@link WebReader#fromString(String) WebReader}
+         */
+        public Request handleWebReader(Predicate<WebReader> handler) {
+            return handleString(s -> {
+                WebReader reader = WebReader.fromString(s);
+                if (reader == null) return false;
+                return handler.test(reader);
             });
         }
 

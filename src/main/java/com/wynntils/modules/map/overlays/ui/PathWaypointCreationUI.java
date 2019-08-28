@@ -18,8 +18,6 @@ import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class PathWaypointCreationUI extends WorldMapUI {

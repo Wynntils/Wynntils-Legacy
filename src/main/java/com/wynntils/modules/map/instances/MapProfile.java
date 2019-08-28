@@ -50,9 +50,7 @@ public class MapProfile {
         WebRequestHandler handler = new WebRequestHandler();
         handler.addRequest(new WebRequestHandler.Request(url, "main_map.info")
             .cacheTo(new File(mapLocation, "main-map.txt"))
-            .handleString(s -> {
-                WebReader reader = WebReader.fromString(s);
-                if (reader == null) return false;
+            .handleWebReader(reader -> {
                 centerX = Double.valueOf(reader.get("CenterX"));
                 centerZ = Double.valueOf(reader.get("CenterZ"));
                 if (!downloadDirect) {

@@ -18,8 +18,6 @@ import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class WaypointCreationMenu extends UI {

@@ -37,7 +37,6 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -702,10 +701,8 @@ public class WebManager {
         if (apiUrls == null) {
             handler.addRequest(new WebRequestHandler.Request("https://api.wynntils.com/webapi", "webapi")
                 .cacheTo(new File(apiCacheFolder, "webapi.txt"))
-                .handleString(s -> {
-                    WebReader reader = WebReader.fromString(s);
-                    if (reader == null) return false;
-                    WebManager.apiUrls = reader;
+                .handleWebReader(reader -> {
+                    apiUrls = reader;
                     if (!inSetup) {
                         WebManager.setupWebApi(false);
                         MapModule.getModule().getMainMap().updateMap();
