@@ -55,8 +55,8 @@ public class QuestInfo {
 
         Matcher m = coordinatePattern.matcher(currentDescription);
         if(m.find()) {
-            x = Integer.valueOf(m.group(1));
-            z = Integer.valueOf(m.group(3));
+            x = Integer.parseInt(m.group(1));
+            z = Integer.parseInt(m.group(3));
         }else { x = 0; z = 0; }
 
         this.splittedDescription = splittedDescription;

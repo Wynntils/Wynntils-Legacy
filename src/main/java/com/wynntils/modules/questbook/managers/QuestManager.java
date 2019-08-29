@@ -113,7 +113,7 @@ public class QuestManager {
                         break;
                     }
 
-                    int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
+                    int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
                     QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase());
 
                     StringBuilder description = new StringBuilder();
@@ -163,7 +163,7 @@ public class QuestManager {
                     else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
                     else if (displayName.charAt(1) == 'b') discoveryType = DiscoveryType.SECRET;
 
-                    int minLevel = Integer.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+                    int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
                     StringBuilder description = new StringBuilder();
                     for (int x = 2; x < lore.size(); x ++) {

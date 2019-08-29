@@ -54,7 +54,7 @@ public class FileUpdater {
 
             File f = new File(location, fileName);
             if(f.exists()) {
-                if(Utils.toMD5(String.valueOf(f.length())).equals(values.get(fileName))) {
+                if(Utils.toMD5(Long.toString(f.length())).equals(values.get(fileName))) {
                     localFiles.remove(fileName);
                     continue;
                 }

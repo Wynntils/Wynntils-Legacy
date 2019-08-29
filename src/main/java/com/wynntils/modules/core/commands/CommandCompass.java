@@ -165,7 +165,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             text.appendText(".");
             sender.sendMessage(text);
         } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
-            CompassManager.setCompassLocation(new Location(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
+            CompassManager.setCompassLocation(new Location(Integer.parseInt(args[0]), 0, Integer.parseInt(args[1])));
 
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);

@@ -269,9 +269,9 @@ public class PlayerInfo {
                         if (loreMatcher.matches()) {
                             // Found an unprocessed item
                             if (maximum == -1) {
-                                maximum = Integer.valueOf(nameMatcher.group(1));
+                                maximum = Integer.parseInt(nameMatcher.group(1));
                             }
-                            amount += Integer.valueOf(loreMatcher.group(1)) * it.getCount();
+                            amount += Integer.parseInt(loreMatcher.group(1)) * it.getCount();
                         }
                     }
                 }

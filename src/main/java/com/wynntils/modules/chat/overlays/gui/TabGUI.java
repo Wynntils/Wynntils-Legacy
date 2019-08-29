@@ -136,9 +136,9 @@ public class TabGUI extends GuiScreen {
         if(button == closeButton) mc.displayGuiScreen(new ChatGUI());
         else if(button == saveButton) {
             if (id == -2) {
-                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0));
+                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0));
             } else {
-                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0);
+                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0);
             }
             mc.displayGuiScreen(new ChatGUI());
         }else if(button == deleteButton) {

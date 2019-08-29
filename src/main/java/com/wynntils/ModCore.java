@@ -41,7 +41,7 @@ public class ModCore {
         Reference.VERSION = e.getModMetadata().version;
         String[] splitDescription = e.getModMetadata().description.split(" ");
         try {
-            Reference.BUILD_NUMBER = Integer.valueOf(splitDescription[splitDescription.length - 1]);
+            Reference.BUILD_NUMBER = Integer.parseInt(splitDescription[splitDescription.length - 1]);
         } catch (NumberFormatException ignored) {}
 
         jarFile = e.getSourceFile();

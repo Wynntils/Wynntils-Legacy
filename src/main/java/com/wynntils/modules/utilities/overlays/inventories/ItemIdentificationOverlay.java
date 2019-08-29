@@ -215,7 +215,7 @@ public class ItemIdentificationOverlay implements Listener {
                 int alreadyRolled = 1;
                 Matcher m = BRACKETS.matcher(wColor);
                 if(m.find()) {
-                    alreadyRolled = Integer.valueOf(m.group().replace("[", "").replace("]", ""));
+                    alreadyRolled = Integer.parseInt(m.group().replace("[", "").replace("]", ""));
                 }
 
                 for(int bb = 1; bb <= alreadyRolled; bb++) rerollValue *= 5;
@@ -251,7 +251,7 @@ public class ItemIdentificationOverlay implements Listener {
             boolean raw = !lore.contains("%");
 
             try {
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
+                int amount = Integer.parseInt(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
 
                 String fieldName;
                 if (raw) {
@@ -275,7 +275,7 @@ public class ItemIdentificationOverlay implements Listener {
                     continue;
                 }
 
-                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
+                int itemVal = Integer.parseInt(String.valueOf(f.get(wItem)));
                 int min;
                 int max;
                 if (amount < 0) {

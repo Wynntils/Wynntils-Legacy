@@ -1,6 +1,7 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
@@ -18,7 +19,6 @@ import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 public class WaypointCreationMenu extends UI {
     private GuiLabel nameFieldLabel;
@@ -116,7 +116,10 @@ public class WaypointCreationMenu extends UI {
         }
 
         WaypointProfile wp = returning ? wpIcon.getWaypointProfile() : this.wp;
-        CustomColor color = wp == null ? null: wp.getColor();
+        CustomColor color = wp == null ? CommonColors.WHITE : wp.getColor();
+        if (color == null) {
+            color = CommonColors.WHITE;
+        }
 
         if (wp == null) {
             setWpIcon(WaypointType.FLAG, 0, color);
@@ -134,6 +137,7 @@ public class WaypointCreationMenu extends UI {
         } else {
             state = new WaypointCreationMenuState();
             state.putState(this);
+            colorWheel.setColor(color);
         }
 
         isAllValidInformation();
@@ -178,11 +182,12 @@ public class WaypointCreationMenu extends UI {
     }
 
     private CustomColor getColor() {
-        return wpIcon.getWaypointProfile().getColor();
+        CustomColor c = wpIcon.getWaypointProfile().getColor();
+        return c == null ? CommonColors.WHITE : c;
     }
 
     private void setColor(CustomColor color) {
-        setWpIcon(getWaypointType(), getZoomNeeded(), color);
+        setWpIcon(getWaypointType(), getZoomNeeded(), color == null ? CommonColors.WHITE : color);
     }
 
     @Override public void onRenderPreUIE(ScreenRenderer renderer) {}
@@ -247,7 +252,7 @@ public class WaypointCreationMenu extends UI {
         if (button == saveButton) {
             WaypointProfile newWp = new WaypointProfile(
                     nameField.getText().trim(),
-                    Integer.valueOf(xCoordField.getText().trim()), Integer.valueOf(yCoordField.getText().trim()), Integer.valueOf(zCoordField.getText().trim()),
+                    Integer.parseInt(xCoordField.getText().trim()), Integer.parseInt(yCoordField.getText().trim()), Integer.parseInt(zCoordField.getText().trim()),
                     getColor(), getWaypointType(), getZoomNeeded()
             );
             if (isUpdatingExisting) {
@@ -274,11 +279,10 @@ public class WaypointCreationMenu extends UI {
         }
     }
 
-    private static final Pattern numberRegex = Pattern.compile("0|-?[1-9][0-9]*");
     private void isAllValidInformation() {
-        boolean xValid = numberRegex.matcher(xCoordField.getText().trim()).matches();
-        boolean yValid = numberRegex.matcher(yCoordField.getText().trim()).matches();
-        boolean zValid = numberRegex.matcher(zCoordField.getText().trim()).matches();
+        boolean xValid = Utils.isValidInteger(xCoordField.getText().trim());
+        boolean yValid = Utils.isValidInteger(yCoordField.getText().trim());
+        boolean zValid = Utils.isValidInteger(zCoordField.getText().trim());
         xCoordField.setTextColor(xValid ? 0xFFFFFF : 0xFF6666);
         yCoordField.setTextColor(yValid ? 0xFFFFFF : 0xFF6666);
         zCoordField.setTextColor(zValid ? 0xFFFFFF : 0xFF6666);

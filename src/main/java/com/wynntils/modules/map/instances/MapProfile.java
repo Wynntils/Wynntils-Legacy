@@ -51,8 +51,8 @@ public class MapProfile {
         handler.addRequest(new WebRequestHandler.Request(url, "main_map.info")
             .cacheTo(new File(mapLocation, "main-map.txt"))
             .handleWebReader(reader -> {
-                centerX = Double.valueOf(reader.get("CenterX"));
-                centerZ = Double.valueOf(reader.get("CenterZ"));
+                centerX = Double.parseDouble(reader.get("CenterX"));
+                centerZ = Double.parseDouble(reader.get("CenterZ"));
                 if (!downloadDirect) {
                     if (new MD5Verification(mapFile).equals(reader.get("MD5"))) {
                         readyToUse = true;

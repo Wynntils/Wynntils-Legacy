@@ -91,8 +91,17 @@ public class CustomColor {
     }
 
     /** HeyZeer0: this is = rgba(1,1,1,1) **/
+    @Override
     public String toString() {
         return "rgba(" + r + "," + g + "," + b + "," + a +")";
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof CustomColor) {
+            CustomColor c = (CustomColor) other;
+            return r == c.r && g == c.g && b == c.b && a == c.a;
+        }
+        return false;
+    }
 }

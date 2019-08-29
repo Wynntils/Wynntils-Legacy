@@ -232,6 +232,7 @@ public class WaypointOverviewUI extends GuiScreen {
             try {
                 imported = WaypointProfile.decode(data);
             } catch (IllegalArgumentException e) {
+                e.printStackTrace();
                 String[] lines = e.getMessage().split("\\\\n|\\n");
                 importText = new ArrayList<>(1 + lines.length);
                 importText.add("Import  ==  ERROR");

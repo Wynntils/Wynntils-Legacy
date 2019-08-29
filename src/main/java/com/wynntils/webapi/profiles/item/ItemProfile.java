@@ -687,8 +687,8 @@ public class ItemProfile {
             public ItemType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                 String itemType = json.getAsString();
                 String[] itemIDs = itemType.split(":");
-                int itemID = Integer.valueOf(itemIDs[0]);
-                int damage = itemIDs.length == 2 ? Integer.valueOf(itemIDs[1]) : 0;
+                int itemID = Integer.parseInt(itemIDs[0]);
+                int damage = itemIDs.length == 2 ? Integer.parseInt(itemIDs[1]) : 0;
                 Item item = Item.REGISTRY.getObjectById(itemID);
                 return new ItemType(item, damage);
             }
@@ -702,9 +702,9 @@ public class ItemProfile {
         public Color deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             String color = json.getAsString();
             String[] colors = color.split("[^\\d]");
-            int red = Integer.valueOf(colors[0]);
-            int green = Integer.valueOf(colors[1]);
-            int blue = Integer.valueOf(colors[2]);
+            int red = Integer.parseInt(colors[0]);
+            int green = Integer.parseInt(colors[1]);
+            int blue = Integer.parseInt(colors[2]);
             return new Color(red, green, blue);
         }
 

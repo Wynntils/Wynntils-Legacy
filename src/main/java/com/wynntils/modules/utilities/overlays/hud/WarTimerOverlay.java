@@ -111,7 +111,7 @@ public class WarTimerOverlay extends Overlay {
             Matcher secondsMatcher = secondsPattern.matcher(message);
             timer = 0;
             if (secondsMatcher.find()) {
-                timer += Integer.valueOf(secondsMatcher.group(1));
+                timer += Integer.parseInt(secondsMatcher.group(1));
             }
             Matcher minutesMatcher = minutesPattern.matcher(message);
             if (minutesMatcher.find()) {
@@ -124,7 +124,7 @@ public class WarTimerOverlay extends Overlay {
         } else if (message.endsWith("...") && message.length() == 4 && (stage == WarStage.WAR_STARTING || stage == WarStage.WAITING)) {
             String timerString = message.substring(0, 1);
             if (timerString.matches("\\d")) {
-                timer = Integer.valueOf(timerString);
+                timer = Integer.parseInt(timerString);
                 afterSecond = (System.currentTimeMillis() % 1000);
                 startTimer = true;
                 lastTimeChanged = System.currentTimeMillis();
@@ -138,7 +138,7 @@ public class WarTimerOverlay extends Overlay {
         } else if (message.endsWith("...") && message.length() == 4 && stage == WarStage.WAITING_FOR_MOBS) {
             String timerString = message.substring(0, 1);
             if (timerString.matches("\\d")) {
-                timer = Integer.valueOf(timerString);
+                timer = Integer.parseInt(timerString);
                 afterSecond = (System.currentTimeMillis() % 1000);
                 startTimer = true;
                 lastTimeChanged = System.currentTimeMillis();

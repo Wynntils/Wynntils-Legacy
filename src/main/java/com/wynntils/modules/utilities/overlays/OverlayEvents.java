@@ -85,7 +85,7 @@ public class OverlayEvents implements Listener {
                         if (!PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage().equals("")) {
                             if (oldxp < PlayerInfo.getPlayerInfo().getCurrentXP()) {
                                 DecimalFormat df = new DecimalFormat("0.0");
-                                float xpchange = Float.valueOf(PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage()) - Float.valueOf(oldxppercent);
+                                float xpchange = Float.parseFloat(PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage()) - Float.parseFloat(oldxppercent);
                                 GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expMessageFormat
                                         .replace("%xo%", Integer.toString(oldxp))
                                         .replace("%xn%", Integer.toString(PlayerInfo.getPlayerInfo().getCurrentXP()))

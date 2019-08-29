@@ -17,7 +17,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onJoinParty(WynnSocialEvent.PartyJoin e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Integer.valueOf(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
     }
 
     @SubscribeEvent

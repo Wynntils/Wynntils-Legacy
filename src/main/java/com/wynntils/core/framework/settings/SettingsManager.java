@@ -125,7 +125,7 @@ public class SettingsManager {
 
             String[] rgba = json.getAsString().replace("rgba(", "").replace(")", "").split(",");
 
-            return new CustomColor(Float.valueOf(rgba[0]), Float.valueOf(rgba[1]), Float.valueOf(rgba[2]), Float.valueOf(rgba[3]));
+            return new CustomColor(Float.parseFloat(rgba[0]), Float.parseFloat(rgba[1]), Float.parseFloat(rgba[2]), Float.parseFloat(rgba[3]));
         }
 
         @Override

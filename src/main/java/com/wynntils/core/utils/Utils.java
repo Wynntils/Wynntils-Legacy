@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 public class Utils {
@@ -532,9 +533,9 @@ public class Utils {
 
         String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
 
-        int r = Integer.valueOf(hex.substring(1, 3), 16);
-        int g = Integer.valueOf(hex.substring(3, 5), 16);
-        int b = Integer.valueOf(hex.substring(5, 7), 16);
+        int r = Integer.parseInt(hex.substring(1, 3), 16);
+        int g = Integer.parseInt(hex.substring(3, 5), 16);
+        int b = Integer.parseInt(hex.substring(5, 7), 16);
 
         CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
         registeredColors.put(input, color);
@@ -545,9 +546,9 @@ public class Utils {
     public static CustomColor colorFromHex(String hex) {
         if(registeredColors.containsKey(hex)) return registeredColors.get(hex);
 
-        int r = Integer.valueOf(hex.substring(1, 3), 16);
-        int g = Integer.valueOf(hex.substring(3, 5), 16);
-        int b = Integer.valueOf(hex.substring(5, 7), 16);
+        int r = Integer.parseInt(hex.substring(1, 3), 16);
+        int g = Integer.parseInt(hex.substring(3, 5), 16);
+        int b = Integer.parseInt(hex.substring(5, 7), 16);
 
         CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
         registeredColors.put(hex, color);
@@ -657,6 +658,34 @@ public class Utils {
     public static boolean isValidCodePoint(int c) {
                                            /* low surrogates */             /* high surrogates */
         return 0 <= c && c <= 0x10FFFF && !(0xD800 <= c && c <= 0xDBFF) && !(0xDC00 <= c && c <= 0xDFFF);
+    }
+
+    private static final Pattern numberRegex = Pattern.compile("0|-?[1-9][0-9]*");
+
+    /**
+     * @return `true` if `s` is an integer and can fit in an `int`
+     */
+    public static boolean isValidInteger(String s) {
+        if (!numberRegex.matcher(s).matches()) return false;
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return `true` if `s` is an integer and can fit in a `long`
+     */
+    public static boolean isValidLong(String s) {
+        if (!numberRegex.matcher(s).matches()) return false;
+        try {
+            Long.parseLong(s);
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+        return true;
     }
 
     public static void tab(GuiTextField... tabList) {
