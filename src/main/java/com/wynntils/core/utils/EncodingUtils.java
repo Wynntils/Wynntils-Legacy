@@ -2,6 +2,12 @@ package com.wynntils.core.utils;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 public class EncodingUtils {
 
@@ -151,6 +157,49 @@ public class EncodingUtils {
             }
         }
         throw new BufferUnderflowException();  // The result buffer underflowed
+    }
+
+    public static byte[] deflate(String s) {
+        return deflate(s.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static byte[] deflate(byte[] b) {
+        Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
+        ArrayList<byte[]> chunks = new ArrayList<>(b.length / 1024);
+        deflater.setInput(b);
+        deflater.finish();
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            chunks.add(Arrays.copyOf(buffer, deflater.deflate(buffer)));
+        }
+        byte[] result = new byte[(int) deflater.getBytesWritten()];
+        int i = 0;
+        for (byte[] chunk : chunks) {
+            System.arraycopy(chunk, 0, result, i, chunk.length);
+            i += chunk.length;
+        }
+        return result;
+    }
+
+    public static byte[] inflate(byte[] deflated) throws DataFormatException {
+        Inflater inflater = new Inflater();
+        ArrayList<byte[]> chunks = new ArrayList<>(deflated.length / 512);
+        inflater.setInput(deflated);
+        byte[] buffer = new byte[1024];
+        while (!inflater.finished()) {
+            chunks.add(Arrays.copyOf(buffer, inflater.inflate(buffer)));
+        }
+        byte[] result = new byte[(int) inflater.getBytesWritten()];
+        int i = 0;
+        for (byte[] chunk : chunks) {
+            System.arraycopy(chunk, 0, result, i, chunk.length);
+            i += chunk.length;
+        }
+        return result;
+    }
+
+    public static String inflateToString(byte[] deflated) throws DataFormatException {
+        return new String(inflate(deflated), StandardCharsets.UTF_8);
     }
 
 }

@@ -12,6 +12,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
+import com.wynntils.core.utils.EncodingUtils;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 
@@ -20,6 +21,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.zip.DataFormatException;
 
 public class SettingsManager {
 
@@ -53,8 +55,9 @@ public class SettingsManager {
         fileWriter.close();
 
         //HeyZeer0: Uploading file
-        if(WebManager.getAccount() != null)
-            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(Files.readAllBytes(f.toPath())), StandardCharsets.UTF_8));
+        if(WebManager.getAccount() != null) {
+            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(EncodingUtils.deflate(Files.readAllBytes(f.toPath()))), StandardCharsets.UTF_8));
+        }
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws Exception {
@@ -107,7 +110,18 @@ public class SettingsManager {
         if(WebManager.getAccount() == null) return null;
         if(!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
 
-        String jsonDecoded = new String(Base64.getDecoder().decode(WebManager.getAccount().getEncondedConfigs().get(name)), StandardCharsets.UTF_8);
+        byte[] encodedFormat = Base64.getDecoder().decode(WebManager.getAccount().getEncondedConfigs().get(name));
+        if (encodedFormat[0] == (byte) 0x78) {
+            // ZLIB magic word
+            try {
+                encodedFormat = EncodingUtils.inflate(encodedFormat);
+            } catch (DataFormatException e) {
+                e.printStackTrace();
+                // Try as json anyways
+            }
+        }
+
+        String jsonDecoded = new String(encodedFormat, StandardCharsets.UTF_8);
         return gson.fromJson(jsonDecoded, obj.getClass());
     }
 
