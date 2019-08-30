@@ -31,6 +31,8 @@ public class CustomColor {
 
     public CustomColor(){}
 
+    public CustomColor(CustomColor c) { this(c.r, c.g, c.b, c.a); }
+
     /** applyColor
      * Will set the color to OpenGL's active color
      */
