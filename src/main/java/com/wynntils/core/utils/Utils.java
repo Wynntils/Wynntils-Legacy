@@ -7,6 +7,8 @@ package com.wynntils.core.utils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
@@ -25,7 +27,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -447,6 +449,26 @@ public class Utils {
             }
             result.append(string).append(" ");
             length += string.length() + 1; //+1 for the space following
+        }
+
+        return result.toString().split("\\|");
+    }
+
+    public static String[] wrapTextBySize(String s, int maxPixels) {
+        SmartFontRenderer renderer = ScreenRenderer.fontRenderer;
+        int spaceSize = renderer.getStringWidth(" ");
+
+        String[] stringArray = s.split(" ");
+        StringBuilder result = new StringBuilder();
+        int length = 0;
+
+        for (String string : stringArray) {
+            if (length + renderer.getStringWidth(string) >= maxPixels) {
+                result.append("|");
+                length = 0;
+            }
+            result.append(string).append(" ");
+            length += renderer.getStringWidth(string) + spaceSize;
         }
 
         return result.toString().split("\\|");

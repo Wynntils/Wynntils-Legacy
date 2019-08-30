@@ -16,7 +16,7 @@ public class PacketResponse {
     Packet input;
     Class responseType;
 
-    Function<Packet<?>, Boolean> verification = null;
+    Function<Packet, Boolean> verification = null;
 
     long lastSent = -1;
     int tries = 0;
@@ -40,7 +40,7 @@ public class PacketResponse {
         return responseType;
     }
 
-    public void setVerification(Function<Packet<?>, Boolean> verification) {
+    public void setVerification(Function<Packet, Boolean> verification) {
         this.verification = verification;
     }
 
@@ -49,7 +49,7 @@ public class PacketResponse {
     }
 
     //TODO make this verification faster cuz at the current state it's slowing the packet a lot
-    public boolean isResponseValid(Packet<?> packetType) {
+    public boolean isResponseValid(Packet packetType) {
         if(responseType == null || tries >= 3) return true; //this avoids packet spamming
         if(!packetType.getClass().isAssignableFrom(responseType)) return false;
 

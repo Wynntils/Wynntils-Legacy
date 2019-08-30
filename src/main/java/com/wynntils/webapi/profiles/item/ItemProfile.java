@@ -10,6 +10,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class ItemProfile {
 
@@ -635,6 +637,10 @@ public class ItemProfile {
                     break;
                 default:
                     break;
+            }
+
+            if(getAddedLore() != null && !getAddedLore().isEmpty()) {
+                Stream.of(Utils.wrapTextBySize(getAddedLore(), 150)).forEach(c -> description.add(TextFormatting.DARK_GRAY + c));
             }
 
             if (description.get(description.size() - 1).equals(" ")) {
