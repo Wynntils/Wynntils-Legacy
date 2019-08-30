@@ -15,6 +15,8 @@ import com.wynntils.webapi.profiles.TerritoryProfile;
 
 public class MapTerritory {
 
+    private static final CustomColor territoryNameColour = new CustomColor(CommonColors.WHITE);
+
     ScreenRenderer renderer = null;
 
     float alpha = 1;
@@ -72,7 +74,7 @@ public class MapTerritory {
         boolean Hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
 
         if((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
-            renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, new CustomColor(1, 1, 1, alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if(MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         if(alpha <= 0) return;
