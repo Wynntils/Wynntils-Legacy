@@ -131,6 +131,7 @@ public class WebManager {
     }
 
     public static void setupUserAccount() {
+        tryReloadApiUrls(false, true);
         account = new WynntilsAccount();
         account.login();
     }
@@ -331,6 +332,7 @@ public class WebManager {
         String url = apiUrls == null ? null : apiUrls.get("ItemList");
         handler.addRequest(new WebRequestHandler.Request(url, "item_list")
             .cacheTo(new File(apiCacheFolder, "items.json"))
+            .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
             .handleJsonObject(j -> {
                 if (!j.has("items") || !j.get("items").isJsonArray()) return false;
                 JsonArray main = j.getAsJsonArray("items");
@@ -356,6 +358,7 @@ public class WebManager {
         String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
         handler.addRequest(new WebRequestHandler.Request(url, "map_markers")
             .cacheTo(new File(apiCacheFolder, "map_markers.json"))
+            .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
             .handleJsonObject(main -> {
                 JsonArray jsonArray = main.getAsJsonArray("locations");
                 Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {

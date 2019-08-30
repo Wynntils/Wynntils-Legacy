@@ -4,10 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.MD5Verification;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -20,6 +22,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class WebRequestHandler {
     /**
@@ -36,6 +39,7 @@ public class WebRequestHandler {
         private int parallelGroup = 0;
         private Predicate<byte[]> handler;
         private File cacheFile;
+        private Predicate<byte[]> cacheValidator = null;
         private int currentlyHandling = 0;
         private int timeout = 16000;
 
@@ -113,6 +117,43 @@ public class WebRequestHandler {
         public Request cacheTo(File f) {
             this.cacheFile = f;
             return this;
+        }
+
+        /**
+         * Set a local cache validator.
+         *
+         * When a validator is set, the cache file will be read from first.
+         * If the validator returns true, the cache file is used first, and a web request probably won't be made
+         * If false, make a web request as normal.
+         */
+        public Request cacheValidator(Predicate<byte[]> validator) {
+            this.cacheValidator = validator;
+            return this;
+        }
+
+        /**
+         * A MD5 hash cache validator.
+         */
+        public Request cacheMD5Validator(String expectedHash) {
+            if (!MD5Verification.isMd5Digest(expectedHash)) return this;
+            return cacheMD5Validator(() -> expectedHash);
+        }
+
+        /**
+         * As {@link #cacheMD5Validator(String)}, but lazily get the hash (inside of a thread).
+         */
+        public Request cacheMD5Validator(Supplier<String> expectedHashSupplier) {
+            return cacheValidator(data -> {
+                String expectedHash = expectedHashSupplier.get();
+                if (!MD5Verification.isMd5Digest(expectedHash)) return false;
+                MD5Verification verification = new MD5Verification(data);
+                if (verification.getMd5() == null) return false;
+                boolean passed = verification.equals(expectedHash);
+                if (!passed) {
+                    Reference.LOGGER.info(this.id + ": MD5 verification failed. Expected: \"" + expectedHash + "\"; Got: \"" + verification.getMd5() + "\"");
+                }
+                return passed;
+            });
         }
 
         /**
@@ -208,6 +249,29 @@ public class WebRequestHandler {
         ArrayList<Callable<Void>> tasks = new ArrayList<>(requests.size());
         for (Request req : requests) {
             tasks.add(() -> {
+                if (req.cacheValidator != null) {
+                    assert req.cacheFile != null : req.id + ": You set a cache validator without a cache file!";
+                    try {
+                        byte[] cachedData = FileUtils.readFileToByteArray(req.cacheFile);
+                        if (req.cacheValidator.test(cachedData)) {
+                            try {
+                                if (req.handler.test(cachedData)) {
+                                    return null;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            Reference.LOGGER.error(req.id + ": Error using cached data that passed validator!");
+                            moveInvalidCache(req.cacheFile);
+                        } else {
+                            Reference.LOGGER.info("Cache for " + req.id + " at " + req.cacheFile.getPath() + " could not be validated");
+                        }
+                    } catch (Exception e) {
+                        Reference.LOGGER.info("Error occurred whilst trying to use validated cache for " + req.id + " at " + req.cacheFile.getPath());
+                        e.printStackTrace();
+                    }
+                }
+
                 byte[] toCache = null;
                 if (req.url != null && !cacheOnly) {
                     Throwable readException = null;
@@ -237,6 +301,7 @@ public class WebRequestHandler {
                         }
                     }
                 }
+
                 if (req.cacheFile != null) {
                     if (toCache != null) {
                         try {
@@ -252,6 +317,7 @@ public class WebRequestHandler {
                                 Reference.LOGGER.info("Error occurred whilst trying to use cache for " + req.id + " at " + req.cacheFile.getPath() + ": Cache file is invalid");
                                 moveInvalidCache(req.cacheFile);
                             }
+                        } catch (FileNotFoundException ignore) {
                         } catch (Exception e) {
                             Reference.LOGGER.info("Error occurred whilst trying to use cache for " + req.id + " at " + req.cacheFile.getPath());
                             e.printStackTrace();

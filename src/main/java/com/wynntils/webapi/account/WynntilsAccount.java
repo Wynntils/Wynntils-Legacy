@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.MD5Verification;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
@@ -178,7 +179,10 @@ public class WynntilsAccount {
     }
 
     public String getMD5Verification(String key) {
-        return md5Verifications.getOrDefault(key, null);
+        String digest = md5Verifications.getOrDefault(key, null);
+        if (digest == null) return null;
+        if (!MD5Verification.isMd5Digest(digest)) return null;
+        return digest;
     }
 
 }
