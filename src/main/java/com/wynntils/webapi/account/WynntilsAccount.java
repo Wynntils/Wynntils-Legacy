@@ -36,6 +36,7 @@ public class WynntilsAccount {
     boolean ready = false;
 
     HashMap<String, String> encondedConfigs = new HashMap<>();
+    HashMap<String, String> md5Verifications = new HashMap<>();
     CloudConfigurations configurationUploader;
 
     public WynntilsAccount() { }
@@ -137,6 +138,7 @@ public class WynntilsAccount {
             }
 
             JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st2.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
+
             if (finalResult.has("error")) {
                 return;
             }
@@ -144,6 +146,9 @@ public class WynntilsAccount {
             if (finalResult.has("result")) {
                 token = finalResult.get("authtoken").getAsString();
                 ready = true;
+
+                JsonObject hashes = finalResult.getAsJsonObject("hashes");
+                hashes.entrySet().forEach((k) -> md5Verifications.put(k.getKey(), k.getValue().getAsString()));
 
                 configurationUploader = new CloudConfigurations(service, token);
 
@@ -170,6 +175,10 @@ public class WynntilsAccount {
         }
 
         Reference.LOGGER.error("Failed to connect to Wynntils Accounts!");
+    }
+
+    public String getMD5Verification(String key) {
+        return md5Verifications.getOrDefault(key, null);
     }
 
 }
