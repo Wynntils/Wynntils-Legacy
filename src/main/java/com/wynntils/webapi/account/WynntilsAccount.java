@@ -92,10 +92,12 @@ public class WynntilsAccount {
         configurationUploader.queueConfig(fileName, base64);
     }
 
-    boolean secondAttempt = false;
+    int connectionAttempts = 0;
 
     public void login() {
-        if (WebManager.getApiUrls() == null) return;
+        if (WebManager.getApiUrls() == null || connectionAttempts >= 4) return;
+
+        connectionAttempts++;
 
         try {
             URLConnection st = new URL(WebManager.getApiUrls().get("UserAccount") + "/requestEncryption").openConnection();
@@ -140,42 +142,36 @@ public class WynntilsAccount {
 
             JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st2.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
-            if (finalResult.has("error")) {
+            if (finalResult.has("error") || !finalResult.has("result")) {
+                Reference.LOGGER.error("Failed to connect to Wynntils Accounts trying again!");
+
+                login();
                 return;
             }
 
-            if (finalResult.has("result")) {
-                token = finalResult.get("authtoken").getAsString();
-                ready = true;
+            token = finalResult.get("authtoken").getAsString();
+            ready = true;
 
-                JsonObject hashes = finalResult.getAsJsonObject("hashes");
-                hashes.entrySet().forEach((k) -> md5Verifications.put(k.getKey(), k.getValue().getAsString()));
+            JsonObject hashes = finalResult.getAsJsonObject("hashes");
+            hashes.entrySet().forEach((k) -> md5Verifications.put(k.getKey(), k.getValue().getAsString()));
 
-                configurationUploader = new CloudConfigurations(service, token);
+            configurationUploader = new CloudConfigurations(service, token);
 
-                Reference.LOGGER.info("Succesfully connected to accounts!");
+            Reference.LOGGER.info("Succesfully connected to accounts!");
 
-                JsonObject obj = finalResult.get("configFiles").getAsJsonObject();
-                if (obj.entrySet().size() <= 0) return;
+            JsonObject obj = finalResult.get("configFiles").getAsJsonObject();
+            if (obj.entrySet().size() <= 0) return;
 
-                for (Map.Entry<String, JsonElement> objs : obj.entrySet()) {
-                    encondedConfigs.put(objs.getKey(), objs.getValue().getAsString());
-                }
-                return;
+            for (Map.Entry<String, JsonElement> objs : obj.entrySet()) {
+                encondedConfigs.put(objs.getKey(), objs.getValue().getAsString());
             }
 
         }catch (Exception ex) {
             ex.printStackTrace();
-        }
 
-        //HeyZeer0: Tries to make a second attempt connection
-        if(!secondAttempt) {
-            secondAttempt = true;
-
+            Reference.LOGGER.error("Failed to connect to Wynntils Accounts trying again!");
             login();
         }
-
-        Reference.LOGGER.error("Failed to connect to Wynntils Accounts!");
     }
 
     public String getMD5Verification(String key) {
