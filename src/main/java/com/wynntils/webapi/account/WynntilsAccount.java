@@ -176,9 +176,7 @@ public class WynntilsAccount {
 
     public String getMD5Verification(String key) {
         String digest = md5Verifications.getOrDefault(key, null);
-        if (digest == null) return null;
-        if (!MD5Verification.isMd5Digest(digest)) return null;
-        return digest;
+        return MD5Verification.isMd5Digest(digest) ? digest : null;
     }
 
 }

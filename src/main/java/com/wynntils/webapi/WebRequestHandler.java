@@ -127,7 +127,14 @@ public class WebRequestHandler {
          * If false, make a web request as normal.
          */
         public Request cacheValidator(Predicate<byte[]> validator) {
-            this.cacheValidator = validator;
+            this.cacheValidator = data -> {
+                try {
+                    return validator.test(data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            };
             return this;
         }
 
