@@ -14,19 +14,24 @@ public class PacketQueue {
 
     private static ArrayList<PacketResponse> complexQueue = new ArrayList<>();
 
-    public static void queueSimplePacket(Packet packet) {
-        complexQueue.add(new PacketResponse(packet));
+    public static PacketResponse queueSimplePacket(Packet packet) {
+        PacketResponse response = new PacketResponse(packet);
+        complexQueue.add(response);
+        return response;
     }
 
-    public static void queueComplexPacket(Packet packet, Class responseType) {
-        complexQueue.add(new PacketResponse(packet, responseType));
+    public static PacketResponse queueComplexPacket(Packet packet, Class responseType) {
+        PacketResponse response = new PacketResponse(packet, responseType);
+        complexQueue.add(response);
+        return response;
     }
 
-    public static void queueComplexPacket(Packet packet, Class responseType, Function<Packet, Boolean> verification) {
+    public static PacketResponse queueComplexPacket(Packet packet, Class responseType, Function<Packet, Boolean> verification) {
         PacketResponse response = new PacketResponse(packet, responseType);
         response.setVerification(verification);
 
         complexQueue.add(response);
+        return response;
     }
 
     public static void checkResponse(Packet<?> response) {

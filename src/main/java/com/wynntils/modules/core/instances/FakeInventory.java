@@ -26,6 +26,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class FakeInventory {
     int itemSlot;
 
     private Consumer<FakeInventory> onReceiveItems = null;
+    private Consumer<FakeInventory> onInterrupt = null;
     private Consumer<FakeInventory> onClose = null;
     private int windowId = -1;
     private short transactionId = 0;
@@ -77,6 +79,15 @@ public class FakeInventory {
         return this;
     }
 
+    /* If set, the fake inventory will be closed when the player tries to
+     * interact with anything. Will not call the onClose callback.
+     */
+    public FakeInventory onInterrupt(Consumer<FakeInventory> onInterrupt) {
+        this.onInterrupt = onInterrupt;
+
+        return this;
+    }
+
     /**
      * Request the inventory to be opened
      *
@@ -95,9 +106,18 @@ public class FakeInventory {
             return this;
         }
 
-        PacketQueue.queueSimplePacket(new CPacketHeldItemChange(itemSlot));
-        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class);
-        PacketQueue.queueSimplePacket(new CPacketHeldItemChange(slot));
+        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).beforeSend(() ->
+            ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(itemSlot))
+        ).afterSend(() ->
+            ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem))
+        ).onDrop(() -> {
+            if (Reference.developmentEnvironment) {
+                ModCore.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "[FakeInventory packets dropped after " + (System.currentTimeMillis() - openTime) + "ms]"));
+            }
+            FrameworkManager.getEventBus().unregister(this);
+            open = false;
+            if (this.onInterrupt != null) this.onInterrupt.accept(this);
+        });
         return this;
     }
 
@@ -108,13 +128,17 @@ public class FakeInventory {
      * don't forget to call this at any cost, please.
      */
     public void close() {
+        close(true);
+    }
+
+    private void close(boolean callOnClose) {
         if(!open) return;
 
         FrameworkManager.getEventBus().unregister(this);
         open = false;
 
         if(windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
-        if(onClose != null) onClose.accept(this);
+        if(callOnClose && onClose != null) onClose.accept(this);
     }
 
     /**
@@ -255,9 +279,22 @@ public class FakeInventory {
     }
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
+
+    private boolean shouldCancel(Event e) {
+        if (!open || isCrashed()) return false;
+
+        if (!e.isCanceled() && onInterrupt != null) {
+            close(false);
+            onInterrupt.accept(this);
+            return false;
+        }
+
+        return true;
+    }
+
     @SubscribeEvent
     public void cancelInteractItem(PacketEvent<CPacketPlayerTryUseItem> e) {
-        if(!open || isCrashed()) return;
+        if(!shouldCancel(e)) return;
 
         if(!e.isCanceled())
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
@@ -268,7 +305,7 @@ public class FakeInventory {
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
     public void cancelInteractItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
-        if(!open || isCrashed()) return;
+        if(!shouldCancel(e)) return;
 
         if(!e.isCanceled())
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
@@ -279,7 +316,7 @@ public class FakeInventory {
     //avoid teleportation while reading the questbook
     @SubscribeEvent
     public void cancelCommands(ClientChatEvent e) {
-        if(!open || !e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes") || isCrashed()) return;
+        if(!shouldCancel(e) || !e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes")) return;
 
         close();
     }

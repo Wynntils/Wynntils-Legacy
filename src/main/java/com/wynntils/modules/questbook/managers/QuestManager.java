@@ -6,6 +6,7 @@ package com.wynntils.modules.questbook.managers;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.utils.Delay;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
@@ -193,6 +194,13 @@ public class QuestManager {
                 return;
             }
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
+        });
+        fakeInventory.onInterrupt(c -> {
+            currentInventory = null;
+            if (Reference.developmentEnvironment) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms]"));
+            }
+            new Delay(QuestManager::requestAnalyse, 101);  // 5 seconds and 1 tick
         });
         currentInventory = fakeInventory;
 
