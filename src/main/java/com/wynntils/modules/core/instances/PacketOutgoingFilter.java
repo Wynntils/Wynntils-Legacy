@@ -29,12 +29,12 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
 
         boolean noEvent = false;
 
-        if (FakeInventory.ignoreNextUserClick) {
-            FakeInventory.ignoreNextUserClick = false;
+        Packet<?> packet = (Packet<?>) msg;
+        if (packet == FakeInventory.ignoredPacket) {
             noEvent = true;
         }
 
-        if (!noEvent && FrameworkManager.getEventBus().post(new PacketEvent<Packet<?>>((Packet<?>) msg, ModCore.mc().getConnection()))) return;
+        if (!noEvent && FrameworkManager.getEventBus().post(new PacketEvent<Packet<?>>(packet, ModCore.mc().getConnection()))) return;
 
         super.write(ctx, msg, promise);
     }

@@ -14,6 +14,7 @@ import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketWindowItems;
@@ -43,7 +44,7 @@ public class FakeInventory {
     private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
     private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
-    public static boolean ignoreNextUserClick = false;
+    public static final Packet<?> ignoredPacket = rightClick;
 
     String windowTitle;
     int itemSlot;
@@ -89,7 +90,6 @@ public class FakeInventory {
         Minecraft mc = ModCore.mc();
         int slot = mc.player.inventory.currentItem;
 
-        ignoreNextUserClick = true;
         if(slot == itemSlot) {
             PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class);
             return this;

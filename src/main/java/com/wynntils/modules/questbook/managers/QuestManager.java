@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class QuestManager {
 
-    private static long readRequestTime = 0;
+    private static long readRequestTime = Long.MIN_VALUE;
 
     private static HashMap<String, QuestInfo> currentQuestsData = new HashMap<>();
     public static HashMap<String, DiscoveryInfo> currentDiscoveryData = new HashMap<>();
@@ -55,10 +55,13 @@ public class QuestManager {
 
     public static void executeQueue() {
         if(!analyseRequested || (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
-
-        analyseRequested = false;
-        readQuestBook(!bookOpened);
-        bookOpened = true;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > readRequestTime + 5000) {
+            readRequestTime = currentTime;
+            analyseRequested = false;
+            readQuestBook(!bookOpened);
+            bookOpened = true;
+        }
     }
 
     /**
