@@ -7,8 +7,10 @@ package com.wynntils.modules.core.instances;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class PacketResponse {
@@ -18,8 +20,7 @@ public class PacketResponse {
 
     Function<Packet, Boolean> verification = null;
     Runnable onDrop = null;
-    Runnable onBeforeSend = null;
-    Runnable onAfterSend = null;
+    BiConsumer<NetHandlerPlayClient, Packet> sender = null;
     boolean skipping = false;
 
     long lastSent = -1;
@@ -72,9 +73,12 @@ public class PacketResponse {
         if (skipping || !shouldSend()) return;
 
         Utils.runAsync(() -> {
-            if (this.onBeforeSend != null) this.onBeforeSend.run();
-            Minecraft.getMinecraft().getConnection().sendPacket(input);
-            if (this.onAfterSend != null) this.onAfterSend.run();
+            NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
+            if (this.sender != null) {
+                this.sender.accept(conn, input);
+            } else {
+                conn.sendPacket(input);
+            }
             lastSent = System.currentTimeMillis();
             tries++;
         });
@@ -96,18 +100,13 @@ public class PacketResponse {
     }
 
     /**
-     * Called just before the packet is sent every time it is actually sent (On the same tick/thread)
+     * Called to send packet with the current connection and the packet that was queued.
+     * Default implementation is `(conn, pack) -> conn.sendPacket(pack)`.
+     *
+     * Can be used to change the packet sent depending on the outcome of previous packets.
      */
-    public PacketResponse beforeSend(Runnable beforeSend) {
-        this.onBeforeSend = beforeSend;
-        return this;
-    }
-
-    /**
-     * Called just after the packet is sent every time it is actually sent (On the same tick/thread)
-     */
-    public PacketResponse afterSend(Runnable afterSend) {
-        this.onAfterSend = afterSend;
+    public PacketResponse setSender(BiConsumer<NetHandlerPlayClient, Packet> sender) {
+        this.sender = sender;
         return this;
     }
 

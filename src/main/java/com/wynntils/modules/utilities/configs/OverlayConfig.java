@@ -440,6 +440,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
 
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
         @Override
         public void onSettingChanged(String name) {
             if ("preset".equals(name)) {

@@ -205,7 +205,9 @@ public class WebManager {
             }
             return;
         }
-        territoryUpdateThread.interrupt();
+        if (territoryUpdateThread != null) {
+            territoryUpdateThread.interrupt();
+        }
         territoryUpdateThread = null;
     }
 

@@ -100,13 +100,13 @@ public class FakeInventory {
 
         Minecraft mc = ModCore.mc();
 
-        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).beforeSend(() -> {
+        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).setSender((conn, pack) -> {
             if (mc.player.inventory.currentItem != itemSlot) {
-                ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(itemSlot));
+                conn.sendPacket(new CPacketHeldItemChange(itemSlot));
             }
-        }).afterSend(() -> {
+            conn.sendPacket(pack);
             if (mc.player.inventory.currentItem != itemSlot) {
-                ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
+                conn.sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
             }
         }).onDrop(() -> {
             if (Reference.developmentEnvironment) {

@@ -3,7 +3,6 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.overlays.Overlay;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
@@ -11,13 +10,14 @@ import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class InfoOverlay extends Overlay {
+    private static final CustomColor backgroundColour = new CustomColor(CommonColors.BLACK);
+    private static final Pattern colourRegex = Pattern.compile("§[0-9a-fA-F]");
+
     private InfoOverlay(int index) {
         super("Info " + index, 100, 9, true,0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
     }
@@ -34,16 +34,64 @@ public abstract class InfoOverlay extends Overlay {
             String formatted = doFormat(format, formatter);
             if (!formatted.isEmpty()) {
                 float center = staticSize.x / 2f;
-                if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
-                    int height = 11 * (1 + StringUtils.countMatches(formatted, '\n'));
-                    int width = Arrays.stream(formatted.split("\n")).mapToInt(fontRenderer::getStringWidth).reduce(0, Integer::max);
-                    drawRect(new CustomColor(0, 0, 0, OverlayConfig.InfoOverlays.INSTANCE.opacity / 100f), (int) (center - width / 2f - 1.5f), 0, (int) (center + width / 2f + 1.5), height - 2);
+                String[] lines = formatted.split("\n");
+                int nLines = lines.length;
+                int[] lineWidths = new int[nLines];
+                for (int i = 0; i < nLines; ++i) {
+                    lineWidths[i] = mc.fontRenderer.getStringWidth(lines[i]);
                 }
 
-                int y = 1;
-                for (String line : formatted.split("\n")) {
-                    drawString(line, center, y, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                    y += 11;
+                if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
+                    int height = 11 * nLines;
+
+                    int width = 0;
+                    for (int currentWidth : lineWidths) {
+                        if (currentWidth > width) {
+                            width = currentWidth;
+                        }
+                    }
+
+                    drawRect(backgroundColour, (int) (center - width / 2f - 1.5f), 0, (int) (center + width / 2f + 1.5f), height - 2);
+                }
+
+                center += drawingOrigin().x;
+                int y = -10 + drawingOrigin().y;
+                switch (OverlayConfig.InfoOverlays.INSTANCE.textShadow) {
+                    // This switch could have been inside the for loop,
+                    // but since this is run up to 4 times every frame, it has been hoisted
+                    case OUTLINE:
+                        for (int i = 0; i < nLines; ++i) {
+                            int x = (int) (center - lineWidths[i] / 2f);
+                            y += 11;
+
+                            // Render outline
+                            String withoutColours = colourRegex.matcher(lines[i]).replaceAll("");
+                            mc.fontRenderer.drawString(withoutColours, x - 1, y, 0xFF000000, false);
+                            mc.fontRenderer.drawString(withoutColours, x + 1, y, 0xFF000000, false);
+                            mc.fontRenderer.drawString(withoutColours, x, y - 1, 0xFF000000, false);
+                            mc.fontRenderer.drawString(withoutColours, x, y + 1, 0xFF000000, false);
+
+                            mc.fontRenderer.drawString(lines[i], x, y, 0xFFFFFFFF, false);
+                        }
+                        break;
+
+                    case NORMAL:
+                        for (int i = 0; i < nLines; ++i) {
+                            int x = (int) (center - lineWidths[i] / 2f);
+                            y += 11;
+
+                            mc.fontRenderer.drawString(lines[i], x, y, 0xFFFFFFFF, true);
+                        }
+                        break;
+
+                    default:
+                        for (int i = 0; i < nLines; ++i) {
+                            int x = (int) (center - lineWidths[i] / 2f);
+                            y += 11;
+
+                            mc.fontRenderer.drawString(lines[i], x, y, 0xFFFFFFFF, false);
+                        }
+                        break;
                 }
             }
         }
@@ -56,6 +104,7 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info1Format; }
         @Override public void render(RenderGameOverlayEvent.Pre e) {
             formatter.clear();
+            backgroundColour.setA(OverlayConfig.InfoOverlays.INSTANCE.opacity / 100f);
             super.render(e);
         }
     }

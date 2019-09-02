@@ -273,6 +273,7 @@ public class WebRequestHandler {
                         } else {
                             Reference.LOGGER.info("Cache for " + req.id + " at " + req.cacheFile.getPath() + " could not be validated");
                         }
+                    } catch (FileNotFoundException ignore) {
                     } catch (Exception e) {
                         Reference.LOGGER.info("Error occurred whilst trying to use validated cache for " + req.id + " at " + req.cacheFile.getPath());
                         e.printStackTrace();
