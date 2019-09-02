@@ -6,7 +6,10 @@ package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.WarStageEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -18,7 +21,6 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.time.OffsetDateTime;
@@ -98,20 +100,10 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        if (Reference.onWars) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            currentTime = OffsetDateTime.now();
-            if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for the war for " + WarTimerOverlay.getTerritory() + " to start" + WarTimerOverlay.getTerritory(), getPlayerInfo(), currentTime);
-            } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for a war to start", getPlayerInfo(), currentTime);
-            }
-        }
-        else if (Reference.onNether) {
+        if (Reference.onNether) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", getPlayerInfo(), OffsetDateTime.now());
-        }
-        else {
+        } else if (!Reference.onWars) {
             startUpdateRegionName();
         }
     }
@@ -143,38 +135,15 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if (Reference.onWars && e.getCurrentClass() != ClassType.NONE) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            currentLevel = 0;
-            if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for the war for " + WarTimerOverlay.getTerritory() + " to start", e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
-            } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for a war to start", e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
-            }
-        } else if (Reference.onNether && e.getCurrentClass() != ClassType.NONE) {
+        if (Reference.onNether && e.getCurrentClass() != ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", e.getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
-        } else if (e.getCurrentClass() != ClassType.NONE) {
+        } else if (!Reference.onWars && e.getCurrentClass() != ClassType.NONE) {
             classUpdate = true;
-        } else if (Reference.onWorld) {
+        } else if (!Reference.onWars && Reference.onWorld) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = 0;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), currentTime);
-        }
-    }
-
-    @SubscribeEvent
-    public void onSetExperience(PacketEvent<SPacketSetExperience> e) {
-        if (Reference.onWars && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE && currentLevel == 0 && e.getPacket().getLevel() != 0) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            currentLevel = e.getPacket().getLevel();
-            Minecraft mc = Minecraft.getMinecraft();
-            String userInformation = RichPresenceConfig.INSTANCE.showUserInformation ? mc.player.getName() + " | Level " + currentLevel + " " + PlayerInfo.getPlayerInfo().getCurrentClass().toString() : null;
-            if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for the war for " + WarTimerOverlay.getTerritory() + " to start", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), userInformation, currentTime);
-            } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for a war to start", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), userInformation, currentTime);
-            }
         }
     }
 
