@@ -99,18 +99,16 @@ public class FakeInventory {
         FrameworkManager.getEventBus().register(this);
 
         Minecraft mc = ModCore.mc();
-        int slot = mc.player.inventory.currentItem;
 
-        if(slot == itemSlot) {
-            PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class);
-            return this;
-        }
-
-        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).beforeSend(() ->
-            ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(itemSlot))
-        ).afterSend(() ->
-            ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem))
-        ).onDrop(() -> {
+        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).beforeSend(() -> {
+            if (mc.player.inventory.currentItem != itemSlot) {
+                ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(itemSlot));
+            }
+        }).afterSend(() -> {
+            if (mc.player.inventory.currentItem != itemSlot) {
+                ModCore.mc().getConnection().sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
+            }
+        }).onDrop(() -> {
             if (Reference.developmentEnvironment) {
                 ModCore.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "[FakeInventory packets dropped after " + (System.currentTimeMillis() - openTime) + "ms]"));
             }
