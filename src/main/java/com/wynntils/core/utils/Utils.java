@@ -688,7 +688,7 @@ public class Utils {
      * @return `true` if `s` is an integer and can fit in an `int`
      */
     public static boolean isValidInteger(String s) {
-        if (!numberRegex.matcher(s).matches()) return false;
+        if (s == null || s.length() > 11 || !numberRegex.matcher(s).matches()) return false;
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException ignored) {
@@ -701,7 +701,7 @@ public class Utils {
      * @return `true` if `s` is an integer and can fit in a `long`
      */
     public static boolean isValidLong(String s) {
-        if (!numberRegex.matcher(s).matches()) return false;
+        if (s == null || s.length() > 20 || !numberRegex.matcher(s).matches()) return false;
         try {
             Long.parseLong(s);
         } catch (NumberFormatException ignored) {

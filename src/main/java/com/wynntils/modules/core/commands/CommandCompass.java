@@ -4,7 +4,9 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -164,20 +166,59 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             text.appendText(".");
             sender.sendMessage(text);
-        } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
-            CompassManager.setCompassLocation(new Location(Integer.parseInt(args[0]), 0, Integer.parseInt(args[1])));
+        } else if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
+            int x = 0;
+            int z = 0;
+            boolean invalid = false;
+            if (args[0].charAt(0) == '~') {
+                x = (int) Minecraft.getMinecraft().player.posX;
+                if (args[0].length() != 1) {
+                    String offset = args[0].substring(1);
+                    if (!Utils.isValidInteger(offset)) {
+                        invalid = true;
+                    } else {
+                        x += Integer.parseInt(offset);
+                    }
+                }
+            } else if (!Utils.isValidInteger(args[0])) {
+                invalid = true;
+            } else {
+                x = Integer.parseInt(args[0]);
+            }
+            if (!invalid) {
+                if (args[1].charAt(0) == '~') {
+                    z = ((int) Minecraft.getMinecraft().player.posZ);
+                    if (args[1].length() != 1) {
+                        String offset = args[1].substring(1);
+                        if (!Utils.isValidInteger(offset)) {
+                            invalid = true;
+                        } else {
+                            z += Integer.parseInt(offset);
+                        }
+                    }
+                } else if (!Utils.isValidInteger(args[1])) {
+                    invalid = true;
+                } else {
+                    z = Integer.parseInt(args[1]);
+                }
+            }
+            if (invalid) {
+                throw new CommandException("The coordinate passed was too big");
+            }
+
+            CompassManager.setCompassLocation(new Location(x, 0, z));
 
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards (");
 
-            TextComponentString xCoordinateText = new TextComponentString(args[0]);
+            TextComponentString xCoordinateText = new TextComponentString(Integer.toString(x));
             xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(xCoordinateText);
 
             text.appendText(", ");
 
-            TextComponentString zCoordinateText = new TextComponentString(args[1]);
+            TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
             zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(zCoordinateText);
 
