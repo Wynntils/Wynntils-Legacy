@@ -60,7 +60,7 @@ public class WorldMapIcon {
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
-        if (info instanceof MapPathWaypointIcon) {
+        if (!info.isEnabled() || info instanceof MapPathWaypointIcon) {
             return false;
         }
         float sizeX = info.getSizeX();

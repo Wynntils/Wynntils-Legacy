@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.settings;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.wynntils.Reference;
@@ -13,6 +14,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.EncodingUtils;
+import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 
@@ -20,6 +22,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Locale;
 import java.util.zip.DataFormatException;
@@ -32,7 +35,8 @@ public class SettingsManager {
     static {
         gson = new GsonBuilder()
             .setPrettyPrinting()
-            .registerTypeHierarchyAdapter(CustomColor.class, new CommonColorsDeserialiser())
+            .registerTypeHierarchyAdapter(CustomColor.class, new CustomColorSerializer())
+            .registerTypeAdapter(new TypeToken<ArrayList<PathWaypointProfile>>(){}.getType(), new PathWaypointProfile.Serializer())
             .create();
 
         configFolder.mkdirs(); //if the config folder doesn't exists create the directory
@@ -129,7 +133,7 @@ public class SettingsManager {
     /**
      * HeyZeer0: This interpretates the common colors class, into/from the 'rgba(r,g,b,a)' format
      */
-    private static class CommonColorsDeserialiser implements JsonDeserializer<CustomColor>, JsonSerializer<CustomColor> {
+    private static class CustomColorSerializer implements JsonDeserializer<CustomColor>, JsonSerializer<CustomColor> {
 
         @Override
         public CustomColor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

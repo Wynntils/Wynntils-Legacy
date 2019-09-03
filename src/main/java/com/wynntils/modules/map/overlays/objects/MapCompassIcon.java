@@ -7,6 +7,7 @@ package com.wynntils.modules.map.overlays.objects;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.map.configs.MapConfig;
 
 public class MapCompassIcon extends MapTextureIcon {
     private static final MapCompassIcon instance = new MapCompassIcon();
@@ -66,7 +67,7 @@ public class MapCompassIcon extends MapTextureIcon {
     }
 
     @Override public boolean isEnabled() {
-        return CompassManager.getCompassLocation() != null;
+        return MapConfig.Waypoints.INSTANCE.compassMarker && CompassManager.getCompassLocation() != null;
     }
 
     public static final MapTextureIcon pointer = createStaticIcon(Textures.Map.map_icons, 14, 53, 24, 61, 5, 4);
