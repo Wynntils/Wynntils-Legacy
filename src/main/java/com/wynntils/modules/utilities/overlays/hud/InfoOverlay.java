@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 
 public abstract class InfoOverlay extends Overlay {
     private static final CustomColor backgroundColour = new CustomColor(CommonColors.BLACK);
-    private static final Pattern colourRegex = Pattern.compile("§[0-9a-fA-F]");
+    private static final Pattern colourRegex = Pattern.compile("§[^kKlLmMnNoOrR]");
 
     private InfoOverlay(int index) {
-        super("Info " + index, 100, 9, true,0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
+        super("Info " + index, 100, 9, true, 0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
     }
 
     public abstract int getIndex();

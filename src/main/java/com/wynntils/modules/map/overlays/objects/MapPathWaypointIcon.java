@@ -121,6 +121,7 @@ public class MapPathWaypointIcon extends MapIcon {
         profile.getColor().applyColor();
         renderPath(path, centreX, centreZ, pathWidth);
 
+        CommonColors.WHITE.applyColor();
         GlStateManager.enableCull();
         GlStateManager.enableTexture2D();
     }
