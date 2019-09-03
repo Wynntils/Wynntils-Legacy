@@ -29,7 +29,7 @@ public class QuestInfo {
     private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
-        this.name = name.replace("À", "").trim();
+        this.name = name.replace("À", "").replace("\u058e", "").trim();
         this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
 
         ArrayList<String> splittedDescription = new ArrayList<>();
@@ -38,12 +38,13 @@ public class QuestInfo {
         for(String x : currentDescription.split(" ")) {
             if(chars + x.length() > 37) {
                 splittedDescription.add(currentMessage.toString());
-                currentMessage = new StringBuilder(x + " ");
+                currentMessage = new StringBuilder(x);
+                currentMessage.append(' ');
                 chars = x.length();
                 continue;
             }
             chars+= x.length() ;
-            currentMessage.append(x).append(" ");
+            currentMessage.append(x).append(' ');
         }
         splittedDescription.add(currentMessage.toString());
 

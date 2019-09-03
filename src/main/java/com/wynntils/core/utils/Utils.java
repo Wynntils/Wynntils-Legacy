@@ -444,10 +444,10 @@ public class Utils {
 
         for (String string: stringArray) {
             if (length + string.length() >= max) {
-                result.append("|");
+                result.append('|');
                 length = 0;
             }
-            result.append(string).append(" ");
+            result.append(string).append(' ');
             length += string.length() + 1; //+1 for the space following
         }
 
@@ -464,10 +464,10 @@ public class Utils {
 
         for (String string : stringArray) {
             if (length + renderer.getStringWidth(string) >= maxPixels) {
-                result.append("|");
+                result.append('|');
                 length = 0;
             }
-            result.append(string).append(" ");
+            result.append(string).append(' ');
             length += renderer.getStringWidth(string) + spaceSize;
         }
 
