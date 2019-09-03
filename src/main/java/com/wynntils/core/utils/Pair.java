@@ -4,6 +4,8 @@
 
 package com.wynntils.core.utils;
 
+import java.util.Objects;
+
 /**
  * The Pair Type Holds 1 field of type T and 1 field of type J
  */
@@ -22,6 +24,16 @@ public class Pair<T,J> {
     @Override
     public String toString() {
         return a.toString() + ", " + b.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Pair)) {
+            return false;
+        }
+
+        Pair<?, ?> other = (Pair<?, ?>) obj;
+        return Objects.deepEquals(a, other.a) && Objects.deepEquals(b, other.b);
     }
 }
 

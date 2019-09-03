@@ -55,12 +55,14 @@ public class OverlayPositionsUI extends UI {
 
     public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a,0.5f,0.5f,-48,0,-10,true,(ui, mouseButton) -> {
         for(OverlayButton settingsContainer : registeredOverlaySettings) {
-            // Convert offset -> anchor, then save
-            Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
-            overlay.position.anchorX = (float) (((overlay.position.anchorX * ScreenRenderer.screen.getScaledWidth_double()) + (double) overlay.position.offsetX) / ScreenRenderer.screen.getScaledWidth_double());
-            overlay.position.anchorY = (float) (((overlay.position.anchorY * ScreenRenderer.screen.getScaledHeight_double()) + (double) overlay.position.offsetY) / ScreenRenderer.screen.getScaledHeight_double());
-            overlay.position.offsetX = 0;
-            overlay.position.offsetY = 0;
+            if (!settingsContainer.getOverlaySettings().isReset()) {
+                // Convert offset -> anchor, then save
+                Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
+                overlay.position.anchorX = (float) (((overlay.position.anchorX * ScreenRenderer.screen.getScaledWidth_double()) + (double) overlay.position.offsetX) / ScreenRenderer.screen.getScaledWidth_double());
+                overlay.position.anchorY = (float) (((overlay.position.anchorY * ScreenRenderer.screen.getScaledHeight_double()) + (double) overlay.position.offsetY) / ScreenRenderer.screen.getScaledHeight_double());
+                overlay.position.offsetX = 0;
+                overlay.position.offsetY = 0;
+            }
             try {
                 settingsContainer.getOverlaySettings().saveSettings();
             } catch (Exception ex) {

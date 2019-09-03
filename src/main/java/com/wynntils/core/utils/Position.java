@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class Position {
 
-    public int drawingX = -1, drawingY = -1;
+    public transient int drawingX = -1, drawingY = -1;
     public int offsetX = 0, offsetY = 0;
     public float anchorX = 0.0f, anchorY = 0.0f;
 
@@ -41,4 +41,17 @@ public class Position {
         this.drawingY = position.drawingY;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s[anchorX=%s,anchorY=%s,offsetX=%s,offsetY=%s]", getClass().getName(), anchorX, anchorY, offsetX, offsetY);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Position)) {
+            return false;
+        }
+        Position pos = (Position) obj;
+        return anchorX == pos.anchorX && anchorY == pos.anchorY && offsetX == pos.offsetX && offsetY == pos.offsetY;
+    }
 }

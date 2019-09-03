@@ -14,7 +14,9 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SettingsContainer {
 
@@ -133,13 +135,58 @@ public class SettingsContainer {
         return true;
     }
 
-    public void resetValue(Field field) throws Exception {
-        field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    private SettingsHolder constructResetInstance() {
+        try {
+            return holder.getClass().getConstructor().newInstance();
+        } catch (Exception e) {
+            Reference.LOGGER.error("new SettingsHolder could not be constructed for class " + holder.getClass());
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void resetValues() throws Exception {
-        for(Field field : fields)
-            field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    public void resetValue(Field field) {
+        SettingsHolder reset = constructResetInstance();
+        if (reset != null) {
+            try {
+                field.set(holder, field.get(reset));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void resetValues() {
+        SettingsHolder defaultInstance = constructResetInstance();
+        if (defaultInstance == null) return;
+        for (Field field : fields) {
+            try {
+                field.set(holder, field.get(defaultInstance));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isReset() {
+        SettingsHolder resetInstance = constructResetInstance();
+        if (resetInstance == null) return false;
+        for (Field field : fields) {
+            if (Modifier.isTransient(field.getModifiers())) continue;
+            Object resetValue;
+            Object heldValue;
+            try {
+                resetValue = field.get(resetInstance);
+                heldValue = field.get(holder);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return false;
+            }
+            if (!Objects.deepEquals(resetValue, heldValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getDisplayPath() {
