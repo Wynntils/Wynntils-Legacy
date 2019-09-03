@@ -361,8 +361,8 @@ public class ItemIdentificationOverlay implements Listener {
                     }
                     identifications++;
                 } else {
-                    double intVal = (double) (max - min);
-                    double pVal = (double) (amount - min);
+                    double intVal = max - min;
+                    double pVal = amount - min;
                     int percent = (int) ((pVal / intVal) * 100);
 
                     TextFormatting color;

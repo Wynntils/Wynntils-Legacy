@@ -31,6 +31,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Locale;
+
 public class ClientEvents implements Listener {
 
     /**
@@ -97,7 +99,7 @@ public class ClientEvents implements Listener {
                 ClassType selectedClass = ClassType.NONE;
 
                 try{
-                    selectedClass = ClassType.valueOf(classS.toUpperCase());
+                    selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
                 }catch (Exception ex) {
                     switch(classS) {
                         case "Hunter":

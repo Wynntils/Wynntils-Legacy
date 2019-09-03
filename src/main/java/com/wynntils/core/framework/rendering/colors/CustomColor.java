@@ -76,7 +76,7 @@ public class CustomColor {
             float vh = h * 6;
             if (vh == 6)
                 vh = 0;
-            int vi = MathHelper.fastFloor((double) vh);
+            int vi = MathHelper.fastFloor(vh);
             float v1 = v * (1 - s);
             float v2 = v * (1 - s * (vh - vi));
             float v3 = v * (1 - s * (1 - (vh - vi)));
@@ -100,6 +100,8 @@ public class CustomColor {
 
     @Override
     public boolean equals(Object other) {
+        if (this == other) return true;
+
         if (other instanceof CustomColor) {
             CustomColor c = (CustomColor) other;
             return r == c.r && g == c.g && b == c.b && a == c.a;

@@ -19,7 +19,7 @@ import java.util.Map;
 public class WorldMapSettingsUI extends GuiScreen {
     private HashMap<String, Boolean> enabledMapIcons, availableMapIcons;
     private int offsetY, realOffsetY = 0;
-    private final int SETTINGS_HEIGHT = -40;
+    private static final int SETTINGS_HEIGHT = -40;
 
     public WorldMapSettingsUI() {
         enabledMapIcons = MapConfig.INSTANCE.enabledMapIcons;

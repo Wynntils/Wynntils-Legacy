@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static net.minecraft.client.gui.Gui.ICONS;
 
@@ -56,7 +57,7 @@ public class FrameworkManager {
             return;
         }
 
-        module.setLogger(LogManager.getFormatterLogger(Reference.MOD_ID + "-" + info.name().toLowerCase()));
+        module.setLogger(LogManager.getFormatterLogger(Reference.MOD_ID + "-" + info.name().toLowerCase(Locale.ROOT)));
 
         availableModules.put(info.name(), new ModuleContainer(info, module));
     }

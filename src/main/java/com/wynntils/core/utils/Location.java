@@ -84,6 +84,8 @@ public class Location {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) return true;
+
         if (obj instanceof Location) {
             Location loc = (Location) obj;
             return x == loc.x && y == loc.y && z == loc.z;

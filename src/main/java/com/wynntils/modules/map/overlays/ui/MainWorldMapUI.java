@@ -28,7 +28,7 @@ public class MainWorldMapUI extends WorldMapUI {
     private boolean holdingMapKey = false;
     private long creationTime;
     private long lastClickTime = Integer.MAX_VALUE;
-    private static final long doubleClickTime = (long) Utils.getDoubleClickTime();
+    private static final long doubleClickTime = Utils.getDoubleClickTime();
 
     public MainWorldMapUI() {
         super();

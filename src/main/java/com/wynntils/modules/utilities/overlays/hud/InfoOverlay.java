@@ -11,6 +11,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,7 +168,7 @@ public abstract class InfoOverlay extends Overlay {
         }
 
         String doPctFormat(String name) {
-            String lowerName = name.toLowerCase();
+            String lowerName = name.toLowerCase(Locale.ROOT);
             switch (lowerName) {
                 case "x": return Integer.toString((int) mc.player.posX);
                 case "y": return Integer.toString((int) mc.player.posY);

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -118,7 +119,7 @@ public class QuestManager {
                     }
 
                     int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
-                    QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase());
+                    QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase(Locale.ROOT));
 
                     StringBuilder description = new StringBuilder();
                     for(int x = 5; x < lore.size(); x++) {

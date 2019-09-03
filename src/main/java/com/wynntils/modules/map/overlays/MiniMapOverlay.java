@@ -31,8 +31,6 @@ public class MiniMapOverlay extends Overlay {
         super("Mini Map", 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
-    private static int zoom = 100;
-
     @Override
     public void render(RenderGameOverlayEvent.Pre e) {
         if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL || !MapConfig.INSTANCE.enabled) return;
@@ -48,7 +46,7 @@ public class MiniMapOverlay extends Overlay {
         int mapSize = MapConfig.INSTANCE.mapSize;
         staticSize = new Point(mapSize, mapSize);
 
-        zoom = MapConfig.INSTANCE.mapZoom;
+        int zoom = MapConfig.INSTANCE.mapZoom;
 
         //texture position
         float minX = map.getTextureXPosition(mc.player.posX) - extraFactor * (mapSize/2f + zoom); // <--- min texture x point

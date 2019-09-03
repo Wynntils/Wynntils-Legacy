@@ -20,6 +20,7 @@ import net.minecraftforge.client.IClientCommand;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
@@ -125,7 +126,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             String dir = args[0];
             if (dir.length() <= 2) {
                 //dir = dir.toUpperCase();
-                switch (dir.toLowerCase()) {
+                switch (dir.toLowerCase(Locale.ROOT)) {
                     case "n":
                         dir = "North";
                         break;

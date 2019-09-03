@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Locale;
 import java.util.zip.DataFormatException;
 
 public class SettingsManager {
@@ -46,7 +47,7 @@ public class SettingsManager {
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
         if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config");
+        f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config");
         if(!f.exists()) f.createNewFile(); // create the config file if it doesn't exists
 
         //HeyZeer0: Writting to file
@@ -69,7 +70,7 @@ public class SettingsManager {
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
         if(!f.exists()) f.mkdirs(); // check if the users folder exists
 
-        String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
+        String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";
         f = new File(f, configFile);
 
         //HeyZeer0: converts the old format to the new format

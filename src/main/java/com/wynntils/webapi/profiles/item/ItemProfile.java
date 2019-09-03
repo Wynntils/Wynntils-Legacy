@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -751,7 +752,7 @@ public class ItemProfile {
 
             @Override
             public ItemRarity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return ItemRarity.valueOf(json.getAsString().toUpperCase());
+                return ItemRarity.valueOf(json.getAsString().toUpperCase(Locale.ROOT));
             }
 
         }

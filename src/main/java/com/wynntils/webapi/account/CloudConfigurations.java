@@ -88,7 +88,7 @@ public class CloudConfigurations {
         }, 0, 10, TimeUnit.SECONDS);
     }
 
-    private class ConfigContainer {
+    private static class ConfigContainer {
 
         String fileName, base64;
 

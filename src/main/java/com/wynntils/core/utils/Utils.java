@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -389,23 +390,10 @@ public class Utils {
             return;
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel(); FileChannel destination = new FileOutputStream(destFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
-            if(source != null) {
-                source.close();
-            }
-            if(destination != null) {
-                destination.close();
-            }
         }
     }
 
@@ -421,12 +409,7 @@ public class Utils {
     }
 
     public static String toMD5(String msg) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(msg.getBytes(), 0, msg.length());
-            return new BigInteger(1, m.digest()).toString(16);
-        }catch (Exception ex) { }
-        return msg;
+        return new MD5Verification(msg.getBytes(StandardCharsets.UTF_8)).getMd5();
     }
 
     public static float easeOut(float current, float goal, float jump, float speed) {

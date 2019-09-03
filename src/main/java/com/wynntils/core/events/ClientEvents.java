@@ -33,6 +33,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.toLowerCase().contains("wynncraft")) {
+        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.toLowerCase(Locale.ROOT).contains("wynncraft")) {
             Reference.setUserWorld(null);
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
         }

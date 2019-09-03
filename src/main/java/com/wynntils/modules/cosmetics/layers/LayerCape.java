@@ -52,8 +52,8 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 double d1 = entitylivingbaseIn.prevChasingPosY + (entitylivingbaseIn.chasingPosY - entitylivingbaseIn.prevChasingPosY) * (double)partialTicks - (entitylivingbaseIn.prevPosY + (entitylivingbaseIn.posY - entitylivingbaseIn.prevPosY) * (double)partialTicks);
                 double d2 = entitylivingbaseIn.prevChasingPosZ + (entitylivingbaseIn.chasingPosZ - entitylivingbaseIn.prevChasingPosZ) * (double)partialTicks - (entitylivingbaseIn.prevPosZ + (entitylivingbaseIn.posZ - entitylivingbaseIn.prevPosZ) * (double)partialTicks);
                 float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks;
-                double d3 = (double) MathHelper.sin(f * 0.017453292F);
-                double d4 = (double)(-MathHelper.cos(f * 0.017453292F));
+                double d3 = MathHelper.sin(f * 0.017453292F);
+                double d4 = -MathHelper.cos(f * 0.017453292F);
                 float f1 = (float)d1 * 10.0F;
                 f1 = MathHelper.clamp(f1, -6.0F, 32.0F);
                 float f2 = (float)(d0 * d3 + d2 * d4) * 100.0F;

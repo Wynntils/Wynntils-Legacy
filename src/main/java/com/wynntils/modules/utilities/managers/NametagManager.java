@@ -205,10 +205,10 @@ public class NametagManager {
                     BufferBuilder vertexBuffer = tesselator.getBuffer();
                     {
                         vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                        vertexBuffer.pos((double) (-middlePos - 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (-middlePos - 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (middlePos + 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (middlePos + 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(-middlePos - 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(-middlePos - 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(middlePos + 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(middlePos + 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
                     }
                     tesselator.draw();
                     enableTexture2D();

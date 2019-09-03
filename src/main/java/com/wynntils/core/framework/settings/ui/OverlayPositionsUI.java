@@ -410,7 +410,7 @@ public class OverlayPositionsUI extends UI {
         }
     }
 
-    private class StringDrawing {
+    private static class StringDrawing {
         public String string;
         public int x;
         public int y;
