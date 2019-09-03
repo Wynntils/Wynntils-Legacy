@@ -6,6 +6,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -239,7 +240,7 @@ public class QuestsPage extends QuestBookPage {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     String url = "https://wynncraft.gamepedia.com/";
-                    String path = overQuest.getName().replace("À", "").trim();
+                    String path = overQuest.getName();
                     //Link Overrides
                     switch (path) {
                         case "The House of Twain":
@@ -309,8 +310,11 @@ public class QuestsPage extends QuestBookPage {
                 .collect(Collectors.toList())
                 : new ArrayList<>(questsMap.values());
 
-        questSearch.sort(Comparator.comparing(QuestInfo::getMinLevel));
-        questSearch.sort(Comparator.comparing(QuestInfo::getStatus));
+        if (QuestBookConfig.INSTANCE.hideMiniQuests) {
+            questSearch.removeIf(i -> i.getName().startsWith("Mini-Quest"));
+        }
+
+        questSearch.sort(Comparator.comparing(QuestInfo::getStatus).thenComparing(QuestInfo::getMinLevel));
     }
 
     @Override

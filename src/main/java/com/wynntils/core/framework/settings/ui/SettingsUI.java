@@ -281,7 +281,7 @@ public class SettingsUI extends UI {
             add(new UIEButton("reset", Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
                 try {
                     registeredSettings.get(currentSettingsPath).resetValue(field);
-
+                    changedSettings.add(currentSettingsPath);
                     setCurrentSettingsPath(currentSettingsPath);
                 } catch (Exception e) {
                     e.printStackTrace();

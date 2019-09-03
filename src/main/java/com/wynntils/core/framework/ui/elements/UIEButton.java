@@ -92,7 +92,7 @@ public class UIEButton extends UIEClickZone {
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-            if(active && hovering && button == MouseButton.LEFT) {
+            if(active && hovering && (button == MouseButton.LEFT || button == MouseButton.RIGHT)) {
                 this.value = !value;
                 super.click(true, button, ui);
             }
