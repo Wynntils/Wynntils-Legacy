@@ -153,4 +153,21 @@ public class CustomColor {
         }
         return false;
     }
+
+    /* package-private */ static class SetBase extends CustomColor {
+        SetBase(int rgb) {
+            super((rgb >> 16) / 255.f, ((rgb >> 8) & 0xFF) / 255.f, (rgb & 0xFF) / 255.f, 1);
+        }
+
+        SetBase(float r, float g, float b, float a) {
+            super(r, g, b, a);
+        }
+
+        // Prevent setA on global references. Create a copy first, with `new CustomColor(c)` first.
+        @Override public CustomColor setA(float a) {
+            new UnsupportedOperationException("Cannot set alpha of common color").printStackTrace();
+            return this;
+        }
+    }
+
 }

@@ -13,17 +13,17 @@ import java.util.Set;
  * @see CommonColors#set
  * @see MinecraftChatColors#set
  */
-public class ColorSet {
-    private final CustomColor[] colors;
+public class ColorSet<T extends CustomColor> {
+    private final T[] colors;
     private final String[] names;
-    private final HashMap<String, CustomColor> nameMap;
+    private final HashMap<String, T> nameMap;
     private final HashSet<String>[] aliases;
 
-    public ColorSet(CustomColor[] colors, String[] names) {
+    public ColorSet(T[] colors, String[] names) {
         this(colors, names, null);
     }
 
-    public ColorSet(CustomColor[] colors, String[] names, @Nullable HashMap<String, CustomColor> aliases) {
+    public ColorSet(T[] colors, String[] names, @Nullable HashMap<String, T> aliases) {
         this.colors = colors;
         this.names = new String[names.length];
 
@@ -42,9 +42,9 @@ public class ColorSet {
         }
 
         if (aliases != null) {
-            for (HashMap.Entry<String, CustomColor> item : aliases.entrySet()) {
+            for (HashMap.Entry<String, T> item : aliases.entrySet()) {
                 String alias = item.getKey().trim().replace(' ', '_').toUpperCase(Locale.ROOT);
-                CustomColor colour = item.getValue();
+                T colour = item.getValue();
                 this.aliases[getCode(colour)].add(alias);
                 nameMap.put(alias.replace("_", ""), colour);
             }
@@ -56,7 +56,7 @@ public class ColorSet {
      *
      * Returns null if invalid.
      */
-    public CustomColor fromCode(int code) {
+    public T fromCode(int code) {
         if (code < 0 || colors.length <= code) {
             return null;
         }
@@ -104,7 +104,7 @@ public class ColorSet {
     /**
      * Return the colour in the set corresponding to the name given
      */
-    public CustomColor fromName(String name) {
+    public T fromName(String name) {
         if (name == null) return null;
 
         name = name.trim().replace(' ', '_').replace("_", "").toUpperCase(Locale.ROOT);
@@ -131,15 +131,15 @@ public class ColorSet {
         return getCode(c) != -1;
     }
 
-    public CustomColor valueOf(String name) {
+    public T valueOf(String name) {
         return fromName(name);
     }
 
-    public CustomColor valueOf(int code) {
+    public T valueOf(int code) {
         return fromCode(code);
     }
 
-    public CustomColor valueOf(CustomColor c) {
+    public T valueOf(CustomColor c) {
         return fromCode(getCode(c));  // Becomes null if not in the set, and also returns reference to color in set
     }
 

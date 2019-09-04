@@ -7,26 +7,30 @@ package com.wynntils.core.framework.rendering.colors;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class MinecraftChatColors {
+public class MinecraftChatColors extends CustomColor.SetBase {
 
-    public static final CustomColor BLACK = CustomColor.fromString("000000",1);
-    public static final CustomColor DARK_BLUE = CustomColor.fromString("0000AA",1);
-    public static final CustomColor DARK_GREEN = CustomColor.fromString("00AA00",1);
-    public static final CustomColor DARK_AQUA = CustomColor.fromString("00AAAA",1);
-    public static final CustomColor DARK_RED = CustomColor.fromString("AA0000",1);
-    public static final CustomColor DARK_PURPLE = CustomColor.fromString("AA00AA",1);
-    public static final CustomColor GOLD = CustomColor.fromString("FFAA00",1);
-    public static final CustomColor GRAY = CustomColor.fromString("AAAAAA",1);
-    public static final CustomColor DARK_GRAY = CustomColor.fromString("555555",1);
-    public static final CustomColor BLUE = CustomColor.fromString("5555FF",1);
-    public static final CustomColor GREEN = CustomColor.fromString("55FF55",1);
-    public static final CustomColor AQUA = CustomColor.fromString("55FFFF",1);
-    public static final CustomColor RED = CustomColor.fromString("FF5555",1);
-    public static final CustomColor LIGHT_PURPLE = CustomColor.fromString("FF55FF",1);
-    public static final CustomColor YELLOW = CustomColor.fromString("FFFF55",1);
-    public static final CustomColor WHITE = CustomColor.fromString("FFFFFF",1);
+    private MinecraftChatColors(int rgb) {
+        super(rgb);
+    }
 
-    private static final CustomColor[] colors = {
+    public static final MinecraftChatColors BLACK = new MinecraftChatColors(0x000000);
+    public static final MinecraftChatColors DARK_BLUE = new MinecraftChatColors(0x0000AA);
+    public static final MinecraftChatColors DARK_GREEN = new MinecraftChatColors(0x00AA00);
+    public static final MinecraftChatColors DARK_AQUA = new MinecraftChatColors(0x00AAAA);
+    public static final MinecraftChatColors DARK_RED = new MinecraftChatColors(0xAA0000);
+    public static final MinecraftChatColors DARK_PURPLE = new MinecraftChatColors(0xAA00AA);
+    public static final MinecraftChatColors GOLD = new MinecraftChatColors(0xFFAA00);
+    public static final MinecraftChatColors GRAY = new MinecraftChatColors(0xAAAAAA);
+    public static final MinecraftChatColors DARK_GRAY = new MinecraftChatColors(0x555555);
+    public static final MinecraftChatColors BLUE = new MinecraftChatColors(0x5555FF);
+    public static final MinecraftChatColors GREEN = new MinecraftChatColors(0x55FF55);
+    public static final MinecraftChatColors AQUA = new MinecraftChatColors(0x55FFFF);
+    public static final MinecraftChatColors RED = new MinecraftChatColors(0xFF5555);
+    public static final MinecraftChatColors LIGHT_PURPLE = new MinecraftChatColors(0xFF55FF);
+    public static final MinecraftChatColors YELLOW = new MinecraftChatColors(0xFFFF55);
+    public static final MinecraftChatColors WHITE = new MinecraftChatColors(0xFFFFFF);
+
+    private static final MinecraftChatColors[] colors = {
         BLACK,     DARK_BLUE,    DARK_GREEN, DARK_AQUA,
         DARK_RED,  DARK_PURPLE,  GOLD,       GRAY,
         DARK_GRAY, BLUE,         GREEN,      AQUA,
@@ -40,7 +44,7 @@ public class MinecraftChatColors {
         "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
     };
 
-    private static final HashMap<String, CustomColor> aliases = new HashMap<>();
+    private static final HashMap<String, MinecraftChatColors> aliases = new HashMap<>();
 
     static {
         aliases.put("DARK_CYAN", DARK_AQUA);
@@ -61,6 +65,6 @@ public class MinecraftChatColors {
         }
     }
 
-    public static final ColorSet set = new ColorSet(colors, names, aliases);
+    public static final ColorSet<MinecraftChatColors> set = new ColorSet<>(colors, names, aliases);
 
 }
