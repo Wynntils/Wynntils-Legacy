@@ -66,7 +66,7 @@ public abstract class InfoOverlay extends Overlay {
                             y += 11;
 
                             // Render outline
-                            String withoutColours = colourRegex.matcher(lines[i]).replaceAll("");
+                            String withoutColours = colourRegex.matcher(lines[i]).replaceAll("§r");
                             mc.fontRenderer.drawString(withoutColours, x - 1, y, 0xFF000000, false);
                             mc.fontRenderer.drawString(withoutColours, x + 1, y, 0xFF000000, false);
                             mc.fontRenderer.drawString(withoutColours, x, y - 1, 0xFF000000, false);
