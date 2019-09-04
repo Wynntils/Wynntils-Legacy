@@ -57,8 +57,8 @@ import static net.minecraft.client.renderer.GlStateManager.tryBlendFuncSeparate;
 public class NametagManager {
 
     private static final NametagLabel friendLabel = new NametagLabel(null, TextFormatting.YELLOW + (TextFormatting.BOLD + "Friend"), 0.7f);
-    private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.CYAN, "Guild Member", 0.7f);
-    private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.ORANGE, "Wynncraft Moderator", 0.7f);
+    private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.AQUA, "Guild Member", 0.7f);
+    private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.GOLD, "Wynncraft Moderator", 0.7f);
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
@@ -262,9 +262,9 @@ public class NametagManager {
             ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
             CustomColor color;
             switch (itemProfile.getTier()) {
-                case MYTHIC: color = MinecraftChatColors.PURPLE; break;
-                case LEGENDARY: color = MinecraftChatColors.CYAN; break;
-                case RARE: color = MinecraftChatColors.PINK; break;
+                case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
+                case LEGENDARY: color = MinecraftChatColors.AQUA; break;
+                case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
                 case UNIQUE: color = MinecraftChatColors.YELLOW; break;
                 case SET: color = MinecraftChatColors.GREEN; break;
                 case NORMAL: color = MinecraftChatColors.WHITE; break;

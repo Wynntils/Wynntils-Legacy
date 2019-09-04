@@ -10,6 +10,7 @@ import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -190,7 +191,7 @@ public abstract class InfoOverlay extends Overlay {
 
                     if (className != null) {
                         if (name.equals("Class")) {  // %Class% is title case
-                            className = className.substring(0, 1).toUpperCase() + className.substring(1);
+                            className = StringUtils.capitalize(className);
                         } else if (name.equals("CLASS")) {  // %CLASS% is all caps
                             className = className.toUpperCase();
                         }

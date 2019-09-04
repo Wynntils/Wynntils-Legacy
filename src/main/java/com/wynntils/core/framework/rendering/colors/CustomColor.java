@@ -92,6 +92,51 @@ public class CustomColor {
         }
     }
 
+    /**
+     * @return float[4]{ h, s, v, a }
+     */
+    public float[] toHSV() {
+        float hue, saturation, value;
+        float cmax = Math.max(Math.max(r, g), b);
+        float cmin = Math.min(Math.min(r, g), b);
+
+        value = cmax;
+        saturation = cmax == 0 ? 0 : (cmax - cmin) / cmax;
+        if (saturation == 0) {
+            hue = 0;
+        } else {
+            float redc = (cmax - r) / (cmax - cmin);
+            float greenc = (cmax - g) / (cmax - cmin);
+            float bluec = (cmax - b) / (cmax - cmin);
+            if (r == cmax) {
+                hue = bluec - greenc;
+            } else if (g == cmax) {
+                hue = 2.0f + redc - bluec;
+            } else {
+                hue = 4.0f + greenc - redc;
+            }
+            hue = hue / 6.0f;
+            if (hue < 0) {
+                hue = hue + 1.0f;
+            }
+        }
+
+        return new float[]{ hue, saturation, value, a };
+    }
+
+    /**
+     * `c.toInt() & 0xFFFFFF` to get `0xRRGGBB` (without alpha)
+     *
+     * @return 0xAARRGGBB
+     */
+    public int toInt() {
+        int r = (int) (this.r * 255);
+        int g = (int) (this.g * 255);
+        int b = (int) (this.b * 255);
+        int a = (int) (this.a * 255);
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
     /** HeyZeer0: this is = rgba(1,1,1,1) **/
     @Override
     public String toString() {

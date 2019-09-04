@@ -149,7 +149,7 @@ public class ChatOverlay extends GuiNewChat {
                 else
                     renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 13, 16);
 
-                renderer.drawString("+", 6, 6, MinecraftChatColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                renderer.drawString("+", 6, 6, MinecraftChatColors.GOLD, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
                 ScreenRenderer.endGL();
 

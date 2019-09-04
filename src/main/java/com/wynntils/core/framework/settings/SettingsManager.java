@@ -10,7 +10,9 @@ import com.google.gson.stream.JsonReader;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.EncodingUtils;
@@ -142,13 +144,33 @@ public class SettingsManager {
                 return new CustomColor(obj.get("r").getAsFloat(), obj.get("g").getAsFloat(), obj.get("b").getAsFloat(), obj.get("a").getAsFloat());
             }
 
-            String[] rgba = json.getAsString().replace("rgba(", "").replace(")", "").split(",");
+            String value = json.getAsString();
+            if (value.length() == 2 && (value.charAt(0) == '§' || value.charAt(0) == '&')) {
+                // §(minecraft colour code)
+                int code = Integer.parseInt(value.substring(1), 16);
+                return new CustomColor(MinecraftChatColors.set.fromCode(code));
+            }
+            CustomColor asCommonColor = CommonColors.set.fromName(value);
+            if (asCommonColor != null) {
+                return new CustomColor(asCommonColor);
+            }
+            String[] rgba = value.replace("rgba(", "").replace(")", "").split(",");
 
             return new CustomColor(Float.parseFloat(rgba[0]), Float.parseFloat(rgba[1]), Float.parseFloat(rgba[2]), Float.parseFloat(rgba[3]));
         }
 
         @Override
         public JsonElement serialize(CustomColor src, Type typeOfSrc, JsonSerializationContext context) {
+            String asCommonColor = CommonColors.set.getName(src);
+            if (asCommonColor != null) {
+                return context.serialize(asCommonColor);
+            }
+
+            int asMinecraftColor = MinecraftChatColors.set.getCode(src);
+            if (asMinecraftColor != -1) {
+                return context.serialize("&" + Integer.toString(asMinecraftColor, 16));
+            }
+
             return context.serialize(src.toString());
         }
 
