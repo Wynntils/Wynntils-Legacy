@@ -11,6 +11,7 @@ import com.wynntils.webapi.downloader.enums.DownloadPhase;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -101,7 +102,7 @@ public class DownloaderManager {
 
                 int fileLenght = st.getContentLength();
 
-                File fileSaved = new File(pf.getLocation(), urlSplited[urlSplited.length - 1].replace("%20", " "));
+                File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlSplited[urlSplited.length - 1], "UTF-8"));
 
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);
