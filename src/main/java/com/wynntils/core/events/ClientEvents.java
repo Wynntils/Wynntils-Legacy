@@ -15,27 +15,20 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class ClientEvents {
 
@@ -153,13 +146,17 @@ public class ClientEvents {
         if(e.phase == TickEvent.Phase.START) return;
 
         ScreenRenderer.refresh();
-        if (Reference.onServer && FMLClientHandler.instance().getClientPlayHandler() == null) {
+        if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+        FrameworkManager.triggerHudTick(e);
+        FrameworkManager.triggerKeyPress();
+    }
+
+    @SubscribeEvent
+    public void onWorldLeave(GuiOpenEvent e) {
+        if (e.getGui() instanceof GuiDisconnected && Reference.onServer) {
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
-        if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
-        FrameworkManager.triggerHudTick(e);
-        FrameworkManager.triggerKeyPress();
     }
 
 }
