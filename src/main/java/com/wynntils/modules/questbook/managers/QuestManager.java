@@ -62,7 +62,6 @@ public class QuestManager {
             readRequestTime = currentTime;
             analyseRequested = false;
             readQuestBook(!bookOpened);
-            bookOpened = true;
         }
     }
 
@@ -129,7 +128,7 @@ public class QuestManager {
                         description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
                     }
 
-                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName());
+                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).replace("À", "").replace("\u058e", "").trim();
                     QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description.toString(), lore);
                     currentQuestsData.put(displayName, quest);
 
@@ -195,6 +194,7 @@ public class QuestManager {
                 return;
             }
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
+            bookOpened = true;
         });
         fakeInventory.onInterrupt(c -> {
             currentInventory = null;
