@@ -119,7 +119,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 case "debug":
-                    QuestManager.requestAnalyse();
+                    QuestManager.requestFullSearch();
                     break;
                 default:
                     throw new CommandException("Invalid argument. Use /wynntils help for more info.");

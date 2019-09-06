@@ -24,11 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -36,6 +32,7 @@ public class QuestManager {
     private static long readRequestTime = Long.MIN_VALUE;
 
     private static HashMap<String, QuestInfo> currentQuestsData = new HashMap<>();
+    private static HashSet<String> incompleteQuests = new HashSet<>();
     public static HashMap<String, DiscoveryInfo> currentDiscoveryData = new HashMap<>();
     public static QuestInfo trackedQuest = null;
 
@@ -82,6 +79,11 @@ public class QuestManager {
 
         FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
         secretDiscoveries = false;
+        // Ensure that all previously incomplete quests have been seen, and when
+        // not doing a fullSearch, don't double check completed quest pages after
+        // all previously incomplete quests have been seen
+        HashSet<String> seenIncompleteQuests = new HashSet<>(incompleteQuests.size());
+        HashSet<String> previouslyIncompleteQuests = new HashSet<>(incompleteQuests);
 
         fakeInventory.onReceiveItems(i -> {
             if(i.getWindowTitle().contains("Quests")) { //Quests
@@ -104,6 +106,8 @@ public class QuestManager {
                     List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
                     if(!realLore.contains("Right click to track")) continue; //not a valid quest
 
+                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).replace("À", "").replace("\u058e", "").trim();
+
                     QuestStatus status = null;
                     if(lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
                     else if(lore.get(0).contains("Started")) status = QuestStatus.STARTED;
@@ -111,10 +115,12 @@ public class QuestManager {
                     else if(lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
                     if(status == null) continue;
 
-                    //this avoids double checking quests that are already completed
-                    if(status == QuestStatus.COMPLETED && !fullSearch) {
-                        next = null;
-                        break;
+                    if (!previouslyIncompleteQuests.remove(displayName) && !fullSearch && status == QuestStatus.COMPLETED) {
+                        continue;
+                    }
+
+                    if (status != QuestStatus.COMPLETED) {
+                        seenIncompleteQuests.add(displayName);
                     }
 
                     int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).replace("✔ Combat Lv. Min: ", "").replace("✖ Combat Lv. Min: ", ""));
@@ -128,7 +134,6 @@ public class QuestManager {
                         description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
                     }
 
-                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).replace("À", "").replace("\u058e", "").trim();
                     QuestInfo quest = new QuestInfo(displayName, status, minLevel, size, description.toString(), lore);
                     currentQuestsData.put(displayName, quest);
 
@@ -140,9 +145,16 @@ public class QuestManager {
 
                 QuestBookPages.QUESTS.getPage().updateSearch();
                 //pagination
-                if (next != null) i.clickItem(next.a, 1, ClickType.PICKUP);
-                else if (QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) i.clickItem(discoveries.a, 1, ClickType.PICKUP);
-                else i.close();
+                if (next != null && (previouslyIncompleteQuests.size() != 0 || fullSearch)) {
+                    i.clickItem(next.a, 1, ClickType.PICKUP);
+                } else {
+                    incompleteQuests = seenIncompleteQuests;
+                    if (QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) {
+                        i.clickItem(discoveries.a, 1, ClickType.PICKUP);
+                    } else {
+                        i.close();
+                    }
+                }
             } else if (i.getWindowTitle().contains("Discoveries")) { //Discoveries
                 Pair<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
                 Pair<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
@@ -194,7 +206,9 @@ public class QuestManager {
                 return;
             }
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
-            bookOpened = true;
+            if (fullSearch) {
+                bookOpened = true;
+            }
         });
         fakeInventory.onInterrupt(c -> {
             currentInventory = null;
@@ -252,6 +266,14 @@ public class QuestManager {
         if(bookOpened) return;
 
         requestAnalyse();
+    }
+
+    /**
+     * Request a full search, including already completed quests
+     */
+    public static void requestFullSearch() {
+        bookOpened = false;
+        analyseRequested = true;
     }
 
     /**
