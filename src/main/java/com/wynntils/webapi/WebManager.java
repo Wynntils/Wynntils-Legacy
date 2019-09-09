@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -624,7 +625,15 @@ public class WebManager {
                     handler.dispatch();
                     for (TerritoryProfile prevTerritory : prevList.values()) {
                         TerritoryProfile currentTerritory = territories.get(prevTerritory.getName());
-                        if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
+                        // TODO: Find out why sometimes the Unicode apostrophes are turned into unknown
+                        // Unicode characters
+                        // It seems to happen at random and seems to only happen to 1 territory at a
+                        // time and when it does both the field name and the territory name field inside
+                        // is turned into unknown Unicode characters (might have something to do with
+                        // the list of territories on the server)
+                        if (currentTerritory == null) {
+                            continue;
+                        } else if (!currentTerritory.getGuild().equals(prevTerritory.getGuild())) {
                             FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), currentTerritory.getGuild(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getGuild()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.CAPTURED));
                         } else if (prevTerritory.getAttacker() == null && currentTerritory.getAttacker() != null) {
                             FrameworkManager.getEventBus().post(new WynnGuildWarEvent(prevTerritory.getFriendlyName(), currentTerritory.getAttacker(), prevTerritory.getGuild(), getGuildTagFromName(currentTerritory.getAttacker()), getGuildTagFromName(prevTerritory.getGuild()), WynnGuildWarEvent.WarUpdateType.ATTACKED));
