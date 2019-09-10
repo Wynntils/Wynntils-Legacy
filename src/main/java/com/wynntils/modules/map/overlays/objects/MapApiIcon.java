@@ -13,13 +13,11 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MapApiIcon extends MapTextureIcon {
-    private static final HashMap<String, String> MAPMARKERNAME_TRANSLATION = new HashMap<String, String>() {{
+
+    public static final Map<String, String> MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>() {{
         put("Content_Dungeon", "Dungeons");
         put("Merchant_Accessory", "Accessory Merchant");
         put("Merchant_Armour", "Armour Merchant");
@@ -53,7 +51,13 @@ public class MapApiIcon extends MapTextureIcon {
         put("Merchant_Other", "Other Merchants");
         put("Special_LightRealm", "Light's Secret");
         put("Merchant_Emerald", "Emerald Merchant");
-    }};
+    }});
+
+    public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()){{
+        for (HashMap.Entry<String, String> entry : MAPMARKERNAME_TRANSLATION.entrySet()) {
+            this.put(entry.getValue(), entry.getKey());
+        }
+    }});
 
     private MapMarkerProfile mmp;
     private int texPosX, texPosZ, texSizeX, texSizeZ;
@@ -123,8 +127,8 @@ public class MapApiIcon extends MapTextureIcon {
         return zoomNeeded;
     }
 
-    @Override public boolean isEnabled() {
-        return MapConfig.INSTANCE.enabledMapIcons.getOrDefault(translatedName, true);
+    @Override public boolean isEnabled(boolean forMinimap) {
+        return (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).getOrDefault(translatedName, true);
     }
 
     public MapMarkerProfile getMapMarkerProfile() {
@@ -211,4 +215,16 @@ public class MapApiIcon extends MapTextureIcon {
     private static boolean isApiMarkerValid(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
         return Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIVAL").getAsJsonObject().has(mmp.getIcon());
     }
+
+    /**
+     * Return a MapApiIcon that can render a map marker being free from position information
+     */
+    public static MapApiIcon getFree(String icon, MapConfig.IconTexture iconTexture) {
+        icon = MAPMARKERNAME_REVERSE_TRANSLATION.getOrDefault(icon, icon);
+        if (!MAPMARKERNAME_TRANSLATION.containsKey(icon)) {
+            throw new RuntimeException("MapWaypointIcon.getFree(\"" + icon + "\"): invalid name");
+        }
+        return new MapApiIcon(new MapMarkerProfile(null, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, icon), iconTexture);
+    }
+
 }

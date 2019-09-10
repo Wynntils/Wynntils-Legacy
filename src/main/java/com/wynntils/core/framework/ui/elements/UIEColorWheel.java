@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.UI;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -257,10 +258,10 @@ public class UIEColorWheel extends UIEClickZone {
 
         @Override
         public void handleMouseInput() throws IOException {
-            int mDwehll = Mouse.getEventDWheel();
-            if(mDwehll >= 1) {
+            int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+            if(mDwehll > 0) {
                 valueSlider.setSliderValue(Math.min(valueSlider.getSliderValue() + 0.1f, 1), true);
-            }else if(mDwehll <= -1) {
+            }else if(mDwehll < 0) {
                 valueSlider.setSliderValue(Math.max(valueSlider.getSliderValue() - 0.1f, 0), true);
             }
 

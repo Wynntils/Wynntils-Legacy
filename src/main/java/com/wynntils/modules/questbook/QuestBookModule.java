@@ -10,7 +10,6 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.ClientEvents;
-import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
 import org.lwjgl.input.Keyboard;
 

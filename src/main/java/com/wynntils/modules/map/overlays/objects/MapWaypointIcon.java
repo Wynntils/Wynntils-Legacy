@@ -118,7 +118,7 @@ public class MapWaypointIcon extends MapTextureIcon {
         return wp.getZoomNeeded();
     }
 
-    @Override public boolean isEnabled() {
+    @Override public boolean isEnabled(boolean forMinimap) {
         return wp.getZoomNeeded() != HIDDEN_ZOOM;
     }
 

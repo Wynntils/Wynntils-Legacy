@@ -125,7 +125,7 @@ public class MiniMapOverlay extends Overlay {
                     float sizeX = c.getSizeX();
                     float sizeZ = c.getSizeZ();
                     if (
-                        !c.isEnabled() ||
+                        !c.isEnabled(true) ||
                         !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
                         !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
                     ) {
@@ -163,7 +163,7 @@ public class MiniMapOverlay extends Overlay {
 
                 MapIcon compassIcon = MapIcon.getCompass();
 
-                if (compassIcon.isEnabled()) {
+                if (compassIcon.isEnabled(true)) {
                     float dx = (float) (compassIcon.getPosX() - mc.player.posX) * scaleFactor;
                     float dz = (float) (compassIcon.getPosZ() - mc.player.posZ) * scaleFactor;
 

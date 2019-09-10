@@ -58,7 +58,8 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
-    public HashMap<String, Boolean> enabledMapIcons = resetMapIcons();
+    public HashMap<String, Boolean> enabledMapIcons = resetMapIcons(false);
+    public HashMap<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
 
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
     public static class WorldMap extends SettingsClass {
@@ -176,42 +177,24 @@ public class MapConfig extends SettingsClass {
     @Override
     public void onSettingChanged(String name) { }
 
-    public HashMap<String, Boolean> resetMapIcons() {
-        return new HashMap<String, Boolean>() {{
-            put("Dungeons", true);
-            put("Accessory Merchant", true);
-            put("Armour Merchant", true);
-            put("Dungeon Merchant", true);
-            put("Horse Merchant", true);
-            put("Key Forge Merchant", true);
-            put("LE Merchant", true);
-            put("Emerald Merchant", true);
-            put("TNT Merchant", true);
-            put("Ore Refinery", true);
-            put("Potion Merchant", true);
-            put("Powder Merchant", true);
-            put("Scroll Merchant", true);
-            put("Seasail Merchant", true);
-            put("Weapon Merchant", true);
-            put("Blacksmith", true);
-            put("Guild Master", true);
-            put("Item Identifier", true);
-            put("Powder Master", true);
-            put("Fast Travel", true);
-            put("Fish Refinery", true);
-            put("Wood Refinery", true);
-            put("Crop Refinery", true);
-            put("Marketplace", true);
-            put("Quests", false);
-            put("Runes", false);
-            put("Nether Portal", true);
-            put("Ultimate Discovery", false);
-            put("Caves", false);
-            put("Grind Spots", false);
-            put("Other Merchants", false);
-            put("Light's Secret", true);
-
-        }};
+    public HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
+        HashMap<String, Boolean> enabledIcons = new HashMap<>();
+        for (String icon : new String[]{
+            "Dungeons", "Accessory Merchant", "Armour Merchant", "Dungeon Merchant", "Horse Merchant",
+            "Key Forge Merchant", "LE Merchant", "Emerald Merchant", "TNT Merchant", "Ore Refinery",
+            "Potion Merchant", "Powder Merchant", "Scroll Merchant", "Seasail Merchant", "Weapon Merchant",
+            "Blacksmith", "Guild Master", "Item Identifier", "Powder Master", "Fast Travel",
+            "Fish Refinery", "Wood Refinery", "Crop Refinery", "Marketplace", "Nether Portal",
+            "Light's Secret"
+        }) {
+            enabledIcons.put(icon, true);
+        }
+        for (String icon : new String[]{
+            "Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants"
+        }) {
+            enabledIcons.put(icon, forMiniMap);
+        }
+        return enabledIcons;
     }
 
     public IconTexture iconTexture = IconTexture.Classic;

@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -261,10 +262,10 @@ public class WorldMapUI extends GuiMovementScreen {
     public void handleMouseInput() throws IOException {
         clicking = Mouse.isButtonDown(0);
 
-        int mDwehll = Mouse.getEventDWheel();
-        if(mDwehll >= 1) {
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if(mDwehll > 0) {
             zoomBy(+5);
-        }else if(mDwehll <= -1) {
+        }else if(mDwehll < 0) {
             zoomBy(-5);
         }
 

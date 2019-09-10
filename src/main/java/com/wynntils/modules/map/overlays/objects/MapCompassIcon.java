@@ -23,12 +23,12 @@ public class MapCompassIcon extends MapTextureIcon {
     }
 
     @Override public int getPosX() {
-        if (!isEnabled()) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return Integer.MIN_VALUE;
         return (int) CompassManager.getCompassLocation().getX();
     }
 
     @Override public int getPosZ() {
-        if (!isEnabled()) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return Integer.MIN_VALUE;
         return (int) CompassManager.getCompassLocation().getZ();
     }
 
@@ -66,7 +66,7 @@ public class MapCompassIcon extends MapTextureIcon {
         return ANY_ZOOM;
     }
 
-    @Override public boolean isEnabled() {
+    @Override public boolean isEnabled(boolean forMinimap) {
         return MapConfig.Waypoints.INSTANCE.compassMarker && CompassManager.getCompassLocation() != null;
     }
 

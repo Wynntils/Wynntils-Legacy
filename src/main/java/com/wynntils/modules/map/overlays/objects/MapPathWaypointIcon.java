@@ -64,7 +64,7 @@ public class MapPathWaypointIcon extends MapIcon {
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isEnabled(boolean forMinimap) {
         return profile.isEnabled;
     }
 

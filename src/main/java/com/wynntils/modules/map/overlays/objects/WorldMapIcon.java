@@ -28,7 +28,7 @@ public class WorldMapIcon {
     }
 
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
-        if (!info.isEnabled()) {
+        if (!info.isEnabled(false)) {
             shouldRender = false;
             return;
         }
@@ -60,7 +60,7 @@ public class WorldMapIcon {
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
-        if (!info.isEnabled() || info instanceof MapPathWaypointIcon) {
+        if (!info.isEnabled(false) || info instanceof MapPathWaypointIcon) {
             return false;
         }
         float sizeX = info.getSizeX();

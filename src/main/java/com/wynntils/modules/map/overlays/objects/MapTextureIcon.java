@@ -73,7 +73,7 @@ public abstract class MapTextureIcon extends MapIcon {
             @Override public float getSizeX() { return sizeX; }
             @Override public float getSizeZ() { return sizeZ; }
             @Override public int getZoomNeeded() { throw new UnsupportedOperationException("Cannot getZoomNeeded() on a static icon"); }
-            @Override public boolean isEnabled() { throw new UnsupportedOperationException("Cannot isEnabled() on a static icon"); }
+            @Override public boolean isEnabled(boolean forMinimap) { throw new UnsupportedOperationException("Cannot isEnabled() on a static icon"); }
             @Override
             public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
                 float ssizeX = sizeX * sizeMultiplier;
