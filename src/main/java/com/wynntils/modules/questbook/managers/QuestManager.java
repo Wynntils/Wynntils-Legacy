@@ -201,14 +201,15 @@ public class QuestManager {
         });
         fakeInventory.onClose(c -> {
             currentInventory = null;
+            if (fullSearch) {
+                bookOpened = true;
+            }
+
             if(Reference.developmentEnvironment) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed in " + (System.currentTimeMillis() - ms) + "ms]"));
                 return;
             }
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
-            if (fullSearch) {
-                bookOpened = true;
-            }
         });
         fakeInventory.onInterrupt(c -> {
             currentInventory = null;

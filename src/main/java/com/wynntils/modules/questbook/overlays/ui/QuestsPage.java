@@ -321,4 +321,10 @@ public class QuestsPage extends QuestBookPage {
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.",  "", TextFormatting.GREEN + "Left click to select");
     }
+
+    @Override
+    public void open(boolean requestOpening) {
+        super.open(requestOpening);
+        QuestManager.wasBookOpened();
+    }
 }
