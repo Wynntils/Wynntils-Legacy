@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.Arrays;
+
 
 /** CustomColor
  * will represent color or complex colors
@@ -154,6 +156,11 @@ public class CustomColor {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new float[]{ r, g, b, a });
+    }
+
     /* package-private */ static class SetBase extends CustomColor {
         SetBase(int rgb) {
             super((rgb >> 16) / 255.f, ((rgb >> 8) & 0xFF) / 255.f, (rgb & 0xFF) / 255.f, 1);
@@ -163,7 +170,7 @@ public class CustomColor {
             super(r, g, b, a);
         }
 
-        // Prevent setA on global references. Create a copy first, with `new CustomColor(c)` first.
+        // Prevent setA on global references. Create a copy with `new CustomColor(c)` first.
         @Override public CustomColor setA(float a) {
             new UnsupportedOperationException("Cannot set alpha of common color").printStackTrace();
             return this;

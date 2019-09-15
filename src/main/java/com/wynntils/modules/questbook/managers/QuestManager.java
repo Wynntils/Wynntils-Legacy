@@ -6,7 +6,6 @@ package com.wynntils.modules.questbook.managers;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Delay;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.instances.FakeInventory;
@@ -44,9 +43,10 @@ public class QuestManager {
 
     private static boolean analyseRequested = false;
     private static boolean bookOpened = false;
+    private static boolean isForcingDiscoveries = false;
 
     /**
-     * Queue a full QuestBook analyse
+     * Queue a QuestBook analyse
      */
     public static void requestAnalyse() {
         analyseRequested = true;
@@ -58,20 +58,17 @@ public class QuestManager {
         if (currentTime > readRequestTime + 5000) {
             readRequestTime = currentTime;
             analyseRequested = false;
-            readQuestBook(!bookOpened);
+            readQuestBook(!bookOpened, isForcingDiscoveries);
         }
     }
 
-    /**
-     * Requests a full QuestBook re-read, when the player is not with the book in hand
-     */
-    private static void readQuestBook(boolean fullSearch) {
+    private static void readQuestBook(boolean fullSearch, boolean forceDiscoveries) {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook) return;
 
         if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
-            readQuestBook(fullSearch);
+            readQuestBook(fullSearch, forceDiscoveries);
             return;
         }
 
@@ -149,7 +146,7 @@ public class QuestManager {
                     i.clickItem(next.a, 1, ClickType.PICKUP);
                 } else {
                     incompleteQuests = seenIncompleteQuests;
-                    if (QuestBookConfig.INSTANCE.scanDiscoveries && discoveries != null) {
+                    if ((QuestBookConfig.INSTANCE.scanDiscoveries || forceDiscoveries) && discoveries != null) {
                         i.clickItem(discoveries.a, 1, ClickType.PICKUP);
                     } else {
                         i.close();
@@ -204,6 +201,9 @@ public class QuestManager {
             if (fullSearch) {
                 bookOpened = true;
             }
+            if (forceDiscoveries) {
+                isForcingDiscoveries = false;
+            }
 
             if(Reference.developmentEnvironment) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed in " + (System.currentTimeMillis() - ms) + "ms]"));
@@ -216,7 +216,15 @@ public class QuestManager {
             if (Reference.developmentEnvironment) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms]"));
             }
-            new Delay(QuestManager::requestAnalyse, 101);  // 5 seconds and 1 tick
+            readRequestTime = System.currentTimeMillis() + 25000;  // Retry in 30 seconds
+            if (forceDiscoveries) {
+                QuestManager.forceDiscoveries();
+            }
+            if (fullSearch) {
+                requestFullSearch();
+            } else {
+                requestAnalyse();
+            }
         });
         currentInventory = fakeInventory;
 
@@ -226,7 +234,7 @@ public class QuestManager {
     /**
      * Returns the current quests data
      *
-     * @return the current quest data in a {@link java.util.ArrayList}
+     * @return the current quest data in a {@link HashMap}
      */
     public static HashMap<String, QuestInfo> getCurrentQuestsData() {
         return currentQuestsData;
@@ -245,7 +253,7 @@ public class QuestManager {
     /**
      * Returns the current discoveries data
      *
-     * @return the current discovery data in a {@link java.util.ArrayList}
+     * @return the current discovery data in a {@link HashMap}
      */
     public static HashMap<String, DiscoveryInfo> getCurrentDiscoveriesData() {
         return currentDiscoveryData;
@@ -266,15 +274,23 @@ public class QuestManager {
     public static void wasBookOpened() {
         if(bookOpened) return;
 
+        requestFullSearch();
+    }
+
+    /**
+     * Request a full search, including already completed quests and discoveries
+     */
+    public static void requestFullSearch() {
+        bookOpened = false;
+        forceDiscoveries();
         requestAnalyse();
     }
 
     /**
-     * Request a full search, including already completed quests
+     * The next analyze request will scan discoveries too, regardless of if {@link QuestBookConfig#scanDiscoveries} is false
      */
-    public static void requestFullSearch() {
-        bookOpened = false;
-        analyseRequested = true;
+    public static void forceDiscoveries() {
+        isForcingDiscoveries = true;
     }
 
     /**
@@ -286,6 +302,7 @@ public class QuestManager {
         trackedQuest = null;
         analyseRequested = false;
         bookOpened = false;
+        isForcingDiscoveries = false;
         currentInventory = null;
     }
 

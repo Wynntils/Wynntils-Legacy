@@ -56,6 +56,7 @@ public class FakeInventory {
     private int windowId = -1;
     private short transactionId = 0;
     private String realWindowTitle = "";
+    private boolean interrupted = false;
 
     private NonNullList<ItemStack> items = NonNullList.create();
 
@@ -256,6 +257,11 @@ public class FakeInventory {
         realWindowTitle = e.getPacket().getWindowTitle().getUnformattedText();
 
         e.setCanceled(true);
+
+        if (interrupted) {
+            close(false);
+            onInterrupt.accept(this);
+        }
     }
 
     //handles the items, calls onReceiveItems
@@ -271,23 +277,27 @@ public class FakeInventory {
 
         items.addAll(e.getPacket().getItemStacks());
 
-        if(onReceiveItems != null) onReceiveItems.accept(this);
+        if(!interrupted && onReceiveItems != null) onReceiveItems.accept(this);
 
         e.setCanceled(true);
+
+        if (interrupted) {
+            close(false);
+            onInterrupt.accept(this);
+        }
     }
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
 
     private boolean shouldCancel(Event e) {
-        if (!open || isCrashed()) return false;
+        if (interrupted || isCrashed()) return false;
 
         if (!e.isCanceled() && onInterrupt != null) {
-            close(false);
-            onInterrupt.accept(this);
+            interrupted = true;
             return false;
         }
 
-        return true;
+        return open;
     }
 
     @SubscribeEvent
@@ -314,7 +324,7 @@ public class FakeInventory {
     //avoid teleportation while reading the questbook
     @SubscribeEvent
     public void cancelCommands(ClientChatEvent e) {
-        if(!shouldCancel(e) || !e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes")) return;
+        if(!e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes")) return;
 
         close();
     }

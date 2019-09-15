@@ -4,6 +4,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
@@ -230,5 +231,16 @@ public class DiscoveriesPage extends QuestBookPage {
     @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "View all your found", TextFormatting.GRAY + "discoveries.",  "", TextFormatting.GREEN + "Left click to select");
+    }
+
+    @Override
+    public void open(boolean requestOpening) {
+        super.open(requestOpening);
+        if (!QuestBookConfig.INSTANCE.scanDiscoveries) {
+            QuestManager.forceDiscoveries();
+            QuestManager.requestAnalyse();
+        } else {
+            QuestManager.wasBookOpened();
+        }
     }
 }

@@ -6,6 +6,8 @@ package com.wynntils.core.utils;
 
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Arrays;
+
 public class Location {
 
     double x, y, z;
@@ -95,6 +97,6 @@ public class Location {
 
     @Override
     public int hashCode() {
-        return Double.hashCode(x) ^ Double.hashCode(y) ^ Double.hashCode(z);
+        return Arrays.hashCode(new double[]{ x, y, z });
     }
 }

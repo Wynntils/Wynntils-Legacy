@@ -153,10 +153,21 @@ public class ColorSet<T extends CustomColor> {
     }
 
     /**
-     * Return the aliases for the colour with a given code
+     * @return the aliases for the colour with a given code
      */
     public Set<String> getAliases(int code) {
         return Collections.unmodifiableSet(aliases[code]);
+    }
+
+    /**
+     * @return a copy of the colours in the set (that can be modified)
+     */
+    public CustomColor[] copySet() {
+        CustomColor[] colors = new CustomColor[this.colors.length];
+        for (int i = 0; i < colors.length; ++i) {
+            colors[i] = new CustomColor(this.colors[i]);
+        }
+        return colors;
     }
 
 }
