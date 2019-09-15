@@ -127,7 +127,7 @@ public class MapWaypointIcon extends MapTextureIcon {
         CustomColor color = wp.getColor();
         if (color != null) {
             GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
-            GL11.glColor4f(color.r, color.g, color.b, color.a);
+            GL11.glColor4f(color.r, color.g, color.b, color.a * currentColorBuf.get(3));
         }
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
         if (color != null) {

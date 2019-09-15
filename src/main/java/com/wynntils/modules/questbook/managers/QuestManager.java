@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
@@ -28,12 +29,19 @@ import java.util.stream.Collectors;
 
 public class QuestManager {
 
+    /** Minimum number of ms between successive analyzes (To prevent analyze spam) */
+    private static final int ANALYZE_MIN_TIMEOUT = 5 * 1000;
+    /** Time to reanalyze after interrupted */
+    private static final int INTERRUPT_TIMEOUT = 30 * 1000;
+
+    private static final int MESSAGE_ID = 423375494;  // QuestManager.class.getName().hashCode()
+
     private static long readRequestTime = Long.MIN_VALUE;
 
     private static HashMap<String, QuestInfo> currentQuestsData = new HashMap<>();
     private static HashSet<String> incompleteQuests = new HashSet<>();
-    public static HashMap<String, DiscoveryInfo> currentDiscoveryData = new HashMap<>();
-    public static QuestInfo trackedQuest = null;
+    private static HashMap<String, DiscoveryInfo> currentDiscoveryData = new HashMap<>();
+    private static QuestInfo trackedQuest = null;
 
     public static List<String> discoveryLore = new ArrayList<>();
     public static List<String> secretdiscoveryLore = new ArrayList<>();
@@ -43,6 +51,7 @@ public class QuestManager {
 
     private static boolean analyseRequested = false;
     private static boolean bookOpened = false;
+    private static boolean interrupted = false;
     private static boolean isForcingDiscoveries = false;
 
     /**
@@ -50,14 +59,17 @@ public class QuestManager {
      */
     public static void requestAnalyse() {
         analyseRequested = true;
+        interrupted = false;
     }
 
     public static void executeQueue() {
-        if(!analyseRequested || (Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
+        if(!analyseRequested || (Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
         long currentTime = System.currentTimeMillis();
-        if (currentTime > readRequestTime + 5000) {
+        if (currentTime > readRequestTime + (interrupted ? INTERRUPT_TIMEOUT : ANALYZE_MIN_TIMEOUT)) {
             readRequestTime = currentTime;
             analyseRequested = false;
+            interrupted = false;
+            sendMessage(TextFormatting.GRAY + "[Analysing quest book...]");
             readQuestBook(!bookOpened, isForcingDiscoveries);
         }
     }
@@ -205,18 +217,19 @@ public class QuestManager {
                 isForcingDiscoveries = false;
             }
 
+            readRequestTime = System.currentTimeMillis();
+
             if(Reference.developmentEnvironment) {
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed in " + (System.currentTimeMillis() - ms) + "ms]"));
-                return;
+                sendMessage(TextFormatting.GRAY + "[Quest book analyzed in " + (System.currentTimeMillis() - ms) + "ms]");
+            } else {
+                sendMessage(TextFormatting.GRAY + "[Quest book analyzed]");
             }
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book Analyzed]"));
         });
         fakeInventory.onInterrupt(c -> {
             currentInventory = null;
-            if (Reference.developmentEnvironment) {
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "[Quest Book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms]"));
-            }
-            readRequestTime = System.currentTimeMillis() + 25000;  // Retry in 30 seconds
+
+            readRequestTime = System.currentTimeMillis();
+
             if (forceDiscoveries) {
                 QuestManager.forceDiscoveries();
             }
@@ -224,6 +237,13 @@ public class QuestManager {
                 requestFullSearch();
             } else {
                 requestAnalyse();
+            }
+
+            interrupted = true;
+            if (Reference.developmentEnvironment) {
+                sendMessage(TextFormatting.GRAY + "[Quest book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms]");
+            } else {
+                sendMessage(TextFormatting.RED + String.format("Quest book analysis has been interrupted by your actions. Retrying in %d seconds", INTERRUPT_TIMEOUT / 1000));
             }
         });
         currentInventory = fakeInventory;
@@ -297,13 +317,28 @@ public class QuestManager {
      * Clears the entire collected book data
      */
     public static void clearData() {
+        readRequestTime = Long.MIN_VALUE;
+
         currentQuestsData.clear();
+        incompleteQuests.clear();
         currentDiscoveryData.clear();
         trackedQuest = null;
+
+        discoveryLore.clear();
+        secretdiscoveryLore.clear();
+
+        secretDiscoveries = false;
+        if (currentInventory != null && currentInventory.isOpen()) currentInventory.close();
+        currentInventory = null;
+
         analyseRequested = false;
         bookOpened = false;
+        interrupted = false;
         isForcingDiscoveries = false;
-        currentInventory = null;
+    }
+
+    private static void sendMessage(String msg) {
+        ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID);
     }
 
 }
