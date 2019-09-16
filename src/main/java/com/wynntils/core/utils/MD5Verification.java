@@ -60,7 +60,7 @@ public class MD5Verification {
     }
 
     public boolean equals(String other) {
-        return getMd5() != null && getMd5().equalsIgnoreCase(other);
+        return md5 != null && md5.equalsIgnoreCase(other);
     }
 
     private static final Pattern md5Regex = Pattern.compile("^[0-9a-fA-F]{32}$");

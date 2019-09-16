@@ -109,6 +109,11 @@ public class UpdateOverlay extends Overlay {
         download = true;
     }
 
+    public static void ignore() {
+        reset();
+        disappear = true;
+    }
+
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks){
         if(download && disappear) {
@@ -163,7 +168,7 @@ public class UpdateOverlay extends Overlay {
         }
     }
 
-    public void copyUpdate(String jarName) {
+    public static void copyUpdate(String jarName) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 Reference.LOGGER.info("Attempting to apply Wynntils update.");

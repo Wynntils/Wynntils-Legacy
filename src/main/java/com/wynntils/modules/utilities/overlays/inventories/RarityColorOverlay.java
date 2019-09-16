@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -24,7 +23,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +31,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RarityColorOverlay implements Listener {
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
     private static String professionFilter = "-";
 
     @SubscribeEvent

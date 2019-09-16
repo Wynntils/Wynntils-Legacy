@@ -65,6 +65,8 @@ public class Textures {
     }
 
     public static class UIs {
+        public static AssetsTexture main_menu;
+
         public static AssetsTexture book;
         public static AssetsTexture book_scrollarea_settings;
 

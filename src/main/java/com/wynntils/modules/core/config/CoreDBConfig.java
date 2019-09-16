@@ -42,6 +42,9 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public String lastVersion = "0.0.0";
 
+    @Setting(displayName = "Main menu Wynncraft button", description = "Should a button be added to connect to Wynncraft on the main menu?")
+    public boolean addMainMenuButton = true;
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("updateStream")) WebManager.checkForUpdates();

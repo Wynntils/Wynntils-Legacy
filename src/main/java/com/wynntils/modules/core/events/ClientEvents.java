@@ -12,6 +12,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -19,6 +20,8 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
@@ -27,6 +30,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -141,4 +145,19 @@ public class ClientEvents implements Listener {
         }
     }
 
+    @SubscribeEvent
+    public void addMainMenuButtons(GuiScreenEvent.InitGuiEvent.Post e) {
+        GuiScreen gui = e.getGui();
+        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
+            MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList());
+        }
+    }
+
+    @SubscribeEvent
+    public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
+        GuiScreen gui = e.getGui();
+        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
+            MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
+        }
+    }
 }

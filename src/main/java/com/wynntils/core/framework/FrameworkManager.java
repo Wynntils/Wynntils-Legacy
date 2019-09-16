@@ -21,7 +21,9 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.commands.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -131,7 +133,10 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent) {
+        if (
+            Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent ||
+            (e instanceof GuiScreenEvent && ((GuiScreenEvent) e).getGui() instanceof GuiMainMenu)
+        ) {
             ReflectionFields.Event_phase.setValue(e, null);
             eventBus.post(e);
         }

@@ -12,6 +12,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
@@ -47,6 +48,7 @@ public class WebManager {
 
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
+    private static boolean ignoringJoinUpdate = false;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static ArrayList<ItemProfile> directItems = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
@@ -123,12 +125,25 @@ public class WebManager {
         updateTerritoryThreadStatus(true);
     }
 
+    public static void checkForUpdatesOnJoin() {
+        if (ignoringJoinUpdate) {
+            ignoringJoinUpdate = false;
+            return;
+        }
+        checkForUpdates();
+    }
+
     public static void checkForUpdates() {
         if (Reference.developmentEnvironment) {
             Reference.LOGGER.info("An update check would have occurred, but you are in a development environment.");
             return;
         }
         updateProfile = new UpdateProfile();
+    }
+
+    public static void skipJoinUpdate() {
+        UpdateOverlay.ignore();
+        ignoringJoinUpdate = true;
     }
 
     public static void setupUserAccount() {
