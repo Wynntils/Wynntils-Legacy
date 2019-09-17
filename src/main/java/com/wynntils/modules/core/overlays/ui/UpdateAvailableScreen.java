@@ -1,5 +1,8 @@
 package com.wynntils.modules.core.overlays.ui;
 
+import com.wynntils.Reference;
+import com.wynntils.modules.core.CoreModule;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -43,6 +46,9 @@ public class UpdateAvailableScreen extends GuiScreen {
     public void actionPerformed(GuiButton button) {
         if (button.id == 0) {
             // Update
+            CoreDBConfig.INSTANCE.showChangelogs = true;
+            CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
             mc.displayGuiScreen(new UpdatingScreen());
         } else if (button.id == 1) {
             // Ignore

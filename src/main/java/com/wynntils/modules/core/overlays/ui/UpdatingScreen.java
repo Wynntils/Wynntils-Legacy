@@ -1,6 +1,7 @@
 package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.Reference;
+import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
@@ -61,6 +62,7 @@ public class UpdatingScreen extends GuiScreen {
 
                     if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         failed = true;
+                        setChangelogs();
                         updateText();
                         Reference.LOGGER.error(url + " returned status code " + st.getResponseCode());
                         return;
@@ -68,6 +70,7 @@ public class UpdatingScreen extends GuiScreen {
 
                     if (!f.exists() && !f.mkdirs()) {
                         failed = true;
+                        setChangelogs();
                         updateText();
                         Reference.LOGGER.error("Couldn't create update file directory");
                         return;
@@ -92,6 +95,8 @@ public class UpdatingScreen extends GuiScreen {
                             // Cancelled
                             fos.close();
                             fis.close();
+                            failed = true;
+                            setChangelogs();
                             return;
                         }
 
@@ -104,11 +109,18 @@ public class UpdatingScreen extends GuiScreen {
                     fos.close();
                     fis.close();
 
+                    if (mc.currentScreen != UpdatingScreen.this) {
+                        failed = true;
+                        setChangelogs();
+                        return;
+                    }
+
                     UpdateOverlay.copyUpdate(jar_name);
                     mc.shutdown();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     failed = true;
+                    setChangelogs();
                     updateText();
                 }
             }, "Wynntils-update-downloader-thread").start();
@@ -126,11 +138,19 @@ public class UpdatingScreen extends GuiScreen {
 
     private static final String[] DOTS = { ".", "..", "...", "...", "..." };
 
+    private void setChangelogs() {
+        if (failed && CoreDBConfig.INSTANCE.showChangelogs) {
+            CoreDBConfig.INSTANCE.showChangelogs = false;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+        }
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
         if (failed) {
+            setChangelogs();
             drawCenteredString(mc.fontRenderer, TextFormatting.RED + "Update download failed", this.width/2, this.width/2, 0xFFFFFFFF);
         } else {
             int left = Math.max(this.width/2 - 100, 10);

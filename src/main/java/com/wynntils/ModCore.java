@@ -47,6 +47,7 @@ public class ModCore {
         jarFile = e.getSourceFile();
 
         Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        // Reference.developmentEnvironment = false;  // Uncomment to test updater
 
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
