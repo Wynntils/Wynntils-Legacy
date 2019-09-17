@@ -84,6 +84,12 @@ public class WorldMapUI extends GuiMovementScreen {
         super.initGui();
 
         updateCenterPosition(centerPositionX, centerPositionZ);
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     float minX = 0; float maxX = 0;

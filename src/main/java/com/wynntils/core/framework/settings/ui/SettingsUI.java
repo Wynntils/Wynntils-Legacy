@@ -24,6 +24,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -97,6 +98,8 @@ public class SettingsUI extends UI {
 
     @Override
     public void onClose() {
+        Keyboard.enableRepeatEvents(false);
+
         mc.currentScreen = null;
         mc.displayGuiScreen(parentScreen);
     }
@@ -189,7 +192,7 @@ public class SettingsUI extends UI {
 
     @Override
     public void onWindowUpdate() {
-
+        Keyboard.enableRepeatEvents(true);
     }
 
     public void setCurrentSettingsPath(String path) {

@@ -25,6 +25,8 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
@@ -576,7 +578,19 @@ public class Utils {
     public static void displayGuiScreen(GuiScreen screen) {
         Minecraft mc = Minecraft.getMinecraft();
 
+        GuiScreen oldScreen = mc.currentScreen;
+
+        GuiOpenEvent event = new GuiOpenEvent(screen);
+        if (MinecraftForge.EVENT_BUS.post(event)) return;
+        screen = event.getGui();
+
+        if (oldScreen == screen) return;
+        if (oldScreen != null) {
+            oldScreen.onGuiClosed();
+        }
+
         mc.currentScreen = screen;
+
         if (screen != null) {
             Minecraft.getMinecraft().setIngameNotInFocus();
 

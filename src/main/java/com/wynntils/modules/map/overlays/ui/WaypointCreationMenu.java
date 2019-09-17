@@ -71,7 +71,6 @@ public class WaypointCreationMenu extends UI {
     }
 
     @Override public void onInit() { }
-    @Override public void onClose() { }
     @Override public void onTick() { }
     @Override public void onWindowUpdate() {
         buttonList.clear();
@@ -141,6 +140,13 @@ public class WaypointCreationMenu extends UI {
         }
 
         isAllValidInformation();
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onClose() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     private void setWpIcon(WaypointType type, int zoomNeeded, CustomColor colour) {

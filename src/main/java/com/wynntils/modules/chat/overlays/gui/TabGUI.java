@@ -10,6 +10,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,6 +128,13 @@ public class TabGUI extends GuiScreen {
         autoCommand.addLine("Auto Command");
         labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
         orderNb.addLine("Order #");
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     @Override
