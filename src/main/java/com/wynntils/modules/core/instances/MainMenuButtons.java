@@ -13,6 +13,7 @@ import io.netty.handler.codec.base64.Base64;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
@@ -37,25 +38,31 @@ public class MainMenuButtons {
 
     private static ServerList serverList = null;
 
+    private static final int WYNNCRAFT_BUTTON_ID = 3790627;
+
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList) {
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
 
         ServerData s = getWynncraftServerData(to.mc);
         FMLClientHandler.instance().setupServerList();
-        buttonList.add(new WynncraftButton(s, 42069, to.width / 2 + 104,to.height / 4 + 48 + 24));
+        buttonList.add(new WynncraftButton(s, WYNNCRAFT_BUTTON_ID, to.width / 2 + 104,to.height / 4 + 48 + 24));
 
         WebManager.checkForUpdates();
         UpdateOverlay.reset();
     }
 
     public static void actionPerformed(GuiMainMenu on, GuiButton button, List<GuiButton> buttonList) {
-        if (button.id == 42069) {
-            if (hasUpdate()) {
-                on.mc.displayGuiScreen(new UpdateAvailableScreen(((WynncraftButton) button).server));
-            } else {
-                WebManager.skipJoinUpdate();
-                on.mc.displayGuiScreen(new GuiConnecting(on, on.mc, ((WynncraftButton) button).server));
-            }
+        if (button.id == WYNNCRAFT_BUTTON_ID) {
+            clickedWynncraftButton(on.mc, ((WynncraftButton) button).server, on);
+        }
+    }
+
+    private static void clickedWynncraftButton(Minecraft mc, ServerData server, GuiScreen backGui) {
+        if (hasUpdate()) {
+            mc.displayGuiScreen(new UpdateAvailableScreen(server));
+        } else {
+            WebManager.skipJoinUpdate();
+            mc.displayGuiScreen(new GuiConnecting(backGui, mc, server));
         }
     }
 
@@ -208,6 +215,21 @@ public class MainMenuButtons {
             return serverIcon;
         }
 
+    }
+
+    public static class FakeGui extends GuiScreen {
+        FakeGui() {
+            doAction();
+        }
+
+        @Override
+        public void initGui() {
+            doAction();
+        }
+
+        private static void doAction() {
+            clickedWynncraftButton(Minecraft.getMinecraft(), getWynncraftServerData(Minecraft.getMinecraft()), null);
+        }
     }
 
 }

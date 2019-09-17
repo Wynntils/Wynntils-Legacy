@@ -36,6 +36,12 @@ public class MainWorldMapUI extends WorldMapUI {
         creationTime = System.currentTimeMillis();
     }
 
+    public MainWorldMapUI(float startX, float startZ) {
+        this();
+
+        updateCenterPosition(startX, startZ);
+    }
+
     @Override
     public void initGui() {
         super.initGui();

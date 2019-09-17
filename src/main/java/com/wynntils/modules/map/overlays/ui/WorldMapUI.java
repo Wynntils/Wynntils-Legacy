@@ -251,12 +251,15 @@ public class WorldMapUI extends GuiMovementScreen {
         renderer.drawString(worldX + ", " + worldZ, width / 2, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
-    protected boolean clicking = false;
+    private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
+    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
 
     private void zoomBy(int by) {
-        zoom = Math.max(MapConfig.WorldMap.INSTANCE.minZoom, Math.min(MapConfig.WorldMap.INSTANCE.maxZoom, zoom - by));
+        zoom = MathHelper.clamp(zoom - by, MIN_ZOOM, MAX_ZOOM);
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
+
+    protected boolean clicking = false;
 
     @Override
     public void handleMouseInput() throws IOException {

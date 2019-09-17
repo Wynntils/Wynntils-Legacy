@@ -88,16 +88,16 @@ public class UpdatingScreen extends GuiScreen {
                     int count;
 
                     while ((count = fis.read(data)) != -1) {
-                        total += count;
-                        progress = total / fileLength;
-                        fos.write(data, 0, count);
                         if (mc.currentScreen != UpdatingScreen.this) {
                             // Cancelled
-                            fos.flush();
                             fos.close();
                             fis.close();
                             return;
                         }
+
+                        total += count;
+                        progress = total / fileLength;
+                        fos.write(data, 0, count);
                     }
 
                     fos.flush();
@@ -131,9 +131,8 @@ public class UpdatingScreen extends GuiScreen {
         drawDefaultBackground();
 
         if (failed) {
-            drawCenteredString(mc.fontRenderer, TextFormatting.RED + "Download failed!", this.width/2, this.width/2, 0xFFFFFFFF);
+            drawCenteredString(mc.fontRenderer, TextFormatting.RED + "Update download failed", this.width/2, this.width/2, 0xFFFFFFFF);
         } else {
-
             int left = Math.max(this.width/2 - 100, 10);
             int right = Math.min(this.width/2 + 100, this.width - 10);
             int top = this.height/2 - 2 - MathHelper.ceil(mc.fontRenderer.FONT_HEIGHT / 2f);

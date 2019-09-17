@@ -460,6 +460,7 @@ public class OverlayConfig extends SettingsClass {
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),
             CLASS("Class", "%Class%\\nLevel %lvl%"),
+            LOCATION("Location", "[%world%] %location%"),
             BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
             UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),

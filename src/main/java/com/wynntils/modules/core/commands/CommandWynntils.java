@@ -6,9 +6,15 @@ package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Delay;
+import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.chat.ChatModule;
+import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -120,6 +126,25 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     break;
                 case "debug":
                     QuestManager.requestFullSearch();
+                    break;
+                case "hidehoveritemtext":
+                    ChatConfig.INSTANCE.heldItemChat = false;
+                    ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+                    ITextComponent message = new TextComponentString("Enable §bMod options > Chat > Held Item Chat Messages§r to undo (or click this)");
+                    message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils showhoveritemtext"));
+                    Minecraft.getMinecraft().player.sendMessage(message);
+                    break;
+                case "showhoveritemtext":
+                    ChatConfig.INSTANCE.heldItemChat = true;
+                    ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+                    break;
+                case "openmapatcompass":
+                    Location compass = CompassManager.getCompassLocation();
+                    if (compass == null) {
+                        Utils.displayGuiScreen(new MainWorldMapUI());
+                    } else {
+                        Utils.displayGuiScreen(new MainWorldMapUI((float) compass.getX(), (float) compass.getZ()));
+                    }
                     break;
                 default:
                     throw new CommandException("Invalid argument. Use /wynntils help for more info.");

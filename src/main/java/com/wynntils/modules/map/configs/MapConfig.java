@@ -80,10 +80,6 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
-
-        // If this ever needs to be configurable, make these into @Setting s.
-        public int maxZoom = 150;  // Note that this is the most zoomed out
-        public int minZoom = -10;  // And this is the most zoomed in
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")

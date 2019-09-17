@@ -53,7 +53,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Block Health Potions When at Full Health", description = "Should the mod prevent you from using your health potions when you are at full health?")
     public boolean blockHealingPots = true;
 
-    @Setting(displayName = "Apply Wynncraft resource pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
+    @Setting(displayName = "Apply Wynncraft Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
     public boolean autoResource = true;
 
     @Setting(upload = false)

@@ -17,6 +17,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
@@ -279,4 +280,42 @@ public class PlayerInfo {
         }
         return new UnprocessedAmount(amount, maximum);
     }
+
+    /**
+     * @return The maximum number of soul points the current player can have
+     *
+     * Note: If veteren, this should always be 15, but currently returns the wrong value
+     */
+    public int getMaxSoulPoints() {
+        return 10 + MathHelper.clamp(getLevel() / 15, 0, 5);
+    }
+
+    /**
+     * @return The current number of soul points the current player has
+     *
+     * -1 if unable to determine
+     */
+    public int getSoulPoints() {
+        if (currentClass == ClassType.NONE || mc.player == null) return -1;
+        ItemStack soulPoints = mc.player.inventory.mainInventory.get(8);
+        if (soulPoints.getItem() != Items.NETHER_STAR) {
+            return -1;
+        }
+        return soulPoints.getCount();
+    }
+
+    /**
+     * @return Time in game ticks (1/20th of a second, 50ms) until next soul point
+     *
+     * -1 if unable to determine
+     *
+     * Also check that {@code {@link #getMaxSoulPoints()} >= {@link #getSoulPoints()}},
+     * in which case soul points are already full
+     */
+    public int getTicksToNextSoulPoint() {
+        if (currentClass == ClassType.NONE || mc.world == null) return -1;
+        int ticks = ((int) (mc.world.getWorldTime() % 24000) + 24000) % 24000;
+        return ((24000 - ticks) % 24000);
+    }
+
 }

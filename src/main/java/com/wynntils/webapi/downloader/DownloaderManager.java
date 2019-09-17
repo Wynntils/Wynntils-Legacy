@@ -100,7 +100,7 @@ public class DownloaderManager {
 
                 String[] urlSplited = pf.getUrl().split("/");
 
-                int fileLenght = st.getContentLength();
+                int fileLength = st.getContentLength();
 
                 File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlSplited[urlSplited.length - 1], "UTF-8"));
 
@@ -113,7 +113,7 @@ public class DownloaderManager {
 
                 while ((count = fis.read(data)) != -1) {
                     total += count;
-                    progression = (int)(total * 100 / fileLenght);
+                    progression = (int)(total * 100 / fileLength);
                     fos.write(data, 0, count);
                 }
 
