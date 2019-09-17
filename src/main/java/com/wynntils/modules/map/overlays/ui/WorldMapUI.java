@@ -259,9 +259,11 @@ public class WorldMapUI extends GuiMovementScreen {
 
     private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
     private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
+    private static final float ZOOM_SCALE_FACTOR = 1.1f;
 
     private void zoomBy(int by) {
-        zoom = MathHelper.clamp(zoom - by, MIN_ZOOM, MAX_ZOOM);
+        double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
+        zoom = MathHelper.clamp((int) Math.round(zoomScale * (zoom + 50) - 50), MIN_ZOOM, MAX_ZOOM);
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
@@ -273,9 +275,9 @@ public class WorldMapUI extends GuiMovementScreen {
 
         int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
         if(mDwehll > 0) {
-            zoomBy(+5);
+            zoomBy(+1);
         }else if(mDwehll < 0) {
-            zoomBy(-5);
+            zoomBy(-1);
         }
 
         super.handleMouseInput();
@@ -284,14 +286,12 @@ public class WorldMapUI extends GuiMovementScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == KeyManager.getZoomInKey().getKeyBinding().getKeyCode()) {
-            zoomBy(+20);
-            return;  // Return early so it doesn't zoom the minimap
+            zoomBy(+2);
         } else if (keyCode == KeyManager.getZoomOutKey().getKeyBinding().getKeyCode()) {
-            zoomBy(-20);
-            return;
+            zoomBy(-2);
+        } else {
+            super.keyTyped(typedChar, keyCode);
         }
-
-        super.keyTyped(typedChar, keyCode);
     }
 
 }

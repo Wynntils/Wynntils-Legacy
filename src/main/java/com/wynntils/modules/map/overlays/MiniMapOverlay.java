@@ -31,6 +31,21 @@ public class MiniMapOverlay extends Overlay {
         super("Mini Map", 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
+    private static final int MAX_ZOOM = 100;  // Note that this is the most zoomed out
+    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
+    private static final double ZOOM_SCALE_FACTOR = 1.05;
+
+    public static void zoomBy(int by) {
+        double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
+        int currentZoom = MapConfig.INSTANCE.mapZoom;
+        float halfMapSize = MapConfig.INSTANCE.mapSize / 2f;
+
+        MapConfig.INSTANCE.mapZoom = MathHelper.clamp((int) Math.round((zoomScale * (currentZoom + halfMapSize) - halfMapSize)), MIN_ZOOM, MAX_ZOOM);
+        if (MapConfig.INSTANCE.mapZoom != currentZoom) {
+            MapConfig.INSTANCE.saveSettings(MapModule.getModule());
+        }
+    }
+
     @Override
     public void render(RenderGameOverlayEvent.Pre e) {
         if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL || !MapConfig.INSTANCE.enabled) return;
