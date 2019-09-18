@@ -220,7 +220,7 @@ public class PlayerInfo {
 
         for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
             ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
-            if (it == null || it.isEmpty()) {
+            if (it.isEmpty()) {
                 continue;
             }
 
