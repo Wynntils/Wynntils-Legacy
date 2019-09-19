@@ -34,7 +34,7 @@ public class QuestBookPage extends GuiScreen {
     protected boolean requestOpening;
 
     private boolean showSearchBar;
-    private String searchBarText;
+    protected String searchBarText;
     private boolean searchBarFocused;
     protected int currentPage;
     protected boolean acceptNext, acceptBack;

@@ -4,6 +4,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Location;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -404,4 +406,20 @@ public class WaypointOverviewUI extends GuiScreen {
         }
         this.buttonList.addAll(editButtons);
     }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDwehll < 0 && nextPageBtn.enabled) {
+            ++page;
+            checkAvailablePages();
+            setEditButtons();
+        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+            --page;
+            checkAvailablePages();
+            setEditButtons();
+        }
+    }
+
 }

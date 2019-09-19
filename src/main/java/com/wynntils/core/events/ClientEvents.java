@@ -177,13 +177,8 @@ public class ClientEvents {
                 guisClosed = true;
             } else if (openingGui && !closingGui) {
                 // Opening first GUI
-                guisClosed = false;
                 Keyboard.enableRepeatEvents(false);
-            } else {
-                guisClosed = false;
             }
-        } else {
-            guisClosed = false;
         }
     }
 

@@ -292,6 +292,8 @@ public class QuestManager {
      * Check if the book was already opened before, if false it will request a read
      */
     public static void wasBookOpened() {
+        interrupted = false;
+
         if(bookOpened) return;
 
         requestFullSearch();

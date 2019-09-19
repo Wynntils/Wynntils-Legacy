@@ -104,6 +104,10 @@ public class QuestInfo {
         return z;
     }
 
+    public boolean isMiniQuest() {
+        return name.startsWith("Mini-Quest");
+    }
+
     public String toString() {
         return name + ":" + minLevel + ":" + size.toString() + ":" + status.toString() + ":" + currentDescription;
     }

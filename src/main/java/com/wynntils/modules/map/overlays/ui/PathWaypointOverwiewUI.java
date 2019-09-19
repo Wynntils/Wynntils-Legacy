@@ -3,6 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
@@ -10,7 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PathWaypointOverwiewUI extends GuiScreen {
@@ -110,4 +113,20 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         }
         this.buttonList.addAll(editButtons);
     }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDwehll < 0 && nextPageBtn.enabled) {
+            ++page;
+            checkAvailablePages();
+            setEditButtons();
+        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+            --page;
+            checkAvailablePages();
+            setEditButtons();
+        }
+    }
+
 }

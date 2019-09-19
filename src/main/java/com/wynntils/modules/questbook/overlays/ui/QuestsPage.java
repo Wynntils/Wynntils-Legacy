@@ -15,8 +15,10 @@ import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -37,6 +39,7 @@ public class QuestsPage extends QuestBookPage {
 
     private ArrayList<QuestInfo> questSearch;
     private QuestInfo overQuest;
+    private SortMethod sort = SortMethod.level;
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);
@@ -211,10 +214,18 @@ public class QuestsPage extends QuestBookPage {
             //Reload Quest Data button
             if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
                 hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 219, 282, 240, 303);
+                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
             } else {
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 282, 261, 303);
+                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
             }
+
+            // Sort method button
+            int dX = 0;
+            if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99) {
+                hoveredText = sort.hoverText.stream().map(I18n::format).collect(Collectors.toList());
+                dX = 22;
+            }
+            render.drawRect(Textures.UIs.quest_book, x + 1, y - 99, x + 12, y - 88, sort.tx1 + dX, sort.ty1, sort.tx2 + dX, sort.ty2);
         }
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
@@ -256,6 +267,9 @@ public class QuestsPage extends QuestBookPage {
                             path += " (Quest)";
                             break;
                         default:
+                            if (overQuest.isMiniQuest()) {
+                                path = "Quests#Miniquests";
+                            }
                             break;
                     }
                     url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
@@ -291,6 +305,11 @@ public class QuestsPage extends QuestBookPage {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestManager.requestAnalyse();
             return;
+        } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
+            searchUpdate(searchBarText);
+            return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -302,19 +321,21 @@ public class QuestsPage extends QuestBookPage {
     }
 
     @Override
-    public void searchUpdate(String currentText) {
+    protected void searchUpdate(String currentText) {
         HashMap<String, QuestInfo> questsMap = QuestManager.getCurrentQuestsData();
 
-        questSearch = currentText != null && !currentText.isEmpty() ? (ArrayList<QuestInfo>) questsMap.values().stream()
-                .filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase()))
-                .collect(Collectors.toList())
-                : new ArrayList<>(questsMap.values());
+        questSearch = new ArrayList<>(questsMap.values());
 
         if (QuestBookConfig.INSTANCE.hideMiniQuests) {
-            questSearch.removeIf(i -> i.getName().startsWith("Mini-Quest"));
+            questSearch.removeIf(QuestInfo::isMiniQuest);
         }
 
-        questSearch.sort(Comparator.comparing(QuestInfo::getStatus).thenComparing(QuestInfo::getMinLevel));
+        if (currentText != null && !currentText.isEmpty()) {
+            String lowerCase = currentText.toLowerCase();
+            questSearch.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerCase));
+        }
+
+        questSearch.sort(sort.comparator);
     }
 
     @Override
@@ -327,4 +348,40 @@ public class QuestsPage extends QuestBookPage {
         super.open(requestOpening);
         QuestManager.wasBookOpened();
     }
+
+    private enum SortMethod {
+        level(
+            Comparator.comparing(QuestInfo::getStatus).thenComparingInt(QuestInfo::getMinLevel),
+            130, 281, 152, 303, Arrays.asList(
+            "Sort by Level",  // Replace with translation keys during l10n
+            "Lowest level quests first"
+        )),
+        distance(Comparator.comparing(QuestInfo::getStatus).thenComparingInt(q -> {
+            if (q.getX() == Integer.MIN_VALUE) {
+                // No coordinate; Probably already started and close (128 block is arbitrary default)
+                return 128 * 128;
+            }
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            if (player == null) {
+                return 128 * 128;
+            }
+            double dX = player.posX - q.getX();
+            double dZ = player.posZ - q.getZ();
+            return (int) (dX * dX + dZ * dZ);
+        }).thenComparingInt(QuestInfo::getMinLevel), 174, 281, 196, 303, Arrays.asList(
+            "Sort by Distance",
+            "Closest quests first"
+        ));
+
+        SortMethod(Comparator<QuestInfo> comparator, int tx1, int ty1, int tx2, int ty2, List<String> hoverText) {
+            this.comparator = comparator;
+            this.tx1 = tx1; this.ty1 = ty1; this.tx2 = tx2; this.ty2 = ty2;
+            this.hoverText = hoverText;
+        }
+
+        Comparator<QuestInfo> comparator;
+        int tx1, ty1, tx2, ty2;
+        List<String> hoverText;
+    }
+
 }

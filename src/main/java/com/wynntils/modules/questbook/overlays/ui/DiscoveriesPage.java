@@ -20,7 +20,6 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DiscoveriesPage extends QuestBookPage {
 
@@ -217,15 +216,24 @@ public class DiscoveriesPage extends QuestBookPage {
     protected void searchUpdate(String currentText) {
         HashMap<String, DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
 
-        discoverySearch = currentText != null &&!currentText.isEmpty() ? (ArrayList<DiscoveryInfo>)discoveries.values().stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase())).collect(Collectors.toList()) : new ArrayList<>(discoveries.values());
+        discoverySearch = new ArrayList<>(discoveries.values());
+
+        discoverySearch.removeIf(c -> {
+            if (c.getType() == null) return true;
+            switch (c.getType()) {
+                case TERRITORY: return !territory;
+                case WORLD: return !world;
+                case SECRET: return !secret;
+                default: return true;
+            }
+        });
+
+        if (currentText != null && !currentText.isEmpty()) {
+            String lowerCase = currentText.toLowerCase();
+            discoverySearch.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerCase));
+        }
 
         discoverySearch.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
-
-        discoverySearch = (ArrayList<DiscoveryInfo>) discoverySearch.stream().filter(c -> {
-            if (territory && c.getType() == DiscoveryType.TERRITORY) return true;
-            if (world && c.getType() == DiscoveryType.WORLD) return true;
-            return secret && c.getType() == DiscoveryType.SECRET;
-        }).collect(Collectors.toList());
     }
 
     @Override

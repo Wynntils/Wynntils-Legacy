@@ -200,9 +200,9 @@ public class WorldMapSettingsUI extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-        if (i != 0) {
-            changePage(i > 0 ? +1 : -1);
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDwehll != 0) {
+            changePage(mDwehll < 0 ? +1 : -1);
         }
     }
 
