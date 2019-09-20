@@ -211,7 +211,7 @@ public class RichProfile {
             if (joinSecret != null) {
                 lastStructure.joinSecret = joinSecret.toString();
                 lastStructure.partyId = joinSecret.id;
-                lastStructure.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+                lastStructure.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
                 lastStructure.partyMax = 15;
             } else {
                 lastStructure.joinSecret = null;
