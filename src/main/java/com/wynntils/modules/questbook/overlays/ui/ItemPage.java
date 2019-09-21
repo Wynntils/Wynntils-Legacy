@@ -387,20 +387,26 @@ public class ItemPage extends QuestBookPage {
         itemSearch = new ArrayList<>(WebManager.getDirectItems());
 
         itemSearch.removeIf(c -> {
-            if (c.getType() == null) return true;
-            switch (c.getType().toLowerCase(Locale.ROOT)) {
-                case "helmet": return !allowHelmet;
-                case "chestplate": return !allowChestplate;
-                case "boots": return !allowBoots;
-                case "leggings": return !allowLeggings;
-                case "wand": return !allowWands;
-                case "spear": return !allowSpears;
-                case "dagger": return !allowDaggers;
-                case "bow": return !allowBows;
-                case "bracelet": return !allowBracelets;
-                case "ring": return !allowRings;
-                case "necklace": return !allowNecklaces;
-                default: return true;
+            if (c.getType() == null && c.getAccessoryType() == null) return true;
+            if (c.getCategory().equals("accessory")) {
+                switch (c.getAccessoryType().toLowerCase(Locale.ROOT)) {
+                    case "bracelet": return !allowBracelets;
+                    case "ring": return !allowRings;
+                    case "necklace": return !allowNecklaces;
+                    default: return true;
+                }
+            } else {
+                switch (c.getType().toLowerCase(Locale.ROOT)) {
+                    case "helmet": return !allowHelmet;
+                    case "chestplate": return !allowChestplate;
+                    case "boots": return !allowBoots;
+                    case "leggings": return !allowLeggings;
+                    case "wand": return !allowWands;
+                    case "spear": return !allowSpears;
+                    case "dagger": return !allowDaggers;
+                    case "bow": return !allowBows;
+                    default: return true;
+                }
             }
         });
 
