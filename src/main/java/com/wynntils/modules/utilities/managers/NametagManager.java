@@ -60,7 +60,7 @@ public class NametagManager {
     private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.AQUA, "Guild Member", 0.7f);
     private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.GOLD, "Wynncraft Moderator", 0.7f);
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
-    private static final NametagLabel wynnContentTeamLabel = new NametagLabel(MinecraftChatColors.DARK_AQUA, "Wynncraft Content Team", 0.7f);
+    private static final NametagLabel wynnContentTeamLabel = new NametagLabel(MinecraftChatColors.DARK_AQUA, "Wynncraft CT", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
