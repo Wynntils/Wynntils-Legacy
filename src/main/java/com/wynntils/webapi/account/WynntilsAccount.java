@@ -11,8 +11,6 @@ import com.google.gson.JsonParser;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.MD5Verification;
-import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
@@ -125,7 +123,7 @@ public class WynntilsAccount {
             JsonObject object = new JsonObject();
             object.addProperty("username", mc.getSession().getUsername());
             object.addProperty("key", lastKey);
-            object.addProperty("version", Reference.VERSION + (Reference.BUILD_NUMBER != -1 ? "_" + Reference.BUILD_NUMBER : "") + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE ? "_CE" : ""));
+            object.addProperty("version", Reference.VERSION + (Reference.BUILD_NUMBER != -1 ? "_" + Reference.BUILD_NUMBER : ""));
 
             byte[] postAsBytes = object.toString().getBytes(StandardCharsets.UTF_8);
 
