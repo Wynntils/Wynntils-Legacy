@@ -17,11 +17,8 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -223,48 +220,8 @@ public class RarityColorOverlay implements Listener {
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
             if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
-                int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
-                int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
-
-                for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
-                    ItemStack it = lowerInv.getStackInSlot(i);
-                    if (it.isEmpty()) {
-                        continue;
-                    }
-
-                    if (it.getItem() == Items.EMERALD) {
-                        LWRemeralds += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                        LWRblocks += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                        LWRliquid += it.getCount();
-                    }
-                }
-                for (int i = 0; i < upperInv.getSizeInventory(); i++) {
-                    ItemStack it = upperInv.getStackInSlot(i);
-                    if (it.isEmpty()) {
-                        continue;
-                    }
-
-                    if (it.getItem() == Items.EMERALD) {
-                        UPRemeralds += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                        UPRblocks += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                        UPRliquid += it.getCount();
-                    }
-                }
-
-                int LWRmoney = (LWRliquid * 4096) + (LWRblocks * 64) + LWRemeralds;
-                int UPRmoney = (UPRliquid * 4096) + (UPRblocks * 64) + UPRemeralds;
+                int LWRmoney = Utils.countMoney(lowerInv);
+                int UPRmoney = Utils.countMoney(upperInv);
 
                 GlStateManager.disableLighting();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -284,13 +241,13 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.endGL();
 
                     } else {
-                        if (LWRmoney != 0) {
-                            LWRleAmount = (int) Math.floor(LWRmoney / 4096);
-                            LWRmoney -= LWRleAmount * 4096;
 
-                            LWRblockAmount = (int) Math.floor(LWRmoney / 64);
-                            LWRmoney -= LWRblockAmount * 64;
-                        }
+                        int LWRleAmount = LWRmoney / 4096;
+                        LWRmoney %= 4096;
+
+                        int LWRblockAmount = LWRmoney / 64;
+                        LWRmoney %= 64;
+
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
@@ -313,13 +270,12 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.endGL();
 
                     } else {
-                        if (UPRmoney != 0) {
-                            UPRleAmount = (int) Math.floor(UPRmoney / 4096);
-                            UPRmoney -= UPRleAmount * 4096;
+                        int UPRleAmount = UPRmoney / 4096;
+                        UPRmoney %= 4096;
 
-                            UPRblockAmount = (int) Math.floor(UPRmoney / 64);
-                            UPRmoney -= UPRblockAmount * 64;
-                        }
+                        int UPRblockAmount = UPRmoney / 64;
+                        UPRmoney %= 64;
+
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);

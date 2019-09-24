@@ -12,9 +12,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
@@ -216,28 +214,8 @@ public class PlayerInfo {
      * @return Total number of emeralds in inventory (Including blocks and LE)
      */
     public int getMoney() {
-        int money = 0;
-
-        for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
-            ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
-            if (it.isEmpty()) {
-                continue;
-            }
-
-            if (it.getItem() == Items.EMERALD) {
-                money += it.getCount();
-                continue;
-            }
-            if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                money += it.getCount() * 64;
-                continue;
-            }
-            if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                money += it.getCount() * (64 * 64);
-            }
-        }
-
-        return money;
+        if (mc.player == null) return 0;
+        return Utils.countMoney(mc.player.inventory);
     }
 
     private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
@@ -259,24 +237,26 @@ public class PlayerInfo {
     public UnprocessedAmount getUnprocessedAmount() {
         int maximum = -1;
         int amount = 0;
-        for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
-            ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
-            if (it != null && !it.isEmpty()) {
-                Matcher nameMatcher = unprocessedNameRegex.matcher(it.getDisplayName());
-                if (nameMatcher.matches()) {
-                    NBTTagList lore = Utils.getLoreTag(it);
-                    if (lore != null && lore.tagCount() != 0) {
-                        Matcher loreMatcher = unprocessedLoreRegex.matcher(lore.getStringTagAt(0));
-                        if (loreMatcher.matches()) {
-                            // Found an unprocessed item
-                            if (maximum == -1) {
-                                maximum = Integer.parseInt(nameMatcher.group(1));
-                            }
-                            amount += Integer.parseInt(loreMatcher.group(1)) * it.getCount();
-                        }
-                    }
-                }
+        for (int i = 0, len = mc.player.inventory.getSizeInventory(); i < len; i++) {
+            ItemStack it = mc.player.inventory.getStackInSlot(i);
+            if (it.isEmpty()) continue;
+
+            Matcher nameMatcher = unprocessedNameRegex.matcher(it.getDisplayName());
+            if (!nameMatcher.matches()) continue;
+
+            NBTTagList lore = Utils.getLoreTag(it);
+            if (lore == null || lore.tagCount() == 0) continue;
+
+            Matcher loreMatcher = unprocessedLoreRegex.matcher(lore.getStringTagAt(0));
+            if (!loreMatcher.matches()) continue;
+
+            // Found an unprocessed item
+
+            if (maximum == -1) {
+                maximum = Integer.parseInt(nameMatcher.group(1));
             }
+            amount += Integer.parseInt(loreMatcher.group(1)) * it.getCount();
+
         }
         return new UnprocessedAmount(amount, maximum);
     }
@@ -284,10 +264,14 @@ public class PlayerInfo {
     /**
      * @return The maximum number of soul points the current player can have
      *
-     * Note: If veteren, this should always be 15, but currently returns the wrong value
+     * Note: If veteran, this should always be 15, but currently might return the wrong value
      */
     public int getMaxSoulPoints() {
-        return 10 + MathHelper.clamp(getLevel() / 15, 0, 5);
+        int maxIfNotVeteran = 10 + MathHelper.clamp(getLevel() / 15, 0, 5);
+        if (getSoulPoints() > maxIfNotVeteran) {
+            return 15;
+        }
+        return maxIfNotVeteran;
     }
 
     /**

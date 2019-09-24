@@ -16,7 +16,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -684,12 +688,9 @@ public class Utils {
      */
     public static boolean isValidInteger(String s) {
         if (s == null || s.length() > 11 || !numberRegex.matcher(s).matches()) return false;
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException ignored) {
-            return false;
-        }
-        return true;
+        if (s.length() < 10) return true;
+        long parsed = Long.parseLong(s);
+        return (int) parsed == parsed;
     }
 
     /**
@@ -697,8 +698,9 @@ public class Utils {
      */
     public static boolean isValidLong(String s) {
         if (s == null || s.length() > 20 || !numberRegex.matcher(s).matches()) return false;
+        if (s.length() < 19) return true;
         try {
-            Long.parseLong(s);
+            Long.parseLong(s);  // Could overflow
         } catch (NumberFormatException ignored) {
             return false;
         }
@@ -731,4 +733,31 @@ public class Utils {
         selected.setCursorPosition(0);
         selected.setSelectionPos(selected.getText().length());
     }
+
+    private static final Item EMERALD_BLOCK = Item.getItemFromBlock(Blocks.EMERALD_BLOCK);
+
+    /**
+     * @return the total amount of emeralds in an inventory, including blocks and le
+     */
+    public static int countMoney(IInventory inv) {
+        if (inv == null) return 0;
+
+        int money = 0;
+
+        for (int i = 0, len = inv.getSizeInventory(); i < len; i++) {
+            ItemStack it = inv.getStackInSlot(i);
+            if (it.isEmpty()) continue;
+
+            if (it.getItem() == Items.EMERALD) {
+                money += it.getCount();
+            } else if (it.getItem() == EMERALD_BLOCK) {
+                money += it.getCount() * 64;
+            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                money += it.getCount() * (64 * 64);
+            }
+        }
+
+        return money;
+    }
+
 }

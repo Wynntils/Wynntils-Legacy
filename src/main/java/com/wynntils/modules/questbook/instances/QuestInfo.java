@@ -6,6 +6,8 @@ package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -58,7 +60,35 @@ public class QuestInfo {
         if(m.find()) {
             x = Integer.parseInt(m.group(1));
             z = Integer.parseInt(m.group(3));
-        }else { x = Integer.MIN_VALUE; z = Integer.MIN_VALUE; }
+        } else {
+            int overrideX = Integer.MIN_VALUE;
+            int overrideZ = Integer.MIN_VALUE;
+            String closestTerritory = null;
+            switch (name) {
+                case "Kingdom of Sand":
+                    if (status == QuestStatus.CAN_START || status == QuestStatus.CANNOT_START) {
+                        closestTerritory = "Desert East Lower";
+                    }
+                    break;
+                case "From the Bottom":
+                    if (status == QuestStatus.CAN_START || status == QuestStatus.CANNOT_START) {
+                        closestTerritory = "Thanos";
+                    }
+                    break;
+            }
+
+            if (overrideX == Integer.MIN_VALUE && closestTerritory != null) {
+                // Override by territory instead of numbers
+                TerritoryProfile t = WebManager.getTerritories().get(closestTerritory);
+                if (t != null) {
+                    overrideX = (t.getStartX() + t.getEndX()) / 2;
+                    overrideZ = (t.getStartZ() + t.getEndZ()) / 2;
+                }
+            }
+
+            x = overrideX;
+            z = overrideZ;
+        }
 
         this.splittedDescription = splittedDescription;
         this.questbookFriendlyName = questbookFriendlyName;

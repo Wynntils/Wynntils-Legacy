@@ -140,7 +140,7 @@ public class HeldItemChatManager {
         } else {
             int seconds = (time / 20) % 60;
             add(text, new TextComponentString(String.format(
-                "§e[§l%s§e:§l%s§e]", Integer.toString(time / (20 * 60)), (seconds < 10 ? "0" : "") + seconds
+                "§e[§l%s§e:§l%s§e]", Integer.toString(time / (20 * 60)), String.format("%02d", seconds)
             )));
         }
 

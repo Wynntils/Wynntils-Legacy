@@ -4,8 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
@@ -14,6 +14,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,21 +75,17 @@ public class ItemIdentificationOverlay implements Listener {
             return;
         }
 
-        if (stack.getDisplayName().contains("Soul Point")) {
+        if (stack.getItem() == Items.NETHER_STAR && stack.getDisplayName().contains("Soul Point")) {
             List<String> lore = Utils.getLore(stack);
             if (lore != null && !lore.isEmpty()) {
                 if (lore.get(lore.size() - 1).contains("Time until next soul point: ")) {
                     lore.remove(lore.size() - 1);
                     lore.remove(lore.size() - 1);
                 }
-                long worldTimeTicks = ModCore.mc().world.getWorldTime();
-                long currentTime = worldTimeTicks % 24000;
-                long minutesUntilSoulPoint = Math.floorDiv(currentTime, 1200);
-                currentTime -= (minutesUntilSoulPoint * 1200);
-                long secondsUntilSoulPoint = Math.floorDiv(currentTime, 20);
-                minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
-                secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
                 lore.add("");
+                int secondsUntilSoulPoint = PlayerInfo.getPlayerInfo().getTicksToNextSoulPoint() / 20;
+                int minutesUntilSoulPoint = secondsUntilSoulPoint / 60;
+                secondsUntilSoulPoint %= 60;
                 lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
                 NBTTagCompound nbt = stack.getTagCompound();
                 NBTTagCompound display = nbt.getCompoundTag("display");

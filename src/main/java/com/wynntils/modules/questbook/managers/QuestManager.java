@@ -340,7 +340,10 @@ public class QuestManager {
     }
 
     private static void sendMessage(String msg) {
-        ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID);
+        // Can be called from nio thread by FakeInventory
+        Minecraft.getMinecraft().addScheduledTask(() ->
+            ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
+        );
     }
 
 }

@@ -39,7 +39,7 @@ public class QuestsPage extends QuestBookPage {
 
     private ArrayList<QuestInfo> questSearch;
     private QuestInfo overQuest;
-    private SortMethod sort = SortMethod.level;
+    private SortMethod sort = SortMethod.LEVEL;
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);
@@ -350,24 +350,24 @@ public class QuestsPage extends QuestBookPage {
     }
 
     private enum SortMethod {
-        level(
+        LEVEL(
             Comparator.comparing(QuestInfo::getStatus).thenComparingInt(QuestInfo::getMinLevel),
             130, 281, 152, 303, Arrays.asList(
             "Sort by Level",  // Replace with translation keys during l10n
             "Lowest level quests first"
         )),
-        distance(Comparator.comparing(QuestInfo::getStatus).thenComparingInt(q -> {
-            if (q.getX() == Integer.MIN_VALUE) {
-                // No coordinate; Probably already started and close (128 block is arbitrary default)
-                return 128 * 128;
-            }
+        DISTANCE(Comparator.comparing(QuestInfo::getStatus).thenComparingLong(q -> {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
             if (player == null) {
-                return 128 * 128;
+                return 0;
             }
-            double dX = player.posX - q.getX();
-            double dZ = player.posZ - q.getZ();
-            return (int) (dX * dX + dZ * dZ);
+            if (q.getX() == Integer.MIN_VALUE) {
+                // No coordinate
+                return Long.MAX_VALUE;
+            }
+            long dX = (long) (player.posX - q.getX());
+            long dZ = (long) (player.posZ - q.getZ());
+            return dX * dX + dZ * dZ;
         }).thenComparingInt(QuestInfo::getMinLevel), 174, 281, 196, 303, Arrays.asList(
             "Sort by Distance",
             "Closest quests first"
