@@ -6,6 +6,7 @@ package com.wynntils.core.framework.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -334,6 +335,27 @@ public class ScreenRenderer {
         float f = fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y ,color,alignment,shadow);
         GlStateManager.color(1.0f,1.0f,1.0f,1.0f);
         return f;
+    }
+
+    /**
+     * Draw a string being corrected splitted every x pixels, without cutting out words
+     *
+     * @param text the text to render
+     * @param maxSize the max pixel size of a sentence
+     * @param x x(from drawingOrigin) to render at
+     * @param y y(from drawingOrigin) to render at
+     * @param offsetY the offset that will increase by every split
+     * @param color the starting color to render(without codes, its basically the actual text's color)
+     * @param alignment the alignment around {x} and {y} to render the text about
+     * @param shadow should the text have a shadow behind it
+     */
+    public void drawSplitedString(String text, int maxSize, float x, float y, float offsetY, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
+        float currentY = y;
+        for(String s : Utils.wrapTextBySize(text, maxSize)) {
+            drawString(s, x, currentY, color, alignment, shadow);
+
+            currentY+=offsetY;
+        }
     }
 
     /**
