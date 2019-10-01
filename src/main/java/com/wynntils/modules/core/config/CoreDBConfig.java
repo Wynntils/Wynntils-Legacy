@@ -42,7 +42,7 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public String lastVersion = "0.0.0";
 
-    @Setting(displayName = "Main menu Wynncraft button", description = "Should a button be added to connect to Wynncraft on the main menu?")
+    @Setting(displayName = "Main Menu Wynncraft Button", description = "Should a button be added to the main menu that allows you to connect to Wynncraft directly?")
     public boolean addMainMenuButton = true;
 
     @Override
