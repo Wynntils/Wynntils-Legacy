@@ -98,10 +98,10 @@ public class ModCore {
             @Override
             public String call() throws Exception {
                 UpdateStream stream = CoreDBConfig.INSTANCE == null ? null : CoreDBConfig.INSTANCE.updateStream;
-                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being an dev env" : "at a normal env");
+                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env");
             }
         });
-        
+
     }
 
     public static Minecraft mc() {
