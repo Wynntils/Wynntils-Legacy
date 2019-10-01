@@ -209,10 +209,10 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
 
-        @Setting(displayName = "Display market prices in a custom format", description = "Should the market prices be displayed in a custom format")
+        @Setting(displayName = "Display Market Prices in a Custom Format", description = "Should market prices be displayed in a custom format?")
         public boolean displayInCustomFormat = true;
 
-        @Setting(displayName = "Market prices format", description = "What format should the market prices be displayed in?\nbrackets indicate all parameters inside must not be 0")
+        @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
         @Setting.Features.StringParameters(parameters = { "les", "ebs", "es", "stx", "le", "eb", "e" })
         public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
     }
