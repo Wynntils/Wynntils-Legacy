@@ -9,6 +9,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
@@ -33,15 +34,21 @@ import java.util.regex.Pattern;
 
 public class ItemIdentificationOverlay implements Listener {
 
+    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
     private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")" + TextFormatting.BOLD + "[\\u21E9\\u21E7\\u21EA]" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")\\d+\\.\\d+%)|( (" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\[(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")[-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + "),(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ") [-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\])|( (" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")\\[[-+]?\\d+ SP\\])");
+    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + E);
+    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + E + ")? ?(\\d+" + E + B + ")? ?([\\d.]+" + L + E + ")?\\)");
+    private final static Pattern STX_PATTERN = Pattern.compile("(\\([^)]*)%stx%([^)]*\\))");
+    private final static Pattern LE_PATTERN = Pattern.compile("(\\([^)]*)%le%([^)]*\\))");
+    private final static Pattern EB_PATTERN = Pattern.compile("(\\([^)]*)%eb%([^)]*\\))");
+    private final static Pattern E_PATTERN = Pattern.compile("(\\([^)]*)%e%([^)]*\\))");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
-    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
         if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
@@ -49,7 +56,7 @@ public class ItemIdentificationOverlay implements Listener {
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
         if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
@@ -57,12 +64,12 @@ public class ItemIdentificationOverlay implements Listener {
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
         if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
 
-    public void drawHoverGuess(ItemStack stack){
+    public void drawHoverGuess(ItemStack stack, IInventory inventory) {
         if (stack.isEmpty() || !stack.hasDisplayName()) {
             return;
         }
@@ -91,6 +98,46 @@ public class ItemIdentificationOverlay implements Listener {
                 nbt.setTag("display", display);
                 stack.setTagCompound(nbt);
                 return;
+            }
+        }
+
+        if (inventory.getName().contains("Marketplace") && !stack.getTagCompound().getBoolean("pricePatternSet") && UtilitiesConfig.Market.INSTANCE.displayInCustomFormat) {
+            List<String> lore = Utils.getLore(stack);
+            if (lore != null && lore.size() > 2) {
+                String price = lore.get(2);
+                Matcher priceMatcher = MARKET_PRICE.matcher(price);
+                if (priceMatcher.find()) {
+                    String actualPriceString = priceMatcher.group(1).replace(",", "");
+                    double priceDouble = Double.parseDouble(actualPriceString);
+                    
+                    int stx = (int) Math.floor(priceDouble / 262144);
+                    int le = (int) Math.floor(priceDouble % 262144 / 4096);
+                    int eb = (int) Math.floor(priceDouble % 4096 / 64);
+                    int e = (int) Math.floor(priceDouble % 64);
+                    
+                    String formedPriceString = UtilitiesConfig.Market.INSTANCE.customFormat;
+
+                    formedPriceString = STX_PATTERN.matcher(formedPriceString).replaceAll(stx != 0 ? "$1" + Integer.toString(stx) + "$2" : "");
+                    formedPriceString = LE_PATTERN.matcher(formedPriceString).replaceAll(le != 0 ? "$1" + Integer.toString(le) + "$2" : "");
+                    formedPriceString = EB_PATTERN.matcher(formedPriceString).replaceAll(eb != 0 ? "$1" + Integer.toString(eb) + "$2" : "");
+                    formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + Integer.toString(e) + "$2" : "");
+
+                    formedPriceString = formedPriceString
+                        .replace("%les%", L + E)
+                        .replace("%ebs%", E + B)
+                        .replace("%es%", E);
+
+                    formedPriceString = formedPriceString
+                        .replace("\\", "\\\\")
+                        .replace("$", "\\$")
+                        .replace("(", "")
+                        .replace(")", "");
+
+                    Matcher splitPriceMatcher = SPLIT_MARKET_PRICE.matcher(price);
+                    price = splitPriceMatcher.replaceAll("(" + formedPriceString + ")");
+                    stack.getSubCompound("display").getTagList("Lore", 8).set(2, new NBTTagString(price));
+                    stack.getTagCompound().setBoolean("pricePatternSet", true);
+                }
             }
         }
 
