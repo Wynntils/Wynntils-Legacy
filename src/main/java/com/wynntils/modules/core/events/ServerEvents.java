@@ -23,7 +23,7 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;

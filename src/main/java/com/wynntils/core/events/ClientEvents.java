@@ -50,6 +50,10 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         if(Reference.onServer) {
+            if (Reference.onWorld) {
+                Reference.setUserWorld(null);
+                MinecraftForge.EVENT_BUS.post(new WynnWorldEvent.Leave());
+            }
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
@@ -161,6 +165,10 @@ public class ClientEvents {
     @SubscribeEvent
     public void onWorldLeave(GuiOpenEvent e) {
         if (e.getGui() instanceof GuiDisconnected && Reference.onServer) {
+            if (Reference.onWorld) {
+                Reference.setUserWorld(null);
+                MinecraftForge.EVENT_BUS.post(new WynnWorldEvent.Leave());
+            }
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }

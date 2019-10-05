@@ -67,9 +67,17 @@ public class ServerEvents implements Listener {
                     if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
 
                     if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                        ModCore.mc().addScheduledTask(() -> {
+                            if (Reference.onWorld) {
+                                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                            }
+                        });
                     }else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), currentTime);
+                        ModCore.mc().addScheduledTask(() -> {
+                            if (Reference.onWorld) {
+                                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), currentTime);
+                            }
+                        });
                     }
                     return;
                 }
@@ -81,7 +89,11 @@ public class ServerEvents implements Listener {
                 RichPresenceModule.getModule().getData().setLocation("Waiting");
                 if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
                 if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                    ModCore.mc().addScheduledTask(() -> {
+                        if (Reference.onWorld) {
+                            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                        }
+                    });
                 }
             }
 

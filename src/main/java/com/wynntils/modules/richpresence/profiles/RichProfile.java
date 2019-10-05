@@ -75,7 +75,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -111,7 +111,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -144,7 +144,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -180,7 +180,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
