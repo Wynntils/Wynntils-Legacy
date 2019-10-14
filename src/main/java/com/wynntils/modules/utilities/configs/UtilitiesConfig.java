@@ -56,7 +56,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Apply Wynncraft Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
     public boolean autoResource = true;
 
-    @Setting(displayName = "Add Confirmation For Purchasing Bank Pages", description = "Should Wynntils show a yes no gui when buying bank pages?")
+    @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
     @Setting(upload = false)
