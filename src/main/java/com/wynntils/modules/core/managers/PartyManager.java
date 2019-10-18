@@ -29,8 +29,8 @@ public class PartyManager {
             boolean owner = components.getFormattedText().startsWith("§b");
             String member = components.getUnformattedText().contains(",") ? components.getUnformattedText().split(",")[0] : components.getUnformattedText();
 
+            if (owner) partyContainer.setOwner(member);
             partyContainer.addMember(member);
-            if(owner) partyContainer.setOwner(member);
         }
 
     }, listPattern);
@@ -51,8 +51,8 @@ public class PartyManager {
         }
         if(component.getUnformattedText().startsWith("You have successfully created a party.")) {
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
-            partyContainer.addMember(Minecraft.getMinecraft().player.getName());
             partyContainer.setOwner(Minecraft.getMinecraft().player.getName());
+            partyContainer.addMember(Minecraft.getMinecraft().player.getName());
             return;
         }
         if(component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has joined the party.")) {
