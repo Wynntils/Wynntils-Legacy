@@ -122,6 +122,9 @@ public class ChatTab implements Comparable<ChatTab> {
 
         if(clearSent) sentMessages.clear();
         currentMessages.clear();
+
+        hasMentions = false;
+        hasNewMessages = false;
     }
 
     public void pushMention() {
