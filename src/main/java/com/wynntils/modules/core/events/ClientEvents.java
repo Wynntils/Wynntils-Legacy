@@ -137,7 +137,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
-        if(!Reference.onWorld || e.phase != TickEvent.Phase.END) return;
+        if (e.phase != TickEvent.Phase.END) return;
 
         if (PacketQueue.hasQueuedPacket()) {
             PingManager.calculatePing();
