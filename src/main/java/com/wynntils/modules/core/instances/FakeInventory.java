@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * Used for fake opening inventories that are opened by items
@@ -47,7 +48,7 @@ public class FakeInventory {
 
     public static final Packet<?> ignoredPacket = rightClick;
 
-    String windowTitle;
+    Pattern windowTitle;
     int itemSlot;
 
     private Consumer<FakeInventory> onReceiveItems = null;
@@ -63,7 +64,7 @@ public class FakeInventory {
     boolean open = false;
     long openTime = System.currentTimeMillis();
 
-    public FakeInventory(String windowTitle, int itemSlot) {
+    public FakeInventory(Pattern windowTitle, int itemSlot) {
         this.windowTitle = windowTitle;
         this.itemSlot = itemSlot;
     }
@@ -246,7 +247,7 @@ public class FakeInventory {
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent<SPacketOpenWindow> e) {
-        if(!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !e.getPacket().getWindowTitle().getUnformattedText().contains(windowTitle)) {
+        if (!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !windowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText())).matches()) {
             windowId = -1;
             close();
             return;
@@ -259,8 +260,8 @@ public class FakeInventory {
         e.setCanceled(true);
 
         if (interrupted) {
+            windowId = -1;
             close(false);
-            onInterrupt.accept(this);
         }
     }
 
@@ -282,8 +283,8 @@ public class FakeInventory {
         e.setCanceled(true);
 
         if (interrupted) {
+            windowId = -1;
             close(false);
-            onInterrupt.accept(this);
         }
     }
 
@@ -294,6 +295,8 @@ public class FakeInventory {
 
         if (!e.isCanceled() && onInterrupt != null) {
             interrupted = true;
+            ModCore.mc().getConnection().sendPacket(new CPacketCloseWindow(1));
+            onInterrupt.accept(this);
             return false;
         }
 

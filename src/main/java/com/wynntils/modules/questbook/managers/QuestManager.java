@@ -25,6 +25,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -35,6 +36,8 @@ public class QuestManager {
     private static final int INTERRUPT_TIMEOUT = 30 * 1000;
 
     private static final int MESSAGE_ID = 423375494;  // QuestManager.class.getName().hashCode()
+
+    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] \\w{3,16}'s (Discoveries|Quests)");
 
     private static long readRequestTime = Long.MIN_VALUE;
 
@@ -86,7 +89,7 @@ public class QuestManager {
 
         long ms = System.currentTimeMillis();
 
-        FakeInventory fakeInventory = new FakeInventory("[Pg.", 7);
+        FakeInventory fakeInventory = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, 7);
         secretDiscoveries = false;
         // Ensure that all previously incomplete quests have been seen, and when
         // not doing a fullSearch, don't double check completed quest pages after
