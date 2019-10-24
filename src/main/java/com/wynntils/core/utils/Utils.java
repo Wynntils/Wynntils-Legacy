@@ -194,7 +194,7 @@ public class Utils {
      * Get the lore NBT tag from an item
      */
     public static NBTTagList getLoreTag(ItemStack item) {
-        if (item == null) return null;
+        if (item.isEmpty()) return null;
         NBTTagCompound display = item.getSubCompound("display");
         if (display != null && display.hasKey("Lore")) {
             NBTBase loreBase = display.getTag("Lore");
