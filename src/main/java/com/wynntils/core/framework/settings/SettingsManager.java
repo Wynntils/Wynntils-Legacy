@@ -79,16 +79,6 @@ public class SettingsManager {
         String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";
         f = new File(f, configFile);
 
-        //HeyZeer0: converts the old format to the new format
-        File conversionFile = new File(configFolder, configFile);
-        boolean delete = false;
-        if(conversionFile.exists()) {
-            f = conversionFile;
-            delete = true;
-
-            Reference.LOGGER.warn("Converting old config " + configFile + " to the new format.");
-        }
-
         if(!f.exists()) {
             f.createNewFile();
             container.onCreateConfig();
@@ -99,9 +89,6 @@ public class SettingsManager {
         InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8);
         SettingsHolder holder = gson.fromJson(new JsonReader(reader), obj.getClass());
         reader.close();
-
-        //HeyZeer0: deletes all files from the old format
-        if(delete) f.delete();
 
         return holder;
     }

@@ -51,7 +51,12 @@ public class SettingsContainer {
     }
 
     public void tryToLoad() throws Exception {
-        updateValues(SettingsManager.getSettings(m, holder, this));
+        if(fromCloud == null) {
+            updateValues(SettingsManager.getSettings(m, holder, this));
+            return;
+        }
+
+        updateValues(fromCloud); //this makes the syncronization
     }
 
     public HashMap<Field, Object> getValues() throws Exception {
