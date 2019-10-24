@@ -31,16 +31,9 @@ public class SettingsContainer {
         this.m = m;
         this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
-        for(Field f : holder.getClass().getDeclaredFields()) {
-            if (!Modifier.isStatic(f.getModifiers())) {
-                fields.add(f);
-            }
-        }
-
-        // Iterate over superclasses until Overlay.class is passed
-        for (Class superclass = holder.getClass().getSuperclass(); Overlay.class.isAssignableFrom(superclass); superclass = superclass.getSuperclass()) {
-            for(Field f : superclass.getDeclaredFields()) {
-                if (!Modifier.isStatic(f.getModifiers())) {
+        for (Class<?> clazz = holder.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
                     fields.add(f);
                 }
             }
@@ -92,17 +85,10 @@ public class SettingsContainer {
         ArrayList<String> fieldsName = new ArrayList<>();
         for(Field f2 : fields) { fieldsName.add(f2.getName()); }
 
-        for(Field f : newH.getClass().getDeclaredFields()) {
-            if(!fieldsName.contains(f.getName())) {
-                save = true;
-
-                continue;
-            }
-            setValue(f, f.get(newH), false);
-        }
-        if (holder instanceof Overlay) {
-            for(Field f : newH.getClass().getSuperclass().getDeclaredFields()) {
-                if(!fieldsName.contains(f.getName())) {
+        for (Class<?> clazz = newH.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers())) continue;
+                if (!fieldsName.contains(f.getName())) {
                     save = true;
 
                     continue;
@@ -115,11 +101,12 @@ public class SettingsContainer {
     }
 
     public void onCreateConfig() throws Exception {
-        ArrayList<String> fieldsName = new ArrayList<>();
-        for(Field f2 : fields) { fieldsName.add(f2.getName()); }
-
-        for(Field f : holder.getClass().getDeclaredFields()) {
-            getConfigFromCloud(f);
+        for (Class<?> clazz = holder.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
+                    getConfigFromCloud(f);
+                }
+            }
         }
     }
 

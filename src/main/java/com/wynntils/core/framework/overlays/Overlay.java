@@ -9,6 +9,7 @@ import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.Position;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -25,7 +26,9 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public transient OverlayGrowFrom growth;
     public transient RenderGameOverlayEvent.ElementType[] overrideElements;
 
+    @Setting
     public boolean active = true;
+    @Setting
     public Position position = new Position();
 
     public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, OverlayGrowFrom growth, RenderGameOverlayEvent.ElementType... overrideElements) {
