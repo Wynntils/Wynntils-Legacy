@@ -35,24 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static net.minecraft.client.renderer.GlStateManager.alphaFunc;
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.depthMask;
-import static net.minecraft.client.renderer.GlStateManager.disableBlend;
-import static net.minecraft.client.renderer.GlStateManager.disableDepth;
-import static net.minecraft.client.renderer.GlStateManager.disableLighting;
-import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.enableBlend;
-import static net.minecraft.client.renderer.GlStateManager.enableDepth;
-import static net.minecraft.client.renderer.GlStateManager.enableLighting;
-import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.glNormal3f;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
-import static net.minecraft.client.renderer.GlStateManager.tryBlendFuncSeparate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class NametagManager {
 
@@ -265,6 +248,7 @@ public class NametagManager {
             CustomColor color;
             switch (itemProfile.getTier()) {
                 case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
+                case FABLED: color = MinecraftChatColors.RED; break;
                 case LEGENDARY: color = MinecraftChatColors.AQUA; break;
                 case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
                 case UNIQUE: color = MinecraftChatColors.YELLOW; break;

@@ -21,7 +21,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.Color;
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -497,6 +497,9 @@ public class ItemProfile {
                 case LEGENDARY:
                     description.add(TextFormatting.AQUA + getName());
                     break;
+                case FABLED:
+                    description.add(TextFormatting.RED + getName());
+                    break;
                 case MYTHIC:
                     description.add(TextFormatting.DARK_PURPLE + getName());
                     break;
@@ -621,6 +624,9 @@ public class ItemProfile {
             }
 
             switch (getTier()) {
+                case FABLED:
+                    description.add(TextFormatting.RED + "Fabled Item");
+                    break;
                 case LEGENDARY:
                     description.add(TextFormatting.AQUA + "Legendary Item");
                     break;
@@ -736,7 +742,7 @@ public class ItemProfile {
 
     public enum ItemRarity {
 
-        NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), MYTHIC(5);
+        NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), FABLED(5), MYTHIC(6);
 
         int id;
 

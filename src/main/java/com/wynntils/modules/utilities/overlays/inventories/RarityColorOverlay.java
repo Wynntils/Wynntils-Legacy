@@ -61,6 +61,8 @@ public class RarityColorOverlay implements Listener {
                 continue;
             } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
+            } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+                r = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.b;
             } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.b;
             } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
@@ -165,6 +167,8 @@ public class RarityColorOverlay implements Listener {
                 continue;
             } else if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 r = 0.078f; g = 0.35f; b = 0.8f;
+            } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+                r = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.b;
             } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.b;
             } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {

@@ -183,6 +183,9 @@ public class ItemIdentificationOverlay implements Listener {
         } else if (stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Mythic")) {
             items = igp.getItems().get(itemType).get("Mythic");
             color = TextFormatting.DARK_PURPLE;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.RED.toString()) && igp.getItems().get(itemType).containsKey("Fabled")) {
+            items = igp.getItems().get(itemType).get("Fabled");
+            color = TextFormatting.RED;
         } else if (stack.getDisplayName().startsWith(TextFormatting.GREEN.toString()) && igp.getItems().get(itemType).containsKey("Set")) {
             items = igp.getItems().get(itemType).get("Set");
             color = TextFormatting.GREEN;
@@ -240,12 +243,14 @@ public class ItemIdentificationOverlay implements Listener {
             String lore = cleanse(actualLore.get(i));
             String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
-            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
+            if(wColor.matches(".*(Mythic|Fabled|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
 
                 //thanks dukiooo for this Math
                 if(wColor.contains("Mythic")) {
                     rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
+                }else if(wColor.contains("Fabled")) {
+                    rerollValue = 10; //TODO find the math for rerolling fabled items
                 }else if(wColor.contains("Legendary")) {
                     rerollValue = (int)Math.ceil(40D + wItem.getLevel() * 5.2);
                 }else if(wColor.contains("Rare")) {

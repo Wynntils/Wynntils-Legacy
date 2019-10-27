@@ -119,6 +119,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
         public boolean mythicHighlight = true;
 
+        @Setting(displayName = "Highlight Legendaries", description = "Should fabled items be highlighted?")
+        public boolean fabledHighlight = true;
+
         @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?")
         public boolean legendaryHighlight = true;
 
@@ -173,6 +176,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
+
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.")
+        public CustomColor fabledHighlightColor = new CustomColor(1, .58f, .49f);
 
         @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);

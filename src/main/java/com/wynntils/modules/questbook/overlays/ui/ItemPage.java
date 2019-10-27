@@ -238,6 +238,11 @@ public class ItemPage extends QuestBookPage {
                         g = 0;
                         b = 0.3f;
                         break;
+                    case FABLED:
+                        r = 1f;
+                        g = 0.58f;
+                        b = 0.49f;
+                        break;
                     case LEGENDARY:
                         r = 0;
                         g = 1;
