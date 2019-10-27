@@ -119,7 +119,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should fabled items be highlighted?")
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?")
         public boolean fabledHighlight = true;
 
         @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?")
