@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.init.SoundEvents;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,13 +54,23 @@ public class MainWorldMapUI extends WorldMapUI {
         this.buttonList.add(helpBtn = new GuiButtonImageBetter(3, 24, height - 34, 11, 16, 0, 72, Textures.Map.map_options.resourceLocation));
     }
 
+    private static boolean isHoldingMapKey() {
+        int mapKey = MapModule.getModule().getMapKey().getKey();
+        if (mapKey == 0) return false;  // Unknown key
+        if (-100 <= mapKey && mapKey <= -85) {
+            // Mouse key
+            return Mouse.isButtonDown(mapKey + 100);
+        }
+        return Keyboard.isKeyDown(mapKey);
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //HeyZeer0: This detects if the user is holding the map key;
-        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) holdingMapKey = true;
+        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
 
         //HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
-        if(holdingMapKey && !Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) {
+        if(holdingMapKey && !isHoldingMapKey()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
             return;
         }
