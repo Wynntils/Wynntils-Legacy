@@ -357,7 +357,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent
@@ -369,7 +371,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent
@@ -381,7 +385,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent
