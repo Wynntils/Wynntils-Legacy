@@ -568,6 +568,6 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-    	ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
     }
 }
