@@ -37,7 +37,7 @@ public class QuestManager {
 
     private static final int MESSAGE_ID = 423375494;  // QuestManager.class.getName().hashCode()
 
-    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] \\w{3,16}'s (Discoveries|Quests)");
+    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] \\w{3,16}'s? (Discoveries|Quests)");
 
     private static long readRequestTime = Long.MIN_VALUE;
 
