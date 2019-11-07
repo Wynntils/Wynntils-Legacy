@@ -13,7 +13,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -48,7 +47,7 @@ public class ItemIdentificationOverlay implements Listener {
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
             drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
@@ -56,7 +55,7 @@ public class ItemIdentificationOverlay implements Listener {
 
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
             drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
@@ -64,7 +63,7 @@ public class ItemIdentificationOverlay implements Listener {
 
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
             drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
