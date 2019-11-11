@@ -69,7 +69,7 @@ reobfJar {
 }
 
 shadowJar {
-    baseName = archivesBaseName + "-MC1.12.2-" + version
+    baseName = archivesBaseName + "-" + version + "-MC1.12.2"
     classifier = null
     version = null
     configurations = [project.configurations.compile]
