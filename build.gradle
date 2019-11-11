@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 0, minor: 2, revision: 7)
+def versionObj = new Version(major: 1, minor: 0, revision: 0)
 
 version = versionObj.toString()
 group = "com.wynntils"
@@ -69,7 +69,7 @@ reobfJar {
 }
 
 shadowJar {
-    baseName = archivesBaseName + "-" + version
+    baseName = archivesBaseName + "-MC1.12.2-" + version
     classifier = null
     version = null
     configurations = [project.configurations.compile]

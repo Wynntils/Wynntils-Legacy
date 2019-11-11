@@ -163,6 +163,7 @@ public class QuestBookPage extends GuiScreen {
                 }
             }
         }
+
         ScreenRenderer.endGL();
     }
 
