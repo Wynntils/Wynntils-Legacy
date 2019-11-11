@@ -84,30 +84,40 @@ public class DiscoveriesPage extends QuestBookPage {
                 }
             }
 
-            if (territory) {
+            //territory discoveries
+            if(mouseX >= x - 135 && mouseX <= x - 105 && mouseY >= y + 35 && mouseY <= y + 65) {
+                render.drawRect(selected_cube_2, x - 135, y + 35, x - 105, y + 65);
+                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Territory Discoveries", TextFormatting.GRAY + "Click to " + (territory ? "hide" : "show"));
+            }else if (territory) {
                 render.drawRect(selected_cube, x - 135, y + 35, x - 105, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 283, 24, 20);
             } else {
                 render.drawRect(unselected_cube, x - 135, y + 35, x - 105, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 263, 24, 20);
             }
+            render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 263, 24, 20);
 
-            if (world) {
+            //world discoveries
+            if(mouseX >= x - 95 && mouseX <= x - 65 && mouseY >= y + 35 && mouseY <= y + 65) {
+                render.drawRect(selected_cube_2, x - 95, y + 35, x - 65, y + 65);
+                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] World Discoveries", TextFormatting.GRAY + "Click to " + (world ? "hide" : "show"));
+            } else if (world) {
                 render.drawRect(selected_cube, x - 95, y + 35, x - 65, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 242, 18, 20);
             } else {
                 render.drawRect(unselected_cube, x - 95, y + 35, x - 65, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 221, 18, 20);
             }
+            render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 242, 18, 20);
 
-            if (secret) {
+            //secret discoveries
+            if(mouseX >= x - 55 && mouseX <= x - 25 && mouseY >= y + 35 && mouseY <= y + 65) {
+                render.drawRect(selected_cube_2, x - 55, y + 35, x - 25, y + 65);
+                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Secret Discoveries", TextFormatting.GRAY + "Click to " + (secret ? "hide" : "show"));
+            } else if (secret) {
                 render.drawRect(selected_cube, x - 55, y + 35, x - 25, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 284, 20, 18);
             } else {
                 render.drawRect(unselected_cube, x - 55, y + 35, x - 25, y + 65);
-                render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 265, 20, 18);
             }
+            render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 284, 20, 18);
 
+            //pages
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int currentY = 12;
@@ -123,14 +133,14 @@ public class DiscoveriesPage extends QuestBookPage {
 
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = mc.world.getTotalWorldTime();
+                            lastTick = Minecraft.getSystemTime();
                         }
 
                         this.selected = i;
 
                         int animationTick;
                         if (!animationCompleted) {
-                            animationTick = (int) ((mc.world.getTotalWorldTime() - lastTick) + partialTicks) * 30;
+                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133) {
                                 animationCompleted = true;
                                 animationTick = 133;

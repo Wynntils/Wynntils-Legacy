@@ -12,6 +12,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
@@ -29,7 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class WebManager {
@@ -56,6 +57,7 @@ public class WebManager {
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
+    private static String currentSplash = "";
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
@@ -117,6 +119,7 @@ public class WebManager {
         updateMapRefineries(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
+        updateCurrentSplash();
 
         handler.dispatchAsync();
 
@@ -154,6 +157,10 @@ public class WebManager {
 
     public static WynntilsAccount getAccount() {
         return account;
+    }
+
+    public static String getCurrentSplash() {
+        return currentSplash;
     }
 
     public static HashMap<String, TerritoryProfile> getTerritories() {
@@ -265,6 +272,13 @@ public class WebManager {
                 return true;
             })
         );
+    }
+
+    public static void updateCurrentSplash() {
+        if(apiUrls == null || apiUrls.getList("Splashes") == null) return;
+
+        List<String> splashes = apiUrls.getList("Splashes");
+        currentSplash = splashes.get(Utils.getRandom().nextInt(splashes.size()));
     }
 
     /**
