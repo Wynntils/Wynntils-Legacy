@@ -13,11 +13,9 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.Toast;
-import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
-import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
-import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
-import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
+import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
@@ -25,6 +23,7 @@ import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -118,6 +117,28 @@ public class OverlayEvents implements Listener {
                 }
             }
             tickcounter++;
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldLeave(WynnWorldEvent.Leave e) {
+        RestartTimerOverlay.clear();
+    }
+
+    @SubscribeEvent
+    public void onLobbyLeave(WorldEvent.Unload e) {
+        if (Reference.onLobby) {
+            RestartTimerOverlay.clear();
+        }
+    }
+
+    @SubscribeEvent
+    public void onChatEvent(ChatEvent.Pre e) {
+        if (UtilitiesConfig.INSTANCE.restartTimer) {
+            if (e.getMessage().getUnformattedText().matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
+                String[] res = e.getMessage().getUnformattedText().split(" ");
+                RestartTimerOverlay.start(res[5], res[6]);
+            }
         }
     }
 
@@ -541,6 +562,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         ModCore.mc().gameSettings.heldItemTooltips = true;
+        RestartTimerOverlay.clear();
     }
 
     @SubscribeEvent

@@ -57,10 +57,10 @@ public class UtilitiesModule extends Module {
         registerOverlay(new InfoOverlay._3(), Priority.LOW);
         registerOverlay(new InfoOverlay._4(), Priority.LOW);
 
-
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
         registerOverlay(new StopWatchOverlay(), Priority.LOW);
+        registerOverlay(new RestartTimerOverlay(), Priority.LOW);
 
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.Data.class);

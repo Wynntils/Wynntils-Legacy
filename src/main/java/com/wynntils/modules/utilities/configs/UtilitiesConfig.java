@@ -59,6 +59,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
+    @Setting(displayName = "Restart Timer", description = "Should a timer be shown indicating how long before the server is going to restart?")
+    public boolean restartTimer = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 
