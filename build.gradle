@@ -69,7 +69,7 @@ reobfJar {
 }
 
 shadowJar {
-    baseName = archivesBaseName + "-" + version + "-MC1.12.2"
+    baseName = archivesBaseName + "-" + version
     classifier = null
     version = null
     configurations = [project.configurations.compile]
@@ -93,6 +93,6 @@ class Version {
     }
 
     String toString() {
-        "${major}.${minor}.${revision}_$build"
+        "${major}.${minor}.${revision}_$build-MC1.12.2"
     }
 }
