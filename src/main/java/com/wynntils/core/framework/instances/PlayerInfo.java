@@ -9,6 +9,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
@@ -193,6 +194,31 @@ public class PlayerInfo {
         CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
     }
 
+    private static final Pattern level1SpellPattern = Pattern.compile("^(Left|Right|\\?)-(Left|Right|\\?)-(Left|Right|\\?)$");
+    private static final Pattern lowLevelSpellPattern = Pattern.compile("^([LR?])-([LR?])-([LR?])$");
+    private String lastParsedTitle = null;
+
+    public boolean[] parseSpellFromTitle(String subtitle) {
+        // Level 1: Left-Right-? in subtitle
+        // Level 2-11: L-R-? in subtitle
+        if (subtitle.equals(lastParsedTitle)) {
+            return lastSpell;
+        }
+        lastParsedTitle = subtitle;
+        if (subtitle.isEmpty()) {
+            return (lastSpell = noSpell);
+        }
+        String right = level == 1 ? "Right" : "R";
+        Matcher m = (level == 1 ? level1SpellPattern : lowLevelSpellPattern).matcher(TextFormatting.getTextWithoutFormattingCodes(subtitle));
+        if (!m.matches() || m.group(1).equals("?")) return (lastSpell = noSpell);
+        boolean spell1 = m.group(1).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        if (m.group(2).equals("?")) return (lastSpell = new boolean[]{ spell1 });
+        boolean spell2 = m.group(2).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        if (m.group(3).equals("?")) return (lastSpell = new boolean[]{ spell1, spell2 });
+        boolean spell3 = m.group(3).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        return (lastSpell = new boolean[]{ spell1, spell2, spell3 });
+    }
+
     /**
      * Return an array of the last spell in the action bar.
      * Each value will be {@link #SPELL_LEFT} or {@link #SPELL_RIGHT}.
@@ -200,6 +226,15 @@ public class PlayerInfo {
      * @return A boolean[] whose length is 0, 1, 2 or 3.
      */
     public boolean[] getLastSpell() {
+        if (getCurrentClass() == ClassType.NONE) {
+            return noSpell;
+        }
+        int level = getLevel();
+        if (level <= 11) {
+            String subtitle = (String) ReflectionFields.GuiIngame_displayedSubTitle.getValue(mc.ingameGUI);
+            return parseSpellFromTitle(subtitle);
+        }
+
         return lastSpell;
     }
 

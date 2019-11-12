@@ -24,6 +24,7 @@ public enum ReflectionFields {
     GuiIngame_persistantChatGUI(GuiIngame.class, "persistantChatGUI", "field_73840_e"),
     GuiIngame_remainingHighlightTicks(GuiIngame.class, "remainingHighlightTicks", "field_92017_k"),
     GuiIngame_highlightingItemStack(GuiIngame.class, "highlightingItemStack", "field_92016_l"),
+    GuiIngame_displayedSubTitle(GuiIngame.class, "displayedSubTitle", "field_175200_y"),
     GuiChat_defaultInputFieldText(GuiChat.class, "defaultInputFieldText", "field_146409_v");
 
     final Field field;
