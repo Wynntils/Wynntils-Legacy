@@ -449,9 +449,10 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
             String colorStrippedMessage = e.getMessage().getUnformattedText();
             // Not sure on the nether server format -Bedo
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.GREEN.toString())) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && e.getMessage().getFormattedText().startsWith(TextFormatting.GREEN.toString())) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
+                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman";
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + TextFormatting.DARK_GREEN + "]");
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + " " + res[9] + TextFormatting.DARK_GREEN + "]");
@@ -466,9 +467,10 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
             String colorStrippedMessage = e.getMessage().getUnformattedText();
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.AQUA.toString())) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && e.getMessage().getFormattedText().startsWith(TextFormatting.AQUA.toString())) { // À temp for Shaman
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
+                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman"; // Temp replace for Shaman (Same changes as above)
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + TextFormatting.DARK_AQUA + "]");
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + " " + res[9] + TextFormatting.DARK_AQUA + "]");
