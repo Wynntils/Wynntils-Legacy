@@ -6,6 +6,8 @@ package com.wynntils.core.utils;
 
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Arrays;
+
 public class Location {
 
     double x, y, z;
@@ -82,4 +84,19 @@ public class Location {
         return new BlockPos(x, y, z);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        if (obj instanceof Location) {
+            Location loc = (Location) obj;
+            return x == loc.x && y == loc.y && z == loc.z;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new double[]{ x, y, z });
+    }
 }

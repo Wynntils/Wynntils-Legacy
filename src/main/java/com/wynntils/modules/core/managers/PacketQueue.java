@@ -4,30 +4,53 @@
 
 package com.wynntils.modules.core.managers;
 
-import net.minecraft.client.Minecraft;
+import com.wynntils.modules.core.instances.PacketResponse;
 import net.minecraft.network.Packet;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.function.Function;
 
 public class PacketQueue {
 
-    private static Queue<Packet> packetQueue = new ArrayDeque<>();
+    private static ArrayList<PacketResponse> complexQueue = new ArrayList<>();
 
-    public static void queuePacket(Packet<?> packet) {
-        packetQueue.add(packet);
+    public static PacketResponse queueSimplePacket(Packet packet) {
+        PacketResponse response = new PacketResponse(packet);
+        complexQueue.add(response);
+        return response;
     }
 
-    public static void queuePackets(Packet<?>... packets) {
-        ;
-        packetQueue.addAll(Arrays.asList(packets));
+    public static PacketResponse queueComplexPacket(Packet packet, Class responseType) {
+        PacketResponse response = new PacketResponse(packet, responseType);
+        complexQueue.add(response);
+        return response;
+    }
+
+    public static PacketResponse queueComplexPacket(Packet packet, Class responseType, Function<Packet, Boolean> verification) {
+        PacketResponse response = new PacketResponse(packet, responseType);
+        response.setVerification(verification);
+
+        complexQueue.add(response);
+        return response;
+    }
+
+    public static void checkResponse(Packet<?> response) {
+        if(complexQueue.size() == 0) return;
+
+        PacketResponse r = complexQueue.get(0);
+        if(!r.isResponseValid(response)) return;
+
+        complexQueue.remove(0);
+    }
+
+    public static boolean hasQueuedPacket() {
+        return !complexQueue.isEmpty();
     }
 
     public static void proccessQueue() {
-        if(packetQueue.isEmpty()) return;
+        if(complexQueue.isEmpty()) return;
 
-        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getConnection().sendPacket(packetQueue.poll()));
+        complexQueue.get(0).sendPacket();
     }
 
 }

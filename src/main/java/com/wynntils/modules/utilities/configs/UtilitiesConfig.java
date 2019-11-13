@@ -53,8 +53,11 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Block Health Potions When at Full Health", description = "Should the mod prevent you from using your health potions when you are at full health?")
     public boolean blockHealingPots = true;
 
-    @Setting(displayName = "Apply Wynncraft resource pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
+    @Setting(displayName = "Apply Wynncraft Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
     public boolean autoResource = true;
+
+    @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
+    public boolean addBankConfirmation = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -115,6 +118,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_mythic.display_name", description = "wynntils.config.utils.item_highlights.highlight_mythic.description")
         public boolean mythicHighlight = true;
 
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?")
+        public boolean fabledHighlight = true;  // TODO: localise
+
         @Setting(displayName = "wynntils.config.utils.item_highlights.highlight_legendary.display_name", description = "wynntils.config.utils.item_highlights.highlight_legendary.description")
         public boolean legendaryHighlight = true;
 
@@ -170,6 +176,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "wynntils.config.utils.item_highlights.mythic_color.display_name", description = "wynntils.config.utils.item_highlights.mythic_color.description")
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.")
+        public CustomColor fabledHighlightColor = new CustomColor(1, .58f, .49f);  // TODO: localise
+
         @Setting(displayName = "wynntils.config.utils.item_highlights.rare_color.display_name", description = "wynntils.config.utils.item_highlights.rare_color.description")
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
@@ -202,6 +211,18 @@ public class UtilitiesConfig extends SettingsClass {
         public void onSettingChanged(String name) {
 
         }
+    }
+
+    @SettingsInfo(name = "market", displayPath = "Main/Market")
+    public static class Market extends SettingsClass {
+        public static Market INSTANCE;
+
+        @Setting(displayName = "Display Market Prices in a Custom Format", description = "Should market prices be displayed in a custom format?")
+        public boolean displayInCustomFormat = true;
+
+        @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
+        @Setting.Features.StringParameters(parameters = { "les", "ebs", "es", "stx", "le", "eb", "e" })
+        public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
     }
 
     @Override

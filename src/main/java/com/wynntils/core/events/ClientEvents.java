@@ -15,26 +15,21 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.lwjgl.input.Keyboard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class ClientEvents {
 
@@ -42,10 +37,11 @@ public class ClientEvents {
     private boolean inClassSelection = false;
     private String lastWorld = "";
     private boolean acceptLeft = false;
+    private static boolean guisClosed = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.toLowerCase().contains("wynncraft")) {
+        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.toLowerCase(Locale.ROOT).contains("wynncraft")) {
             Reference.setUserWorld(null);
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
         }
@@ -54,6 +50,10 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerLeave(FMLNetworkEvent.ClientDisconnectionFromServerEvent e) {
         if(Reference.onServer) {
+            if (Reference.onWorld) {
+                Reference.setUserWorld(null);
+                MinecraftForge.EVENT_BUS.post(new WynnWorldEvent.Leave());
+            }
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
@@ -128,25 +128,8 @@ public class ClientEvents {
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Leave());
                     PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                 }
-                continue;
-            }
-            if(player.getDisplayName() == null) continue;
-
-            //party handling below
-            if(player.getDisplayName().getUnformattedText().contains("/party create")) {
-                PlayerInfo.getPlayerInfo().getPlayerParty().closeParty();
-                continue;
-            }
-
-            String formatedName = player.getDisplayName().getFormattedText();
-
-            if(!formatedName.contains("[") && formatedName.endsWith("§r") && !formatedName.contains("§l")) {
-                if(formatedName.startsWith("§e")) partyMembers.add(TextFormatting.getTextWithoutFormattingCodes(formatedName));
-                else if(formatedName.startsWith("§c")) { partyOwner = TextFormatting.getTextWithoutFormattingCodes(formatedName); }
             }
         }
-
-        if(!partyOwner.isEmpty() || !partyMembers.isEmpty()) PlayerInfo.getPlayerInfo().getPlayerParty().updateParty(partyOwner, partyMembers);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -166,12 +149,45 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTick(TickEvent.ClientTickEvent e) {
-        if(e.phase == TickEvent.Phase.START) return;
+        if(e.phase != TickEvent.Phase.END) return;
+
+        if (Reference.onWorld && guisClosed && ModCore.mc().currentScreen == null) {
+            Keyboard.enableRepeatEvents(true);
+        }
+        guisClosed = false;
 
         ScreenRenderer.refresh();
-        if(!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+        if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
+    }
+
+    @SubscribeEvent
+    public void onWorldLeave(GuiOpenEvent e) {
+        if (e.getGui() instanceof GuiDisconnected && Reference.onServer) {
+            if (Reference.onWorld) {
+                Reference.setUserWorld(null);
+                MinecraftForge.EVENT_BUS.post(new WynnWorldEvent.Leave());
+            }
+            Reference.onServer = false;
+            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onGuiClosed(GuiOpenEvent e) {
+        if (Reference.onWorld) {
+            // Enable repeat events when no GUIs are open
+            boolean closingGui = e.getGui() == null;
+            boolean openingGui = ModCore.mc().currentScreen == null;
+            if (closingGui && !openingGui) {
+                // Closing all GUIs
+                guisClosed = true;
+            } else if (openingGui && !closingGui) {
+                // Opening first GUI
+                Keyboard.enableRepeatEvents(false);
+            }
+        }
     }
 
 }

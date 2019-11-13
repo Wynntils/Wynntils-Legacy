@@ -65,6 +65,7 @@ public class ClientEvents implements Listener {
             if(wp != null) {
                 if(MapConfig.Waypoints.INSTANCE.waypoints.stream().anyMatch(c -> c.getX() == lastLocation.getX() && c.getY() == lastLocation.getY() && c.getZ() == lastLocation.getZ())) return;
 
+                wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T4);
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
                 MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
 

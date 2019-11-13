@@ -713,7 +713,9 @@ wynntils.map.overlays.minimap.west_short=W
 wynntils.map.overlays.minimap.north_west_short=NW
 
 ## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.default=Default  ##TODO
 wynntils.map.ui.waypoint_creation.buttons.always_visible=Всегда видим
+wynntils.map.ui.waypoint_creation.buttons.hidden=Hidden  ##TODO
 wynntils.map.ui.waypoint_creation.floating.waypoint_name=Имя вейпоинта:
 wynntils.map.ui.waypoint_creation.floating.coordinates=Координаты:
 wynntils.map.ui.world_map_settings.floating.icon=Иконка:
@@ -729,6 +731,7 @@ wynntils.map.ui.path_creation.floating.line_2=Right click to remove points ##TOD
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=Иконка
 wynntils.map.ui.waypoints.floating.name=Имя
+wynntils.map.ui.waypoints.floating.group=Group  ##TODO
 wynntils.map.ui.waypoints.button.edit=Изменить...
 wynntils.map.ui.waypoints.button.new=NEW ##TODO
 

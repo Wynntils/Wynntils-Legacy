@@ -4,15 +4,16 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
-import net.minecraft.client.Minecraft;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,55 +34,57 @@ import java.util.regex.Pattern;
 
 public class ItemIdentificationOverlay implements Listener {
 
+    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
     private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
     private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")" + TextFormatting.BOLD + "[\\u21E9\\u21E7\\u21EA]" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")\\d+\\.\\d+%)|( (" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\[(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")[-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + "),(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ") [-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\])|( (" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")\\[[-+]?\\d+ SP\\])");
+    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + E);
+    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + E + ")? ?(\\d+" + E + B + ")? ?([\\d.]+" + L + E + ")?\\)");
+    private final static Pattern STX_PATTERN = Pattern.compile("(\\([^)]*)%stx%([^)]*\\))");
+    private final static Pattern LE_PATTERN = Pattern.compile("(\\([^)]*)%le%([^)]*\\))");
+    private final static Pattern EB_PATTERN = Pattern.compile("(\\([^)]*)%eb%([^)]*\\))");
+    private final static Pattern E_PATTERN = Pattern.compile("(\\([^)]*)%e%([^)]*\\))");
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
-    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
 
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
 
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
+        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
             drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
         }
     }
 
-    public void drawHoverGuess(ItemStack stack){
+    public void drawHoverGuess(ItemStack stack, IInventory inventory) {
         if (stack.isEmpty() || !stack.hasDisplayName()) {
             return;
         }
 
-        if (stack.getDisplayName().contains("Soul Point")) {
+        if (stack.getItem() == Items.NETHER_STAR && stack.getDisplayName().contains("Soul Point")) {
             List<String> lore = Utils.getLore(stack);
             if (lore != null && !lore.isEmpty()) {
                 if (lore.get(lore.size() - 1).contains("Time until next soul point: ")) {
                     lore.remove(lore.size() - 1);
                     lore.remove(lore.size() - 1);
                 }
-                long worldTimeTicks = ModCore.mc().world.getWorldTime();
-                long currentTime = worldTimeTicks % 24000;
-                long minutesUntilSoulPoint = Math.floorDiv(currentTime, 1200);
-                currentTime -= (minutesUntilSoulPoint * 1200);
-                long secondsUntilSoulPoint = Math.floorDiv(currentTime, 20);
-                minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
-                secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
                 lore.add("");
+                int secondsUntilSoulPoint = PlayerInfo.getPlayerInfo().getTicksToNextSoulPoint() / 20;
+                int minutesUntilSoulPoint = secondsUntilSoulPoint / 60;
+                secondsUntilSoulPoint %= 60;
                 lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
                 NBTTagCompound nbt = stack.getTagCompound();
                 NBTTagCompound display = nbt.getCompoundTag("display");
@@ -91,6 +94,46 @@ public class ItemIdentificationOverlay implements Listener {
                 nbt.setTag("display", display);
                 stack.setTagCompound(nbt);
                 return;
+            }
+        }
+
+        if (inventory.getName().contains("Marketplace") && !stack.getTagCompound().getBoolean("pricePatternSet") && UtilitiesConfig.Market.INSTANCE.displayInCustomFormat) {
+            List<String> lore = Utils.getLore(stack);
+            if (lore != null && lore.size() > 2) {
+                String price = lore.get(2);
+                Matcher priceMatcher = MARKET_PRICE.matcher(price);
+                if (priceMatcher.find()) {
+                    String actualPriceString = priceMatcher.group(1).replace(",", "");
+                    double priceDouble = Double.parseDouble(actualPriceString);
+                    
+                    int stx = (int) Math.floor(priceDouble / 262144);
+                    int le = (int) Math.floor(priceDouble % 262144 / 4096);
+                    int eb = (int) Math.floor(priceDouble % 4096 / 64);
+                    int e = (int) Math.floor(priceDouble % 64);
+                    
+                    String formedPriceString = UtilitiesConfig.Market.INSTANCE.customFormat;
+
+                    formedPriceString = STX_PATTERN.matcher(formedPriceString).replaceAll(stx != 0 ? "$1" + Integer.toString(stx) + "$2" : "");
+                    formedPriceString = LE_PATTERN.matcher(formedPriceString).replaceAll(le != 0 ? "$1" + Integer.toString(le) + "$2" : "");
+                    formedPriceString = EB_PATTERN.matcher(formedPriceString).replaceAll(eb != 0 ? "$1" + Integer.toString(eb) + "$2" : "");
+                    formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + Integer.toString(e) + "$2" : "");
+
+                    formedPriceString = formedPriceString
+                        .replace("%les%", L + E)
+                        .replace("%ebs%", E + B)
+                        .replace("%es%", E);
+
+                    formedPriceString = formedPriceString
+                        .replace("\\", "\\\\")
+                        .replace("$", "\\$")
+                        .replace("(", "")
+                        .replace(")", "");
+
+                    Matcher splitPriceMatcher = SPLIT_MARKET_PRICE.matcher(price);
+                    price = splitPriceMatcher.replaceAll("(" + formedPriceString + ")");
+                    stack.getSubCompound("display").getTagList("Lore", 8).set(2, new NBTTagString(price));
+                    stack.getTagCompound().setBoolean("pricePatternSet", true);
+                }
             }
         }
 
@@ -139,6 +182,9 @@ public class ItemIdentificationOverlay implements Listener {
         } else if (stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Mythic")) {
             items = igp.getItems().get(itemType).get("Mythic");
             color = TextFormatting.DARK_PURPLE;
+        } else if (stack.getDisplayName().startsWith(TextFormatting.RED.toString()) && igp.getItems().get(itemType).containsKey("Fabled")) {
+            items = igp.getItems().get(itemType).get("Fabled");
+            color = TextFormatting.RED;
         } else if (stack.getDisplayName().startsWith(TextFormatting.GREEN.toString()) && igp.getItems().get(itemType).containsKey("Set")) {
             items = igp.getItems().get(itemType).get("Set");
             color = TextFormatting.GREEN;
@@ -187,6 +233,7 @@ public class ItemIdentificationOverlay implements Listener {
         double chanceUp = 0;
         double chanceDown = 0;
         int totalSP = 0;
+        boolean setBonusStart = false;
 
         List <String> actualLore = Utils.getLore(stack);
         List <Integer> statOrderMem = new ArrayList<>();
@@ -195,12 +242,14 @@ public class ItemIdentificationOverlay implements Listener {
             String lore = cleanse(actualLore.get(i));
             String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
-            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
+            if(wColor.matches(".*(Mythic|Fabled|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
                 int rerollValue = 0;
 
                 //thanks dukiooo for this Math
                 if(wColor.contains("Mythic")) {
                     rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
+                }else if(wColor.contains("Fabled")) {
+                    rerollValue = 10; //TODO find the math for rerolling fabled items
                 }else if(wColor.contains("Legendary")) {
                     rerollValue = (int)Math.ceil(40D + wItem.getLevel() * 5.2);
                 }else if(wColor.contains("Rare")) {
@@ -214,7 +263,7 @@ public class ItemIdentificationOverlay implements Listener {
                 int alreadyRolled = 1;
                 Matcher m = BRACKETS.matcher(wColor);
                 if(m.find()) {
-                    alreadyRolled = Integer.valueOf(m.group().replace("[", "").replace("]", ""));
+                    alreadyRolled = Integer.parseInt(m.group().replace("[", "").replace("]", ""));
                 }
 
                 for(int bb = 1; bb <= alreadyRolled; bb++) rerollValue *= 5;
@@ -224,10 +273,11 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             if (lore.contains("Set") && lore.contains("Bonus")) {
-                break;
+                setBonusStart = true;
+                continue;
             }
 
-            if (!wColor.startsWith("+") && !wColor.startsWith("-")) {
+            if (!wColor.startsWith("+") && !wColor.startsWith("-") || setBonusStart) {
                 actualLore.set(i, lore);
                 continue;
             }
@@ -249,7 +299,7 @@ public class ItemIdentificationOverlay implements Listener {
             boolean raw = !lore.contains("%");
 
             try {
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
+                int amount = Integer.parseInt(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
 
                 String fieldName;
                 if (raw) {
@@ -273,7 +323,7 @@ public class ItemIdentificationOverlay implements Listener {
                     continue;
                 }
 
-                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
+                int itemVal = Integer.parseInt(String.valueOf(f.get(wItem)));
                 int min;
                 int max;
                 if (amount < 0) {
@@ -359,8 +409,8 @@ public class ItemIdentificationOverlay implements Listener {
                     }
                     identifications++;
                 } else {
-                    double intVal = (double) (max - min);
-                    double pVal = (double) (amount - min);
+                    double intVal = max - min;
+                    double pVal = amount - min;
                     int percent = (int) ((pVal / intVal) * 100);
 
                     TextFormatting color;

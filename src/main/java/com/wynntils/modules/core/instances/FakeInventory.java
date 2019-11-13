@@ -14,6 +14,7 @@ import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketWindowItems;
@@ -25,10 +26,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * Used for fake opening inventories that are opened by items
@@ -43,23 +46,25 @@ public class FakeInventory {
     private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
     private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
-    public static boolean ignoreNextUserClick = false;
+    public static final Packet<?> ignoredPacket = rightClick;
 
-    String windowTitle;
+    Pattern windowTitle;
     int itemSlot;
 
     private Consumer<FakeInventory> onReceiveItems = null;
+    private Consumer<FakeInventory> onInterrupt = null;
     private Consumer<FakeInventory> onClose = null;
     private int windowId = -1;
     private short transactionId = 0;
     private String realWindowTitle = "";
+    private boolean interrupted = false;
 
     private NonNullList<ItemStack> items = NonNullList.create();
 
     boolean open = false;
     long openTime = System.currentTimeMillis();
 
-    public FakeInventory(String windowTitle, int itemSlot) {
+    public FakeInventory(Pattern windowTitle, int itemSlot) {
         this.windowTitle = windowTitle;
         this.itemSlot = itemSlot;
     }
@@ -76,6 +81,15 @@ public class FakeInventory {
         return this;
     }
 
+    /* If set, the fake inventory will be closed when the player tries to
+     * interact with anything. Will not call the onClose callback.
+     */
+    public FakeInventory onInterrupt(Consumer<FakeInventory> onInterrupt) {
+        this.onInterrupt = onInterrupt;
+
+        return this;
+    }
+
     /**
      * Request the inventory to be opened
      *
@@ -87,19 +101,23 @@ public class FakeInventory {
         FrameworkManager.getEventBus().register(this);
 
         Minecraft mc = ModCore.mc();
-        int slot = mc.player.inventory.currentItem;
 
-        ignoreNextUserClick = true;
-        if(slot == itemSlot) {
-            PacketQueue.queuePackets(rightClick, releaseClick);
-            return this;
-        }
-
-        PacketQueue.queuePackets(
-                new CPacketHeldItemChange(itemSlot),
-                rightClick, releaseClick,
-                new CPacketHeldItemChange(slot)
-        );
+        PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).setSender((conn, pack) -> {
+            if (mc.player.inventory.currentItem != itemSlot) {
+                conn.sendPacket(new CPacketHeldItemChange(itemSlot));
+            }
+            conn.sendPacket(pack);
+            if (mc.player.inventory.currentItem != itemSlot) {
+                conn.sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem));
+            }
+        }).onDrop(() -> {
+            if (Reference.developmentEnvironment) {
+                ModCore.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "[FakeInventory packets dropped after " + (System.currentTimeMillis() - openTime) + "ms]"));
+            }
+            FrameworkManager.getEventBus().unregister(this);
+            open = false;
+            if (this.onInterrupt != null) this.onInterrupt.accept(this);
+        });
         return this;
     }
 
@@ -110,13 +128,17 @@ public class FakeInventory {
      * don't forget to call this at any cost, please.
      */
     public void close() {
+        close(true);
+    }
+
+    private void close(boolean callOnClose) {
         if(!open) return;
 
         FrameworkManager.getEventBus().unregister(this);
         open = false;
 
         if(windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
-        if(onClose != null) onClose.accept(this);
+        if(callOnClose && onClose != null) onClose.accept(this);
     }
 
     /**
@@ -225,7 +247,7 @@ public class FakeInventory {
     //handles the inventory container receive, sets open to true
     @SubscribeEvent
     public void onInventoryReceive(PacketEvent<SPacketOpenWindow> e) {
-        if(!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !e.getPacket().getWindowTitle().getUnformattedText().contains(windowTitle)) {
+        if (!"minecraft:container".equals(e.getPacket().getGuiId()) || !e.getPacket().hasSlots() || !windowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText())).matches()) {
             windowId = -1;
             close();
             return;
@@ -236,6 +258,11 @@ public class FakeInventory {
         realWindowTitle = e.getPacket().getWindowTitle().getUnformattedText();
 
         e.setCanceled(true);
+
+        if (interrupted) {
+            windowId = -1;
+            close(false);
+        }
     }
 
     //handles the items, calls onReceiveItems
@@ -249,20 +276,36 @@ public class FakeInventory {
 
         items.clear();
 
-        List<ItemStack> stacks = e.getPacket().getItemStacks();
-        for(int i = 0; i < stacks.size(); i++) {
-            items.add(stacks.get(i));
-        }
+        items.addAll(e.getPacket().getItemStacks());
 
-        if(onReceiveItems != null) onReceiveItems.accept(this);
+        if(!interrupted && onReceiveItems != null) onReceiveItems.accept(this);
 
         e.setCanceled(true);
+
+        if (interrupted) {
+            windowId = -1;
+            close(false);
+        }
     }
 
     //cancel all other interactions to avoid GUI openings while this one is already opened
+
+    private boolean shouldCancel(Event e) {
+        if (interrupted || isCrashed()) return false;
+
+        if (!e.isCanceled() && onInterrupt != null) {
+            interrupted = true;
+            ModCore.mc().getConnection().sendPacket(new CPacketCloseWindow(1));
+            onInterrupt.accept(this);
+            return false;
+        }
+
+        return open;
+    }
+
     @SubscribeEvent
     public void cancelInteractItem(PacketEvent<CPacketPlayerTryUseItem> e) {
-        if(!open || isCrashed()) return;
+        if(!shouldCancel(e)) return;
 
         if(!e.isCanceled())
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
@@ -273,7 +316,7 @@ public class FakeInventory {
     //cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
     public void cancelInteractItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
-        if(!open || isCrashed()) return;
+        if(!shouldCancel(e)) return;
 
         if(!e.isCanceled())
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
@@ -284,7 +327,7 @@ public class FakeInventory {
     //avoid teleportation while reading the questbook
     @SubscribeEvent
     public void cancelCommands(ClientChatEvent e) {
-        if(!open || !e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes") || isCrashed()) return;
+        if(!e.getMessage().startsWith("/class") || !e.getMessage().startsWith("/classes")) return;
 
         close();
     }

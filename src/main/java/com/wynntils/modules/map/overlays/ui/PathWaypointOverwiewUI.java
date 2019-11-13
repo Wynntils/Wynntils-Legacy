@@ -3,6 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
@@ -11,7 +12,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PathWaypointOverwiewUI extends GuiScreen {
@@ -64,8 +67,8 @@ public class PathWaypointOverwiewUI extends GuiScreen {
             renderer.drawRect(wp.getColor(), this.width / 2 - 179, 52 + 25 * i, this.width / 2 - 163, 68 + 25 * i);
 
             fontRenderer.drawString(wp.name, this.width/2 - 150, 56 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getPosX()), this.width/2 + 20, 56 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getPosZ()), this.width/2 + 60, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString(wp.getPosX()), this.width/2 + 20, 56 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString(wp.getPosZ()), this.width/2 + 60, 56 + 25 * i, colour);
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 155, this.width / 2 + 75, 60 + 25 * i - 1, colour | 0xFF000000);
@@ -111,4 +114,20 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         }
         this.buttonList.addAll(editButtons);
     }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDwehll < 0 && nextPageBtn.enabled) {
+            ++page;
+            checkAvailablePages();
+            setEditButtons();
+        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+            --page;
+            checkAvailablePages();
+            setEditButtons();
+        }
+    }
+
 }

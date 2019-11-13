@@ -27,6 +27,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -104,6 +105,8 @@ public class SettingsUI extends UI {
 
     @Override
     public void onClose() {
+        Keyboard.enableRepeatEvents(false);
+
         mc.currentScreen = null;
         mc.displayGuiScreen(parentScreen);
     }
@@ -213,7 +216,7 @@ public class SettingsUI extends UI {
 
     @Override
     public void onWindowUpdate() {
-
+        Keyboard.enableRepeatEvents(true);
     }
 
     public void setCurrentSettingsPath(String path) {
@@ -327,7 +330,7 @@ public class SettingsUI extends UI {
             add(new UIEButton(I18n.format("wynntils.config.other.reset"), Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
                 try {
                     registeredSettings.get(currentSettingsPath).resetValue(field);
-
+                    changedSettings.add(currentSettingsPath);
                     setCurrentSettingsPath(currentSettingsPath);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -357,7 +360,8 @@ public class SettingsUI extends UI {
             try {
                 Object value = registeredSettings.get(currentSettingsPath).getValues().get(field);
                 if (value instanceof String) {
-                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, ((String) value).replace("§", "&"), false, (ui, oldString) -> {
+                    String text = ((String) value).replace("§", "&");
+                    valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, text, false, (ui, oldString) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText().replace("&", "§"), false);
                             changedSettings.add(currentSettingsPath);
@@ -370,6 +374,8 @@ public class SettingsUI extends UI {
                     if(limit != null)
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
                     else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
+                    // Set text again in case it was over default max length of 32
+                    ((UIETextBox) valueElement).setText(text);
                 } else if (field.getType().isAssignableFrom(boolean.class)) {
                     valueElement = new UIEButton.Toggle(I18n.format("wynntils.config.other.enabled"), Textures.UIs.button_b, I18n.format("wynntils.config.other.disabled"), Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
@@ -380,7 +386,7 @@ public class SettingsUI extends UI {
                         }
                     });
                 } else if (value instanceof Enum) {
-                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) field.getType(), value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) field.getType(), (Enum) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Enum) valueElement).value, false);
                             changedSettings.add(currentSettingsPath);

@@ -18,9 +18,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
@@ -111,6 +109,11 @@ public class UpdateOverlay extends Overlay {
         download = true;
     }
 
+    public static void ignore() {
+        reset();
+        disappear = true;
+    }
+
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks){
         if(download && disappear) {
@@ -168,7 +171,7 @@ public class UpdateOverlay extends Overlay {
         }
     }
 
-    public void copyUpdate(String jarName) {
+    public static void copyUpdate(String jarName) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 Reference.LOGGER.info("Attempting to apply Wynntils update.");

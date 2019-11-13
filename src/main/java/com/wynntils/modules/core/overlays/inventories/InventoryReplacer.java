@@ -62,7 +62,7 @@ public class InventoryReplacer extends GuiInventory {
             QuestBookPages.MAIN.getPage().open(true);
             return;
         }
-        
+
         super.actionPerformed(guiButton);
     }
 

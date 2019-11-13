@@ -6,9 +6,15 @@ package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Delay;
+import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.chat.ChatModule;
+import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -108,7 +114,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     break;
                 case "reloadapi":
                     WebManager.reset();
-                    WebManager.setupWebApi();
+                    WebManager.setupWebApi(false);
                     break;
                 case "changelog":
                     new Delay(() -> {
@@ -122,7 +128,26 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     }, 1);
                     break;
                 case "debug":
-                    QuestManager.requestAnalyse();
+                    QuestManager.requestFullSearch();
+                    break;
+                case "hidehoveritemtext":
+                    ChatConfig.INSTANCE.heldItemChat = false;
+                    ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+                    ITextComponent message = new TextComponentString("Enable §bMod options > Chat > Held Item Chat Messages§r to undo (or click this)");
+                    message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils showhoveritemtext"));
+                    Minecraft.getMinecraft().player.sendMessage(message);
+                    break;
+                case "showhoveritemtext":
+                    ChatConfig.INSTANCE.heldItemChat = true;
+                    ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+                    break;
+                case "openmapatcompass":
+                    Location compass = CompassManager.getCompassLocation();
+                    if (compass == null) {
+                        Utils.displayGuiScreen(new MainWorldMapUI());
+                    } else {
+                        Utils.displayGuiScreen(new MainWorldMapUI((float) compass.getX(), (float) compass.getZ()));
+                    }
                     break;
                 default:
                     throw new CommandException("wynntils.commands.wynntils.error.invalid_argument");
@@ -131,18 +156,18 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             throw new CommandException("wynntils.commands.wynntils.error.missing_argument");
         }
     }
-    
+
     private void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
         TextComponentString prefixText = new TextComponentString(prefix);
         prefixText.getStyle().setColor(TextFormatting.DARK_GRAY);
         text.appendSibling(prefixText);
-        
+
         TextComponentString nameText = new TextComponentString(name);
         nameText.getStyle().setColor(TextFormatting.RED);
         text.appendSibling(nameText);
-        
+
         text.appendText(" ");
-        
+
         TextComponentTranslation descriptionText = new TextComponentTranslation(description);
         descriptionText.getStyle().setColor(TextFormatting.GRAY);
         text.appendSibling(descriptionText);
@@ -155,7 +180,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             sender.sendMessage(text);
             return;
         }
-        
+
         TextComponentTranslation releaseStreamText;
         TextComponentTranslation buildText;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
@@ -175,7 +200,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString versionText = new TextComponentString("");
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
-        
+
         TextComponentTranslation updateCheckText;
         TextFormatting color;
         if (WebManager.getUpdate().updateCheckFailed()) {
@@ -191,7 +216,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         updateCheckText.getStyle().setColor(color);
         sender.sendMessage(updateCheckText);
     }
-    
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {

@@ -8,13 +8,13 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 
 @SettingsInfo(name = "overlays", displayPath = "wynntils.config.overlay.display_path")
 public class OverlayConfig extends SettingsClass {
@@ -396,11 +396,11 @@ public class OverlayConfig extends SettingsClass {
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
-    
+
     @SettingsInfo(name = "war_timer_settings", displayPath = "wynntils.config.overlay.wartimer.display_path")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
-        
+
         @Setting(displayName = "wynntils.config.overlay.wartimer.text_shadow.display_name", description = "wynntils.config.overlay.wartimer.text_shadow.description")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
@@ -471,40 +471,44 @@ public class OverlayConfig extends SettingsClass {
         public String info4Format = "";
 
         @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
-        public Presets preset = Presets.COORDS;
+        public Presets preset = Presets.CLICK_ME;
 
         @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
 
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
         @Override
         public void onSettingChanged(String name) {
             if ("preset".equals(name)) {
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(preset.getValue()), null);
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
             }
         }
 
         public enum Presets {
-            COORDS("Coords", "%x% %z% (%y%)"),
+            CLICK_ME("Click me to copy to clipboard", null),
+            COORDS("Coordinates", "%x% %z% (%y%)"),
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),
-            CLASS("Class", "%Class%\\nLevel %lvl%");
+            CLASS("Class", "%Class%\\nLevel %lvl%"),
+            LOCATION("Location", "[%world%] %location%"),
+            BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
+            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
+            PING("Ping", "%ping%ms/15s");
 
-            private String name;
-            private String value;
+            public final String displayName;
+            public final String value;
 
-            Presets(String name, String value) {
-                this.name = name;
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
                 this.value = value;
-            }
-
-            @Override
-            public String toString() {
-                return name;
-            }
-
-            public String getValue() {
-                return value;
             }
         }
     }

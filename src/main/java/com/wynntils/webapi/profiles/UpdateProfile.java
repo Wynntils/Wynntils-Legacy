@@ -27,19 +27,17 @@ public class UpdateProfile {
                 MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
                     String cuttingEdgeMd5 = WebManager.getCuttingEdgeJarFileMD5();
-                    if (!md5Installed.getMd5().equals(cuttingEdgeMd5)) {
+                    if (!md5Installed.equals(cuttingEdgeMd5)) {
                         hasUpdate = true;
                         latestUpdate = "B" + WebManager.getCuttingEdgeBuildNumber();
                         UpdateOverlay.reset();
                     }
                 } else {
                     String stableMd5 = WebManager.getStableJarFileMD5();
-                    if (!md5Installed.getMd5().equals(stableMd5)) {
+                    if (!md5Installed.equals(stableMd5)) {
                         hasUpdate = true;
                         latestUpdate = WebManager.getStableJarVersion();
-
-                        //TODO make this thing optional
-                        UpdateOverlay.forceDownload();
+                        UpdateOverlay.reset();
                     }
                 }
 

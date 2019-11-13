@@ -66,6 +66,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
+        registerSettings(UtilitiesConfig.Market.class);
 
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);

@@ -27,7 +27,9 @@ public class CompassManager {
     public static void reset() {
         compassLocation = null;
 
-        Minecraft.getMinecraft().world.setSpawnPoint(ServerEvents.getCurrentSpawnPosition());
+        if (Minecraft.getMinecraft().world != null) {
+            Minecraft.getMinecraft().world.setSpawnPoint(ServerEvents.getCurrentSpawnPosition());
+        }
     }
 
 }

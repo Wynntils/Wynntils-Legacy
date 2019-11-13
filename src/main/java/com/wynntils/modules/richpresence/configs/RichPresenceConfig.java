@@ -15,7 +15,7 @@ public class RichPresenceConfig extends SettingsClass {
 
     @Setting(displayName = "wynntils.config.richpresence.show_information.display_name", description = "wynntils.config.richpresence.show_information.description")
     public boolean showUserInformation = true;
-    
+
     @Setting(displayName = "wynntils.config.richpresence.enable.display_name", description = "wynntils.config.richpresence.enable.description")
     public boolean enableRichPresence = true;
 

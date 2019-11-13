@@ -140,7 +140,7 @@ wynntils.config.music.background_volume.description=Hoe luid moet de muziek zijn
 
 ## QUESTBOOK CONFIG ##
 wynntils.config.questbook.display_path=Avonturen Boek
-wynntils.config.questbook.allow_questbook.display_name=Activeer Wynntils' Avonturen Boek 
+wynntils.config.questbook.allow_questbook.display_name=Activeer Wynntils' Avonturen Boek
 wynntils.config.questbook.allow_questbook.description=Moet Wynncraft's avonturen boek vervangen worden door die van Wynntils?
 wynntils.config.questbook.compass_follow.display_name=Zet Locaties van Avonturen op het Kompas
 wynntils.config.questbook.compass_follow.description=Moet het kompas wijzen naar benoemde punten in uw avontuur?
@@ -420,7 +420,7 @@ wynntils.config.overlay.ticker.inv.enable.display_name=Activeer Vol Inventaris B
 wynntils.config.overlay.ticker.inv.enable.description=Moet er een bericht verschijnen zodra de inventaris vol is?
 wynntils.config.overlay.ticker.inv.update_rate.display_name=Inventaris Update Snelheid
 wynntils.config.overlay.ticker.inv.update_rate.description=Hoe vaak (in secondes) moet het volle inventaris bericht verschijnen?
-wynntils.config.overlay.ticker.inv.format.display_name=Vol Inventaris Bericht Opbouw 
+wynntils.config.overlay.ticker.inv.format.display_name=Vol Inventaris Bericht Opbouw
 wynntils.config.overlay.ticker.inv.format.description=Hoe moet het volle inventaris bericht zijn opgebouwd?
 
 ## OVERLAYS TICKER MESSAGE REDIRECT CONFIG ##
@@ -729,6 +729,7 @@ wynntils.map.ui.path_creation.floating.line_2=Right click to remove points ##TOD
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=Icon ##TODO
 wynntils.map.ui.waypoints.floating.name=Name ##TODO
+wynntils.map.ui.waypoints.floating.group=Group  ##TODO
 wynntils.map.ui.waypoints.button.edit=Edit... ##TODO
 wynntils.map.ui.waypoints.button.new=NEW ##TODO
 
@@ -776,7 +777,7 @@ wynntils.questbook.ui.questbook.quests.description_1=Hier kunt u al uw beschikba
 wynntils.questbook.ui.questbook.quests.description_2=avonturen zien. Je kunt ook
 wynntils.questbook.ui.questbook.quests.description_3=zoeken naar specifieke avon-
 wynntils.questbook.ui.questbook.quests.description_4=turen door de naam te typen.
-wynntils.questbook.ui.questbook.quests.description_5=Je kunt naar de volgende 
+wynntils.questbook.ui.questbook.quests.description_5=Je kunt naar de volgende
 wynntils.questbook.ui.questbook.quests.description_6=pagina m.b.v. de knoppen of
 wynntils.questbook.ui.questbook.quests.description_7=door te scrollen.
 wynntils.questbook.ui.questbook.quests.description_8=Je kan een avontuur volgen
@@ -936,3 +937,7 @@ wynntils.utilities.overlays.stopwatch.display_name=Stopwatch ##TODO
 
 ## INFO OVERLAY ##
 wynntils.utilities.overlays.info.display_name=Info ##TODO
+
+# # WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.default=Default
+wynntils.map.ui.waypoint_creation.buttons.hidden=Hidden

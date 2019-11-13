@@ -22,7 +22,7 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
     /**
      * Dispatch a packet incoming event to be checked before reaching the
      * interpretator
-     * 
+     *
      * @see PacketEvent for more information about these events
      *
      *

@@ -713,7 +713,9 @@ wynntils.map.overlays.minimap.west_short=西方
 wynntils.map.overlays.minimap.north_west_short=西北方
 
 ## WAYPOINT CREATION MENU ##
+wynntils.map.ui.waypoint_creation.buttons.default=Default  ##TODO
 wynntils.map.ui.waypoint_creation.buttons.always_visible=永遠可見
+wynntils.map.ui.waypoint_creation.buttons.hidden=Hidden  ##TODO
 wynntils.map.ui.waypoint_creation.floating.waypoint_name=標記點名稱:
 wynntils.map.ui.waypoint_creation.floating.coordinates=座標:
 wynntils.map.ui.world_map_settings.floating.icon=圖標:
@@ -729,6 +731,7 @@ wynntils.map.ui.path_creation.floating.line_2=Right click to remove points ##TOD
 ## WAYPOINT MENU ##
 wynntils.map.ui.waypoints.floating.icon=圖標
 wynntils.map.ui.waypoints.floating.name=名稱
+wynntils.map.ui.waypoints.floating.group=Group  ##TODO
 wynntils.map.ui.waypoints.button.edit=編輯...
 wynntils.map.ui.waypoints.button.new=NEW ##TODO
 
