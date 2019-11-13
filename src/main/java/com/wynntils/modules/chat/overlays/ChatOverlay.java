@@ -406,7 +406,7 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void deleteChatLine(int id) {
-        getCurrentTab().getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id);
+        TabManager.getAvailableTabs().forEach(tab -> tab.getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id));
     }
 
     public int getChatWidth() {
