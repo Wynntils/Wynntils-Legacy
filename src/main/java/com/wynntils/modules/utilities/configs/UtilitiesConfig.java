@@ -59,6 +59,12 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
+    @Setting(displayName = "Congratulations Message", description = "Should there be a clickable message to automatically congratulate people?")
+    public boolean congratulateMessage = true;
+
+    @Setting(displayName = "Congratulations Message Content", description = "What should the congratulations message be?")
+    public String congratulateMessageContent = "gratz %user% on %level% %skill%!";
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

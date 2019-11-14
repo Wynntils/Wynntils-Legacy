@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -39,9 +40,9 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -95,6 +96,49 @@ public class ClientEvents implements Listener {
         if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
 
         e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
+    @SubscribeEvent
+    public void onPosChatEvent(ChatEvent.Pos e) {
+        if (UtilitiesConfig.INSTANCE.congratulateMessage) {
+            if (e.getMessage().getUnformattedText().matches("\\[!] Congratulations to \\w+ for reaching (combat level \\d+|level \\d+ in \\W \\w+)!")) {
+                String[] res = e.getMessage().getUnformattedText().split(" ");
+
+                ITextComponent hoverClickAction = new TextComponentString("Click here to congratulate them!").setStyle(new Style().setUnderlined(true).setColor(TextFormatting.AQUA));
+
+                String command = "/msg %user% ".replace("%user%", res[3]);
+                String message = UtilitiesConfig.INSTANCE.congratulateMessageContent.replace("%user%", res[3]);
+                switch (res.length) {
+                    case 9:
+                        message = message
+                                .replace("%level%", res[8].replace("!", ""))
+                                .replace("%skill%", "Combat");
+                        break;
+                    case 11:
+                        message = message
+                                .replace("%level%", res[7].replace("!", ""))
+                                .replace("%skill%", res[10]);
+                        break;
+                    default:
+                        Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Error occurred in congratulate message, please report this!").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
+                        return;
+                }
+                hoverClickAction.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command + message));
+
+                hoverClickAction.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Send ").setStyle(new Style().setColor(TextFormatting.GRAY))
+                        .appendSibling(new TextComponentString("\"" + message + "\"").setStyle(new Style().setColor(TextFormatting.WHITE)))
+                        .appendSibling(new TextComponentString(" to ").setStyle(new Style().setColor(TextFormatting.GRAY)))
+                        .appendSibling(new TextComponentString(res[3]).setStyle(new Style().setColor(TextFormatting.WHITE)))
+                        .appendSibling(new TextComponentString("!").setStyle(new Style().setColor(TextFormatting.GRAY)))
+                ));
+
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Want to congratulate ").setStyle(new Style().setColor(TextFormatting.GRAY))
+                        .appendSibling(new TextComponentString(res[3]).setStyle(new Style().setColor(TextFormatting.WHITE)))
+                        .appendSibling(new TextComponentString("? ").setStyle(new Style().setColor(TextFormatting.GRAY)))
+                        .appendSibling(hoverClickAction)
+                );
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
