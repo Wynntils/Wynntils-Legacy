@@ -38,7 +38,7 @@ public class ChatEvent extends Event {
         }
 
         public boolean isCancelable() {
-            return true;
+            return false;
         }
 
     }

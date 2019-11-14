@@ -221,6 +221,8 @@ public class ChatOverlay extends GuiNewChat {
                 updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId);
             }
         }
+
+        FrameworkManager.getEventBus().post(new ChatEvent.Pos(chatComponent));
     }
 
     private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId) {
