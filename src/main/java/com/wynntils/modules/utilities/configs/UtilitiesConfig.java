@@ -59,6 +59,12 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
+    @Setting(displayName = "Clickable Trade Message", description = "Should the trade message become clickable to send back a trade request?")
+    public boolean clickableTradeMessage = true;
+
+    @Setting(displayName = "Clickable Duel Message", description = "Should the duel message become clickable to send back a duel request?")
+    public boolean clickableDuelMessage = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -39,9 +40,9 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -95,6 +96,38 @@ public class ClientEvents implements Listener {
         if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
 
         e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
+    @SubscribeEvent
+    public void onPreChatEvent(ChatEvent.Pre e) {
+        if (UtilitiesConfig.INSTANCE.clickableTradeMessage) {
+            if (e.getMessage().getUnformattedText().matches("\\w+ would like to trade! Type /trade \\w+ to accept\\.")) {
+                e.setCanceled(true);
+                String[] res = e.getMessage().getUnformattedText().split(" ");
+
+                ITextComponent newMessage = new TextComponentString(res[0] + " would like to trade! To accept type ").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE))
+                        .appendSibling(new TextComponentString("/trade " + res[0]).setStyle(new Style().setColor(TextFormatting.GOLD)))
+                        .appendSibling(new TextComponentString(" or click this message!").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE)));
+                newMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/trade " + res[0]));
+                newMessage.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("/trade " + res[0]).setStyle(new Style().setColor(TextFormatting.GOLD))));
+
+                Minecraft.getMinecraft().player.sendMessage(newMessage);
+            }
+        }
+        if (UtilitiesConfig.INSTANCE.clickableDuelMessage) {
+            if (e.getMessage().getUnformattedText().matches("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.")) {
+                e.setCanceled(true);
+                String[] res = e.getMessage().getUnformattedText().split(" ");
+
+                ITextComponent newMessage = new TextComponentString(res[0] + " [Lv. " + res[2] + " would like to duel! To accept type ").setStyle(new Style().setColor(TextFormatting.BLUE))
+                        .appendSibling(new TextComponentString("/duel " + res[0]).setStyle(new Style().setColor(TextFormatting.GOLD)))
+                        .appendSibling(new TextComponentString(" or click this message!").setStyle(new Style().setColor(TextFormatting.BLUE)));
+                newMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel " + res[0]));
+                newMessage.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("/duel " + res[0]).setStyle(new Style().setColor(TextFormatting.GOLD))));
+
+                Minecraft.getMinecraft().player.sendMessage(newMessage);
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
