@@ -7,6 +7,7 @@ package com.wynntils.modules.chat.managers;
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -36,6 +37,8 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
+    private static final Pattern tradeReg = Pattern.compile("\\w+ would like to trade! Type /trade \\w+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
@@ -165,6 +168,30 @@ public class ChatManager {
                             .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                             .setUnderlined(true)
                             .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
+                }
+            }
+        }
+
+        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Trade!")));
+                }
+            }
+        }
+
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Duel!")));
                 }
             }
         }
