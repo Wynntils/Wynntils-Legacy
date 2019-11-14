@@ -44,6 +44,7 @@ public class ChatManager {
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
         boolean cancel = false;
 
+        //timestamps
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
                 try {
@@ -82,9 +83,11 @@ public class ChatManager {
             in.getSiblings().addAll(0, timeStamp);
         }
 
+        //popup sound
         if(in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
+        //wynnic translator
         if (hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             for (ITextComponent component : in.getSiblings()) {
@@ -160,6 +163,7 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
+        //clickable party invites
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -172,6 +176,7 @@ public class ChatManager {
             }
         }
 
+        //clickable trade messages
         if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -184,6 +189,7 @@ public class ChatManager {
             }
         }
 
+        //clickable duel messages
         if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -196,6 +202,7 @@ public class ChatManager {
             }
         }
 
+        //clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
             String crdText;
             TextFormatting color;
