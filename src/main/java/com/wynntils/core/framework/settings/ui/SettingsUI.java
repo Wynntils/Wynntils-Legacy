@@ -23,7 +23,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -39,16 +41,14 @@ public class SettingsUI extends UI {
     private String currentSettingsPath = "";
     private Map<String, SettingsContainer> registeredSettings = new HashMap<>();
     private List<String> sortedSettings = new ArrayList<>();
+    private HashSet<String> changedSettings = new HashSet<>();
+    private List<String> searchText = (List<String>) Collections.EMPTY_LIST;
 
     public UIEList holders = new UIEList(0.5f,0.5f,-170,-87);
     public UIEList settings = new UIEList(0.5f,0.5f,5,-90);
 
     public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,-85,1,1f,0,null);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar,0.5f,0.5f,185,-100, 200,true,-95,-150,1f,0,null);
-
-    public SettingsUI thisScreen = this;
-
-    HashSet<String> changedSettings = new HashSet<>();
 
     public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
@@ -57,6 +57,9 @@ public class SettingsUI extends UI {
     public UIEButton applyButton = new UIEButton("Apply",Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
+    });
+    public UIETextBox searchField = new UIETextBox(0.5f, 0.5f, -80, 82, 65, true, "Search...", true, (ui, newText) -> {
+        updateSearchText();
     });
 
     public SettingsUI(GuiScreen parentScreen) {
@@ -167,8 +170,14 @@ public class SettingsUI extends UI {
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
                 ScreenRenderer.scale(0.8f);
-                render.drawString(((SettingElement) setting).info.displayName(), (setting.position.getDrawingX() + 33f) / 0.8f, (setting.position.getDrawingY() + 7) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                String name = ((SettingElement) setting).info.displayName();
+                render.drawString(name, (setting.position.getDrawingX() + 34f) / 0.8f, (setting.position.getDrawingY() + 5) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 ScreenRenderer.resetScale();
+                if (((SettingElement) setting).isSearched) {
+                    int y = (int) (setting.position.getDrawingY() + 5 + fontRenderer.FONT_HEIGHT * 0.8f);
+                    int x = setting.position.getDrawingX() + 34;
+                    render.drawRect(CommonColors.BLACK, x, y, x + (int) (fontRenderer.getStringWidth(name) * 0.8f) + 1, y + 1);
+                }
             }
             setting.position.offsetX -= settings.position.offsetX;
             setting.position.offsetY -= settings.position.offsetY;
@@ -205,7 +214,9 @@ public class SettingsUI extends UI {
 
             for (Field field : sorted) {
                 try {
-                    settings.add(new SettingElement(field));
+                    SettingElement newSetting = new SettingElement(field);
+                    newSetting.isSearched = doesMatchSearch(newSetting);
+                    settings.add(newSetting);
                     settingsScrollbar.max -= settingHeight;
                 } catch (Exception ignored) {
                     //no @Setting
@@ -227,8 +238,66 @@ public class SettingsUI extends UI {
         }
     }
 
+    private void updateSearchText() {
+        String newText = searchField.getText();
+        if (newText == null) newText = "";
+        String[] words = StringUtils.split(newText);
+        searchText = new ArrayList<>(words.length);
+        for (String word : words) {
+            if (!word.isEmpty()) searchText.add(word);
+        }
+        settings.elements.forEach(s -> {
+            ((SettingElement) s).isSearched = doesMatchSearch((SettingElement) s);
+        });
+        holders.elements.forEach(h -> {
+            ((HolderButton) h).isSearched = doesMatchSearch((HolderButton) h);
+        });
+    }
+
+    private boolean doesStringMatchSearch(String s) {
+        if (searchText.isEmpty()) return false;
+        for (String word : searchText) {
+            if (StringUtils.containsIgnoreCase(s, word)) return true;
+        }
+        return false;
+    }
+
+    private boolean doesMatchSearch(Setting setting) {
+        if (setting == null || searchText.isEmpty()) return false;
+        return doesStringMatchSearch(setting.displayName()) || doesStringMatchSearch(setting.description());
+    }
+
+    private boolean doesMatchSearch(SettingElement setting) {
+        return doesMatchSearch(setting.info);
+    }
+
+    private boolean doesMatchSearch(String settingPath) {
+        if (searchText.isEmpty()) return false;
+        if (doesStringMatchSearch(settingPath)) {
+            return true;
+        }
+        Set<Field> settings;
+        try {
+            settings = registeredSettings.get(settingPath).getValues().keySet();
+        } catch (Exception ignored) {
+            return false;
+        }
+        for (Field setting : settings) {
+            if (doesMatchSearch(setting.getAnnotation(Setting.class))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean doesMatchSearch(HolderButton settingPath) {
+        return doesMatchSearch(settingPath.path);
+    }
+
     private class HolderButton extends UIEButton {
-        public String path;
+        String path;
+        boolean isSearched = false;
+        int textWidth;
 
         public HolderButton(String path) {
             super("", null, 0f, 0f, 0, 0, -1, true, null);
@@ -238,6 +307,7 @@ public class SettingsUI extends UI {
             this.text = paths[paths.length-1];
             this.position.offsetY = 11*holders.elements.size();
             this.position.offsetX = 10*paths.length;
+            this.textWidth = fontRenderer.getStringWidth(this.text);
         }
 
         @Override
@@ -247,12 +317,14 @@ public class SettingsUI extends UI {
             active = !currentSettingsPath.equals(this.path);
             width = Math.max( this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
 
-            if (!active) {
-                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-            } else if (hovering) {
-                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-            } else {
-                drawString(text,this.position.getDrawingX()+width/2f,this.position.getDrawingY()+height/2f-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            CustomColor color = !active ? TEXTCOLOR_NOTACTIVE : hovering ? TEXTCOLOR_HOVERING : TEXTCOLOR_NORMAL;
+            drawString(text, this.position.getDrawingX()+width/2f, this.position.getDrawingY()+height/2f-4f, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+
+            if (isSearched) {
+                int x = (int) (this.position.getDrawingX()+(width - textWidth)/2f);
+                int y = (int) (this.position.getDrawingY()+height/2f-4f) + fontRenderer.FONT_HEIGHT;
+                drawRect(CommonColors.BLACK, x + 1, y + 1, x + textWidth + 1, y + 2);
+                drawRect(color, x, y, x + textWidth, y + 1);
             }
         }
 
@@ -271,6 +343,7 @@ public class SettingsUI extends UI {
         public Field field;
         public Setting info;
         public UIElement valueElement;
+        public boolean isSearched = false;
 
         public SettingElement(Field field) throws NullPointerException {
             super(0f, 0f, 0, 0);
@@ -383,7 +456,7 @@ public class SettingsUI extends UI {
                             registeredSettings.get(currentSettingsPath).setValue(field, color, false);
                             changedSettings.add(currentSettingsPath);
                         }catch (Exception ex) { ex.printStackTrace(); }
-                    }, thisScreen);
+                    }, SettingsUI.this);
                     ((UIEColorWheel) valueElement).setColor((CustomColor)value);
                 }
             } catch (Exception e) {
