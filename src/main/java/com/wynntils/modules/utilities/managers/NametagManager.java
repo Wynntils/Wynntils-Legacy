@@ -67,9 +67,10 @@ public class NametagManager {
             if(PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel); //friend
             else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
 
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.GOLD.toString())) customLabels.add(moderatorLabel); //moderator
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_RED.toString())) customLabels.add(adminLabel); //admin
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_AQUA.toString())) customLabels.add(wynnContentTeamLabel); //Wynn CT
+            //wynncraft teams (Admin, Moderator, GM, Builder, etc.)
+            if (entity.getTeam() != null && !(entity.getTeam().getName().equalsIgnoreCase("all") || entity.getTeam().getName().equalsIgnoreCase("afk"))) {
+                customLabels.add(new NametagLabel(null, entity.getTeam().getColor() + "Wynncraft " + entity.getTeam().getName(), 0.7f));
+            }
             if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
             if(WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel); //helper
             if(WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel); //contentTeam
