@@ -64,15 +64,15 @@ public class PlayerInfo {
     }
 
     public void updateActionBar(String lastActionBar) {
-        //avoid useless processing
-        if(this.lastActionBar != null && this.lastActionBar.equals(lastActionBar)) return;
-
-        this.lastActionBar = lastActionBar;
-
         if (currentClass != ClassType.NONE) {
-            if(lastActionBar.contains("|") || lastActionBar.contains("_"))  {
+            //avoid useless processing
+            if (this.lastActionBar != null && this.lastActionBar.equals(lastActionBar)) return;
+
+            this.lastActionBar = lastActionBar;
+
+            if (lastActionBar.contains("|") || lastActionBar.contains("_")) {
                 specialActionBar = Utils.getCutString(lastActionBar,"    ","    " + TextFormatting.AQUA,false);
-            }else{
+            } else {
                 specialActionBar = null;
             }
 
