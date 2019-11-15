@@ -6,8 +6,8 @@ package com.wynntils.core.framework.overlays;
 
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.Module;
-import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;

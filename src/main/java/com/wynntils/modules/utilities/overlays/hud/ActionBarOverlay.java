@@ -43,8 +43,7 @@ public class ActionBarOverlay extends Overlay {
                 return;
             }
 
-            String middle = "";
-            String extra = "";
+            String middle;
             String l = "";
             String r = "";
 

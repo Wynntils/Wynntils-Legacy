@@ -22,7 +22,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.function.Consumer;
 
 public class MiniMapOverlay extends Overlay {

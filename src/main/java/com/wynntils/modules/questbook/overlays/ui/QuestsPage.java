@@ -24,11 +24,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 

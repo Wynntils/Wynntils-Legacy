@@ -33,7 +33,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -91,7 +90,7 @@ public class Utils {
     /**
      * Removes the invisible character À
      *
-     * @param input
+     * @param input string
      * @return input string without the invisible character
      */
     public static String stripInvisibleChar(String input) {
@@ -101,7 +100,7 @@ public class Utils {
     /**
      * Removes the percentage box (e.g. [96%])
      *
-     * @param input
+     * @param input string
      * @return input string without the percentage box
      */
     public static String stripPercentage(String input) {
@@ -111,7 +110,7 @@ public class Utils {
     /**
      * Removes the "Perfect"-rainbow from input string
      *
-     * @param input
+     * @param input string
      * @return input string without the "Perfect"-rainbow
      */
     public static String stripPerfect(String input) {
@@ -121,7 +120,7 @@ public class Utils {
     /**
      * Removes characters from input string based on extended.
      *
-     * @param input
+     * @param input string
      * @param extended
      *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
      *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
@@ -144,14 +143,14 @@ public class Utils {
     }
 
     /**
-     * Returns a cutted string after x characters
+     * Returns a cut string after x characters
      *
      * @param x
      *        Original String
      * @param amount
      *        The max string char amount
      *
-     * @return Original string cutted after x characters
+     * @return Original string cut after x characters
      */
     public static String removeAfterChar(String x, int amount) {
         String toReturn = x;
@@ -163,10 +162,10 @@ public class Utils {
     }
 
     /**
-     * Gets by text the current player drection
+     * Get short direction string for a given yaw
      *
      * @param yaw player's yaw
-     * @return
+     * @return Two or one character string
      */
     public static String getPlayerDirection(float yaw){
         double num = (yaw + 202.5) / 45.0;
@@ -214,8 +213,6 @@ public class Utils {
 
     /**
      * Get the lore from an item
-     *
-     * @param item
      *
      * @return an {@link List} containing all item lore
      */
@@ -510,7 +507,7 @@ public class Utils {
      * Search for a Wynncraft World.
      * only works if the user is on lobby!
      *
-     * @param worldNumber
+     * @param worldNumber The world to join
      */
     public static void joinWorld(int worldNumber) {
         if(!Reference.onServer || Reference.onWorld) return;

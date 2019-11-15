@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.UUID;

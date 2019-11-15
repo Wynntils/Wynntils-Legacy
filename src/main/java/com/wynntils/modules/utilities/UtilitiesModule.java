@@ -20,6 +20,7 @@ import com.wynntils.modules.utilities.overlays.inventories.*;
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
+    private GameUpdateOverlay gameUpdateOverlay;
 
     public void onEnable() {
         module = this;
@@ -48,7 +49,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
-        registerOverlay(new GameUpdateOverlay(), Priority.NORMAL);
+        registerOverlay(gameUpdateOverlay = new GameUpdateOverlay(), Priority.NORMAL);
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
@@ -89,4 +90,9 @@ public class UtilitiesModule extends Module {
     public static UtilitiesModule getModule() {
         return module;
     }
+
+    public GameUpdateOverlay getGameUpdateOverlay() {
+        return gameUpdateOverlay;
+    }
+
 }

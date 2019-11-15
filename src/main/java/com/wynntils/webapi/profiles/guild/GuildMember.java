@@ -48,7 +48,7 @@ public class GuildMember {
 
         CHIEF,
 
-        OWNER;
+        OWNER
     }
 
 }

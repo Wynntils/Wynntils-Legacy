@@ -51,8 +51,6 @@ public class ClientEvents implements Listener {
      * Replacements:
      * /tell -> /msg
      * /xp -> /guild xp
-     *
-     * @param e
      */
     @SubscribeEvent
     public void commandReplacements(ClientChatEvent e) {

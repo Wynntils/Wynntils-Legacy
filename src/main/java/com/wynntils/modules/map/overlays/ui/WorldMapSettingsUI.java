@@ -18,7 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class WorldMapSettingsUI extends GuiScreen {
 
