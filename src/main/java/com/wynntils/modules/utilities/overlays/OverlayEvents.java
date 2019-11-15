@@ -13,7 +13,6 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
@@ -134,11 +133,9 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onChatEvent(ChatEvent.Pre e) {
-        if (UtilitiesConfig.INSTANCE.restartTimer) {
-            if (e.getMessage().getUnformattedText().matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
-                String[] res = e.getMessage().getUnformattedText().split(" ");
-                RestartTimerOverlay.start(res[5], res[6]);
-            }
+        if (e.getMessage().getUnformattedText().matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
+            String[] res = e.getMessage().getUnformattedText().split(" ");
+            RestartTimerOverlay.start(res[5], res[6]);
         }
     }
 
