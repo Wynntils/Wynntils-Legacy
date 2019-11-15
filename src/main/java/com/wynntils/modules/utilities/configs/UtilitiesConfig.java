@@ -60,10 +60,10 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean addBankConfirmation = true;
 
     @Setting(displayName = "Congratulations Message", description = "Should there be a clickable message to automatically congratulate people?")
-    public boolean congratulateMessage = true;
+    public boolean congratulateMessage = false;
 
     @Setting(displayName = "Congratulations Message Content", description = "What should the congratulations message be?")
-    public String congratulateMessageContent = "gratz %user% on %level% %skill%!";
+    public String congratulateMessageContent = "Congratulations %user% on %level% %skill%!";
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
