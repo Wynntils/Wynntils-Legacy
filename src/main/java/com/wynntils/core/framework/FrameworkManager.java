@@ -126,6 +126,7 @@ public class FrameworkManager {
         ClientCommandHandler.instance.registerCommand(new CommandCompass());
         ClientCommandHandler.instance.registerCommand(new CommandTerritory());
         ClientCommandHandler.instance.registerCommand(new CommandExportDiscoveries());
+        ClientCommandHandler.instance.registerCommand(new CommandServer());
     }
 
     public static void disableModules() {

@@ -41,6 +41,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -354,7 +355,7 @@ public class WebManager {
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         main.remove("request");
 
-        Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
+        Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
         }.getType();
 
         return gson.fromJson(main, type);
