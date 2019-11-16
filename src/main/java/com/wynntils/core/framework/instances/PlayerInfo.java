@@ -63,20 +63,20 @@ public class PlayerInfo {
         instance = this;
     }
 
-    public void updateActionBar(String lastActionBar) {
-        if (currentClass != ClassType.NONE) {
-            //avoid useless processing
-            if (this.lastActionBar != null && this.lastActionBar.equals(lastActionBar)) return;
+    public void updateActionBar(String actionBar) {
+        if (currentClass == ClassType.NONE) return;
 
-            this.lastActionBar = lastActionBar;
+        // Avoid useless processing
+        if (this.lastActionBar == null || !this.lastActionBar.equals(actionBar)) {
+            this.lastActionBar = actionBar;
 
-            if (lastActionBar.contains("|") || lastActionBar.contains("_")) {
-                specialActionBar = Utils.getCutString(lastActionBar,"    ","    " + TextFormatting.AQUA,false);
+            if (actionBar.contains("|") || actionBar.contains("_")) {
+                specialActionBar = Utils.getCutString(actionBar, "    ", "    " + TextFormatting.AQUA, false);
             } else {
                 specialActionBar = null;
             }
 
-            Matcher match = actionbarPattern.matcher(lastActionBar);
+            Matcher match = actionbarPattern.matcher(actionBar);
 
             if (match.matches()) {
                 if (match.group(1) != null) {
@@ -92,16 +92,14 @@ public class PlayerInfo {
 
                     lastSpell = new boolean[size];
                     for (int i = 0; i < size; ++i) {
-                        lastSpell[i] = match.group(i + 3).charAt(0) == 'R';
+                        lastSpell[i] = match.group(i + 3).charAt(0) == 'R' ? SPELL_RIGHT : SPELL_LEFT;
                     }
                 }
-            } else {
-                lastSpell = noSpell;
             }
-
-            this.level = mc.player.experienceLevel;
-            this.experiencePercentage = mc.player.experience;
         }
+
+        this.level = mc.player.experienceLevel;
+        this.experiencePercentage = mc.player.experience;
     }
 
     public HashSet<String> getFriendList() {
