@@ -50,15 +50,15 @@ public class SettingsUI extends UI {
     public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,-85,1,1f,0,null);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar,0.5f,0.5f,185,-100, 200,true,-95,-150,1f,0,null);
 
-    public UIEButton cancelButton = new UIEButton("Cancel",Textures.UIs.button_a,0.5f,0.5f,-170,85,-10,true,(ui, mouseButton) -> {
+    public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -180, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
-    public UIEButton applyButton = new UIEButton("Apply",Textures.UIs.button_a,0.5f,0.5f,-120,85,-10,true,(ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a, 0.5f, 0.5f, -130, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     });
-    public UIETextBox searchField = new UIETextBox(0.5f, 0.5f, -80, 82, 65, true, "Search...", true, (ui, newText) -> {
+    public UIETextBox searchField = new UIETextBox(0.5f, 0.5f, -90, 82, 85, true, "Search...", true, (ui, oldText) -> {
         updateSearchText();
     });
 
@@ -154,14 +154,15 @@ public class SettingsUI extends UI {
         ScreenRenderer.clearMask();
 
         ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 + 5, screenHeight / 2 - 100, screenWidth / 2 + 185, screenHeight / 2 + 100);
-        settings.elements.forEach(setting -> {
+        settings.elements.forEach(setting_ -> {
+            SettingElement setting = (SettingElement) setting_;
             setting.position.anchorX = settings.position.anchorX;
             setting.position.anchorY = settings.position.anchorY;
             setting.position.offsetX += settings.position.offsetX;
             setting.position.offsetY += settings.position.offsetY;
             setting.position.refresh();
             if(setting.visible = setting.position.getDrawingY() < screenHeight/2+100 && setting.position.getDrawingY() > screenHeight/2-100-settingHeight){
-                ((UIEList) setting).elements.forEach(settingElement -> {
+                setting.elements.forEach(settingElement -> {
                     settingElement.position.anchorX = settings.position.anchorX;
                     settingElement.position.anchorY = settings.position.anchorY;
                     settingElement.position.offsetX += setting.position.offsetX;
@@ -174,11 +175,16 @@ public class SettingsUI extends UI {
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
                 ScreenRenderer.scale(0.8f);
-                String name = ((SettingElement) setting).info.displayName();
-                render.drawString(name, (setting.position.getDrawingX() + 34f) / 0.8f, (setting.position.getDrawingY() + 5) / 0.8f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                String name = setting.info.displayName();
+                render.drawString(
+                    name,
+                    (setting.position.getDrawingX() + 34f) / 0.8f, (setting.position.getDrawingY() + 4.5f) / 0.8f,
+                    !searchText.isEmpty() && !setting.isSearched ? CommonColors.GRAY : CommonColors.BLACK,
+                    SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE
+                );
                 ScreenRenderer.resetScale();
-                if (((SettingElement) setting).isSearched) {
-                    int y = (int) (setting.position.getDrawingY() + 5 + fontRenderer.FONT_HEIGHT * 0.8f);
+                if (setting.isSearched) {
+                    int y = (int) (setting.position.getDrawingY() + 4.5f + fontRenderer.FONT_HEIGHT * 0.8f);
                     int x = setting.position.getDrawingX() + 34;
                     render.drawRect(CommonColors.BLACK, x, y, x + (int) (fontRenderer.getStringWidth(name) * 0.8f) + 1, y + 1);
                 }
@@ -192,7 +198,7 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
         ScreenRenderer.scale(0.7f);
-        String path = this.currentSettingsPath.replace('/','>');
+        String path = this.currentSettingsPath.replace('/', '>');
         render.drawString(path, (screenWidth/2f+10)/0.7f, (screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         if (Reference.developmentEnvironment) {
             SettingsContainer scn = registeredSettings.get(currentSettingsPath);
@@ -308,6 +314,8 @@ public class SettingsUI extends UI {
         return doesMatchSearch(settingPath.path);
     }
 
+    private static final CustomColor TEXTCOLOR_UNSEARCHED = CustomColor.fromString("e6e6e6", 1f);
+
     private class HolderButton extends UIEButton {
         String path;
         boolean isSearched = false;
@@ -331,7 +339,7 @@ public class SettingsUI extends UI {
             active = !currentSettingsPath.equals(this.path);
             width = Math.max( this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
 
-            CustomColor color = !active ? TEXTCOLOR_NOTACTIVE : hovering ? TEXTCOLOR_HOVERING : TEXTCOLOR_NORMAL;
+            CustomColor color = !active ? TEXTCOLOR_NOTACTIVE : hovering ? TEXTCOLOR_HOVERING : (!searchText.isEmpty() && !isSearched) ? TEXTCOLOR_UNSEARCHED : TEXTCOLOR_NORMAL;
             drawString(text, this.position.getDrawingX()+width/2f, this.position.getDrawingY()+height/2f-4f, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
             if (isSearched) {
