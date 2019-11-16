@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.settings.ui;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
@@ -23,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
@@ -145,8 +145,12 @@ public class SettingsUI extends UI {
         settings.position.offsetY = (int)settingsScrollbar.getValue();
         holders.position.offsetY = (int)holdersScrollbar.getValue();
 
+        holders.elements.forEach(el -> {
+            int y = el.position.offsetY + holders.position.offsetY;
+            el.visible = -99 <= y && y <= +73;
+        });
         ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 - 165, screenHeight / 2 - 88, screenWidth / 2 - 25, screenHeight / 2 + 73);
-        holders.render(mouseX,mouseY);
+        holders.render(mouseX, mouseY);
         ScreenRenderer.clearMask();
 
         ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 + 5, screenHeight / 2 - 100, screenWidth / 2 + 185, screenHeight / 2 + 100);
@@ -188,7 +192,17 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
         ScreenRenderer.scale(0.7f);
-        render.drawString(this.currentSettingsPath.replace('/','>'),(screenWidth/2f+10)/0.7f,(screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        String path = this.currentSettingsPath.replace('/','>');
+        render.drawString(path, (screenWidth/2f+10)/0.7f, (screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        if (Reference.developmentEnvironment) {
+            SettingsContainer scn = registeredSettings.get(currentSettingsPath);
+            if (scn != null) {
+                String saveFile = scn.getSaveFile();
+                if (saveFile != null) {
+                    render.drawString(saveFile, (screenWidth/2f-10)/0.7f, (screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                }
+            }
+        }
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
@@ -331,7 +345,7 @@ public class SettingsUI extends UI {
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-            if(active && hovering) {
+            if (visible && active && hovering) {
                 if(clickSound != null)
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
                 setCurrentSettingsPath(path);

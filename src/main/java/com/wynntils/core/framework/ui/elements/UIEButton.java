@@ -25,8 +25,6 @@ public class UIEButton extends UIEClickZone {
     public String text;
     public int setWidth;
 
-    public boolean visible = true;
-
     public UIEButton(String text, Texture texture, float anchorX, float anchorY, int offsetX, int offsetY, int setWidth, boolean active, BiConsumer<UI, MouseButton> onClick) {
         super(anchorX, anchorY, offsetX, offsetY, setWidth, texture == null ? 1 : (int)texture.height/3, active, onClick);
         this.clickSound = net.minecraft.init.SoundEvents.UI_BUTTON_CLICK;

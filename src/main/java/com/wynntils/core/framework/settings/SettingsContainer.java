@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 public class SettingsContainer {
@@ -71,6 +72,12 @@ public class SettingsContainer {
 
     public void saveSettings() throws Exception {
         SettingsManager.saveSettings(m, holder);
+    }
+
+    public String getSaveFile() {
+        SettingsInfo info = holder.getClass().getAnnotation(SettingsInfo.class);
+        if (info == null) return null;
+        return m.getInfo().name() + "-" + (holder instanceof Overlay ? "overlay_" + ((Overlay)holder).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";
     }
 
     public void setValue(Field f, Object value) throws Exception {
