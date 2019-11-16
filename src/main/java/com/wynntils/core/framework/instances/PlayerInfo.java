@@ -9,6 +9,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
@@ -62,20 +63,20 @@ public class PlayerInfo {
         instance = this;
     }
 
-    public void updateActionBar(String lastActionBar) {
-        //avoid useless processing
-        if(this.lastActionBar != null && this.lastActionBar.equals(lastActionBar)) return;
+    public void updateActionBar(String actionBar) {
+        if (currentClass == ClassType.NONE) return;
 
-        this.lastActionBar = lastActionBar;
+        // Avoid useless processing
+        if (this.lastActionBar == null || !this.lastActionBar.equals(actionBar)) {
+            this.lastActionBar = actionBar;
 
-        if (currentClass != ClassType.NONE) {
-            if(lastActionBar.contains("|") || lastActionBar.contains("_"))  {
-                specialActionBar = Utils.getCutString(lastActionBar,"    ","    " + TextFormatting.AQUA,false);
-            }else{
+            if (actionBar.contains("|") || actionBar.contains("_")) {
+                specialActionBar = Utils.getCutString(actionBar, "    ", "    " + TextFormatting.AQUA, false);
+            } else {
                 specialActionBar = null;
             }
 
-            Matcher match = actionbarPattern.matcher(lastActionBar);
+            Matcher match = actionbarPattern.matcher(actionBar);
 
             if (match.matches()) {
                 if (match.group(1) != null) {
@@ -91,16 +92,14 @@ public class PlayerInfo {
 
                     lastSpell = new boolean[size];
                     for (int i = 0; i < size; ++i) {
-                        lastSpell[i] = match.group(i + 3).charAt(0) == 'R';
+                        lastSpell[i] = match.group(i + 3).charAt(0) == 'R' ? SPELL_RIGHT : SPELL_LEFT;
                     }
                 }
-            } else {
-                lastSpell = noSpell;
             }
-
-            this.level = mc.player.experienceLevel;
-            this.experiencePercentage = mc.player.experience;
         }
+
+        this.level = mc.player.experienceLevel;
+        this.experiencePercentage = mc.player.experience;
     }
 
     public HashSet<String> getFriendList() {
@@ -193,6 +192,31 @@ public class PlayerInfo {
         CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
     }
 
+    private static final Pattern level1SpellPattern = Pattern.compile("^(Left|Right|\\?)-(Left|Right|\\?)-(Left|Right|\\?)$");
+    private static final Pattern lowLevelSpellPattern = Pattern.compile("^([LR?])-([LR?])-([LR?])$");
+    private String lastParsedTitle = null;
+
+    public boolean[] parseSpellFromTitle(String subtitle) {
+        // Level 1: Left-Right-? in subtitle
+        // Level 2-11: L-R-? in subtitle
+        if (subtitle.equals(lastParsedTitle)) {
+            return lastSpell;
+        }
+        lastParsedTitle = subtitle;
+        if (subtitle.isEmpty()) {
+            return (lastSpell = noSpell);
+        }
+        String right = level == 1 ? "Right" : "R";
+        Matcher m = (level == 1 ? level1SpellPattern : lowLevelSpellPattern).matcher(TextFormatting.getTextWithoutFormattingCodes(subtitle));
+        if (!m.matches() || m.group(1).equals("?")) return (lastSpell = noSpell);
+        boolean spell1 = m.group(1).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        if (m.group(2).equals("?")) return (lastSpell = new boolean[]{ spell1 });
+        boolean spell2 = m.group(2).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        if (m.group(3).equals("?")) return (lastSpell = new boolean[]{ spell1, spell2 });
+        boolean spell3 = m.group(3).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+        return (lastSpell = new boolean[]{ spell1, spell2, spell3 });
+    }
+
     /**
      * Return an array of the last spell in the action bar.
      * Each value will be {@link #SPELL_LEFT} or {@link #SPELL_RIGHT}.
@@ -200,6 +224,15 @@ public class PlayerInfo {
      * @return A boolean[] whose length is 0, 1, 2 or 3.
      */
     public boolean[] getLastSpell() {
+        if (getCurrentClass() == ClassType.NONE) {
+            return noSpell;
+        }
+        int level = getLevel();
+        if (level <= 11) {
+            String subtitle = (String) ReflectionFields.GuiIngame_displayedSubTitle.getValue(mc.ingameGUI);
+            return parseSpellFromTitle(subtitle);
+        }
+
         return lastSpell;
     }
 

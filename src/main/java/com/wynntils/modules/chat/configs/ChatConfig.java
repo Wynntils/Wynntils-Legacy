@@ -55,6 +55,12 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Clickable Coordinates", description = "Should coordinates displayed in chat be clickable as a '/compass' command?")
     public boolean clickableCoordinates = true;
 
+    @Setting(displayName = "Clickable Trade Message", description = "Should the trade message become clickable?")
+    public boolean clickableTradeMessage = true;
+
+    @Setting(displayName = "Clickable Duel Message", description = "Should the duel message become clickable?")
+    public boolean clickableDuelMessage = true;
+
     public enum Presets {
         a,
         b,

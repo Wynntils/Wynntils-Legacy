@@ -27,7 +27,7 @@ public enum QuestBookPages {
     }
 
     public static QuestBookPage getPageBySlot(int slot) {
-        return Arrays.stream(QuestBookPages.values()).filter(questBookPages -> {return questBookPages.getSlotNb() == slot;}).findFirst().get().getPage();
+        return Arrays.stream(QuestBookPages.values()).filter(questBookPages -> questBookPages.getSlotNb() == slot).findFirst().get().getPage();
     }
 
     public int getSlotNb() {

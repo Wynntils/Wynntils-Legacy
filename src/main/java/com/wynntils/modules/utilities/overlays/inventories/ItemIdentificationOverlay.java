@@ -113,10 +113,10 @@ public class ItemIdentificationOverlay implements Listener {
                     
                     String formedPriceString = UtilitiesConfig.Market.INSTANCE.customFormat;
 
-                    formedPriceString = STX_PATTERN.matcher(formedPriceString).replaceAll(stx != 0 ? "$1" + Integer.toString(stx) + "$2" : "");
-                    formedPriceString = LE_PATTERN.matcher(formedPriceString).replaceAll(le != 0 ? "$1" + Integer.toString(le) + "$2" : "");
-                    formedPriceString = EB_PATTERN.matcher(formedPriceString).replaceAll(eb != 0 ? "$1" + Integer.toString(eb) + "$2" : "");
-                    formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + Integer.toString(e) + "$2" : "");
+                    formedPriceString = STX_PATTERN.matcher(formedPriceString).replaceAll(stx != 0 ? "$1" + stx + "$2" : "");
+                    formedPriceString = LE_PATTERN.matcher(formedPriceString).replaceAll(le != 0 ? "$1" + le + "$2" : "");
+                    formedPriceString = EB_PATTERN.matcher(formedPriceString).replaceAll(eb != 0 ? "$1" + eb + "$2" : "");
+                    formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + e + "$2" : "");
 
                     formedPriceString = formedPriceString
                         .replace("%les%", L + E)

@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.configs;
 
 import com.wynntils.core.framework.instances.Module;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
@@ -50,7 +51,10 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
     public boolean minimapIcons = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 9)
+    @Setting(displayName = "Compass Beacon Color", description = "What color should the compass beacon be?", order = 9)
+    public CustomColor compassBeaconColor = CommonColors.RED;
+
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 10)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 

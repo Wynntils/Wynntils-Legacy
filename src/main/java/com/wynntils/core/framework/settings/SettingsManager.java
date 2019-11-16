@@ -31,7 +31,7 @@ import java.util.zip.DataFormatException;
 
 public class SettingsManager {
 
-    private static Gson gson = null;
+    private static Gson gson;
     private static final File configFolder = new File(Reference.MOD_STORAGE_ROOT, "configs");
 
     static {

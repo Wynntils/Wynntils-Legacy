@@ -12,6 +12,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
@@ -29,9 +30,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -40,6 +41,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class WebManager {
@@ -56,6 +59,7 @@ public class WebManager {
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
+    private static String currentSplash = "";
 
     private static ArrayList<UUID> helpers = new ArrayList<>();
     private static ArrayList<UUID> moderators = new ArrayList<>();
@@ -117,6 +121,7 @@ public class WebManager {
         updateMapRefineries(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
+        updateCurrentSplash();
 
         handler.dispatchAsync();
 
@@ -154,6 +159,10 @@ public class WebManager {
 
     public static WynntilsAccount getAccount() {
         return account;
+    }
+
+    public static String getCurrentSplash() {
+        return currentSplash;
     }
 
     public static HashMap<String, TerritoryProfile> getTerritories() {
@@ -267,6 +276,13 @@ public class WebManager {
         );
     }
 
+    public static void updateCurrentSplash() {
+        if(apiUrls == null || apiUrls.getList("Splashes") == null) return;
+
+        List<String> splashes = apiUrls.getList("Splashes");
+        currentSplash = splashes.get(Utils.getRandom().nextInt(splashes.size()));
+    }
+
     /**
      * Request all guild names to WynnAPI
      *
@@ -303,9 +319,11 @@ public class WebManager {
      * @param guild Name of the guild
      *
      * @return A wrapper for all guild info
-     * @throws Exception
+     * @throws IOException thrown by URLConnection
      */
-    public static GuildProfile getGuildProfile(String guild) throws Exception {
+    public static GuildProfile getGuildProfile(String guild) throws IOException {
+        if (apiUrls == null) return null;
+
         URLConnection st = new URL(apiUrls.get("GuildInfo") + URLEncoder.encode(guild, "UTF-8")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -324,9 +342,11 @@ public class WebManager {
      * Request all online players to WynnAPI
      *
      * @return a {@link HashMap} who the key is the server and the value is an array containing all players on it
-     * @throws Exception
+     * @throws IOException thrown by URLConnection
      */
-    public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws Exception {
+    public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws IOException {
+        if (apiUrls == null) return new HashMap<>();
+
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -335,7 +355,7 @@ public class WebManager {
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         main.remove("request");
 
-        Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
+        Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
         }.getType();
 
         return gson.fromJson(main, type);
@@ -343,8 +363,6 @@ public class WebManager {
 
     /**
      * Update all Wynn items on the {@link HashMap} items
-     *
-     * @throws Exception
      */
     public static void updateItemList(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("ItemList");
@@ -369,8 +387,6 @@ public class WebManager {
 
     /**
      * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
-     *
-     * @throws Exception
      */
     public static void updateMapMarkers(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
@@ -391,8 +407,6 @@ public class WebManager {
 
     /**
      * Update all Refineries MapMarkers on the {@link HashMap} mapMarkers
-     *
-     * @throws Exception
      */
     public static void updateMapRefineries(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("RefineryLocations");
@@ -413,8 +427,6 @@ public class WebManager {
 
     /**
      * Update all Wynn ItemGuesses on the {@link HashMap} itemGuesses
-     *
-     * @throws Exception
      */
     public static void updateItemGuesses(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("ItemGuesses");
@@ -505,7 +517,7 @@ public class WebManager {
         );
     }
 
-    public static String getStableJarFileUrl() throws Exception {
+    public static String getStableJarFileUrl() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -515,7 +527,7 @@ public class WebManager {
         return apiUrls.get("Jars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
-    public static String getStableJarFileMD5() throws Exception {
+    public static String getStableJarFileMD5() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -525,7 +537,7 @@ public class WebManager {
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
     }
 
-    public static String getStableJarVersion() throws Exception {
+    public static String getStableJarVersion() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=artifacts[fileName]").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -535,7 +547,7 @@ public class WebManager {
         return main.getAsJsonObject().get("artifacts").getAsJsonArray().get(0).getAsJsonObject().get("fileName").getAsString().split("_")[0].split("-")[1];
     }
 
-    public static String getCuttingEdgeJarFileUrl() throws Exception {
+    public static String getCuttingEdgeJarFileUrl() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -545,7 +557,7 @@ public class WebManager {
         return apiUrls.get("DevJars") + "artifact/" + main.getAsJsonArray("artifacts").get(0).getAsJsonObject().get("relativePath").getAsString();
     }
 
-    public static String getCuttingEdgeJarFileMD5() throws Exception {
+    public static String getCuttingEdgeJarFileMD5() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -555,7 +567,7 @@ public class WebManager {
         return main.getAsJsonArray("fingerprint").get(0).getAsJsonObject().get("hash").getAsString();
     }
 
-    public static int getCuttingEdgeBuildNumber() throws Exception {
+    public static int getCuttingEdgeBuildNumber() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=number").openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -565,7 +577,7 @@ public class WebManager {
         return main.getAsJsonObject().get("number").getAsInt();
     }
 
-    public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws Exception {
+    public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws IOException {
         URLConnection st = new URL(apiUrls.get("WynnSounds")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);

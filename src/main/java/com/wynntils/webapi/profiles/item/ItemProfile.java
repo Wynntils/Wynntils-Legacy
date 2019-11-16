@@ -21,7 +21,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.codec.binary.Base64;
 
-import java.awt.*;
+import java.awt.Color;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

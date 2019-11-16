@@ -36,11 +36,14 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
+    private static final Pattern tradeReg = Pattern.compile("\\w+ would like to trade! Type /trade \\w+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
         boolean cancel = false;
 
+        //timestamps
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
                 try {
@@ -79,9 +82,11 @@ public class ChatManager {
             in.getSiblings().addAll(0, timeStamp);
         }
 
+        //popup sound
         if(in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
+        //wynnic translator
         if (hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             for (ITextComponent component : in.getSiblings()) {
@@ -157,6 +162,7 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
+        //clickable party invites
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -169,6 +175,33 @@ public class ChatManager {
             }
         }
 
+        //clickable trade messages
+        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Trade!")));
+                }
+            }
+        }
+
+        //clickable duel messages
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Duel!")));
+                }
+            }
+        }
+
+        //clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
             String crdText;
             TextFormatting color;

@@ -28,19 +28,25 @@ public class HeldItemChatManager {
         showMessage(getMessage());
     }
 
-    private static ITextComponent getMessage() {
-        if (!ChatConfig.INSTANCE.heldItemChat) return null;
+    public static void reset() {
+        deleteMessage();
+        startedHolding = Long.MIN_VALUE;
+        lastHolding = -1;
+    }
 
+    private static ITextComponent getMessage() {
         Minecraft mc = Minecraft.getMinecraft();
         if (
+            !ChatConfig.INSTANCE.heldItemChat ||
             mc.player == null || mc.world == null ||
             mc.player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
             mc.player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
-            mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR
-        ) return null;
-
-        PlayerInfo info = PlayerInfo.getPlayerInfo();
-        if (info.getCurrentClass() == ClassType.NONE) return null;
+            mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR ||
+            PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE
+        ) {
+            reset();
+            return null;
+        }
 
         if (lastHolding != mc.player.inventory.currentItem) {
             lastHolding = mc.player.inventory.currentItem;
@@ -170,8 +176,11 @@ public class HeldItemChatManager {
         hasMessage = true;
         boolean oldClickableCoords = ChatConfig.INSTANCE.clickableCoordinates;
         ChatConfig.INSTANCE.clickableCoordinates = false;
-        ChatOverlay.getChat().printUnloggedChatMessage(msg, MESSAGE_ID);
-        ChatConfig.INSTANCE.clickableCoordinates = oldClickableCoords;
+        try {
+            ChatOverlay.getChat().printUnloggedChatMessage(msg, MESSAGE_ID);
+        } finally {
+            ChatConfig.INSTANCE.clickableCoordinates = oldClickableCoords;
+        }
     }
 
     private static ITextComponent add(ITextComponent to, ITextComponent what) {

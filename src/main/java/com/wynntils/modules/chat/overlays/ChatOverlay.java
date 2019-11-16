@@ -30,7 +30,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -243,7 +242,7 @@ public class ChatOverlay extends GuiNewChat {
                         int thisGroupId = tab.getCurrentGroupId() - 1;
                         for (int i = 0; i < lines.size(); ++i) {
                             if (lines.get(i) instanceof GroupedChatLine && ((GroupedChatLine) lines.get(i)).getGroupId() == thisGroupId) {
-                                lines.remove(0);
+                                lines.remove(i);
                                 --i;
                             }
                         }
@@ -408,7 +407,7 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void deleteChatLine(int id) {
-        getCurrentTab().getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id);
+        TabManager.getAvailableTabs().forEach(tab -> tab.getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id));
     }
 
     public int getChatWidth() {

@@ -38,7 +38,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     }
 
     @Override
-    public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
@@ -47,16 +47,10 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            if (entitylivingbaseIn instanceof AbstractClientPlayer) {
-                AbstractClientPlayer abstractclientplayer = entitylivingbaseIn;
-
-                if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
-                    this.renderPlayer.bindTexture(abstractclientplayer.getLocationElytra());
-                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
-                    this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
-                } else {
-                    this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
-                }
+            if (entitylivingbaseIn.isPlayerInfoSet() && entitylivingbaseIn.getLocationElytra() != null) {
+                this.renderPlayer.bindTexture(entitylivingbaseIn.getLocationElytra());
+            } else if (entitylivingbaseIn.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
+                this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
             } else {
                 this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
             }

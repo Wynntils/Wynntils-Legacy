@@ -93,7 +93,7 @@ public class FakeInventory {
     /**
      * Request the inventory to be opened
      *
-     * @return
+     * @return this
      */
     public FakeInventory open() {
         openTime = System.currentTimeMillis();

@@ -28,11 +28,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestsPage extends QuestBookPage {
@@ -48,6 +44,7 @@ public class QuestsPage extends QuestBookPage {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
+
         int x = width / 2; int y = height / 2;
         int posX = (x - mouseX); int posY = (y - mouseY);
         List<String> hoveredText = new ArrayList<>();
@@ -136,14 +133,14 @@ public class QuestsPage extends QuestBookPage {
 
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getMinecraft().world.getTotalWorldTime();
+                            lastTick = Minecraft.getSystemTime();
                         }
 
                         this.selected = i;
 
                         int animationTick;
                         if (!animationCompleted) {
-                            animationTick = (int) ((Minecraft.getMinecraft().world.getTotalWorldTime() - lastTick) + partialTicks) * 30;
+                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133) {
                                 animationCompleted = true;
                                 animationTick = 133;

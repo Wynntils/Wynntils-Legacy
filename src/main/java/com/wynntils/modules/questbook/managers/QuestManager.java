@@ -56,6 +56,7 @@ public class QuestManager {
     private static boolean bookOpened = false;
     private static boolean interrupted = false;
     private static boolean isForcingDiscoveries = false;
+    private static List<Runnable> onFinished = new ArrayList<>();
 
     /**
      * Queue a QuestBook analyse
@@ -219,6 +220,11 @@ public class QuestManager {
             if (forceDiscoveries) {
                 isForcingDiscoveries = false;
             }
+            Iterator<Runnable> runnables = onFinished.iterator();
+            while (runnables.hasNext()) {
+                runnables.next().run();
+                runnables.remove();
+            }
 
             readRequestTime = System.currentTimeMillis();
 
@@ -319,6 +325,15 @@ public class QuestManager {
     }
 
     /**
+     * After the next analysis is finish the runnable will be executed
+     * 
+     * @param runnable the runnable to run
+     */
+    public static void onFinished(Runnable runnable) {
+        onFinished.add(runnable);
+    }
+
+    /**
      * Clears the entire collected book data
      */
     public static void clearData() {
@@ -340,6 +355,7 @@ public class QuestManager {
         bookOpened = false;
         interrupted = false;
         isForcingDiscoveries = false;
+        onFinished.clear();
     }
 
     private static void sendMessage(String msg) {

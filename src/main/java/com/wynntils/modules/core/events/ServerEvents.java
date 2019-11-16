@@ -101,8 +101,9 @@ public class ServerEvents implements Listener {
         }
         PartyManager.handleMessages(e.getMessage()); //party messages here
 
-        if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
-            String[] splited = e.getMessage().getUnformattedText().split(":");
+        String messageText = e.getMessage().getUnformattedText();
+        if(messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
+            String[] splited = messageText.split(":");
 
             String[] friends;
             if(splited[1].contains(",")) {
@@ -115,15 +116,15 @@ public class ServerEvents implements Listener {
             waitingForFriendList = false;
             return;
         }
-        if(e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
+        if(messageText.startsWith("#") && messageText.contains(" XP -")) {
             if(waitingForGuildList) e.setCanceled(true);
 
-            String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
+            String[] messageSplitted = messageText.split(" ");
             PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
             return;
         }
-        if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
-            String[] splittedText = e.getMessage().getUnformattedText().split(" ");
+        if(!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
+            String[] splittedText = messageText.split(" ");
             if(!splittedText[1].equalsIgnoreCase("has")) return;
 
             if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
@@ -152,7 +153,6 @@ public class ServerEvents implements Listener {
 
     /**
      * Verifies the response from packet queue
-     * @param e
      */
     @SubscribeEvent
     public void onReceivePacket(PacketEvent e) {
@@ -162,8 +162,6 @@ public class ServerEvents implements Listener {
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
-     *
-     * @param e
      */
     @SubscribeEvent
     public void onJoinLobby(RenderPlayerEvent.Post e) {

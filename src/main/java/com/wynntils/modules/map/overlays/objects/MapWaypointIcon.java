@@ -18,7 +18,7 @@ public class MapWaypointIcon extends MapTextureIcon {
     public static final int HIDDEN_ZOOM = -1;
 
     private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
-    private static int[] sizeMapping = null;
+    private static int[] sizeMapping;
     private static int waypointTypesCount;
     private static final int texPosXIndex = 0;
     private static final int texPosZIndex = 1;

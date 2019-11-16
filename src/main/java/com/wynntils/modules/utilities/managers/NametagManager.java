@@ -32,6 +32,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -48,6 +49,7 @@ public class NametagManager {
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
+    private static final HashMap<String, NametagLabel> wynncraftTeamLabels = new HashMap<>();
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
     private static final ScreenRenderer renderer = new ScreenRenderer();
@@ -67,9 +69,10 @@ public class NametagManager {
             if(PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel); //friend
             else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
 
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.GOLD.toString())) customLabels.add(moderatorLabel); //moderator
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_RED.toString())) customLabels.add(adminLabel); //admin
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_AQUA.toString())) customLabels.add(wynnContentTeamLabel); //Wynn CT
+            //wynncraft teams (Admin, Moderator, GM, Builder, etc.)
+            if (entity.getTeam() != null && !(entity.getTeam().getName().equalsIgnoreCase("all") || entity.getTeam().getName().equalsIgnoreCase("afk"))) {
+                customLabels.add(getWynncraftTeamLabel(entity.getTeam()));
+            }
             if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
             if(WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel); //helper
             if(WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel); //contentTeam
@@ -261,6 +264,13 @@ public class NametagManager {
         }
 
         return labels;
+    }
+
+    private static NametagLabel getWynncraftTeamLabel(Team team) {
+        if (!wynncraftTeamLabels.containsKey(team.getName())) {
+            wynncraftTeamLabels.put(team.getName(), new NametagLabel(null, team.getColor() + "Wynncraft " + team.getName(), 0.7f));
+        }
+        return wynncraftTeamLabels.get(team.getName());
     }
 
 }
