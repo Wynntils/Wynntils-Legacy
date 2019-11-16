@@ -15,10 +15,6 @@ import java.io.IOException;
 
 public class ChatGUI extends GuiChat {
 
-    public ChatGUI() {
-
-    }
-
     public ChatGUI(String defaultInputText) {
         super(defaultInputText);
     }
