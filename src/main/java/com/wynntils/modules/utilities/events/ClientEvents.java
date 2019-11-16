@@ -6,12 +6,14 @@ package com.wynntils.modules.utilities.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -23,6 +25,7 @@ import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -53,6 +56,8 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ClientEvents implements Listener {
+    private static GuiScreen scheduledGuiScreen = null;
+    private static boolean firstNullOccurred = false;
 
     boolean isAfk = false;
     int lastPosition = 0;
@@ -95,6 +100,26 @@ public class ClientEvents implements Listener {
         if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
 
         e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
+    @SubscribeEvent
+    public void onGUIClose(GuiOpenEvent e) {
+        if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
+            firstNullOccurred = false;
+            e.setGui(scheduledGuiScreen);
+            scheduledGuiScreen = null;
+            return;
+        }
+        firstNullOccurred = scheduledGuiScreen != null && e.getGui() == null && !firstNullOccurred;
+    }
+
+    @SubscribeEvent
+    public void onPosChatEvent(ChatEvent.Pos e) {
+        if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
+            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)|price in emeralds) or type 'cancel' to cancel:")) {
+                scheduledGuiScreen = new ChatGUI();
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
