@@ -127,7 +127,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         }
     }
 
-    private void serverInfo (MinecraftServer server, ICommandSender sender, String[] args) {
+    private void serverInfo(MinecraftServer server, ICommandSender sender, String[] args) {
         try {
             HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
             if (args.length >= 1) {
@@ -163,7 +163,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         }
     }
 
-    private TextComponentString getFilteredServerList (HashMap<String, ArrayList<String>> onlinePlayers,
+    private TextComponentString getFilteredServerList(HashMap<String, ArrayList<String>> onlinePlayers,
                                                        String filter,
                                                        List<String> options) {
         TextComponentString text = new TextComponentString("");
