@@ -123,14 +123,19 @@ public class ClientEvents implements Listener {
                         Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Error occurred in congratulate message, please report this!").setStyle(new Style().setColor(TextFormatting.DARK_RED)));
                         return;
                 }
-                hoverClickAction.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command + message));
+                hoverClickAction.getStyle().setClickEvent(new ClickEvent(UtilitiesConfig.INSTANCE.congratulateMessageContent.equals("") ? ClickEvent.Action.SUGGEST_COMMAND : ClickEvent.Action.RUN_COMMAND, command + message));
 
-                hoverClickAction.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Send ").setStyle(new Style().setColor(TextFormatting.GRAY))
+                HoverEvent suggestHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Type ").setStyle(new Style().setColor(TextFormatting.GRAY))
+                        .appendSibling(new TextComponentString("\"" + command + "\"").setStyle(new Style().setColor(TextFormatting.WHITE)))
+                        .appendSibling(new TextComponentString(" in chat.").setStyle(new Style().setColor(TextFormatting.GRAY)))
+                );
+                HoverEvent commandHover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Send ").setStyle(new Style().setColor(TextFormatting.GRAY))
                         .appendSibling(new TextComponentString("\"" + message + "\"").setStyle(new Style().setColor(TextFormatting.WHITE)))
                         .appendSibling(new TextComponentString(" to ").setStyle(new Style().setColor(TextFormatting.GRAY)))
                         .appendSibling(new TextComponentString(res[3]).setStyle(new Style().setColor(TextFormatting.WHITE)))
                         .appendSibling(new TextComponentString("!").setStyle(new Style().setColor(TextFormatting.GRAY)))
-                ));
+                );
+                hoverClickAction.getStyle().setHoverEvent(UtilitiesConfig.INSTANCE.congratulateMessageContent.equals("") ? suggestHover : commandHover);
 
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Want to congratulate ").setStyle(new Style().setColor(TextFormatting.GRAY))
                         .appendSibling(new TextComponentString(res[3]).setStyle(new Style().setColor(TextFormatting.WHITE)))
