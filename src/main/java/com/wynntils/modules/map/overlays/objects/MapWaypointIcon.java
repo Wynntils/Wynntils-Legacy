@@ -50,10 +50,10 @@ public class MapWaypointIcon extends MapTextureIcon {
         setSize(WaypointType.SIGN, 190, 36, 208, 54);
         setSize(WaypointType.STAR, 208, 36, 226, 54);
         setSize(WaypointType.TURRET, 226, 36, 244, 54);
-        setSize(WaypointType.FARMING, 24, 53, 39, 71);
-        setSize(WaypointType.FISHING, 39, 53, 55, 67);
-        setSize(WaypointType.MINING, 55, 53, 73, 67);
-        setSize(WaypointType.WOODCUTTING, 73, 53, 89, 70);
+        setSize(WaypointType.FARMING, 24, 53, 42, 71);
+        setSize(WaypointType.FISHING, 42, 53, 60, 71);
+        setSize(WaypointType.MINING, 60, 53, 78, 71);
+        setSize(WaypointType.WOODCUTTING, 78, 53, 96, 71);
     }
 
     private WaypointProfile wp;
