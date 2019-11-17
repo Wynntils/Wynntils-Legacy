@@ -40,9 +40,7 @@ public class ChatManager {
     private static final Pattern duelReg = Pattern.compile("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
-    public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
-        boolean cancel = false;
-
+    public static ITextComponent processRealMessage(ITextComponent in) {
         //timestamps
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
@@ -237,14 +235,14 @@ public class ChatManager {
             }
         }
 
-        return new Pair<>(in, cancel);
+        return in;
     }
 
     public static ITextComponent renderMessage(ITextComponent in) {
         return in;
     }
 
-    public static boolean proccessUserMention(ITextComponent in) {
+    public static boolean processUserMention(ITextComponent in) {
         boolean hasMention = false;
         if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2) {
             if (in.getFormattedText().contains(ModCore.mc().player.getName())) {

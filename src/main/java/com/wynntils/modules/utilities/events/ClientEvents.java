@@ -114,7 +114,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onPosChatEvent(ChatEvent.Pos e) {
+    public void onPostChatEvent(ChatEvent.Post e) {
         if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
             if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)|price in emeralds) or type 'cancel' to cancel:")) {
                 scheduledGuiScreen = new ChatGUI();
