@@ -37,7 +37,7 @@ public class MapWaypointIcon extends MapTextureIcon {
     static {
         waypointTypesCount = WaypointType.class.getEnumConstants().length;
 
-        assert waypointTypesCount == 9 : "If you added a new waypoint type, specify the dimensions here";
+        assert waypointTypesCount == 13 : "If you added a new waypoint type, specify the dimensions here";
 
         sizeMapping = new int[waypointTypesCount * 4];
 
@@ -50,6 +50,10 @@ public class MapWaypointIcon extends MapTextureIcon {
         setSize(WaypointType.SIGN, 190, 36, 208, 54);
         setSize(WaypointType.STAR, 208, 36, 226, 54);
         setSize(WaypointType.TURRET, 226, 36, 244, 54);
+        setSize(WaypointType.FARMING, 24, 53, 42, 71);
+        setSize(WaypointType.FISHING, 42, 53, 60, 71);
+        setSize(WaypointType.MINING, 60, 53, 78, 71);
+        setSize(WaypointType.WOODCUTTING, 78, 53, 96, 71);
     }
 
     private WaypointProfile wp;

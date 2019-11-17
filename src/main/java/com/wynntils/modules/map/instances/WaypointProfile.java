@@ -315,7 +315,11 @@ public class WaypointProfile {
         LOOTCHEST_T4("Chest (T4)"),
         LOOTCHEST_T3("Chest (T3"),
         LOOTCHEST_T2("Chest (T2)"),
-        LOOTCHEST_T1("Chest (T1)");
+        LOOTCHEST_T1("Chest (T1)"),
+        FARMING("Farming"),
+        FISHING("Fishing"),
+        MINING("Mining"),
+        WOODCUTTING("Woodcutting");
 
         private String displayName;
 
