@@ -85,7 +85,7 @@ public class ClientEvents implements Listener {
             openQuestBook = false;
 
             QuestBookPages.MAIN.getPage().open(true);
-            QuestManager.wasBookOpened(); //request the first reading if possible
+            QuestManager.wasBookOpened();  // Request the first reading if possible
         }
     }
 

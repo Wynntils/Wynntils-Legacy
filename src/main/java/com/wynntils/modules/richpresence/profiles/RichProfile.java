@@ -75,7 +75,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -111,7 +111,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -119,7 +119,7 @@ public class RichProfile {
 
         rpc.Discord_UpdatePresence(richPresence);
     }
-    
+
     /**
      * update user RichPresence
      *
@@ -144,7 +144,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -180,7 +180,7 @@ public class RichProfile {
         if(joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
-            richPresence.partySize = 1 + PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+            richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             richPresence.partyMax = 15;
         }
 
@@ -207,7 +207,20 @@ public class RichProfile {
         if (disabled) return;
         this.joinSecret = joinSecret;
 
-        if(lastStructure != null) updateRichPresence(lastStructure.state, lastStructure.details, lastStructure.largeImageKey, lastStructure.largeImageText, OffsetDateTime.now());
+        if (lastStructure != null) {
+            if (joinSecret != null) {
+                lastStructure.joinSecret = joinSecret.toString();
+                lastStructure.partyId = joinSecret.id;
+                lastStructure.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
+                lastStructure.partyMax = 15;
+            } else {
+                lastStructure.joinSecret = null;
+                lastStructure.partyId = null;
+                lastStructure.partySize = 0;
+                lastStructure.partyMax = 0;
+            }
+            rpc.Discord_UpdatePresence(lastStructure);
+        }
     }
 
     public boolean validSecrent(String secret) {

@@ -15,6 +15,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 
 public class SettingsContainer {
 
@@ -30,16 +32,9 @@ public class SettingsContainer {
         this.m = m;
         this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
 
-        for(Field f : holder.getClass().getDeclaredFields()) {
-            if (!Modifier.isStatic(f.getModifiers())) {
-                fields.add(f);
-            }
-        }
-
-        // Iterate over superclasses until Overlay.class is passed
-        for (Class superclass = holder.getClass().getSuperclass(); Overlay.class.isAssignableFrom(superclass); superclass = superclass.getSuperclass()) {
-            for(Field f : superclass.getDeclaredFields()) {
-                if (!Modifier.isStatic(f.getModifiers())) {
+        for (Class<?> clazz = holder.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
                     fields.add(f);
                 }
             }
@@ -57,7 +52,12 @@ public class SettingsContainer {
     }
 
     public void tryToLoad() throws Exception {
-        updateValues(SettingsManager.getSettings(m, holder, this));
+        if(fromCloud == null) {
+            updateValues(SettingsManager.getSettings(m, holder, this));
+            return;
+        }
+
+        updateValues(fromCloud); //this makes the syncronization
     }
 
     public HashMap<Field, Object> getValues() throws Exception {
@@ -72,6 +72,12 @@ public class SettingsContainer {
 
     public void saveSettings() throws Exception {
         SettingsManager.saveSettings(m, holder);
+    }
+
+    public String getSaveFile() {
+        SettingsInfo info = holder.getClass().getAnnotation(SettingsInfo.class);
+        if (info == null) return null;
+        return m.getInfo().name() + "-" + (holder instanceof Overlay ? "overlay_" + ((Overlay)holder).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";
     }
 
     public void setValue(Field f, Object value) throws Exception {
@@ -91,17 +97,10 @@ public class SettingsContainer {
         ArrayList<String> fieldsName = new ArrayList<>();
         for(Field f2 : fields) { fieldsName.add(f2.getName()); }
 
-        for(Field f : newH.getClass().getDeclaredFields()) {
-            if(!fieldsName.contains(f.getName())) {
-                save = true;
-
-                continue;
-            }
-            setValue(f, f.get(newH), false);
-        }
-        if (holder instanceof Overlay) {
-            for(Field f : newH.getClass().getSuperclass().getDeclaredFields()) {
-                if(!fieldsName.contains(f.getName())) {
+        for (Class<?> clazz = newH.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers())) continue;
+                if (!fieldsName.contains(f.getName())) {
                     save = true;
 
                     continue;
@@ -114,11 +113,12 @@ public class SettingsContainer {
     }
 
     public void onCreateConfig() throws Exception {
-        ArrayList<String> fieldsName = new ArrayList<>();
-        for(Field f2 : fields) { fieldsName.add(f2.getName()); }
-
-        for(Field f : holder.getClass().getDeclaredFields()) {
-            getConfigFromCloud(f);
+        for (Class<?> clazz = holder.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())) {
+                    getConfigFromCloud(f);
+                }
+            }
         }
     }
 
@@ -133,13 +133,58 @@ public class SettingsContainer {
         return true;
     }
 
-    public void resetValue(Field field) throws Exception {
-        field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    private SettingsHolder constructResetInstance() {
+        try {
+            return holder.getClass().getConstructor().newInstance();
+        } catch (Exception e) {
+            Reference.LOGGER.error("new SettingsHolder could not be constructed for class " + holder.getClass());
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void resetValues() throws Exception {
-        for(Field field : fields)
-            field.set(holder,field.get(holder.getClass().getConstructor().newInstance()));
+    public void resetValue(Field field) {
+        SettingsHolder reset = constructResetInstance();
+        if (reset != null) {
+            try {
+                field.set(holder, field.get(reset));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void resetValues() {
+        SettingsHolder defaultInstance = constructResetInstance();
+        if (defaultInstance == null) return;
+        for (Field field : fields) {
+            try {
+                field.set(holder, field.get(defaultInstance));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isReset() {
+        SettingsHolder resetInstance = constructResetInstance();
+        if (resetInstance == null) return false;
+        for (Field field : fields) {
+            if (Modifier.isTransient(field.getModifiers())) continue;
+            Object resetValue;
+            Object heldValue;
+            try {
+                resetValue = field.get(resetInstance);
+                heldValue = field.get(holder);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return false;
+            }
+            if (!Objects.deepEquals(resetValue, heldValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getDisplayPath() {

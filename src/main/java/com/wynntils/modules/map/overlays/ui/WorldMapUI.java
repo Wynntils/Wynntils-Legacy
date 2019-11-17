@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -83,6 +84,12 @@ public class WorldMapUI extends GuiMovementScreen {
         super.initGui();
 
         updateCenterPosition(centerPositionX, centerPositionZ);
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     float minX = 0; float maxX = 0;
@@ -250,22 +257,27 @@ public class WorldMapUI extends GuiMovementScreen {
         renderer.drawString(worldX + ", " + worldZ, width / 2, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
-    protected boolean clicking = false;
+    private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
+    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
+    private static final float ZOOM_SCALE_FACTOR = 1.1f;
 
     private void zoomBy(int by) {
-        zoom = Math.max(MapConfig.WorldMap.INSTANCE.minZoom, Math.min(MapConfig.WorldMap.INSTANCE.maxZoom, zoom - by));
+        double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
+        zoom = MathHelper.clamp((int) Math.round(zoomScale * (zoom + 50) - 50), MIN_ZOOM, MAX_ZOOM);
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
+
+    protected boolean clicking = false;
 
     @Override
     public void handleMouseInput() throws IOException {
         clicking = Mouse.isButtonDown(0);
 
-        int mDwehll = Mouse.getEventDWheel();
-        if(mDwehll >= 1) {
-            zoomBy(+5);
-        }else if(mDwehll <= -1) {
-            zoomBy(-5);
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if(mDwehll > 0) {
+            zoomBy(+1);
+        }else if(mDwehll < 0) {
+            zoomBy(-1);
         }
 
         super.handleMouseInput();
@@ -274,14 +286,12 @@ public class WorldMapUI extends GuiMovementScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == KeyManager.getZoomInKey().getKeyBinding().getKeyCode()) {
-            zoomBy(+20);
-            return;  // Return early so it doesn't zoom the minimap
+            zoomBy(+2);
         } else if (keyCode == KeyManager.getZoomOutKey().getKeyBinding().getKeyCode()) {
-            zoomBy(-20);
-            return;
+            zoomBy(-2);
+        } else {
+            super.keyTyped(typedChar, keyCode);
         }
-
-        super.keyTyped(typedChar, keyCode);
     }
 
 }

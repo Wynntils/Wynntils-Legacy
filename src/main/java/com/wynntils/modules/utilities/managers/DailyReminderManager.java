@@ -24,23 +24,23 @@ public class DailyReminderManager {
         if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GRAY);
-            
+
             TextComponentString openingBracket = new TextComponentString("[");
             openingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.appendSibling(openingBracket);
-            
+
             text.appendText("!");
-            
+
             TextComponentString closingBracket = new TextComponentString("] ");
             closingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.appendSibling(closingBracket);
-            
+
             TextComponentString dailyRewards = new TextComponentString("Daily rewards ");
             dailyRewards.getStyle().setColor(TextFormatting.WHITE);
             text.appendSibling(dailyRewards);
-            
+
             text.appendText("are available to claim!");
-            
+
             p.sendMessage(text);
             ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
 

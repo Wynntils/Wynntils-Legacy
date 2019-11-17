@@ -49,9 +49,11 @@ public abstract class MapIcon {
     public abstract int getZoomNeeded();
 
     /**
+     * @param forMinimap If true, return whether enabled for minimap instead of main map
+     *
      * @return Whether this icon should be rendered or not (Usually based on a config)
      */
-    public abstract boolean isEnabled();
+    public abstract boolean isEnabled(boolean forMinimap);
 
     /**
      * Render this icon

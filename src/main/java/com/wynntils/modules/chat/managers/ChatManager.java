@@ -36,11 +36,12 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
 
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
+    private static final Pattern tradeReg = Pattern.compile("\\w+ would like to trade! Type /trade \\w+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
-    public static Pair<ITextComponent, Boolean> proccessRealMessage(ITextComponent in) {
-        boolean cancel = false;
-
+    public static ITextComponent processRealMessage(ITextComponent in) {
+        //timestamps
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
                 try {
@@ -60,7 +61,7 @@ public class ChatManager {
             }
             //from here
 
-            List<ITextComponent> timeStamp = new ArrayList<ITextComponent>();
+            List<ITextComponent> timeStamp = new ArrayList<>();
             ITextComponent startBracket = new TextComponentString("[");
             startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             timeStamp.add(startBracket);
@@ -79,9 +80,11 @@ public class ChatManager {
             in.getSiblings().addAll(0, timeStamp);
         }
 
+        //popup sound
         if(in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
+        //wynnic translator
         if (hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             for (ITextComponent component : in.getSiblings()) {
@@ -89,62 +92,62 @@ public class ChatManager {
                     String toAdd = "";
                     String currentNonTranslatable = "";
                     boolean previousWynnic = false;
-                    String oldText = "";
+                    StringBuilder oldText = new StringBuilder();
                     for (char character : component.getUnformattedText().toCharArray()) {
                         if (String.valueOf(character).matches(wynnicRegex)) {
                             if (previousWynnic) {
                                 toAdd += currentNonTranslatable;
-                                oldText += currentNonTranslatable;
+                                oldText.append(currentNonTranslatable);
                                 currentNonTranslatable = "";
                             } else {
-                                ITextComponent newComponent = new TextComponentString(oldText);
+                                ITextComponent newComponent = new TextComponentString(oldText.toString());
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
                                 newTextComponents.add(newComponent);
-                                oldText = "";
+                                oldText = new StringBuilder();
                                 toAdd = "";
                                 previousWynnic = true;
                             }
                             String englishVersion = translateCharacter(character);
                             toAdd += englishVersion;
-                            oldText += character;
+                            oldText.append(character);
                         } else if (String.valueOf(character).matches(nonTranslatable)) {
                             if (previousWynnic) {
                                 currentNonTranslatable += character;
                             } else {
-                                oldText += character;
+                                oldText.append(character);
                             }
                         } else {
                             if (previousWynnic) {
                                 previousWynnic = false;
-                                ITextComponent oldComponent = new TextComponentString(oldText);
+                                ITextComponent oldComponent = new TextComponentString(oldText.toString());
                                 oldComponent.setStyle(component.getStyle().createDeepCopy());
                                 ITextComponent newComponent = new TextComponentString(toAdd);
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
                                 newTextComponents.add(oldComponent);
                                 oldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
-                                oldText = currentNonTranslatable;
+                                oldText = new StringBuilder(currentNonTranslatable);
                                 currentNonTranslatable = "";
-                                oldText += character;
+                                oldText.append(character);
                             } else {
-                                oldText += character;
+                                oldText.append(character);
                             }
                         }
                     }
                     if (!currentNonTranslatable.isEmpty()) {
-                        oldText += currentNonTranslatable;
+                        oldText.append(currentNonTranslatable);
                         if (previousWynnic) {
                             toAdd += currentNonTranslatable;
                         }
                     }
                     if (previousWynnic) {
-                        ITextComponent oldComponent = new TextComponentString(oldText);
+                        ITextComponent oldComponent = new TextComponentString(oldText.toString());
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
                         ITextComponent newComponent = new TextComponentString(toAdd);
                         newComponent.setStyle(component.getStyle().createDeepCopy());
                         newTextComponents.add(oldComponent);
                         oldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
                     } else {
-                        ITextComponent oldComponent = new TextComponentString(oldText);
+                        ITextComponent oldComponent = new TextComponentString(oldText.toString());
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
                         newTextComponents.add(oldComponent);
                     }
@@ -157,6 +160,7 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
+        //clickable party invites
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -169,6 +173,33 @@ public class ChatManager {
             }
         }
 
+        //clickable trade messages
+        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Trade!")));
+                }
+            }
+        }
+
+        //clickable duel messages
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
+            for (ITextComponent textComponent : in.getSiblings()) {
+                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                    String command = textComponent.getUnformattedComponentText();
+                    textComponent.getStyle()
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                            .setUnderlined(true)
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Duel!")));
+                }
+            }
+        }
+
+        //clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
             String crdText;
             TextFormatting color;
@@ -204,21 +235,21 @@ public class ChatManager {
             }
         }
 
-        return new Pair<>(in, cancel);
+        return in;
     }
 
     public static ITextComponent renderMessage(ITextComponent in) {
         return in;
     }
 
-    public static boolean proccessUserMention(ITextComponent in) {
+    public static boolean processUserMention(ITextComponent in) {
         boolean hasMention = false;
         if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2) {
             if (in.getFormattedText().contains(ModCore.mc().player.getName())) {
                 // Patterns used to detect guild/party chat
                 boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
                 boolean foundStart = false;
-                ArrayList<ITextComponent> components = new ArrayList<ITextComponent>();
+                ArrayList<ITextComponent> components = new ArrayList<>();
                 for (ITextComponent component : in.getSiblings()) {
                     if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
                         hasMention = true;
@@ -269,7 +300,7 @@ public class ChatManager {
         boolean cancel = false;
 
         if (message.contains("{")) {
-            String newString = "";
+            StringBuilder newString = new StringBuilder();
             boolean isWynnic = false;
             for (char character : message.toCharArray()) {
                 if (character == '{') {
@@ -279,26 +310,26 @@ public class ChatManager {
                 } else if (isWynnic) {
                     if (!String.valueOf(character).matches(nonTranslatable)) {
                         if (String.valueOf(character).matches("[a-z]")) {
-                            newString += ((char) ((character) + 9275));
+                            newString.append((char) ((character) + 9275));
                         } else if (String.valueOf(character).matches("[A-Z]")) {
-                            newString += ((char) ((character) + 9307));
+                            newString.append((char) ((character) + 9307));
                         } else if (String.valueOf(character).matches("[1-9]")) {
-                            newString += ((char) ((character) + 9283));
+                            newString.append((char) ((character) + 9283));
                         } else if (character == '.') {
-                            newString += "\uFF10";
+                            newString.append("\uFF10");
                         } else if (character == '!') {
-                            newString += "\uFF11";
+                            newString.append("\uFF11");
                         } else if (character == '?') {
-                            newString += "\uFF12";
+                            newString.append("\uFF12");
                         }
                     } else {
-                        newString += character;
+                        newString.append(character);
                     }
                 } else {
-                    newString += character;
+                    newString.append(character);
                 }
             }
-            after = newString;
+            after = newString.toString();
 
         }
 

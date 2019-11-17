@@ -7,20 +7,30 @@ package com.wynntils.core.utils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Toolkit;
@@ -33,16 +43,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.nio.channels.FileChannel;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 public class Utils {
@@ -50,6 +58,8 @@ public class Utils {
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
+    private static Pattern WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
+    private static Random random = new Random();
 
     /**
      * Runs a runnable after the determined time
@@ -62,14 +72,25 @@ public class Utils {
         executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
+    /**
+     * @return the main random instance
+     */
+    public static Random getRandom() {
+        return random;
+    }
+
     public static ScheduledFuture runTaskTimer(Runnable r, TimeUnit timeUnit, long amount) {
         return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
+    }
+
+    public static void runAsync(Runnable r) {
+        executorService.submit(r);
     }
 
     /**
      * Removes the invisible character À
      *
-     * @param input
+     * @param input string
      * @return input string without the invisible character
      */
     public static String stripInvisibleChar(String input) {
@@ -79,7 +100,7 @@ public class Utils {
     /**
      * Removes the percentage box (e.g. [96%])
      *
-     * @param input
+     * @param input string
      * @return input string without the percentage box
      */
     public static String stripPercentage(String input) {
@@ -89,7 +110,7 @@ public class Utils {
     /**
      * Removes the "Perfect"-rainbow from input string
      *
-     * @param input
+     * @param input string
      * @return input string without the "Perfect"-rainbow
      */
     public static String stripPerfect(String input) {
@@ -99,7 +120,7 @@ public class Utils {
     /**
      * Removes characters from input string based on extended.
      *
-     * @param input
+     * @param input string
      * @param extended
      *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
      *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
@@ -122,14 +143,14 @@ public class Utils {
     }
 
     /**
-     * Returns a cutted string after x characters
+     * Returns a cut string after x characters
      *
      * @param x
      *        Original String
      * @param amount
      *        The max string char amount
      *
-     * @return Original string cutted after x characters
+     * @return Original string cut after x characters
      */
     public static String removeAfterChar(String x, int amount) {
         String toReturn = x;
@@ -141,10 +162,10 @@ public class Utils {
     }
 
     /**
-     * Gets by text the current player drection
+     * Get short direction string for a given yaw
      *
      * @param yaw player's yaw
-     * @return
+     * @return Two or one character string
      */
     public static String getPlayerDirection(float yaw){
         double num = (yaw + 202.5) / 45.0;
@@ -175,28 +196,35 @@ public class Utils {
     }
 
     /**
+     * Get the lore NBT tag from an item
+     */
+    public static NBTTagList getLoreTag(ItemStack item) {
+        if (item.isEmpty()) return null;
+        NBTTagCompound display = item.getSubCompound("display");
+        if (display != null && display.hasKey("Lore")) {
+            NBTBase loreBase = display.getTag("Lore");
+            NBTTagList lore;
+            if (loreBase.getId() == 9 && (lore = (NBTTagList) loreBase).getTagType() == 8) {
+                return lore;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get the lore from an item
-     *
-     * @param item
      *
      * @return an {@link List} containing all item lore
      */
     public static List<String> getLore(ItemStack item) {
         List<String> lore = new ArrayList<>();
-        if(item.isEmpty() || !item.hasTagCompound()) {
+        if(item.isEmpty()) {
             return lore;
         }
-        if (item.getTagCompound().hasKey("display", 10)) {
-            NBTTagCompound nbttagcompound = item.getTagCompound().getCompoundTag("display");
-
-            if (nbttagcompound.getTagId("Lore") == 9) {
-                NBTTagList nbttaglist3 = nbttagcompound.getTagList("Lore", 8);
-
-                if (!nbttaglist3.isEmpty()) {
-                    for (int l1 = 0; l1 < nbttaglist3.tagCount(); ++l1) {
-                        lore.add(nbttaglist3.getStringTagAt(l1));
-                    }
-                }
+        NBTTagList loreTag = getLoreTag(item);
+        if (loreTag != null) {
+            for (int i = 0; i < loreTag.tagCount(); ++i) {
+                lore.add(loreTag.getStringTagAt(i));
             }
         }
         return lore;
@@ -370,23 +398,10 @@ public class Utils {
             return;
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel(); FileChannel destination = new FileOutputStream(destFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
-            if(source != null) {
-                source.close();
-            }
-            if(destination != null) {
-                destination.close();
-            }
         }
     }
 
@@ -402,12 +417,7 @@ public class Utils {
     }
 
     public static String toMD5(String msg) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(msg.getBytes(), 0, msg.length());
-            return new BigInteger(1, m.digest()).toString(16);
-        }catch (Exception ex) { }
-        return msg;
+        return new MD5Verification(msg.getBytes(StandardCharsets.UTF_8)).getMd5();
     }
 
     public static float easeOut(float current, float goal, float jump, float speed) {
@@ -420,19 +430,39 @@ public class Utils {
 
     public static String[] wrapText(String s, int max) {
         String[] stringArray = s.split(" ");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int length = 0;
 
         for (String string: stringArray) {
             if (length + string.length() >= max) {
-                result += "|";
+                result.append('|');
                 length = 0;
             }
-            result += string + " ";
+            result.append(string).append(' ');
             length += string.length() + 1; //+1 for the space following
         }
 
-        return result.split("\\|");
+        return result.toString().split("\\|");
+    }
+
+    public static String[] wrapTextBySize(String s, int maxPixels) {
+        SmartFontRenderer renderer = ScreenRenderer.fontRenderer;
+        int spaceSize = renderer.getStringWidth(" ");
+
+        String[] stringArray = s.split(" ");
+        StringBuilder result = new StringBuilder();
+        int length = 0;
+
+        for (String string : stringArray) {
+            if (length + renderer.getStringWidth(string) >= maxPixels) {
+                result.append('|');
+                length = 0;
+            }
+            result.append(string).append(' ');
+            length += renderer.getStringWidth(string) + spaceSize;
+        }
+
+        return result.toString().split("\\|");
     }
 
     public static String getPlayerHPBar(EntityPlayer entityPlayer) {
@@ -477,12 +507,12 @@ public class Utils {
      * Search for a Wynncraft World.
      * only works if the user is on lobby!
      *
-     * @param worldNumber
+     * @param worldNumber The world to join
      */
     public static void joinWorld(int worldNumber) {
         if(!Reference.onServer || Reference.onWorld) return;
 
-        FakeInventory serverSelector = new FakeInventory("Wynncraft Servers", 0);
+        FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, 0);
         serverSelector.onReceiveItems(c -> {
             Pair<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
             if (world != null) {
@@ -495,7 +525,7 @@ public class Utils {
             if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
         });
-        
+
         serverSelector.open();
     }
 
@@ -516,9 +546,9 @@ public class Utils {
 
         String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
 
-        int r = Integer.valueOf(hex.substring(1, 3), 16);
-        int g = Integer.valueOf(hex.substring(3, 5), 16);
-        int b = Integer.valueOf(hex.substring(5, 7), 16);
+        int r = Integer.parseInt(hex.substring(1, 3), 16);
+        int g = Integer.parseInt(hex.substring(3, 5), 16);
+        int b = Integer.parseInt(hex.substring(5, 7), 16);
 
         CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
         registeredColors.put(input, color);
@@ -529,9 +559,9 @@ public class Utils {
     public static CustomColor colorFromHex(String hex) {
         if(registeredColors.containsKey(hex)) return registeredColors.get(hex);
 
-        int r = Integer.valueOf(hex.substring(1, 3), 16);
-        int g = Integer.valueOf(hex.substring(3, 5), 16);
-        int b = Integer.valueOf(hex.substring(5, 7), 16);
+        int r = Integer.parseInt(hex.substring(1, 3), 16);
+        int g = Integer.parseInt(hex.substring(3, 5), 16);
+        int b = Integer.parseInt(hex.substring(5, 7), 16);
 
         CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
         registeredColors.put(hex, color);
@@ -556,7 +586,19 @@ public class Utils {
     public static void displayGuiScreen(GuiScreen screen) {
         Minecraft mc = Minecraft.getMinecraft();
 
+        GuiScreen oldScreen = mc.currentScreen;
+
+        GuiOpenEvent event = new GuiOpenEvent(screen);
+        if (MinecraftForge.EVENT_BUS.post(event)) return;
+        screen = event.getGui();
+
+        if (oldScreen == screen) return;
+        if (oldScreen != null) {
+            oldScreen.onGuiClosed();
+        }
+
         mc.currentScreen = screen;
+
         if (screen != null) {
             Minecraft.getMinecraft().setIngameNotInFocus();
 
@@ -573,6 +615,9 @@ public class Utils {
 
     private static int doubleClickTime = -1;
 
+    /**
+     * @return Maximum milliseconds between clicks to count as a double click
+     */
     public static int getDoubleClickTime() {
         if (doubleClickTime < 0) {
             Object prop = Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
@@ -586,6 +631,9 @@ public class Utils {
         return doubleClickTime;
     }
 
+    /**
+     * Write a String, `s`, to the clipboard. Clears if `s` is null.
+     */
     public static void copyToClipboard(String s) {
         if (s == null) {
             clearClipboard();
@@ -610,6 +658,9 @@ public class Utils {
         }, null);
     }
 
+    /**
+     * @return A String read from the clipboard, or null if the clipboard does not contain a string
+     */
     public static String pasteFromClipboard() {
         try {
             return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
@@ -618,8 +669,99 @@ public class Utils {
         }
     }
 
+    /**
+     * @return `s.getBytes("UTF-8").length`, but without encoding the string
+     */
     public static int utf8Length(String s) {
         if (s == null) return 0;
         return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
     }
+
+    /**
+     * @return `true` if `c` is a valid Unicode code point (in [0, 0x10FFFF] and not a surrogate)
+     */
+    public static boolean isValidCodePoint(int c) {
+                                           /* low surrogates */             /* high surrogates */
+        return 0 <= c && c <= 0x10FFFF && !(0xD800 <= c && c <= 0xDBFF) && !(0xDC00 <= c && c <= 0xDFFF);
+    }
+
+    private static final Pattern numberRegex = Pattern.compile("0|-?[1-9][0-9]*");
+
+    /**
+     * @return `true` if `s` is an integer and can fit in an `int`
+     */
+    public static boolean isValidInteger(String s) {
+        if (s == null || s.length() > 11 || !numberRegex.matcher(s).matches()) return false;
+        if (s.length() < 10) return true;
+        long parsed = Long.parseLong(s);
+        return (int) parsed == parsed;
+    }
+
+    /**
+     * @return `true` if `s` is an integer and can fit in a `long`
+     */
+    public static boolean isValidLong(String s) {
+        if (s == null || s.length() > 20 || !numberRegex.matcher(s).matches()) return false;
+        if (s.length() < 19) return true;
+        try {
+            Long.parseLong(s);  // Could overflow
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void tab(GuiTextField... tabList) {
+        tab(Arrays.asList(tabList));
+    }
+
+    /**
+     * Given a list of text fields, blur the currently focused field and focus the
+     * next one. Focuses the first one if there is no focused field or the last field is focused.
+     */
+    public static void tab(List<GuiTextField> tabList) {
+        int focusIndex = -1;
+        for (int i = 0; i < tabList.size(); ++i) {
+            GuiTextField field = tabList.get(i);
+            if (field.isFocused()) {
+                focusIndex = i;
+                field.setCursorPosition(0);
+                field.setSelectionPos(0);
+                field.setFocused(false);
+                break;
+            }
+        }
+        focusIndex = (focusIndex + 1) % tabList.size();
+        GuiTextField selected = tabList.get(focusIndex);
+        selected.setFocused(true);
+        selected.setCursorPosition(0);
+        selected.setSelectionPos(selected.getText().length());
+    }
+
+    private static final Item EMERALD_BLOCK = Item.getItemFromBlock(Blocks.EMERALD_BLOCK);
+
+    /**
+     * @return the total amount of emeralds in an inventory, including blocks and le
+     */
+    public static int countMoney(IInventory inv) {
+        if (inv == null) return 0;
+
+        int money = 0;
+
+        for (int i = 0, len = inv.getSizeInventory(); i < len; i++) {
+            ItemStack it = inv.getStackInSlot(i);
+            if (it.isEmpty()) continue;
+
+            if (it.getItem() == Items.EMERALD) {
+                money += it.getCount();
+            } else if (it.getItem() == EMERALD_BLOCK) {
+                money += it.getCount() * 64;
+            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+                money += it.getCount() * (64 * 64);
+            }
+        }
+
+        return money;
+    }
+
 }

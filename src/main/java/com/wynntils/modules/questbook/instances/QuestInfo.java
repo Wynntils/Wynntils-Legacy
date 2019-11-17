@@ -6,6 +6,8 @@ package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class QuestInfo {
     private final String currentDescription;
     private final int x, z;
 
-    private final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
+    private static final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
     public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
         this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
@@ -37,12 +39,13 @@ public class QuestInfo {
         for(String x : currentDescription.split(" ")) {
             if(chars + x.length() > 37) {
                 splittedDescription.add(currentMessage.toString());
-                currentMessage = new StringBuilder(x + " ");
+                currentMessage = new StringBuilder(x);
+                currentMessage.append(' ');
                 chars = x.length();
                 continue;
             }
             chars+= x.length() ;
-            currentMessage.append(x).append(" ");
+            currentMessage.append(x).append(' ');
         }
         splittedDescription.add(currentMessage.toString());
 
@@ -55,9 +58,37 @@ public class QuestInfo {
 
         Matcher m = coordinatePattern.matcher(currentDescription);
         if(m.find()) {
-            x = Integer.valueOf(m.group(1));
-            z = Integer.valueOf(m.group(3));
-        }else { x = 0; z = 0; }
+            x = Integer.parseInt(m.group(1));
+            z = Integer.parseInt(m.group(3));
+        } else {
+            int overrideX = Integer.MIN_VALUE;
+            int overrideZ = Integer.MIN_VALUE;
+            String closestTerritory = null;
+            switch (name) {
+                case "Kingdom of Sand":
+                    if (status == QuestStatus.CAN_START || status == QuestStatus.CANNOT_START) {
+                        closestTerritory = "Desert East Lower";
+                    }
+                    break;
+                case "From the Bottom":
+                    if (status == QuestStatus.CAN_START || status == QuestStatus.CANNOT_START) {
+                        closestTerritory = "Thanos";
+                    }
+                    break;
+            }
+
+            if (overrideX == Integer.MIN_VALUE && closestTerritory != null) {
+                // Override by territory instead of numbers
+                TerritoryProfile t = WebManager.getTerritories().get(closestTerritory);
+                if (t != null) {
+                    overrideX = (t.getStartX() + t.getEndX()) / 2;
+                    overrideZ = (t.getStartZ() + t.getEndZ()) / 2;
+                }
+            }
+
+            x = overrideX;
+            z = overrideZ;
+        }
 
         this.splittedDescription = splittedDescription;
         this.questbookFriendlyName = questbookFriendlyName;
@@ -101,6 +132,10 @@ public class QuestInfo {
 
     public int getZ() {
         return z;
+    }
+
+    public boolean isMiniQuest() {
+        return name.startsWith("Mini-Quest");
     }
 
     public String toString() {

@@ -32,38 +32,24 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderLivingEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static net.minecraft.client.renderer.GlStateManager.alphaFunc;
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.depthMask;
-import static net.minecraft.client.renderer.GlStateManager.disableBlend;
-import static net.minecraft.client.renderer.GlStateManager.disableDepth;
-import static net.minecraft.client.renderer.GlStateManager.disableLighting;
-import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.enableBlend;
-import static net.minecraft.client.renderer.GlStateManager.enableDepth;
-import static net.minecraft.client.renderer.GlStateManager.enableLighting;
-import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
-import static net.minecraft.client.renderer.GlStateManager.glNormal3f;
-import static net.minecraft.client.renderer.GlStateManager.popMatrix;
-import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
-import static net.minecraft.client.renderer.GlStateManager.rotate;
-import static net.minecraft.client.renderer.GlStateManager.scale;
-import static net.minecraft.client.renderer.GlStateManager.translate;
-import static net.minecraft.client.renderer.GlStateManager.tryBlendFuncSeparate;
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class NametagManager {
 
     private static final NametagLabel friendLabel = new NametagLabel(null, TextFormatting.YELLOW + (TextFormatting.BOLD + "Friend"), 0.7f);
-    private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.CYAN, "Guild Member", 0.7f);
-    private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.ORANGE, "Wynncraft Moderator", 0.7f);
+    private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.AQUA, "Guild Member", 0.7f);
+    private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.GOLD, "Wynncraft Moderator", 0.7f);
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
+    private static final NametagLabel wynnContentTeamLabel = new NametagLabel(MinecraftChatColors.DARK_AQUA, "Wynncraft CT", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
+    private static final HashMap<String, NametagLabel> wynncraftTeamLabels = new HashMap<>();
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
     private static final ScreenRenderer renderer = new ScreenRenderer();
@@ -83,8 +69,10 @@ public class NametagManager {
             if(PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel); //friend
             else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
 
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.GOLD.toString())) customLabels.add(moderatorLabel); //moderator
-            if(entity.getDisplayName().getUnformattedText().startsWith(TextFormatting.DARK_RED.toString())) customLabels.add(adminLabel); //admin
+            //wynncraft teams (Admin, Moderator, GM, Builder, etc.)
+            if (entity.getTeam() != null && !(entity.getTeam().getName().equalsIgnoreCase("all") || entity.getTeam().getName().equalsIgnoreCase("afk"))) {
+                customLabels.add(getWynncraftTeamLabel(entity.getTeam()));
+            }
             if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
             if(WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel); //helper
             if(WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel); //contentTeam
@@ -172,7 +160,7 @@ public class NametagManager {
             if(scale != 1) scale(scale, scale, scale);
             verticalShift = (int)(verticalShift/scale);
 
-            renderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
+            ScreenRenderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
             {
                 //positions
                 translate(x / scale, y / scale, z / scale); //translates to the correct postion
@@ -205,10 +193,10 @@ public class NametagManager {
                     BufferBuilder vertexBuffer = tesselator.getBuffer();
                     {
                         vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                        vertexBuffer.pos((double) (-middlePos - 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (-middlePos - 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (middlePos + 1), (double) (8 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos((double) (middlePos + 1), (double) (-1 + verticalShift), 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(-middlePos - 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(-middlePos - 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(middlePos + 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                        vertexBuffer.pos(middlePos + 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
                     }
                     tesselator.draw();
                     enableTexture2D();
@@ -239,7 +227,7 @@ public class NametagManager {
                 disableBlend();
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
-            renderer.endGL();
+            ScreenRenderer.endGL();
         }
         popMatrix();
     }
@@ -262,9 +250,10 @@ public class NametagManager {
             ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
             CustomColor color;
             switch (itemProfile.getTier()) {
-                case MYTHIC: color = MinecraftChatColors.PURPLE; break;
-                case LEGENDARY: color = MinecraftChatColors.CYAN; break;
-                case RARE: color = MinecraftChatColors.PINK; break;
+                case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
+                case FABLED: color = MinecraftChatColors.RED; break;
+                case LEGENDARY: color = MinecraftChatColors.AQUA; break;
+                case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
                 case UNIQUE: color = MinecraftChatColors.YELLOW; break;
                 case SET: color = MinecraftChatColors.GREEN; break;
                 case NORMAL: color = MinecraftChatColors.WHITE; break;
@@ -275,6 +264,13 @@ public class NametagManager {
         }
 
         return labels;
+    }
+
+    private static NametagLabel getWynncraftTeamLabel(Team team) {
+        if (!wynncraftTeamLabels.containsKey(team.getName())) {
+            wynncraftTeamLabels.put(team.getName(), new NametagLabel(null, team.getColor() + "Wynncraft " + team.getName(), 0.7f));
+        }
+        return wynncraftTeamLabels.get(team.getName());
     }
 
 }

@@ -10,6 +10,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.ClientEvents;
+import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
 import org.lwjgl.input.Keyboard;
 
@@ -25,8 +26,9 @@ public class QuestBookModule extends Module {
         registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> {
             QuestBookPages.QUESTS.getPage().open(true);
         });
-        registerKeyBinding("Open Item Guide", Keyboard.KEY_I, "Wynntils", true, () -> {
+        registerKeyBinding("Open Menu", Keyboard.KEY_I, "Wynntils", true, () -> {
             QuestBookPages.MAIN.getPage().open(true);
+            QuestManager.wasBookOpened();
         });
     }
 

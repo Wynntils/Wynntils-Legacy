@@ -12,7 +12,6 @@ public enum ReflectionMethods {
 
     ReflectionMethods(Class<?> holdingClass, String deobf, String obf) {
         this.method = ReflectionHelper.findMethod(holdingClass, deobf, obf);
-        this.method.setAccessible(true);
     }
 
     public void invoke(Object parent, Object... fields) {

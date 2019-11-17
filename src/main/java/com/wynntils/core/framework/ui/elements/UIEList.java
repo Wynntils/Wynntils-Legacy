@@ -6,7 +6,8 @@ package com.wynntils.core.framework.ui.elements;
 
 import com.wynntils.core.framework.ui.UIElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UIEList extends UIElement {
     public List<UIElement> elements;

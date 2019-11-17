@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 0, minor: 2, revision: 7)
+def versionObj = new Version(major: 1, minor: 0, revision: 0)
 
 version = versionObj.toString()
 group = "com.wynntils"
@@ -43,7 +43,7 @@ configurations {
 }
 
 dependencies {
-    embed fileTree(dir: 'lib', include: ['*.jar'])
+    embed "javazoom:jlayer:1.0.1"
 }
 
 processResources {
@@ -93,6 +93,6 @@ class Version {
     }
 
     String toString() {
-        "${major}.${minor}.${revision}_$build"
+        "${major}.${minor}.${revision}_$build-MC1.12.2"
     }
 }

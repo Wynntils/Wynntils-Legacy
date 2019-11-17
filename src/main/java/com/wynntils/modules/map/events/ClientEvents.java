@@ -29,7 +29,7 @@ public class ClientEvents implements Listener {
         if (!MapConfig.INSTANCE.showCompassBeam || CompassManager.getCompassLocation() == null) return;
 
         Location compass = CompassManager.getCompassLocation();
-        BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), CommonColors.RED);
+        BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), MapConfig.INSTANCE.compassBeaconColor);
     }
 
     @SubscribeEvent

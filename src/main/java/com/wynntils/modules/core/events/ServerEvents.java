@@ -16,6 +16,8 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
@@ -52,7 +54,8 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
-        WebManager.checkForUpdates();
+        WebManager.tryReloadApiUrls(true);
+        WebManager.checkForUpdatesOnJoin();
         DownloaderManager.startDownloading();
     }
 
@@ -79,6 +82,8 @@ public class ServerEvents implements Listener {
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+
+        PartyManager.handlePartyList(); //party list here
     }
 
     /**
@@ -94,8 +99,11 @@ public class ServerEvents implements Listener {
         if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
-        if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
-            String[] splited = e.getMessage().getUnformattedText().split(":");
+        PartyManager.handleMessages(e.getMessage()); //party messages here
+
+        String messageText = e.getMessage().getUnformattedText();
+        if(messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
+            String[] splited = messageText.split(":");
 
             String[] friends;
             if(splited[1].contains(",")) {
@@ -108,15 +116,15 @@ public class ServerEvents implements Listener {
             waitingForFriendList = false;
             return;
         }
-        if(e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
+        if(messageText.startsWith("#") && messageText.contains(" XP -")) {
             if(waitingForGuildList) e.setCanceled(true);
 
-            String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
+            String[] messageSplitted = messageText.split(" ");
             PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
             return;
         }
-        if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
-            String[] splittedText = e.getMessage().getUnformattedText().split(" ");
+        if(!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
+            String[] splittedText = messageText.split(" ");
             if(!splittedText[1].equalsIgnoreCase("has")) return;
 
             if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
@@ -144,10 +152,16 @@ public class ServerEvents implements Listener {
     }
 
     /**
+     * Verifies the response from packet queue
+     */
+    @SubscribeEvent
+    public void onReceivePacket(PacketEvent e) {
+        PacketQueue.checkResponse(e.getPacket());
+    }
+
+    /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
-     *
-     * @param e
      */
     @SubscribeEvent
     public void onJoinLobby(RenderPlayerEvent.Post e) {
@@ -167,7 +181,9 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
-        if (CompassManager.getCompassLocation() != null) {
+        if (Minecraft.getMinecraft().player == null) {
+            CompassManager.reset();
+        } else if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }
     }

@@ -38,7 +38,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     }
 
     @Override
-    public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
@@ -47,16 +47,10 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            if (entitylivingbaseIn instanceof AbstractClientPlayer) {
-                AbstractClientPlayer abstractclientplayer = entitylivingbaseIn;
-
-                if (abstractclientplayer.isPlayerInfoSet() && abstractclientplayer.getLocationElytra() != null) {
-                    this.renderPlayer.bindTexture(abstractclientplayer.getLocationElytra());
-                } else if (abstractclientplayer.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
-                    this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
-                } else {
-                    this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
-                }
+            if (entitylivingbaseIn.isPlayerInfoSet() && entitylivingbaseIn.getLocationElytra() != null) {
+                this.renderPlayer.bindTexture(entitylivingbaseIn.getLocationElytra());
+            } else if (entitylivingbaseIn.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
+                this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
             } else {
                 this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
             }
@@ -68,8 +62,8 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             double d1 = entitylivingbaseIn.prevChasingPosY + (entitylivingbaseIn.chasingPosY - entitylivingbaseIn.prevChasingPosY) * (double) partialTicks - (entitylivingbaseIn.prevPosY + (entitylivingbaseIn.posY - entitylivingbaseIn.prevPosY) * (double) partialTicks);
             double d2 = entitylivingbaseIn.prevChasingPosZ + (entitylivingbaseIn.chasingPosZ - entitylivingbaseIn.prevChasingPosZ) * (double) partialTicks - (entitylivingbaseIn.prevPosZ + (entitylivingbaseIn.posZ - entitylivingbaseIn.prevPosZ) * (double) partialTicks);
             float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks;
-            double d3 = (double) MathHelper.sin(f * 0.017453292F);
-            double d4 = (double) (-MathHelper.cos(f * 0.017453292F));
+            double d3 = MathHelper.sin(f * 0.017453292F);
+            double d4 = -MathHelper.cos(f * 0.017453292F);
             float f1 = (float) d1 * 10.0F;
             f1 = MathHelper.clamp(f1, -6.0F, 32.0F);
             float f2 = (float) (d0 * d3 + d2 * d4) * 100.0F;

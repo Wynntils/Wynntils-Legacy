@@ -11,6 +11,7 @@ import com.wynntils.webapi.downloader.enums.DownloadPhase;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -92,27 +93,27 @@ public class DownloaderManager {
                     pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
                     return;
                 }
-                
+
                 if(!pf.getLocation().exists()) {
                     pf.getLocation().mkdirs();
                 }
 
                 String[] urlSplited = pf.getUrl().split("/");
 
-                int fileLenght = st.getContentLength();
+                int fileLength = st.getContentLength();
 
-                File fileSaved = new File(pf.getLocation(), urlSplited[urlSplited.length - 1].replace("%20", " "));
+                File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlSplited[urlSplited.length - 1], "UTF-8"));
 
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);
 
-                byte data[] = new byte[1024];
+                byte[] data = new byte[1024];
                 long total = 0;
                 int count;
 
                 while ((count = fis.read(data)) != -1) {
                     total += count;
-                    progression = (int)(total * 100 / fileLenght);
+                    progression = (int)(total * 100 / fileLength);
                     fos.write(data, 0, count);
                 }
 
@@ -124,7 +125,7 @@ public class DownloaderManager {
                 if(pf.getAction() == DownloadAction.UNZIP) {
                     currentPhase = DownloadPhase.UNZIPPING;
 
-                    byte buffer[] = new byte[1024];
+                    byte[] buffer = new byte[1024];
                     FileInputStream fin = new FileInputStream(fileSaved);
                     ZipInputStream zin = new ZipInputStream(fin);
                     FileChannel channel = fin.getChannel();

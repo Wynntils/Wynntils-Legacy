@@ -12,12 +12,16 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
@@ -26,9 +30,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.Locale;
 
 public class ClientEvents implements Listener {
 
@@ -96,7 +103,7 @@ public class ClientEvents implements Listener {
                 ClassType selectedClass = ClassType.NONE;
 
                 try{
-                    selectedClass = ClassType.valueOf(classS.toUpperCase());
+                    selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
                 }catch (Exception ex) {
                     switch(classS) {
                         case "Hunter":
@@ -110,6 +117,10 @@ public class ClientEvents implements Listener {
                             break;
                         case "Ninja":
                             selectedClass = ClassType.ASSASSIN;
+                            break;
+                        case "Shaman":
+                            selectedClass = ClassType.SHAMAN;
+                            break;
                     }
                 }
 
@@ -120,8 +131,6 @@ public class ClientEvents implements Listener {
 
     /**
      * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
-     * 
-     * @param e
      */
     @SubscribeEvent
     public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
@@ -132,9 +141,27 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
-        if(e.phase != TickEvent.Phase.END) return;
+        if (e.phase != TickEvent.Phase.END) return;
 
-        PacketQueue.proccessQueue();
+        if (PacketQueue.hasQueuedPacket()) {
+            PingManager.calculatePing();
+            PacketQueue.proccessQueue();
+        }
     }
 
+    @SubscribeEvent
+    public void addMainMenuButtons(GuiScreenEvent.InitGuiEvent.Post e) {
+        GuiScreen gui = e.getGui();
+        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
+            MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList());
+        }
+    }
+
+    @SubscribeEvent
+    public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
+        GuiScreen gui = e.getGui();
+        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
+            MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
+        }
+    }
 }

@@ -22,7 +22,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ItemPage extends QuestBookPage {
 
@@ -239,6 +238,11 @@ public class ItemPage extends QuestBookPage {
                         g = 0;
                         b = 0.3f;
                         break;
+                    case FABLED:
+                        r = 1f;
+                        g = 0.58f;
+                        b = 0.49f;
+                        break;
                     case LEGENDARY:
                         r = 0;
                         g = 1;
@@ -384,24 +388,37 @@ public class ItemPage extends QuestBookPage {
     }
 
     @Override
-    public void searchUpdate(String currentText) {
-        ArrayList<ItemProfile> items = new ArrayList<>(WebManager.getDirectItems());
+    protected void searchUpdate(String currentText) {
+        itemSearch = new ArrayList<>(WebManager.getDirectItems());
 
-        itemSearch = currentText != null && !currentText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase())).collect(Collectors.toList()) : items;
+        itemSearch.removeIf(c -> {
+            if (c.getType() == null && c.getAccessoryType() == null) return true;
+            if (c.getCategory().equals("accessory")) {
+                switch (c.getAccessoryType().toLowerCase(Locale.ROOT)) {
+                    case "bracelet": return !allowBracelets;
+                    case "ring": return !allowRings;
+                    case "necklace": return !allowNecklaces;
+                    default: return true;
+                }
+            } else {
+                switch (c.getType().toLowerCase(Locale.ROOT)) {
+                    case "helmet": return !allowHelmet;
+                    case "chestplate": return !allowChestplate;
+                    case "boots": return !allowBoots;
+                    case "leggings": return !allowLeggings;
+                    case "wand": return !allowWands;
+                    case "spear": return !allowSpears;
+                    case "dagger": return !allowDaggers;
+                    case "bow": return !allowBows;
+                    default: return true;
+                }
+            }
+        });
 
-        itemSearch = (ArrayList<ItemProfile>)itemSearch.stream().filter(c -> {
-            if(allowHelmet && c.getType() != null && c.getType().equalsIgnoreCase("Helmet")) return true;
-            if(allowChestplate && c.getType() != null && c.getType().equalsIgnoreCase("Chestplate")) return true;
-            if(allowBoots && c.getType() != null && c.getType().equalsIgnoreCase("Boots")) return true;
-            if(allowLeggings && c.getType() != null && c.getType().equalsIgnoreCase("Leggings")) return true;
-            if(allowWands && c.getType() != null && c.getType().equalsIgnoreCase("Wand")) return true;
-            if(allowSpears && c.getType() != null && c.getType().equalsIgnoreCase("Spear")) return true;
-            if(allowDaggers && c.getType() != null && c.getType().equalsIgnoreCase("Dagger")) return true;
-            if(allowBows && c.getType() != null && c.getType().equalsIgnoreCase("Bow")) return true;
-            if(allowBracelets && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Bracelet")) return true;
-            if(allowRings && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Ring")) return true;
-            return allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace");
-        }).collect(Collectors.toList());
+        if (currentText != null && !currentText.isEmpty()) {
+            String lowerText = currentText.toLowerCase();
+            itemSearch.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerText));
+        }
     }
 
     @Override

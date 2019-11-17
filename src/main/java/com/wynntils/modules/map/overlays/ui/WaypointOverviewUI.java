@@ -4,6 +4,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Location;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
@@ -12,14 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class WaypointOverviewUI extends GuiScreen {
 
@@ -133,6 +132,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 155 + groupShift, this.width / 2 + 75 + groupShift, (int) centreZ - 1, colour | 0xFF000000);
+                GlStateManager.color(1, 1, 1, 1);
             }
         }
         ScreenRenderer.endGL();
@@ -218,17 +218,19 @@ public class WaypointOverviewUI extends GuiScreen {
             );
         } else if (b == importBtn) {
             String data = Utils.pasteFromClipboard();
-            if (data != null) data = data.trim();
+            if (data != null) data = data.replaceAll("\\s+", "");
             if (data == null || data.isEmpty()) {
                 importText = Arrays.asList(
                     "Import  ==  ERROR",
                     "Clipboard is empty"
                 );
+                return;
             }
             ArrayList<WaypointProfile> imported;
             try {
                 imported = WaypointProfile.decode(data);
             } catch (IllegalArgumentException e) {
+                e.printStackTrace();
                 String[] lines = e.getMessage().split("\\\\n|\\n");
                 importText = new ArrayList<>(1 + lines.length);
                 importText.add("Import  ==  ERROR");
@@ -400,4 +402,20 @@ public class WaypointOverviewUI extends GuiScreen {
         }
         this.buttonList.addAll(editButtons);
     }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDwehll < 0 && nextPageBtn.enabled) {
+            ++page;
+            checkAvailablePages();
+            setEditButtons();
+        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+            --page;
+            checkAvailablePages();
+            setEditButtons();
+        }
+    }
+
 }

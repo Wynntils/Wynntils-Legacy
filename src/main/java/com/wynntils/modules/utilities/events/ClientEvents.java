@@ -6,12 +6,15 @@ package com.wynntils.modules.utilities.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.DailyReminderManager;
@@ -22,20 +25,21 @@ import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
+import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
-import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -49,8 +53,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class ClientEvents implements Listener {
+    private static GuiScreen scheduledGuiScreen = null;
+    private static boolean firstNullOccurred = false;
 
     boolean isAfk = false;
     int lastPosition = 0;
@@ -93,6 +100,26 @@ public class ClientEvents implements Listener {
         if(!UtilitiesConfig.INSTANCE.disableFovChanges) return;
 
         e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    }
+
+    @SubscribeEvent
+    public void onGUIClose(GuiOpenEvent e) {
+        if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
+            firstNullOccurred = false;
+            e.setGui(scheduledGuiScreen);
+            scheduledGuiScreen = null;
+            return;
+        }
+        firstNullOccurred = scheduledGuiScreen != null && e.getGui() == null && !firstNullOccurred;
+    }
+
+    @SubscribeEvent
+    public void onPostChatEvent(ChatEvent.Post e) {
+        if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
+            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)|price in emeralds) or type 'cancel' to cancel:")) {
+                scheduledGuiScreen = new ChatGUI();
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -233,6 +260,8 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private boolean bankPageConfirmed = false;
+
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if(UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
@@ -241,6 +270,56 @@ public class ClientEvents implements Listener {
             } else {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGuiInventory().getLowerInv().getSizeInventory() - 27, Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
             }
+        }
+
+        if (UtilitiesConfig.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+            IInventory inventory = e.getSlotIn().inventory;
+            if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
+                ItemStack item = e.getSlotIn().getStack();
+                if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
+                    String E = "\u00B2";
+                    String B = "\u00BD";
+                    String L = "\u00BC";
+                    List<String> lore = Utils.getLore(item);
+                    String price = lore.get(4);
+                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
+                    int le = (int) Math.floor((double) actualPrice) / 4096;
+                    int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
+                    int emeralds = actualPrice % 64;
+                    String priceDisplay = "";
+                    if (le != 0) {
+                        priceDisplay += le + L + E + " ";
+                    }
+                    if (eb != 0) {
+                        priceDisplay += eb + E + B + " ";
+                    }
+                    if (emeralds != 0) {
+                        priceDisplay += emeralds + E + " ";
+                    }
+                    priceDisplay = priceDisplay.substring(0, priceDisplay.length() - 1);
+                    String itemName = item.getDisplayName();
+                    String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
+                    ChestReplacer gui = e.getGuiInventory();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGuiInventory().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+                    ModCore.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        ModCore.mc().displayGuiScreen(gui);
+                        if (result) {
+                            ModCore.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + priceDisplay, 0));
+                    e.setCanceled(true);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
+        if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
+            bankPageConfirmed = false;
+            CPacketClickWindow packet = new CPacketClickWindow(ModCore.mc().player.openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), ModCore.mc().player.openContainer.getNextTransactionID(ModCore.mc().player.inventory));
+            ModCore.mc().getConnection().sendPacket(packet);
         }
     }
 
@@ -303,7 +382,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent
@@ -315,7 +396,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent
@@ -327,7 +410,9 @@ public class ClientEvents implements Listener {
         if(player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
+        });
     }
 
     @SubscribeEvent

@@ -20,8 +20,11 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.commands.*;
+import com.wynntils.modules.questbook.commands.CommandExportDiscoveries;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -30,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static net.minecraft.client.gui.Gui.ICONS;
 
@@ -49,14 +53,14 @@ public class FrameworkManager {
         registeredOverlays.put(Priority.HIGH, new ArrayList<>());
         registeredOverlays.put(Priority.HIGHEST, new ArrayList<>());
     }
-    
+
     public static void registerModule(Module module) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
         if(info == null) {
             return;
         }
 
-        module.setLogger(LogManager.getFormatterLogger(Reference.MOD_ID + "-" + info.name().toLowerCase()));
+        module.setLogger(LogManager.getFormatterLogger(Reference.MOD_ID + "-" + info.name().toLowerCase(Locale.ROOT)));
 
         availableModules.put(info.name(), new ModuleContainer(info, module));
     }
@@ -121,6 +125,8 @@ public class FrameworkManager {
         ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
         ClientCommandHandler.instance.registerCommand(new CommandCompass());
         ClientCommandHandler.instance.registerCommand(new CommandTerritory());
+        ClientCommandHandler.instance.registerCommand(new CommandExportDiscoveries());
+        ClientCommandHandler.instance.registerCommand(new CommandServer());
     }
 
     public static void disableModules() {
@@ -130,7 +136,10 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent) {
+        if (
+            Reference.onServer || e instanceof WynncraftServerEvent || e instanceof TickEvent.RenderTickEvent ||
+            (e instanceof GuiScreenEvent && ((GuiScreenEvent) e).getGui() instanceof GuiMainMenu)
+        ) {
             ReflectionFields.Event_phase.setValue(e, null);
             eventBus.post(e);
         }

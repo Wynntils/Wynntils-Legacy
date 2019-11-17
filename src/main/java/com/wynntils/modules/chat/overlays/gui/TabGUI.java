@@ -10,6 +10,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -127,6 +128,13 @@ public class TabGUI extends GuiScreen {
         autoCommand.addLine("Auto Command");
         labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
         orderNb.addLine("Order #");
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     @Override
@@ -136,9 +144,9 @@ public class TabGUI extends GuiScreen {
         if(button == closeButton) mc.displayGuiScreen(new ChatGUI());
         else if(button == saveButton) {
             if (id == -2) {
-                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0));
+                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0));
             } else {
-                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0);
+                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0);
             }
             mc.displayGuiScreen(new ChatGUI());
         }else if(button == deleteButton) {

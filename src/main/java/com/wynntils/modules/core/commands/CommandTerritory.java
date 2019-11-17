@@ -48,10 +48,17 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
             throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
         }
-        String territoryName = StringUtils.join(args, " ");
+
+        String territoryName;
+        if (args.length == 1) {
+            territoryName = args[0].replace('_', ' ');
+        } else {
+            territoryName = StringUtils.join(args, " ");
+        }
+        String finalTerritoryName = territoryName;
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
 
-        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(territoryName)).findFirst();
+        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(finalTerritoryName)).findFirst();
         if(!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
@@ -84,7 +91,11 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
-        if (args.length >= 1) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map((territoryProfile) ->
+                territoryProfile.getFriendlyName().replace(' ', '_')
+            ).collect(Collectors.toList()));
+        } else if (args.length > 1) {
             String temp = String.join(" ", args).toLowerCase();
             List<String> result = getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map(territoryProfile -> {
                 if (args.length <= territoryProfile.getFriendlyName().split(" ").length && territoryProfile.getFriendlyName().toLowerCase().startsWith(temp)) {

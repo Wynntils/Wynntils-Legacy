@@ -10,6 +10,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.response.MinecraftTexturesPayload;
 import com.mojang.util.UUIDTypeAdapter;
 import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -25,7 +26,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class ItemProfile {
 
@@ -412,7 +415,7 @@ public class ItemProfile {
             } else {
                 Item result = null;
                 Block resultBlock = null;
-                
+
                 if(accessoryType != null) {
                     if (accessoryType.equalsIgnoreCase("Necklace")) {
                         resultBlock = Blocks.GLASS_PANE;
@@ -493,6 +496,9 @@ public class ItemProfile {
             switch (getTier()) {
                 case LEGENDARY:
                     description.add(TextFormatting.AQUA + getName());
+                    break;
+                case FABLED:
+                    description.add(TextFormatting.RED + getName());
                     break;
                 case MYTHIC:
                     description.add(TextFormatting.DARK_PURPLE + getName());
@@ -618,6 +624,9 @@ public class ItemProfile {
             }
 
             switch (getTier()) {
+                case FABLED:
+                    description.add(TextFormatting.RED + "Fabled Item");
+                    break;
                 case LEGENDARY:
                     description.add(TextFormatting.AQUA + "Legendary Item");
                     break;
@@ -636,7 +645,11 @@ public class ItemProfile {
                 default:
                     break;
             }
-            
+
+            if(getAddedLore() != null && !getAddedLore().isEmpty()) {
+                Stream.of(Utils.wrapTextBySize(getAddedLore(), 150)).forEach(c -> description.add(TextFormatting.DARK_GRAY + c));
+            }
+
             if (description.get(description.size() - 1).equals(" ")) {
                 description.remove(description.size() - 1);
             }
@@ -687,8 +700,8 @@ public class ItemProfile {
             public ItemType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                 String itemType = json.getAsString();
                 String[] itemIDs = itemType.split(":");
-                int itemID = Integer.valueOf(itemIDs[0]);
-                int damage = itemIDs.length == 2 ? Integer.valueOf(itemIDs[1]) : 0;
+                int itemID = Integer.parseInt(itemIDs[0]);
+                int damage = itemIDs.length == 2 ? Integer.parseInt(itemIDs[1]) : 0;
                 Item item = Item.REGISTRY.getObjectById(itemID);
                 return new ItemType(item, damage);
             }
@@ -702,9 +715,9 @@ public class ItemProfile {
         public Color deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             String color = json.getAsString();
             String[] colors = color.split("[^\\d]");
-            int red = Integer.valueOf(colors[0]);
-            int green = Integer.valueOf(colors[1]);
-            int blue = Integer.valueOf(colors[2]);
+            int red = Integer.parseInt(colors[0]);
+            int green = Integer.parseInt(colors[1]);
+            int blue = Integer.parseInt(colors[2]);
             return new Color(red, green, blue);
         }
 
@@ -727,9 +740,9 @@ public class ItemProfile {
 
     }
 
-    public static enum ItemRarity {
+    public enum ItemRarity {
 
-        NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), MYTHIC(5);
+        NORMAL(0), SET(1), UNIQUE(2), RARE(3), LEGENDARY(4), FABLED(5), MYTHIC(6);
 
         int id;
 
@@ -745,7 +758,7 @@ public class ItemProfile {
 
             @Override
             public ItemRarity deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return ItemRarity.valueOf(json.getAsString().toUpperCase());
+                return ItemRarity.valueOf(json.getAsString().toUpperCase(Locale.ROOT));
             }
 
         }

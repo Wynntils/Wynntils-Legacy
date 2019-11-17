@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class IngredientFilterOverlay implements Listener {
 
-    private final static ArrayList<String> professionArray = new ArrayList<String>(Arrays.asList("-", "None", "Ⓐ", "Cooking", "Ⓓ", "Jeweling", "Ⓔ", "Scribing", "Ⓕ", "Tailoring", "Ⓖ", "Weapon smithing", "Ⓗ", "Armouring", "Ⓘ", "Woodworking", "Ⓛ", "Alchemism"));
+    private final static ArrayList<String> professionArray = new ArrayList<>(Arrays.asList("-", "None", "Ⓐ", "Cooking", "Ⓓ", "Jeweling", "Ⓔ", "Scribing", "Ⓕ", "Tailoring", "Ⓖ", "Weapon smithing", "Ⓗ", "Armouring", "Ⓘ", "Woodworking", "Ⓛ", "Alchemism"));
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
