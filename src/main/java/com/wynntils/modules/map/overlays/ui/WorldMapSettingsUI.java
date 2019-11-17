@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Mouse;
@@ -95,11 +96,7 @@ public class WorldMapSettingsUI extends GuiScreen {
         GlStateManager.translate((this.width-399)/2 + 286, 29f, 0f);
         GlStateManager.rotate(-45, 0, 0, 1);
         this.fontRenderer.drawString("Main map", 0, 0, 0xFFFFFFFF);
-        // This rotate->translate->rotate could become one translate
-        // but I'm too lazy to do linear algebra
-        GlStateManager.rotate(45, 0, 0, 1);
-        GlStateManager.translate(14f, 3f, 0f);
-        GlStateManager.rotate(-45, 0, 0, 1);
+        GlStateManager.translate(11 / MathHelper.SQRT_2, 17 / MathHelper.SQRT_2, 0f);
         this.fontRenderer.drawString("Minimap", 0, 0, 0xFFFFFFFF);
         GlStateManager.popMatrix();
 

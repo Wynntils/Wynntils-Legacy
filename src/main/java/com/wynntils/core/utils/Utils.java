@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -162,38 +163,19 @@ public class Utils {
         return toReturn;
     }
 
+
+    private static final String[] directions = new String[]{ "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+
     /**
      * Get short direction string for a given yaw
      *
      * @param yaw player's yaw
      * @return Two or one character string
      */
-    public static String getPlayerDirection(float yaw){
-        double num = (yaw + 202.5) / 45.0;
-        while (num < 0.0) {
-            num += 360.0;
-        }
-        int dir = (int) (num);
-        dir = dir % 8;
+    public static String getPlayerDirection(float yaw) {
+        int index = (int) (MathHelper.positiveModulo(yaw + 202.5f, 360.0f) / 45.0f);
 
-        switch (dir) {
-            case 1:
-                return "NE";
-            case 2:
-                return "E";
-            case 3:
-                return "SE";
-            case 4:
-                return "S";
-            case 5:
-                return "SW";
-            case 6:
-                return "W";
-            case 7:
-                return "NW";
-            default:
-                return "N";
-        }
+        return 0 <= index && index < 8 ? directions[index] : directions[0];
     }
 
     /**
