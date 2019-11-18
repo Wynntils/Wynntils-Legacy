@@ -121,13 +121,13 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onWorldLeave(WynnWorldEvent.Leave e) {
-        RestartTimerOverlay.clear();
+        TimerOverlay.Restart.clear();
     }
 
     @SubscribeEvent
     public void onLobbyLeave(WorldEvent.Unload e) {
         if (Reference.onLobby) {
-            RestartTimerOverlay.clear();
+            TimerOverlay.Restart.clear();
         }
     }
 
@@ -135,7 +135,7 @@ public class OverlayEvents implements Listener {
     public void onChatEvent(ChatEvent.Pre e) {
         if (e.getMessage().getUnformattedText().matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
             String[] res = e.getMessage().getUnformattedText().split(" ");
-            RestartTimerOverlay.start(res[5], res[6]);
+            TimerOverlay.Restart.start(res[5], res[6]);
         }
     }
 
@@ -559,7 +559,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         ModCore.mc().gameSettings.heldItemTooltips = true;
-        RestartTimerOverlay.clear();
+        TimerOverlay.Restart.clear();
     }
 
     @SubscribeEvent

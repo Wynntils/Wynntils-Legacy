@@ -11,7 +11,7 @@ import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
-import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
+import com.wynntils.modules.utilities.overlays.hud.TimerOverlay;
 import com.wynntils.webapi.WebManager;
 import org.lwjgl.input.Keyboard;
 
@@ -27,10 +27,10 @@ public class KeyManager {
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
-            if(ModCore.mc().gameSettings.gammaSetting < 1000) {
+            if (ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
-            }else{
+            } else {
                 ModCore.mc().gameSettings.gammaSetting = lastGamma;
             }
         });
@@ -60,7 +60,7 @@ public class KeyManager {
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
 
-        stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+        stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, TimerOverlay.StopWatch::start);
     }
 
     public static KeyHolder getLockInventoryKey() {

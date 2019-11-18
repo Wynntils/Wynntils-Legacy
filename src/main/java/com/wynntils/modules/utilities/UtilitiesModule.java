@@ -59,8 +59,9 @@ public class UtilitiesModule extends Module {
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
-        registerOverlay(new StopWatchOverlay(), Priority.LOW);
-        registerOverlay(new RestartTimerOverlay(), Priority.LOW);
+
+        registerOverlay(new TimerOverlay.StopWatch(), Priority.LOW);
+        registerOverlay(new TimerOverlay.Restart(), Priority.LOW);
 
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.Data.class);
