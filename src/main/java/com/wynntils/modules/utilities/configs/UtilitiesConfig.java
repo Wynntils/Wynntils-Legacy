@@ -59,7 +59,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
-    @Setting(displayName = "Add Spacing to Item Identifications", description = "Should Wynntils space out Item Identifications when hovering over to make things easier to read at a glance")
+    @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
     public boolean addItemIdentificationSpacing = true;
 
     @Setting(displayName = "Indicate Newly Added Items to the Game", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
