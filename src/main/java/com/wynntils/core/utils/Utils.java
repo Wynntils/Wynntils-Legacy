@@ -33,7 +33,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -293,6 +294,10 @@ public class Utils {
             getItemFieldName.put("rawSpell Damage", "spellDamageRaw");
             getItemFieldName.put("Melee Damage", "damageBonus");
             getItemFieldName.put("rawMelee Damage", "damageBonusRaw");
+            getItemFieldName.put("Main Attack Damage", "damageBonus");  // Name changed on Beta
+            getItemFieldName.put("rawMain Attack Damage", "damageBonusRaw");    // Name change on Beta
+            getItemFieldName.put("Neutral Spell Damage", "spellDamage");    // Name Change on Beta
+            getItemFieldName.put("rawNeutral Spell Damage", "spellDamageRaw");  // Name Change on Beta
 
             getItemFieldName.put("Fire Damage", "bonusFireDamage");
             getItemFieldName.put("Water Damage", "bonusWaterDamage");
@@ -309,55 +314,79 @@ public class Utils {
         return getItemFieldName.getOrDefault(key, null);
     }
 
-    public static Integer getFieldRank(String key) {
-        if (getItemFieldRank.size() <= 0) {
-            getItemFieldRank.put("attackSpeedBonus", 1);
+    public static String getFieldName(String key, String suffix) {
+        String result = getFieldName(key);
 
-            getItemFieldRank.put("damageBonus", 2);
-            getItemFieldRank.put("damageBonusRaw", 3);
-
-            getItemFieldRank.put("spellDamage", 4);
-            getItemFieldRank.put("spellDamageRaw", 5);
-
-            getItemFieldRank.put("healthBonus", 6);
-            getItemFieldRank.put("healthRegen", 7);
-            getItemFieldRank.put("healthRegenRaw", 8);
-
-            getItemFieldRank.put("lifeSteal", 9);
-            getItemFieldRank.put("manaRegen", 10);
-            getItemFieldRank.put("manaSteal", 11);
-
-            getItemFieldRank.put("bonusEarthDamage", 12);
-            getItemFieldRank.put("bonusThunderDamage", 13);
-            getItemFieldRank.put("bonusWaterDamage", 14);
-            getItemFieldRank.put("bonusFireDamage", 15);
-            getItemFieldRank.put("bonusAirDamage", 16);
-
-            getItemFieldRank.put("bonusEarthDefense", 17);
-            getItemFieldRank.put("bonusThunderDefense", 18);
-            getItemFieldRank.put("bonusWaterDefense", 19);
-            getItemFieldRank.put("bonusFireDefense", 20);
-            getItemFieldRank.put("bonusAirDefense", 21);
-
-            getItemFieldRank.put("strengthPoints", 22);
-            getItemFieldRank.put("dexterityPoints", 23);
-            getItemFieldRank.put("intelligencePoints", 24);
-            getItemFieldRank.put("defensePoints", 25);
-            getItemFieldRank.put("agilityPoints", 26);
-
-            getItemFieldRank.put("speed", 27);
-            getItemFieldRank.put("exploding", 28);
-            getItemFieldRank.put("poison", 29);
-            getItemFieldRank.put("thorns", 30);
-            getItemFieldRank.put("reflection", 31);
-
-            getItemFieldRank.put("soulPoints", 32);
-            getItemFieldRank.put("emeraldStealing", 33);
-            getItemFieldRank.put("lootBonus", 34);
-            getItemFieldRank.put("xpBonus", 35);
+        if (suffix == null) {
+            String rawResult = getItemFieldName.getOrDefault("raw" + key, null);
+            return (rawResult == null ? result : rawResult);
         }
 
-        return getItemFieldRank.getOrDefault(key, 1000);
+        return result;
+    }
+
+    public static Integer getFieldRank(String key) {
+        if (getItemFieldRank.size() <= 0) {
+            getItemFieldRank.put("attackSpeedBonus", 101);
+
+            getItemFieldRank.put("damageBonusRaw", 102);
+            getItemFieldRank.put("damageBonus", 103);
+
+            getItemFieldRank.put("spellDamageRaw", 104);
+            getItemFieldRank.put("spellDamage", 105);
+
+            getItemFieldRank.put("healthBonus", 306);
+            getItemFieldRank.put("healthRegenRaw", 307);
+            getItemFieldRank.put("healthRegen", 308);
+            getItemFieldRank.put("lifeSteal", 309);
+
+            getItemFieldRank.put("manaRegen", 410);
+            getItemFieldRank.put("manaSteal", 411);
+
+            getItemFieldRank.put("bonusEarthDamage", 512);
+            getItemFieldRank.put("bonusThunderDamage", 513);
+            getItemFieldRank.put("bonusWaterDamage", 514);
+            getItemFieldRank.put("bonusFireDamage", 515);
+            getItemFieldRank.put("bonusAirDamage", 516);
+
+            getItemFieldRank.put("bonusEarthDefense", 617);
+            getItemFieldRank.put("bonusThunderDefense", 618);
+            getItemFieldRank.put("bonusWaterDefense", 619);
+            getItemFieldRank.put("bonusFireDefense", 620);
+            getItemFieldRank.put("bonusAirDefense", 621);
+
+            getItemFieldRank.put("strengthPoints", 722);
+            getItemFieldRank.put("dexterityPoints", 723);
+            getItemFieldRank.put("intelligencePoints", 724);
+            getItemFieldRank.put("defensePoints", 725);
+            getItemFieldRank.put("agilityPoints", 726);
+
+            getItemFieldRank.put("exploding", 827);
+            getItemFieldRank.put("poison", 828);
+            getItemFieldRank.put("thorns", 829);
+            getItemFieldRank.put("reflection", 830);
+
+            getItemFieldRank.put("speed", 831);
+            getItemFieldRank.put("sprint", 832);       // Not properly implimented yet
+            getItemFieldRank.put("sprintRegen", 833);  // Not properly implimented yet
+            getItemFieldRank.put("jump", 834);         // Not properly implimented yet
+
+            getItemFieldRank.put("soulPoints", 1035);
+            getItemFieldRank.put("emeraldStealing", 1036);
+            getItemFieldRank.put("lootBonus", 1037);
+            getItemFieldRank.put("lootQuality", 1038);   // Not properly implimented yet
+
+            getItemFieldRank.put("xpBonus", 1039);
+            getItemFieldRank.put("gatherXp", 1040);      // Not properly implimented yet
+            getItemFieldRank.put("gatherSpeed", 1041);   // Not properly implimented yet
+
+            getItemFieldRank.put("firstSpellCost", 1242); // Not properly implimented yet
+            getItemFieldRank.put("secondSpellCost", 1243); // Not properly implimented yet
+            getItemFieldRank.put("thirdSpellCost", 1244); // Not properly implimented yet
+            getItemFieldRank.put("forthSpellCost", 1245); // Not properly implimented yet
+        }
+
+        return getItemFieldRank.getOrDefault(key, 10000);
     }
 
     //ported from a really really fucking old C# code because im lazy, dont judge -SHCM
