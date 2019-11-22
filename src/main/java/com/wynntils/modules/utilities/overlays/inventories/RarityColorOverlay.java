@@ -106,8 +106,6 @@ public class RarityColorOverlay implements Listener {
         }
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-            final String E = "\u00B2", B = "\u00BD", L = "\u00BC";
-
             int money = PlayerInfo.getPlayerInfo().getMoney(), leAmount = 0, blockAmount = 0;
 
             GlStateManager.disableLighting();
@@ -120,7 +118,7 @@ public class RarityColorOverlay implements Listener {
                 ScreenRenderer.beginGL(0, 0);
                 {
                     ScreenRenderer.scale(0.9f);
-                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(money) + E;
+                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(money) + Reference.emeraldSymbols[0];
                     screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                 }
                 ScreenRenderer.endGL();
@@ -135,7 +133,7 @@ public class RarityColorOverlay implements Listener {
                 ScreenRenderer.beginGL(0, 0);
                 {
                     ScreenRenderer.scale(0.9f);
-                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(leAmount) + L + E + " " + ItemIdentificationOverlay.decimalFormat.format(blockAmount) + E + B + " " + ItemIdentificationOverlay.decimalFormat.format(money) + E;
+                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(leAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + " " + ItemIdentificationOverlay.decimalFormat.format(blockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(money) + Reference.emeraldSymbols[0];
                     screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                 }
                 ScreenRenderer.endGL();
@@ -343,4 +341,5 @@ public class RarityColorOverlay implements Listener {
     public static String getProfessionFilter() {
         return professionFilter;
     }
+
 }

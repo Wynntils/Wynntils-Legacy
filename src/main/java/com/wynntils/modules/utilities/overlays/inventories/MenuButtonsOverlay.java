@@ -19,7 +19,7 @@ public class MenuButtonsOverlay implements Listener {
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.IngameMenuOverlap.InitGui e) {
         if(!UtilitiesConfig.INSTANCE.addClassServer) return;
-        
+
         ArrayList<GuiButton> toBeRemoved = new ArrayList<>();
         e.getButtonList().forEach(b -> {
             if (b.id >= 5 && b.id <= 7) {
