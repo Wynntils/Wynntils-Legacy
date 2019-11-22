@@ -60,19 +60,23 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
-        if (args.length == 0) {
-            throw new WrongUsageException("/compass [<x> <z> | <direction> | clear]");
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
+        if (args.length == 0) throw new WrongUsageException("/compass [<x> <z> | <direction> | clear]");
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
             if (CompassManager.getCompassLocation() != null) {
                 CompassManager.reset();
+
                 TextComponentString text = new TextComponentString("The beacon and icon of your desired coordinates have been cleared.");
                 text.getStyle().setColor(TextFormatting.GREEN);
                 sender.sendMessage(text);
-            } else {
-                throw new CommandException("There is nothing to be cleared as you have not set any coordinates to be displayed as a beacon and icon.");
+                return;
             }
-        } else if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
-            int[] newPos = { 0, 0 };
+
+            throw new CommandException("There is nothing to be cleared as you have not set any coordinates to be displayed as a beacon and icon.");
+        }
+
+        if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
+            int[] newPos = {0, 0};
             //check for north/south
             switch (args[0].toLowerCase()) {
                 case "north":
@@ -94,6 +98,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                 default:
                     break;
             }
+
             //check for east/west
             switch (args[0].toLowerCase()) {
                 case "east":
@@ -125,7 +130,6 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             String dir = args[0];
             if (dir.length() <= 2) {
-                //dir = dir.toUpperCase();
                 switch (dir.toLowerCase(Locale.ROOT)) {
                     case "n":
                         dir = "North";
@@ -156,7 +160,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                         break;
                 }
             }
-            dir = dir.substring(0,1).toUpperCase() + dir.substring(1);
+
+            dir = dir.substring(0, 1).toUpperCase() + dir.substring(1);
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText("Compass is now pointing towards ");
@@ -167,12 +172,16 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             text.appendText(".");
             sender.sendMessage(text);
-        } else if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
-            int x = 0;
-            int z = 0;
+            return;
+        }
+
+        if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
+            int x = 0; int z = 0;
+
             boolean invalid = false;
             if (args[0].charAt(0) == '~') {
                 x = (int) Minecraft.getMinecraft().player.posX;
+
                 if (args[0].length() != 1) {
                     String offset = args[0].substring(1);
                     if (!Utils.isValidInteger(offset)) {
@@ -186,11 +195,13 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             } else {
                 x = Integer.parseInt(args[0]);
             }
+
             if (!invalid) {
                 if (args[1].charAt(0) == '~') {
                     z = ((int) Minecraft.getMinecraft().player.posZ);
                     if (args[1].length() != 1) {
                         String offset = args[1].substring(1);
+
                         if (!Utils.isValidInteger(offset)) {
                             invalid = true;
                         } else {
@@ -203,9 +214,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     z = Integer.parseInt(args[1]);
                 }
             }
-            if (invalid) {
-                throw new CommandException("The coordinate passed was too big");
-            }
+
+            if (invalid) throw new CommandException("The coordinate passed was too big");
 
             CompassManager.setCompassLocation(new Location(x, 0, z));
 
@@ -225,9 +235,11 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             text.appendText(").");
             sender.sendMessage(text);
-        } else {
-            throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
+
+            return;
         }
+        
+        throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
     }
 
     @Override
