@@ -81,7 +81,11 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 GlStateManager.rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
                 GlStateManager.rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.enableAlpha();
+                GlStateManager.enableBlend();
                 renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
+                GlStateManager.disableBlend();
+                GlStateManager.disableAlpha();
                 GlStateManager.popMatrix();
             }
         }
