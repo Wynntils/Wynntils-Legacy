@@ -32,6 +32,7 @@ public class CommandForceUpdate extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         WebManager.getUpdate().forceUpdate();
+
         TextComponentString text = new TextComponentString("Forcing Wynntils to update...");
         text.getStyle().setColor(TextFormatting.AQUA);
         sender.sendMessage(text);
