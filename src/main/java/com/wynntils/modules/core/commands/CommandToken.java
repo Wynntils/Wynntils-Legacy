@@ -45,7 +45,7 @@ public class CommandToken extends CommandBase implements IClientCommand {
                     "https://account.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
             token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new TextComponentString("Click me to register an account.")));
-            
+
             token.getStyle().setColor(TextFormatting.DARK_AQUA);
             token.getStyle().setUnderlined(true);
             text.appendSibling(token);
