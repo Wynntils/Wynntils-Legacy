@@ -241,7 +241,7 @@ public class ItemIdentificationOverlay implements Listener {
                     if (UtilitiesConfig.INSTANCE.showNewItems && !ItemNameRaw.startsWith("Unidentified") && !stack.getTagCompound().hasKey("verifiedWynntils"))
                         stack.setStackDisplayName(stack.getDisplayName() + " " + TextFormatting.GOLD + "NEW");
 
-                    NBTTagCompound nbt = ProcessItemNoCalc(stack, false, false); // Order the item's IDs
+                    NBTTagCompound nbt = processItemNoCalc(stack, false, false); // Order the item's IDs
                     stack.setTagCompound(nbt);
                     return;
                 }
@@ -253,7 +253,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemProfile wItem = WebManager.getItems().get(ItemNameRaw);
 
         if (wItem.isIdentified()) {
-            NBTTagCompound nbt = ProcessItemNoCalc(stack, showChances, showRanges);
+            NBTTagCompound nbt = processItemNoCalc(stack, showChances, showRanges);
             stack.setTagCompound(nbt);
             return;
         }
@@ -273,7 +273,7 @@ public class ItemIdentificationOverlay implements Listener {
 
             // Sets Reroll cost on item
             if (!stack.getTagCompound().hasKey("verifiedWynntils") && ITEM_QUALITY.matcher(wColor).find()) {
-                actualLore.set(i, CalculateReroll(lore, wColor, wItem.getLevel()));
+                actualLore.set(i, calculateReroll(lore, wColor, wItem.getLevel()));
                 break;
             }
 
@@ -342,21 +342,21 @@ public class ItemIdentificationOverlay implements Listener {
                 if (valueItem < Bounds[1]) Perfect = false;
 
                 if (showChances) {  // run if Ctrl is down
-                    float[] Chances = CalculateChances(Bounds, valueItem, valueBase);
+                    float[] Chances = calculateChances(Bounds, valueItem, valueBase);
                     runningValues[0] = runningValues[0] + ((1 - runningValues[0]) * (Chances[0] / 100)); // Running total for rough chance item will get worse
                     runningValues[1] = runningValues[1] + ((1 - runningValues[1]) * (Chances[1] / 100)); // Running total for rough chance item will get better
-                    actualLore.set(i, FormatChances(Chances, lore, true));
+                    actualLore.set(i, formatChances(Chances, lore, true));
                     continue;
                 }
 
                 if (showRanges) {   // run if Shift is down
-                    actualLore.set(i, FormatRanges(Bounds, lore));
+                    actualLore.set(i, formatRanges(Bounds, lore));
                     continue;
                 }
 
-                int percentage = CalculateSimple(Bounds, valueItem, valueBase);
+                int percentage = falculateSimple(Bounds, valueItem, valueBase);
                 runningValues[0] += percentage;     // Add percentages together to get a mean percentage quality for the item
-                actualLore.set(i, FormatSimple(percentage, lore));
+                actualLore.set(i, formatSimple(percentage, lore));
                 continue;
             }
         }
@@ -369,7 +369,7 @@ public class ItemIdentificationOverlay implements Listener {
         NBTTagList tag = new NBTTagList();
 
         if (!nbt.getBoolean("verifiedWynntils"))    // ReOrder IDs only if it's not been done already
-            actualLore = ReOrderIdentifications(statStartMem, statOrderMem, actualLore);
+            actualLore = reOrderIdentifications(statStartMem, statOrderMem, actualLore);
         actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
         display.setTag("Lore", tag);
@@ -377,9 +377,9 @@ public class ItemIdentificationOverlay implements Listener {
         String name = cleanse(display.getString("Name"), showChancesOld, showRangesOld);
         if (Perfect && identifications > 0) {   // Setup Perfect rainbow nametag
             nbt.setString("rainbowTitle", Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(name)));
-            nbt.setString("rainbowTitleExtra", FormatName("", -1, runningValues, showChances, showRanges));
+            nbt.setString("rainbowTitleExtra", formatName("", -1, runningValues, showChances, showRanges));
         } else {
-            display.setString("Name", FormatName(name, identifications, runningValues, showChances, showRanges));
+            display.setString("Name", formatName(name, identifications, runningValues, showChances, showRanges));
         }
 
         nbt.setTag("display", display);
@@ -393,7 +393,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static NBTTagCompound ProcessItemNoCalc(ItemStack stack, boolean showChances, boolean showRanges) {
+    private static NBTTagCompound processItemNoCalc(ItemStack stack, boolean showChances, boolean showRanges) {
         if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
         NBTTagCompound nbt = stack.getTagCompound();
 
@@ -425,7 +425,7 @@ public class ItemIdentificationOverlay implements Listener {
 
 
         if (!nbt.getBoolean("verifiedWynntils")) {
-            actualLore = ReOrderIdentifications(statStartMem, statOrderMem, actualLore);
+            actualLore = reOrderIdentifications(statStartMem, statOrderMem, actualLore);
             nbt.setBoolean("verifiedWynntils", true);
         }
 
@@ -436,7 +436,7 @@ public class ItemIdentificationOverlay implements Listener {
         actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
 
         String name = cleanse(stack.getDisplayName(), stack.getTagCompound().getBoolean("showChances"), stack.getTagCompound().getBoolean("showRanges"));
-        if (showRanges && !showChances) name = FormatName(name, 1, runningValues, false, true);
+        if (showRanges && !showChances) name = formatName(name, 1, runningValues, false, true);
 
         display.setTag("Lore", tag);
         display.setString("Name", name);
@@ -455,7 +455,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static String CalculateReroll(String lore, String wColour, int level) {
+    private static String calculateReroll(String lore, String wColour, int level) {
         Matcher QUALITY = ITEM_QUALITY.matcher(wColour);
         QUALITY.find();
 
@@ -487,7 +487,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static float[] CalculateChances(int[] bounds, int valItem, int valBase) {
+    private static float[] calculateChances(int[] bounds, int valItem, int valBase) {
         float[] chances = {0, 0, 0};
 
         for (double j = (valBase < 0 ? 70 : 30); j <= 130; j++) {
@@ -510,7 +510,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static String FormatChances(float[] chances, String lore, boolean best) {
+    private static String formatChances(float[] chances, String lore, boolean best) {
         if (best) return lore + " "
                 + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", chances[0]) + "% "
                 + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", chances[1]) + "% "
@@ -521,7 +521,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static String FormatRanges(int[] Bounds, String Lore) {
+    private static String formatRanges(int[] Bounds, String Lore) {
         if (Bounds[0] < 0) {
             return Lore + " " + TextFormatting.DARK_RED + "[" + TextFormatting.RED + Bounds[0] + TextFormatting.DARK_RED + ", " + TextFormatting.RED + Bounds[1] + TextFormatting.DARK_RED + "]";
         }
@@ -529,7 +529,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static int CalculateSimple(int[] Bounds, int item, int base){
+    private static int falculateSimple(int[] Bounds, int item, int base){
         if (item < 0) {
             double range = Bounds[0] - Bounds[1];
             double itemVal = item - Bounds[1];
@@ -541,7 +541,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static String FormatSimple(int percent, String Lore){
+    private static String formatSimple(int percent, String Lore){
         TextFormatting color;
         if (percent >= 97) {
             color = TextFormatting.AQUA;
@@ -557,7 +557,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static List<String> ReOrderIdentifications(int start, List<Integer> mem, List<String> lore){
+    private static List<String> reOrderIdentifications(int start, List<Integer> mem, List<String> lore){
 
         for (int i = 0; i < mem.size(); i++) {
             if (lore.get(start + i).equals("")) lore.remove(start + i); // Clears out blank lines imposed from wynncraft's attempt to order IDs nicely (we want to do ourown)
@@ -575,13 +575,13 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         if (UtilitiesConfig.INSTANCE.addItemIdentificationSpacing)
-            lore = GroupIdentifications(start, mem, lore);
+            lore = groupIdentifications(start, mem, lore);
 
         return lore;
     }
 
 
-    private static List<String> GroupIdentifications(int start, List<Integer> mem, List<String> lore) {
+    private static List<String> groupIdentifications(int start, List<Integer> mem, List<String> lore) {
         if (mem.isEmpty()) return lore;
 
         if (!lore.get(start + mem.size()).equals("")) // Sepperates "Major IDs" from the main ID stack
@@ -601,13 +601,13 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
 
-    private static String FormatName(String name, int idCount, float[] values, boolean showChances, boolean showRanges) {
+    private static String formatName(String name, int idCount, float[] values, boolean showChances, boolean showRanges) {
         if (idCount == 0) return name;
 
         if (showChances) {
             // weight the chances againsed eachother to give an idea of how lightly an item as a whole will go up Vs down
             values = new float[]{(values[0] / (values[0] + values[1])) * 100, (values[1] / (values[0] + values[1])) * 100};
-            return FormatChances(values, name, false);
+            return formatChances(values, name, false);
         }
 
         if (showRanges) {
@@ -620,6 +620,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (idCount < 0) {
             return name;
         }
-        return FormatSimple((int) (values[0] / idCount), name);
+        return formatSimple((int) (values[0] / idCount), name);
     }
+    
 }
