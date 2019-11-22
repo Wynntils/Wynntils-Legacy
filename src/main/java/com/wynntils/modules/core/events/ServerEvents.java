@@ -178,12 +178,18 @@ public class ServerEvents implements Listener {
 
     static BlockPos currentSpawn = null;
 
+    /**
+     *  Block compass changing locations if a forced location is set
+     */
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
         if (Minecraft.getMinecraft().player == null) {
             CompassManager.reset();
-        } else if (CompassManager.getCompassLocation() != null) {
+            return;
+        }
+
+        if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }
     }
