@@ -64,6 +64,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
             throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
         }
+
         Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 
         TerritoryProfile tp = selectedTerritory.get();
@@ -106,6 +107,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
             result.removeAll(Arrays.asList("", null));
             return result.stream().distinct().collect(Collectors.toList());
         }
+
         return Collections.emptyList();
     }
 

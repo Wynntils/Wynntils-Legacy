@@ -238,7 +238,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             return;
         }
-        
+
         throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
     }
 
