@@ -88,10 +88,10 @@ public class NametagManager {
         double distance = entity.getDistanceSq(e.getRenderer().getRenderManager().renderViewEntity);
         double range = entity.isSneaking() ? 1024.0d : 4096.0d;
 
-        if (distance < range) {
-            alphaFunc(516, 0.1F);
-            drawLabels(entity, entity.getDisplayName().getFormattedText(), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
-        }
+        if(distance > range) return true;
+
+        alphaFunc(516, 0.1F);
+        drawLabels(entity, entity.getDisplayName().getFormattedText(), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
 
         return true;
     }
