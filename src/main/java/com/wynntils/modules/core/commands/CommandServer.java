@@ -2,13 +2,17 @@ package com.wynntils.modules.core.commands;
 
 import com.google.common.collect.Lists;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
 import java.util.*;
@@ -105,62 +109,106 @@ public class CommandServer extends CommandBase implements IClientCommand {
             return;
         }
 
-        try {
-            HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
-            if (selectedType != null) {
-                sender.sendMessage(getFilteredServerList(onlinePlayers, selectedType, options));
-            } else if (options.contains("group")) {
-                text = new TextComponentString("Available servers" +
-                        (options.contains("count") ? String.format(" (%d)", onlinePlayers.size()): "") + ":\n");
+        int messageId = Utils.getRandom().nextInt(Integer.MAX_VALUE);
+        ChatOverlay.getChat().printUnloggedChatMessage(new TextComponentString(TextFormatting.GRAY + "Calculating Servers..."), messageId);
 
-                for (String type : serverTypes.subList(0, serverTypes.size() - 1)) {
-                    text.appendSibling(getFilteredServerList(onlinePlayers, type, options));
-                    text.appendText("\n");
+        String finalSelectedType = selectedType;
+        Utils.runAsync(() -> {
+            try{
+                HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
+                if(finalSelectedType == null) {
+                    ChatOverlay.getChat().printUnloggedChatMessage(
+                            getFilteredServerList(onlinePlayers, "", options), messageId
+                    ); //updates the message
+                    return;
                 }
-                text.appendSibling(getFilteredServerList(onlinePlayers, serverTypes.get(serverTypes.size() - 1), options));
-                sender.sendMessage(text);
-            } else { //args.length == 0
-                sender.sendMessage(getFilteredServerList(onlinePlayers, "", options));
+
+                if(options.contains("group")) {
+                    TextComponentString toEdit = new TextComponentString("Available servers" +
+                            (options.contains("count") ? String.format(" (%d)", onlinePlayers.size()): "") + ":\n");
+
+                    for (String type : serverTypes.subList(0, serverTypes.size() - 1)) {
+                        toEdit.appendSibling(getFilteredServerList(onlinePlayers, type, options));
+                        toEdit.appendText("\n");
+                    }
+                    toEdit.appendSibling(getFilteredServerList(onlinePlayers, serverTypes.get(serverTypes.size() - 1), options));
+
+                    ChatOverlay.getChat().printUnloggedChatMessage(toEdit, messageId); //updates the message
+                    return;
+                }
+
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        getFilteredServerList(onlinePlayers, finalSelectedType, options), messageId
+                ); //updates the message
+            }catch (Exception ex) {
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString(
+                                TextFormatting.RED +
+                                "An error occurred while trying to get the servers!"
+                        ).setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new TextComponentString(TextFormatting.RED + ex.getMessage())
+                                ))),
+                        messageId
+                );
+
+                ex.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     private void serverInfo(MinecraftServer server, ICommandSender sender, String[] args) {
-        try {
-            HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
-            if (args.length >= 1) {
-                for (String serverName : onlinePlayers.keySet()) {
-                    if (args[0].equalsIgnoreCase(serverName)) {
-                        TextComponentString text = new TextComponentString(String.format("%s: ", serverName));
-                        TextComponentString playerText = new TextComponentString("");
+        int messageId = Utils.getRandom().nextInt(Integer.MAX_VALUE);
+        ChatOverlay.getChat().printUnloggedChatMessage(
+                new TextComponentString(TextFormatting.GRAY + "Calculating Server Information..."
+                ), messageId);
 
-                        ArrayList<String> players = onlinePlayers.get(serverName);
+        Utils.runAsync(() -> {
+            try {
+                HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
+                if (args.length >= 1) {
+                    for (String serverName : onlinePlayers.keySet()) {
+                        if (args[0].equalsIgnoreCase(serverName)) {
+                            TextComponentString text = new TextComponentString(String.format("%s: ", serverName));
+                            TextComponentString playerText = new TextComponentString("");
 
-                        for (String player : players.subList(0, players.size() - 1)) {
-                            playerText.appendText(String.format("%s, ", player));
+                            ArrayList<String> players = onlinePlayers.get(serverName);
+
+                            for (String player : players.subList(0, players.size() - 1)) {
+                                playerText.appendText(String.format("%s, ", player));
+                            }
+                            playerText.appendText(players.get(players.size() - 1));
+                            playerText.getStyle().setColor(TextFormatting.GRAY);
+                            text.appendSibling(playerText);
+
+                            text.appendText("\nTotal online players: ");
+                            TextComponentString playerCountText = new TextComponentString(String.valueOf(players.size()));
+                            playerCountText.getStyle().setColor(TextFormatting.GRAY);
+                            text.appendSibling(playerCountText);
+
+                            ChatOverlay.getChat().printUnloggedChatMessage(text, messageId);
+                            return;
                         }
-                        playerText.appendText(players.get(players.size() - 1));
-                        playerText.getStyle().setColor(TextFormatting.GRAY);
-                        text.appendSibling(playerText);
-
-                        text.appendText("\nTotal online players: ");
-                        TextComponentString playerCountText = new TextComponentString(String.valueOf(players.size()));
-                        playerCountText.getStyle().setColor(TextFormatting.GRAY);
-                        text.appendSibling(playerCountText);
-
-                        sender.sendMessage(text);
-                        return;
                     }
+                    ChatOverlay.getChat().printUnloggedChatMessage(
+                            new TextComponentString(String.format("Unknown server ID: %s", args[0])), messageId);
+                } else { //args.length == 0
+                    ChatOverlay.getChat().printUnloggedChatMessage(
+                            new TextComponentString("Usage: /s info <serverID>"), messageId);
                 }
-                sender.sendMessage(new TextComponentString(String.format("Unknown server ID: %s", args[0])));
-            } else { //args.length == 0
-                sender.sendMessage(new TextComponentString("Usage: /s info <serverID>"));
+            } catch (Exception e) {
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString(
+                                TextFormatting.RED +
+                                        "An error occurred while trying to get the servers!"
+                        ).setStyle(new Style().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new TextComponentString(TextFormatting.RED + e.getMessage())
+                        ))),
+                        messageId
+                );
+
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     private TextComponentString getFilteredServerList(HashMap<String, ArrayList<String>> onlinePlayers,
