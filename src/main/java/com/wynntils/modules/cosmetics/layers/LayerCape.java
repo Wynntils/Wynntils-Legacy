@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.ModCore;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -30,7 +31,8 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE") && entitylivingbaseIn.getUniqueID() == ModCore.mc().player.getUniqueID())
+            return;
         //loading cape
         ResourceLocation rl;
         if (WebManager.hasCape(entitylivingbaseIn.getUniqueID())) {
@@ -79,7 +81,11 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
                 GlStateManager.rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
                 GlStateManager.rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.enableAlpha();
+                GlStateManager.enableBlend();
                 renderModel(entitylivingbaseIn, this.playerRenderer.getMainModel(), 0.0625f);
+                GlStateManager.disableBlend();
+                GlStateManager.disableAlpha();
                 GlStateManager.popMatrix();
             }
         }

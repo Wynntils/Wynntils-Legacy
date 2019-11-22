@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.ModCore;
 import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -39,11 +40,13 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
     @Override
     public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE") && entitylivingbaseIn.getUniqueID() == ModCore.mc().player.getUniqueID())
+            return;
         ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
         if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID()) && itemstack.getItem() != Items.ELYTRA) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableAlpha();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
@@ -91,6 +94,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
             GlStateManager.disableBlend();
+            GlStateManager.disableAlpha();
             GlStateManager.popMatrix();
         }
     }
