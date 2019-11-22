@@ -53,10 +53,10 @@ public class UtilitiesModule extends Module {
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
-        registerOverlay(new InfoOverlay._1(), Priority.LOW);
-        registerOverlay(new InfoOverlay._2(), Priority.LOW);
-        registerOverlay(new InfoOverlay._3(), Priority.LOW);
-        registerOverlay(new InfoOverlay._4(), Priority.LOW);
+        registerOverlay(new InfoOverlay._1(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._3(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
 
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);

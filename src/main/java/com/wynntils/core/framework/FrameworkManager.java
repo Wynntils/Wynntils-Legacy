@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import static net.minecraft.client.gui.Gui.ICONS;
@@ -42,7 +43,7 @@ public class FrameworkManager {
     private static long tick = 0;
 
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
-    public static HashMap<Priority, ArrayList<Overlay>> registeredOverlays = new HashMap<>();
+    public static LinkedHashMap<Priority, ArrayList<Overlay>> registeredOverlays = new LinkedHashMap<>();
 
     private static EventBus eventBus = new EventBus();
 
