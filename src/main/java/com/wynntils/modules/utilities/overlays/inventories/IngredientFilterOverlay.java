@@ -16,9 +16,16 @@ public class IngredientFilterOverlay implements Listener {
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (UtilitiesConfig.Items.INSTANCE.filterEnabled) {
-            e.getGuiInventory().getButtonList().add(new GuiButton(11, (e.getGuiInventory().width - e.getGuiInventory().getXSize()) / 2 - 20, (e.getGuiInventory().height - e.getGuiInventory().getYSize()) / 2 + 15, 18, 18, RarityColorOverlay.getProfessionFilter()));
-        }
+        if (!UtilitiesConfig.Items.INSTANCE.filterEnabled) return;
+
+        e.getGuiInventory().getButtonList().add(
+                new GuiButton(11,
+                        (e.getGuiInventory().width - e.getGuiInventory().getXSize()) / 2 - 20,
+                        (e.getGuiInventory().height - e.getGuiInventory().getYSize()) / 2 + 15,
+                        18, 18,
+                        RarityColorOverlay.getProfessionFilter()
+                )
+        );
     }
 
     @SubscribeEvent
