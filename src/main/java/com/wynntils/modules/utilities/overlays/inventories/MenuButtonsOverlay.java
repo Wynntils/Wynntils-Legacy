@@ -29,6 +29,7 @@ public class MenuButtonsOverlay implements Listener {
                     b.displayString = TextFormatting.GRAY + b.displayString;
                 }
             });
+
             e.getButtonList().removeAll(toBeRemoved);
             e.getButtonList().add(new GuiButton(753, e.getGui().width / 2 - 100, e.getGui().height / 4 + 48 + -16, "Class selection"));
             e.getButtonList().add(new GuiButton(754, e.getGui().width / 2 - 100, e.getGui().height / 4 + 72 + -16, "Back to Hub"));
@@ -40,7 +41,9 @@ public class MenuButtonsOverlay implements Listener {
         if (e.getButton().id == 753) {
             Minecraft.getMinecraft().player.sendChatMessage("/class");
             e.setCanceled(true);
-        } else if (e.getButton().id == 754) {
+            return;
+        }
+        if (e.getButton().id == 754) {
             Minecraft.getMinecraft().player.sendChatMessage("/hub");
             e.setCanceled(true);
         }
