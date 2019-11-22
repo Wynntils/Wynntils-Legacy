@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -239,7 +240,7 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + Reference.emeraldSymbols[0];
                             screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                         }
                         ScreenRenderer.endGL();
@@ -255,7 +256,7 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(LWRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + ItemIdentificationOverlay.E;
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRleAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + " " + ItemIdentificationOverlay.decimalFormat.format(LWRblockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + Reference.emeraldSymbols[0];
                             screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                         }
                         ScreenRenderer.endGL();
@@ -268,7 +269,7 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + Reference.emeraldSymbols[0];
                             screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                         }
                         ScreenRenderer.endGL();
@@ -283,7 +284,7 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRleAmount) + ItemIdentificationOverlay.L + ItemIdentificationOverlay.E + " " + ItemIdentificationOverlay.decimalFormat.format(UPRblockAmount) + ItemIdentificationOverlay.E + ItemIdentificationOverlay.B + " " + ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + ItemIdentificationOverlay.E;
+                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRleAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(UPRblockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + Reference.emeraldSymbols[0];
                             screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                         }
                         ScreenRenderer.endGL();

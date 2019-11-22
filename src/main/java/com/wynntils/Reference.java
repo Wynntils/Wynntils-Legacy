@@ -20,6 +20,12 @@ public class Reference {
     public static final File MOD_ASSETS_ROOT = new File(MOD_STORAGE_ROOT + "\\assets");
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 
+    public static String[] emeraldSymbols = new String[] {
+            new String(new char[]{(char) 0xB2}), //E
+            new String(new char[]{(char) 0xBD}), //B
+            new String(new char[]{(char) 0xBC}) // L
+    };
+
     private static String userWorld = null;
 
     public static void setUserWorld(String uw) {

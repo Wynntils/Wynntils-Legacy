@@ -33,19 +33,19 @@ import java.util.regex.Pattern;
 
 public class ItemIdentificationOverlay implements Listener {
 
-    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
     private final static Pattern ID_PATTERN = Pattern.compile("^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+)$");
     private final static Pattern ID_PATTERN_CHANCES = Pattern.compile("( " + TextFormatting.RED + TextFormatting.BOLD + "\\u21E9" + TextFormatting.RESET + TextFormatting.RED + "\\d+\\.\\d+%)( " + TextFormatting.GREEN + TextFormatting.BOLD + "\\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + "\\d+\\.\\d+%)( " + TextFormatting.AQUA + TextFormatting.BOLD + "\\u21EA" + TextFormatting.RESET + TextFormatting.AQUA + "\\d+\\.\\d%)?$");
     private final static Pattern ID_PATTERN_RANGES = Pattern.compile(" (" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\[(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")[\\+-]?\\d+(\\1), (\\2)[\\+-]?\\d+(\\1)]|( (" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")\\[[-+]?\\d+ SP])$");
     private final static Pattern ID_PATTERN_SIMPLE = Pattern.compile(" (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + "|" + TextFormatting.YELLOW + ")(\\[-?\\d+%])$");
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?");
 
-    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + E);
-    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + E + ")? ?(\\d+" + E + B + ")? ?([\\d.]+" + L + E + ")?\\)");
+    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + Reference.emeraldSymbols[0]);
+    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + Reference.emeraldSymbols[0] + ")? ?(\\d+" + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + ")? ?([\\d.]+" + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + ")?\\)");
     private final static Pattern STX_PATTERN = Pattern.compile("(\\([^)]*)%stx%([^)]*\\))");
     private final static Pattern LE_PATTERN = Pattern.compile("(\\([^)]*)%le%([^)]*\\))");
     private final static Pattern EB_PATTERN = Pattern.compile("(\\([^)]*)%eb%([^)]*\\))");
     private final static Pattern E_PATTERN = Pattern.compile("(\\([^)]*)%e%([^)]*\\))");
+
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     @SubscribeEvent
@@ -122,9 +122,9 @@ public class ItemIdentificationOverlay implements Listener {
                     formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + e + "$2" : "");
 
                     formedPriceString = formedPriceString
-                        .replace("%les%", L + E)
-                        .replace("%ebs%", E + B)
-                        .replace("%es%", E);
+                        .replace("%les%", Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0])
+                        .replace("%ebs%", Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1])
+                        .replace("%es%", Reference.emeraldSymbols[0]);
 
                     formedPriceString = formedPriceString
                         .replace("\\", "\\\\")
@@ -483,7 +483,7 @@ public class ItemIdentificationOverlay implements Listener {
             alreadyRolled = Integer.parseInt(QUALITY.group("Rolls"));
         rerollValue *= Math.pow(5, alreadyRolled);
 
-        return lore + (rerollValue == 0 ? "" : TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + E + "]");
+        return lore + (rerollValue == 0 ? "" : TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + Reference.emeraldSymbols[0] + "]");
     }
 
 
@@ -622,5 +622,5 @@ public class ItemIdentificationOverlay implements Listener {
         }
         return formatSimple((int) (values[0] / idCount), name);
     }
-    
+
 }
