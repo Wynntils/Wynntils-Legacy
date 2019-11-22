@@ -16,20 +16,20 @@ public class SkillPointOverlay implements Listener {
         if(e.getGuiInventory().getSlotUnderMouse() == null || !e.getGuiInventory().getSlotUnderMouse().getHasStack()) return;
 
         String lore = Utils.getStringLore(e.getGuiInventory().getSlotUnderMouse().getStack());
-        if (e.getGuiInventory().getLowerInv().getName().contains("skill points remaining") && lore.contains("points")) {
-            lore = lore.replace("§", "");
-            String[] tokens = lore.split("[0-9]{1,3} points");
-            for (int j = 0; j <= tokens.length - 1; j++) {
-                lore = lore.replace(tokens[j], "");
-            }
-            String[] numbers = lore.split(" ");
-            try {
-                int count = Integer.parseInt(numbers[0]);
-                e.getGuiInventory().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
-            } catch (Exception ex) {
-                System.out.print(ex.toString());
-            }
+        if(!e.getGuiInventory().getLowerInv().getName().contains("skill points remaining")) return;
+        if(!lore.contains("points")) return;
+
+        lore = lore.replace("§", "");
+        String[] tokens = lore.split("[0-9]{1,3} points");
+        for (int j = 0; j <= tokens.length - 1; j++) {
+            lore = lore.replace(tokens[j], "");
         }
+
+        String[] numbers = lore.split(" ");
+        try {
+            int count = Integer.parseInt(numbers[0]);
+            e.getGuiInventory().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
 }
