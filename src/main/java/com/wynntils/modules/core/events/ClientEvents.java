@@ -139,29 +139,37 @@ public class ClientEvents implements Listener {
         }
     }
 
+    /**
+     * Process the packet queue if the queue is not empty
+     */
     @SubscribeEvent
     public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
-        if (e.phase != TickEvent.Phase.END) return;
+        if (e.phase != TickEvent.Phase.END || !PacketQueue.hasQueuedPacket()) return;
 
-        if (PacketQueue.hasQueuedPacket()) {
-            PingManager.calculatePing();
-            PacketQueue.proccessQueue();
-        }
+        PingManager.calculatePing();
+        PacketQueue.proccessQueue();
     }
 
+    /**
+     *  Register the new Main Menu buttons
+     */
     @SubscribeEvent
     public void addMainMenuButtons(GuiScreenEvent.InitGuiEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
-            MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList());
-        }
+        if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+
+        MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList());
     }
 
+    /**
+     *  Handles the main menu new buttons actions
+     */
     @SubscribeEvent
     public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if (gui == gui.mc.currentScreen && gui instanceof GuiMainMenu) {
-            MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
-        }
+        if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+
+        MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }
+
 }
