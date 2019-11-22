@@ -27,7 +27,9 @@ public class ItemLockOverlay implements Listener {
             if(s.slotNumber <= 4) continue;
             renderItemLock(s, e.getGuiInventory().getGuiLeft(), e.getGuiInventory().getGuiTop());
         }
-        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
+
+        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack())
+            e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -38,7 +40,9 @@ public class ItemLockOverlay implements Listener {
             if(s.slotNumber < e.getGuiInventory().getLowerInv().getSizeInventory()) continue;
             renderItemLock(s, e.getGuiInventory().getGuiLeft(), e.getGuiInventory().getGuiTop());
         }
-        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
+
+        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack())
+            e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -49,22 +53,25 @@ public class ItemLockOverlay implements Listener {
             if(s.slotNumber < e.getGuiInventory().getLowerInv().getSizeInventory()) continue;
             renderItemLock(s, e.getGuiInventory().getGuiLeft(), e.getGuiInventory().getGuiTop());
         }
-        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
+
+        if(e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack())
+            e.getGuiInventory().renderToolTip(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     private void renderItemLock(Slot s, int guiLeft, int guiTop) {
-        if(UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId()) && UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) {
-            ScreenRenderer.beginGL(0, 0);
+        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+        if(!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) return;
 
-            //HeyZeer0: this will make the lock appear over the item
-            GlStateManager.translate(0, 0, 260);
+        ScreenRenderer.beginGL(0, 0);
 
-            ScreenRenderer r = new ScreenRenderer();
-            RenderHelper.disableStandardItemLighting();
-            ScreenRenderer.scale(0.5f);
-            r.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
-            ScreenRenderer.endGL();
-        }
+        //HeyZeer0: this will make the lock appear over the item
+        GlStateManager.translate(0, 0, 260);
+
+        ScreenRenderer r = new ScreenRenderer();
+        RenderHelper.disableStandardItemLighting();
+        ScreenRenderer.scale(0.5f);
+        r.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
+        ScreenRenderer.endGL();
     }
 
 }
