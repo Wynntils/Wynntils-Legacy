@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.ModCore;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -30,7 +31,8 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer>
 
     public void doRenderLayer(net.minecraft.client.entity.AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")) return;
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE") && entitylivingbaseIn.getUniqueID() == ModCore.mc().player.getUniqueID())
+            return;
         //loading cape
         ResourceLocation rl;
         if (WebManager.hasCape(entitylivingbaseIn.getUniqueID())) {
