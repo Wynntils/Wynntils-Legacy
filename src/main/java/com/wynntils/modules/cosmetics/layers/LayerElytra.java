@@ -94,7 +94,6 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
             GlStateManager.disableBlend();
-            GlStateManager.disableAlpha();
             GlStateManager.popMatrix();
         }
     }
