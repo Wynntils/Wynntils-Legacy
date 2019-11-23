@@ -60,7 +60,7 @@ public class EmeraldCountOverlay implements Listener {
 
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-            drawMoneyAmount(190, 6, Utils.countMoney(lowerInv), renderer, CommonColors.WHITE);
+            drawMoneyAmount(190, -10, Utils.countMoney(lowerInv), renderer, CommonColors.WHITE);
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
             drawMoneyAmount(190, 2 * (lowerInv.getSizeInventory() + 10), Utils.countMoney(upperInv), renderer, textColor);
     }
