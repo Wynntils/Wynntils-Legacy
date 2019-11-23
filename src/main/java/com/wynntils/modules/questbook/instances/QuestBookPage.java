@@ -81,7 +81,7 @@ public class QuestBookPage extends GuiScreen {
         searchUpdate("");
         time = Minecraft.getSystemTime();
         text_flicker = Minecraft.getSystemTime();
-        lastTick = Minecraft.getMinecraft().world.getWorldTime();
+        lastTick = Minecraft.getSystemTime();
 
         Keyboard.enableRepeatEvents(true);
     }
