@@ -5,18 +5,13 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -24,8 +19,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.glTexEnvi;
 
 public class RarityColorOverlay implements Listener {
 
@@ -94,55 +91,24 @@ public class RarityColorOverlay implements Listener {
                 continue;
             }
 
-            ScreenRenderer.beginGL(0, 0);
+            //start rendering
             ScreenRenderer renderer = new ScreenRenderer();
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.color(r, g, b, 1.0f);
-            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-            renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
-            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-            ScreenRenderer.endGL();
-        }
+            ScreenRenderer.beginGL(0, 0); {
+                color(r, g, b, 1.0f);
+                glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                RenderHelper.disableStandardItemLighting();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-            int money = PlayerInfo.getPlayerInfo().getMoney(), leAmount = 0, blockAmount = 0;
+                renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
 
-            GlStateManager.disableLighting();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-            ScreenRenderer screen = new ScreenRenderer();
-            int x = 190;
-            int y = 80;
-            CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    ScreenRenderer.scale(0.9f);
-                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(money) + Reference.emeraldSymbols[0];
-                    screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                }
-                ScreenRenderer.endGL();
-            } else {
-                if (money != 0) {
-                    leAmount = (int) Math.floor(money / 4096);
-                    money -= leAmount * 4096;
-
-                    blockAmount = (int) Math.floor(money / 64);
-                    money -= blockAmount * 64;
-                }
-                ScreenRenderer.beginGL(0, 0);
-                {
-                    ScreenRenderer.scale(0.9f);
-                    String moneyText = ItemIdentificationOverlay.decimalFormat.format(leAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + " " + ItemIdentificationOverlay.decimalFormat.format(blockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(money) + Reference.emeraldSymbols[0];
-                    screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                }
-                ScreenRenderer.endGL();
-            }
+                glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                color(1.0f, 1.0f, 1.0f, 1.0f);
+            } ScreenRenderer.endGL();
         }
     }
 
     public void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
         int playerInvSlotNumber = 0;
+
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
             if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
                 playerInvSlotNumber++;
@@ -210,87 +176,18 @@ public class RarityColorOverlay implements Listener {
                 continue;
             }
 
-            ScreenRenderer.beginGL(0, 0);
+            //start rendering
             ScreenRenderer renderer = new ScreenRenderer();
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.color(r, g, b, 1.0f);
-            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-            renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
-            GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-            ScreenRenderer.endGL();
-        }
+            ScreenRenderer.beginGL(0, 0); {
+                color(r, g, b, 1F);
+                glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+                RenderHelper.disableStandardItemLighting();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
-            if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
-                int LWRmoney = Utils.countMoney(lowerInv);
-                int UPRmoney = Utils.countMoney(upperInv);
+                renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
 
-                GlStateManager.disableLighting();
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
-                ScreenRenderer screen = new ScreenRenderer();
-                int x = 190;
-                int y = (int) ((lowerInv.getSizeInventory() / 9) * 19.7) + 25;
-                CustomColor emeraldColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
-                //LWR INV
-                if (emeraldsLowerInv) {
-                    if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                        ScreenRenderer.beginGL(0, 0);
-                        {
-                            ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + Reference.emeraldSymbols[0];
-                            screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                        }
-                        ScreenRenderer.endGL();
-
-                    } else {
-
-                        int LWRleAmount = LWRmoney / 4096;
-                        LWRmoney %= 4096;
-
-                        int LWRblockAmount = LWRmoney / 64;
-                        LWRmoney %= 64;
-
-                        ScreenRenderer.beginGL(0, 0);
-                        {
-                            ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(LWRleAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + " " + ItemIdentificationOverlay.decimalFormat.format(LWRblockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(LWRmoney) + Reference.emeraldSymbols[0];
-                            screen.drawString(moneyText, x, 6, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                        }
-                        ScreenRenderer.endGL();
-                    }
-                }
-
-                //UPR INV
-                if (emeraldsUpperInv) {
-                    if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                        ScreenRenderer.beginGL(0, 0);
-                        {
-                            ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + Reference.emeraldSymbols[0];
-                            screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                        }
-                        ScreenRenderer.endGL();
-
-                    } else {
-                        int UPRleAmount = UPRmoney / 4096;
-                        UPRmoney %= 4096;
-
-                        int UPRblockAmount = UPRmoney / 64;
-                        UPRmoney %= 64;
-
-                        ScreenRenderer.beginGL(0, 0);
-                        {
-                            ScreenRenderer.scale(0.9f);
-                            String moneyText = ItemIdentificationOverlay.decimalFormat.format(UPRleAmount) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(UPRblockAmount) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " " + ItemIdentificationOverlay.decimalFormat.format(UPRmoney) + Reference.emeraldSymbols[0];
-                            screen.drawString(moneyText, x, y, emeraldColor, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
-                        }
-                        ScreenRenderer.endGL();
-                    }
-
-                    GlStateManager.enableLighting();
-                }
-            }
+                glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+                color(1F, 1F, 1F, 1F);
+            } ScreenRenderer.endGL();
         }
     }
 
@@ -332,12 +229,14 @@ public class RarityColorOverlay implements Listener {
             // Fire
             returnVal = new float[]{1f, 0.333f, 0.333f};
         }
+
         return returnVal;
     }
 
     public static void setProfessionFilter(String s) {
         professionFilter = s;
     }
+
     public static String getProfessionFilter() {
         return professionFilter;
     }

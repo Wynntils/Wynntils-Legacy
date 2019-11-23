@@ -110,6 +110,7 @@ public class ClientEvents implements Listener {
             scheduledGuiScreen = null;
             return;
         }
+
         firstNullOccurred = scheduledGuiScreen != null && e.getGui() == null && !firstNullOccurred;
     }
 

@@ -38,6 +38,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemLockOverlay());
         registerEvents(new MenuButtonsOverlay());
         registerEvents(new IngredientFilterOverlay());
+        registerEvents(new EmeraldCountOverlay());
 
         //Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
