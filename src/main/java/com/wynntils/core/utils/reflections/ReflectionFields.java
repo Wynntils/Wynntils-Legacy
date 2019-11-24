@@ -6,6 +6,7 @@ package com.wynntils.core.utils.reflections;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.Entity;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public enum ReflectionFields {
 
@@ -25,7 +27,12 @@ public enum ReflectionFields {
     GuiIngame_remainingHighlightTicks(GuiIngame.class, "remainingHighlightTicks", "field_92017_k"),
     GuiIngame_highlightingItemStack(GuiIngame.class, "highlightingItemStack", "field_92016_l"),
     GuiIngame_displayedSubTitle(GuiIngame.class, "displayedSubTitle", "field_175200_y"),
-    GuiChat_defaultInputFieldText(GuiChat.class, "defaultInputFieldText", "field_146409_v");
+    GuiChat_defaultInputFieldText(GuiChat.class, "defaultInputFieldText", "field_146409_v"),
+    GuiPlayerTabOverlay_ENTRY_ORDERING(GuiPlayerTabOverlay.class, "ENTRY_ORDERING", "field_175252_a");
+
+    static {
+        GuiPlayerTabOverlay_ENTRY_ORDERING.removeFinal();
+    }
 
     final Field field;
 
@@ -45,6 +52,26 @@ public enum ReflectionFields {
     public void setValue(Object parent, Object value) {
         try{
             field.set(parent,value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static Field modifiersField = null;
+
+    private void removeFinal() {
+        if (modifiersField == null) {
+            try {
+                modifiersField = Field.class.getDeclaredField("modifiers");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+                return;
+            }
+            modifiersField.setAccessible(true);
+        }
+
+        try {
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
