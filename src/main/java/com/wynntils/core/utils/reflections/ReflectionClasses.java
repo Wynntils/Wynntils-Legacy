@@ -4,7 +4,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public enum ReflectionClasses {
 
-    SPacketPlayerListItem$AddPlayerData("net.minecraft.network.play.server.SPacketPlayerListItem$AddPlayerData");
+    ;
 
     public final Class<?> clazz;
 

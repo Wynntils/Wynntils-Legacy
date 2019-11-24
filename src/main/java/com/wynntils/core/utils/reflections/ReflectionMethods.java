@@ -7,8 +7,7 @@ import java.lang.reflect.Method;
 
 public enum ReflectionMethods {
 
-    SPacketPlayerListItem$AddPlayerData_getProfile(ReflectionClasses.SPacketPlayerListItem$AddPlayerData.clazz, "getProfile", "func_179962_a"),
-    SPacketPlayerListItem$AddPlayerData_getDisplayName(ReflectionClasses.SPacketPlayerListItem$AddPlayerData.clazz, "getDisplayName", "func_179961_d");
+    ;
 
     final Method method;
 
