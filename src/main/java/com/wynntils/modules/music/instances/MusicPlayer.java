@@ -121,6 +121,7 @@ public class MusicPlayer {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void startReproduction() {
         if(currentPlayer != null) {
             currentPlayer.stop();

@@ -4,6 +4,7 @@
 
 package com.wynntils.core.events;
 
+import com.mojang.authlib.GameProfile;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
@@ -14,11 +15,13 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.utils.reflections.ReflectionMethods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
@@ -105,14 +108,14 @@ public class ClientEvents {
         if (!Reference.onServer) return;
         if(e.getPacket().getAction() != Action.UPDATE_DISPLAY_NAME && e.getPacket().getAction() != Action.REMOVE_PLAYER) return;
 
-        List<String> partyMembers = new ArrayList<>();
-        String partyOwner = "";
-
-        for(SPacketPlayerListItem.AddPlayerData player : e.getPacket().getEntries()) {
+        for(Object player : (List<?>) e.getPacket().getEntries()) {
             //world handling below
-            if(player.getProfile().getId().equals(worldUUID)) {
+            GameProfile profile = (GameProfile) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getProfile.invoke(player);
+            if(profile.getId().equals(worldUUID)) {
                 if(e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
-                    String name = player.getDisplayName().getUnformattedText();
+                    ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
+                    if (nameComponent == null) continue;
+                    String name = nameComponent.getUnformattedText();
                     String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
 
                     if(world.equalsIgnoreCase(lastWorld)) continue;

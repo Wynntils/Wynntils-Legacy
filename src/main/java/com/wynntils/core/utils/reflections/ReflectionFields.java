@@ -36,7 +36,7 @@ public enum ReflectionFields {
     public Object getValue(Object parent) {
         try{
             return field.get(parent);
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
@@ -45,7 +45,7 @@ public enum ReflectionFields {
     public void setValue(Object parent, Object value) {
         try{
             field.set(parent,value);
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }

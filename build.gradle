@@ -60,7 +60,7 @@ processResources {
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
-        attributes 'FMLAT': 'wynntils_at.cfg'
+        attributes [:]
     }
 }
 
@@ -73,8 +73,6 @@ shadowJar {
     classifier = null
     version = null
     configurations = [project.configurations.compile]
-    relocate "org.slf4j", "cf.wynntils.relocate.org.slf4j"
-    relocate "org.json", "cf.wybbtuls.relocate.org.json"
 }
 
 task wrapper(type: Wrapper) {
@@ -82,7 +80,7 @@ task wrapper(type: Wrapper) {
 }
 
 class Version {
-    static String major, minor, revision
+    int major, minor, revision
 
     static String getBuild() {
         System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER") ?: "DEV"
