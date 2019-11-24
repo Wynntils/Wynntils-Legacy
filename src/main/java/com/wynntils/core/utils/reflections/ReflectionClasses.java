@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public enum ReflectionClasses {
 
-    GuiPlayerTabOverlay$PlayerComparator("net.minecraft.client.gui.GuiPlayerTabOverlay$PlayerComparator"),
     SPacketPlayerListItem$AddPlayerData("net.minecraft.network.play.server.SPacketPlayerListItem$AddPlayerData");
 
     public final Class<?> clazz;
