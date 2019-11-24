@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.EmeraldSymbols;
 import com.wynntils.core.utils.RainbowText;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -39,8 +40,8 @@ public class ItemIdentificationOverlay implements Listener {
     private final static Pattern ID_PATTERN_SIMPLE = Pattern.compile(" (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + "|" + TextFormatting.YELLOW + ")(\\[-?\\d+%])$");
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?");
 
-    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + Reference.emeraldSymbols[0]);
-    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + Reference.emeraldSymbols[0] + ")? ?(\\d+" + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + ")? ?([\\d.]+" + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + ")?\\)");
+    private final static Pattern MARKET_PRICE = Pattern.compile("[-x] " + TextFormatting.WHITE + "([\\d,]+)" + TextFormatting.GRAY + EmeraldSymbols.EMERALDS);
+    private final static Pattern SPLIT_MARKET_PRICE = Pattern.compile("\\((\\d+stx)? ?(\\d+" + EmeraldSymbols.EMERALDS + ")? ?(\\d+" + EmeraldSymbols.BLOCKS + ")? ?([\\d.]+" + EmeraldSymbols.LE + ")?\\)");
     private final static Pattern STX_PATTERN = Pattern.compile("(\\([^)]*)%stx%([^)]*\\))");
     private final static Pattern LE_PATTERN = Pattern.compile("(\\([^)]*)%le%([^)]*\\))");
     private final static Pattern EB_PATTERN = Pattern.compile("(\\([^)]*)%eb%([^)]*\\))");
@@ -122,9 +123,9 @@ public class ItemIdentificationOverlay implements Listener {
                     formedPriceString = E_PATTERN.matcher(formedPriceString).replaceAll(e != 0 ? "$1" + e + "$2" : "");
 
                     formedPriceString = formedPriceString
-                        .replace("%les%", Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0])
-                        .replace("%ebs%", Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1])
-                        .replace("%es%", Reference.emeraldSymbols[0]);
+                        .replace("%les%", EmeraldSymbols.LE)
+                        .replace("%ebs%", EmeraldSymbols.BLOCKS)
+                        .replace("%es%", EmeraldSymbols.EMERALDS);
 
                     formedPriceString = formedPriceString
                         .replace("\\", "\\\\")
@@ -483,7 +484,7 @@ public class ItemIdentificationOverlay implements Listener {
             alreadyRolled = Integer.parseInt(QUALITY.group("Rolls"));
         rerollValue *= Math.pow(5, alreadyRolled);
 
-        return lore + (rerollValue == 0 ? "" : TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + Reference.emeraldSymbols[0] + "]");
+        return lore + (rerollValue == 0 ? "" : TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + EmeraldSymbols.EMERALDS + "]");
     }
 
 

@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.EmeraldSymbols;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.inventory.IInventory;
@@ -83,13 +84,13 @@ public class EmeraldCountOverlay implements Listener {
         //generating text
         String moneyText = "";
         if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) { //plain text
-            moneyText = format.format(moneyAmount) + Reference.emeraldSymbols[0];
+            moneyText = format.format(moneyAmount) + EmeraldSymbols.EMERALDS;
         }else{ //sliced text
             int[] moneySlices = calculateMoneyAmount(moneyAmount);
 
-            moneyText += format.format(moneySlices[2]) + Reference.emeraldSymbols[2] + Reference.emeraldSymbols[0] + " "; //liquid emeralds
-            moneyText += format.format(moneySlices[1]) + Reference.emeraldSymbols[0] + Reference.emeraldSymbols[1] + " "; //emerald blocks
-            moneyText += format.format(moneySlices[0]) + Reference.emeraldSymbols[0]; //emeralds
+            moneyText += format.format(moneySlices[2]) + EmeraldSymbols.LE + " "; //liquid emeralds
+            moneyText += format.format(moneySlices[1]) + EmeraldSymbols.BLOCKS + " "; //emerald blocks
+            moneyText += format.format(moneySlices[0]) + EmeraldSymbols.EMERALDS; //emeralds
         }
 
         //rendering

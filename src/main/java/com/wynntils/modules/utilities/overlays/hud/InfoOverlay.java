@@ -5,6 +5,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.EmeraldSymbols;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
@@ -245,9 +246,9 @@ public abstract class InfoOverlay extends Overlay {
                 case "n": return "\n";
                 case "%": return "%";
                 case "§": return "&";
-                case "E": return "\u00B2";
-                case "B": return "\u00BD";
-                case "L": return "\u00BC";
+                case "E": return EmeraldSymbols.E_STRING;
+                case "B": return EmeraldSymbols.B_STRING;
+                case "L": return EmeraldSymbols.L_STRING;
                 default:
                     // xXX, uXXXX, UXXXXXXXX
                     int codePoint = Integer.parseInt(escaped.substring(1), 16);
