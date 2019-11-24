@@ -10,6 +10,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
+import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 
@@ -26,6 +27,8 @@ public class CoreModule extends Module {
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
 
         registerSettings(CoreDBConfig.class);
+
+        TabManager.replaceTabOrderer();
 
         module = this;
     }
