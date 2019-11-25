@@ -164,6 +164,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
         public boolean emeraldCountInventory = true;
 
+        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?")
+        public boolean emeraldCountText = false;
+
         @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
         public boolean powderHighlight = true;
 
