@@ -28,7 +28,7 @@ public class PlayerInfoOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
-        if(!Reference.onWorld) return;
+        if(!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
 
         //TODO make the animation be TIME, instead of FRAME, reliant. This is currently causing some slowdowns
         { // Animation Detection
