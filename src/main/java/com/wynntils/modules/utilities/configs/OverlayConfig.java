@@ -478,7 +478,7 @@ public class OverlayConfig extends SettingsClass {
     public static class PlayerInfo extends SettingsClass {
         public static PlayerInfo INSTANCE;
 
-        @Setting(displayName = "Replace Vanilla Player List", description = "Should the vanilla player list be replaced with the Wynntils' custom list?", order = 1)
+        @Setting(displayName = "Replace Vanilla Player List", description = "Should the vanilla player list be replaced with Wynntils' custom list?", order = 1)
         public boolean replaceVanilla = true;
 
         @Setting(displayName = "Player List Transparency", description = "How transparent should the custom player list be?", order = 2)
