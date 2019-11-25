@@ -133,7 +133,6 @@ public class ClientEvents implements Listener {
         }
     }
 
-
     private static int lastHorseId = -1;
     @SuppressWarnings("unchecked")
     private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);

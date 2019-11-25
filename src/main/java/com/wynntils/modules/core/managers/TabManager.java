@@ -11,7 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TabManager {
-    private static class FastEntryOrdering extends Ordering<NetworkPlayerInfo> {
+
+    private static FastEntryOrdering entryOrdering;
+
+    public static class FastEntryOrdering extends Ordering<NetworkPlayerInfo> {
         private Ordering<NetworkPlayerInfo> previousOrdering;
         private static boolean errored = false;
 
@@ -64,11 +67,21 @@ public class TabManager {
      */
     public static void replaceTabOrderer() {
         try {
-            ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING.setValue(GuiPlayerTabOverlay.class, new FastEntryOrdering(
-                (Ordering<NetworkPlayerInfo>) ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING.getValue(GuiPlayerTabOverlay.class))
-            );
+            entryOrdering = new FastEntryOrdering(
+                    (Ordering<NetworkPlayerInfo>) ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING
+                            .getValue(GuiPlayerTabOverlay.class));
+
+            ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING.setValue(GuiPlayerTabOverlay.class, entryOrdering);
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @return the entry orderer
+     */
+    public static FastEntryOrdering getEntryOrdering() {
+        return entryOrdering;
+    }
+
 }
