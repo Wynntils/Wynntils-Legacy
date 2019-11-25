@@ -478,10 +478,10 @@ public class OverlayConfig extends SettingsClass {
     public static class PlayerInfo extends SettingsClass {
         public static PlayerInfo INSTANCE;
 
-        @Setting(displayName = "Replace Vanilla Player Info", description = "Should the Vanilla Player List be replaced with the Wynntils Custom One?", order = 1)
+        @Setting(displayName = "Replace Vanilla Player List", description = "Should the vanilla player list be replaced with the Wynntils' custom list?", order = 1)
         public boolean replaceVanilla = true;
 
-        @Setting(displayName = "Background Alpha", description = "The Player Info background alpha", order = 2)
+        @Setting(displayName = "Player List Transparency", description = "How transparent should the custom player list be?", order = 2)
         @Setting.Limitations.FloatLimit(min = .0f, max = 1f)
         public float backgroundAlpha = 0.3f;
 
