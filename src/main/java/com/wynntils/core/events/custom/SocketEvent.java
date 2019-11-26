@@ -6,15 +6,20 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SocketEvent extends Event {
 
-    Socket socket = SocketManager.getSocket();
+    Socket socket;
 
     public SocketEvent() {
+        this.socket = SocketManager.getSocket();
     }
 
     public static class ConnectionEvent extends SocketEvent {
 
         public ConnectionEvent(Object... args) {
-            System.out.println("Connected to websocket");
+
+        }
+
+        public Socket getSocket() {
+            return socket;
         }
     }
 
