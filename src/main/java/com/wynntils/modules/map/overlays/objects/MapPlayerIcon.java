@@ -2,6 +2,7 @@ package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.modules.core.instances.PlayerLocationProfile;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -9,7 +10,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class MapPlayerIcon extends MapIcon {
 
@@ -87,7 +90,8 @@ public class MapPlayerIcon extends MapIcon {
             // FIXME: this is rendered slightly off
             float sizeX = getSizeX() * sizeMultiplier / 4;
             float sizeZ = getSizeZ() * sizeMultiplier / 4;
-            GlStateManager.translate(centreX - sizeX * 2, centreZ - sizeZ * 2, 0);
+            boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
+            GlStateManager.translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
             GlStateManager.scale(sizeX, sizeZ, 1);
             ResourceLocation res = getResource();
             Minecraft.getMinecraft().getTextureManager().bindTexture(res);
