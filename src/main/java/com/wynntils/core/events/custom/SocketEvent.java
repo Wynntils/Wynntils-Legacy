@@ -23,5 +23,23 @@ public class SocketEvent extends Event {
         }
     }
 
+    public static class UpdateFriendLocation extends SocketEvent {
+
+        public String username;
+        public int x, y, z;
+
+        public UpdateFriendLocation(String username, int x, int y, int z) {
+            this.username = username;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+
+        }
+
+        public Socket getSocket() {
+            return socket;
+        }
+    }
+
 
 }

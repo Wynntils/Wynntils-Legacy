@@ -6,7 +6,9 @@ package com.wynntils.modules.core.events;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -18,6 +20,7 @@ import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
@@ -83,6 +86,8 @@ public class ServerEvents implements Listener {
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
+        SocketManager.getSocket().emit("join world", e.getWorld());
+
         PartyManager.handlePartyList(); //party list here
     }
 
@@ -111,6 +116,8 @@ public class ServerEvents implements Listener {
             }else{ friends = new String[] {splited[1].substring(1)}; }
 
             PlayerInfo.getPlayerInfo().setFriendList(new HashSet<>(Arrays.asList(friends)));
+
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList(Minecraft.getMinecraft().player.getName()));
 
             if(waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;

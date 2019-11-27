@@ -13,7 +13,6 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.music.MusicModule;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.richpresence.RichPresenceModule;
-import com.wynntils.modules.socket.SocketModule;
 import com.wynntils.modules.utilities.UtilitiesModule;
 
 public class ModuleManager {
@@ -29,7 +28,6 @@ public class ModuleManager {
         FrameworkManager.registerModule(new CosmeticsModule());
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());
-        FrameworkManager.registerModule(new SocketModule());
         FrameworkManager.registerModule(new MapModule());
     }
 

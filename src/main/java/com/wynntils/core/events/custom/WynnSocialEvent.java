@@ -73,4 +73,12 @@ public class WynnSocialEvent extends Event {
 
     }
 
+    public static class FriendList extends WynnSocialEvent {
+
+        public FriendList(String member) {
+            super(member);
+        }
+
+    }
+
 }

@@ -4,9 +4,11 @@
 
 package com.wynntils.modules.core.events;
 
+import com.google.gson.Gson;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -15,11 +17,14 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import io.socket.client.Socket;
 import net.minecraft.block.BlockBarrier;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,6 +39,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -177,6 +183,28 @@ public class ClientEvents implements Listener {
         if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
+    }
+
+    int lastPosition = 0;
+
+    @SubscribeEvent
+    public void friendListSaved(WynnSocialEvent.FriendList e) {
+        Socket socket = SocketManager.getSocket();
+
+        String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
+
+        socket.emit("update friends", json);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void tickHandler(TickEvent.ClientTickEvent e) {
+        if (!Reference.onWorld) return;
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
+        if (lastPosition != currentPosition) {
+            SocketManager.getSocket().emit("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+        }
+        lastPosition = currentPosition;
     }
 
 }
