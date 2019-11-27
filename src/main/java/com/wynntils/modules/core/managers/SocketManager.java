@@ -54,30 +54,36 @@ public class SocketManager {
     }
 
     private static void registerEvents() {
+        Gson gson = new Gson();
         // Register Events
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             Reference.LOGGER.info("Websocket connection event...");
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
             // Trigger forge event ~
-            System.out.println(args);
-            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(
-                Utils.uuidFromString((String) args[0]), (Integer) args[1], (Integer) args[2], (Integer) args[3]
-            ));
+            String json = (String) args[0];
+
+            FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
+
+            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
             System.out.println(args);
-            Gson gson = new Gson();
             String json = (String) args[0];
 
             JsonArray a = gson.fromJson(json, JsonArray.class);
 
             a.forEach(j -> {
-                FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(
-                    Utils.uuidFromString(a.get(0).getAsString()), a.get(1).getAsInt(), a.get(2).getAsInt(), a.get(3).getAsInt())
-                );
+                FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
+
+                FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
             });
 
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
+    }
+
+    private static class FriendLocationUpdate {
+        public String username, uuid;
+        public int x, y, z;
     }
 }

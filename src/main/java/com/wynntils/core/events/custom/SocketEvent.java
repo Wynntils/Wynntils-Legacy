@@ -28,9 +28,15 @@ public class SocketEvent extends Event {
     public static class FriendEvent extends SocketEvent {
 
         public UUID uuid;
+        public String username;
 
         public FriendEvent(UUID uuid) {
+            this(uuid, null);
+        }
+
+        public FriendEvent(UUID uuid, String username) {
             this.uuid = uuid;
+            this.username = username;
         }
 
         public Socket getSocket() {
@@ -45,7 +51,11 @@ public class SocketEvent extends Event {
             public int x, y, z;
 
             public LocationUpdate(UUID uuid, int x, int y, int z) {
-                super(uuid);
+                this(uuid, null, x, y, z);
+            }
+
+            public LocationUpdate(UUID uuid, String username, int x, int y, int z) {
+                super(uuid, username);
                 this.x = x;
                 this.y = y;
                 this.z = z;
@@ -60,7 +70,11 @@ public class SocketEvent extends Event {
         public static class StopTracking extends FriendEvent {
 
             public StopTracking(UUID uuid) {
-                super(uuid);
+                this(uuid, null);
+            }
+
+            public StopTracking(UUID uuid, String username) {
+                super(uuid, username);
             }
 
         }
