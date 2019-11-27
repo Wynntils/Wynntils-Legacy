@@ -28,7 +28,7 @@ public class SocketManager {
         String[] trans = {"websocket"};
         opts.transports = trans;
 
-        boolean local = true; // testing mode
+        boolean local = false; // testing mode
 
         String url;
         if (local) {
@@ -74,7 +74,7 @@ public class SocketManager {
             JsonArray a = gson.fromJson(json, JsonArray.class);
 
             a.forEach(j -> {
-                FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
+                FriendLocationUpdate profile = gson.fromJson(j, FriendLocationUpdate.class);
 
                 FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
             });

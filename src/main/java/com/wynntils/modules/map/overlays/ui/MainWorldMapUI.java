@@ -6,7 +6,9 @@ import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -64,6 +66,8 @@ public class MainWorldMapUI extends WorldMapUI {
         return Keyboard.isKeyDown(mapKey);
     }
 
+    long lastRequest;
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //HeyZeer0: This detects if the user is holding the map key;
@@ -76,6 +80,11 @@ public class MainWorldMapUI extends WorldMapUI {
         }
 
         updatePosition(mouseX, mouseY);
+
+        if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) { // Only request every 2 seconds!
+            SocketManager.getSocket().emit("give me friend locations");
+            lastRequest = System.currentTimeMillis();
+        }
 
         //start rendering
         ScreenRenderer.beginGL(0, 0);
