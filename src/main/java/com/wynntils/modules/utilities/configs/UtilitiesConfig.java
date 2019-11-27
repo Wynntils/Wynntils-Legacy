@@ -82,6 +82,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
 
+        @Setting(displayName = "Block Worstations", description = "Should you be blocked from clicking in workstations while warring?")
+        public boolean blockWorkstations = true;
+
         @Setting(displayName = "Show Player Health Bar", description = "Should the health bar of other players in a war server be displayed above their heads?")
         public boolean warrerHealthBar = true;
 
