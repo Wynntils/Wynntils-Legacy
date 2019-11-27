@@ -25,11 +25,12 @@ public class SocketEvent extends Event {
 
     public static class UpdateFriendLocation extends SocketEvent {
 
-        public String username;
+        public String username, uuid;
         public int x, y, z;
 
-        public UpdateFriendLocation(String username, int x, int y, int z) {
+        public UpdateFriendLocation(String username, String uuid, int x, int y, int z) {
             this.username = username;
+            this.uuid = username;
             this.x = x;
             this.y = y;
             this.z = z;

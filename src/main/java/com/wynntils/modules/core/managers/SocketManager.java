@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.modules.core.instances.PlayerLocationProfile;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -50,26 +49,29 @@ public class SocketManager {
     }
 
     private static void registerEvents() {
+        Gson gson = new Gson();
         // Register Events
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             Reference.LOGGER.info("Websocket connection event...");
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent(args));
         }).on("update player location on map", (Object... args) -> {
             // Trigger forge event ~
-            System.out.println(args);
-            FrameworkManager.getEventBus().post(new SocketEvent.UpdateFriendLocation((String) args[0], Integer.parseInt((String) args[1]), Integer.parseInt((String) args[2]), Integer.parseInt((String) args[3])));
+            String json = (String) args[0];
+
+            SocketEvent.UpdateFriendLocation profile = gson.fromJson(json, SocketEvent.UpdateFriendLocation.class);
+
+            FrameworkManager.getEventBus().post(new SocketEvent.UpdateFriendLocation(profile.username, profile.uuid, profile.x, profile.y, profile.z));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
             System.out.println(args);
-            Gson gson = new Gson();
             String json = (String) args[0];
 
             JsonArray a = gson.fromJson(json, JsonArray.class);
 
             a.forEach(j -> {
-                PlayerLocationProfile profile = gson.fromJson(j, PlayerLocationProfile.class);
+                SocketEvent.UpdateFriendLocation profile = gson.fromJson(j, SocketEvent.UpdateFriendLocation.class);
 
-                FrameworkManager.getEventBus().post(new SocketEvent.UpdateFriendLocation(profile.username, profile.x, profile.y, profile.z));
+                FrameworkManager.getEventBus().post(new SocketEvent.UpdateFriendLocation(profile.username, profile.uuid, profile.x, profile.y, profile.z));
             });
 
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
