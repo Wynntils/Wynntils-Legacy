@@ -3,17 +3,12 @@ package com.wynntils.modules.core.events;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Location;
+import com.wynntils.modules.core.instances.PlayerLocationProfile;
 import com.wynntils.webapi.WebManager;
 import io.socket.client.Socket;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.HashMap;
-
 public class SocketEvents implements Listener {
-
-    public static HashMap<String, Location> friendLocations = new HashMap<String, Location>();
-
     @SubscribeEvent
     public void connectionEvent(SocketEvent.ConnectionEvent e) {
         Reference.LOGGER.info("Connected to websocket");
@@ -23,10 +18,15 @@ public class SocketEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void updatePlayerLocation(SocketEvent.UpdateFriendLocation e) {
-        // Draw icon on map at x y z
-        friendLocations.put(e.username, new Location(e.x, e.y, e.z));
+    public void updatePlayerLocation(SocketEvent.FriendEvent.LocationUpdate e) {
+        PlayerLocationProfile profile = PlayerLocationProfile.getInstance(e.uuid, null);
+        profile.setTrackable(true);
+        profile.updateManually(e.x, e.y, e.z);
     }
 
+    @SubscribeEvent
+    public void stopTracking(SocketEvent.FriendEvent.StopTracking e) {
+        PlayerLocationProfile.getInstance(e.uuid, null).setTrackable(false);
+    }
 
 }

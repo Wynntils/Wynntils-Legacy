@@ -14,6 +14,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapCompassIcon;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -135,12 +136,12 @@ public class MiniMapOverlay extends Overlay {
                 final int maxFastWorldZ = (int) (mc.player.posZ + extraFactor * (mapSize/2f + zoom)) + 1;
 
                 Consumer<MapIcon> consumer = c -> {
+                    if (!c.isEnabled(true)) return;
                     int posX = c.getPosX();
                     int posZ = c.getPosZ();
                     float sizeX = c.getSizeX();
                     float sizeZ = c.getSizeZ();
                     if (
-                        !c.isEnabled(true) ||
                         !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
                         !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
                     ) {
@@ -175,6 +176,7 @@ public class MiniMapOverlay extends Overlay {
                 MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
                 MapIcon.getWaypoints().forEach(consumer);
                 MapIcon.getPathWaypoints().forEach(consumer);
+                MapPlayerIcon.getFriends().forEach(consumer);
 
                 MapIcon compassIcon = MapIcon.getCompass();
 

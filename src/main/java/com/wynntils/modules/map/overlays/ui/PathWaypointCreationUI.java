@@ -57,7 +57,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
         icon = new MapPathWaypointIcon(this.profile);
         wmIcon = new WorldMapIcon(icon);
         if (profile != null) {
-            pathWpMapIcons.removeIf(c -> ((MapPathWaypointIcon) c.getInfo()).getProfile().equals(originalProfile));
+            icons.removeIf(c -> c.getInfo() instanceof MapPathWaypointIcon && ((MapPathWaypointIcon) c.getInfo()).getProfile().equals(originalProfile));
         }
         hidden = !this.profile.isEnabled;
         this.profile.isEnabled = true;

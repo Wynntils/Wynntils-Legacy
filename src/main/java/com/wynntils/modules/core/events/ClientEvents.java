@@ -17,6 +17,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
@@ -39,6 +40,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -205,6 +207,16 @@ public class ClientEvents implements Listener {
             SocketManager.getSocket().emit("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
         }
         lastPosition = currentPosition;
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load e) {
+        PlayerEntityManager.onWorldLoad(e.getWorld());
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload e) {
+        PlayerEntityManager.onWorldUnload();
     }
 
 }

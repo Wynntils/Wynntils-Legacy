@@ -23,12 +23,12 @@ public class MapCompassIcon extends MapTextureIcon {
     }
 
     @Override public int getPosX() {
-        if (!isEnabled(false)) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return NO_LOCATION;
         return (int) CompassManager.getCompassLocation().getX();
     }
 
     @Override public int getPosZ() {
-        if (!isEnabled(false)) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return NO_LOCATION;
         return (int) CompassManager.getCompassLocation().getZ();
     }
 

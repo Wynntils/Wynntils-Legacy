@@ -775,4 +775,13 @@ public class Utils {
         return money;
     }
 
+    public static UUID uuidFromString(String s) {
+        if (s.contains("-")) {
+            return UUID.fromString(s);
+        }
+        if (s.length() != 32) {
+            throw new IllegalArgumentException("Invalid UUID string: " + s);
+        }
+        return new UUID(Long.parseUnsignedLong(s.substring(0, 16), 16), Long.parseUnsignedLong(s.substring(16, 32), 16));
+    }
 }
