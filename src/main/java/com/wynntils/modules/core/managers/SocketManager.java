@@ -8,7 +8,6 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import net.minecraft.client.Minecraft;
 
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -49,8 +48,10 @@ public class SocketManager {
         registerEvents();
 
         socket.connect();
-        UUID currentPlayersUUID = Minecraft.getMinecraft().getSession().getProfile().getId();
-        // TODO: send UUID to socket server
+    }
+
+    public static void disconnectSocket() {
+        if (socket != null && socket.connected()) socket.disconnect();
     }
 
     private static void registerEvents() {
@@ -68,17 +69,17 @@ public class SocketManager {
             FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
-            System.out.println(args);
             String json = (String) args[0];
-
             JsonArray a = gson.fromJson(json, JsonArray.class);
-
             a.forEach(j -> {
                 FriendLocationUpdate profile = gson.fromJson(j, FriendLocationUpdate.class);
-
                 FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
             });
-
+        }).on("stop tracking", (Object... args) -> {
+            // Trigger forge event ~
+            UUID uuid = UUID.fromString((String) args[0]);
+            String username = (String) args[1];
+            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.StopTracking(uuid, username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
     }
 

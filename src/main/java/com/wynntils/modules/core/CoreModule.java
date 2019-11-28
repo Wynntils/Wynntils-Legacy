@@ -11,7 +11,6 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
 import com.wynntils.modules.core.events.SocketEvents;
-import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
@@ -32,8 +31,6 @@ public class CoreModule extends Module {
         registerSettings(CoreDBConfig.class);
 
         TabManager.replaceTabOrderer();
-
-        SocketManager.registerSocket();
 
         module = this;
     }

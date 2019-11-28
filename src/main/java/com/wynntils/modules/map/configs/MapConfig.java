@@ -85,7 +85,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
-        @Setting(displayName = "Show friends on mini map?", description = "Should friends who are online in your world be displayed on your map?")
+        @Setting(displayName = "Show friends on map?", description = "Should friends who are online in your world be displayed on your map?")
         public boolean showFriends = true;
     }
 

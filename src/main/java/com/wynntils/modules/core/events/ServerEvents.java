@@ -91,6 +91,12 @@ public class ServerEvents implements Listener {
         PartyManager.handlePartyList(); //party list here
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void leaveWorldEvent(WynnWorldEvent.Leave e) {
+        SocketManager.getSocket().emit("leave world");
+    }
+
+
     /**
      * Detects and register the current friend list of the user
      * Called when the client receives a chat message

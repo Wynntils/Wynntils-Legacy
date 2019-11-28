@@ -9,6 +9,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.WynnSocialEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -23,7 +24,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
-import io.socket.client.Socket;
 import net.minecraft.block.BlockBarrier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -191,11 +191,9 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void friendListSaved(WynnSocialEvent.FriendList e) {
-        Socket socket = SocketManager.getSocket();
-
         String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
 
-        socket.emit("update friends", json);
+        SocketManager.getSocket().emit("update friends", json);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -217,6 +215,16 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload e) {
         PlayerEntityManager.onWorldUnload();
+    }
+
+    @SubscribeEvent
+    public void joinWynncraft(WynncraftServerEvent.Login e) {
+        SocketManager.registerSocket();
+    }
+
+    @SubscribeEvent
+    public void leaveWynncraft(WynncraftServerEvent.Leave e) {
+        SocketManager.disconnectSocket();
     }
 
 }

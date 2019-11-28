@@ -65,7 +65,7 @@ public class SocketEvent extends Event {
 
         /**
          * Called when socket says to stop tracking player
-         * (When they have unfriended you)
+         * (When they have unfriended you, or they have left the server)
          */
         public static class StopTracking extends FriendEvent {
 
