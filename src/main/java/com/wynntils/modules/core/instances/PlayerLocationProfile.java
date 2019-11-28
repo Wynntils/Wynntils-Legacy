@@ -78,7 +78,7 @@ public class PlayerLocationProfile {
     }
 
     private void updateLocation() {
-        if (!isTrackable || !hasEntityInWorld()) {
+        if (!isTrackable || !isOnWorld()) {
             x = y = z = Integer.MIN_VALUE;
             return;
         }
