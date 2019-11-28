@@ -59,7 +59,7 @@ public class PlayerLocationProfile {
      */
     public boolean updateFromWorld() {
         EntityPlayer e = entityRef.get();
-        boolean canRender = e.getDistance(Minecraft.getMinecraft().player) < 30;
+        boolean canRender = e != null && e.getDistance(Minecraft.getMinecraft().player) < 30;
         if (e != null && canRender) {
             x = (int) e.posX;
             y = (int) e.posY;
