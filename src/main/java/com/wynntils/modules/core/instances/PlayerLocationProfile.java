@@ -32,7 +32,14 @@ public class PlayerLocationProfile {
 
     public static PlayerLocationProfile getInstance(UUID uuid, String username) {
         PlayerLocationProfile existingInstance = profiles.get(uuid);
-        return existingInstance == null ? new PlayerLocationProfile(uuid, username) : existingInstance;
+        if (existingInstance == null) {
+            PlayerLocationProfile newProfile = new PlayerLocationProfile(uuid, username);
+            profiles.put(uuid, newProfile);
+            return newProfile;
+        } else {
+            return existingInstance;
+        }
+//        return existingInstance == null ? new PlayerLocationProfile(uuid, username) : existingInstance;
     }
 
     public NetworkPlayerInfo getPlayerInfo() {

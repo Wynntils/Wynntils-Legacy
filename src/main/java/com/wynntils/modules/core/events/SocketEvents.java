@@ -20,7 +20,7 @@ public class SocketEvents implements Listener {
     @SubscribeEvent
     public void updatePlayerLocation(SocketEvent.FriendEvent.LocationUpdate e) {
         PlayerLocationProfile profile = PlayerLocationProfile.getInstance(e.uuid, e.username);
-        profile.setTrackable(true);
+        if (!profile.isTrackable()) profile.setTrackable(true);
         profile.updateManually(e.x, e.y, e.z);
     }
 
