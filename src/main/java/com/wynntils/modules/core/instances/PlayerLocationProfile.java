@@ -39,7 +39,6 @@ public class PlayerLocationProfile {
         } else {
             return existingInstance;
         }
-//        return existingInstance == null ? new PlayerLocationProfile(uuid, username) : existingInstance;
     }
 
     public NetworkPlayerInfo getPlayerInfo() {
@@ -60,7 +59,8 @@ public class PlayerLocationProfile {
      */
     public boolean updateFromWorld() {
         EntityPlayer e = entityRef.get();
-        if (e != null) {
+        boolean canRender = e.getDistance(Minecraft.getMinecraft().player) < 30;
+        if (e != null && canRender) {
             x = (int) e.posX;
             y = (int) e.posY;
             z = (int) e.posZ;

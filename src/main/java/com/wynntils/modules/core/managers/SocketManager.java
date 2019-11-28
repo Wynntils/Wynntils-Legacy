@@ -10,7 +10,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 public class SocketManager {
 
@@ -77,9 +76,9 @@ public class SocketManager {
             });
         }).on("stop tracking", (Object... args) -> {
             // Trigger forge event ~
-            UUID uuid = UUID.fromString((String) args[0]);
+            String uuid = (String) args[0];
             String username = (String) args[1];
-            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.StopTracking(uuid, username));
+            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.StopTracking(Utils.uuidFromString(uuid), username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
     }
 
