@@ -164,10 +164,10 @@ public class ServerEvents implements Listener {
     public void addFriend(ClientChatEvent e) {
         if(e.getMessage().startsWith("/friend add ")) {
             PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList(Minecraft.getMinecraft().player.getName()));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(e.getMessage().replace("/friend add ", "")));
         }else if(e.getMessage().startsWith("/friend remove ")) {
             PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList(Minecraft.getMinecraft().player.getName()));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(e.getMessage().replace("/friend remove ", "")));
         }else if(e.getMessage().startsWith("/guild list")) {
             waitingForGuildList = false;
         }

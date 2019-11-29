@@ -21,7 +21,7 @@ public class OtherPlayerProfile {
     private int y;
     private int z;
     private WeakReference<EntityPlayer> entityRef = new WeakReference<>(null);
-    private boolean hasHat = false;
+    private boolean hasHat = true;
     private boolean isFriend = false;
     private boolean isInParty = false;
     private boolean isGuildmate = false;
@@ -83,11 +83,7 @@ public class OtherPlayerProfile {
      * @return true if the player entity was found on the world and location can be live-updated.
      */
     public boolean updateLocationFromWorld() {
-        EntityPlayer e = entityRef.get();
-        if (e != null) {
-            return tryUpdateFromEntity(e);
-        }
-        e = PlayerEntityManager.getPlayerByUUID(uuid);
+        EntityPlayer e = PlayerEntityManager.getPlayerByUUID(uuid);
         if (e == null || e.getDistance(Minecraft.getMinecraft().player) > 30) {
             return false;
         }

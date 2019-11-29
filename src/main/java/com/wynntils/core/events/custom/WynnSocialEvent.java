@@ -79,6 +79,20 @@ public class WynnSocialEvent extends Event {
             super(member);
         }
 
+        public static class Add extends FriendList {
+
+            public Add(String member) {
+                super(member);
+            }
+        }
+
+        public static class Remove extends FriendList {
+
+            public Remove(String member) {
+                super(member);
+            }
+        }
+
     }
 
 }

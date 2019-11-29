@@ -190,9 +190,18 @@ public class ClientEvents implements Listener {
     int lastPosition = 0;
 
     @SubscribeEvent
-    public void friendListSaved(WynnSocialEvent.FriendList e) {
-        String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
+    public void addFriend(WynnSocialEvent.FriendList.Add e) {
+        SocketManager.getSocket().emit("add friend", e.getMember());
+    }
 
+    @SubscribeEvent
+    public void removeFriend(WynnSocialEvent.FriendList.Remove e) {
+        SocketManager.getSocket().emit("remove friend", e.getMember());
+    }
+
+    @SubscribeEvent
+    public void friendListUpdate(WynnSocialEvent.FriendList e) {
+        String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
         SocketManager.getSocket().emit("update friends", json);
     }
 
