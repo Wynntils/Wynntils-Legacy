@@ -121,6 +121,11 @@ public class ClientEvents implements Listener {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
+        if (UtilitiesConfig.INSTANCE.openChatBankSearch) {
+            if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
+                scheduledGuiScreen = new ChatGUI();
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
