@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -19,7 +20,7 @@ import java.util.*;
 
 
 public class CommandServer extends CommandBase implements IClientCommand {
-    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "WAR", "HB");
+    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "WAR", "HB", "EU");
 
     @Override
     public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) {
@@ -116,12 +117,6 @@ public class CommandServer extends CommandBase implements IClientCommand {
         Utils.runAsync(() -> {
             try{
                 HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
-                if(finalSelectedType == null) {
-                    ChatOverlay.getChat().printUnloggedChatMessage(
-                            getFilteredServerList(onlinePlayers, "", options), messageId
-                    ); //updates the message
-                    return;
-                }
 
                 if(options.contains("group")) {
                     TextComponentString toEdit = new TextComponentString("Available servers" +
@@ -134,6 +129,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     toEdit.appendSibling(getFilteredServerList(onlinePlayers, serverTypes.get(serverTypes.size() - 1), options));
 
                     ChatOverlay.getChat().printUnloggedChatMessage(toEdit, messageId); //updates the message
+                    return;
+                }
+                
+                if(finalSelectedType == null) {
+                    ChatOverlay.getChat().printUnloggedChatMessage(
+                            getFilteredServerList(onlinePlayers, "", options), messageId
+                    ); //updates the message
                     return;
                 }
 
@@ -246,6 +248,45 @@ public class CommandServer extends CommandBase implements IClientCommand {
         text.appendSibling(serverListText);
 
         return text;
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, "list", "info");
+        }
+        switch (args[0].toLowerCase()) {
+            case "list":
+            case "ls":
+            case "l":
+                List<String> arguments = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
+                if (arguments.size() > 1 && arguments.get(0).equals("help"))
+                    return Collections.EMPTY_LIST;
+
+                boolean containsServerType = arguments.stream().anyMatch((arg) -> {
+                    List<String> incompatibilities = new ArrayList<>();
+                    incompatibilities.addAll(serverTypes);
+                    incompatibilities.add("sort");
+                    incompatibilities.add("group");
+                    return incompatibilities.contains(arg);
+                });
+
+                List<String> possibleArguments = new ArrayList<>();
+
+                if (!containsServerType) {
+                    possibleArguments.addAll(serverTypes);
+                    possibleArguments.add("sort");
+                    possibleArguments.add("group");
+                }
+                possibleArguments.add("count");
+                if (arguments.size() == 1) {
+                    possibleArguments.add("help");
+                }
+                possibleArguments.removeAll(arguments);
+
+                return getListOfStringsMatchingLastWord(args, possibleArguments);
+        }
+        return Collections.EMPTY_LIST;
     }
 
     @Override

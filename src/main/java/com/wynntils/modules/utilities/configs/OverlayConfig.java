@@ -82,7 +82,6 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-
     @SettingsInfo(name = "mana_settings", displayPath = "Overlays/Mana")
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
@@ -210,7 +209,6 @@ public class OverlayConfig extends SettingsClass {
             c
         }
     }
-
 
     @SettingsInfo(name = "leveling_settings", displayPath = "Overlays/Leveling")
     public static class Leveling extends SettingsClass {
@@ -474,5 +472,18 @@ public class OverlayConfig extends SettingsClass {
                 this.value = value;
             }
         }
+    }
+
+    @SettingsInfo(name = "player_info_settings", displayPath = "Overlays/Player Info")
+    public static class PlayerInfo extends SettingsClass {
+        public static PlayerInfo INSTANCE;
+
+        @Setting(displayName = "Replace Vanilla Player List", description = "Should the vanilla player list be replaced with Wynntils' custom list?", order = 1)
+        public boolean replaceVanilla = true;
+
+        @Setting(displayName = "Player List Transparency", description = "How transparent should the custom player list be?", order = 2)
+        @Setting.Limitations.FloatLimit(min = .0f, max = 1f)
+        public float backgroundAlpha = 0.3f;
+
     }
 }

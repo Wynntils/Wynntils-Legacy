@@ -128,7 +128,7 @@ public class ClientEvents implements Listener {
                         case "Ninja":
                             selectedClass = ClassType.ASSASSIN;
                             break;
-                        case "Shaman":
+                        case "Skyseer":
                             selectedClass = ClassType.SHAMAN;
                             break;
                     }

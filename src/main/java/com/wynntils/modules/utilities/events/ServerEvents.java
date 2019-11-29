@@ -14,6 +14,7 @@ import com.wynntils.modules.utilities.managers.WarManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -110,5 +111,9 @@ public class ServerEvents implements Listener {
         if(WarManager.filterMob(e)) e.setCanceled(true);
     }
 
+    @SubscribeEvent
+    public void onClickEntity(PacketEvent<CPacketUseEntity> e) {
+        if(WarManager.allowClick(e)) e.setCanceled(true);
+    }
 
 }

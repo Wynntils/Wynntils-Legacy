@@ -3,28 +3,34 @@ package com.wynntils.modules.core.managers;
 import com.google.common.collect.Ordering;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.reflections.ReflectionClasses;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
-import java.util.*;
-
-import static com.wynntils.core.utils.reflections.ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING;
+import java.util.Arrays;
+import java.util.List;
 
 public class TabManager {
-    private static class FastEntryOrdering extends Ordering<NetworkPlayerInfo> {
-        private static final Ordering<NetworkPlayerInfo> DEFAULT_ORDERING = Ordering.from((Comparator<NetworkPlayerInfo>) ReflectionClasses.GuiPlayerTabOverlay$PlayerComparator.construct());
+
+    private static FastEntryOrdering entryOrdering;
+
+    public static class FastEntryOrdering extends Ordering<NetworkPlayerInfo> {
+        private Ordering<NetworkPlayerInfo> previousOrdering;
         private static boolean errored = false;
+
+        private FastEntryOrdering(Ordering<NetworkPlayerInfo> previousOrdering) {
+            this.previousOrdering = previousOrdering;
+        }
 
         @Override
         public int compare(NetworkPlayerInfo left, NetworkPlayerInfo right) {
-            return DEFAULT_ORDERING.compare(left, right);
+            return previousOrdering.compare(left, right);
         }
 
         @Override
         public <E extends NetworkPlayerInfo> List<E> sortedCopy(Iterable<E> elements) {
             if (errored || !Reference.onWorld) {
-                return super.sortedCopy(elements);
+                return previousOrdering.sortedCopy(elements);
             }
 
             // Wynncraft tab names are '\0CRR', where \0 is ascii NUL, C is 1-4 (column), and R is 1-20 (row)
@@ -52,7 +58,7 @@ public class TabManager {
 
             errored = true;
             Reference.LOGGER.error("Wynncraft has changed the tab names or incorrectly assumed on world");
-            return super.sortedCopy(elements);
+            return previousOrdering.sortedCopy(elements);
         }
     }
 
@@ -61,9 +67,21 @@ public class TabManager {
      */
     public static void replaceTabOrderer() {
         try {
-            GuiPlayerTabOverlay_ENTRY_ORDERING.setValue(GuiPlayerTabOverlay.class, new FastEntryOrdering());
+            entryOrdering = new FastEntryOrdering(
+                    (Ordering<NetworkPlayerInfo>) ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING
+                            .getValue(GuiPlayerTabOverlay.class));
+
+            ReflectionFields.GuiPlayerTabOverlay_ENTRY_ORDERING.setValue(GuiPlayerTabOverlay.class, entryOrdering);
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @return the entry orderer
+     */
+    public static FastEntryOrdering getEntryOrdering() {
+        return entryOrdering;
+    }
+
 }

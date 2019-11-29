@@ -84,5 +84,7 @@ public class Textures {
         public static AssetsTexture rarity;
 
         public static AssetsTexture quest_book;
+
+        public static AssetsTexture tab_overlay;
     }
 }

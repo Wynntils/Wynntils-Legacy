@@ -12,6 +12,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -23,9 +24,11 @@ import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
@@ -42,13 +45,14 @@ import java.util.HashSet;
 public class ServerEvents implements Listener {
 
     /**
-     * Does 4 different things and is triggered when the user joins Wynncraft:
+     * Does 5 different things and is triggered when the user joins Wynncraft:
      *  - Register the pipeline that intercepts INCOMING Packets
      *  @see PacketIncomingFilter
      *  - Register the pipline that intercepts OUTGOING Packets
      *  @see PacketOutgoingFilter
      *  - Check if the mod has an update available
      *  - Check if there is anything on the download queue
+     *  - Updates the overlayPlayerList to the Wynntils Version
      *
      * @param e Represents the event
      */
@@ -56,6 +60,9 @@ public class ServerEvents implements Listener {
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
+
+        GuiIngame ingameGui = Minecraft.getMinecraft().ingameGUI;
+        ReflectionFields.GuiIngame_overlayPlayerList.setValue(ingameGui, new PlayerInfoReplacer(Minecraft.getMinecraft(), ingameGui));
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();

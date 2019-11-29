@@ -82,6 +82,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
 
+        @Setting(displayName = "Block Workstations", description = "Should the mod prevent you from clicking on workstations while in war servers?")
+        public boolean blockWorkstations = true;
+
         @Setting(displayName = "Show Player Health Bar", description = "Should the health bar of other players in a war server be displayed above their heads?")
         public boolean warrerHealthBar = true;
 
@@ -163,6 +166,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
         public boolean emeraldCountInventory = true;
+
+        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?")
+        public boolean emeraldCountText = false;
 
         @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
         public boolean powderHighlight = true;
