@@ -1,7 +1,7 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.modules.core.instances.PlayerLocationProfile;
+import com.wynntils.modules.core.instances.OtherPlayerProfile;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -10,35 +10,30 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class MapPlayerIcon extends MapIcon {
 
-    private PlayerLocationProfile profile;
-    private Type type;
+    private OtherPlayerProfile profile;
 
-    private MapPlayerIcon(PlayerLocationProfile profile, Type type) {
+    private MapPlayerIcon(OtherPlayerProfile profile) {
         this.profile = profile;
-        this.type = type;
     }
 
-    private static ArrayList<MapIcon> friendIcons = new ArrayList<>();
+    private static List<MapIcon> playerIcons = Collections.emptyList();
 
-    public static void addFriend(PlayerLocationProfile profile) {
-        friendIcons.add(new MapPlayerIcon(profile, Type.FRIEND));
+    public static void updatePlayers() {
+        playerIcons = OtherPlayerProfile.getAllInstances().stream().filter(OtherPlayerProfile::isTrackable).map(MapPlayerIcon::new).collect(Collectors.toList());
     }
 
-    public static void removeFriend(PlayerLocationProfile profile) {
-        friendIcons.removeIf(i -> ((MapPlayerIcon) i).profile == profile && ((MapPlayerIcon) i).type == Type.FRIEND);
+    public static List<MapIcon> getPlayers() {
+        return playerIcons;
     }
 
-    public static List<MapIcon> getFriends() {
-        return friendIcons;
-    }
-
-    public PlayerLocationProfile getProfile() {
+    public OtherPlayerProfile getProfile() {
         return profile;
     }
 
@@ -87,7 +82,6 @@ public class MapPlayerIcon extends MapIcon {
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.pushMatrix();
         {
-            // FIXME: this is rendered slightly off
             float sizeX = getSizeX() * sizeMultiplier / 4;
             float sizeZ = getSizeZ() * sizeMultiplier / 4;
             boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
@@ -121,10 +115,6 @@ public class MapPlayerIcon extends MapIcon {
         if (cachedResource != null && cachedResource != STEVE_SKIN && cachedResource != ALEX_SKIN) return cachedResource;
         NetworkPlayerInfo info = profile.getPlayerInfo();
         return cachedResource = (info != null ? info.getLocationSkin() : DefaultPlayerSkin.getDefaultSkin(profile.uuid));
-    }
-
-    public enum Type {
-        FRIEND
     }
 
 }

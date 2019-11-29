@@ -9,10 +9,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-public class PlayerLocationProfile {
+public class OtherPlayerProfile {
 
     public final UUID uuid;
     private String username;
@@ -20,25 +21,40 @@ public class PlayerLocationProfile {
     private int y;
     private int z;
     private WeakReference<EntityPlayer> entityRef = new WeakReference<>(null);
-    private boolean isTrackable = false;
     private boolean hasHat = false;
+    private boolean isFriend = false;
+    private boolean isInParty = false;
+    private boolean isGuildmate = false;
+    private boolean isMutualFriend = false;
 
-    private static LinkedHashMap<UUID, PlayerLocationProfile> profiles = new LinkedHashMap<>();
+    private static LinkedHashMap<UUID, OtherPlayerProfile> profiles = new LinkedHashMap<>();
 
-    private PlayerLocationProfile(UUID uuid, String username) {
+    private OtherPlayerProfile(UUID uuid, String username) {
         this.uuid = uuid;
         this.username = username;
     }
 
-    public static PlayerLocationProfile getInstance(UUID uuid, String username) {
-        PlayerLocationProfile existingInstance = profiles.get(uuid);
+    public static OtherPlayerProfile getInstance(UUID uuid, String username) {
+        OtherPlayerProfile existingInstance = getInstanceIfExists(uuid, username);
         if (existingInstance == null) {
-            PlayerLocationProfile newProfile = new PlayerLocationProfile(uuid, username);
+            OtherPlayerProfile newProfile = new OtherPlayerProfile(uuid, username);
             profiles.put(uuid, newProfile);
             return newProfile;
         } else {
             return existingInstance;
         }
+    }
+
+    public static OtherPlayerProfile getInstanceIfExists(UUID uuid, String username) {
+        OtherPlayerProfile profile = profiles.get(uuid);
+        if (profile != null && profile.username == null) {
+            profile.username = username;
+        }
+        return profile;
+    }
+
+    public static Collection<OtherPlayerProfile> getAllInstances() {
+        return profiles.values();
     }
 
     public NetworkPlayerInfo getPlayerInfo() {
@@ -57,13 +73,10 @@ public class PlayerLocationProfile {
     /**
      * @return true if the player entity was found on the world and location can be live-updated.
      */
-    public boolean updateFromWorld() {
+    public boolean updateLocationFromWorld() {
         EntityPlayer e = entityRef.get();
-        if (e != null && e.getDistance(Minecraft.getMinecraft().player) < 30) {
-            x = (int) e.posX;
-            y = (int) e.posY;
-            z = (int) e.posZ;
-            return true;
+        if (e != null) {
+            return tryUpdateFromEntity(e);
         }
         e = PlayerEntityManager.getPlayerByUUID(uuid);
         if (e == null || e.getDistance(Minecraft.getMinecraft().player) > 30) {
@@ -71,25 +84,30 @@ public class PlayerLocationProfile {
         }
         hasHat = e.isWearing(EnumPlayerModelParts.HAT);
         entityRef = new WeakReference<>(e);
+        return tryUpdateFromEntity(e);
+    }
+
+    private boolean tryUpdateFromEntity(EntityPlayer e) {
+        if (e.getDistance(Minecraft.getMinecraft().player) >= 30) return false;
         x = (int) e.posX;
         y = (int) e.posY;
         z = (int) e.posZ;
         return true;
     }
 
-    public void updateManually(int x, int y, int z) {
+    public void updateLocation(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     private void updateLocation() {
-        if (!isTrackable || !isOnWorld()) {
+        if (!isTrackable() || !isOnWorld()) {
             x = y = z = Integer.MIN_VALUE;
             return;
         }
 
-        if (updateFromWorld()) {
+        if (updateLocationFromWorld()) {
             // TODO: tell socket server to stop sending player location if not already stopped
         } else {
             // TODO: tell socket server to start sending player location if stopped
@@ -122,19 +140,59 @@ public class PlayerLocationProfile {
         return username;
     }
 
-    public void setTrackable(boolean trackable) {
-        if (isTrackable != trackable) {
-            isTrackable = trackable;
-            if (isTrackable) {
-                MapPlayerIcon.addFriend(this);
-            } else {
-                MapPlayerIcon.removeFriend(this);
-            }
+    private void onTrackableChange() {
+        MapPlayerIcon.updatePlayers();
+        updateLocation();
+    }
+
+    public void setMutualFriend(boolean isMutualFriend) {
+        boolean oldTrackable = isTrackable();
+        this.isMutualFriend = isMutualFriend;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
         }
     }
 
+    public void setInParty(boolean isInParty) {
+        boolean oldTrackable = isTrackable();
+        this.isInParty = isInParty;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
+        }
+    }
+
+    public void setInGuild(boolean isInGuild) {
+        boolean oldTrackable = isTrackable();
+        this.isGuildmate = isInGuild;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
+        }
+    }
+
+    /**
+     * @return Whether the current player is friends with the player in this OtherPlayerProfile
+     */
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    /**
+     * @return Whether the player in this OtherPlayerProfile is friends with the current player and vice versa
+     */
+    public boolean isMutualFriend() {
+        return isMutualFriend;
+    }
+
+    public boolean isInParty() {
+        return isInParty;
+    }
+
+    public boolean isGuildmate() {
+        return isGuildmate;
+    }
+
     public boolean isTrackable() {
-        return isTrackable;
+        return isFriend && isMutualFriend || isInParty || isGuildmate;
     }
 
     public boolean hasHat() {

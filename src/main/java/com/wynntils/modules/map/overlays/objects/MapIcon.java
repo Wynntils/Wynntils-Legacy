@@ -89,4 +89,8 @@ public abstract class MapIcon {
     public static List<MapIcon> getPathWaypoints() {
         return MapPathWaypointIcon.getPathWaypoints();
     }
+
+    public static List<MapIcon> getPlayers() {
+        return MapPlayerIcon.getPlayers();
+    }
 }

@@ -78,7 +78,7 @@ public class SocketManager {
             // Trigger forge event ~
             String uuid = (String) args[0];
             String username = (String) args[1];
-            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.StopTracking(Utils.uuidFromString(uuid), username));
+            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.Unfriend(Utils.uuidFromString(uuid), username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
     }
 

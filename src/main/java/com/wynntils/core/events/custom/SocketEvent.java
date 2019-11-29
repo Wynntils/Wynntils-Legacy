@@ -64,16 +64,15 @@ public class SocketEvent extends Event {
         }
 
         /**
-         * Called when socket says to stop tracking player
-         * (When they have unfriended you, or they have left the server)
+         * Called when socket says that a player has unfriended you
          */
-        public static class StopTracking extends FriendEvent {
+        public static class Unfriend extends FriendEvent {
 
-            public StopTracking(UUID uuid) {
+            public Unfriend(UUID uuid) {
                 this(uuid, null);
             }
 
-            public StopTracking(UUID uuid, String username) {
+            public Unfriend(UUID uuid, String username) {
                 super(uuid, username);
             }
 

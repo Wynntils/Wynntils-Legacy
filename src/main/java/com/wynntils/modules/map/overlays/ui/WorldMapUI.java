@@ -17,7 +17,6 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
-import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -59,8 +58,8 @@ public class WorldMapUI extends GuiMovementScreen {
         //HeyZeer0: Handles all waypoints
         List<MapIcon> wpMapIcons = MapIcon.getWaypoints();
         List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
-        // Handles friends
-        List<MapIcon> friendsIcons = MapPlayerIcon.getFriends();
+        // Handles guild / party / friends
+        List<MapIcon> friendsIcons = MapIcon.getPlayers();
         // Handles compass
         compassIcon = new WorldMapIcon(MapIcon.getCompass());
 
