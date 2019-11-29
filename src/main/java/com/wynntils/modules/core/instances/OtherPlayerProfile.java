@@ -26,6 +26,7 @@ public class OtherPlayerProfile {
     private boolean isInParty = false;
     private boolean isGuildmate = false;
     private boolean isMutualFriend = false;
+    private boolean inSameWorld = false;
 
     private static LinkedHashMap<UUID, OtherPlayerProfile> profiles = new LinkedHashMap<>();
 
@@ -63,7 +64,15 @@ public class OtherPlayerProfile {
     }
 
     public boolean isOnWorld() {
-        return getPlayerInfo() != null;
+        return inSameWorld;
+    }
+
+    public void setOnWorld(boolean onWorld) {
+        boolean oldTrackable = isTrackable();
+        inSameWorld = onWorld;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
+        }
     }
 
     public boolean hasEntityInWorld() {
@@ -102,7 +111,7 @@ public class OtherPlayerProfile {
     }
 
     private void updateLocation() {
-        if (!isTrackable() || !isOnWorld()) {
+        if (!isTrackable()) {
             x = y = z = Integer.MIN_VALUE;
             return;
         }
@@ -192,7 +201,7 @@ public class OtherPlayerProfile {
     }
 
     public boolean isTrackable() {
-        return isFriend && isMutualFriend || isInParty || isGuildmate;
+        return ((isFriend && isMutualFriend) || isInParty || isGuildmate) && inSameWorld;
     }
 
     public boolean hasHat() {

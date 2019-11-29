@@ -25,16 +25,16 @@ public class SocketEvent extends Event {
         }
     }
 
-    public static class FriendEvent extends SocketEvent {
+    public static class OtherPlayerEvent extends SocketEvent {
 
         public UUID uuid;
         public String username;
 
-        public FriendEvent(UUID uuid) {
+        public OtherPlayerEvent(UUID uuid) {
             this(uuid, null);
         }
 
-        public FriendEvent(UUID uuid, String username) {
+        public OtherPlayerEvent(UUID uuid, String username) {
             this.uuid = uuid;
             this.username = username;
         }
@@ -46,19 +46,21 @@ public class SocketEvent extends Event {
         /**
          * Fired when socket receives new location of player
          */
-        public static class LocationUpdate extends FriendEvent {
+        public static class LocationUpdate extends OtherPlayerEvent {
 
             public int x, y, z;
+            public boolean isMutualFriend;
 
-            public LocationUpdate(UUID uuid, int x, int y, int z) {
-                this(uuid, null, x, y, z);
+            public LocationUpdate(UUID uuid, int x, int y, int z, boolean isMutualFriend) {
+                this(uuid, null, x, y, z, isMutualFriend);
             }
 
-            public LocationUpdate(UUID uuid, String username, int x, int y, int z) {
+            public LocationUpdate(UUID uuid, String username, int x, int y, int z, boolean isMutualFriend) {
                 super(uuid, username);
                 this.x = x;
                 this.y = y;
                 this.z = z;
+                this.isMutualFriend = isMutualFriend;
             }
 
         }
@@ -66,13 +68,28 @@ public class SocketEvent extends Event {
         /**
          * Called when socket says that a player has unfriended you
          */
-        public static class Unfriend extends FriendEvent {
+        public static class Unfriend extends OtherPlayerEvent {
 
             public Unfriend(UUID uuid) {
                 this(uuid, null);
             }
 
             public Unfriend(UUID uuid, String username) {
+                super(uuid, username);
+            }
+
+        }
+
+        /**
+         * Called when socket says that a player that was previously tracked has left your world
+         */
+        public static class Left extends OtherPlayerEvent {
+
+            public Left(UUID uuid) {
+                this(uuid, null);
+            }
+
+            public Left(UUID uuid, String username) {
                 super(uuid, username);
             }
 

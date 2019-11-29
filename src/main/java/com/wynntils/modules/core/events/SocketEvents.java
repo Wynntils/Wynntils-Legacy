@@ -38,14 +38,21 @@ public class SocketEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void updatePlayerLocation(SocketEvent.FriendEvent.LocationUpdate e) {
+    public void updatePlayerLocation(SocketEvent.OtherPlayerEvent.LocationUpdate e) {
         OtherPlayerProfile profile = OtherPlayerProfile.getInstance(e.uuid, e.username);
+        profile.setOnWorld(true);
+        profile.setMutualFriend(e.isMutualFriend);
 
         profile.updateLocation(e.x, e.y, e.z);
     }
 
     @SubscribeEvent
-    public void stopTracking(SocketEvent.FriendEvent.Unfriend e) {
+    public void playerLeft(SocketEvent.OtherPlayerEvent.Left e) {
+        OtherPlayerProfile.getInstance(e.uuid, e.username).setOnWorld(false);
+    }
+
+    @SubscribeEvent
+    public void unfriend(SocketEvent.OtherPlayerEvent.Unfriend e) {
         OtherPlayerProfile.getInstance(e.uuid, e.username).setMutualFriend(false);
     }
 

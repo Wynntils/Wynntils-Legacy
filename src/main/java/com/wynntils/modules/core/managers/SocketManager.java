@@ -65,25 +65,30 @@ public class SocketManager {
 
             FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
 
-            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
             String json = (String) args[0];
             JsonArray a = gson.fromJson(json, JsonArray.class);
             a.forEach(j -> {
                 FriendLocationUpdate profile = gson.fromJson(j, FriendLocationUpdate.class);
-                FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z));
+                FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend));
             });
-        }).on("stop tracking", (Object... args) -> {
+        }).on("left world", (Object... args) -> {
+            String uuid = (String) args[0];
+            String username = (String) args[1];
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(Utils.uuidFromString(uuid), username));
+        }).on("unfriend", (Object... args) -> {
             // Trigger forge event ~
             String uuid = (String) args[0];
             String username = (String) args[1];
-            FrameworkManager.getEventBus().post(new SocketEvent.FriendEvent.Unfriend(Utils.uuidFromString(uuid), username));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(Utils.uuidFromString(uuid), username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
     }
 
     private static class FriendLocationUpdate {
         public String username, uuid;
         public int x, y, z;
+        public boolean isMutualFriend;
     }
 }
