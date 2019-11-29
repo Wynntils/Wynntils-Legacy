@@ -46,6 +46,11 @@ public abstract class MapTextureIcon extends MapIcon {
         return false;
     }
 
+    @Override
+    public boolean hasDynamicLocation() {
+        return false;
+    }
+
     public static MapTextureIcon createStaticIcon(
             Texture texture,
             int texPosX, int texPosZ, int texSizeX, int texSizeZ
@@ -74,6 +79,7 @@ public abstract class MapTextureIcon extends MapIcon {
             @Override public float getSizeZ() { return sizeZ; }
             @Override public int getZoomNeeded() { throw new UnsupportedOperationException("Cannot getZoomNeeded() on a static icon"); }
             @Override public boolean isEnabled(boolean forMinimap) { throw new UnsupportedOperationException("Cannot isEnabled() on a static icon"); }
+            @Override public boolean hasDynamicLocation() { throw new UnsupportedOperationException("Cannot hasDynamicLocation() on a static icon"); }
             @Override
             public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
                 float ssizeX = sizeX * sizeMultiplier;

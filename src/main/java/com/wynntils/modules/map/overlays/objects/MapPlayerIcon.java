@@ -103,6 +103,11 @@ public class MapPlayerIcon extends MapIcon {
         return false;
     }
 
+    @Override
+    public boolean hasDynamicLocation() {
+        return true;
+    }
+
     private ResourceLocation cachedResource;
     private static final ResourceLocation STEVE_SKIN = DefaultPlayerSkin.getDefaultSkin(new UUID(0, 0));
     private static final ResourceLocation ALEX_SKIN = DefaultPlayerSkin.getDefaultSkin(new UUID(0, 1));

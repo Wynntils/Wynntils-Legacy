@@ -215,7 +215,10 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         //draw map icons
-        forEachIcon(c -> c.drawScreen(mouseX, mouseY, partialTicks, scale, renderer));
+        forEachIcon(i -> {
+            if (i.getInfo().hasDynamicLocation()) resetIcon(i);
+            i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
+        });
 
         float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
         float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);

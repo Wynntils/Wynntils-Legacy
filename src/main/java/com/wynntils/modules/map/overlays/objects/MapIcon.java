@@ -93,4 +93,10 @@ public abstract class MapIcon {
     public static List<MapIcon> getPlayers() {
         return MapPlayerIcon.getPlayers();
     }
+
+    /**
+     * If true, the location will be queried every time this icon is drawn, like in the minimap
+     */
+    public abstract boolean hasDynamicLocation();
+
 }

@@ -39,7 +39,7 @@ public class PartyContainer {
     public void addMember(String userName) {
         partyMembers.add(userName);
 
-        FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin(userName, partyMembers.size() == 1));
+        FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Join(userName, partyMembers.size() == 1));
     }
 
     /**
@@ -50,7 +50,7 @@ public class PartyContainer {
     public void addMembers(List<String> members) {
         partyMembers.addAll(members);
 
-        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyJoin(userName, partyMembers.size() == 1)));
+        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Join(userName, partyMembers.size() == 1)));
     }
 
     /**
@@ -59,7 +59,7 @@ public class PartyContainer {
      * @param userName  the member userName
      */
     public void removeMember(String userName) {
-        FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyLeave(userName));
+        FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Leave(userName));
 
         if (userName.equalsIgnoreCase(Minecraft.getMinecraft().player.getName())) {
             partyMembers.clear();
@@ -76,7 +76,7 @@ public class PartyContainer {
      * @param members the list with all the members that you want to remove
      */
     public void removeMembers(List<String> members) {
-        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.PartyLeave(userName)));
+        members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Leave(userName)));
 
         if (members.contains(Minecraft.getMinecraft().player.getName())) {
             partyMembers.clear();
