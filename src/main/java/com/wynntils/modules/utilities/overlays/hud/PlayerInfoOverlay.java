@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,21 +109,29 @@ public class PlayerInfoOverlay extends Overlay {
 
     }
 
-    private static List<String> getAvailablePlayers() {
+    List<String> lastPlayers = new ArrayList<>();
+    long nextExecution = 0;
+
+    private List<String> getAvailablePlayers() {
+        if(Minecraft.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;
+        nextExecution = Minecraft.getSystemTime() + 250;
+
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
                 .sortedCopy(Minecraft.getMinecraft().player.connection.getPlayerInfoMap());
 
-        return players.stream()
+        lastPlayers = players.stream()
                 .map(c -> wrapText(c.getDisplayName().getUnformattedText().replace("§7", "§0"), 73))
                 .collect(Collectors.toList());
+
+        return lastPlayers;
     }
 
-    private static String wrapText(String input, int maxLenght) {
-        if(fontRenderer.getStringWidth(input) <= maxLenght) return input;
+    private String wrapText(String input, int maxLength) {
+        if(fontRenderer.getStringWidth(input) <= maxLength) return input;
 
         StringBuilder builder = new StringBuilder();
         for(char c : input.toCharArray()) {
-            if(fontRenderer.getStringWidth(builder.toString() + c) > maxLenght) break;
+            if(fontRenderer.getStringWidth(builder.toString() + c) > maxLength) break;
 
             builder.append(c);
         }
