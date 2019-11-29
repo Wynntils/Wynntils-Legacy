@@ -201,7 +201,7 @@ public class OtherPlayerProfile {
     }
 
     public boolean isTrackable() {
-        return ((isFriend && isMutualFriend) || isInParty || isGuildmate) && inSameWorld;
+        return (isMutualFriend || isInParty || isGuildmate) && inSameWorld;
     }
 
     public boolean hasHat() {
