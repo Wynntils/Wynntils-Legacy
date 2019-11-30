@@ -82,7 +82,7 @@ public class MainWorldMapUI extends WorldMapUI {
         updatePosition(mouseX, mouseY);
 
         if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) { // Only request every 2 seconds!
-            SocketManager.getSocket().emit("give me friend locations");
+            if (SocketManager.getSocket() != null) SocketManager.getSocket().emit("giveLocations");
             lastRequest = System.currentTimeMillis();
         }
 
