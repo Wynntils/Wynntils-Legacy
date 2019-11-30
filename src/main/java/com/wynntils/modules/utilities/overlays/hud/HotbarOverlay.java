@@ -55,7 +55,7 @@ public class HotbarOverlay extends Overlay {
             int x = -88 + (i*20);
 
             String description = Utils.getStringLore(stack);
-            if(UtilitiesConfig.Items.INSTANCE.highlighItemsInHotbar && !description.isEmpty()) {
+            if(UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
                 if(description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
@@ -65,7 +65,7 @@ public class HotbarOverlay extends Overlay {
                 else if(description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
 
                 if(color != null) {
-                    color.setA(0.3f);
+                    color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);
                     drawRect(color, x, 3, x + 16, 19);
                 }
             }

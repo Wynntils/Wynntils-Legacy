@@ -26,15 +26,18 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UIEColorWheel extends UIEClickZone {
 
     private static final Pattern hexChecker = Pattern.compile("#(?:[0-9A-Fa-f]{3}){1,2}");
+    private static final Pattern hexAndAlphaChecker = Pattern.compile("^#((?:[0-9A-Fa-f]{3}){1,2}),\\s+(\\d*(?:\\.\\d*)?)%$");
 
     CustomColor color = new CustomColor(1, 1, 1);
     GuiScreen backGui;
     Consumer<CustomColor> onAccept;
+    boolean allowAlpha;
     public UIETextBox textBox;
 
     public UIEColorWheel(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, Consumer<CustomColor> onAccept, GuiScreen backGui) {
@@ -44,10 +47,23 @@ public class UIEColorWheel extends UIEClickZone {
         this.clickSound = SoundEvents.UI_BUTTON_CLICK;
         this.onAccept = onAccept;
 
-        textBox = new UIETextBox(0, 0, 0, 16, 120, true, String.format("#%02X%02X%02X", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255)), false, (ui, t) -> {
+        textBox = new UIETextBox(0, 0, 0, 16, 120, true, formatColourName(color), false, (ui, t) -> {
             String text = textBox.getText().trim();
+            Matcher m;
             if (hexChecker.matcher(text).matches()) {
                 color = CustomColor.fromString(text.replace("#", ""), 1);
+            } else if (allowAlpha && (m = hexAndAlphaChecker.matcher(text)).matches()) {
+                float a;
+                try {
+                    a = Float.parseFloat(m.group(2)) / 100;
+                } catch (NumberFormatException e) {
+                    a = -1;
+                }
+                if (!(0 <= a && a <= 1)) {
+                    textBox.setColor(0xFF5555);
+                    return;
+                }
+                color = CustomColor.fromString(m.group(1), a);
             } else if (CommonColors.set.has(text)) {
                 color = CommonColors.set.fromName(text);
             } else if (MinecraftChatColors.set.has(text)) {
@@ -58,16 +74,30 @@ public class UIEColorWheel extends UIEClickZone {
             }
 
             textBox.setColor(0x55FF55);
+            if (!allowAlpha && color.a != 1) {
+                color = new CustomColor(color.r, color.g, color.b);
+            }
             onAccept.accept(color);
         });
 
         textBox.setColor(0x55FF55);
     }
 
+    public void allowAlpha() {
+        this.allowAlpha = true;
+    }
+
     public void setColor(CustomColor color) {
         this.color = color;
 
-        textBox.setText(String.format("#%02X%02X%02X", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255)));
+        textBox.setText(formatColourName(color));
+    }
+
+    private String formatColourName(CustomColor color) {
+        if (!allowAlpha || color.a == 1) {
+            return String.format("#%02X%02X%02X", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255));
+        }
+        return String.format("#%02X%02X%02X, %d%%", (int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255), (int) (color.a * 100));
     }
 
     @Override
@@ -107,6 +137,7 @@ public class UIEColorWheel extends UIEClickZone {
         GuiButton applyButton;
         GuiButton cancelButton;
         GuiSlider valueSlider;
+        GuiSlider alphaSlider;
 
         int clickedPosX, clickedPosY = 0;
 
@@ -118,7 +149,7 @@ public class UIEColorWheel extends UIEClickZone {
         boolean wheelSelected = false;
 
         public ColorPickerGUI() {
-            toChange = color;
+            toChange = new CustomColor(color);
         }
 
         @Override
@@ -152,7 +183,17 @@ public class UIEColorWheel extends UIEClickZone {
                     toChange = CustomColor.fromHSV(hsv[0], hsv[1], value, hsv[3]);
                     colorText = null;
                 }
-            }, 2, this.width/2 - 75, this.height/2+71, "Brightness", 0, 1, toChange.toHSV()[2], (id, name, value) -> String.format("Brightness: %d%%", (int) (value * 100))));
+            }, 2, this.width/2 - (allowAlpha ? 155 : 75), this.height/2+71, "Brightness", 0, 1, toChange.toHSV()[2], (id, name, value) -> String.format("Brightness: %d%%", (int) (value * 100))));
+            if (allowAlpha) {
+                buttonList.add(alphaSlider = new GuiSlider(new GuiPageButtonList.GuiResponder() {
+                    @Override public void setEntryValue(int id, boolean value) {}
+                    @Override public void setEntryValue(int id, String value) {}
+                    @Override public void setEntryValue(int id, float value) {
+                        toChange.setA(value);
+                        colorText = null;
+                    }
+                }, 3, this.width/2 + 5, this.height/2+71, "Opacity", 0, 1, toChange.a, (id, name, value) -> String.format("Opacity: %d%%", (int) (value * 100))));
+            }
             setColor(toChange);
 
             super.initGui();
@@ -169,6 +210,9 @@ public class UIEColorWheel extends UIEClickZone {
             clickedPosX = width/2 + (int) Math.round(r * Math.cos(theta));
             clickedPosY = height/2 - 13 - (int) Math.round(r * Math.sin(theta));
             valueSlider.setSliderValue(v, false);
+            if (allowAlpha) {
+                alphaSlider.setSliderValue(c.a, false);
+            }
         }
 
         private boolean changeColor(int mouseX, int mouseY, boolean move) {
@@ -231,7 +275,7 @@ public class UIEColorWheel extends UIEClickZone {
 
             text = h + "";
 
-            toChange = CustomColor.fromHSV((float)h, (float)s, valueSlider.getSliderValue(), 1);
+            toChange = CustomColor.fromHSV((float)h, (float)s, valueSlider.getSliderValue(), getAlpha());
             colorText = null;
             return true;
         }
@@ -275,11 +319,12 @@ public class UIEColorWheel extends UIEClickZone {
             beginGL(0, 0);
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
             float v = valueSlider.getSliderValue();
-            if (v != 1) {
-                GlStateManager.color(v, v, v, 1);
+            float a = getAlpha();
+            if (v != 1 || a != 1) {
+                GlStateManager.color(v, v, v, a);
             }
             drawRectF(Textures.UIs.color_wheel, (width/2f)-80, (height/2f)-93, (width/2f)+80, (height/2f)+67, 0, 0, 256, 256); //rgb wheel
-            if (v != 1) {
+            if (v != 1 || a != 1) {
                 GlStateManager.color(1, 1, 1, 1);
             }
             drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9); //cursor
@@ -305,6 +350,10 @@ public class UIEColorWheel extends UIEClickZone {
             }
 
             super.drawScreen(mouseX, mouseY, partialTicks);
+        }
+
+        private float getAlpha() {
+            return allowAlpha ? alphaSlider.getSliderValue() : 1;
         }
 
     }
