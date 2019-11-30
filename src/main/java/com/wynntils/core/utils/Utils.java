@@ -34,7 +34,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -517,15 +516,47 @@ public class Utils {
     /**
      * Search for a Wynncraft World.
      * only works if the user is on lobby!
-     *
+     * 
+     * @param worldType   the world type to join
      * @param worldNumber The world to join
+     *
      */
-    public static void joinWorld(int worldNumber) {
+    public static void joinWorld(String worldType, int worldNumber) {
         if(!Reference.onServer || Reference.onWorld) return;
 
         FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, 0);
         serverSelector.onReceiveItems(c -> {
-            Pair<Integer, ItemStack> world = c.findItem("World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            String prefix = "";
+            if (worldType.equals("")) {
+                // US Servers
+                prefix = "";
+            } else if (worldType.equals("EU")) {
+                prefix = "EU ";
+            } else if (worldType.equals("HB")) {
+                prefix = "Beta ";
+            }
+
+            boolean onCorrectCategory = c.findItem(prefix + "World ", FilterType.STARTS_WITH) != null;
+            if (!onCorrectCategory) {
+                String worldCategory = "";
+                if (worldType.equals("")) {
+                    worldCategory = "US Servers";
+                } else if (worldType.equals("EU")) {
+                    worldCategory = "EU Servers";
+                } else if (worldType.equals("HB")) {
+                    worldCategory = "Hero Beta";
+                }
+
+                Pair<Integer, ItemStack> categoryItem = c.findItem(worldCategory, FilterType.EQUALS_IGNORE_CASE);
+                if (categoryItem != null) {
+                    c.clickItem(categoryItem.a, 1, ClickType.PICKUP);
+                } else {
+                    c.close();
+                }
+                return;
+            }
+
+            Pair<Integer, ItemStack> world = c.findItem(prefix + "World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
             if (world != null) {
                 c.clickItem(world.a, 1, ClickType.PICKUP);
                 c.close();
@@ -535,6 +566,8 @@ public class Utils {
             Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
             if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
             else c.close();
+        }).onInterrupt((c) -> {
+            joinWorld(worldType, worldNumber);
         });
 
         serverSelector.open();
