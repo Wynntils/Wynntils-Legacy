@@ -32,7 +32,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 public class ClientEvents {
 
@@ -44,8 +45,9 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
-        if(!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.toLowerCase(Locale.ROOT).contains("wynncraft")) {
-            Reference.setUserWorld(null);
+        Reference.setUserWorld(null);
+
+        if (Reference.onServer) {
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
         }
     }
@@ -167,7 +169,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void onWorldLeave(GuiOpenEvent e) {
-        if (e.getGui() instanceof GuiDisconnected && Reference.onServer) {
+        if (Reference.onServer && e.getGui() instanceof GuiDisconnected) {
             if (Reference.onWorld) {
                 Reference.setUserWorld(null);
                 MinecraftForge.EVENT_BUS.post(new WynnWorldEvent.Leave());
