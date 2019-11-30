@@ -16,10 +16,8 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.MainMenuButtons;
-import com.wynntils.modules.core.managers.PacketQueue;
-import com.wynntils.modules.core.managers.PingManager;
-import com.wynntils.modules.core.managers.PlayerEntityManager;
-import com.wynntils.modules.core.managers.SocketManager;
+import com.wynntils.modules.core.managers.*;
+import com.wynntils.modules.core.managers.PartyGuildFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
@@ -45,6 +43,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Collection;
 import java.util.Locale;
 
 public class ClientEvents implements Listener {
@@ -191,18 +190,50 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void addFriend(WynnSocialEvent.FriendList.Add e) {
-        SocketManager.getSocket().emit("add friend", e.getMember());
+        Collection<String> newFriends = e.getMembers();
+        if (e.isSingular) {
+            // Single friend added
+            for (String name : newFriends) {
+                SocketManager.getSocket().emit("add friend", name);
+                PartyGuildFriendManager.changePlayer(name, true, As.FRIEND, true);
+            }
+        } else {
+            // Friends list updated
+            String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
+            SocketManager.getSocket().emit("update friends", json);
+            for (String name : newFriends) {
+                PartyGuildFriendManager.changePlayer(name, true, As.FRIEND, false);
+            }
+            PartyGuildFriendManager.tryResolveNames();
+        }
     }
 
     @SubscribeEvent
     public void removeFriend(WynnSocialEvent.FriendList.Remove e) {
-        SocketManager.getSocket().emit("remove friend", e.getMember());
+        Collection<String> removedFriends = e.getMembers();
+        if (e.isSingular) {
+            // Single friend removed
+            for (String name : removedFriends) {
+                SocketManager.getSocket().emit("remove friend", name);
+                PartyGuildFriendManager.changePlayer(name, false, As.FRIEND, true);
+            }
+        } else {
+            // Friends list updated; Socket managed in addFriend
+            for (String name : removedFriends) {
+                PartyGuildFriendManager.changePlayer(name, false, As.FRIEND, false);
+            }
+            PartyGuildFriendManager.tryResolveNames();
+        }
     }
 
     @SubscribeEvent
-    public void friendListUpdate(WynnSocialEvent.FriendList e) {
-        String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
-        SocketManager.getSocket().emit("update friends", json);
+    public void joinGuild(WynnSocialEvent.Guild.Join e) {
+        PartyGuildFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
+    }
+
+    @SubscribeEvent
+    public void leaveGuild(WynnSocialEvent.Guild.Leave e) {
+        PartyGuildFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

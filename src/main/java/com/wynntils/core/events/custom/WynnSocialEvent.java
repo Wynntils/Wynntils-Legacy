@@ -9,6 +9,7 @@ import com.wynntils.core.framework.instances.containers.PartyContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 /**
@@ -112,20 +113,35 @@ public class WynnSocialEvent extends Event {
     }
 
 
-    public static class FriendList extends WynnSocialEvent {
-        public FriendList(String member) {
-            super(member);
+    public static class FriendList extends Event {
+        Collection<String> members;
+        public final boolean isSingular;
+
+        public FriendList(Collection<String> members, boolean isSingular) {
+            this.members = members;
+            this.isSingular = isSingular;
         }
 
+        public Collection<String> getMembers() {
+            return members;
+        }
+
+        /**
+         * Called when multiple friends are "added" (discovered) when friends list is read with `members`,
+         * and when /friend add is run, with a collection of names.
+         */
         public static class Add extends FriendList {
-            public Add(String member) {
-                super(member);
+            public Add(Collection<String> members, boolean isSingular) {
+                super(members, isSingular);
             }
         }
 
+        /**
+         * As {@link Add}, but when friend(s) is removed.
+         */
         public static class Remove extends FriendList {
-            public Remove(String member) {
-                super(member);
+            public Remove(Collection<String> members, boolean isSingular) {
+                super(members, isSingular);
             }
         }
     }

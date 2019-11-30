@@ -1,5 +1,6 @@
 package com.wynntils.modules.core.instances;
 
+import com.wynntils.modules.core.managers.PartyGuildFriendManager;
 import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
 import net.minecraft.client.Minecraft;
@@ -29,6 +30,7 @@ public class OtherPlayerProfile {
     private boolean inSameWorld = false;
 
     private static LinkedHashMap<UUID, OtherPlayerProfile> profiles = new LinkedHashMap<>();
+    private static LinkedHashMap<String, OtherPlayerProfile> nameMap = new LinkedHashMap<>();
 
     private OtherPlayerProfile(UUID uuid, String username) {
         this.uuid = uuid;
@@ -40,18 +42,28 @@ public class OtherPlayerProfile {
         if (existingInstance == null) {
             OtherPlayerProfile newProfile = new OtherPlayerProfile(uuid, username);
             profiles.put(uuid, newProfile);
+            if (username != null) {
+                nameMap.put(username, newProfile);
+                PartyGuildFriendManager.tryResolveName(uuid, username);
+            }
             return newProfile;
         } else {
             return existingInstance;
         }
     }
 
-    public static OtherPlayerProfile getInstanceIfExists(UUID uuid, String username) {
+    private static OtherPlayerProfile getInstanceIfExists(UUID uuid, String username) {
         OtherPlayerProfile profile = profiles.get(uuid);
-        if (profile != null && profile.username == null) {
+        if (profile != null && profile.username == null && username != null) {
             profile.username = username;
+            nameMap.put(username, profile);
+            PartyGuildFriendManager.tryResolveName(uuid, username);
         }
         return profile;
+    }
+
+    public static OtherPlayerProfile getInstanceByName(String username) {
+        return nameMap.get(username);
     }
 
     public static Collection<OtherPlayerProfile> getAllInstances() {
@@ -140,6 +152,8 @@ public class OtherPlayerProfile {
             NetworkPlayerInfo info = getPlayerInfo();
             if (info != null) {
                 username = info.getGameProfile().getName();
+                nameMap.put(username, this);
+                PartyGuildFriendManager.tryResolveName(uuid, username);
             }
         }
         return username;
@@ -150,9 +164,19 @@ public class OtherPlayerProfile {
         updateLocation();
     }
 
+    public void setIsFriend(boolean isFriend) {
+        boolean oldTrackable = isTrackable();
+        this.isFriend = isFriend;
+        this.isMutualFriend = isFriend && isMutualFriend;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
+        }
+    }
+
     public void setMutualFriend(boolean isMutualFriend) {
         boolean oldTrackable = isTrackable();
         this.isMutualFriend = isMutualFriend;
+        this.isFriend = true;
         if (isTrackable() != oldTrackable) {
             onTrackableChange();
         }
