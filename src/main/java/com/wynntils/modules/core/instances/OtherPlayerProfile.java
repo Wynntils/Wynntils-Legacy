@@ -1,6 +1,7 @@
 package com.wynntils.modules.core.instances;
 
-import com.wynntils.modules.core.managers.PartyGuildFriendManager;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
 import net.minecraft.client.Minecraft;
@@ -24,7 +25,6 @@ public class OtherPlayerProfile {
     private WeakReference<EntityPlayer> entityRef = new WeakReference<>(null);
     private boolean hasHat = true;
     private boolean isFriend = false;
-    private boolean isInParty = false;
     private boolean isGuildmate = false;
     private boolean isMutualFriend = false;
     private boolean inSameWorld = false;
@@ -44,7 +44,7 @@ public class OtherPlayerProfile {
             profiles.put(uuid, newProfile);
             if (username != null) {
                 nameMap.put(username, newProfile);
-                PartyGuildFriendManager.tryResolveName(uuid, username);
+                GuildAndFriendManager.tryResolveName(uuid, username);
             }
             return newProfile;
         } else {
@@ -57,7 +57,7 @@ public class OtherPlayerProfile {
         if (profile != null && profile.username == null && username != null) {
             profile.username = username;
             nameMap.put(username, profile);
-            PartyGuildFriendManager.tryResolveName(uuid, username);
+            GuildAndFriendManager.tryResolveName(uuid, username);
         }
         return profile;
     }
@@ -153,7 +153,7 @@ public class OtherPlayerProfile {
             if (info != null) {
                 username = info.getGameProfile().getName();
                 nameMap.put(username, this);
-                PartyGuildFriendManager.tryResolveName(uuid, username);
+                GuildAndFriendManager.tryResolveName(uuid, username);
             }
         }
         return username;
@@ -182,14 +182,6 @@ public class OtherPlayerProfile {
         }
     }
 
-    public void setInParty(boolean isInParty) {
-        boolean oldTrackable = isTrackable();
-        this.isInParty = isInParty;
-        if (isTrackable() != oldTrackable) {
-            onTrackableChange();
-        }
-    }
-
     public void setInGuild(boolean isInGuild) {
         boolean oldTrackable = isTrackable();
         this.isGuildmate = isInGuild;
@@ -213,7 +205,9 @@ public class OtherPlayerProfile {
     }
 
     public boolean isInParty() {
-        return isInParty;
+        String username = getUsername();
+        if (username == null) return false;
+        return PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().contains(username);
     }
 
     public boolean isGuildmate() {
@@ -221,7 +215,7 @@ public class OtherPlayerProfile {
     }
 
     public boolean isTrackable() {
-        return (isMutualFriend || isInParty || isGuildmate) && inSameWorld;
+        return (isMutualFriend || isInParty() || isGuildmate) && inSameWorld;
     }
 
     public boolean hasHat() {

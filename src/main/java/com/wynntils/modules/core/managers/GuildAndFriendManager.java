@@ -9,12 +9,11 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PartyGuildFriendManager {
+public class GuildAndFriendManager {
 
     private static class UnresolvedInfo {
-        boolean inGuild;
-        boolean inParty;
-        boolean isFriend;
+        Boolean inGuild;
+        Boolean isFriend;
     }
 
     private static HashMap<String, UnresolvedInfo> unresolvedNames = new HashMap<>();
@@ -36,14 +35,13 @@ public class PartyGuildFriendManager {
         UnresolvedInfo u = unresolvedNames.remove(name);
         if (u != null) {
             OtherPlayerProfile p = OtherPlayerProfile.getInstance(uuid, name);
-            p.setInGuild(u.inGuild);
-            p.setInParty(u.inParty);
-            p.setIsFriend(u.isFriend);
+            if (u.inGuild != null) p.setInGuild(u.inGuild);
+            if (u.isFriend != null) p.setIsFriend(u.isFriend);
         }
     }
 
     public enum As {
-        FRIEND, PARTY, GUILD
+        FRIEND, GUILD
     }
 
     public static void changePlayer(String name, boolean to, As as, boolean tryResolving) {
@@ -51,7 +49,6 @@ public class PartyGuildFriendManager {
         if (p != null) {
             switch (as) {
                 case FRIEND: p.setIsFriend(to); break;
-                case PARTY: p.setInParty(to); break;
                 case GUILD: p.setInGuild(to); break;
             }
             return;
@@ -59,9 +56,8 @@ public class PartyGuildFriendManager {
         UnresolvedInfo newInfo = new UnresolvedInfo();
         UnresolvedInfo u = unresolvedNames.getOrDefault(name, newInfo);
         switch (as) {
-            case FRIEND: u.isFriend = to; break;
-            case PARTY: u.inParty = to; break;
-            case GUILD: u.inGuild = to; break;
+            case FRIEND: u.isFriend = to ? Boolean.TRUE : Boolean.FALSE; break;
+            case GUILD: u.inGuild = to ? Boolean.TRUE : Boolean.FALSE; break;
         }
         if (u == newInfo) unresolvedNames.put(name, newInfo);
         if (tryResolving) tryResolveNames();

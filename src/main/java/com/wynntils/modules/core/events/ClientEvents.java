@@ -17,7 +17,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.*;
-import com.wynntils.modules.core.managers.PartyGuildFriendManager.As;
+import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
@@ -195,16 +195,16 @@ public class ClientEvents implements Listener {
             // Single friend added
             for (String name : newFriends) {
                 SocketManager.getSocket().emit("add friend", name);
-                PartyGuildFriendManager.changePlayer(name, true, As.FRIEND, true);
+                GuildAndFriendManager.changePlayer(name, true, As.FRIEND, true);
             }
         } else {
             // Friends list updated
             String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
             SocketManager.getSocket().emit("update friends", json);
             for (String name : newFriends) {
-                PartyGuildFriendManager.changePlayer(name, true, As.FRIEND, false);
+                GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
             }
-            PartyGuildFriendManager.tryResolveNames();
+            GuildAndFriendManager.tryResolveNames();
         }
     }
 
@@ -215,25 +215,25 @@ public class ClientEvents implements Listener {
             // Single friend removed
             for (String name : removedFriends) {
                 SocketManager.getSocket().emit("remove friend", name);
-                PartyGuildFriendManager.changePlayer(name, false, As.FRIEND, true);
+                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, true);
             }
         } else {
             // Friends list updated; Socket managed in addFriend
             for (String name : removedFriends) {
-                PartyGuildFriendManager.changePlayer(name, false, As.FRIEND, false);
+                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
             }
-            PartyGuildFriendManager.tryResolveNames();
+            GuildAndFriendManager.tryResolveNames();
         }
     }
 
     @SubscribeEvent
     public void joinGuild(WynnSocialEvent.Guild.Join e) {
-        PartyGuildFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
+        GuildAndFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
     }
 
     @SubscribeEvent
     public void leaveGuild(WynnSocialEvent.Guild.Leave e) {
-        PartyGuildFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
+        GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
