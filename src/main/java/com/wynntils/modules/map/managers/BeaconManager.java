@@ -37,6 +37,8 @@ public class BeaconManager {
 
         if(alpha > 1) alpha = 1; //avoid excessive values
 
+        alpha *= color.a;
+
         double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
         if(distance > maxDistance) { //this will drag the beam to the visible area if outside of it
             Vec3d delta = positionVec.subtract(playerVec).normalize();

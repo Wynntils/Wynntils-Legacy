@@ -161,7 +161,7 @@ public class UIEColorWheel extends UIEClickZone {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
                 onAccept.accept(color);
                 if (colorText == null) {
-                    textBox.setText(String.format("#%02X%02X%02X", (int) (color.r * 255), (int) (color.g * 255), (int) (color.b * 255)));
+                    textBox.setText(formatColourName(color));
                 } else {
                     textBox.setText(colorText);
                 }

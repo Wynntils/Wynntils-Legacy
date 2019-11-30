@@ -97,6 +97,9 @@ public class SettingsUI extends UI {
             holdersScrollbar.progress = 0f;
         }
         holdersScrollbar.max += 160;
+
+        searchField.setText("");
+        updateSearchText();
     }
 
     @Override
