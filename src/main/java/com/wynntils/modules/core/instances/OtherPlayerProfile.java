@@ -190,6 +190,14 @@ public class OtherPlayerProfile {
         }
     }
 
+    public void setInParty(boolean isInGuild) {
+        boolean oldTrackable = isTrackable();
+        this.isGuildmate = isInGuild;
+        if (isTrackable() != oldTrackable) {
+            onTrackableChange();
+        }
+    }
+
     /**
      * @return Whether the current player is friends with the player in this OtherPlayerProfile
      */

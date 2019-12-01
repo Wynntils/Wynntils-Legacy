@@ -68,14 +68,14 @@ public class SocketManager {
 
             FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
 
-            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
             String json = (String) args[0];
             JsonArray a = gson.fromJson(json, JsonArray.class);
             a.forEach(j -> {
                 FriendLocationUpdate profile = gson.fromJson(j, FriendLocationUpdate.class);
-                FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend));
+                FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
             });
         }).on("left world", (Object... args) -> {
             String uuid = (String) args[0];
@@ -92,6 +92,6 @@ public class SocketManager {
     private static class FriendLocationUpdate {
         public String username, uuid;
         public int x, y, z;
-        public boolean isMutualFriend;
+        public boolean isMutualFriend, isPartyMember, isInGuild;
     }
 }

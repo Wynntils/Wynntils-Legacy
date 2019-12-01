@@ -1,6 +1,7 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.core.instances.OtherPlayerProfile;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.client.Minecraft;
@@ -78,8 +79,10 @@ public class MapPlayerIcon extends MapIcon {
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//        GlStateManager.enableBlend();
+//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableBlend();
+        GlStateManager.disableBlend();
         GlStateManager.pushMatrix();
         {
             float sizeX = getSizeX() * sizeMultiplier / 4;
@@ -87,13 +90,31 @@ public class MapPlayerIcon extends MapIcon {
             boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
             GlStateManager.translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
             GlStateManager.scale(sizeX, sizeZ, 1);
+            ScreenRenderer.scale(1);
             ResourceLocation res = getResource();
             Minecraft.getMinecraft().getTextureManager().bindTexture(res);
+
+            if (worldMapOpen) { // Is messy on minimap
+                CommonColors outlineColor = null;
+                if (profile.isMutualFriend()) {
+                    outlineColor = CommonColors.GREEN;
+                } else if (profile.isInParty()) {
+                    outlineColor = CommonColors.YELLOW;
+                } else if (profile.isGuildmate()) {
+                    outlineColor = CommonColors.LIGHT_BLUE;
+                }
+
+                if (outlineColor != null) renderer.drawRect(outlineColor, -1, -1, 9, 9);
+
+            }
+
             Gui.drawScaledCustomSizeModalRect(0, 0, 8.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
 
             if (profile.hasHat()) {
                 Gui.drawScaledCustomSizeModalRect(0, 0, 40.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
             }
+
+
         }
         GlStateManager.popMatrix();
     }

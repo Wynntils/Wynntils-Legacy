@@ -50,6 +50,8 @@ public class SocketEvents implements Listener {
         OtherPlayerProfile profile = OtherPlayerProfile.getInstance(e.uuid, e.username);
         profile.setOnWorld(true);
         profile.setMutualFriend(e.isMutualFriend);
+        profile.setInGuild(e.isInGuild);
+        profile.setInParty(e.isPartyMember);
 
         profile.updateLocation(e.x, e.y, e.z);
     }

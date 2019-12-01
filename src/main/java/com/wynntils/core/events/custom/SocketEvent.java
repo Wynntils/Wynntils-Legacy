@@ -60,18 +60,20 @@ public class SocketEvent extends Event {
         public static class LocationUpdate extends OtherPlayerEvent {
 
             public int x, y, z;
-            public boolean isMutualFriend;
+            public boolean isMutualFriend, isPartyMember, isInGuild;
 
-            public LocationUpdate(UUID uuid, int x, int y, int z, boolean isMutualFriend) {
-                this(uuid, null, x, y, z, isMutualFriend);
+            public LocationUpdate(UUID uuid, int x, int y, int z, boolean isMutualFriend, boolean isPartyMember, boolean isInGuild) {
+                this(uuid, null, x, y, z, isMutualFriend, isPartyMember, isInGuild);
             }
 
-            public LocationUpdate(UUID uuid, String username, int x, int y, int z, boolean isMutualFriend) {
+            public LocationUpdate(UUID uuid, String username, int x, int y, int z, boolean isMutualFriend, boolean isPartyMember, boolean isInGuild) {
                 super(uuid, username);
                 this.x = x;
                 this.y = y;
                 this.z = z;
                 this.isMutualFriend = isMutualFriend;
+                this.isPartyMember = isPartyMember;
+                this.isInGuild = isInGuild;
             }
 
         }
