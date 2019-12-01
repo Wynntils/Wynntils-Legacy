@@ -59,6 +59,9 @@ public class SocketManager {
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             Reference.LOGGER.info("Websocket connection event...");
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
+        }).on(Socket.EVENT_RECONNECT, (Object... args) -> {
+            Reference.LOGGER.info("Reconnecting to websocket...");
+            FrameworkManager.getEventBus().post(new SocketEvent.ReConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
             // Trigger forge event ~
             String json = (String) args[0];
@@ -83,7 +86,7 @@ public class SocketManager {
             String uuid = (String) args[0];
             String username = (String) args[1];
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(Utils.uuidFromString(uuid), username));
-        }).on(Socket.EVENT_DISCONNECT, (Object... args) -> System.out.println("Disconnected from websocket"));
+        }).on(Socket.EVENT_DISCONNECT, (Object... args) -> Reference.LOGGER.info("Disconnected from websocket"));
     }
 
     private static class FriendLocationUpdate {

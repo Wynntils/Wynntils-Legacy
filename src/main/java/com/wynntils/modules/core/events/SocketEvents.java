@@ -14,27 +14,35 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SocketEvents implements Listener {
 
-    boolean sentAuth = false;
+    boolean reconnection = false;
 
     @SubscribeEvent
     public void connectionEvent(SocketEvent.ConnectionEvent e) {
         Reference.LOGGER.info("Connected to websocket");
-
         Socket socket = e.getSocket();
         socket.emit("authenticate", WebManager.getAccount().getToken(), new Ack() {
             @Override
             public void call(Object... args) {
                 System.out.println("Check ack");
-                if (sentAuth) { // If this is a reconnect, send friend list and world again.
+                if (reconnection) {  // If this is a reconnect, send friend list and world again.
                     if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty()) {
                         String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
                         socket.emit("update friends", json);
                     }
                     if (Reference.onWorld) SocketManager.getSocket().emit("join world", Reference.getUserWorld());
+                    reconnection = false;
                 }
-                sentAuth = true;
+                if (WebManager.getPlayerProfile().getGuildName() != null && WebManager.getPlayerProfile().getGuildName() != "") {
+                    socket.emit("set guild", WebManager.getPlayerProfile().getGuildName());
+                }
             }
         });
+    }
+
+    @SubscribeEvent
+    public void reconnectionEvent(SocketEvent.ReConnectionEvent e) {
+        Reference.LOGGER.info("Reconnection successful");
+        reconnection = true;
     }
 
     @SubscribeEvent

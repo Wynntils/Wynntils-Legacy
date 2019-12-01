@@ -25,6 +25,17 @@ public class SocketEvent extends Event {
         }
     }
 
+    public static class ReConnectionEvent extends SocketEvent {
+
+        public ReConnectionEvent() {
+
+        }
+
+        public Socket getSocket() {
+            return socket;
+        }
+    }
+
     public static class OtherPlayerEvent extends SocketEvent {
 
         public UUID uuid;
