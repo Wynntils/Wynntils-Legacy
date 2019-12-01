@@ -236,6 +236,16 @@ public class ClientEvents implements Listener {
         GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
     }
 
+    @SubscribeEvent
+    public void leaveParty(WynnSocialEvent.Party.Leave e) {
+        SocketManager.getSocket().emit("remove party member", e.getMember());
+    }
+
+    @SubscribeEvent
+    public void joinParty(WynnSocialEvent.Party.Join e) {
+        SocketManager.getSocket().emit("add party member", e.getMember());
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickHandler(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld) return;

@@ -25,11 +25,11 @@ public class SocketEvents implements Listener {
             public void call(Object... args) {
                 System.out.println("Check ack");
                 if (reconnection) {  // If this is a reconnect, send friend list and world again.
-                    if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty()) {
-                        String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
-                        socket.emit("update friends", json);
-                    }
+                    if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty())
+                        socket.emit("update friends", new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList()));
                     if (Reference.onWorld) SocketManager.getSocket().emit("join world", Reference.getUserWorld());
+                    if (Reference.onWorld && PlayerInfo.getPlayerInfo().getPlayerParty().isPartying() && !PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().isEmpty())
+                        SocketManager.getSocket().emit("update party", new Gson().toJson(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers()));
                     reconnection = false;
                 }
                 if (WebManager.getPlayerProfile().getGuildName() != null && WebManager.getPlayerProfile().getGuildName() != "") {
