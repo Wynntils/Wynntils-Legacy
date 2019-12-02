@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;

@@ -5,7 +5,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.EmeraldSymbols;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;

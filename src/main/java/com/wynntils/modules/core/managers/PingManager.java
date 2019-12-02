@@ -5,7 +5,7 @@
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.CommandResponse;
+import com.wynntils.core.utils.helpers.CommandResponse;
 
 import java.util.regex.Pattern;
 

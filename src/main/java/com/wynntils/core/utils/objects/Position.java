@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -53,7 +53,9 @@ public class Position {
         if (!(obj instanceof Position)) {
             return false;
         }
+
         Position pos = (Position) obj;
         return anchorX == pos.anchorX && anchorY == pos.anchorY && offsetX == pos.offsetX && offsetY == pos.offsetY;
     }
+
 }

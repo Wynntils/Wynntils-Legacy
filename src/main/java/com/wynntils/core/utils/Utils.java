@@ -10,6 +10,8 @@ import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.helpers.MD5Verification;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.instances.FakeInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

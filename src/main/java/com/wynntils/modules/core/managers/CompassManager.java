@@ -5,7 +5,7 @@
 package com.wynntils.modules.core.managers;
 
 
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.events.ServerEvents;
 import net.minecraft.client.Minecraft;
 

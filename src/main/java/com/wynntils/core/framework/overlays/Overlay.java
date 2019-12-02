@@ -11,7 +11,7 @@ import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.wynntils.core.utils.Position;
+import com.wynntils.core.utils.objects.Position;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 

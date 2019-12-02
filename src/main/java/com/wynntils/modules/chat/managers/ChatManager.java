@@ -5,7 +5,7 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;

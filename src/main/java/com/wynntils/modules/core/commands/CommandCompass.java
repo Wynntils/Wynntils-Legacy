@@ -3,7 +3,7 @@
  */
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;

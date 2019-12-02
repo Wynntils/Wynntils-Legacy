@@ -6,7 +6,7 @@ package com.wynntils.modules.questbook.managers;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.instances.FakeInventory;

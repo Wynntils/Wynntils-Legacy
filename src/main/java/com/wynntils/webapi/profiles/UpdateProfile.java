@@ -6,7 +6,7 @@ package com.wynntils.webapi.profiles;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.utils.MD5Verification;
+import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;

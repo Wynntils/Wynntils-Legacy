@@ -9,7 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
