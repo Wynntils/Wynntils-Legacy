@@ -6,6 +6,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.webapi.WebManager;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -29,11 +30,8 @@ public class SocketManager {
         boolean local = false; // testing mode
 
         String url;
-        if (local) {
-            url = "http://localhost:3000";
-        } else {
-            url = "https://io.wynntils.com";
-        }
+        if (local) url = "http://localhost:3000";
+        else url = WebManager.getApiUrls().get("Socket");
 
         try {
             socket = IO.socket(url, opts);
@@ -43,7 +41,6 @@ public class SocketManager {
         }
 
         // Register Events
-
         registerEvents();
 
         socket.connect();
@@ -94,4 +91,5 @@ public class SocketManager {
         public int x, y, z;
         public boolean isMutualFriend, isPartyMember, isInGuild;
     }
+
 }
