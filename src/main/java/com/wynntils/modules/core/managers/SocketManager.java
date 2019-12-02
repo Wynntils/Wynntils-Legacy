@@ -32,7 +32,7 @@ public class SocketManager {
         if (local) {
             url = "http://localhost:3000";
         } else {
-            url = "https://dev.wynntils.com";
+            url = "https://io.wynntils.com";
         }
 
         try {
