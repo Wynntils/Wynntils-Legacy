@@ -16,6 +16,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
+import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
@@ -134,6 +135,8 @@ public class ClientEvents {
                     PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
                 }
             }
+            // Add uuid of newly joined player
+            GuildAndFriendManager.tryResolveName(profile.getId(), profile.getName());
         }
     }
 

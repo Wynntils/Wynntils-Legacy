@@ -4,9 +4,12 @@
 
 package com.wynntils.modules.core.events;
 
+import com.google.common.collect.Sets;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -16,9 +19,7 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
-import com.wynntils.modules.core.managers.CompassManager;
-import com.wynntils.modules.core.managers.PacketQueue;
-import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class ServerEvents implements Listener {
@@ -90,8 +92,16 @@ public class ServerEvents implements Listener {
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
+        SocketManager.getSocket().emit("join world", e.getWorld());
+
         PartyManager.handlePartyList(); //party list here
     }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void leaveWorldEvent(WynnWorldEvent.Leave e) {
+        SocketManager.getSocket().emit("leave world");
+    }
+
 
     /**
      * Detects and register the current friend list of the user
@@ -117,7 +127,12 @@ public class ServerEvents implements Listener {
                 friends = splited[1].substring(1).split(", ");
             }else{ friends = new String[] {splited[1].substring(1)}; }
 
-            PlayerInfo.getPlayerInfo().setFriendList(new HashSet<>(Arrays.asList(friends)));
+            HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
+            HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
+            PlayerInfo.getPlayerInfo().setFriendList(newFriendsList);
+
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.intersection(friendsList, newFriendsList), false));
 
             if(waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
@@ -127,15 +142,24 @@ public class ServerEvents implements Listener {
             if(waitingForGuildList) e.setCanceled(true);
 
             String[] messageSplitted = messageText.split(" ");
-            PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
+            if (PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1])) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(messageSplitted[1]));
+            }
             return;
         }
         if(!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
             String[] splittedText = messageText.split(" ");
             if(!splittedText[1].equalsIgnoreCase("has")) return;
 
-            if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
-            else if(splittedText[2].equalsIgnoreCase("kicked")) PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3]);
+            if(splittedText[2].equalsIgnoreCase("joined")) {
+                if (PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0])) {
+                    FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
+                }
+            } else if(splittedText[2].equalsIgnoreCase("kicked")) {
+                if (PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3])) {
+                    FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
+                }
+            }
         }
     }
 
@@ -150,9 +174,15 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
         if(e.getMessage().startsWith("/friend add ")) {
-            PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
+            String addedFriend = e.getMessage().replace("/friend add ", "");
+            if (PlayerInfo.getPlayerInfo().getFriendList().add(addedFriend)) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
+            }
         }else if(e.getMessage().startsWith("/friend remove ")) {
-            PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
+            String removedFriend = e.getMessage().replace("/friend remove ", "");
+            if (PlayerInfo.getPlayerInfo().getFriendList().remove(removedFriend)) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
+            }
         }else if(e.getMessage().startsWith("/guild list")) {
             waitingForGuildList = false;
         }

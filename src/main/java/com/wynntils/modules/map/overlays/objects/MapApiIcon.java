@@ -224,7 +224,7 @@ public class MapApiIcon extends MapTextureIcon {
         if (!MAPMARKERNAME_TRANSLATION.containsKey(icon)) {
             throw new RuntimeException("MapWaypointIcon.getFree(\"" + icon + "\"): invalid name");
         }
-        return new MapApiIcon(new MapMarkerProfile(null, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, icon), iconTexture);
+        return new MapApiIcon(new MapMarkerProfile(null, NO_LOCATION, NO_LOCATION, NO_LOCATION, icon), iconTexture);
     }
 
 }

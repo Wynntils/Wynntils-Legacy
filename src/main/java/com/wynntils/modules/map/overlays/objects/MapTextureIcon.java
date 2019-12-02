@@ -1,13 +1,13 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.AssetsTexture;
+import com.wynntils.core.framework.rendering.textures.Texture;
 
 /**
  * For {@link MapIcon}s which are represented by a sprite sheet texture
  */
 public abstract class MapTextureIcon extends MapIcon {
-    public abstract AssetsTexture getTexture();
+    public abstract Texture getTexture();
 
     /**
      * @return The x position of the top-left of this icon (px)
@@ -46,8 +46,13 @@ public abstract class MapTextureIcon extends MapIcon {
         return false;
     }
 
+    @Override
+    public boolean hasDynamicLocation() {
+        return false;
+    }
+
     public static MapTextureIcon createStaticIcon(
-            AssetsTexture texture,
+            Texture texture,
             int texPosX, int texPosZ, int texSizeX, int texSizeZ
     ) {
         return createStaticIcon(texture, texPosX, texPosZ, texSizeX, texSizeZ, texSizeX - texPosX, texSizeZ - texPosZ);
@@ -57,12 +62,12 @@ public abstract class MapTextureIcon extends MapIcon {
      * @return A `MapTextureIcon` instance with the given parameters that can be drawn with `renderAt`
      */
     public static MapTextureIcon createStaticIcon(
-            AssetsTexture texture,
+            Texture texture,
             int texPosX, int texPosZ, int texSizeX, int texSizeZ,
             int sizeX, int sizeZ
     ) {
         return new MapTextureIcon() {
-            @Override public AssetsTexture getTexture() { return texture; }
+            @Override public Texture getTexture() { return texture; }
             @Override public int getTexPosX() { return texPosX; }
             @Override public int getTexPosZ() { return texPosZ; }
             @Override public int getTexSizeX() { return texSizeX; }
@@ -74,6 +79,7 @@ public abstract class MapTextureIcon extends MapIcon {
             @Override public float getSizeZ() { return sizeZ; }
             @Override public int getZoomNeeded() { throw new UnsupportedOperationException("Cannot getZoomNeeded() on a static icon"); }
             @Override public boolean isEnabled(boolean forMinimap) { throw new UnsupportedOperationException("Cannot isEnabled() on a static icon"); }
+            @Override public boolean hasDynamicLocation() { throw new UnsupportedOperationException("Cannot hasDynamicLocation() on a static icon"); }
             @Override
             public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
                 float ssizeX = sizeX * sizeMultiplier;

@@ -21,7 +21,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onLeaveParty(WynnSocialEvent.PartyLeave e) {
+    public void onLeaveParty(WynnSocialEvent.Party.Join e) {
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
     }
 

@@ -73,6 +73,10 @@ public class MapPathWaypointIcon extends MapIcon {
         return true;
     }
 
+    @Override
+    public boolean hasDynamicLocation() {
+        return false;
+    }
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {

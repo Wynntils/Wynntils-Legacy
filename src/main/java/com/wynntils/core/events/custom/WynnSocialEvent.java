@@ -9,6 +9,9 @@ import com.wynntils.core.framework.instances.containers.PartyContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * Triggered for Wynncraft Social Events
  * That includes: Party handling, Guild handling
@@ -29,48 +32,118 @@ public class WynnSocialEvent extends Event {
         return member.equalsIgnoreCase(Minecraft.getMinecraft().player.getName());
     }
 
-    /**
-     * Triggered when one player leaves the Party
-     * (including yourself)
-     */
-    public static class PartyLeave extends WynnSocialEvent {
+    public static class Party extends WynnSocialEvent {
 
-        public PartyLeave(String member) {
+        public Party(String member) {
             super(member);
-        }
-
-        public boolean isYou() {
-            return member.equalsIgnoreCase(Minecraft.getMinecraft().player.getName());
         }
 
         public PartyContainer getParty() {
             return PlayerInfo.getPlayerInfo().getPlayerParty();
+        }
+
+        /**
+         * Triggered when one player leaves the Party
+         * (including yourself)
+         */
+        public static class Leave extends Party {
+
+            public Leave(String member) {
+                super(member);
+            }
+
+        }
+
+        /**
+         * Triggered when one player joins the Party
+         * (including yourself)
+         */
+        public static class Join extends Party {
+
+            private boolean createdNow;
+
+            public Join(String member, boolean createdNow) {
+                super(member);
+
+                this.createdNow = createdNow;
+            }
+
+            public boolean wasCreatedNow() {
+                return createdNow;
+            }
+
         }
 
     }
 
-    /**
-     * Triggered when one player joins the Party
-     * (including yourself)
-     */
-    public static class PartyJoin extends WynnSocialEvent {
+    public static class Guild extends WynnSocialEvent {
 
-        boolean createdNow;
-
-        public PartyJoin(String member, boolean createdNow) {
+        public Guild(String member) {
             super(member);
-
-            this.createdNow = createdNow;
         }
 
-        public boolean wasCreatedNow() {
-            return createdNow;
+        public HashSet<String> getGuildList() {
+            return PlayerInfo.getPlayerInfo().getGuildList();
         }
 
-        public PartyContainer getParty() {
-            return PlayerInfo.getPlayerInfo().getPlayerParty();
+        /** (Not used yet)
+         * Triggered when one player leaves the guild
+         * (including yourself)
+         */
+        public static class Leave extends Guild {
+
+            public Leave(String member) {
+                super(member);
+            }
+
         }
 
+        /** (Not used yet)
+         * Triggered when one player joins the guild
+         * (including yourself)
+         */
+        public static class Join extends Guild {
+
+            public Join(String member) {
+                super(member);
+            }
+
+        }
+
+    }
+
+
+    public static class FriendList extends Event {
+        Collection<String> members;
+        public final boolean isSingular;
+
+        public FriendList(Collection<String> members, boolean isSingular) {
+            this.members = members;
+            this.isSingular = isSingular;
+        }
+
+        public Collection<String> getMembers() {
+            return members;
+        }
+
+        /**
+         * Called when multiple friends are "added" (discovered) when friends list is read with `members`,
+         * and when /friend add is run, with a collection of names.
+         */
+        public static class Add extends FriendList {
+            public Add(Collection<String> members, boolean isSingular) {
+                super(members, isSingular);
+            }
+        }
+
+        /**
+         * As {@link Add}, but when friend(s) is removed.
+         */
+        public static class Remove extends FriendList {
+            public Remove(Collection<String> members, boolean isSingular) {
+                super(members, isSingular);
+            }
+        }
     }
 
 }

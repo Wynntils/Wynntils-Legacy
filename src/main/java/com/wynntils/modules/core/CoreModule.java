@@ -10,6 +10,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
+import com.wynntils.modules.core.events.SocketEvents;
 import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
@@ -22,6 +23,7 @@ public class CoreModule extends Module {
     public void onEnable() {
         registerEvents(new ClientEvents());
         registerEvents(new ServerEvents());
+        registerEvents(new SocketEvents());
 
         registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);

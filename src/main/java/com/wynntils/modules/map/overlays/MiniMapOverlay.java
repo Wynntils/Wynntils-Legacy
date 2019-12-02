@@ -135,12 +135,12 @@ public class MiniMapOverlay extends Overlay {
                 final int maxFastWorldZ = (int) (mc.player.posZ + extraFactor * (mapSize/2f + zoom)) + 1;
 
                 Consumer<MapIcon> consumer = c -> {
+                    if (!c.isEnabled(true)) return;
                     int posX = c.getPosX();
                     int posZ = c.getPosZ();
                     float sizeX = c.getSizeX();
                     float sizeZ = c.getSizeZ();
                     if (
-                        !c.isEnabled(true) ||
                         !(minFastWorldX <= posX + sizeX && posX - sizeX <= maxFastWorldX) ||
                         !(minFastWorldZ <= posZ + sizeZ && posZ - sizeZ <= maxFastWorldZ)
                     ) {
@@ -175,6 +175,7 @@ public class MiniMapOverlay extends Overlay {
                 MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture).forEach(consumer);
                 MapIcon.getWaypoints().forEach(consumer);
                 MapIcon.getPathWaypoints().forEach(consumer);
+                MapIcon.getPlayers().forEach(consumer);
 
                 MapIcon compassIcon = MapIcon.getCompass();
 

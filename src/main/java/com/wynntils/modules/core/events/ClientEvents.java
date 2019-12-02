@@ -4,22 +4,26 @@
 
 package com.wynntils.modules.core.events;
 
+import com.google.gson.Gson;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.MainMenuButtons;
-import com.wynntils.modules.core.managers.PacketQueue;
-import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.core.managers.*;
+import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import net.minecraft.block.BlockBarrier;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,9 +38,12 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.Collection;
 import java.util.Locale;
 
 public class ClientEvents implements Listener {
@@ -177,6 +184,97 @@ public class ClientEvents implements Listener {
         if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
+    }
+
+    int lastPosition = 0;
+
+    @SubscribeEvent
+    public void addFriend(WynnSocialEvent.FriendList.Add e) {
+        Collection<String> newFriends = e.getMembers();
+        if (e.isSingular) {
+            // Single friend added
+            for (String name : newFriends) {
+                SocketManager.getSocket().emit("add friend", name);
+                GuildAndFriendManager.changePlayer(name, true, As.FRIEND, true);
+            }
+        } else {
+            // Friends list updated
+            String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
+            SocketManager.getSocket().emit("update friends", json);
+            for (String name : newFriends) {
+                GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
+            }
+            GuildAndFriendManager.tryResolveNames();
+        }
+    }
+
+    @SubscribeEvent
+    public void removeFriend(WynnSocialEvent.FriendList.Remove e) {
+        Collection<String> removedFriends = e.getMembers();
+        if (e.isSingular) {
+            // Single friend removed
+            for (String name : removedFriends) {
+                SocketManager.getSocket().emit("remove friend", name);
+                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, true);
+            }
+        } else {
+            // Friends list updated; Socket managed in addFriend
+            for (String name : removedFriends) {
+                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
+            }
+            GuildAndFriendManager.tryResolveNames();
+        }
+    }
+
+    @SubscribeEvent
+    public void joinGuild(WynnSocialEvent.Guild.Join e) {
+        GuildAndFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
+    }
+
+    @SubscribeEvent
+    public void leaveGuild(WynnSocialEvent.Guild.Leave e) {
+        GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
+    }
+
+    @SubscribeEvent
+    public void leaveParty(WynnSocialEvent.Party.Leave e) {
+        SocketManager.getSocket().emit("remove party member", e.getMember());
+    }
+
+    @SubscribeEvent
+    public void joinParty(WynnSocialEvent.Party.Join e) {
+        SocketManager.getSocket().emit("add party member", e.getMember());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void tickHandler(TickEvent.ClientTickEvent e) {
+        if (!Reference.onWorld) return;
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
+        if (lastPosition != currentPosition) {
+            SocketManager.getSocket().emit("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+        }
+        lastPosition = currentPosition;
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load e) {
+        PlayerEntityManager.onWorldLoad(e.getWorld());
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload e) {
+        PlayerEntityManager.onWorldUnload();
+    }
+
+    @SubscribeEvent
+    public void joinWynncraft(WynncraftServerEvent.Login e) {
+        SocketManager.registerSocket();
+    }
+
+    @SubscribeEvent
+    public void leaveWynncraft(WynncraftServerEvent.Leave e) {
+        SocketManager.disconnectSocket();
     }
 
 }

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.google.common.collect.Iterables;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.GuiMovementScreen;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -32,6 +33,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -44,9 +46,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float centerPositionZ;
     protected int zoom = 0;
 
-    protected List<WorldMapIcon> pathWpMapIcons;
-    protected List<WorldMapIcon> apiMapIcons;
-    protected List<WorldMapIcon> wpMapIcons;
+    protected List<WorldMapIcon> icons;
     protected WorldMapIcon compassIcon;
     protected List<MapTerritory> territories;
 
@@ -54,17 +54,24 @@ public class WorldMapUI extends GuiMovementScreen {
         mc = Minecraft.getMinecraft();
 
         //HeyZeer0: Handles MiniMap markers provided by Wynn API
-        apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture)
-                .stream()
-                .map(WorldMapIcon::new)
-                .collect(Collectors.toList());
-
+        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
         //HeyZeer0: Handles all waypoints
-        wpMapIcons = MapIcon.getWaypoints().stream().map(WorldMapIcon::new).collect(Collectors.toList());
-
-        pathWpMapIcons = MapIcon.getPathWaypoints().stream().map(WorldMapIcon::new).collect(Collectors.toList());
-
+        List<MapIcon> wpMapIcons = MapIcon.getWaypoints();
+        List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
+        // Handles guild / party / friends
+        List<MapIcon> friendsIcons = MapIcon.getPlayers();
+        // Handles compass
         compassIcon = new WorldMapIcon(MapIcon.getCompass());
+
+        icons = new ArrayList<>(apiMapIcons.size() + wpMapIcons.size() + pathWpMapIcons.size() + friendsIcons.size());
+        for (MapIcon i : Iterables.concat(
+            apiMapIcons,
+            wpMapIcons,
+            pathWpMapIcons,
+            friendsIcons
+        )) {
+            icons.add(new WorldMapIcon(i));
+        }
 
         //HeyZeer0: Handles the territories
         territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
@@ -96,9 +103,7 @@ public class WorldMapUI extends GuiMovementScreen {
     float minZ = 0; float maxZ = 0;
 
     protected void forEachIcon(Consumer<WorldMapIcon> c) {
-        apiMapIcons.forEach(c);
-        wpMapIcons.forEach(c);
-        pathWpMapIcons.forEach(c);
+        icons.forEach(c);
         if (CompassManager.getCompassLocation() != null)
             c.accept(compassIcon);
     }
@@ -210,7 +215,10 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         //draw map icons
-        forEachIcon(c -> c.drawScreen(mouseX, mouseY, partialTicks, scale, renderer));
+        forEachIcon(i -> {
+            if (i.getInfo().hasDynamicLocation()) resetIcon(i);
+            i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
+        });
 
         float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
         float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
