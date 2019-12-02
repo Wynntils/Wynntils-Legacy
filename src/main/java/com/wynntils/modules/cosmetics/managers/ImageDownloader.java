@@ -102,7 +102,7 @@ public class ImageDownloader extends SimpleTexture {
                 }
             }
         };
-        
+
         this.imageThread.setDaemon(true);
         this.imageThread.start();
     }
