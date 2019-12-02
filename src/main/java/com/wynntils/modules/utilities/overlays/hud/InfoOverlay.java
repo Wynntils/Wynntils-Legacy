@@ -10,6 +10,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -233,6 +234,10 @@ public abstract class InfoOverlay extends Overlay {
                 case "mem_max": case "memmax":
                     setMemory();
                     return Long.toString(maxMemory);
+                case "bps":
+                    return PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed());
+                case "bpm":
+                    return PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 60);
                 case "%":
                     return "%";
                 default:
