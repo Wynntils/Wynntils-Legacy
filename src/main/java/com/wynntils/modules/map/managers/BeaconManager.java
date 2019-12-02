@@ -5,7 +5,7 @@
 package com.wynntils.modules.map.managers;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -36,6 +36,8 @@ public class BeaconManager {
         if(distance <= 8f) alpha = (float)(distance - 4f) / 3f;
 
         if(alpha > 1) alpha = 1; //avoid excessive values
+
+        alpha *= color.a;
 
         double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
         if(distance > maxDistance) { //this will drag the beam to the visible area if outside of it

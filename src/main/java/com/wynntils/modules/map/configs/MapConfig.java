@@ -52,6 +52,7 @@ public class MapConfig extends SettingsClass {
     public boolean minimapIcons = true;
 
     @Setting(displayName = "Compass Beacon Color", description = "What color should the compass beacon be?", order = 9)
+    @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
     @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 10)
@@ -100,6 +101,7 @@ public class MapConfig extends SettingsClass {
         public PointerType pointerStyle = PointerType.ARROW;
 
         @Setting(displayName = "Pointer Colour", description = "What should the colour of the pointer be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
+        @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor pointerColor = new CustomColor(1, 1, 1, 1);
 
     }

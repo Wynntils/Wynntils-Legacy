@@ -237,6 +237,7 @@ public class WorldMapUI extends GuiMovementScreen {
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
 
             MapConfig.Textures.INSTANCE.pointerColor.applyColor();
+            GlStateManager.enableAlpha();
             renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth * 1.5f, playerPostionZ - type.dHeight * 1.5f, playerPostionX + type.dWidth * 1.5f, playerPostionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
             GlStateManager.color(1, 1, 1, 1);
 

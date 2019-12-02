@@ -1,4 +1,8 @@
-package com.wynntils.core.utils;
+/*
+ *  * Copyright © Wynntils - 2019.
+ */
+
+package com.wynntils.core.utils.helpers;
 
 import net.minecraft.client.Minecraft;
 

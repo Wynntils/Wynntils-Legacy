@@ -3,7 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.SocketManager;

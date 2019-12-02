@@ -25,7 +25,7 @@ public class PlayerInfoOverlay extends Overlay {
         super("Player Info Overlay", 410, 239, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
     }
 
-    double animationProgress = 0;
+    transient double animationProgress = 0;
 
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
@@ -109,8 +109,8 @@ public class PlayerInfoOverlay extends Overlay {
 
     }
 
-    List<String> lastPlayers = new ArrayList<>();
-    long nextExecution = 0;
+    transient List<String> lastPlayers = new ArrayList<>();
+    transient long nextExecution = 0;
 
     private List<String> getAvailablePlayers() {
         if(Minecraft.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;

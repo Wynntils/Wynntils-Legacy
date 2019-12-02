@@ -53,5 +53,11 @@ public @interface Setting {
         public @interface StringParameters {
             String[] parameters();
         }
+
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
+        public @interface CustomColorFeatures {
+            boolean allowAlpha() default false;
+        }
     }
 }

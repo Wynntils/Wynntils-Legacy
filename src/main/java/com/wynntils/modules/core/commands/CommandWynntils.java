@@ -5,8 +5,8 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.Delay;
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.helpers.Delay;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;

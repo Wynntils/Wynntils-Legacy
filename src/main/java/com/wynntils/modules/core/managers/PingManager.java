@@ -5,7 +5,7 @@
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.CommandResponse;
+import com.wynntils.core.utils.helpers.CommandResponse;
 
 import java.util.regex.Pattern;
 
@@ -21,7 +21,7 @@ public class PingManager {
 
         CommandResponse response = new CommandResponse("/toggle", (m, t) -> {
             lastPing = System.currentTimeMillis() - lastCall;
-            Reference.LOGGER.info("Updated user ping to " + lastPing + "ms");
+            Reference.LOGGER.debug("Updated user ping to " + lastPing + "ms");
         }, pattern);
 
         response.setCancel(true);

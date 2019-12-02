@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.helpers;
 
 import com.wynntils.core.framework.FrameworkManager;
 import net.minecraft.client.Minecraft;

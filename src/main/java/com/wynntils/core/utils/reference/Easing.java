@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.reference;
 
 
 import net.minecraft.util.math.MathHelper;

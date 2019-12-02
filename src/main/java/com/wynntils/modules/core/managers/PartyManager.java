@@ -6,7 +6,7 @@ package com.wynntils.modules.core.managers;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
-import com.wynntils.core.utils.CommandResponse;
+import com.wynntils.core.utils.helpers.CommandResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 

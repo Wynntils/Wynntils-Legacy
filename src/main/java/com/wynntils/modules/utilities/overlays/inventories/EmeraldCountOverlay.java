@@ -14,7 +14,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Texture;
-import com.wynntils.core.utils.EmeraldSymbols;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.renderer.GlStateManager;

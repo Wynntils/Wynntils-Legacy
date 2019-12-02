@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.helpers;
 
 import java.io.File;
 import java.io.FileInputStream;

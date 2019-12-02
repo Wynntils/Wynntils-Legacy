@@ -7,7 +7,7 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.utils.LongPress;
+import com.wynntils.core.utils.helpers.LongPress;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;

@@ -4,10 +4,12 @@
 
 package com.wynntils;
 
+import net.minecraft.client.multiplayer.ServerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.Locale;
 
 public class Reference {
 
@@ -22,8 +24,10 @@ public class Reference {
 
     private static String userWorld = null;
 
-    public static void setUserWorld(String uw) {
-        onServer = true;
+    public static synchronized void setUserWorld(String uw) {
+        ServerData currentServer = ModCore.mc().getCurrentServerData();
+        onServer = !ModCore.mc().isSingleplayer() && currentServer != null && currentServer.serverIP.toLowerCase(Locale.ROOT).contains("wynncraft");
+        onEuServer = onServer && currentServer.serverIP.toLowerCase(Locale.ROOT).startsWith("eu");
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
@@ -38,6 +42,7 @@ public class Reference {
     }
 
     public static boolean onServer = false;
+    public static boolean onEuServer = false;
     public static boolean onWorld = false;
     public static boolean onNether = false;
     public static boolean onWars = false;

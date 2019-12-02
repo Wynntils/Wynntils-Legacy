@@ -9,7 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
@@ -203,10 +203,17 @@ public class FakeInventory {
                     return new Pair<>(slot, item);
                 }
             }
-        } else {
+        } else if (filterType == FilterType.EQUALS_IGNORE_CASE) {
             for (int slot = 0; slot < items.size(); slot++) {
                 ItemStack item = items.get(slot);
                 if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equalsIgnoreCase(name)) {
+                    return new Pair<>(slot, item);
+                }
+            }
+        } else {
+            for (int slot = 0; slot < items.size(); slot++) {
+                ItemStack item = items.get(slot);
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).startsWith(name)) {
                     return new Pair<>(slot, item);
                 }
             }

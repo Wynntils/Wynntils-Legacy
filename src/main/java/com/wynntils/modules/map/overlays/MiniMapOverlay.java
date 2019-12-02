@@ -255,6 +255,7 @@ public class MiniMapOverlay extends Overlay {
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
 
             MapConfig.Textures.INSTANCE.pointerColor.applyColor();
+            GlStateManager.enableAlpha();
             drawRectF(Textures.Map.map_pointers, (mapSize/2f) - type.dWidth, (mapSize/2f) - type.dHeight, (mapSize/2f) + type.dWidth, (mapSize/2f) + type.dHeight, 0, type.yStart, type.width, type.yStart + type.height);
             GlStateManager.color(1, 1, 1, 1);
 

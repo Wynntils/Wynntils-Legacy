@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2019.
  */
 
-package com.wynntils.core.utils;
+package com.wynntils.core.utils.objects;
 
 import java.util.Objects;
 
@@ -10,6 +10,7 @@ import java.util.Objects;
  * The Pair Type Holds 1 field of type T and 1 field of type J
  */
 public class Pair<T,J> {
+
     public T a;
     public J b;
 

@@ -16,8 +16,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class ClientEvents implements Listener {
 
     @SubscribeEvent
-    public void onJoinParty(WynnSocialEvent.Party.Join e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
+    public void onJoinParty(WynnSocialEvent.PartyJoin e) {
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", ""))));
     }
 
     @SubscribeEvent

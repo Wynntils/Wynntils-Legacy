@@ -1,6 +1,11 @@
-package com.wynntils.core.utils;
+/*
+ *  * Copyright © Wynntils - 2019.
+ */
+
+package com.wynntils.core.utils.reference;
 
 public class EmeraldSymbols {
+
     public static final char E = '\u00B2';
     public static final char B = '\u00BD';
     public static final char L = '\u00BC';
@@ -12,4 +17,5 @@ public class EmeraldSymbols {
     public static final String EMERALDS = (E_STRING).intern();
     public static final String BLOCKS = (E_STRING + B_STRING).intern();
     public static final String LE = (L_STRING + E_STRING).intern();
+
 }
