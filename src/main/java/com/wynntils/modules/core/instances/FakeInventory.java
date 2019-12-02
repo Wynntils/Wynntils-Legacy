@@ -203,10 +203,17 @@ public class FakeInventory {
                     return new Pair<>(slot, item);
                 }
             }
-        } else {
+        } else if (filterType == FilterType.EQUALS_IGNORE_CASE) {
             for (int slot = 0; slot < items.size(); slot++) {
                 ItemStack item = items.get(slot);
                 if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).equalsIgnoreCase(name)) {
+                    return new Pair<>(slot, item);
+                }
+            }
+        } else {
+            for (int slot = 0; slot < items.size(); slot++) {
+                ItemStack item = items.get(slot);
+                if (!item.isEmpty() && item.hasDisplayName() && TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).startsWith(name)) {
                     return new Pair<>(slot, item);
                 }
             }

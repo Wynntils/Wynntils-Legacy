@@ -9,14 +9,16 @@ import java.util.UUID;
 public class SecretContainer {
 
     String owner;
+    String worldType;
     int world;
 
     String randomHash;
     String id = UUID.randomUUID().toString().replace("-", "");
 
-    public SecretContainer(String owner, int world) {
+    public SecretContainer(String owner, String worldType, int world) {
         this.owner = owner;
         this.world = world;
+        this.worldType = worldType;
 
         randomHash = UUID.randomUUID().toString().replace("-", "");
     }
@@ -26,12 +28,22 @@ public class SecretContainer {
 
         String[] splitted = hash.split("::");
         owner = splitted[0];
-        world = Integer.parseInt(splitted[2]);
+        if (splitted.length == 4) {
+            worldType = splitted[2];
+            world = Integer.parseInt(splitted[3]);
+        } else {
+            worldType = "";
+            world = Integer.parseInt(splitted[2]);
+        }
         randomHash = splitted[1];
     }
 
     public String getOwner() {
         return owner;
+    }
+
+    public String getWorldType() {
+        return worldType;
     }
 
     public int getWorld() {
@@ -44,7 +56,7 @@ public class SecretContainer {
 
     @Override
     public String toString() {
-        return owner + "::" + randomHash + "::" + world;
+        return owner + "::" + randomHash + "::" + worldType + "::" + world;
     }
 
 }

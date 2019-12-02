@@ -59,6 +59,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
+    @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
+    public boolean openChatBankSearch = true;
+
     @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
     public boolean addItemIdentificationSpacing = true;
 
@@ -107,117 +110,120 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
-        @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?")
+        @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?", order = 0)
         public boolean filterEnabled = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)")
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)", order = 11)
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?")
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 12)
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?")
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 13)
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?")
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 14)
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?")
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 15)
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?")
+        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 20)
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?")
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 21)
         public boolean fabledHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?")
+        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 22)
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?")
+        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 23)
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?")
+        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 24)
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?")
+        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 25)
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?")
+        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 26)
         public boolean normalHighlight = false;
 
-        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?")
+        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?")
+        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 31)
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?")
+        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 32)
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?")
+        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 33)
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?")
+        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)")
+        // TODO: move these 3 configs
+        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)", order = 101)
         public boolean emeraldCountChest = true;
 
-        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?")
+        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
         public boolean emeraldCountInventory = true;
 
-        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?")
+        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 103)
         public boolean emeraldCountText = false;
 
-        @Setting(displayName = "Highlight Powders", description = "Should powders be highlighted according to their element?")
-        public boolean powderHighlight = true;
-
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?")
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 40)
         public boolean ingredientHighlight = true;
 
-        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted on the scrap menu")
+        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted on the scrap menu", order = 41)
         public boolean highlightCosmeticDuplicates = true;
 
-        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8This setting has no effect if powder highlighting is disabled.")
-        @Setting.Limitations.IntLimit(min = 1, max = 6)
+        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
+        @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
 
-        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
-        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
         public CustomColor fabledHighlightColor = new CustomColor(1, .58f, .49f);
 
-        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
 
-        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
         public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
         public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
 
-        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
         public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
         public CustomColor craftedHighlightColor = new CustomColor(0, .545f, .545f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1, 1, 0);
 
-        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.")
+        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Display Item Highlighting on Hotbar", description = "Should the highlight of item rarities be displayed on the hotbar?", order = 0)
-        public boolean highlighItemsInHotbar = true;
+        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 61)
+        @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
+        public float inventoryAlpha = 100;
+
+        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 62)
+        @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
+        public float hotbarAlpha = 30;
 
 
         @Override

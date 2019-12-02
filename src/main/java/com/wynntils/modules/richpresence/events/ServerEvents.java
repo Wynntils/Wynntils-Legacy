@@ -182,7 +182,8 @@ public class ServerEvents implements Listener {
     public static void onEnableSettingChange() {
         if (RichPresenceConfig.INSTANCE.enableRichPresence) {
             if (Reference.onLobby) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
+                String state = Reference.onEuServer ? "In :flag_eu: Lobby" : "In Lobby";
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
             } else if (Reference.onWars) {
                 if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
                     if (WarTimerOverlay.getTerritory() != null) {

@@ -97,6 +97,9 @@ public class SettingsUI extends UI {
             holdersScrollbar.progress = 0f;
         }
         holdersScrollbar.max += 160;
+
+        searchField.setText("");
+        updateSearchText();
     }
 
     @Override
@@ -479,6 +482,12 @@ public class SettingsUI extends UI {
                             changedSettings.add(currentSettingsPath);
                         }catch (Exception ex) { ex.printStackTrace(); }
                     }, SettingsUI.this);
+                    Setting.Features.CustomColorFeatures features = field.getAnnotation(Setting.Features.CustomColorFeatures.class);
+                    if (features != null) {
+                        if (features.allowAlpha()) {
+                            ((UIEColorWheel) valueElement).allowAlpha();
+                        }
+                    }
                     ((UIEColorWheel) valueElement).setColor((CustomColor)value);
                 }
             } catch (Exception e) {
