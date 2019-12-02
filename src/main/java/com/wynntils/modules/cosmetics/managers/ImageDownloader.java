@@ -39,14 +39,10 @@ public class ImageDownloader extends SimpleTexture {
         this.imageBuffer = imageBuffer;
     }
 
-    private void checkTextureUploaded()
-    {
-        if (!this.textureUploaded)
-        {
-            if (this.bufferedImage != null)
-            {
-                if (this.textureLocation != null)
-                {
+    private void checkTextureUploaded() {
+        if (!this.textureUploaded) {
+            if (this.bufferedImage != null) {
+                if (this.textureLocation != null) {
                     this.deleteGlTexture();
                 }
 
@@ -56,49 +52,39 @@ public class ImageDownloader extends SimpleTexture {
         }
     }
 
-    public int getGlTextureId()
-    {
+    public int getGlTextureId() {
         this.checkTextureUploaded();
         return super.getGlTextureId();
     }
 
-    public void loadTexture(IResourceManager resourceManager) throws IOException
-    {
-        if (this.bufferedImage == null && this.textureLocation != null)
-        {
+    public void loadTexture(IResourceManager resourceManager) throws IOException {
+        if (this.bufferedImage == null && this.textureLocation != null) {
             super.loadTexture(resourceManager);
         }
 
-        if (this.imageThread == null)
-        {
+        if (this.imageThread == null) {
             this.loadTextureFromServer(this);
         }
     }
 
-    protected void loadTextureFromServer(ImageDownloader downloader)
-    {
-        this.imageThread = new Thread("Texture Downloader")
-        {
-            public void run()
-            {
+    protected void loadTextureFromServer(ImageDownloader downloader) {
+        this.imageThread = new Thread("Texture Downloader") {
+            public void run() {
                 HttpURLConnection httpurlconnection = null;
 
-                try
-                {
+                try {
                     httpurlconnection = (HttpURLConnection)(new URL(url)).openConnection(Minecraft.getMinecraft().getProxy());
                     httpurlconnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                     httpurlconnection.setDoInput(true);
                     httpurlconnection.setDoOutput(false);
                     httpurlconnection.connect();
 
-                    if (httpurlconnection.getResponseCode() / 100 == 2)
-                    {
+                    if (httpurlconnection.getResponseCode() / 100 == 2) {
                         BufferedImage bufferedimage;
 
                         bufferedimage = TextureUtil.readBufferedImage(httpurlconnection.getInputStream());
 
-                        if (imageBuffer != null)
-                        {
+                        if (imageBuffer != null) {
                             bufferedimage = imageBuffer.parseUserSkin(bufferedimage);
                         }
 
@@ -106,19 +92,17 @@ public class ImageDownloader extends SimpleTexture {
                         return;
                     }
                 }
-                catch (Exception exception)
-                {
+                catch (Exception exception) {
                     return;
                 }
-                finally
-                {
-                    if (httpurlconnection != null)
-                    {
+                finally {
+                    if (httpurlconnection != null) {
                         httpurlconnection.disconnect();
                     }
                 }
             }
         };
+        
         this.imageThread.setDaemon(true);
         this.imageThread.start();
     }
