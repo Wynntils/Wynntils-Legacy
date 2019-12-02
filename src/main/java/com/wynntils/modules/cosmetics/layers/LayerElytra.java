@@ -10,17 +10,16 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import static net.minecraft.client.renderer.GlStateManager.*;
+
 public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClientPlayer> {
+
     /**
      * The basic Elytra texture.
      */
@@ -39,32 +38,38 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     }
 
     @Override
-    public void doRenderLayer(AbstractClientPlayer entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE") && entitylivingbaseIn.getUniqueID() == ModCore.mc().player.getUniqueID())
+    public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")
+                && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
-        ItemStack itemstack = entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-        if (WebManager.hasElytra(entitylivingbaseIn.getUniqueID()) && itemstack.getItem() != Items.ELYTRA) {
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.enableAlpha();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        if(WebManager.hasElytra(player.getUniqueID())) return;
 
-            if (entitylivingbaseIn.isPlayerInfoSet() && entitylivingbaseIn.getLocationElytra() != null) {
-                this.renderPlayer.bindTexture(entitylivingbaseIn.getLocationElytra());
-            } else if (entitylivingbaseIn.hasPlayerInfo() && WebManager.hasElytra(entitylivingbaseIn.getUniqueID())) {
-                this.renderPlayer.bindTexture(new ResourceLocation("wynntils:capes/" + entitylivingbaseIn.getUniqueID().toString().replace("-", "")));
-            } else {
-                this.renderPlayer.bindTexture(TEXTURE_ELYTRA);
-            }
+        //texture
+        ResourceLocation elytra;
+        if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
+            elytra = player.getLocationElytra();
+        } else if (player.hasPlayerInfo() && WebManager.hasElytra(player.getUniqueID())) {
+            elytra = new ResourceLocation("wynntils:capes/" + player.getUniqueID().toString().replace("-", ""));
+        } else {
+            elytra = TEXTURE_ELYTRA;
+        }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 0.0F, 0.125F);
+        color(1.0F, 1.0F, 1.0F, 1.0F);
+        enableAlpha();
+        enableBlend();
+        blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            double d0 = entitylivingbaseIn.prevChasingPosX + (entitylivingbaseIn.chasingPosX - entitylivingbaseIn.prevChasingPosX) * (double) partialTicks - (entitylivingbaseIn.prevPosX + (entitylivingbaseIn.posX - entitylivingbaseIn.prevPosX) * (double) partialTicks);
-            double d1 = entitylivingbaseIn.prevChasingPosY + (entitylivingbaseIn.chasingPosY - entitylivingbaseIn.prevChasingPosY) * (double) partialTicks - (entitylivingbaseIn.prevPosY + (entitylivingbaseIn.posY - entitylivingbaseIn.prevPosY) * (double) partialTicks);
-            double d2 = entitylivingbaseIn.prevChasingPosZ + (entitylivingbaseIn.chasingPosZ - entitylivingbaseIn.prevChasingPosZ) * (double) partialTicks - (entitylivingbaseIn.prevPosZ + (entitylivingbaseIn.posZ - entitylivingbaseIn.prevPosZ) * (double) partialTicks);
-            float f = entitylivingbaseIn.prevRenderYawOffset + (entitylivingbaseIn.renderYawOffset - entitylivingbaseIn.prevRenderYawOffset) * partialTicks;
+        renderPlayer.bindTexture(elytra);
+
+        //rendering
+        { pushMatrix();
+            translate(0.0F, 0.0F, 0.125F);
+
+            double d0 = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * (double) partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks);
+            double d1 = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * (double) partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks);
+            double d2 = player.prevChasingPosZ + (player.chasingPosZ - player.prevChasingPosZ) * (double) partialTicks - (player.prevPosZ + (player.posZ - player.prevPosZ) * (double) partialTicks);
+            float f = player.prevRenderYawOffset + (player.renderYawOffset - player.prevRenderYawOffset) * partialTicks;
             double d3 = MathHelper.sin(f * 0.017453292F);
             double d4 = -MathHelper.cos(f * 0.017453292F);
             float f1 = (float) d1 * 10.0F;
@@ -80,25 +85,25 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             f2 = MathHelper.clamp(f2, 0.0F, 150.0F);
             f3 = MathHelper.clamp(f3, 0.0F, 50.0F);
 
-            float f4 = entitylivingbaseIn.prevCameraYaw + (entitylivingbaseIn.cameraYaw - entitylivingbaseIn.prevCameraYaw) * partialTicks;
-            f1 = f1 + MathHelper.sin((entitylivingbaseIn.prevDistanceWalkedModified + (entitylivingbaseIn.distanceWalkedModified - entitylivingbaseIn.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
+            float f4 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
+            f1 = f1 + MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
 
-            if (entitylivingbaseIn.isSneaking()) {
+            if (player.isSneaking()) {
                 f1 += 15.0F;
             }
 
-            GlStateManager.rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
+            rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
+            rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
 
-            this.modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entitylivingbaseIn);
-            this.modelElytra.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, player);
+            modelElytra.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-            GlStateManager.disableBlend();
-            GlStateManager.popMatrix();
-        }
+            disableBlend();
+        } popMatrix();
     }
 
     public boolean shouldCombineTextures() {
         return false;
     }
+
 }
