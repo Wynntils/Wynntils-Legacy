@@ -18,11 +18,10 @@ public class SocketManager {
     private static final boolean local = false;
 
     public static void registerSocket() {
-        Reference.LOGGER.info("Register Socket");
+        Reference.LOGGER.info("Connecting to the Socker Server...");
 
         IO.Options opts = new IO.Options();
-        String[] trans = {"websocket"};
-        opts.transports = trans;
+        opts.transports = new String[]{"websocket"};
 
         String url;
         if (local) url = "http://localhost:3000";
@@ -48,17 +47,14 @@ public class SocketManager {
         Gson gson = new Gson();
         // Register Events
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
-            Reference.LOGGER.info("Websocket connection event...");
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
         }).on(Socket.EVENT_RECONNECT, (Object... args) -> {
-            Reference.LOGGER.info("Reconnecting to websocket...");
             FrameworkManager.getEventBus().post(new SocketEvent.ReConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
             // Trigger forge event ~
             String json = (String) args[0];
 
             FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
-
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
@@ -71,13 +67,15 @@ public class SocketManager {
         }).on("left world", (Object... args) -> {
             String uuid = (String) args[0];
             String username = (String) args[1];
+
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(Utils.uuidFromString(uuid), username));
         }).on("unfriend", (Object... args) -> {
             // Trigger forge event ~
             String uuid = (String) args[0];
             String username = (String) args[1];
+
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(Utils.uuidFromString(uuid), username));
-        }).on(Socket.EVENT_DISCONNECT, (Object... args) -> Reference.LOGGER.info("Disconnected from websocket"));
+        }).on(Socket.EVENT_DISCONNECT, (Object... args) -> Reference.LOGGER.info("Disconnected from the Socket Server"));
     }
 
     public static Socket getSocket() {
