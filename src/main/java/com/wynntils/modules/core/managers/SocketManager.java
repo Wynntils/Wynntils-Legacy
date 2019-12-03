@@ -10,7 +10,11 @@ import com.wynntils.webapi.WebManager;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
+import javax.net.ssl.*;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 public class SocketManager {
 
@@ -18,10 +22,45 @@ public class SocketManager {
     private static final boolean local = false;
 
     public static void registerSocket() {
-        Reference.LOGGER.info("Connecting to the Socker Server...");
+        Reference.LOGGER.info("Connecting to the Socket Server...");
+
+        SSLContext mySSLContext = null;
+        try {
+            mySSLContext = SSLContext.getInstance("TLS");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+            }
+
+            public void checkClientTrusted(X509Certificate[] chain,
+                                           String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] chain,
+                                           String authType) {
+            }
+        }};
+
+        try {
+            mySSLContext.init(null, trustAllCerts, null);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+        HostnameVerifier myHostnameVerifier = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
 
         IO.Options opts = new IO.Options();
         opts.transports = new String[]{"websocket"};
+        opts.sslContext = mySSLContext;
+        opts.hostnameVerifier = myHostnameVerifier;
 
         String url;
         if (local) url = "http://localhost:3000";
@@ -48,6 +87,8 @@ public class SocketManager {
         // Register Events
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
+        }).on(Socket.EVENT_CONNECT_ERROR, (Object... args) -> {
+            Reference.LOGGER.error("Socket failed to connect", args[0]);
         }).on(Socket.EVENT_RECONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ReConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
