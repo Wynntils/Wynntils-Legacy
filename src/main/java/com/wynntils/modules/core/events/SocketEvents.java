@@ -20,20 +20,23 @@ public class SocketEvents implements Listener {
     public void connectionEvent(SocketEvent.ConnectionEvent e) {
         Reference.LOGGER.info("Connected to websocket");
         Socket socket = e.getSocket();
-        socket.emit("authenticate", WebManager.getAccount().getToken(), new Ack() {
-            @Override
-            public void call(Object... args) {
-                if (reconnection) {  // If this is a reconnect, send friend list and world again.
-                    if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty())
-                        socket.emit("update friends", new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList()));
-                    if (Reference.onWorld) SocketManager.getSocket().emit("join world", Reference.getUserWorld());
-                    if (Reference.onWorld && PlayerInfo.getPlayerInfo().getPlayerParty().isPartying() && !PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().isEmpty())
-                        SocketManager.getSocket().emit("update party", new Gson().toJson(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers()));
-                    reconnection = false;
-                }
-                if (WebManager.getPlayerProfile().getGuildName() != null && WebManager.getPlayerProfile().getGuildName() != "") {
-                    socket.emit("set guild", WebManager.getPlayerProfile().getGuildName());
-                }
+
+        socket.emit("authenticate", WebManager.getAccount().getToken(), (Ack) args -> {
+            if (reconnection) {  // If this is a reconnect, send friend list and world again.
+                if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty())
+                    socket.emit("update friends", new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList()));
+
+                if (Reference.onWorld) SocketManager.getSocket().emit("join world", Reference.getUserWorld());
+
+                if (Reference.onWorld && PlayerInfo.getPlayerInfo().getPlayerParty().isPartying()
+                        && !PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().isEmpty())
+                    SocketManager.getSocket().emit("update party", new Gson().toJson(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers()));
+
+                reconnection = false;
+            }
+
+            if (WebManager.getPlayerProfile().getGuildName() != null && WebManager.getPlayerProfile().getGuildName() != "") {
+                socket.emit("set guild", WebManager.getPlayerProfile().getGuildName());
             }
         });
     }
@@ -41,6 +44,7 @@ public class SocketEvents implements Listener {
     @SubscribeEvent
     public void reconnectionEvent(SocketEvent.ReConnectionEvent e) {
         Reference.LOGGER.info("Reconnection successful");
+
         reconnection = true;
     }
 

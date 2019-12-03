@@ -36,8 +36,7 @@ public class SocketManager {
         try {
             socket = IO.socket(url, opts);
         } catch (URISyntaxException e) {
-            System.out.println("SOCKET ERROR : ");
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         // Register Events

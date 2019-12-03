@@ -36,7 +36,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -811,12 +812,10 @@ public class Utils {
     }
 
     public static UUID uuidFromString(String s) {
-        if (s.contains("-")) {
-            return UUID.fromString(s);
-        }
-        if (s.length() != 32) {
-            throw new IllegalArgumentException("Invalid UUID string: " + s);
-        }
+        if (s.contains("-")) return UUID.fromString(s);
+        if (s.length() != 32) throw new IllegalArgumentException("Invalid UUID string: " + s);
+
         return new UUID(Long.parseUnsignedLong(s.substring(0, 16), 16), Long.parseUnsignedLong(s.substring(16, 32), 16));
     }
+
 }
