@@ -96,13 +96,13 @@ public class MapPlayerIcon extends MapIcon {
 
             if (worldMapOpen) { // Is messy on minimap
                 CommonColors outlineColor = null;
-                if (profile.isMutualFriend()) {
-                    outlineColor = CommonColors.GREEN;
-                } else if (profile.isInParty()) {
+                if (profile.isInParty())
                     outlineColor = CommonColors.YELLOW;
-                } else if (profile.isGuildmate()) {
+                else if (profile.isMutualFriend())
+                    outlineColor = CommonColors.GREEN;
+                else if (profile.isGuildmate())
                     outlineColor = CommonColors.LIGHT_BLUE;
-                }
+
 
                 if (outlineColor != null)  {
                     renderer.drawRectF(outlineColor, -0.5f, -0.5f, 8.5f, 8.5f);
