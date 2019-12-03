@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -544,6 +544,7 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
         GlStateManager.enableTexture2D();
+        GlStateManager.color(1f,1f,1f,1f);
     }
 
     public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {

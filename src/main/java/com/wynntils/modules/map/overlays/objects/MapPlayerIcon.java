@@ -104,7 +104,9 @@ public class MapPlayerIcon extends MapIcon {
                     outlineColor = CommonColors.LIGHT_BLUE;
                 }
 
-                if (outlineColor != null) renderer.drawRect(outlineColor, -1, -1, 9, 9);
+                if (outlineColor != null)  {
+                    renderer.drawRectF(outlineColor, -0.5f, -0.5f, 8.5f, 8.5f);
+                }
 
             }
 
