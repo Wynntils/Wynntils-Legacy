@@ -53,12 +53,14 @@ public class GuildAndFriendManager {
             }
             return;
         }
+
         UnresolvedInfo newInfo = new UnresolvedInfo();
         UnresolvedInfo u = unresolvedNames.getOrDefault(name, newInfo);
         switch (as) {
             case FRIEND: u.isFriend = to ? Boolean.TRUE : Boolean.FALSE; break;
             case GUILD: u.inGuild = to ? Boolean.TRUE : Boolean.FALSE; break;
         }
+
         if (u == newInfo) unresolvedNames.put(name, newInfo);
         if (tryResolving) tryResolveNames();
     }

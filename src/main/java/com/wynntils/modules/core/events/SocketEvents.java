@@ -23,7 +23,6 @@ public class SocketEvents implements Listener {
         socket.emit("authenticate", WebManager.getAccount().getToken(), new Ack() {
             @Override
             public void call(Object... args) {
-                System.out.println("Check ack");
                 if (reconnection) {  // If this is a reconnect, send friend list and world again.
                     if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty())
                         socket.emit("update friends", new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList()));
