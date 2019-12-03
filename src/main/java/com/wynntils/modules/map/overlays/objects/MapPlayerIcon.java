@@ -7,7 +7,6 @@ import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class MapPlayerIcon extends MapIcon {
 
@@ -77,22 +78,21 @@ public class MapPlayerIcon extends MapIcon {
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableAlpha();
-//        GlStateManager.enableBlend();
-//        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.disableBlend();
-        GlStateManager.disableBlend();
-        GlStateManager.pushMatrix();
-        {
+        color(1.0F, 1.0F, 1.0F, 1.0F);
+        enableAlpha();
+        disableBlend();
+        disableBlend();
+
+        { pushMatrix();
             float sizeX = getSizeX() * sizeMultiplier / 4;
             float sizeZ = getSizeZ() * sizeMultiplier / 4;
             boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
-            GlStateManager.translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
-            GlStateManager.scale(sizeX, sizeZ, 1);
+            translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
+            scale(sizeX, sizeZ, 1);
             ScreenRenderer.scale(1);
             ResourceLocation res = getResource();
             Minecraft.getMinecraft().getTextureManager().bindTexture(res);
+
 
             if (worldMapOpen) { // Is messy on minimap
                 CommonColors outlineColor = null;
@@ -110,13 +110,10 @@ public class MapPlayerIcon extends MapIcon {
 
             Gui.drawScaledCustomSizeModalRect(0, 0, 8.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
 
-            if (profile.hasHat()) {
+            if (profile.hasHat())
                 Gui.drawScaledCustomSizeModalRect(0, 0, 40.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
-            }
 
-
-        }
-        GlStateManager.popMatrix();
+        } popMatrix();
     }
 
     @Override
