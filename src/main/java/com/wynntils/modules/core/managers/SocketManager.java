@@ -15,10 +15,7 @@ import java.net.URISyntaxException;
 public class SocketManager {
 
     private static Socket socket;
-
-    public static Socket getSocket() {
-        return socket;
-    }
+    private static final boolean local = false;
 
     public static void registerSocket() {
         Reference.LOGGER.info("Register Socket");
@@ -26,8 +23,6 @@ public class SocketManager {
         IO.Options opts = new IO.Options();
         String[] trans = {"websocket"};
         opts.transports = trans;
-
-        boolean local = false; // testing mode
 
         String url;
         if (local) url = "http://localhost:3000";
@@ -83,6 +78,10 @@ public class SocketManager {
             String username = (String) args[1];
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(Utils.uuidFromString(uuid), username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> Reference.LOGGER.info("Disconnected from websocket"));
+    }
+
+    public static Socket getSocket() {
+        return socket;
     }
 
     private static class FriendLocationUpdate {
