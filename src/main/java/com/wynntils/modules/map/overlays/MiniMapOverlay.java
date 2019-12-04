@@ -22,7 +22,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.function.Consumer;
 
 public class MiniMapOverlay extends Overlay {
@@ -99,7 +99,9 @@ public class MiniMapOverlay extends Overlay {
 
             //map quad
             float extraSize = (extraFactor - 1f) * mapSize/2f;  // How many extra pixels multiplying by extraFactor added on each side
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
+            int option = MapConfig.INSTANCE.renderUsingLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST;
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, option);
 
             GlStateManager.enableBlend();
             Tessellator tessellator = Tessellator.getInstance();
@@ -111,6 +113,7 @@ public class MiniMapOverlay extends Overlay {
                 bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize, position.getDrawingY() + mapSize + extraSize, 0).tex(maxX, maxZ).endVertex();
                 bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize, position.getDrawingY() - extraSize, 0).tex(maxX, minZ).endVertex();
                 bufferbuilder.pos(position.getDrawingX() - extraSize, position.getDrawingY() - extraSize, 0).tex(minX, minZ).endVertex();
+
                 tessellator.draw();
             }
 
@@ -121,7 +124,10 @@ public class MiniMapOverlay extends Overlay {
             if (MapConfig.INSTANCE.minimapIcons) {
                 final float halfMapSize = mapSize / 2f;
                 final float scaleFactor = mapSize / (mapSize + 2f * zoom);
+
+                //TODO this needs to scale in even numbers to avoid distortion!
                 final float sizeMultiplier = 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier * (1 - (1 - scaleFactor) * (1 - scaleFactor));
+
                 final double rotationRadians = Math.toRadians(mc.player.rotationYaw);
                 final float sinRotationRadians = (float) Math.sin(rotationRadians);
                 final float cosRotationRadians = (float) -Math.cos(rotationRadians);
@@ -315,7 +321,6 @@ public class MiniMapOverlay extends Overlay {
                         mapSize / 2f, mapSize + 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE
                 );
             }
-
         }catch (Exception ex) { ex.printStackTrace(); }
     }
 

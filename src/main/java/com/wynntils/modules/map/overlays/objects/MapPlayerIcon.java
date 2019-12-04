@@ -86,15 +86,17 @@ public class MapPlayerIcon extends MapIcon {
         { pushMatrix();
             float sizeX = getSizeX() * sizeMultiplier / 4;
             float sizeZ = getSizeZ() * sizeMultiplier / 4;
+
             boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
             translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
             scale(sizeX, sizeZ, 1);
+
             ScreenRenderer.scale(1);
             ResourceLocation res = getResource();
             Minecraft.getMinecraft().getTextureManager().bindTexture(res);
 
-
-            if (worldMapOpen) { // Is messy on minimap
+            //TODO somehow this doesn't works on the MiniMap
+            if(worldMapOpen) {
                 CommonColors outlineColor = null;
                 if (profile.isInParty())
                     outlineColor = CommonColors.YELLOW;
@@ -103,10 +105,7 @@ public class MapPlayerIcon extends MapIcon {
                 else if (profile.isGuildmate())
                     outlineColor = CommonColors.LIGHT_BLUE;
 
-
-                if (outlineColor != null)  {
-                    renderer.drawRectF(outlineColor, -0.5f, -0.5f, 8.5f, 8.5f);
-                }
+                if (outlineColor != null) renderer.drawRectF(outlineColor, -0.5f, -0.5f, 8.5f, 8.5f);
 
             }
 

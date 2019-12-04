@@ -55,7 +55,10 @@ public class MapConfig extends SettingsClass {
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 10)
+    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 10)
+    public boolean renderUsingLinear = true;
+
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 11)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 

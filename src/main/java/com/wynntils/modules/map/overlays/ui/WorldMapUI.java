@@ -31,7 +31,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +154,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected float getScaleFactor(int zoom) {
         // How many blocks in one pixel
+        //TODO this needs to scale in even numbers to avoid distortion!
         return 1f / (1f + zoom / 50f);
     }
 

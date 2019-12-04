@@ -496,6 +496,7 @@ public class ScreenRenderer {
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.enableTexture2D();
+
         texture.bind();
 
         float xMin  = x1  + drawingOrigin.x,
@@ -506,6 +507,7 @@ public class ScreenRenderer {
               txMax = tx2 / texture.width,
               tyMin = ty1 / texture.height,
               tyMax = ty2 / texture.height;
+
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glTexCoord2f(txMin,tyMin);
         GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -515,6 +517,7 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMax, 0);
         GlStateManager.glTexCoord2f(txMax,tyMin);
         GlStateManager.glVertex3f(xMax, yMin, 0);
+
         GlStateManager.glEnd();
     }
 

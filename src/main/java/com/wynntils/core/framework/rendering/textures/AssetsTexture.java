@@ -52,6 +52,7 @@ public class AssetsTexture extends Texture {
     @Override
     public ActionResult bind() {
         if(!loaded) return ActionResult.ERROR;
+
         Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
         return ActionResult.SUCCESS;
     }

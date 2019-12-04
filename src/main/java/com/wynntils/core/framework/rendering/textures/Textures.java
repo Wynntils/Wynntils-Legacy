@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class Textures {
+
     public static void loadTextures() {
         List<Class<?>> textureClasses = new ArrayList<>();
 
@@ -21,7 +22,6 @@ public class Textures {
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
         textureClasses.add(Map.class);
-
 
         for(Class<?> clazz : textureClasses) {
             String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase(Locale.ROOT) + "/";
