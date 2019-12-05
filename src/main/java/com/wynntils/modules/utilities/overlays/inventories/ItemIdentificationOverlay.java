@@ -408,7 +408,7 @@ public class ItemIdentificationOverlay implements Listener {
             String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
             Matcher ID = ID_PATTERN.matcher(wColor);
-            if(ID.find()) continue;
+            if(!ID.find()) continue;
 
             String fieldName = Utils.getFieldName(ID.group("ID"), ID.group("Suffix"));
             if(fieldName == null) continue;
