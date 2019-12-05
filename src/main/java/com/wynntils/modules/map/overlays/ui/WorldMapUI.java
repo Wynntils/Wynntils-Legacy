@@ -183,11 +183,13 @@ public class WorldMapUI extends GuiMovementScreen {
         try{
             GlStateManager.enableAlpha();
             GlStateManager.color(1, 1, 1, 1f);
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
 
             map.bindTexture(); // <--- binds the texture
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
             Tessellator tessellator = Tessellator.getInstance();
 
             BufferBuilder bufferbuilder = tessellator.getBuffer();
