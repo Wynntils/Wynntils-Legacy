@@ -115,6 +115,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 break;
             case "reloadapi":
                 WebManager.reset();
+                WebManager.setupUserAccount();
                 WebManager.setupWebApi(false);
                 break;
             case "changelog":
