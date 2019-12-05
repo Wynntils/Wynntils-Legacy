@@ -51,6 +51,15 @@ public class MapApiIcon extends MapTextureIcon {
         put("Merchant_Other", "Other Merchants");
         put("Special_LightRealm", "Light's Secret");
         put("Merchant_Emerald", "Emerald Merchant");
+        put("Profession_Weaponsmithing", "Weaponsmithing Station");
+        put("Profession_Armouring", "Armouring Station");
+        put("Profession_Alchemism", "Alchemism Station");
+        put("Profession_Jeweling", "Jeweling Station");
+        put("Profession_Tailoring", "Tailoring Station");
+        put("Profession_Scribing", "Scribing Station");
+        put("Profession_Cooking", "Cooking Station");
+        put("Profession_Woodworking", "Woodworking Station");
+        put("Merchant_Tool", "Tool Merchant");
     }});
 
     public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()){{
@@ -164,7 +173,10 @@ public class MapApiIcon extends MapTextureIcon {
             medievalApiMarkers.clear();
         }
         for (MapMarkerProfile mmp : WebManager.getApiMarkers()) {
-            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
+            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) {
+                classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
+            }
+
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Medieval));
         }
     }

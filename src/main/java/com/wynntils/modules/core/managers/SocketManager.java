@@ -10,7 +10,9 @@ import com.wynntils.webapi.WebManager;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -30,18 +32,14 @@ public class SocketManager {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+
+        TrustManager[] trustAllCerts = new TrustManager[]{ new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[]{};
+                return new java.security.cert.X509Certificate[] {};
             }
 
-            public void checkClientTrusted(X509Certificate[] chain,
-                                           String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] chain,
-                                           String authType) {
-            }
+            public void checkClientTrusted(X509Certificate[] chain, String authType) { }
+            public void checkServerTrusted(X509Certificate[] chain, String authType) { }
         }};
 
         try {
@@ -50,17 +48,10 @@ public class SocketManager {
             e.printStackTrace();
         }
 
-        HostnameVerifier myHostnameVerifier = new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
-
         IO.Options opts = new IO.Options();
-        opts.transports = new String[]{"websocket"};
+        opts.transports = new String[] { "websocket" };
         opts.sslContext = mySSLContext;
-        opts.hostnameVerifier = myHostnameVerifier;
+        opts.hostnameVerifier = (hostname, session) -> true;
 
         String url;
         if (local) url = "http://localhost:3000";
@@ -124,9 +115,11 @@ public class SocketManager {
     }
 
     private static class FriendLocationUpdate {
+
         public String username, uuid;
         public int x, y, z;
         public boolean isMutualFriend, isPartyMember, isInGuild;
+
     }
 
 }

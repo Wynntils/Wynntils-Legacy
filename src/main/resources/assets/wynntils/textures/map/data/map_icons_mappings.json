@@ -264,6 +264,78 @@
       "zoomNeeded": 0,
       "size": 3
     },
+    "Merchant_Tool": {
+      "texPosX": 96,
+      "texPosZ": 56,
+      "texSizeX": 113,
+      "texSizeZ": 71,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Alchemism": {
+      "texPosX": 115,
+      "texPosZ": 54,
+      "texSizeX": 131,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Armouring": {
+      "texPosX": 132,
+      "texPosZ": 55,
+      "texSizeX": 149,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Cooking": {
+      "texPosX": 150,
+      "texPosZ": 56,
+      "texSizeX": 168,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Jeweling": {
+      "texPosX": 169,
+      "texPosZ": 56,
+      "texSizeX": 186,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Scribing": {
+      "texPosX": 187,
+      "texPosZ": 56,
+      "texSizeX": 205,
+      "texSizeZ": 73,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Tailoring": {
+      "texPosX": 206,
+      "texPosZ": 57,
+      "texSizeX": 223,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Weaponsmithing": {
+      "texPosX": 227,
+      "texPosZ": 57,
+      "texSizeX": 242,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Woodworking": {
+      "texPosX": 0,
+      "texPosZ": 72,
+      "texSizeX": 17,
+      "texSizeZ": 87,
+      "zoomNeeded": 0,
+      "size": 2
+    },
     "painting": {
       "texPosX": 18,
       "texPosZ": 35,

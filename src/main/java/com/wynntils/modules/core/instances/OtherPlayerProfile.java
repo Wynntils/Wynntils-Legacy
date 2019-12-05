@@ -22,7 +22,6 @@ public class OtherPlayerProfile {
     private int x;
     private int y;
     private int z;
-    private WeakReference<EntityPlayer> entityRef = new WeakReference<>(null);
     private boolean hasHat = true;
     private boolean isFriend = false;
     private boolean isGuildmate = false;
@@ -46,6 +45,7 @@ public class OtherPlayerProfile {
                 nameMap.put(username, newProfile);
                 GuildAndFriendManager.tryResolveName(uuid, username);
             }
+
             return newProfile;
         } else {
             return existingInstance;
@@ -57,8 +57,10 @@ public class OtherPlayerProfile {
         if (profile != null && profile.username == null && username != null) {
             profile.username = username;
             nameMap.put(username, profile);
+
             GuildAndFriendManager.tryResolveName(uuid, username);
         }
+
         return profile;
     }
 
@@ -82,6 +84,7 @@ public class OtherPlayerProfile {
     public void setOnWorld(boolean onWorld) {
         boolean oldTrackable = isTrackable();
         inSameWorld = onWorld;
+
         if (isTrackable() != oldTrackable) {
             onTrackableChange();
         }
@@ -99,8 +102,9 @@ public class OtherPlayerProfile {
         if (e == null || e.getDistance(Minecraft.getMinecraft().player) > 30) {
             return false;
         }
+
         hasHat = e.isWearing(EnumPlayerModelParts.HAT);
-        entityRef = new WeakReference<>(e);
+        WeakReference<EntityPlayer> entityRef = new WeakReference<>(e);
         return tryUpdateFromEntity(e);
     }
 
@@ -109,6 +113,7 @@ public class OtherPlayerProfile {
         x = (int) e.posX;
         y = (int) e.posY;
         z = (int) e.posZ;
+
         return true;
     }
 
@@ -134,16 +139,19 @@ public class OtherPlayerProfile {
 
     public int getX() {
         updateLocation();
+
         return x;
     }
 
     public int getY() {
         updateLocation();
+
         return y;
     }
 
     public int getZ() {
         updateLocation();
+
         return z;
     }
 
@@ -156,11 +164,13 @@ public class OtherPlayerProfile {
                 GuildAndFriendManager.tryResolveName(uuid, username);
             }
         }
+
         return username;
     }
 
     private void onTrackableChange() {
         MapPlayerIcon.updatePlayers();
+
         updateLocation();
     }
 
@@ -185,6 +195,7 @@ public class OtherPlayerProfile {
     public void setInGuild(boolean isInGuild) {
         boolean oldTrackable = isTrackable();
         this.isGuildmate = isInGuild;
+
         if (isTrackable() != oldTrackable) {
             onTrackableChange();
         }
@@ -215,6 +226,7 @@ public class OtherPlayerProfile {
     public boolean isInParty() {
         String username = getUsername();
         if (username == null) return false;
+
         return PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().contains(username);
     }
 
