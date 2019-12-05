@@ -3,8 +3,8 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
-import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.map.MapModule;
@@ -83,6 +83,7 @@ public class MainWorldMapUI extends WorldMapUI {
 
         if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) { // Only request every 2 seconds!
             if (SocketManager.getSocket() != null) SocketManager.getSocket().emit("giveLocations");
+
             lastRequest = System.currentTimeMillis();
         }
 

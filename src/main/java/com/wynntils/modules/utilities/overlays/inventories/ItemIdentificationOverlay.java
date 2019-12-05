@@ -8,9 +8,9 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.core.utils.helpers.RainbowText;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.RainbowText;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -408,19 +408,20 @@ public class ItemIdentificationOverlay implements Listener {
             String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
 
             Matcher ID = ID_PATTERN.matcher(wColor);
-            if (ID.find()) {
-                String fieldName = Utils.getFieldName(ID.group("ID"), ID.group("Suffix"));
+            if(ID.find()) continue;
 
-                if (statOrderMem.isEmpty()) statStartMem = i;
-                statOrderMem.add(Utils.getFieldRank(fieldName));
+            String fieldName = Utils.getFieldName(ID.group("ID"), ID.group("Suffix"));
+            if(fieldName == null) continue;
 
-                if (showRanges) {   // If shift held down show SP display same as rollable items
-                    switch (fieldName) {
-                        case "agilityPoints": case "intelligencePoints": case "defensePoints": case "strengthPoints": case "dexterityPoints":
-                            runningValues[0] += Integer.parseInt(ID.group("Value")); break;
-                        default: break;
-                    }
-                }
+            if (statOrderMem.isEmpty()) statStartMem = i;
+            statOrderMem.add(Utils.getFieldRank(fieldName));
+
+            if(!showRanges) continue;
+
+            switch (fieldName) {
+                case "agilityPoints": case "intelligencePoints": case "defensePoints": case "strengthPoints": case "dexterityPoints":
+                    runningValues[0] += Integer.parseInt(ID.group("Value")); break;
+                    default: break;
             }
         }
 
@@ -621,6 +622,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (idCount < 0) {
             return name;
         }
+
         return formatSimple((int) (values[0] / idCount), name);
     }
 
