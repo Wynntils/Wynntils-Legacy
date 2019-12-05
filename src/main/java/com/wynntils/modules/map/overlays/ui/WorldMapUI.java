@@ -183,6 +183,7 @@ public class WorldMapUI extends GuiMovementScreen {
         try{
             GlStateManager.enableAlpha();
             GlStateManager.color(1, 1, 1, 1f);
+            GlStateManager.enableTexture2D();
 
             map.bindTexture(); // <--- binds the texture
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
