@@ -52,7 +52,7 @@ public class PlayerInfoOverlay extends Overlay {
                         -(int) (178 * animationProgress),
                         0,
                         (int) (178 * animationProgress),
-                        232, 0, 0, 1, 1);
+                        222, 0, 0, 1, 1);
 
                 color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha); //apply transparency
                 drawRect(Textures.UIs.tab_overlay, -178, 0, 178, 216, 28, 6, 385, 222);
