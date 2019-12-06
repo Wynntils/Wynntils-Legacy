@@ -402,13 +402,16 @@ public class ScreenRenderer {
      */
     public void drawRect(CustomColor color, int x1, int y1, int x2, int y2) {
         if(!rendering) return;
+
         GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
         color.applyColor();
+
         int xMin = Math.min(x1, x2) + drawingOrigin.x,
             xMax = Math.max(x1, x2) + drawingOrigin.x,
             yMin = Math.min(y1, y2) + drawingOrigin.y,
             yMax = Math.max(y1, y2) + drawingOrigin.y;
+
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glVertex3f(xMin, yMin, 0);
         GlStateManager.glVertex3f(xMin, yMax, 0);
@@ -742,4 +745,9 @@ public class ScreenRenderer {
         itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
     }
+
+    public static Point getDrawingOrigin() {
+        return drawingOrigin;
+    }
+
 }

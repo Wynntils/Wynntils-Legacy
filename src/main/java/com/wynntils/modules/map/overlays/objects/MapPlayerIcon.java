@@ -3,10 +3,11 @@ package com.wynntils.modules.map.overlays.objects;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.core.instances.OtherPlayerProfile;
-import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 
@@ -84,35 +85,41 @@ public class MapPlayerIcon extends MapIcon {
         disableBlend();
 
         { pushMatrix();
-            float sizeX = getSizeX() * sizeMultiplier / 4;
-            float sizeZ = getSizeZ() * sizeMultiplier / 4;
+            float sizeX = getSizeX() * sizeMultiplier;
+            float sizeZ = getSizeZ() * sizeMultiplier;
 
-            boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
-            translate(centreX - (sizeX * (worldMapOpen ? 4 : -3)), centreZ - (sizeZ * (worldMapOpen ? 4 : -3)), 0);
-            scale(sizeX, sizeZ, 1);
+            //boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
 
-            ScreenRenderer.scale(1);
             ResourceLocation res = getResource();
-            Minecraft.getMinecraft().getTextureManager().bindTexture(res);
 
             //TODO somehow this doesn't works on the MiniMap
-            if(worldMapOpen) {
-                CommonColors outlineColor = null;
-                if (profile.isInParty())
-                    outlineColor = CommonColors.YELLOW;
-                else if (profile.isMutualFriend())
-                    outlineColor = CommonColors.GREEN;
-                else if (profile.isGuildmate())
-                    outlineColor = CommonColors.LIGHT_BLUE;
+            CommonColors outlineColor = null;
+            if (profile.isInParty())
+                outlineColor = CommonColors.YELLOW;
+            else if (profile.isMutualFriend())
+                outlineColor = CommonColors.GREEN;
+            else if (profile.isGuildmate())
+                outlineColor = CommonColors.LIGHT_BLUE;
 
-                if (outlineColor != null) renderer.drawRectF(outlineColor, -0.5f, -0.5f, 8.5f, 8.5f);
+            if (outlineColor != null) renderer.drawRectF(outlineColor,
+                    (centreX) - sizeX - .5f,
+                    (centreZ) - sizeZ - .5f,
+                    (centreX) + sizeX + .5f,
+                    (centreZ) + sizeZ + .5f
+            );
 
-            }
+            Minecraft.getMinecraft().getTextureManager().bindTexture(res);
 
-            Gui.drawScaledCustomSizeModalRect(0, 0, 8.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
+            drawScaledCustomSizeModalRect(
+                    ((centreX + renderer.getDrawingOrigin().x) -sizeX),
+                    ((centreZ + renderer.getDrawingOrigin().y) -sizeZ),
+                    8f, 8, 8, 8,
+                    sizeX * 2f,
+                    sizeZ * 2f,
+                    64f, 64f);
 
             if (profile.hasHat())
-                Gui.drawScaledCustomSizeModalRect(0, 0, 40.0F, 8, 8, 8, 8, 8, 64.0F, 64.0F);
+                drawScaledCustomSizeModalRect(-sizeX, -sizeZ, 40.0F, 8, 8, 8, sizeX * 2f, sizeZ * 2f, 64.0F, 64.0F);
 
         } popMatrix();
     }
@@ -125,6 +132,19 @@ public class MapPlayerIcon extends MapIcon {
     @Override
     public boolean hasDynamicLocation() {
         return true;
+    }
+
+    public static void drawScaledCustomSizeModalRect(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height, float tileWidth, float tileHeight) {
+        float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, 0.0D).tex(u * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0.0D).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
+        bufferbuilder.pos(x, y, 0.0D).tex(u * f, v * f1).endVertex();
+        tessellator.draw();
     }
 
     private ResourceLocation cachedResource;

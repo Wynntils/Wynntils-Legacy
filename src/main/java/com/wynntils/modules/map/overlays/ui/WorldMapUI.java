@@ -82,6 +82,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void resetIcon(WorldMapIcon icon) {
         icon.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ, zoom);
     }
+
     protected void resetCompassMapIcon() {
         resetIcon(compassIcon);
     }
