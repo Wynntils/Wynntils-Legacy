@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class PlayerInfoOverlay extends Overlay {
 
     public PlayerInfoOverlay() {
-        super("Player Info Overlay", 410, 239, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
+        super("Player Info Overlay", 410, 229, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
     }
 
     transient double animationProgress = 0;
@@ -49,13 +49,13 @@ public class PlayerInfoOverlay extends Overlay {
 
             { //mask
                 createMask(Textures.Masks.full,
-                            -(int) (178 * animationProgress),
-                            0,
-                            (int) (178 * animationProgress),
-                            232, 0, 0, 1, 1);
+                        -(int) (178 * animationProgress),
+                        0,
+                        (int) (178 * animationProgress),
+                        222, 0, 0, 1, 1);
 
                 color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha); //apply transparency
-                drawRect(Textures.UIs.tab_overlay, -178, 0, 178, 226, 28, 6, 385, 232);
+                drawRect(Textures.UIs.tab_overlay, -178, 0, 178, 216, 28, 6, 385, 222);
                 color(1f, 1f, 1f, 1f);
 
                 { //titles
@@ -95,13 +95,13 @@ public class PlayerInfoOverlay extends Overlay {
                         (int) (177 * animationProgress),
                         -5,
                         (int) (27 + (177 * animationProgress)),
-                        239, 0, 0, 27, 239);
+                        229, 0, 0, 27, 229);
 
                 drawRect(Textures.UIs.tab_overlay,
                         -(int) (27 + (177 * animationProgress)),
                         -5,
                         -(int) (177 * animationProgress),
-                        239, 0, 0, 27, 239);
+                        229, 0, 0, 27, 229);
             }
             color(1f, 1f, 1f, 1f);
 
