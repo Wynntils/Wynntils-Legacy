@@ -280,6 +280,12 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 boolean containsServerType = arguments.stream().anyMatch((arg) -> {
                     List<String> incompatibilities = new ArrayList<>();
                     incompatibilities.addAll(serverTypes);
+                    incompatibilities.add("group");
+                    return incompatibilities.contains(arg);
+                });
+
+                boolean containsGroup = arguments.stream().anyMatch((arg) -> {
+                    List<String> incompatibilities = new ArrayList<>();
                     incompatibilities.add("sort");
                     incompatibilities.add("group");
                     return incompatibilities.contains(arg);
@@ -289,8 +295,12 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
                 if (!containsServerType) {
                     possibleArguments.addAll(serverTypes);
+                    if (!containsGroup) {
+                        possibleArguments.add("group");
+                    }
+                }
+                if (!containsGroup) {
                     possibleArguments.add("sort");
-                    possibleArguments.add("group");
                 }
                 possibleArguments.add("count");
                 if (arguments.size() == 1) {
