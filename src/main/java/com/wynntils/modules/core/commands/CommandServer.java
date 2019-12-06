@@ -20,7 +20,7 @@ import java.util.*;
 
 
 public class CommandServer extends CommandBase implements IClientCommand {
-    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "WAR", "HB", "EU");
+    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "DEV", "WAR", "HB", "EU");
 
     @Override
     public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) {
@@ -118,7 +118,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             try{
                 HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
 
-                if(options.contains("group")) {
+                if(options.contains("group") && finalSelectedType == null) {
                     TextComponentString toEdit = new TextComponentString("Available servers" +
                             (options.contains("count") ? String.format(" (%d)", onlinePlayers.size()): "") + ":\n");
 
@@ -165,38 +165,52 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 ), messageId);
 
         Utils.runAsync(() -> {
+            if (args.length == 0) {
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString("Usage: /s info <serverID>"), messageId);
+                return;
+            }
+            if (args.length > 1) {
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString("Too many arguments\nUsage: /s info <serverID>"), messageId);
+                return;
+            }
+            if (args[0].equalsIgnoreCase("help")) {
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString("Usage: /s info <serverID>"), messageId);
+                return;
+            }
+            //args.length == 1 and no help
             try {
                 HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
-                if (args.length >= 1) {
-                    for (String serverName : onlinePlayers.keySet()) {
-                        if (args[0].equalsIgnoreCase(serverName)) {
-                            TextComponentString text = new TextComponentString(String.format("%s: ", serverName));
-                            TextComponentString playerText = new TextComponentString("");
+                for (String serverName : onlinePlayers.keySet()) {
+                    if (args[0].equalsIgnoreCase(serverName)) {
+                        TextComponentString text = new TextComponentString(String.format("%s: ", serverName));
+                        TextComponentString playerText = new TextComponentString("");
 
-                            ArrayList<String> players = onlinePlayers.get(serverName);
+                        ArrayList<String> players = onlinePlayers.get(serverName);
 
+                        if (players.size() > 0) {
                             for (String player : players.subList(0, players.size() - 1)) {
                                 playerText.appendText(String.format("%s, ", player));
                             }
                             playerText.appendText(players.get(players.size() - 1));
                             playerText.getStyle().setColor(TextFormatting.GRAY);
                             text.appendSibling(playerText);
-
-                            text.appendText("\nTotal online players: ");
-                            TextComponentString playerCountText = new TextComponentString(String.valueOf(players.size()));
-                            playerCountText.getStyle().setColor(TextFormatting.GRAY);
-                            text.appendSibling(playerCountText);
-
-                            ChatOverlay.getChat().printUnloggedChatMessage(text, messageId);
-                            return;
                         }
+
+                        text.appendText("\nTotal online players: ");
+                        TextComponentString playerCountText = new TextComponentString(String.valueOf(players.size()));
+                        playerCountText.getStyle().setColor(TextFormatting.GRAY);
+                        text.appendSibling(playerCountText);
+
+                        ChatOverlay.getChat().printUnloggedChatMessage(text, messageId);
+                        return;
                     }
-                    ChatOverlay.getChat().printUnloggedChatMessage(
-                            new TextComponentString(String.format("Unknown server ID: %s", args[0])), messageId);
-                } else { //args.length == 0
-                    ChatOverlay.getChat().printUnloggedChatMessage(
-                            new TextComponentString("Usage: /s info <serverID>"), messageId);
                 }
+                ChatOverlay.getChat().printUnloggedChatMessage(
+                        new TextComponentString(String.format("Unknown server ID: %s", args[0])), messageId);
+
             } catch (Exception e) {
                 ChatOverlay.getChat().printUnloggedChatMessage(
                         new TextComponentString(
