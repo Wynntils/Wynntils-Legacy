@@ -198,9 +198,17 @@ public class MapConfig extends SettingsClass {
             enabledIcons.put(icon, true);
         }
         for (String icon : new String[]{
-            "Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants"
+            "Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants",
+            "Art Merchant", "Tool Merchant"
         }) {
             enabledIcons.put(icon, forMiniMap);
+        }
+        for (String icon : new String[]{
+            "Weaponsmithing Station", "Armouring Station", "Alchemism Station",
+            "Jeweling Station", "Tailoring Station", "Scribing Station",
+            "Cooking Station", "Woodworking Station"
+        }) {
+            enabledIcons.put(icon, false);
         }
         return enabledIcons;
     }

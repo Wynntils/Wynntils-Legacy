@@ -137,7 +137,8 @@ public class MapApiIcon extends MapTextureIcon {
     }
 
     @Override public boolean isEnabled(boolean forMinimap) {
-        return (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).getOrDefault(translatedName, true);
+        Boolean enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(translatedName);
+        return enabled == null ? true : enabled;
     }
 
     public MapMarkerProfile getMapMarkerProfile() {
