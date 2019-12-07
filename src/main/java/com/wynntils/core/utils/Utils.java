@@ -622,7 +622,7 @@ public class Utils {
              minute = (duration / (1000 * 60)) % 60,
              hour = (duration / (1000 * 60 * 60)) % 24;
 
-        return String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
+        return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
     /**

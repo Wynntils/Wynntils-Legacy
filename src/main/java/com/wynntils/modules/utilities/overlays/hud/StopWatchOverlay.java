@@ -38,7 +38,7 @@ public class StopWatchOverlay extends Overlay {
     }
 
     public StopWatchOverlay() {
-        super("Stop Watch", 60, 10, true, 0, 1f, 10, -15, OverlayGrowFrom.BOTTOM_LEFT, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
+        super("Stop Watch", 60, 10, true, 0, 1f, 10, -15, OverlayGrowFrom.TOP_LEFT, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 
     @Override
