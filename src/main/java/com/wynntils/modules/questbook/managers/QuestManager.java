@@ -79,8 +79,6 @@ public class QuestManager {
     }
 
     private static void readQuestBook(boolean fullSearch, boolean forceDiscoveries) {
-        if (!QuestBookConfig.INSTANCE.allowCustomQuestbook) return;
-
         if(currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
 
@@ -119,7 +117,7 @@ public class QuestManager {
                     List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
                     if(!realLore.contains("Right click to track")) continue; //not a valid quest
 
-                    String displayName = TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()).replace("À", "").replace("\u058e", "").trim();
+                    String displayName = Utils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
 
                     QuestStatus status = null;
                     if(lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
@@ -185,7 +183,7 @@ public class QuestManager {
                     if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
 
                     String displayName = item.getDisplayName();
-                    displayName = displayName.substring(0, displayName.length() - 1);
+                    displayName = Utils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
 
                     DiscoveryType discoveryType = null;
                     if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;

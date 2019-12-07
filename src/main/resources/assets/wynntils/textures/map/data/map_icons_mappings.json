@@ -200,6 +200,15 @@
       "zoomNeeded": 0,
       "size": 3
     },
+    "Content_Miniquest": {
+      "texPosX": 165,
+      "texPosZ": 18,
+      "texSizeX": 183,
+      "texSizeZ": 36,
+      "zoomNeeded": 0,
+      "size": 4,
+      "__comment": "Just a smaller version of Content_Quest right now"
+    },
     "Special_Rune": {
       "texPosX": 64,
       "texPosZ": 35,
@@ -345,48 +354,48 @@
       "size": 2
     }
   },
-  "MEDIVAL": {
-     "Content_CorruptedDungeon": {
+  "MEDIEVAL": {
+    "Content_CorruptedDungeon": {
       "texPosX": 0,
       "texPosZ": 238,
       "texSizeX": 17,
       "texSizeZ": 256,
       "zoomNeeded": -1000,
-       "size": 2
+      "size": 2
     },
-     "Content_Dungeon": {
+    "Content_Dungeon": {
       "texPosX": 17,
       "texPosZ": 238,
       "texSizeX": 34,
       "texSizeZ": 256,
       "zoomNeeded": -1000,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Accessory": {
+    "Merchant_Accessory": {
       "texPosX": 50,
       "texPosZ": 242,
       "texSizeX": 64,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Armour": {
+    "Merchant_Armour": {
       "texPosX": 34,
       "texPosZ": 241,
       "texSizeX": 50,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Dungeon": {
+    "Merchant_Dungeon": {
       "texPosX": 64,
       "texPosZ": 242,
       "texSizeX": 80,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Horse": {
+    "Merchant_Horse": {
       "texPosX": 80,
       "texPosZ": 235,
       "texSizeX": 100,
@@ -394,79 +403,79 @@
       "zoomNeeded": 0,
       "size": 3
     },
-     "Merchant_KeyForge": {
+    "Merchant_KeyForge": {
       "texPosX": 100,
       "texPosZ": 239,
       "texSizeX": 116,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Liquid": {
+    "Merchant_Liquid": {
       "texPosX": 116,
       "texPosZ": 240,
       "texSizeX": 126,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Potion": {
+    "Merchant_Potion": {
       "texPosX": 126,
       "texPosZ": 237,
       "texSizeX": 142,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Powder": {
+    "Merchant_Powder": {
       "texPosX": 142,
       "texPosZ": 240,
       "texSizeX": 158,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Scroll": {
+    "Merchant_Scroll": {
       "texPosX": 156,
       "texPosZ": 243,
       "texSizeX": 172,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Seasail": {
+    "Merchant_Seasail": {
       "texPosX": 172,
       "texPosZ": 238,
       "texSizeX": 199,
       "texSizeZ": 256,
-       "zoomNeeded": 0,
-       "size": 2
+      "zoomNeeded": 0,
+      "size": 2
     },
-     "Merchant_Weapon": {
+    "Merchant_Weapon": {
       "texPosX": 199,
       "texPosZ": 242,
       "texSizeX": 213,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "NPC_Blacksmith": {
+    "NPC_Blacksmith": {
       "texPosX": 213,
       "texPosZ": 242,
       "texSizeX": 228,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "NPC_GuildMaster": {
+    "NPC_GuildMaster": {
       "texPosX": 228,
       "texPosZ": 235,
       "texSizeX": 242,
       "texSizeZ": 256,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "NPC_ItemIdentifier": {
+    "NPC_ItemIdentifier": {
       "texPosX": 242,
       "texPosZ": 239,
       "texSizeX": 251,
@@ -474,125 +483,134 @@
       "zoomNeeded": -1000,
       "size": 2
     },
-     "NPC_PowderMaster": {
+    "NPC_PowderMaster": {
       "texPosX": 0,
       "texPosZ": 222,
       "texSizeX": 14,
       "texSizeZ": 238,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Special_FastTravel": {
+    "Special_FastTravel": {
       "texPosX": 14,
       "texPosZ": 224,
       "texSizeX": 34,
       "texSizeZ": 238,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "tnt": {
+    "tnt": {
       "texPosX": 34,
       "texPosZ": 222,
       "texSizeX": 50,
       "texSizeZ": 241,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Ore_Refinery": {
+    "Ore_Refinery": {
       "texPosX": 50,
       "texPosZ": 228,
       "texSizeX": 63,
       "texSizeZ": 242,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Fish_Refinery": {
+    "Fish_Refinery": {
       "texPosX": 63,
       "texPosZ": 228,
       "texSizeX": 76,
       "texSizeZ": 242,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Wood_Refinery": {
+    "Wood_Refinery": {
       "texPosX": 76,
       "texPosZ": 223,
       "texSizeX": 89,
       "texSizeZ": 235,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Crop_Refinery": {
+    "Crop_Refinery": {
       "texPosX": 89,
       "texPosZ": 224,
       "texSizeX": 102,
       "texSizeZ": 235,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "NPC_TradeMarket": {
+    "NPC_TradeMarket": {
       "texPosX": 102,
       "texPosZ": 225,
       "texSizeX": 116,
       "texSizeZ": 239,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Content_Quest": {
+    "Content_Quest": {
       "texPosX": 116,
       "texPosZ": 223,
       "texSizeX": 125,
       "texSizeZ": 240,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Special_Rune": {
+    "Content_Miniquest": {
+      "texPosX": 116,
+      "texPosZ": 223,
+      "texSizeX": 125,
+      "texSizeZ": 240,
+      "zoomNeeded": 0,
+      "size": 4,
+      "__comment": "Just a smaller version of Content_Quest right now"
+    },
+    "Special_Rune": {
       "texPosX": 125,
       "texPosZ": 219,
       "texSizeX": 143,
       "texSizeZ": 237,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Content_UltimateDiscovery": {
+    "Content_UltimateDiscovery": {
       "texPosX": 201,
       "texPosZ": 18,
       "texSizeX": 219,
       "texSizeZ": 36,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Content_Cave": {
+    "Content_Cave": {
       "texPosX": 234,
       "texPosZ": 0,
       "texSizeX": 250,
       "texSizeZ": 18,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Content_GrindSpot": {
+    "Content_GrindSpot": {
       "texPosX": 221,
       "texPosZ": 20,
       "texSizeX": 233,
       "texSizeZ": 32,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Merchant_Other": {
+    "Merchant_Other": {
       "texPosX": 143,
       "texPosZ": 227,
       "texSizeX": 156,
       "texSizeZ": 240,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
-     "Special_LightRealm": {
+    "Special_LightRealm": {
       "texPosX": 156,
       "texPosZ": 225,
       "texSizeX": 170,
       "texSizeZ": 243,
       "zoomNeeded": 0,
-       "size": 2
+      "size": 2
     },
     "Special_RootsOfCorruption": {
       "texPosX": 170,
@@ -609,6 +627,87 @@
       "texSizeZ": 242,
       "zoomNeeded": 0,
       "size": 2
+    },
+    "Merchant_Tool": {
+      "texPosX": 96,
+      "texPosZ": 56,
+      "texSizeX": 113,
+      "texSizeZ": 71,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Alchemism": {
+      "texPosX": 115,
+      "texPosZ": 54,
+      "texSizeX": 131,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Armouring": {
+      "texPosX": 132,
+      "texPosZ": 55,
+      "texSizeX": 149,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Cooking": {
+      "texPosX": 150,
+      "texPosZ": 56,
+      "texSizeX": 168,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Jeweling": {
+      "texPosX": 169,
+      "texPosZ": 56,
+      "texSizeX": 186,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Scribing": {
+      "texPosX": 187,
+      "texPosZ": 56,
+      "texSizeX": 205,
+      "texSizeZ": 73,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Tailoring": {
+      "texPosX": 206,
+      "texPosZ": 57,
+      "texSizeX": 223,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Weaponsmithing": {
+      "texPosX": 224,
+      "texPosZ": 57,
+      "texSizeX": 242,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
+    },
+    "Profession_Woodworking": {
+      "texPosX": 0,
+      "texPosZ": 72,
+      "texSizeX": 17,
+      "texSizeZ": 87,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not medieval theme"
     },
     "painting": {
       "texPosX": 184,

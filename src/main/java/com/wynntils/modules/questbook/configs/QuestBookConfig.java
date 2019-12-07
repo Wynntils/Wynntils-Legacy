@@ -13,7 +13,7 @@ public class QuestBookConfig extends SettingsClass {
 
     public static QuestBookConfig INSTANCE;
 
-    @Setting(displayName = "Allow Wynntils' Quest Book", description = "Should Wynncraft's quest book be replaced by Wynntils'?")
+    @Setting(displayName = "Replace Wynncraft Quest Book", description = "Should Wynncraft's quest book be replaced by Wynntils' custom quest book?\n\n§8The quest book can still be accessed through the \"Open Quest Book\" hotkey")
     public boolean allowCustomQuestbook = true;
 
     @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")

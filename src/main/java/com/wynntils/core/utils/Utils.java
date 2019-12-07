@@ -92,6 +92,18 @@ public class Utils {
     }
 
     /**
+     * Removes the characters 'À' ('\u00c0') and '\u058e' that is sometimes added in Wynn APIs and
+     * replaces '\u2019' (RIGHT SINGLE QUOTATION MARK) with '\'' (And trims)
+     *
+     * @param input string
+     * @return the string without these two chars
+     */
+    public static String normalizeBadString(String input) {
+        if (input == null) return "";
+        return input.trim().replace("À", "").replace("\u058e", "").replace('\u2019', '\'');
+    }
+
+    /**
      * Removes the invisible character À
      *
      * @param input string

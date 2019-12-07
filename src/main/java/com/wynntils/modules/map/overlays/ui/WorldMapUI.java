@@ -19,6 +19,7 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -77,6 +78,12 @@ public class WorldMapUI extends GuiMovementScreen {
         territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
+
+        if (MapConfig.INSTANCE.hideCompletedQuests) {
+            // Request analyse if not already done to
+            // hide completed quests
+            QuestManager.wasBookOpened();
+        }
     }
 
     protected void resetIcon(WorldMapIcon icon) {

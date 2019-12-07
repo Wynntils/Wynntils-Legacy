@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.configs;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -12,12 +13,14 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
@@ -51,18 +54,21 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
     public boolean minimapIcons = true;
 
-    @Setting(displayName = "Compass Beacon Color", description = "What color should the compass beacon be?", order = 9)
+    @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 9)
+    public boolean hideCompletedQuests = true;
+
+    @Setting(displayName = "Compass Beacon Color", description = "What color should the compass beacon be?", order = 10)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
-    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 10)
+    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 11)
     public boolean renderUsingLinear = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 11)
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 12)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
-    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?")
+    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?", order = 13)
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
@@ -185,7 +191,7 @@ public class MapConfig extends SettingsClass {
     @Override
     public void onSettingChanged(String name) { }
 
-    public HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
+    public static HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
         HashMap<String, Boolean> enabledIcons = new HashMap<>();
         for (String icon : new String[]{
             "Dungeons", "Accessory Merchant", "Armour Merchant", "Dungeon Merchant", "Horse Merchant",
@@ -193,12 +199,12 @@ public class MapConfig extends SettingsClass {
             "Potion Merchant", "Powder Merchant", "Scroll Merchant", "Seasail Merchant", "Weapon Merchant",
             "Blacksmith", "Guild Master", "Item Identifier", "Powder Master", "Fast Travel",
             "Fish Refinery", "Wood Refinery", "Crop Refinery", "Marketplace", "Nether Portal",
-            "Light's Secret"
+            "Light's Secret", "Quests"
         }) {
             enabledIcons.put(icon, true);
         }
         for (String icon : new String[]{
-            "Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants",
+            "Mini-Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants",
             "Art Merchant", "Tool Merchant"
         }) {
             enabledIcons.put(icon, forMiniMap);
@@ -210,6 +216,25 @@ public class MapConfig extends SettingsClass {
         }) {
             enabledIcons.put(icon, false);
         }
+
+        // Warn if we are either missing some icons in the options
+        // or have options that do not have an icon
+        if (Reference.developmentEnvironment) {
+            HashSet<String> ignored = new HashSet<>();
+            for (String ignoredName : MapApiIcon.IGNORED_MARKERS) {
+                ignored.add(MapApiIcon.MAPMARKERNAME_TRANSLATION.get(ignoredName));
+            }
+
+            for (String icon : MapApiIcon.MAPMARKERNAME_TRANSLATION.values()) {
+                if (ignored.contains(icon)) continue;
+                if (!enabledIcons.containsKey(icon)) Reference.LOGGER.warn("Missing option for icon \"" + icon + "\"");
+            }
+            for (String icon : enabledIcons.keySet()) {
+                if (ignored.contains(icon)) continue;
+                if (!MapApiIcon.MAPMARKERNAME_REVERSE_TRANSLATION.containsKey(icon)) Reference.LOGGER.warn("Missing translation for \"" + icon + "\"");
+            }
+        }
+
         return enabledIcons;
     }
 

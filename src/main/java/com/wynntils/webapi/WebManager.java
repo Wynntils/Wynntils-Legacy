@@ -399,6 +399,8 @@ public class WebManager {
                 }.getType();
 
                 mapMarkers = gson.fromJson(jsonArray, type);
+                mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
+                mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
                 MapApiIcon.resetApiMarkers();
                 return true;
             })
@@ -419,6 +421,7 @@ public class WebManager {
                 Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
                 refineryMapMarkers = gson.fromJson(jsonArray, type);
+                refineryMapMarkers.forEach(MapMarkerProfile::ensureNormalized);
                 MapApiIcon.resetApiMarkers();
                 return true;
             })

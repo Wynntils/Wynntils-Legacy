@@ -85,7 +85,7 @@ public class ModCore {
         });
 
         if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {
-            MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons(false);
+            MapConfig.INSTANCE.enabledMapIcons = MapConfig.resetMapIcons(false);
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
         }
 

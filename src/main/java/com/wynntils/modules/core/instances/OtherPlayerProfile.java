@@ -10,7 +10,6 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.UUID;
@@ -99,17 +98,11 @@ public class OtherPlayerProfile {
      */
     public boolean updateLocationFromWorld() {
         EntityPlayer e = PlayerEntityManager.getPlayerByUUID(uuid);
-        if (e == null || e.getDistance(Minecraft.getMinecraft().player) > 30) {
-            return false;
-        }
+        if (e == null) return false;
 
         hasHat = e.isWearing(EnumPlayerModelParts.HAT);
-        WeakReference<EntityPlayer> entityRef = new WeakReference<>(e);
-        return tryUpdateFromEntity(e);
-    }
 
-    private boolean tryUpdateFromEntity(EntityPlayer e) {
-        if (e.getDistance(Minecraft.getMinecraft().player) >= 30) return false;
+        if (e.isDead || e.getDistance(Minecraft.getMinecraft().player) >= 30) return false;
         x = (int) e.posX;
         y = (int) e.posY;
         z = (int) e.posZ;
