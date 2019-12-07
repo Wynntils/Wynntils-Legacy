@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -284,8 +285,8 @@ public class ChatOverlay extends GuiNewChat {
             tab.updateLastMessageAndAmount(originalMessage, 2);
         }
 
-        //push mention
-        if (!noProcessing && ChatManager.processUserMention(originalMessage)) tab.pushMention();
+        // push mention
+        if (!noProcessing && ChatManager.processUserMention(displayedMessage, originalMessage)) tab.pushMention();
 
         //continue mc code
 

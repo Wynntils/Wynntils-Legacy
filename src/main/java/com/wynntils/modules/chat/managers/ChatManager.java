@@ -41,6 +41,16 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static ITextComponent processRealMessage(ITextComponent in) {
+        // Reorginizing
+        if (!in.getUnformattedComponentText().isEmpty()) {
+            ITextComponent newMessage = new TextComponentString("");
+            newMessage.setStyle(in.getStyle().createDeepCopy());
+            newMessage.appendSibling(in);
+            newMessage.getSiblings().addAll(in.getSiblings());
+            in.getSiblings().clear();
+            in = newMessage;
+        }
+
         //timestamps
         if(ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
@@ -51,15 +61,6 @@ public class ChatManager {
                     validDateFormat = false;
                 }
             }
-            if (!in.getUnformattedComponentText().isEmpty()) {
-                ITextComponent newMessage = new TextComponentString("");
-                newMessage.setStyle(in.getStyle().createDeepCopy());
-                newMessage.appendSibling(in);
-                newMessage.getSiblings().addAll(in.getSiblings());
-                in.getSiblings().clear();
-                in = newMessage;
-            }
-            //from here
 
             List<ITextComponent> timeStamp = new ArrayList<>();
             ITextComponent startBracket = new TextComponentString("[");
@@ -246,42 +247,45 @@ public class ChatManager {
         return in;
     }
 
-    public static boolean processUserMention(ITextComponent in) {
+    public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         boolean hasMention = false;
-        if(ChatConfig.INSTANCE.allowChatMentions && in.getSiblings().size() >= 2) {
+        if (ChatConfig.INSTANCE.allowChatMentions) {
             if (in.getFormattedText().contains(ModCore.mc().player.getName())) {
                 // Patterns used to detect guild/party chat
-                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
+                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
                 boolean foundStart = false;
+                boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
                 ArrayList<ITextComponent> components = new ArrayList<>();
                 for (ITextComponent component : in.getSiblings()) {
                     if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
                         hasMention = true;
-                        String[] sections = component.getUnformattedText().split(ModCore.mc().player.getName());
-                        for (int index = 0; index < sections.length; index++) {
-                            String section = sections[index];
+                        String text = component.getUnformattedComponentText();
+                        String playerName = ModCore.mc().player.getName();
+                        while (text.indexOf(playerName) > -1) {
+                            String section = text.substring(0, text.indexOf(playerName));
                             ITextComponent sectionComponent = new TextComponentString(section);
-                            sectionComponent.setStyle(component.getStyle().createDeepCopy());
+                            sectionComponent.setStyle(component.getStyle().createShallowCopy());
                             components.add(sectionComponent);
-                            if (index != sections.length - 1) {
-                                ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                                playerComponent.setStyle(component.getStyle().createDeepCopy());
-                                playerComponent.getStyle().setColor(TextFormatting.YELLOW);
-                                components.add(playerComponent);
-                            }
 
-                        }
-                        if (component.getUnformattedText().endsWith(ModCore.mc().player.getName())) {
                             ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                            playerComponent.setStyle(component.getStyle().createDeepCopy());
+                            playerComponent.setStyle(component.getStyle().createShallowCopy());
                             playerComponent.getStyle().setColor(TextFormatting.YELLOW);
                             components.add(playerComponent);
+
+                            text = text.replaceFirst(".*" + ModCore.mc().player.getName(), "");
                         }
+                        ITextComponent sectionComponent = new TextComponentString(text);
+                        sectionComponent.setStyle(component.getStyle().createShallowCopy());
+                        components.add(sectionComponent);
                     } else if (!foundStart) {
-                        if (in.getSiblings().get(0).getUnformattedText().contains("/")) {
-                            foundStart = component.getUnformattedText().contains(":");
-                        } else if (isGuildOrParty) {
-                            foundStart = component.getUnformattedText().contains("]");
+                        if (foundEndTimestamp) {
+                            if (in.getSiblings().get(0).getUnformattedText().contains("/")) {
+                                foundStart = component.getUnformattedText().contains(":");
+                            } else if (isGuildOrParty) {
+                                foundStart = component.getUnformattedText().contains("]");
+                            }
+                        } else if (component.getUnformattedComponentText().contains("] ")) {
+                            foundEndTimestamp = true;
                         }
                         components.add(component);
                     } else {
