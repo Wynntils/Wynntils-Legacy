@@ -191,6 +191,7 @@ public abstract class InfoOverlay extends Overlay {
                         case ARCHER: className = "archer"; break;
                         case WARRIOR: className = "warrior"; break;
                         case ASSASSIN: className = "assassin"; break;
+                        case SHAMAN: className = "shaman"; break;
                         default: className = null; break;
                     }
 
