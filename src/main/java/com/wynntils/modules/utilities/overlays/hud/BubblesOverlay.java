@@ -32,7 +32,7 @@ public class BubblesOverlay extends Overlay {
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
 
     @Setting(displayName = "Text Name", description = "The color of the text")
-    public CustomColor textColor = CustomColor.fromString("6aabf5",1f);
+    public CustomColor textColor = CustomColor.fromInt(0x6aabf5, 1f);
 
     private static float amount = 0.0f;
 

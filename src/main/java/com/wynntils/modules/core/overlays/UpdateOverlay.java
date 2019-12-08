@@ -28,10 +28,10 @@ import java.io.IOException;
 
 public class UpdateOverlay extends Overlay {
 
-    private static CustomColor background = CustomColor.fromString("333341",1);
-    private static CustomColor box = CustomColor.fromString("434355",1);
-    private static CustomColor yes = CustomColor.fromString("80fd80",1);
-    private static CustomColor no = CustomColor.fromString("fd8080",1);
+    private static CustomColor background = CustomColor.fromInt(0x333341, 1);
+    private static CustomColor box = CustomColor.fromInt(0x434355, 1);
+    private static CustomColor yes = CustomColor.fromInt(0x80fd80, 1);
+    private static CustomColor no = CustomColor.fromInt(0xfd8080, 1);
 
     public UpdateOverlay() {
         super("Update", 20, 20, true, 1f, 0f, 0, 0, null);

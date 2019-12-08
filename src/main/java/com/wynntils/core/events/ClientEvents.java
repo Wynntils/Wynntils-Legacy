@@ -71,6 +71,8 @@ public class ClientEvents {
 
         String message = e.getMessage().getUnformattedText();
 
+        if (message.contains("\u27a4")) return;  // Whisper from a player
+
         GameEvent toDispatch = null;
         if(message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
         else if(message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();

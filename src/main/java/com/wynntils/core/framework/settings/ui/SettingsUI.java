@@ -317,7 +317,7 @@ public class SettingsUI extends UI {
         return doesMatchSearch(settingPath.path);
     }
 
-    private static final CustomColor TEXTCOLOR_UNSEARCHED = CustomColor.fromString("e6e6e6", 1f);
+    private static final CustomColor TEXTCOLOR_UNSEARCHED = CustomColor.fromInt(0xe6e6e6, 1f);
 
     private class HolderButton extends UIEButton {
         String path;

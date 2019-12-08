@@ -38,7 +38,7 @@ public class ExpBarOverlay extends Overlay {
     public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CustomColor.fromString("aaff00",1f);
+    public CustomColor textColor = CustomColor.fromInt(0xaaff00, 1f);
 
     private static float exp = 0.0f;
 

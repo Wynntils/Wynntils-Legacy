@@ -17,9 +17,9 @@ import java.util.function.Function;
 
 public class UIEButton extends UIEClickZone {
 
-    public static CustomColor TEXTCOLOR_NORMAL = CustomColor.fromString("ffffff",1f);
-    public static CustomColor TEXTCOLOR_HOVERING = CustomColor.fromString("ffff6b",1f);
-    public static CustomColor TEXTCOLOR_NOTACTIVE = CustomColor.fromString("b2b2b2",1f);
+    public static CustomColor TEXTCOLOR_NORMAL = CustomColor.fromInt(0xffffff, 1f);
+    public static CustomColor TEXTCOLOR_HOVERING = CustomColor.fromInt(0xffff6b, 1f);
+    public static CustomColor TEXTCOLOR_NOTACTIVE = CustomColor.fromInt(0xb2b2b2, 1f);
 
     public Texture texture;
     public String text;

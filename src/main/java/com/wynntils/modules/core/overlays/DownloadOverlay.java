@@ -15,13 +15,13 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class DownloadOverlay extends Overlay {
 
-    private static CustomColor background = CustomColor.fromString("333341",1);
-    private static CustomColor box = CustomColor.fromString("434355",1);
-    private static CustomColor progress = CustomColor.fromString("80fd80",1);
-    private static CustomColor back = CustomColor.fromString("ececec",1);
+    private static CustomColor background = CustomColor.fromInt(0x333341, 1);
+    private static CustomColor box = CustomColor.fromInt(0x434355, 1);
+    private static CustomColor progress = CustomColor.fromInt(0x80fd80, 1);
+    private static CustomColor back = CustomColor.fromInt(0xececec, 1);
 
-    private static CustomColor brackgroundRed = CustomColor.fromString("6e3737",1);
-    private static CustomColor boxRed = CustomColor.fromString("fd8080",1);
+    private static CustomColor brackgroundRed = CustomColor.fromInt(0x6e3737, 1);
+    private static CustomColor boxRed = CustomColor.fromInt(0xfd8080, 1);
 
     static int lastPercent = 0;
     static DownloadPhase lastPhase;
