@@ -448,7 +448,7 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
             // Not sure on the nether server format -Bedo
-            if (messageText.matches(".+ has logged into server (WC|HB|WAR|EU|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && formattedText.startsWith(TextFormatting.GREEN.toString())) {
+            if (messageText.matches(".+ has logged into server (WC|HB|WAR|EU|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(TextFormatting.GREEN.toString())) {
                 String[] res = messageText.split(" ");
                 if (res.length == 9) {
                     if (res[8].equals("ArcherÀ")) res[8] = "Shaman";
@@ -465,7 +465,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
-            if (messageText.matches(".+ has logged into server (WC|HB|EU|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && formattedText.startsWith(TextFormatting.AQUA.toString())) { // À temp for Shaman
+            if (messageText.matches(".+ has logged into server (WC|HB|EU|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(TextFormatting.AQUA.toString())) { // À temp for Shaman
                 String[] res = messageText.split(" ");
                 if (res.length == 9) {
                     if (res[8].equals("ArcherÀ")) res[8] = "Shaman"; // Temp replace for Shaman (Same changes as above)
