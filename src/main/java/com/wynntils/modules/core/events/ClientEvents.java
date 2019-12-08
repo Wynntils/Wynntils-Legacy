@@ -15,6 +15,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
@@ -273,7 +274,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void joinWynncraft(WynncraftServerEvent.Login e) {
-        SocketManager.registerSocket();
+        if (CoreDBConfig.INSTANCE.enableSockets) SocketManager.registerSocket();
     }
 
     @SubscribeEvent

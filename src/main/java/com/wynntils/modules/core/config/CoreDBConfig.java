@@ -10,6 +10,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.webapi.WebManager;
 
 @SettingsInfo(name = "main", displayPath = "Core")
@@ -30,6 +31,9 @@ public class CoreDBConfig extends SettingsClass {
             "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
 
+    @Setting(displayName = "Enable Socket Connections", description = "Socket connections are used to:\n  - §7Display friend on the world map.§r\n  - §7Display party members on the world map.§r\n  - §7Display guild members on the world map.§r")
+    public boolean enableSockets = true;
+
     @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
@@ -47,6 +51,14 @@ public class CoreDBConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if (name.equals("updateStream")) WebManager.checkForUpdates();
+        if (name.equals("updateStream")) {
+            WebManager.checkForUpdates();
+        } else if (name.equals("enableSockets")) {
+            if (this.enableSockets) {
+                SocketManager.registerSocket();
+            } else {
+                SocketManager.disconnectSocket();
+            }
+        }
     }
 }
