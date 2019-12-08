@@ -178,7 +178,7 @@ public class QuestBookPage extends GuiScreen {
                 searchBarFocused = true;
                 if (mouseButton == 1) {
                     searchBarText = "";
-                    searchUpdate(searchBarText);
+                    updateSearch();
                 }
             } else {
                 searchBarFocused = false;
@@ -229,7 +229,7 @@ public class QuestBookPage extends GuiScreen {
                 keepForTime = true;
             }
             currentPage = 1;
-            searchUpdate(searchBarText);
+            updateSearch();
         }
         super.keyTyped(typedChar, keyCode);
     }

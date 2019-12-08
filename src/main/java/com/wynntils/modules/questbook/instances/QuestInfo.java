@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.webapi.WebManager;
@@ -21,6 +23,8 @@ public class QuestInfo {
     private String questbookFriendlyName;
     private final QuestStatus status;
     private final int minLevel;
+    private final QuestLevelType levelType;
+    private final boolean hasLevel;
     private final QuestSize size;
     private final List<String> lore;
     private final ArrayList<String> splittedDescription;
@@ -30,8 +34,10 @@ public class QuestInfo {
 
     private static final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
-    public QuestInfo(String name, QuestStatus status, int minLevel, QuestSize size, String currentDescription, List<String> lore) {
-        this.name = name; this.status = status; this.minLevel = minLevel; this.size = size; this.currentDescription = currentDescription; this.lore = lore;
+    public QuestInfo(String name, QuestStatus status, int minLevel, QuestLevelType levelType, boolean hasLevel, QuestSize size, String currentDescription, List<String> lore) {
+        this.name = name; this.status = status;
+        this.minLevel = minLevel; this.levelType = levelType; this.hasLevel = hasLevel;
+        this.size = size; this.currentDescription = currentDescription; this.lore = lore;
 
         ArrayList<String> splittedDescription = new ArrayList<>();
         StringBuilder currentMessage = new StringBuilder();
@@ -98,8 +104,17 @@ public class QuestInfo {
         return lore;
     }
 
+    public QuestLevelType getLevelType() {
+        return levelType;
+    }
+
     public int getMinLevel() {
         return minLevel;
+    }
+
+    public boolean hasLevel() {
+        if (status != QuestStatus.CANNOT_START) return true;
+        return levelType == QuestLevelType.COMBAT ? PlayerInfo.getPlayerInfo().getLevel() >= minLevel : hasLevel;
     }
 
     public QuestSize getSize() {
@@ -135,11 +150,11 @@ public class QuestInfo {
     }
 
     public boolean isMiniQuest() {
-        return name.startsWith("Mini-Quest");
+        return false;
     }
 
     public String toString() {
-        return name + ":" + minLevel + ":" + size.toString() + ":" + status.toString() + ":" + currentDescription;
+        return name + ":" + minLevel + ":" + levelType + ":" + size.toString() + ":" + status.toString() + ":" + currentDescription;
     }
 
 }

@@ -28,7 +28,4 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analysed every time by the quest book?\n\n§8Enabling this will cause analysis to be slower but the discoveries page will always be up to date.")
     public boolean scanDiscoveries = false;
 
-    @Setting(displayName = "Hide Mini Quests", description = "Should mini quests be hidden from the quest book?")
-    public boolean hideMiniQuests = false;
-
 }

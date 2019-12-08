@@ -75,7 +75,7 @@ public class ClientEvents {
         if(message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
         else if(message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
         else if(message.contains("[Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
-        else if(message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
+        else if(message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted.MiniQuestCompleted();
         else if(message.contains("You are now combat level") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
 
         if(toDispatch == null) return;

@@ -27,6 +27,9 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(GameEvent e)  {
+        if (e instanceof GameEvent.QuestCompleted.MiniQuestCompleted) {
+            QuestManager.scanMiniquests();
+        }
         QuestManager.requestAnalyse();
     }
 

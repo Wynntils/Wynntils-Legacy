@@ -62,7 +62,7 @@ public class GameEvent extends Event {
      * Called when a quest is completed
      */
     public static class QuestCompleted extends GameEvent {
-
+        public static class MiniQuestCompleted extends QuestCompleted { }
     }
 
 }
