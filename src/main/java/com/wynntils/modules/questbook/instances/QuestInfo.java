@@ -10,6 +10,8 @@ import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -55,11 +57,12 @@ public class QuestInfo {
         }
         splittedDescription.add(currentMessage.toString());
 
-        String questbookFriendlyName = this.name;
-        if (questbookFriendlyName.length() > 22) {
-            questbookFriendlyName = questbookFriendlyName.substring(0, 19);
-            questbookFriendlyName += "...";
+        String questbookFriendlyName = this.name.replace("Mini-Quest - ", "");
+        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(questbookFriendlyName) > 120) questbookFriendlyName += "...";
+        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(questbookFriendlyName) > 120) {
+            questbookFriendlyName = questbookFriendlyName.substring(0, questbookFriendlyName.length() - 4).trim() + "...";
         }
+
         lore.add(0, TextFormatting.BOLD + this.name);
 
         Matcher m = coordinatePattern.matcher(currentDescription);

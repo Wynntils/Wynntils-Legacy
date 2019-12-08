@@ -606,8 +606,8 @@ public class WebManager {
      * @return A {@link InputStream} for the saved result
      */
     public static JsonElement handleCache(InputStream stream, String fileName, boolean forceRecall) {
-        File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath() + "/apicache");
-        File apiCacheFile = new File(apiCacheFolder.getPath() + "/" + fileName);
+        File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath(), "apicache");
+        File apiCacheFile = new File(apiCacheFolder.getPath(), fileName);
         if (!forceRecall) {
             try {
                 if (!apiCacheFolder.exists())

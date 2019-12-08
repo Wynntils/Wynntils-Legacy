@@ -64,6 +64,11 @@ public class QuestManager {
      * Queue a QuestBook analyse
      */
     public static void requestAnalyse() {
+        if (!bookOpened) {
+            requestFullSearch();
+            return;
+        }
+
         analyseRequested = true;
         interrupted = false;
     }
@@ -345,7 +350,8 @@ public class QuestManager {
         bookOpened = false;
         forceDiscoveries();
         scanMiniquests();
-        requestAnalyse();
+        analyseRequested = true;
+        interrupted = false;
     }
 
     /**

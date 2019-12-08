@@ -144,9 +144,9 @@ public class ServerEvents implements Listener {
         if(messageText.startsWith("#") && messageText.contains(" XP -")) {
             if(waitingForGuildList) e.setCanceled(true);
 
-            String[] messageSplitted = messageText.split(" ");
-            if (PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1])) {
-                FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(messageSplitted[1]));
+            String[] splitMessage = messageText.split(" ");
+            if (PlayerInfo.getPlayerInfo().getGuildList().add(splitMessage[1])) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splitMessage[1]));
             }
             return;
         }

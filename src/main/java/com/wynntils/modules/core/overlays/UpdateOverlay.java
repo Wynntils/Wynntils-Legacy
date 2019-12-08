@@ -120,7 +120,7 @@ public class UpdateOverlay extends Overlay {
             download = false;
 
             try {
-                File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
+                File f = new File(Reference.MOD_STORAGE_ROOT, "updates");
 
                 String url;
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
@@ -179,7 +179,7 @@ public class UpdateOverlay extends Overlay {
                     return;
                 }
 
-                File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
+                File newJar = new File(new File(Reference.MOD_STORAGE_ROOT, "updates"), jarName);
                 Utils.copyFile(newJar, oldJar);
                 newJar.delete();
                 Reference.LOGGER.info("Successfully applied Wynntils update.");

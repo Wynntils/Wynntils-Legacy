@@ -98,11 +98,11 @@ public class DownloaderManager {
                     pf.getLocation().mkdirs();
                 }
 
-                String[] urlSplited = pf.getUrl().split("/");
+                String[] urlParts = pf.getUrl().split("/");
 
                 int fileLength = st.getContentLength();
 
-                File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlSplited[urlSplited.length - 1], "UTF-8"));
+                File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
 
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);
@@ -160,7 +160,7 @@ public class DownloaderManager {
                     zin.closeEntry();
                     zin.close();
 
-                    File zip = new File(pf.getLocation(), urlSplited[urlSplited.length - 1]);
+                    File zip = new File(pf.getLocation(), urlParts[urlParts.length - 1]);
                     if(zip.exists()) { zip.delete(); }
                 }
 

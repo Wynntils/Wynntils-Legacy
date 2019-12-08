@@ -338,7 +338,7 @@ public class ScreenRenderer {
     }
 
     /**
-     * Draw a string being corrected splitted every x pixels, without cutting out words
+     * Draw a string being corrected split every x pixels, without cutting out words
      *
      * @param text the text to render
      * @param maxSize the max pixel size of a sentence
@@ -348,14 +348,19 @@ public class ScreenRenderer {
      * @param color the starting color to render(without codes, its basically the actual text's color)
      * @param alignment the alignment around {x} and {y} to render the text about
      * @param shadow should the text have a shadow behind it
+     *
+     * @return the number of lines rendered
      */
-    public void drawSplitedString(String text, int maxSize, float x, float y, float offsetY, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
+    public int drawSplitString(String text, int maxSize, float x, float y, float offsetY, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
         float currentY = y;
+        int lines = 0;
         for(String s : Utils.wrapTextBySize(text, maxSize)) {
             drawString(s, x, currentY, color, alignment, shadow);
 
             currentY+=offsetY;
+            ++lines;
         }
+        return lines;
     }
 
     /**

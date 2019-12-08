@@ -19,7 +19,7 @@ public class Reference {
     public static String VERSION = "";
     public static int BUILD_NUMBER = -1;
     public static final File MOD_STORAGE_ROOT = new File("wynntils");
-    public static final File MOD_ASSETS_ROOT = new File(MOD_STORAGE_ROOT + "\\assets");
+    public static final File MOD_ASSETS_ROOT = new File(MOD_STORAGE_ROOT, "assets");
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 
     private static String userWorld = null;

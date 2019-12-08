@@ -220,6 +220,20 @@ public class QuestsPage extends QuestBookPage {
 
                     currentY += 13;
                 }
+            } else {
+                String textToDisplay;
+                if (
+                    QuestManager.getCurrentQuestsData().size() == 0 || searchBarText.equals("") ||
+                    (showingMiniQuests && QuestManager.getCurrentQuestsData().values().stream().noneMatch(QuestInfo::isMiniQuest))
+                ) {
+                    textToDisplay = String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "mini-quests" : "quests");
+                } else {
+                    textToDisplay = String.format("No %s found!\nTry searching for something else.", showingMiniQuests ? "mini-quests" : "quests");
+                }
+
+                for (String line : textToDisplay.split("\n")) {
+                    currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
+                }
             }
 
             //Reload Quest Data button
@@ -323,10 +337,12 @@ public class QuestsPage extends QuestBookPage {
         } else if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
+            searchBarText = "";
             updateSearch();
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestManager.scanMiniquests();
             QuestManager.requestAnalyse();
             return;
         } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) {
