@@ -23,7 +23,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -186,9 +185,7 @@ public class WarTimerOverlay extends Overlay {
 
     @Override
     public void tick(ClientTickEvent event, long ticks) {
-        if (event.phase == Phase.END) {
-            updateTimer();
-        }
+        updateTimer();
     }
 
     private static void updateTimer() {

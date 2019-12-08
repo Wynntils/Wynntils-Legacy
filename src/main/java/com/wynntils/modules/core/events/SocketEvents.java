@@ -3,6 +3,7 @@ package com.wynntils.modules.core.events;
 import com.google.gson.Gson;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
+import com.wynntils.core.framework.enums.BroadcastType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.core.instances.OtherPlayerProfile;
@@ -10,7 +11,12 @@ import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.webapi.WebManager;
 import io.socket.client.Ack;
 import io.socket.client.Socket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import static net.minecraft.init.SoundEvents.ENTITY_WITHER_HURT;
 
 public class SocketEvents implements Listener {
 
@@ -67,6 +73,29 @@ public class SocketEvents implements Listener {
     @SubscribeEvent
     public void unfriend(SocketEvent.OtherPlayerEvent.Unfriend e) {
         OtherPlayerProfile.getInstance(e.uuid, e.username).setMutualFriend(false);
+    }
+
+    @SubscribeEvent
+    public void onBroadcast(SocketEvent.BroadcastEvent e) {
+        String message = e.getMessage().replace("&", "§").replace("%user%", Minecraft.getMinecraft().player.getName());
+
+        Minecraft.getMinecraft().getSoundHandler().playSound(
+                PositionedSoundRecord.getMasterRecord(ENTITY_WITHER_HURT, 1f)
+        );
+
+        if(e.getType() == BroadcastType.TITLE) {
+            String title = message; String subtitle = "";
+            if(message.contains("::")) {
+                String[] split = message.split("::");
+                title = split[0];
+                subtitle = split[1];
+            }
+
+            Minecraft.getMinecraft().ingameGUI.displayTitle(title, subtitle, 5, 60, 5);
+            return;
+        }
+
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
     }
 
 }

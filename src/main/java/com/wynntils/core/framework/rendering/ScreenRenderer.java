@@ -543,11 +543,12 @@ public class ScreenRenderer {
               xMax  = Math.max(x1, x2) + drawingOrigin.x,
               yMin  = Math.min(y1, y2) + drawingOrigin.y,
               yMax  = Math.max(y1, y2) + drawingOrigin.y;
+
         GlStateManager.glBegin(GL_QUADS);
-        GlStateManager.glVertex3f(xMin, yMin, 0);
-        GlStateManager.glVertex3f(xMin, yMax, 0);
-        GlStateManager.glVertex3f(xMax, yMax, 0);
-        GlStateManager.glVertex3f(xMax, yMin, 0);
+        GlStateManager.glVertex3f((int)xMin, (int)yMin, 0);
+        GlStateManager.glVertex3f((int)xMin, (int)yMax, 0);
+        GlStateManager.glVertex3f((int)xMax, (int)yMax, 0);
+        GlStateManager.glVertex3f((int)xMax, (int)yMin, 0);
         GlStateManager.glEnd();
         GlStateManager.enableTexture2D();
         GlStateManager.color(1f,1f,1f,1f);

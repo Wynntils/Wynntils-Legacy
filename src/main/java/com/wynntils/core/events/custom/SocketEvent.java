@@ -1,5 +1,6 @@
 package com.wynntils.core.events.custom;
 
+import com.wynntils.core.framework.enums.BroadcastType;
 import com.wynntils.modules.core.managers.SocketManager;
 import io.socket.client.Socket;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -110,5 +111,24 @@ public class SocketEvent extends Event {
 
     }
 
+    public static class BroadcastEvent extends SocketEvent {
+
+        BroadcastType type;
+        String message;
+
+        public BroadcastEvent(BroadcastType type, String message) {
+            this.type = type;
+            this.message = message;
+        }
+
+        public BroadcastType getType() {
+            return type;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+    }
 
 }

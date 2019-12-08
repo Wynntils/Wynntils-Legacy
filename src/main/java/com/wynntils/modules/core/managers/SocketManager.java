@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.enums.BroadcastType;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.WebManager;
 import io.socket.client.IO;
@@ -101,6 +102,11 @@ public class SocketManager {
             String username = (String) args[1];
 
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(Utils.uuidFromString(uuid), username));
+        }).on("broadcast", (Object... args) -> {
+            BroadcastType type = BroadcastType.valueOf((String)args[0]);
+            if(type == null) type = BroadcastType.MESSAGE;
+
+            FrameworkManager.getEventBus().post(new SocketEvent.BroadcastEvent(type, (String)args[1]));
         }).on("unfriend", (Object... args) -> {
             // Trigger forge event ~
             String uuid = (String) args[0];

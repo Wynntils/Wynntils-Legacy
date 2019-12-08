@@ -40,8 +40,6 @@ import static net.minecraft.client.gui.Gui.ICONS;
 
 public class FrameworkManager {
 
-    private static long tick = 0;
-
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
     public static LinkedHashMap<Priority, ArrayList<Overlay>> registeredOverlays = new LinkedHashMap<>();
 
@@ -128,6 +126,7 @@ public class FrameworkManager {
         ClientCommandHandler.instance.registerCommand(new CommandTerritory());
         ClientCommandHandler.instance.registerCommand(new CommandExportDiscoveries());
         ClientCommandHandler.instance.registerCommand(new CommandServer());
+        ClientCommandHandler.instance.registerCommand(new CommandAdmin());
     }
 
     public static void disableModules() {
@@ -208,16 +207,13 @@ public class FrameworkManager {
     }
 
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
-        if(e.phase == TickEvent.Phase.START) return;
+        if(e.phase == TickEvent.Phase.START || !Reference.onServer) return;
 
-        if (Reference.onServer) {
-            tick++;
-            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
-                for (Overlay overlay : overlays) {
-                    if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
-                        overlay.position.refresh(ScreenRenderer.screen);
-                        overlay.tick(e, tick);
-                    }
+        for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+            for (Overlay overlay : overlays) {
+                if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
+                    overlay.position.refresh(ScreenRenderer.screen);
+                    overlay.tick(e, 0);
                 }
             }
         }
