@@ -260,38 +260,46 @@ public class QuestsPage extends QuestBookPage {
                 QuestManager.setTrackedQuest(overQuest);
             } else {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    String url = "https://wynncraft.gamepedia.com/";
-                    String path = overQuest.getName();
-                    //Link Overrides
-                    switch (path) {
-                        case "The House of Twain":
-                        case "Tower of Ascension":
-                        case "The Qira Hive":
-                        case "The Realm of Light":
-                        case "Temple of the Legends":
-                        case "Taproot":
-                        case "The Passage":
-                        case "Zhight Island":
-                        case "The Tower of Amnesia":
-                        case "Pit of the Dead":
-                            path += " (Quest)";
-                            break;
-                        default:
-                            if (overQuest.isMiniQuest()) {
-                                path = "Quests#Miniquests";
-                            }
-                            break;
-                    }
+
+                String url = "https://wynncraft.gamepedia.com/";
+                String path = overQuest.getName();
+                //Link Overrides
+                switch (path) {
+                    case "The House of Twain":
+                    case "Tower of Ascension":
+                    case "The Qira Hive":
+                    case "The Realm of Light":
+                    case "Temple of the Legends":
+                    case "Taproot":
+                    case "The Passage":
+                    case "Zhight Island":
+                    case "The Tower of Amnesia":
+                    case "Pit of the Dead":
+                        path += " (Quest)";
+                        break;
+                    default:
+                        break;
+                }
+
+                if (overQuest.isMiniQuest()) {
+                    url += "Quests#Miniquests";  // Don't encode #
+                } else {
                     url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
+                }
+
+                boolean opened = false;
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                     try {
                         Desktop.getDesktop().browse(new URI(url));
-                    } catch (Exception ignored) {
-                        Utils.copyToClipboard(url);
-                        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
-                        text.getStyle().setColor(TextFormatting.DARK_RED);
-                        ModCore.mc().player.sendMessage(text);
-                    }
+                        opened = true;
+                    } catch (Exception ignored) { }
+                }
+
+                if (!opened) {
+                    Utils.copyToClipboard(url);
+                    TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
+                    text.getStyle().setColor(TextFormatting.DARK_RED);
+                    ModCore.mc().player.sendMessage(text);
                 }
             }
         }

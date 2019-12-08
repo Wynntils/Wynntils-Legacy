@@ -161,7 +161,7 @@ public class QuestManager {
                     }
 
                     QuestInfo quest;
-                    if (isForcingMiniquests) {
+                    if (isMiniquests) {
                         quest = new MiniQuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
                     } else {
                         quest = new QuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
@@ -176,7 +176,7 @@ public class QuestManager {
 
                 QuestBookPages.QUESTS.getPage().updateSearch();
                 //pagination
-                if (next != null && ((isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0 || fullSearch)) {
+                if (next != null && (fullSearch || (isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0)) {
                     i.clickItem(next.a, 1, ClickType.PICKUP);
                 } else {
                     if (isMiniquests) {
@@ -186,7 +186,7 @@ public class QuestManager {
                     }
                     if (isForcingMiniquests && !isMiniquests && miniquests != null) {
                         i.clickItem(miniquests.a, 1, ClickType.PICKUP);
-                    } else if ((QuestBookConfig.INSTANCE.scanDiscoveries || forceDiscoveries) && discoveries != null) {
+                    } else if ((QuestBookConfig.INSTANCE.scanDiscoveries || forceDiscoveries || fullSearch) && discoveries != null) {
                         i.clickItem(discoveries.a, 1, ClickType.PICKUP);
                     } else {
                         i.close();
