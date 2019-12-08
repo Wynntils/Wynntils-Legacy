@@ -12,6 +12,7 @@ public class KeyHolder {
     private Runnable onAction;
     private boolean press;
     private KeyBinding keyBinding;
+    public boolean wasPressed;
 
     public KeyHolder(String name, int key, String tab, boolean press, Runnable onAction) {
         this.onAction = onAction;

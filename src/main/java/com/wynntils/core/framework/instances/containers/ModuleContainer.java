@@ -51,11 +51,14 @@ public class ModuleContainer {
             return;
         }
         keyHolders.forEach(k -> {
-            if(k.isPress() && k.getKeyBinding().isPressed()) {
-                k.getOnAction().run();
-            }else if(!k.isPress() && k.getKeyBinding().isKeyDown()) {
+            if (!k.getKeyBinding().isKeyDown()) k.wasPressed = false;
+
+            if (k.isPress() && k.getKeyBinding().isKeyDown() && !k.wasPressed) {
+                k.wasPressed = true;
                 k.getOnAction().run();
             }
+
+            if (!k.isPress() && k.getKeyBinding().isKeyDown()) k.getOnAction().run();
         });
     }
 
