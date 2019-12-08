@@ -194,16 +194,18 @@ public class ClientEvents implements Listener {
         if (e.isSingular) {
             // Single friend added
             for (String name : newFriends) {
-                SocketManager.getSocket().emit("add friend", name);
+                SocketManager.emitEvent("add friend", name);
                 GuildAndFriendManager.changePlayer(name, true, As.FRIEND, true);
             }
         } else {
             // Friends list updated
             String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
-            SocketManager.getSocket().emit("update friends", json);
+            SocketManager.emitEvent("update friends", json);
+
             for (String name : newFriends) {
                 GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
             }
+
             GuildAndFriendManager.tryResolveNames();
         }
     }
@@ -214,14 +216,15 @@ public class ClientEvents implements Listener {
         if (e.isSingular) {
             // Single friend removed
             for (String name : removedFriends) {
-                SocketManager.getSocket().emit("remove friend", name);
+                SocketManager.emitEvent("remove friend", name);
                 GuildAndFriendManager.changePlayer(name, false, As.FRIEND, true);
             }
         } else {
             // Friends list updated; Socket managed in addFriend
             for (String name : removedFriends) {
-                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
+                SocketManager.emitEvent(name, false, As.FRIEND, false);
             }
+
             GuildAndFriendManager.tryResolveNames();
         }
     }
@@ -238,12 +241,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void leaveParty(WynnSocialEvent.Party.Leave e) {
-        SocketManager.getSocket().emit("remove party member", e.getMember());
+        SocketManager.emitEvent("remove party member", e.getMember());
     }
 
     @SubscribeEvent
     public void joinParty(WynnSocialEvent.Party.Join e) {
-        SocketManager.getSocket().emit("add party member", e.getMember());
+        SocketManager.emitEvent("add party member", e.getMember());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -252,8 +255,9 @@ public class ClientEvents implements Listener {
         EntityPlayer player = Minecraft.getMinecraft().player;
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
         if (lastPosition != currentPosition) {
-            SocketManager.getSocket().emit("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+            SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
         }
+
         lastPosition = currentPosition;
     }
 

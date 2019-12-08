@@ -32,11 +32,11 @@ public class SocketEvents implements Listener {
                 if (!PlayerInfo.getPlayerInfo().getFriendList().isEmpty())
                     socket.emit("update friends", new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList()));
 
-                if (Reference.onWorld) SocketManager.getSocket().emit("join world", Reference.getUserWorld());
+                if (Reference.onWorld) SocketManager.emitEvent("join world", Reference.getUserWorld());
 
                 if (Reference.onWorld && PlayerInfo.getPlayerInfo().getPlayerParty().isPartying()
                         && !PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().isEmpty())
-                    SocketManager.getSocket().emit("update party", new Gson().toJson(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers()));
+                    SocketManager.emitEvent("update party", new Gson().toJson(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers()));
 
                 reconnection = false;
             }

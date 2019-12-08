@@ -7,6 +7,8 @@ import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.BroadcastType;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -25,6 +27,11 @@ public class SocketManager {
     private static final boolean local = false;
 
     public static void registerSocket() {
+        System.out.println("CHECKING VALUEEEEEEEE");
+        System.out.println(WebManager.getApiUrls().get("EnableSocket"));
+        if (WebManager.getApiUrls().get("EnableSocket").equalsIgnoreCase("false")
+        && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) return;
+
         Reference.LOGGER.info("Connecting to the Socket Server...");
 
         SSLContext mySSLContext = null;
@@ -118,6 +125,12 @@ public class SocketManager {
 
     public static Socket getSocket() {
         return socket;
+    }
+
+    public static void emitEvent(String eventName, Object... options) {
+        if(socket == null) return;
+
+        socket.emit(eventName, options);
     }
 
     private static class FriendLocationUpdate {

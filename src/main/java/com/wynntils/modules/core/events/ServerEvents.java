@@ -19,7 +19,10 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
-import com.wynntils.modules.core.managers.*;
+import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
@@ -92,14 +95,14 @@ public class ServerEvents implements Listener {
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
-        SocketManager.getSocket().emit("join world", e.getWorld());
+        SocketManager.emitEvent("join world", e.getWorld());
 
         PartyManager.handlePartyList(); //party list here
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void leaveWorldEvent(WynnWorldEvent.Leave e) {
-        SocketManager.getSocket().emit("leave world");
+        SocketManager.emitEvent("leave world");
     }
 
 

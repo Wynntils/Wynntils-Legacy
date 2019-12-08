@@ -586,7 +586,7 @@ public class ItemIdentificationOverlay implements Listener {
     private static List<String> groupIdentifications(int start, List<Integer> mem, List<String> lore) {
         if (mem.isEmpty()) return lore;
 
-        if (!lore.get(start + mem.size()).equals("")) // Sepperates "Major IDs" from the main ID stack
+        if (!lore.get(start + mem.size() - 1).equals("")) // Sepperates "Major IDs" from the main ID stack
             lore.add(start + mem.size(), "");
 
         int divider = mem.get(mem.size()-1) / 100;

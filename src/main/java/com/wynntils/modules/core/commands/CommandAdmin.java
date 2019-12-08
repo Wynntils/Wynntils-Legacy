@@ -56,7 +56,7 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
                 message.add(args[i]);
             }
 
-            SocketManager.getSocket().emit("sendBroadcast", type, message);
+            SocketManager.emitEvent("sendBroadcast", type, message);
             return;
         }
 
