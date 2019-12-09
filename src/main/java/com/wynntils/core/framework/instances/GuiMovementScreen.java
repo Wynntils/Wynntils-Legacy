@@ -34,7 +34,7 @@ public class GuiMovementScreen extends GuiScreen {
                     return;
                 }
 
-                if(Keyboard.getEventKeyState()) keyTyped(Keyboard.getEventCharacter(), Keyboard.getEventKey());
+                this.handleKeyboardInput();
             }
         }
     }
