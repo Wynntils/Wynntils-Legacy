@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -52,9 +53,10 @@ public class ActionBarOverlay extends Overlay {
             int padding = 3;
             int y = 0;
 
-            String lCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posX;
+            BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
+            String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
             String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
-            String rCoord = TextFormatting.GRAY.toString() + (int) ScreenRenderer.mc.player.posZ;
+            String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
             //Order:
             //Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
