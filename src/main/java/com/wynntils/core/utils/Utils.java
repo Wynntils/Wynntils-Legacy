@@ -292,6 +292,8 @@ public class Utils {
             getItemFieldName.put("rawMelee Damage", "damageBonusRaw");
             getItemFieldName.put("Main Attack Damage", "damageBonus");  // Name changed on Beta
             getItemFieldName.put("rawMain Attack Damage", "damageBonusRaw");    // Name change on Beta
+            getItemFieldName.put("Main Attack Neutral Damage", "damageBonusRaw");    // Name change in case name consistency is brought to melee%
+            getItemFieldName.put("rawMain Attack Neutral Damage", "damageBonusRaw");    // Name change on 1.19 Release
             getItemFieldName.put("Neutral Spell Damage", "spellDamage");    // Name Change on Beta
             getItemFieldName.put("rawNeutral Spell Damage", "spellDamageRaw");  // Name Change on Beta
 
