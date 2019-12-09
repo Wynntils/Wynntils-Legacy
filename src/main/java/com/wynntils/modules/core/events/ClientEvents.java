@@ -165,15 +165,22 @@ public class ClientEvents implements Listener {
         PacketQueue.proccessQueue();
     }
 
+    GuiScreen lastScreen = null;
+
     /**
      *  Register the new Main Menu buttons
      */
     @SubscribeEvent
     public void addMainMenuButtons(GuiScreenEvent.InitGuiEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
 
-        MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList());
+        if(gui instanceof GuiMainMenu) {
+            boolean resize = lastScreen != null && lastScreen instanceof GuiMainMenu;
+            System.out.println(resize);
+            MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList(), resize);
+        }
+
+        lastScreen = gui;
     }
 
     /**
@@ -252,9 +259,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickHandler(TickEvent.ClientTickEvent e) {
-        if (!Reference.onWorld) return;
+        if (e.phase != TickEvent.Phase.END || !Reference.onWorld) return;
+
         EntityPlayer player = Minecraft.getMinecraft().player;
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
+
         if (lastPosition != currentPosition) {
             SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
         }

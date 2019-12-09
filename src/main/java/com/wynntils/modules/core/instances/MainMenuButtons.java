@@ -37,18 +37,27 @@ import java.util.Objects;
 public class MainMenuButtons {
 
     private static ServerList serverList = null;
-
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
 
-    public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList) {
+    private static WynncraftButton lastButton = null;
+
+    public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
 
-        ServerData s = getWynncraftServerData(to.mc);
-        FMLClientHandler.instance().setupServerList();
-        buttonList.add(new WynncraftButton(s, WYNNCRAFT_BUTTON_ID, to.width / 2 + 104,to.height / 4 + 48 + 24));
+        if(lastButton == null || !resize) {
+            ServerData s = getWynncraftServerData(to.mc);
+            FMLClientHandler.instance().setupServerList();
 
-        WebManager.checkForUpdates();
-        UpdateOverlay.reset();
+            lastButton = new WynncraftButton(s, WYNNCRAFT_BUTTON_ID, to.width / 2 + 104, to.height / 4 + 48 + 24);
+            WebManager.checkForUpdates();
+            UpdateOverlay.reset();
+
+            buttonList.add(lastButton);
+            return;
+        }
+
+        lastButton.x = to.width / 2 + 104; lastButton.y = to.height / 4 + 48 + 24;
+        buttonList.add(lastButton);
     }
 
     public static void actionPerformed(GuiMainMenu on, GuiButton button, List<GuiButton> buttonList) {
@@ -72,6 +81,7 @@ public class MainMenuButtons {
 
     private static ServerData getWynncraftServerData(Minecraft mc) {
         serverList = new ServerList(mc);
+
         ServerData server = null;
         int i = 0, count = serverList.countServers();
         for (; i < count; ++i) {
@@ -103,7 +113,9 @@ public class MainMenuButtons {
 
         WynncraftButton(ServerData server, int buttonId, int x, int y) {
             super(buttonId, x, y, 20, 20, "");
+
             this.server = server;
+
             serverIcon = new ResourceLocation("servers/" + server.serverIP + "/icon");
             icon = (DynamicTexture) Minecraft.getMinecraft().getTextureManager().getTexture(serverIcon);
         }
@@ -155,13 +167,13 @@ public class MainMenuButtons {
             }
 
             pinger.pingPendingNetworks();
-
         }
 
         // Modified from net.minecraft.client.gui.ServerListEntryNormal$prepareServerIcon
         ResourceLocation getServerIcon() {
             String currentIcon = server.getBase64EncodedIconData();
             if (Objects.equals(currentIcon, lastIcon)) return icon == null ? UNKNOWN_SERVER : serverIcon;
+
             lastIcon = currentIcon;
 
             if (currentIcon == null) {

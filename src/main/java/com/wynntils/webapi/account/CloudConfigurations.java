@@ -90,6 +90,7 @@ public class CloudConfigurations {
                 }else{
                     Reference.LOGGER.info("Configuration upload failed!");
                 }
+
             } catch (Exception ex) {
                 ex.printStackTrace();
 

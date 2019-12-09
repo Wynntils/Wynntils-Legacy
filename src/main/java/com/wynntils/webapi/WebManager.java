@@ -39,11 +39,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class WebManager {
 
@@ -143,6 +139,7 @@ public class WebManager {
             Reference.LOGGER.info("An update check would have occurred, but you are in a development environment.");
             return;
         }
+
         updateProfile = new UpdateProfile();
     }
 
