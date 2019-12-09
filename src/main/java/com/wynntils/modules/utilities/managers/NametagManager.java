@@ -72,7 +72,7 @@ public class NametagManager {
             else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
 
             //wynncraft tags (Admin, Moderator, GM, Builder, etc.)
-            if (entity.getTeam() != null && entity.getTeam().getName().startsWith("tag_")) {
+            if (entity.getTeam() != null && entity.getTeam().getName().matches("(tag|pvp)_.*")) {
                 if(!entity.getTeam().getName().contains("normal"))
                     customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam()));
             }
@@ -272,7 +272,7 @@ public class NametagManager {
 
     private static NametagLabel getWynncraftTeamLabel(ScorePlayerTeam team) {
         if (!wynncraftTagLabels.containsKey(team.getName())) {
-            wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix() + "Wynncraft " + StringUtils.capitalize(team.getName().substring(4)), 0.7f));
+            wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix() + "Wynncraft " + StringUtils.capitalize(team.getName().replaceAll("(tag|pvp)_", "")), 0.7f));
         }
         return wynncraftTagLabels.get(team.getName());
     }
