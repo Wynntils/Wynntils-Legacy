@@ -23,6 +23,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -141,6 +142,7 @@ public class QuestsPage extends QuestBookPage {
 
                     List<String> lore = new ArrayList<>(selected.getLore());
 
+                    int animationTick = -1;
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
                         if (lastTick == 0 && !animationCompleted) {
                             lastTick = Minecraft.getSystemTime();
@@ -148,22 +150,27 @@ public class QuestsPage extends QuestBookPage {
 
                         this.selected = i;
 
-                        int animationTick;
                         if (!animationCompleted) {
                             animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
-                            if (animationTick >= 133) {
+                            if (animationTick >= 133 && selected.getQuestbookFriendlyName().equals(selected.getName())) {
                                 animationCompleted = true;
                                 animationTick = 133;
                             }
                         } else {
+                            if (!selected.getQuestbookFriendlyName().equals(selected.getName())) {
+                                animationCompleted = false;
+                                lastTick = Minecraft.getSystemTime() - 133 * 2;
+                            }
                             animationTick = 133;
                         }
 
+                        int width = Math.min(animationTick, 133);
+                        animationTick -= 133 + 200;
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(selected.getName())) {
-                            render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
+                            render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                             render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                         } else {
-                            render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + animationTick, y - 87 + currentY);
+                            render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                             render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                         }
 
@@ -216,7 +223,33 @@ public class QuestsPage extends QuestBookPage {
                     }
                     lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
 
-                    render.drawString(selected.getQuestbookFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    String name = selected.getQuestbookFriendlyName();
+                    if (this.selected == i && !name.equals(selected.getName()) && animationTick > 0) {
+                        name = selected.getName();
+                        int maxScroll = fontRenderer.getStringWidth(name) - (120 - 10);
+                        int scrollAmount = (animationTick / 20) % (maxScroll + 60);
+
+                        if (maxScroll <= scrollAmount && scrollAmount <= maxScroll + 40) {
+                            // Stay on max scroll for 20 * 40 animation ticks after reaching the end
+                            scrollAmount = maxScroll;
+                        } else if (maxScroll <= scrollAmount) {
+                            // And stay on minimum scroll for 20 * 20 animation ticks after looping back to the start
+                            scrollAmount = 0;
+                        }
+
+                        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+                        {
+                            // Scissor test is in screen coordinates, so y is inverted and scale needs to be manually applied
+                            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+                            double scaleW = Minecraft.getMinecraft().displayWidth / res.getScaledWidth_double();
+                            double scaleH = Minecraft.getMinecraft().displayHeight / res.getScaledHeight_double();
+                            GL11.glScissor((int) ((x + 26 + ScreenRenderer.drawingOrigin().x) * scaleW), (int) ((y + 87 - currentY - ScreenRenderer.drawingOrigin().y) * scaleH), (int) ((13 + 133 - 2 - 26) * scaleW), (int) ((96 - 87) * scaleH));
+                            render.drawString(name, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                        }
+                        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+                    } else {
+                        render.drawString(name, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    }
 
                     currentY += 13;
                 }

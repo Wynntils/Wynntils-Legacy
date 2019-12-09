@@ -752,8 +752,4 @@ public class ScreenRenderer {
         RenderHelper.disableStandardItemLighting();
     }
 
-    public static Point getDrawingOrigin() {
-        return drawingOrigin;
-    }
-
 }
