@@ -7,8 +7,8 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.utils.helpers.LongPress;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.LongPress;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
@@ -42,10 +42,10 @@ public class StopWatchOverlay extends Overlay {
     }
 
     @Override
-    public void render(RenderGameOverlayEvent.Pre event) {
-        if(startTime == -1 && lastTime == -1) return;
-
+        public void render(RenderGameOverlayEvent.Pre event) {
         longPressDetection.tick(KeyManager.getStopwatchKey().getKeyBinding().isKeyDown());
+
+        if((startTime == -1 && lastTime == -1) || longPressDetection.isFinished()) return;
 
         if(startTime != -1) {
             drawString(Utils.millisToString(System.currentTimeMillis() - startTime), 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);

@@ -15,6 +15,10 @@ public class LongPress {
         this.timeout = timeout; this.whenFinished = whenFinished;
     }
 
+    public boolean isFinished() {
+        return endTime != 0 && System.currentTimeMillis() >= endTime;
+    }
+
     public void tick(boolean isKeyDown) {
         if(!isKeyDown) {
             endTime = 0;
