@@ -48,6 +48,7 @@ public class NametagManager {
     private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
     private static final NametagLabel wynnContentTeamLabel = new NametagLabel(MinecraftChatColors.DARK_AQUA, "Wynncraft CT", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
+    private static final NametagLabel huntedLabel = new NametagLabel(MinecraftChatColors.RED, "Hunted Mode", 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
@@ -73,8 +74,8 @@ public class NametagManager {
 
             //wynncraft tags (Admin, Moderator, GM, Builder, etc.)
             if (entity.getTeam() != null && entity.getTeam().getName().matches("(tag|pvp)_.*")) {
-                if(!entity.getTeam().getName().contains("normal"))
-                    customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam()));
+                if (!entity.getTeam().getName().contains("normal")) customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam())); //wynncraft staff
+                if (entity.getTeam().getName().matches("pvp_.*")) customLabels.add(huntedLabel); //hunted mode
             }
 
             if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
@@ -272,7 +273,7 @@ public class NametagManager {
 
     private static NametagLabel getWynncraftTeamLabel(ScorePlayerTeam team) {
         if (!wynncraftTagLabels.containsKey(team.getName())) {
-            wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix() + "Wynncraft " + StringUtils.capitalize(team.getName().replaceAll("(tag|pvp)_", "")), 0.7f));
+            wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix().replace("[PvP]", "") + "Wynncraft " + StringUtils.capitalize(team.getName().replaceAll("(tag|pvp)_", "")), 0.7f));
         }
         return wynncraftTagLabels.get(team.getName());
     }
