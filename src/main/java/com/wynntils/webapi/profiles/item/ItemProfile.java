@@ -221,6 +221,9 @@ public class ItemProfile {
             display.setTag("Lore", loreList);
             display.setString("Name", tier.getColor() + displayName); //item display name
 
+            //armor color
+            if(itemInfo.isArmorColorValid()) display.setInteger("color", itemInfo.getArmorColorAsInt());
+
             tag.setTag("display", display);
             tag.setBoolean("Unbreakable", true); //this allow items like reliks to have damage
 

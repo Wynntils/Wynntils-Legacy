@@ -196,7 +196,7 @@ public class ItemPage extends QuestBookPage {
             }
 
             if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
-            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
+            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> c.getRequirements().getLevel()));
             if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);

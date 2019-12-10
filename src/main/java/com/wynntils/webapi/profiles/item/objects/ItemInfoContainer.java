@@ -9,6 +9,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ItemInfoContainer {
@@ -45,6 +46,19 @@ public class ItemInfoContainer {
 
     public boolean isArmorColorValid() {
         return armorColor != null && COLOR_PATTERN.matcher(armorColor).find();
+    }
+
+    public int getArmorColorAsInt() {
+        if(armorColor == null) return 0;
+
+        Matcher m = COLOR_PATTERN.matcher(getArmorColor());
+        if(!m.find()) return 0;
+
+        int r = Integer.valueOf(m.group(1));
+        int g = Integer.valueOf(m.group(2));
+        int b = Integer.valueOf(m.group(3));
+
+        return (r << 16) + (g << 8) + b;
     }
 
     public ItemStack asItemStack() {
