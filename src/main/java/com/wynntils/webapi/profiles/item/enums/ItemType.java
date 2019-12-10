@@ -28,7 +28,7 @@ public enum ItemType {
     Item defaultItem; int meta;
 
     ItemType(Item defaultItem, int meta) {
-        this.defaultItem = defaultItem;
+        this.defaultItem = defaultItem; this.meta = meta;
     }
 
     public Item getDefaultItem() {

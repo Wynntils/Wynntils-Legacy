@@ -10,14 +10,14 @@ import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
@@ -48,17 +48,25 @@ public class ItemPage extends QuestBookPage {
     private boolean allowBracelets = true;
     private boolean allowRings = true;
 
-    private final ItemStack helmetIcon = new ItemStack(Items.DIAMOND_HELMET);
-    private final ItemStack chestplateIcon = new ItemStack(Items.DIAMOND_CHESTPLATE);
-    private final ItemStack leggingsIcon = new ItemStack(Items.DIAMOND_LEGGINGS);
-    private final ItemStack bootsIcon = new ItemStack(Items.DIAMOND_BOOTS);
-    private final ItemStack wandsIcon = new ItemStack(Items.STICK);
-    private final ItemStack daggersIcon = new ItemStack(Items.SHEARS);
-    private final ItemStack spearsIcon = new ItemStack(Items.IRON_SHOVEL);
-    private final ItemStack bowsIcon = new ItemStack(Items.BOW);
-    private final ItemStack necklaceIcon = new ItemStack(Blocks.GLASS_PANE);
-    private final ItemStack braceletsIcon = new ItemStack(Blocks.SPRUCE_FENCE);
-    private final ItemStack ringsIcon = new ItemStack(Blocks.STAINED_GLASS);
+    private static final ItemStack helmetIcon = new ItemStack(ItemType.HELMET.getDefaultItem());
+    private static final ItemStack chestplateIcon = new ItemStack(ItemType.CHESTPLATE.getDefaultItem());
+    private static final ItemStack leggingsIcon = new ItemStack(ItemType.LEGGINGS.getDefaultItem());
+    private static final ItemStack bootsIcon = new ItemStack(ItemType.BOOTS.getDefaultItem());
+    private static final ItemStack wandsIcon = new ItemStack(ItemType.WAND.getDefaultItem());
+    private static final ItemStack daggersIcon = new ItemStack(ItemType.DAGGER.getDefaultItem());
+    private static final ItemStack spearsIcon = new ItemStack(ItemType.SPEAR.getDefaultItem());
+    private static final ItemStack bowsIcon = new ItemStack(ItemType.BOW.getDefaultItem());
+    private static final ItemStack relikIcon = new ItemStack(ItemType.RELIK.getDefaultItem(), 1, ItemType.RELIK.getMeta());
+    private static final ItemStack ringsIcon = new ItemStack(ItemType.RING.getDefaultItem());
+    private static final ItemStack necklaceIcon = new ItemStack(ItemType.NECKLACE.getDefaultItem());
+    private static final ItemStack braceletsIcon = new ItemStack(ItemType.BRACELET.getDefaultItem());
+
+    static {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setBoolean("Unbreakable", true);
+
+        relikIcon.setTagCompound(compound);
+    }
 
     public ItemPage() {
         super("Item Guide", true, IconContainer.itemGuideIcon);
@@ -122,7 +130,7 @@ public class ItemPage extends QuestBookPage {
 
             int placed = 0;
             int plusY = 0;
-            for (int i = 0; i < 11; i++) {
+            for (int i = 0; i < 12; i++) {
                 if(placed + 1 >= 7) {
                     placed = 0;
                     plusY ++;
@@ -148,9 +156,10 @@ public class ItemPage extends QuestBookPage {
                     else if(i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                     else if(i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                     else if(i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 8 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 9 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 10 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if(i == 8 && allowReliks) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if(i == 9 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if(i == 10 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if(i == 11 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                     else render.drawRect(unselected_cube, maxX, maxY, minX, minY);
                 }
 
@@ -162,9 +171,10 @@ public class ItemPage extends QuestBookPage {
                 else if(i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
                 else if(i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
                 else if(i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
-                else if(i == 8) render.drawItemStack(necklaceIcon, maxX, minY, false);
-                else if(i == 9) render.drawItemStack(ringsIcon, maxX, minY, false);
-                else if(i == 10) render.drawItemStack(braceletsIcon, maxX, minY, false);
+                else if(i == 8) render.drawItemStack(relikIcon, maxX, minY, false);
+                else if(i == 9) render.drawItemStack(necklaceIcon, maxX, minY, false);
+                else if(i == 10) render.drawItemStack(ringsIcon, maxX, minY, false);
+                else if(i == 11) render.drawItemStack(braceletsIcon, maxX, minY, false);
 
                 placed++;
             }
@@ -186,7 +196,7 @@ public class ItemPage extends QuestBookPage {
             }
 
             if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
-            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> c.getRequirements().getLevel()));
+            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
             if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
@@ -382,12 +392,15 @@ public class ItemPage extends QuestBookPage {
                     allowBows = !allowBows;
                     break;
                 case 9:
-                    allowNecklaces = !allowNecklaces;
+                    allowReliks = !allowReliks;
                     break;
                 case 10:
-                    allowRings = !allowRings;
+                    allowNecklaces = !allowNecklaces;
                     break;
                 case 11:
+                    allowRings = !allowRings;
+                    break;
+                case 12:
                     allowBracelets = !allowBracelets;
                     break;
                 default:
@@ -433,4 +446,5 @@ public class ItemPage extends QuestBookPage {
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.",  "", TextFormatting.GREEN + "Left click to select");
     }
+
 }
