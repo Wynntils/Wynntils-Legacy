@@ -467,7 +467,7 @@ public class ItemIdentificationOverlay implements Listener {
             case "Mythic":
                 rerollValue = (int)Math.ceil(90.0D + level * 18); break;
             case "Fabled":
-                rerollValue = 10; break; //TODO find the math for rerolling fabled items
+                rerollValue = (level + 5) * 60; break;
             case "Legendary":
                 rerollValue = (int)Math.ceil(40.0D + level * 5.2); break;
             case "Rare":
