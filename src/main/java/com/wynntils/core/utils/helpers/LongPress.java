@@ -29,7 +29,6 @@ public class LongPress {
         if(System.currentTimeMillis() < endTime) return;
 
         whenFinished.run();
-        endTime = 0;
     }
 
 }
