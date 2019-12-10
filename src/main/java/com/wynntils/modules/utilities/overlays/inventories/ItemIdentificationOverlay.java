@@ -141,6 +141,42 @@ public class ItemIdentificationOverlay implements Listener {
             }
         }
 
+        if (!stack.getTagCompound().getBoolean("showWynnic") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (Utils.hasWynnic(Utils.getStringLore(stack))) {
+                NBTTagList loreList = Utils.getLoreTag(stack);
+                if (loreList != null) {
+                    stack.getTagCompound().setTag("originalLore", loreList.copy());
+                    for (int index = 0; index < loreList.tagCount(); index++) {
+                        String lore = loreList.getStringTagAt(index);
+                        if (Utils.hasWynnic(lore)) {
+                            String translated = "";
+                            for (char character : lore.toCharArray()) {
+                                if (Utils.hasWynnic(String.valueOf(character))) {
+                                    translated += Utils.translateCharacterFromWynnic(character);
+                                } else {
+                                    translated += character;
+                                }
+                            }
+                            loreList.set(index, new NBTTagString(translated));
+                        }
+                    }
+                }
+            }
+            stack.getTagCompound().setBoolean("showWynnic", true);
+        }
+
+        if (stack.getTagCompound().getBoolean("showWynnic") && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            NBTTagCompound tag = stack.getTagCompound();
+            if (tag.hasKey("originalLore")) {
+                NBTTagCompound displayTag = tag.getCompoundTag("display");
+                if (displayTag != null) {
+                    displayTag.setTag("Lore", tag.getTag("originalLore"));
+                }
+                tag.removeTag("originalLore");
+            }
+            stack.getTagCompound().setBoolean("showWynnic", false);
+        }
+
         if (!stack.getDisplayName().contains("Unidentified")) {
             return;
         }

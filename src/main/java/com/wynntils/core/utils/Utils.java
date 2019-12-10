@@ -36,7 +36,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -61,6 +60,7 @@ public class Utils {
 
     public static HashMap<String, String> getItemFieldName = new HashMap<>();
     public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
+    private static Pattern wynnicRegex = Pattern.compile("[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]");
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
     private static Pattern WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
     private static Random random = new Random();
@@ -830,6 +830,22 @@ public class Utils {
         if (s.length() != 32) throw new IllegalArgumentException("Invalid UUID string: " + s);
 
         return new UUID(Long.parseUnsignedLong(s.substring(0, 16), 16), Long.parseUnsignedLong(s.substring(16, 32), 16));
+    }
+
+    public static boolean hasWynnic(String text) {
+        return wynnicRegex.matcher(text).find();
+    }
+
+    public static String translateCharacterFromWynnic(char wynnic) {
+        if (String.valueOf(wynnic).matches("[\u249C-\u24B5]")) {
+            return String.valueOf((char) ((wynnic) - 9275));
+        } else if (String.valueOf(wynnic).matches("[\u2474-\u247C]")) {
+            return String.valueOf((char) ((wynnic) - 9283));
+        } else if (String.valueOf(wynnic).matches("[\u247D-\u247F]")) {
+            return wynnic == '\u247D' ? "10" : wynnic == '\u247E' ? "50" : wynnic == '\u247F' ? "100" : "";
+        } else {
+            return wynnic == '\uFF10' ? "." : wynnic == '\uFF11' ? "!" : wynnic == '\uFF12' ? "?" : "";
+        }
     }
 
 }
