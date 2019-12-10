@@ -34,6 +34,7 @@ public class ChatManager {
 
     private static final String wynnicRegex = "[\u249C-\u24B5\u2474-\u247F\uFF10-\uFF12]";
     private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
+    private static final String optionalTranslatable = "[.!?]";
 
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
     private static final Pattern tradeReg = Pattern.compile("\\w+ would like to trade! Type /trade \\w+ to accept\\.");
@@ -91,15 +92,15 @@ public class ChatManager {
             for (ITextComponent component : in.getSiblings()) {
                 if (hasWynnic(component.getUnformattedText())) {
                     String toAdd = "";
-                    String currentNonTranslatable = "";
+                    String currentNonTranslated = "";
                     boolean previousWynnic = false;
                     StringBuilder oldText = new StringBuilder();
                     for (char character : component.getUnformattedText().toCharArray()) {
                         if (String.valueOf(character).matches(wynnicRegex)) {
                             if (previousWynnic) {
-                                toAdd += currentNonTranslatable;
-                                oldText.append(currentNonTranslatable);
-                                currentNonTranslatable = "";
+                                toAdd += currentNonTranslated;
+                                oldText.append(currentNonTranslated);
+                                currentNonTranslated = "";
                             } else {
                                 ITextComponent newComponent = new TextComponentString(oldText.toString());
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
@@ -111,9 +112,9 @@ public class ChatManager {
                             String englishVersion = translateCharacter(character);
                             toAdd += englishVersion;
                             oldText.append(character);
-                        } else if (String.valueOf(character).matches(nonTranslatable)) {
+                        } else if (String.valueOf(character).matches(nonTranslatable) || String.valueOf(character).matches(optionalTranslatable)) {
                             if (previousWynnic) {
-                                currentNonTranslatable += character;
+                                currentNonTranslated += character;
                             } else {
                                 oldText.append(character);
                             }
@@ -126,18 +127,18 @@ public class ChatManager {
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
                                 newTextComponents.add(oldComponent);
                                 oldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newComponent));
-                                oldText = new StringBuilder(currentNonTranslatable);
-                                currentNonTranslatable = "";
+                                oldText = new StringBuilder(currentNonTranslated);
+                                currentNonTranslated = "";
                                 oldText.append(character);
                             } else {
                                 oldText.append(character);
                             }
                         }
                     }
-                    if (!currentNonTranslatable.isEmpty()) {
-                        oldText.append(currentNonTranslatable);
+                    if (!currentNonTranslated.isEmpty()) {
+                        oldText.append(currentNonTranslated);
                         if (previousWynnic) {
-                            toAdd += currentNonTranslatable;
+                            toAdd += currentNonTranslated;
                         }
                     }
                     if (previousWynnic) {
