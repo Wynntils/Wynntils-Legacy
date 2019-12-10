@@ -4,6 +4,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
@@ -21,7 +22,10 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class ItemPage extends QuestBookPage {
 
@@ -39,6 +43,7 @@ public class ItemPage extends QuestBookPage {
     private boolean allowDaggers = true;
     private boolean allowSpears = true;
     private boolean allowBows = true;
+    private boolean allowReliks = true;
     private boolean allowNecklaces = true;
     private boolean allowBracelets = true;
     private boolean allowRings = true;
@@ -180,9 +185,9 @@ public class ItemPage extends QuestBookPage {
                 currentPage = pages;
             }
 
-            if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-            if(byLevel) itemSearch.sort(Comparator.comparingInt(ItemProfile::getLevel).reversed());
-            if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getId()));
+            if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
+            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> c.getRequirements().getLevel()));
+            if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
@@ -282,20 +287,27 @@ public class ItemPage extends QuestBookPage {
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    if (pf.asStack() != null) {
-                        render.drawItemStack(pf.asStack().a, maxX, maxY, false);
-                    } else { continue; }
 
-                    hoveredText = pf.asStack().b;
+                    if(pf.getGuideStack() == null) continue;
+
+                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
+
+                    ArrayList<String> lore = new ArrayList<>();
+                    lore.add(pf.getGuideStack().getDisplayName());
+                    lore.addAll(Utils.getLore(pf.getGuideStack()));
+
+                    hoveredText = lore;
                 } else {
+
                     GlStateManager.color(r, g, b, 1.0f);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    if (pf.asStack() != null) {
-                        render.drawItemStack(pf.asStack().a, maxX, maxY, false);
-                    } else { continue; }
+
+                    if (pf.getGuideStack() == null) continue;
+
+                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
                 }
 
                 placedCubes++;
@@ -392,32 +404,28 @@ public class ItemPage extends QuestBookPage {
         itemSearch = new ArrayList<>(WebManager.getDirectItems());
 
         itemSearch.removeIf(c -> {
-            if (c.getType() == null && c.getAccessoryType() == null) return true;
-            if (c.getCategory().equals("accessory")) {
-                switch (c.getAccessoryType().toLowerCase(Locale.ROOT)) {
-                    case "bracelet": return !allowBracelets;
-                    case "ring": return !allowRings;
-                    case "necklace": return !allowNecklaces;
-                    default: return true;
-                }
-            } else {
-                switch (c.getType().toLowerCase(Locale.ROOT)) {
-                    case "helmet": return !allowHelmet;
-                    case "chestplate": return !allowChestplate;
-                    case "boots": return !allowBoots;
-                    case "leggings": return !allowLeggings;
-                    case "wand": return !allowWands;
-                    case "spear": return !allowSpears;
-                    case "dagger": return !allowDaggers;
-                    case "bow": return !allowBows;
-                    default: return true;
-                }
-            }
+            if (c.getItemInfo().getType() == null) return true;
+              switch (c.getItemInfo().getType()) {
+                  case HELMET: return !allowHelmet;
+                  case CHESTPLATE: return !allowChestplate;
+                  case BOOTS: return !allowBoots;
+                  case LEGGINGS: return !allowLeggings;
+                  case WAND: return !allowWands;
+                  case SPEAR: return !allowSpears;
+                  case DAGGER: return !allowDaggers;
+                  case BOW: return !allowBows;
+                  case RELIK: return !allowReliks;
+                  case RING: return !allowRings;
+                  case NECKLACE: return !allowNecklaces;
+                  case BRACELET: return !allowBracelets;
+
+                  default: return true;
+              }
         });
 
         if (currentText != null && !currentText.isEmpty()) {
             String lowerText = currentText.toLowerCase();
-            itemSearch.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerText));
+            itemSearch.removeIf(c -> !doesSearchMatch(c.getDisplayName().toLowerCase(), lowerText));
         }
     }
 

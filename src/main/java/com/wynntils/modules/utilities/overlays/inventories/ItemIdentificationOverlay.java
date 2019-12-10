@@ -310,7 +310,7 @@ public class ItemIdentificationOverlay implements Listener {
 
             // Sets Reroll cost on item
             if (!stack.getTagCompound().hasKey("verifiedWynntils") && ITEM_QUALITY.matcher(wColor).find()) {
-                actualLore.set(i, calculateReroll(lore, wColor, wItem.getLevel()));
+                actualLore.set(i, calculateReroll(lore, wColor, wItem.getRequirements().getLevel()));
                 break;
             }
 

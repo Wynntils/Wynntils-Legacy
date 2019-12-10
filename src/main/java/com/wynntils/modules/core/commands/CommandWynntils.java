@@ -5,9 +5,9 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -15,7 +15,6 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
-import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
@@ -138,7 +137,6 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                QuestManager.requestFullSearch();
                 break;
             case "hidehoveritemtext":
                 ChatConfig.INSTANCE.heldItemChat = false;

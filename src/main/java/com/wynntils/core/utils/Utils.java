@@ -36,7 +36,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -259,6 +260,10 @@ public class Utils {
         }
 
         return result.toString();
+    }
+
+    public static String capitalizeFirst(String input) {
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
     public static String getFieldName(String key) {

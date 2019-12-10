@@ -49,7 +49,7 @@ public class WebManager {
     private static UpdateProfile updateProfile;
     private static boolean ignoringJoinUpdate = false;
     private static HashMap<String, ItemProfile> items = new HashMap<>();
-    private static ArrayList<ItemProfile> directItems = new ArrayList<>();
+    private static Collection<ItemProfile> directItems = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> refineryMapMarkers = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
@@ -188,7 +188,7 @@ public class WebManager {
 
     public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
 
-    public static ArrayList<ItemProfile> getDirectItems() {
+    public static Collection<ItemProfile> getDirectItems() {
         return directItems;
     }
 
@@ -362,19 +362,19 @@ public class WebManager {
      * Update all Wynn items on the {@link HashMap} items
      */
     public static void updateItemList(WebRequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("ItemList");
-        handler.addRequest(new WebRequestHandler.Request(url, "item_list")
-            .cacheTo(new File(apiCacheFolder, "items.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
-            .handleJsonObject(j -> {
-                if (!j.has("items") || !j.get("items").isJsonArray()) return false;
-                JsonArray main = j.getAsJsonArray("items");
+        String url = apiUrls == null ? null : apiUrls.get("NewItemList");
+        handler.addRequest(new WebRequestHandler.Request(url, "new_item_list")
+            .cacheTo(new File(apiCacheFolder, "new_items.json"))
+            .cacheMD5Validator(() -> getAccount().getMD5Verification("newItemList"))
+            .handleJsonArray(j -> {
+                ItemProfile[] gItems = gson.fromJson(j, ItemProfile[].class);
 
-                Type type = new TypeToken<HashMap<String, ItemProfile>>() {
-                }.getType();
+                HashMap<String, ItemProfile> citems = new HashMap<>();
+                for(ItemProfile prof : gItems) {
+                    citems.put(prof.getDisplayName(), prof);
+                }
 
-                HashMap<String, ItemProfile> citems = ItemProfile.GSON.fromJson(main, type);
-                directItems.addAll(citems.values());
+                directItems = citems.values();
 
                 items = citems;
                 return true;

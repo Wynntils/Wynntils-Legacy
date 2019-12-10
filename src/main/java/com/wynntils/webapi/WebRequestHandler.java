@@ -1,5 +1,6 @@
 package com.wynntils.webapi;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -97,6 +98,16 @@ public class WebRequestHandler {
             return handleJson(j -> {
                 if (!j.isJsonObject()) return false;
                 return handler.test(j.getAsJsonObject());
+            });
+        }
+
+        /**
+         * As {@link #handle(Predicate) handle}, but the data is parsed as JSON and converted into an Array
+         */
+        public Request handleJsonArray(Predicate<JsonArray> handler) {
+            return handleJson(j -> {
+                if (!j.isJsonArray()) return false;
+                return handler.test(j.getAsJsonArray());
             });
         }
 

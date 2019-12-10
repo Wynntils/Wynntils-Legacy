@@ -1,0 +1,70 @@
+/*
+ *  * Copyright © Wynntils - 2019.
+ */
+
+package com.wynntils.webapi.profiles.item.objects;
+
+import com.wynntils.webapi.profiles.item.enums.ItemDropType;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import java.util.regex.Pattern;
+
+public class ItemInfoContainer {
+
+    private static final Pattern COLOR_PATTERN = Pattern.compile("(\\d{1,3}),(\\d{1,3}),(\\d{1,3})");
+
+    String material;
+    ItemType type;
+    String set;
+    ItemDropType dropType;
+    String armorColor = null;
+
+    public ItemInfoContainer(String material, ItemType type, String set, ItemDropType dropType, String armorColor) {}
+
+    public ItemDropType getDropType() {
+        return dropType;
+    }
+
+    public ItemType getType() {
+        return type;
+    }
+
+    public String getArmorColor() {
+        return armorColor;
+    }
+
+    public String getSet() {
+        return set;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public boolean isArmorColorValid() {
+        return armorColor != null && COLOR_PATTERN.matcher(armorColor).find();
+    }
+
+    public ItemStack asItemStack() {
+        if(material == null) {
+            return new ItemStack(type.getDefaultItem(), 1, type.getMeta());
+        }
+
+        if(material.matches("(.*\\d.*)")) {
+            String[] split = material.split(":");
+
+            ItemStack stack = new ItemStack(Item.getItemById(Integer.valueOf(split[0])));
+
+
+            if(split.length <= 1) return stack;
+
+            stack.setItemDamage(Integer.valueOf(split[1]));
+            return stack;
+        }
+
+        return new ItemStack(Item.getByNameOrId(material));
+    }
+
+}
