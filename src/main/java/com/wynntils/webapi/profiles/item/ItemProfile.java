@@ -4,7 +4,6 @@
 
 package com.wynntils.webapi.profiles.item;
 
-import com.wynntils.Reference;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
@@ -113,9 +112,7 @@ public class ItemProfile {
         ItemStack stack = itemInfo.asItemStack();
         if(stack == null) {
             guideStack = ItemStack.EMPTY;
-
-            Reference.LOGGER.warn("Item with null material found " + displayName);
-            return null;
+            return guideStack;
         }
 
         List<String> itemLore = new ArrayList<>();
