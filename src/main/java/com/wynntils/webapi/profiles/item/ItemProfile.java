@@ -110,7 +110,7 @@ public class ItemProfile {
 
     private ItemStack generateStack() {
         ItemStack stack = itemInfo.asItemStack();
-        if(stack == null) {
+        if (stack.isEmpty()) {
             guideStack = ItemStack.EMPTY;
             return guideStack;
         }
