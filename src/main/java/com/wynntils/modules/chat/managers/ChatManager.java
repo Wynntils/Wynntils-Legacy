@@ -89,6 +89,13 @@ public class ChatManager {
         //wynnic translator
         if (Utils.hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
+            boolean capital = false;
+            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
+            boolean foundStart = false;
+            boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
+            if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
+                foundStart = true;
+            }
             for (ITextComponent component : in.getSiblings()) {
                 if (Utils.hasWynnic(component.getUnformattedText())) {
                     String toAdd = "";
@@ -110,6 +117,15 @@ public class ChatManager {
                                 previousWynnic = true;
                             }
                             String englishVersion = Utils.translateCharacterFromWynnic(character);
+                            if (capital && englishVersion.matches("[a-z]")) {
+                                englishVersion = String.valueOf(Character.toUpperCase(englishVersion.charAt(0)));
+                            }
+
+                            if (".?!".contains(englishVersion)) {
+                                capital = true;
+                            } else {
+                                capital = false;
+                            }
                             toAdd += englishVersion;
                             oldText.append(character);
                         } else if (String.valueOf(character).matches(nonTranslatable) || String.valueOf(character).matches(optionalTranslatable)) {
@@ -117,6 +133,12 @@ public class ChatManager {
                                 currentNonTranslated += character;
                             } else {
                                 oldText.append(character);
+                            }
+
+                            if (".?!".contains(String.valueOf(character))) {
+                                capital = true;
+                            } else if (character != ' ') {
+                                capital = false;
                             }
                         } else {
                             if (previousWynnic) {
@@ -132,6 +154,10 @@ public class ChatManager {
                                 oldText.append(character);
                             } else {
                                 oldText.append(character);
+                            }
+
+                            if (character != ' ') {
+                                capital = false;
                             }
                         }
                     }
@@ -153,9 +179,26 @@ public class ChatManager {
                         oldComponent.setStyle(component.getStyle().createDeepCopy());
                         newTextComponents.add(oldComponent);
                     }
-
                 } else {
                     newTextComponents.add(component);
+                }
+                if (!foundStart) {
+                    if (foundEndTimestamp) {
+                        if (in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/")) {
+                            foundStart = component.getUnformattedText().contains(":");
+                        } else if (isGuildOrParty) {
+                            foundStart = component.getUnformattedText().contains("]");
+                        }
+                    } else if (component.getUnformattedComponentText().contains("] ")) {
+                        foundEndTimestamp = true;
+                        if (!in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
+                            foundStart = true;
+                        }
+                    }
+
+                    if (foundStart) {
+                        capital = true;
+                    }
                 }
             }
             in.getSiblings().clear();
@@ -280,7 +323,7 @@ public class ChatManager {
                         components.add(sectionComponent);
                     } else if (!foundStart) {
                         if (foundEndTimestamp) {
-                            if (in.getSiblings().get(0).getUnformattedText().contains("/")) {
+                            if (in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/")) {
                                 foundStart = component.getUnformattedText().contains(":");
                             } else if (isGuildOrParty) {
                                 foundStart = component.getUnformattedText().contains("]");
