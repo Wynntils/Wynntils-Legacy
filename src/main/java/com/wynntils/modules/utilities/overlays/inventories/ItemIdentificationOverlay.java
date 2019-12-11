@@ -146,15 +146,33 @@ public class ItemIdentificationOverlay implements Listener {
                 NBTTagList loreList = Utils.getLoreTag(stack);
                 if (loreList != null) {
                     stack.getTagCompound().setTag("originalLore", loreList.copy());
+                    boolean capital = true;
                     for (int index = 0; index < loreList.tagCount(); index++) {
                         String lore = loreList.getStringTagAt(index);
                         if (Utils.hasWynnic(lore)) {
                             String translated = "";
+                            boolean colorCode = false;
                             for (char character : lore.toCharArray()) {
+                                String translatedCharacter;
                                 if (Utils.hasWynnic(String.valueOf(character))) {
-                                    translated += Utils.translateCharacterFromWynnic(character);
+                                    translatedCharacter = Utils.translateCharacterFromWynnic(character);
+                                    if (capital && translatedCharacter.matches("[a-z]")) {
+                                        translatedCharacter = String.valueOf(Character.toUpperCase(translatedCharacter.charAt(0)));
+                                    }
                                 } else {
-                                    translated += character;
+                                    translatedCharacter = String.valueOf(character);
+                                }
+
+                                translated += translatedCharacter;
+
+                                if (".?!".contains(translatedCharacter)) {
+                                    capital = true;
+                                } else if (translatedCharacter.equals("§")) {
+                                    colorCode = true;
+                                } else if (!translatedCharacter.equals(" ") && !colorCode) {
+                                    capital = false;
+                                } else if (colorCode) {
+                                    colorCode = false;
                                 }
                             }
                             loreList.set(index, new NBTTagString(translated));
