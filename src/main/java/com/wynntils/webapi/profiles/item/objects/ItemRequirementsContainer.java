@@ -62,7 +62,7 @@ public class ItemRequirementsContainer {
     }
 
     public boolean hasRequirements(ItemType type) {
-        return requiresQuest() || requiresClass(type) || strength != 0 || dexterity != 0 || intelligence != 0 || defense != 0 || agility != 0;
+        return requiresQuest() || requiresClass(type) || level != 0 || strength != 0 || dexterity != 0 || intelligence != 0 || defense != 0 || agility != 0;
     }
 
     public ClassType getRealClass(ItemType type) {

@@ -163,6 +163,8 @@ public class ItemProfile {
                     itemLore.add(GREEN + "✔ " + GRAY + "Quest Req: " + requirements.getQuest());
                 if (requirements.requiresClass(itemInfo.getType()))
                     itemLore.add(GREEN + "✔ " + GRAY + "Class Req: " + requirements.getRealClass(itemInfo.getType()).getDisplayName());
+                if (requirements.getLevel() != 0)
+                    itemLore.add(GREEN + "✔ " + GRAY + "Combat Lv. Min: " + requirements.getLevel());
                 if (requirements.getStrength() != 0)
                     itemLore.add(GREEN + "✔ " + GRAY + "Strength Min: " + requirements.getStrength());
                 if (requirements.getAgility() != 0)
