@@ -200,11 +200,11 @@ public class ItemProfile {
             //powders
             if(powderAmount > 0) itemLore.add(GRAY + "["+ powderAmount + " Powder Slots]");
 
-            //untradeable
-            if(restriction != null) itemLore.add(RED + Utils.capitalizeFirst(restriction) + " Item");
-
             //item tier
             itemLore.add(tier.asLore());
+
+            //untradable
+            if(restriction != null) itemLore.add(RED + Utils.capitalizeFirst(restriction) + " Item");
 
             //item lore
             if(!lore.isEmpty()) {
