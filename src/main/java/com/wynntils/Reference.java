@@ -43,11 +43,20 @@ public class Reference {
 
     public static boolean onServer = false;
     public static boolean onEuServer = false;
+
     public static boolean onWorld = false;
     public static boolean onNether = false;
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
+
     public static boolean developmentEnvironment = false;
+
+    public static class ServerIPS {
+
+        public static final String us = "play.wynncraft.com";
+        public static final String eu = "eu.wynncraft.com";
+
+    }
 
 }

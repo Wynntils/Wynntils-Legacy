@@ -4,9 +4,7 @@
 
 package com.wynntils.core.utils.reflections;
 
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.Entity;
@@ -21,6 +19,7 @@ public enum ReflectionFields {
     GuiChest_lowerChestInventory(GuiChest.class, "lowerChestInventory", "field_147015_w"),
     Entity_CUSTOM_NAME(Entity.class, "CUSTOM_NAME", "field_184242_az"),
     Event_phase(Event.class, "phase"),
+    GuiScreen_buttonList(GuiScreen.class, "buttonList", "field_146292_n"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
     GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w"),
     GuiIngame_persistantChatGUI(GuiIngame.class, "persistantChatGUI", "field_73840_e"),

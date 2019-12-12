@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
@@ -15,14 +16,11 @@ import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
@@ -30,7 +28,6 @@ import java.util.regex.Pattern;
 
 public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.OnJoinGame {
 
-    private static final ServerData serverAddress = new ServerData("Wynncraft", "play.wynncraft.com", false);
     private static final Pattern dmRegex = Pattern.compile("§7(\\[(.*) ➤ (.*)\\])(.*)");
 
     boolean waitingLobby = false;
@@ -43,8 +40,6 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
     long delayTime = 0;
 
     public RPCJoinHandler() {
-        serverAddress.setResourceMode(ServerData.ServerResourceMode.ENABLED);
-
         FrameworkManager.getEventBus().register(this);
     }
 
@@ -57,14 +52,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
         Minecraft mc = Minecraft.getMinecraft();
 
         if(!Reference.onServer) {
-            GuiMultiplayer guiMultiplayer = new GuiMultiplayer(new GuiMainMenu());
-
-            if(mc.world != null) {
-                mc.world.sendQuittingDisconnectingPacket();
-                mc.loadWorld(null);
-            }
-
-            FMLClientHandler.instance().connectToServer(guiMultiplayer, serverAddress);
+            ServerUtils.connect(ServerUtils.getWynncraftServerData(new ServerList(mc), true));
             waitingLobby = true;
             return;
         }

@@ -52,10 +52,10 @@ public class EmeraldCountOverlay implements Listener {
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if(!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
 
-        IInventory lowerInv = e.getGuiInventory().getLowerInv();
+        IInventory lowerInv = e.getGui().getLowerInv();
         if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
 
-        IInventory upperInv = e.getGuiInventory().getUpperInv();
+        IInventory upperInv = e.getGui().getUpperInv();
 
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
@@ -75,8 +75,8 @@ public class EmeraldCountOverlay implements Listener {
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
         if(!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
 
-        IInventory lowerInv = e.getGuiInventory().getLowerInv();
-        IInventory upperInv = e.getGuiInventory().getUpperInv();
+        IInventory lowerInv = e.getGui().getLowerInv();
+        IInventory upperInv = e.getGui().getUpperInv();
 
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {

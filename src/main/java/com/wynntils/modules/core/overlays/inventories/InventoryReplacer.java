@@ -15,6 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
+import java.util.List;
 
 public class InventoryReplacer extends GuiInventory {
 
@@ -69,5 +70,9 @@ public class InventoryReplacer extends GuiInventory {
     @Override
     public void renderToolTip(ItemStack stack, int x, int y) {
         super.renderToolTip(stack, x, y);
+    }
+
+    public List<GuiButton> getButtonList() {
+        return buttonList;
     }
 }

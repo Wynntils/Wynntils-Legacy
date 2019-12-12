@@ -20,7 +20,6 @@ import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
@@ -220,17 +219,12 @@ public class MapConfig extends SettingsClass {
         // Warn if we are either missing some icons in the options
         // or have options that do not have an icon
         if (Reference.developmentEnvironment) {
-            HashSet<String> ignored = new HashSet<>();
-            for (String ignoredName : MapApiIcon.IGNORED_MARKERS) {
-                ignored.add(MapApiIcon.MAPMARKERNAME_TRANSLATION.get(ignoredName));
-            }
-
             for (String icon : MapApiIcon.MAPMARKERNAME_TRANSLATION.values()) {
-                if (ignored.contains(icon)) continue;
+                if (MapApiIcon.IGNORED_MARKERS.contains(icon)) continue;
                 if (!enabledIcons.containsKey(icon)) Reference.LOGGER.warn("Missing option for icon \"" + icon + "\"");
             }
             for (String icon : enabledIcons.keySet()) {
-                if (ignored.contains(icon)) continue;
+                if (MapApiIcon.IGNORED_MARKERS.contains(icon)) continue;
                 if (!MapApiIcon.MAPMARKERNAME_REVERSE_TRANSLATION.containsKey(icon)) Reference.LOGGER.warn("Missing translation for \"" + icon + "\"");
             }
         }

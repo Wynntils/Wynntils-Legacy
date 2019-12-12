@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
@@ -149,6 +150,9 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             case "showhoveritemtext":
                 ChatConfig.INSTANCE.heldItemChat = true;
                 ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+                break;
+            case "changetoeu":
+                ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), Reference.ServerIPS.eu, "Wynncraft"));
                 break;
             case "openmapatcompass":
                 Location compass = CompassManager.getCompassLocation();

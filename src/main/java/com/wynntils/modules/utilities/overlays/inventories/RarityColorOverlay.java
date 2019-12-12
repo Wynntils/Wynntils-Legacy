@@ -30,17 +30,17 @@ public class RarityColorOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        drawChest(e.getGuiInventory(), e.getGuiInventory().getLowerInv(), e.getGuiInventory().getUpperInv(), true, true);
+        drawChest(e.getGui(), e.getGui().getLowerInv(), e.getGui().getUpperInv(), true, true);
     }
 
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        drawChest(e.getGuiInventory(), e.getGuiInventory().getUpperInv(), e.getGuiInventory().getLowerInv(), true, false);
+        drawChest(e.getGui(), e.getGui().getUpperInv(), e.getGui().getLowerInv(), true, false);
     }
 
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
-        for (Slot s : e.getGuiInventory().inventorySlots.inventorySlots) {
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
                 continue;
             if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)

@@ -1,13 +1,13 @@
 package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.Reference;
+import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.text.TextFormatting;
 
@@ -55,7 +55,7 @@ public class UpdateAvailableScreen extends GuiScreen {
         } else if (button.id == 1) {
             // Ignore
             WebManager.skipJoinUpdate();
-            mc.displayGuiScreen(new GuiConnecting(null, mc, server));
+            ServerUtils.connect(null, server);
         } else if (button.id == 2) {
             // Cancel
             mc.displayGuiScreen(null);

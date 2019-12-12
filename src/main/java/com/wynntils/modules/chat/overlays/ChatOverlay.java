@@ -213,7 +213,7 @@ public class ChatOverlay extends GuiNewChat {
 
         boolean found = false;
         for(ChatTab tab : TabManager.getAvailableTabs()) {
-            if(!tab.regexMatches(chatComponent) || tab.isLowPriority()) continue;
+            if(tab.isLowPriority() || !tab.regexMatches(chatComponent)) continue;
 
             updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
             found = true;

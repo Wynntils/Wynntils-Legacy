@@ -31,6 +31,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Add Class & Server Button to Menu", description = "Should a class and server button be displayed on the in-game menu?")
     public boolean addClassServer = true;
 
+    @Setting(displayName = "Add Change Hub Button to Menu", description = "Should a button to change between the US and EU hubs be displayed on the in-game menu when in the hub?")
+    public boolean addChangeHub = true;
+
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
     public boolean hideNametags = true;
 

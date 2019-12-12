@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 
 import java.io.IOException;
+import java.util.List;
 
 public class IngameMenuReplacer extends GuiIngameMenu {
 
@@ -44,6 +45,10 @@ public class IngameMenuReplacer extends GuiIngameMenu {
     @Override
     public void drawHoveringText(String text, int x, int y) {
         super.drawHoveringText(text, x, y);
+    }
+
+    public List<GuiButton> getButtonList() {
+        return buttonList;
     }
 
 }

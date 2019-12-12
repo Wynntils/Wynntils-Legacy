@@ -11,7 +11,6 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;

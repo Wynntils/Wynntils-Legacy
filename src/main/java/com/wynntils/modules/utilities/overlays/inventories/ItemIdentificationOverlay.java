@@ -51,25 +51,25 @@ public class ItemIdentificationOverlay implements Listener {
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
+            drawHoverItem(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
         }
     }
 
     @SubscribeEvent
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
+            drawHoverItem(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
         }
     }
 
     @SubscribeEvent
     public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if (e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            drawHoverGuess(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
+            drawHoverItem(e.getGui().getSlotUnderMouse().getStack(), e.getGui().getSlotUnderMouse().inventory);
         }
     }
 

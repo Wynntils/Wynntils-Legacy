@@ -2,6 +2,7 @@ package com.wynntils.modules.core.instances;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.UpdateAvailableScreen;
@@ -14,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.network.ServerPinger;
@@ -31,7 +31,6 @@ import java.awt.image.BufferedImage;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class MainMenuButtons {
@@ -71,7 +70,7 @@ public class MainMenuButtons {
             mc.displayGuiScreen(new UpdateAvailableScreen(server));
         } else {
             WebManager.skipJoinUpdate();
-            mc.displayGuiScreen(new GuiConnecting(backGui, mc, server));
+            ServerUtils.connect(backGui, server);
         }
     }
 
@@ -80,24 +79,7 @@ public class MainMenuButtons {
     }
 
     private static ServerData getWynncraftServerData(Minecraft mc) {
-        serverList = new ServerList(mc);
-
-        ServerData server = null;
-        int i = 0, count = serverList.countServers();
-        for (; i < count; ++i) {
-            server = serverList.getServerData(i);
-            if (server.serverIP.toLowerCase(Locale.ROOT).contains("wynncraft")) {
-                break;
-            }
-        }
-
-        if (i >= count) {
-            server = new ServerData("Wynncraft", "play.wynncraft.com", false);
-            serverList.addServerData(server);
-            serverList.saveServerList();
-        }
-
-        return server;
+        return ServerUtils.getWynncraftServerData(serverList = new ServerList(mc), true);
     }
 
     private static class WynncraftButton extends GuiButton {

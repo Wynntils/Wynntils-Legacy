@@ -13,10 +13,10 @@ public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if(e.getGuiInventory().getSlotUnderMouse() == null || !e.getGuiInventory().getSlotUnderMouse().getHasStack()) return;
+        if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
-        String lore = Utils.getStringLore(e.getGuiInventory().getSlotUnderMouse().getStack());
-        if(!e.getGuiInventory().getLowerInv().getName().contains("skill points remaining")) return;
+        String lore = Utils.getStringLore(e.getGui().getSlotUnderMouse().getStack());
+        if(!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
         if(!lore.contains("points")) return;
 
         lore = lore.replace("§", "");
@@ -28,7 +28,7 @@ public class SkillPointOverlay implements Listener {
         String[] numbers = lore.split(" ");
         try {
             int count = Integer.parseInt(numbers[0]);
-            e.getGuiInventory().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
+            e.getGui().getSlotUnderMouse().getStack().setCount(count == 0 ? 1 : count);
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 

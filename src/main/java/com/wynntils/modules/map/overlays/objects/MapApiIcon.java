@@ -22,13 +22,10 @@ import java.util.*;
 
 public class MapApiIcon extends MapTextureIcon {
 
-    public static final Set<String> IGNORED_MARKERS = Collections.unmodifiableSet(new HashSet<String>() {{
-        add("Content_CorruptedDungeon");
-    }});
-
     public static final Map<String, String> MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>() {{
         put("Content_Dungeon", "Dungeons");
         put("Content_CorruptedDungeon", "Corrupted Dungeons");
+        put("Content_BossAltar", "Boss Altar");
         put("Merchant_Accessory", "Accessory Merchant");
         put("Merchant_Armour", "Armour Merchant");
         put("Merchant_Dungeon", "Dungeon Merchant");
@@ -71,6 +68,17 @@ public class MapApiIcon extends MapTextureIcon {
         put("Profession_Cooking", "Cooking Station");
         put("Profession_Woodworking", "Woodworking Station");
         put("Merchant_Tool", "Tool Merchant");
+    }});
+
+    public static final Set<String> IGNORED_MARKERS = Collections.unmodifiableSet(new HashSet<String>() {{
+        for (String ignored : new String[]{
+            "Content_CorruptedDungeon"
+        }) {
+            add(ignored);
+            String translated = MAPMARKERNAME_TRANSLATION.get(ignored);
+            assert translated != null;
+            add(translated);
+        }
     }});
 
     public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()){{

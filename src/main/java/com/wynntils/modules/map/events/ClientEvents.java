@@ -42,8 +42,8 @@ public class ClientEvents implements Listener {
     public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if(lastLocation == null) return;
 
-        if(e.getGuiInventory().getLowerInv().getName().contains("Loot Chest ")) {
-            String tier = e.getGuiInventory().getLowerInv().getName().replace("Loot Chest ", "");
+        if(e.getGui().getLowerInv().getName().contains("Loot Chest ")) {
+            String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
             if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
 
             WaypointProfile wp = null;
