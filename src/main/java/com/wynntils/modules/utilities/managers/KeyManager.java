@@ -60,7 +60,7 @@ public class KeyManager {
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
 
-        stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop StopWatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+        stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
     }
 
     public static KeyHolder getLockInventoryKey() {
