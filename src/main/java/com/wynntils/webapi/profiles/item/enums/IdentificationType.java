@@ -9,7 +9,8 @@ public enum IdentificationType {
     INTEGER(""),
     PERCENTAGE("%"),
     FOUR_SECONDS("/4s"),
-    THREE_SECONDS("/3s");
+    THREE_SECONDS("/3s"),
+    TIER(" tier");
 
     String inGame;
 

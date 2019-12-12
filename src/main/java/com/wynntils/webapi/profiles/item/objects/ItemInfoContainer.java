@@ -70,8 +70,6 @@ public class ItemInfoContainer {
             String[] split = material.split(":");
 
             ItemStack stack = new ItemStack(Item.getItemById(Integer.valueOf(split[0])));
-
-
             if(split.length <= 1) return stack;
 
             stack.setItemDamage(Integer.valueOf(split[1]));

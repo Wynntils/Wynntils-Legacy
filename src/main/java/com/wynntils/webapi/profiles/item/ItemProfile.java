@@ -110,10 +110,7 @@ public class ItemProfile {
 
     private ItemStack generateStack() {
         ItemStack stack = itemInfo.asItemStack();
-        if(stack == null) {
-            guideStack = ItemStack.EMPTY;
-            return guideStack;
-        }
+        if(stack.isEmpty()) return guideStack = ItemStack.EMPTY;
 
         List<String> itemLore = new ArrayList<>();
         { //lore
@@ -229,10 +226,7 @@ public class ItemProfile {
             stack.setTagCompound(tag);
         }
 
-        //storaging
-        guideStack = stack;
-
-        return guideStack;
+        return guideStack = stack;
     }
 
     private String getDefenseText(String type) {

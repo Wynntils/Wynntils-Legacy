@@ -23,7 +23,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
-import net.minecraft.block.BlockBarrier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -34,11 +33,9 @@ import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -139,20 +136,20 @@ public class ClientEvents implements Listener {
         }
     }
 
-    /**
-     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
-     */
-    @SubscribeEvent
-    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
-        if(!Reference.onWorld || e.getEntityPlayer() == null) return;
-
-        //HeyZeer0: this verifies based if there's a barrier block below the player, it will also helps
-        //if the player is inside a dungeon | Main Use = cutscene
-        EntityPlayer player = e.getEntityPlayer();
-        if(!(player.world.getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock() instanceof BlockBarrier)) return;
-
-        e.setCanceled(true);
-    }
+//    /**
+//     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
+//     */
+//    @SubscribeEvent
+//    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
+//        if(!Reference.onWorld || e.getEntityPlayer() == null) return;
+//
+//        //HeyZeer0: this verifies based if there's a barrier block below the player, it will also helps
+//        //if the player is inside a dungeon | Main Use = cutscene
+//        EntityPlayer player = e.getEntityPlayer();
+//        if(!(player.world.getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock() instanceof BlockBarrier)) return;
+//
+//        e.setCanceled(true);
+//    }
 
     /**
      * Process the packet queue if the queue is not empty
