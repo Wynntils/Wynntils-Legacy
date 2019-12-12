@@ -298,7 +298,7 @@ public class ItemPage extends QuestBookPage {
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                    if(pf.getGuideStack() == null) continue;
+                    if (pf.getGuideStack().isEmpty()) continue;
 
                     render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
 
@@ -315,7 +315,7 @@ public class ItemPage extends QuestBookPage {
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                    if (pf.getGuideStack() == null) continue;
+                    if (pf.getGuideStack().isEmpty()) continue;
 
                     render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
                 }
