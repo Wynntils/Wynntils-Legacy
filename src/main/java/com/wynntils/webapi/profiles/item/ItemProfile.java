@@ -109,6 +109,10 @@ public class ItemProfile {
         return guideStack != null ? guideStack : generateStack();
     }
 
+    public void clearGuideStack() {
+        guideStack = null;
+    }
+
     private ItemStack generateStack() {
         ItemStack stack = itemInfo.asItemStack();
         if(stack.isEmpty()) return guideStack = ItemStack.EMPTY;
@@ -176,14 +180,14 @@ public class ItemProfile {
 
             //ids
             if(statuses.size() > 0) {
-                HashMap<String, String> statuLore = new HashMap<>();
+                HashMap<String, String> statusLore = new HashMap<>();
                 for (String idName : statuses.keySet()) {
                     IdentificationContainer id = statuses.get(idName);
 
-                    statuLore.put(idName, id.getAsLore(idName));
+                    statusLore.put(idName, id.getAsLore(idName));
                 }
 
-                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statuLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
+                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
                 itemLore.add(" ");
             }
 

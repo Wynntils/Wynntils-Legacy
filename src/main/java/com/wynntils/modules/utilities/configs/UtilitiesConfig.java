@@ -8,6 +8,8 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.ItemProfile;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,8 +76,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(upload = false)
     public String lastServerResourcePackHash = "";
 
-    //HeyZeer0: Do not add @Setting here, or it will be displayed on the configuration
-    @Setting(upload = true)
+    @Setting()
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
     @SettingsInfo(name = "wars", displayPath = "Wars")
@@ -249,7 +250,8 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-
+        if(name.equalsIgnoreCase("addItemIdentificationSpacing"))
+            WebManager.getDirectItems().forEach(ItemProfile::clearGuideStack);
     }
 
 }
