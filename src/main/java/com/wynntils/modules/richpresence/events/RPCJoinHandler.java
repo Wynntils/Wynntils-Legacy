@@ -52,7 +52,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
         Minecraft mc = Minecraft.getMinecraft();
 
         if(!Reference.onServer) {
-            ServerUtils.connect(ServerUtils.getWynncraftServerData(new ServerList(mc), true));
+            ServerUtils.connect(ServerUtils.getWynncraftServerData(true));
             waitingLobby = true;
             return;
         }

@@ -42,13 +42,16 @@ public class ServerUtils {
         WorldClient world = mc.world;
         if (world == null) return;
 
+        boolean singlePlayer = mc.isIntegratedServerRunning();
+        boolean realms = !singlePlayer && mc.isConnectedToRealms();
+
         world.sendQuittingDisconnectingPacket();
         mc.loadWorld(null);
 
         if (!switchGui) return;
-        if (mc.isIntegratedServerRunning()) {
+        if (singlePlayer) {
             mc.displayGuiScreen(new GuiMainMenu());
-        } else if (mc.isConnectedToRealms()) {
+        } else if (realms) {
             // Should not be possible because Wynntils will
             // never be running on the latest version of Minecraft
             new RealmsBridge().switchToRealms(new GuiMainMenu());
@@ -62,7 +65,7 @@ public class ServerUtils {
     }
 
     public static ServerData getWynncraftServerData(ServerList serverList, boolean addNew) {
-        return getWynncraftServerData(serverList, addNew, Reference.ServerIPS.eu);
+        return getWynncraftServerData(serverList, addNew, Reference.ServerIPS.us);
     }
 
     /**
