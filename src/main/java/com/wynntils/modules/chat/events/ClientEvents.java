@@ -8,6 +8,8 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ServerUtils;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
@@ -19,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -87,12 +88,18 @@ public class ClientEvents implements Listener {
         HeldItemChatManager.onTick();
     }
 
+    private static class OnChangeToEUClick implements Runnable {
+        @Override
+        public void run() {
+            ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), Reference.ServerIPS.eu, "Wynncraft"));
+        }
+    }
+
     @SubscribeEvent
     public void onChangeHubMessage(ChatEvent.Pre e) {
         if (e.getMessage().getUnformattedText().equals("Log in to eu.wynncraft.com for less lag.")) {
             TextComponentString newMessage = new TextComponentString("Click here to log in to " + TextFormatting.UNDERLINE + Reference.ServerIPS.eu + TextFormatting.RESET + " for less lag.");
-            newMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils changetoeu"));
-            e.setMessage(newMessage);
+            e.setMessage(TextAction.withStaticEvent(newMessage, OnChangeToEUClick.class));
         }
     }
 

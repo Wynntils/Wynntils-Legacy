@@ -5,17 +5,11 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.ServerUtils;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
-import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.chat.ChatModule;
-import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
-import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
-import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
@@ -59,6 +53,11 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             return;
         }
 
+        if (TextAction.isCommandPrefix(args[0])) {
+            TextAction.processCommand(args);
+            return;
+        }
+
         switch (String.join("", args).toLowerCase()) {
             case "donate":
                 TextComponentString c = new TextComponentString("You can donate to Wynntils at: ");
@@ -73,6 +72,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 sender.sendMessage(c.appendSibling(url));
                 break;
             case "help":
+            case "help1":
                 TextComponentString text = new TextComponentString("");
                 text.getStyle().setColor(TextFormatting.GOLD);
                 text.appendText("Wynntils' command list: ");
@@ -138,30 +138,6 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                break;
-            case "hidehoveritemtext":
-                ChatConfig.INSTANCE.heldItemChat = false;
-                ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
-
-                ITextComponent message = new TextComponentString("Enable §bMod options > Chat > Held Item Chat Messages§r to undo (or click this)");
-                message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils showhoveritemtext"));
-                Minecraft.getMinecraft().player.sendMessage(message);
-                break;
-            case "showhoveritemtext":
-                ChatConfig.INSTANCE.heldItemChat = true;
-                ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
-                break;
-            case "changetoeu":
-                ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), Reference.ServerIPS.eu, "Wynncraft"));
-                break;
-            case "openmapatcompass":
-                Location compass = CompassManager.getCompassLocation();
-                if (compass == null) {
-                    Utils.displayGuiScreen(new MainWorldMapUI());
-                    break;
-                }
-
-                Utils.displayGuiScreen(new MainWorldMapUI((float) compass.getX(), (float) compass.getZ()));
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

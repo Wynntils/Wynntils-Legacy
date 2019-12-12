@@ -2,10 +2,14 @@ package com.wynntils.modules.chat.managers;
 
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.util.math.MathHelper;
@@ -64,6 +68,19 @@ public class HeldItemChatManager {
         }
     }
 
+    private static class OnOpenMapAtCompassClick implements Runnable {
+        @Override
+        public void run() {
+            Location compass = CompassManager.getCompassLocation();
+            if (compass == null) {
+                Utils.displayGuiScreen(new MainWorldMapUI());
+                return;
+            }
+
+            Utils.displayGuiScreen(new MainWorldMapUI((float) compass.getX(), (float) compass.getZ()));
+        }
+    }
+
     private static ITextComponent getCompassMessage() {
         ITextComponent base = new TextComponentString("Compass Beacon");
         ITextComponent text = base;
@@ -110,7 +127,7 @@ public class HeldItemChatManager {
         )));
 
         text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to show on main map")));
-        text.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils openmapatcompass"));
+        text.getStyle().setClickEvent(TextAction.getStaticEvent(OnOpenMapAtCompassClick.class));
 
         return base;
     }
@@ -153,12 +170,30 @@ public class HeldItemChatManager {
         return base;
     }
 
+    private static class OnCancelClick implements Runnable {
+        private static class OnUnhideClick implements Runnable {
+            @Override
+            public void run() {
+                ChatConfig.INSTANCE.heldItemChat = true;
+                ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+            }
+        }
+
+        @Override
+        public void run() {
+            ChatConfig.INSTANCE.heldItemChat = false;
+            ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
+
+            ITextComponent message = new TextComponentString("Enable §bMod options > Chat > Held Item Chat Messages§r to undo (or click this)");
+            Minecraft.getMinecraft().player.sendMessage(TextAction.withStaticEvent(message, OnUnhideClick.class));
+        }
+    }
+
     private static ITextComponent getCancelComponent() {
         ITextComponent msg = new TextComponentString("[x]");
         msg.getStyle().setColor(TextFormatting.DARK_RED);
         msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Do not show this text")));
-        msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils hidehoveritemtext"));
-        return msg;
+        return TextAction.withStaticEvent(msg, OnCancelClick.class);
     }
 
     private static void deleteMessage() {
