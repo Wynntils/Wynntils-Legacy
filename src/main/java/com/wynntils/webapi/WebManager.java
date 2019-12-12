@@ -22,6 +22,7 @@ import com.wynntils.webapi.profiles.MusicProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import com.wynntils.webapi.profiles.UpdateProfile;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -48,11 +49,14 @@ public class WebManager {
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static boolean ignoringJoinUpdate = false;
+
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static Collection<ItemProfile> directItems = new ArrayList<>();
+    private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapMarkerProfile> refineryMapMarkers = new ArrayList<>();
-    private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
     private static String currentSplash = "";
@@ -113,6 +117,7 @@ public class WebManager {
         updateUsersRoles(handler);
         updateUsersModels(handler);
         updateItemList(handler);
+        updateIdentificationOrderer(handler);
         updateMapMarkers(handler);
         updateMapRefineries(handler);
         updateItemGuesses(handler);
@@ -379,6 +384,20 @@ public class WebManager {
                 items = citems;
                 return true;
             })
+        );
+    }
+
+    /**
+     * Update all Wynn items on the {@link HashMap} items
+     */
+    public static void updateIdentificationOrderer(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("IdentificationOrder");
+        handler.addRequest(new WebRequestHandler.Request(url, "identification_order")
+                .cacheTo(new File(apiCacheFolder, "identification_order.json"))
+                .handleJsonObject(j -> {
+                    IdentificationOrderer.INSTANCE = gson.fromJson(j, IdentificationOrderer.class);
+                    return true;
+                })
         );
     }
 

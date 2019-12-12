@@ -27,6 +27,10 @@ public class IdentificationContainer {
         return min;
     }
 
+    public boolean isFixed() {
+        return min == max;
+    }
+
     public String getAsLore(String idName) {
         if(idName.startsWith("raw")) {
             idName = idName.substring(3);
@@ -42,7 +46,7 @@ public class IdentificationContainer {
         String name = Utils.capitalizeFirst(nameBuilder.toString());
 
         String id;
-        if(min == max)
+        if(isFixed())
             id = (min < 0 ? TextFormatting.RED : TextFormatting.GREEN + "+") + String.valueOf(min);
         else
             id = ((min < 0 ? TextFormatting.RED : TextFormatting.GREEN + "+") + String.valueOf(min)) +
