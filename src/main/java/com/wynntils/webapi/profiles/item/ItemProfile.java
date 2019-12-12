@@ -5,6 +5,7 @@
 package com.wynntils.webapi.profiles.item;
 
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
@@ -175,11 +176,14 @@ public class ItemProfile {
 
             //ids
             if(statuses.size() > 0) {
+                HashMap<String, String> statuLore = new HashMap<>();
                 for (String idName : statuses.keySet()) {
                     IdentificationContainer id = statuses.get(idName);
 
-                    itemLore.add(id.getAsLore(idName));
+                    statuLore.put(idName, id.getAsLore(idName));
                 }
+
+                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statuLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
                 itemLore.add(" ");
             }
 
