@@ -336,7 +336,7 @@ public class ItemIdentificationOverlay implements Listener {
         String[] splitName = longIdName.split(" ");
         String result = raw ? "raw" : "";
         for (String r : splitName) {
-            if (r.startsWith("[")) continue;
+            if (r.startsWith("[")) continue; //ignore ids
             result = result + r.substring(0, 1).toUpperCase() + r.substring(1).toLowerCase();
         }
 
