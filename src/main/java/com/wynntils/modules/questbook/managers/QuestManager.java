@@ -4,10 +4,11 @@
 
 package com.wynntils.modules.questbook.managers;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -19,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
@@ -124,62 +126,67 @@ public class QuestManager {
                     miniquestsLore.removeAll(Arrays.asList("", null));
                 }
 
-                //parsing
-                for(ItemStack item : i.getItems()) {
-                    if(!item.hasDisplayName()) continue; //not a valid quest
+                NonNullList<ItemStack> items = NonNullList.create();
+                items.addAll(i.getItems());
+                ModCore.mc().addScheduledTask(() -> {
+                    // parsing
+                    for (ItemStack item : items) {
+                        if (!item.hasDisplayName()) continue; // not a valid quest
 
-                    List<String> lore = Utils.getLore(item);
-                    if(lore.isEmpty()) continue; //not a valid quest
+                        List<String> lore = Utils.getLore(item);
+                        if (lore.isEmpty()) continue; // not a valid quest
 
-                    List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
-                    if(!realLore.contains("Right click to track")) continue; //not a valid quest
+                        List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
+                        if (!realLore.contains("Right click to track")) continue; // not a valid quest
 
-                    String displayName = Utils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
+                        String displayName = Utils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
 
-                    QuestStatus status = null;
-                    if(lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
-                    else if(lore.get(0).contains("Started")) status = QuestStatus.STARTED;
-                    else if(lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
-                    else if(lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
-                    if(status == null) continue;
+                        QuestStatus status = null;
+                        if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
+                        else if (lore.get(0).contains("Started")) status = QuestStatus.STARTED;
+                        else if (lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
+                        else if (lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
+                        if (status == null) continue;
 
-                    if (!(isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).remove(displayName) && !fullSearch && status == QuestStatus.COMPLETED) {
-                        continue;
-                    }
-
-                    if (status != QuestStatus.COMPLETED) {
-                        (isMiniquests ? seenIncompleteMiniQuests : seenIncompleteQuests).add(displayName);
-                    }
-
-                    String[] parts = TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).split("\\s+");
-                    boolean hasLevel = !parts[0].equals("✖");
-                    QuestLevelType levelType = QuestLevelType.valueOf(parts[1].toUpperCase(Locale.ROOT));
-                    int minLevel = Integer.parseInt(parts[parts.length - 1]);
-                    QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase(Locale.ROOT));
-
-                    StringBuilder description = new StringBuilder();
-                    for(int x = 5; x < lore.size(); x++) {
-                        if(lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
-                            break;
+                        if (!(isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).remove(displayName) && !fullSearch && status == QuestStatus.COMPLETED) {
+                            continue;
                         }
-                        description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
+
+                        if (status != QuestStatus.COMPLETED) {
+                            (isMiniquests ? seenIncompleteMiniQuests : seenIncompleteQuests).add(displayName);
+                        }
+
+                        String[] parts = TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).split("\\s+");
+                        boolean hasLevel = !parts[0].equals("✖");
+                        QuestLevelType levelType = QuestLevelType.valueOf(parts[1].toUpperCase(Locale.ROOT));
+                        int minLevel = Integer.parseInt(parts[parts.length - 1]);
+                        QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase(Locale.ROOT));
+
+                        StringBuilder description = new StringBuilder();
+                        for (int x = 5; x < lore.size(); x++) {
+                            if (lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
+                                break;
+                            }
+                            description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
+                        }
+
+                        QuestInfo quest;
+                        if (isMiniquests) {
+                            quest = new MiniQuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
+                        } else {
+                            quest = new QuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
+                        }
+                        currentQuestsData.put(displayName, quest);
+
+                        if (trackedQuest != null && trackedQuest.getName().equals(displayName)) {
+                            if (quest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
+                            else
+                                trackedQuest = quest;
+                        }
                     }
 
-                    QuestInfo quest;
-                    if (isMiniquests) {
-                        quest = new MiniQuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
-                    } else {
-                        quest = new QuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
-                    }
-                    currentQuestsData.put(displayName, quest);
-
-                    if(trackedQuest != null && trackedQuest.getName().equals(displayName)) {
-                        if(quest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
-                        else trackedQuest = quest;
-                    }
-                }
-
-                QuestBookPages.QUESTS.getPage().updateSearch();
+                    QuestBookPages.QUESTS.getPage().updateSearch();
+                });
                 //pagination
                 if (next != null && (fullSearch || (isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0)) {
                     i.clickItem(next.a, 1, ClickType.PICKUP);
@@ -207,31 +214,35 @@ public class QuestManager {
                     secretdiscoveryLore.removeAll(Arrays.asList("", null));
                 }
 
-                for (ItemStack item : i.getItems()) { //parsing discoveries
-                    if(!item.hasDisplayName()) continue; //not a valid discovery
+                NonNullList<ItemStack> items = NonNullList.create();
+                items.addAll(i.getItems());
+                ModCore.mc().addScheduledTask(() -> {
+                    for (ItemStack item : items) { // parsing discoveries
+                        if (!item.hasDisplayName()) continue; // not a valid discovery
 
-                    List<String> lore = Utils.getLore(item);
-                    if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
+                        List<String> lore = Utils.getLore(item);
+                        if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
 
-                    String displayName = item.getDisplayName();
-                    displayName = Utils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
+                        String displayName = item.getDisplayName();
+                        displayName = Utils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
 
-                    DiscoveryType discoveryType = null;
-                    if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;
-                    else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
-                    else if (displayName.charAt(1) == 'b') discoveryType = DiscoveryType.SECRET;
+                        DiscoveryType discoveryType = null;
+                        if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;
+                        else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
+                        else if (displayName.charAt(1) == 'b') discoveryType = DiscoveryType.SECRET;
 
-                    int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+                        int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
-                    StringBuilder description = new StringBuilder();
-                    for (int x = 2; x < lore.size(); x ++) {
-                        description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
+                        StringBuilder description = new StringBuilder();
+                        for (int x = 2; x < lore.size(); x++) {
+                            description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
+                        }
+
+                        currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description.toString(), lore, discoveryType));
                     }
 
-                    currentDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description.toString(), lore, discoveryType));
-                }
-
-                QuestBookPages.DISCOVERIES.getPage().updateSearch();
+                    QuestBookPages.DISCOVERIES.getPage().updateSearch();
+                });
                 //pagination
                 if (next != null) i.clickItem(next.a, 1, ClickType.PICKUP);
                 else if (!secretDiscoveries && sDiscoveries != null) {
