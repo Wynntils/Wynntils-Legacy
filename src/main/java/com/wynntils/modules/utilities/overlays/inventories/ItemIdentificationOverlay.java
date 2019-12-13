@@ -218,7 +218,7 @@ public class ItemIdentificationOverlay implements Listener {
                 double mean = specialAmount / (double)idLore.size();
 
                 //perfect item
-                if(mean >= 100) wynntils.setBoolean("isPerfect", true);
+                if(mean >= 100 && !item.isIdentified()) wynntils.setBoolean("isPerfect", true);
 
                 if(mean >= 97d) specialDisplay += AQUA;
                 else if(mean >= 80d) specialDisplay += GREEN;
