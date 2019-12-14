@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles.item.objects;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.webapi.profiles.item.enums.IdentificationType;
 import org.apache.commons.lang3.math.Fraction;
 
@@ -67,7 +67,7 @@ public class IdentificationContainer {
             else nameBuilder.append(c);
         }
 
-        return Utils.capitalizeFirst(nameBuilder.toString());
+        return StringUtils.capitalizeFirst(nameBuilder.toString());
     }
 
     public static class ReidentificationChances {

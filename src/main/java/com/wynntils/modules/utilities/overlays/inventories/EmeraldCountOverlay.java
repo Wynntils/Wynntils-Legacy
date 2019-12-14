@@ -14,8 +14,8 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Texture;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
@@ -60,15 +60,15 @@ public class EmeraldCountOverlay implements Listener {
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-                drawTextMoneyAmount(170, -10, Utils.countMoney(lowerInv), renderer, CommonColors.WHITE);
+                drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-                drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), Utils.countMoney(upperInv), renderer, textColor);
+                drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
             return;
         }
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-            drawIconsMoneyAmount(178, 0, Utils.countMoney(lowerInv), renderer);
+            drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-            drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), Utils.countMoney(upperInv), renderer);
+            drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
     }
 
     @SubscribeEvent
@@ -81,16 +81,16 @@ public class EmeraldCountOverlay implements Listener {
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-                drawTextMoneyAmount(190, -10, Utils.countMoney(lowerInv), renderer, CommonColors.WHITE);
+                drawTextMoneyAmount(190, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-                drawTextMoneyAmount(190, 2 * (lowerInv.getSizeInventory() + 10), Utils.countMoney(upperInv), renderer, textColor);
+                drawTextMoneyAmount(190, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
             return;
         }
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-            drawIconsMoneyAmount(178, 0, Utils.countMoney(lowerInv), renderer);
+            drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-            drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), Utils.countMoney(upperInv), renderer);
+            drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
     }
 
     /**

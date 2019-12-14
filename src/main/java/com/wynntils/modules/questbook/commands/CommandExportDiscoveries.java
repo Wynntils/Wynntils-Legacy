@@ -5,7 +5,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.command.CommandBase;
@@ -86,7 +86,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
                 while (discoveriesIterator.hasNext()) {
                     DiscoveryInfo discovery = discoveriesIterator.next();
                     output.write(discovery.getMinLevel() + ",");
-                    output.write(Utils.firstCharToUpper(new String[] { discovery.getType().toString().toLowerCase() }) + ",");
+                    output.write(StringUtils.firstCharToUpper(new String[] { discovery.getType().toString().toLowerCase() }) + ",");
                     output.write(TextFormatting.getTextWithoutFormattingCodes(discovery.getName()));
                     if (discoveriesIterator.hasNext()) {
                         output.write("\n");

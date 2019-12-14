@@ -9,7 +9,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -54,7 +54,7 @@ public class HotbarOverlay extends Overlay {
 
             int x = -88 + (i*20);
 
-            String description = Utils.getStringLore(stack);
+            String description = ItemUtils.getStringLore(stack);
             if(UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 

@@ -10,7 +10,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import net.minecraft.client.Minecraft;
@@ -49,7 +49,7 @@ public class ChangelogUI extends GuiScreen {
         }
 
         for(String rawText : changelogContent)
-            this.changelogContent.addAll(Arrays.asList(Utils.wrapText(rawText, 40)));
+            this.changelogContent.addAll(Arrays.asList(StringUtils.wrapText(rawText, 40)));
 
         if(this.changelogContent.size() <= 15) scrollbarSize = 118;
         else {

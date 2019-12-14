@@ -7,7 +7,8 @@ package com.wynntils.modules.questbook.managers;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.instances.FakeInventory;
@@ -114,15 +115,15 @@ public class QuestManager {
 
                 //lore
                 if(discoveries != null) {
-                    discoveryLore = Utils.getLore(discoveries.b);
+                    discoveryLore = ItemUtils.getLore(discoveries.b);
                     discoveryLore.removeAll(Arrays.asList("", null));
                 }
                 if (quests != null) {
-                    questsLore = Utils.getLore(quests.b);
+                    questsLore = ItemUtils.getLore(quests.b);
                     questsLore.removeAll(Arrays.asList("", null));
                 }
                 if (miniquests != null) {
-                    miniquestsLore = Utils.getLore(miniquests.b);
+                    miniquestsLore = ItemUtils.getLore(miniquests.b);
                     miniquestsLore.removeAll(Arrays.asList("", null));
                 }
 
@@ -133,13 +134,13 @@ public class QuestManager {
                     for (ItemStack item : items) {
                         if (!item.hasDisplayName()) continue; // not a valid quest
 
-                        List<String> lore = Utils.getLore(item);
+                        List<String> lore = ItemUtils.getLore(item);
                         if (lore.isEmpty()) continue; // not a valid quest
 
                         List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
                         if (!realLore.contains("Right click to track")) continue; // not a valid quest
 
-                        String displayName = Utils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
+                        String displayName = StringUtils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
 
                         QuestStatus status = null;
                         if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
@@ -210,7 +211,7 @@ public class QuestManager {
 
                 //lore
                 if (sDiscoveries != null) {
-                    secretdiscoveryLore = Utils.getLore(sDiscoveries.b);
+                    secretdiscoveryLore = ItemUtils.getLore(sDiscoveries.b);
                     secretdiscoveryLore.removeAll(Arrays.asList("", null));
                 }
 
@@ -220,11 +221,11 @@ public class QuestManager {
                     for (ItemStack item : items) { // parsing discoveries
                         if (!item.hasDisplayName()) continue; // not a valid discovery
 
-                        List<String> lore = Utils.getLore(item);
+                        List<String> lore = ItemUtils.getLore(item);
                         if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
 
                         String displayName = item.getDisplayName();
-                        displayName = Utils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
+                        displayName = StringUtils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
 
                         DiscoveryType discoveryType = null;
                         if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;

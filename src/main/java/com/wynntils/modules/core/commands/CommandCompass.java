@@ -3,8 +3,8 @@
  */
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -184,13 +184,13 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
                 if (args[0].length() != 1) {
                     String offset = args[0].substring(1);
-                    if (!Utils.isValidInteger(offset)) {
+                    if (!StringUtils.isValidInteger(offset)) {
                         invalid = true;
                     } else {
                         x += Integer.parseInt(offset);
                     }
                 }
-            } else if (!Utils.isValidInteger(args[0])) {
+            } else if (!StringUtils.isValidInteger(args[0])) {
                 invalid = true;
             } else {
                 x = Integer.parseInt(args[0]);
@@ -202,13 +202,13 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     if (args[1].length() != 1) {
                         String offset = args[1].substring(1);
 
-                        if (!Utils.isValidInteger(offset)) {
+                        if (!StringUtils.isValidInteger(offset)) {
                             invalid = true;
                         } else {
                             z += Integer.parseInt(offset);
                         }
                     }
-                } else if (!Utils.isValidInteger(args[1])) {
+                } else if (!StringUtils.isValidInteger(args[1])) {
                     invalid = true;
                 } else {
                     z = Integer.parseInt(args[1]);

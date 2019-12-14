@@ -5,6 +5,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -286,9 +287,9 @@ public class WaypointCreationMenu extends UI {
     }
 
     private void isAllValidInformation() {
-        boolean xValid = Utils.isValidInteger(xCoordField.getText().trim());
-        boolean yValid = Utils.isValidInteger(yCoordField.getText().trim());
-        boolean zValid = Utils.isValidInteger(zCoordField.getText().trim());
+        boolean xValid = StringUtils.isValidInteger(xCoordField.getText().trim());
+        boolean yValid = StringUtils.isValidInteger(yCoordField.getText().trim());
+        boolean zValid = StringUtils.isValidInteger(zCoordField.getText().trim());
         xCoordField.setTextColor(xValid ? 0xFFFFFF : 0xFF6666);
         yCoordField.setTextColor(yValid ? 0xFFFFFF : 0xFF6666);
         zCoordField.setTextColor(zValid ? 0xFFFFFF : 0xFF6666);

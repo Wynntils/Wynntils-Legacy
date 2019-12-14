@@ -11,6 +11,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
@@ -285,7 +286,7 @@ public class ClientEvents implements Listener {
                     String E = "\u00B2";
                     String B = "\u00BD";
                     String L = "\u00BC";
-                    List<String> lore = Utils.getLore(item);
+                    List<String> lore = ItemUtils.getLore(item);
                     String price = lore.get(4);
                     int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
                     int le = (int) Math.floor((double) actualPrice) / 4096;

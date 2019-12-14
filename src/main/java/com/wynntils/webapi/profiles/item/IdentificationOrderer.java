@@ -77,8 +77,8 @@ public class IdentificationOrderer {
 
             String[] split = groupRange.split("-");
 
-            int min = Integer.valueOf(split[0]);
-            int max = Integer.valueOf(split[1]);
+            int min = Integer.parseInt(split[0]);
+            int max = Integer.parseInt(split[1]);
 
             //register each range into a reference
             for(int i = min; i <= max; i++) {

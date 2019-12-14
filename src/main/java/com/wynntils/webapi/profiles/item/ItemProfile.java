@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles.item;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
@@ -194,7 +194,7 @@ public class ItemProfile {
             //major ids
             if(majorIds.size() > 0) {
                 for (MajorIdentification majorId : majorIds) {
-                    Stream.of(Utils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> itemLore.add(DARK_AQUA + c));
+                    Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> itemLore.add(DARK_AQUA + c));
                 }
                 itemLore.add(" ");
             }
@@ -206,11 +206,11 @@ public class ItemProfile {
             itemLore.add(tier.asLore());
 
             //untradable
-            if(restriction != null) itemLore.add(RED + Utils.capitalizeFirst(restriction) + " Item");
+            if (restriction != null) itemLore.add(RED + StringUtils.capitalizeFirst(restriction) + " Item");
 
             //item lore
             if(!lore.isEmpty()) {
-                Stream.of(Utils.wrapTextBySize(lore, 150)).forEach(c -> itemLore.add(DARK_GRAY + c));
+                Stream.of(StringUtils.wrapTextBySize(lore, 150)).forEach(c -> itemLore.add(DARK_GRAY + c));
             }
         }
 

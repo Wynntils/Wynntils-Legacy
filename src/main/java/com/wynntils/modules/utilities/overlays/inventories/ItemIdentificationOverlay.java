@@ -8,7 +8,8 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.SelectedIdentification;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.RainbowText;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -30,6 +31,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -71,7 +73,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         //check if item is a valid item if not ignore it
         if(!stack.getTagCompound().hasKey("wynntils")) {
-            String itemName = Utils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())); //this replace allows market items to be scanned
+            String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())); //this replace allows market items to be scanned
             ItemProfile item = WebManager.getItems().getOrDefault(itemName, null);
             if(item == null) {
                 NBTTagCompound compound = stack.getTagCompound();
@@ -132,7 +134,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         //copying some parts of the old lore (stops on ids, powder or quality)
         boolean ignoreNext = false;
-        for(String oldLore : Utils.getLore(stack)) {
+        for (String oldLore : ItemUtils.getLore(stack)) {
             if(ignoreNext) {
                 ignoreNext = false;
                 continue;
@@ -197,7 +199,7 @@ public class ItemIdentificationOverlay implements Listener {
             //major ids
             if(item.getMajorIds().size() > 0) {
                 for (MajorIdentification majorId : item.getMajorIds()) {
-                    Stream.of(Utils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
+                    Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
                 }
                 newLore.add(" ");
             }
@@ -225,7 +227,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         //item lore
         if(!item.getLore().isEmpty()) {
-            Stream.of(Utils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
+            Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
         }
 
         //special displayname
@@ -322,14 +324,14 @@ public class ItemIdentificationOverlay implements Listener {
         NBTTagCompound mainTag = new NBTTagCompound();
 
         { //main data
-            mainTag.setString("originName", Utils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()))); //this replace allow market items to be scanned
+            mainTag.setString("originName", StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()))); //this replace allow market items to be scanned
             mainTag.setString("currentType", idType.toString());
             mainTag.setBoolean("shouldUpdate", true);
         }
 
         NBTTagCompound idTag = new NBTTagCompound();
         { //lore data
-            for(String loreLine : Utils.getLore(stack)) {
+            for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
 
                 //ids
@@ -342,7 +344,7 @@ public class ItemIdentificationOverlay implements Listener {
                         if (spell != null) idName = idName.replaceAll(spell.getRegex().pattern(), spell.getShortName());
 
                         String shortIdName = toShortIdName(idName, isRaw);
-                        idTag.setInteger(shortIdName, Integer.valueOf(idMatcher.group("Value")));
+                        idTag.setInteger(shortIdName, Integer.parseInt(idMatcher.group("Value")));
                         continue;
                     }
                 }
@@ -352,7 +354,7 @@ public class ItemIdentificationOverlay implements Listener {
                     if (rerollMatcher.find()) {
                         if (rerollMatcher.group("Rolls") == null) continue;
 
-                        mainTag.setInteger("rerollAmount", Integer.valueOf(rerollMatcher.group("Rolls")));
+                        mainTag.setInteger("rerollAmount", Integer.parseInt(rerollMatcher.group("Rolls")));
                         continue;
                     }
                 }
@@ -367,9 +369,9 @@ public class ItemIdentificationOverlay implements Listener {
                     NBTTagCompound marketTag = new NBTTagCompound();
 
                     if(market.group("Quantity") != null)
-                        marketTag.setInteger("quantity", Integer.valueOf(market.group("Quantity").replace(",", "")));
+                        marketTag.setInteger("quantity", Integer.parseInt(market.group("Quantity").replace(",", "")));
 
-                    marketTag.setInteger("price", Integer.valueOf(market.group("Value").replace(",", "")));
+                    marketTag.setInteger("price", Integer.parseInt(market.group("Value").replace(",", "")));
 
                     mainTag.setTag("marketInfo", marketTag);
                 }
@@ -390,13 +392,15 @@ public class ItemIdentificationOverlay implements Listener {
 
     private static String toShortIdName(String longIdName, boolean raw) {
         String[] splitName = longIdName.split(" ");
-        String result = raw ? "raw" : "";
+        StringBuilder result = new StringBuilder(raw ? "raw" : "");
         for (String r : splitName) {
             if (r.startsWith("[")) continue; //ignore ids
-            result = result + r.substring(0, 1).toUpperCase() + r.substring(1).toLowerCase();
+            result.append(Character.toUpperCase(r.charAt(0))).append(r.substring(1).toLowerCase(Locale.ROOT));
         }
 
-        return Character.toLowerCase(result.charAt(0)) + result.substring(1);
+        if (result.length() == 0) return "";
+        result.setCharAt(0, Character.toLowerCase(result.charAt(0)));
+        return result.toString();
     }
 
     /**
@@ -406,7 +410,7 @@ public class ItemIdentificationOverlay implements Listener {
      * @return an array with the values in the respective order of emeralds[0], emerald blocks[1], liquid emeralds[2], stx[3]
      */
     private static int[] calculateMoneyAmount(int money) {
-        return new int[] { money % 64, (money / 64) % 64, (money / 4096) % 64, (money / 4096) / 64 };
+        return new int[] { money % 64, (money / 64) % 64, (money / 4096) % 64, money / (64 * 4096) };
     }
 
 }

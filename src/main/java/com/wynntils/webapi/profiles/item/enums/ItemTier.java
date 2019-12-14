@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.function.IntUnaryOperator;
@@ -40,7 +40,7 @@ public enum ItemTier {
     }
 
     public String asLore() {
-        return color + Utils.capitalizeFirst(toString().toLowerCase()) + " Item";
+        return color + StringUtils.capitalizeFirst(toString().toLowerCase()) + " Item";
     }
 
 }

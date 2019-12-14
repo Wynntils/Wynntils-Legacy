@@ -6,7 +6,7 @@ package com.wynntils.core.framework.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -354,7 +354,7 @@ public class ScreenRenderer {
     public int drawSplitString(String text, int maxSize, float x, float y, float offsetY, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
         float currentY = y;
         int lines = 0;
-        for(String s : Utils.wrapTextBySize(text, maxSize)) {
+        for (String s : StringUtils.wrapTextBySize(text, maxSize)) {
             drawString(s, x, currentY, color, alignment, shadow);
 
             currentY+=offsetY;

@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.webapi.WebReader;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
@@ -54,7 +54,7 @@ public class FileUpdater {
 
             File f = new File(location, fileName);
             if(f.exists()) {
-                if(Utils.toMD5(Long.toString(f.length())).equalsIgnoreCase(values.get(fileName))) {
+                if (StringUtils.toMD5(Long.toString(f.length())).equalsIgnoreCase(values.get(fileName))) {
                     localFiles.remove(fileName);
                     continue;
                 }

@@ -6,7 +6,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.SocketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.BroadcastType;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
@@ -85,7 +85,7 @@ public class SocketManager {
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
         }).on(Socket.EVENT_CONNECT_ERROR, (Object... args) -> {
-            Reference.LOGGER.error("Socket failed to connect", args[0]);
+            Reference.LOGGER.error("Socket failed to connect: {}", args[0]);
         }).on(Socket.EVENT_RECONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ReConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
@@ -93,20 +93,20 @@ public class SocketManager {
             String json = (String) args[0];
 
             FriendLocationUpdate profile = gson.fromJson(json, FriendLocationUpdate.class);
-            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(StringUtils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
         }).on("update player locations on map", (Object... args) -> {
             // Trigger forge event ~
             String json = (String) args[0];
             JsonArray a = gson.fromJson(json, JsonArray.class);
             a.forEach(j -> {
                 FriendLocationUpdate profile = gson.fromJson(j, FriendLocationUpdate.class);
-                FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(Utils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
+                FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.LocationUpdate(StringUtils.uuidFromString(profile.uuid), profile.username, profile.x, profile.y, profile.z, profile.isMutualFriend, profile.isPartyMember, profile.isInGuild));
             });
         }).on("left world", (Object... args) -> {
             String uuid = (String) args[0];
             String username = (String) args[1];
 
-            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(Utils.uuidFromString(uuid), username));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(StringUtils.uuidFromString(uuid), username));
         }).on("broadcast", (Object... args) -> {
             BroadcastType type = BroadcastType.valueOf((String)args[0]);
             if(type == null) type = BroadcastType.MESSAGE;
@@ -117,7 +117,7 @@ public class SocketManager {
             String uuid = (String) args[0];
             String username = (String) args[1];
 
-            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(Utils.uuidFromString(uuid), username));
+            FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Unfriend(StringUtils.uuidFromString(uuid), username));
         }).on(Socket.EVENT_DISCONNECT, (Object... args) -> Reference.LOGGER.info("Disconnected from the Socket Server"));
     }
 

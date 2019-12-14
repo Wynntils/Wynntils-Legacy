@@ -145,18 +145,19 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
-            if (messageText.equals("There is no room for a horse.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "There is no room for a horse.");
-                e.setCanceled(true);
-                return;
-            } else if (messageText.equals("Since you interacted with your inventory, your horse has despawned.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Horse despawned.");
-                e.setCanceled(true);
-                return;
-            } else if (messageText.equals("Your horse is scared to come out right now, too many mobs are nearby.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Too many mobs nearby to spawn your horse");
-                e.setCanceled(true);
-                return;
+            switch (messageText) {
+                case "There is no room for a horse.":
+                    GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "There is no room for a horse.");
+                    e.setCanceled(true);
+                    return;
+                case "Since you interacted with your inventory, your horse has despawned.":
+                    GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Horse despawned.");
+                    e.setCanceled(true);
+                    return;
+                case "Your horse is scared to come out right now, too many mobs are nearby.":
+                    GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Too many mobs nearby to spawn your horse");
+                    e.setCanceled(true);
+                    return;
             }
         }
 
@@ -429,18 +430,17 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginLocal) {
-            String message = messageText;
-            if (message.matches("^\\[.+\\] .+ has just logged in!")) {
-                if (message.startsWith("[HERO]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_PURPLE + "[" + TextFormatting.LIGHT_PURPLE + "HERO" + TextFormatting.DARK_PURPLE + "] " + TextFormatting.LIGHT_PURPLE + message.split(" ")[1]);
+            if (messageText.matches("^\\[.+\\] .+ has just logged in!")) {
+                if (messageText.startsWith("[HERO]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_PURPLE + "[" + TextFormatting.LIGHT_PURPLE + "HERO" + TextFormatting.DARK_PURPLE + "] " + TextFormatting.LIGHT_PURPLE + messageText.split(" ")[1]);
                     e.setCanceled(true);
                     return;
-                } else if (message.startsWith("[VIP+]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + "VIP+" + TextFormatting.DARK_AQUA + "] " + TextFormatting.AQUA + message.split(" ")[1]);
+                } else if (messageText.startsWith("[VIP+]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + "VIP+" + TextFormatting.DARK_AQUA + "] " + TextFormatting.AQUA + messageText.split(" ")[1]);
                     e.setCanceled(true);
                     return;
-                } else if (message.startsWith("[VIP]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + "VIP" + TextFormatting.DARK_GREEN + "] " + TextFormatting.GREEN + message.split(" ")[1]);
+                } else if (messageText.startsWith("[VIP]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + "VIP" + TextFormatting.DARK_GREEN + "] " + TextFormatting.GREEN + messageText.split(" ")[1]);
                     e.setCanceled(true);
                     return;
                 }

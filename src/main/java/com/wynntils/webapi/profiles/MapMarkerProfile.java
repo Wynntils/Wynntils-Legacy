@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 
 public class MapMarkerProfile {
 
@@ -44,7 +44,7 @@ public class MapMarkerProfile {
     }
 
     public void ensureNormalized() {
-        if (name != null) name = Utils.normalizeBadString(name);
+        if (name != null) name = StringUtils.normalizeBadString(name);
         icon = icon.replace(".png", "");
     }
 

@@ -6,7 +6,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillPointOverlay implements Listener {
@@ -15,7 +15,7 @@ public class SkillPointOverlay implements Listener {
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
-        String lore = Utils.getStringLore(e.getGui().getSlotUnderMouse().getStack());
+        String lore = ItemUtils.getStringLore(e.getGui().getSlotUnderMouse().getStack());
         if(!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
         if(!lore.contains("points")) return;
 

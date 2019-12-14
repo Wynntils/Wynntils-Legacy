@@ -2,7 +2,7 @@ package com.wynntils.modules.core.managers;
 
 import com.google.common.collect.Ordering;
 import com.wynntils.Reference;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -40,7 +40,7 @@ public class TabManager {
                 String name = v.getGameProfile().getName();
                 if (name.length() != 4 || name.charAt(0) != 0) continue;
                 name = name.substring(1, 4);
-                if (!Utils.isValidInteger(name)) continue;
+                if (!StringUtils.isValidInteger(name)) continue;
                 int x = Integer.parseInt(name);
                 int col = x / 100 - 1;
                 if (!(0 <= col && col < 4)) continue;

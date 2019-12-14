@@ -66,11 +66,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
         String selectedType = null;
 
         for (String arg : args) {
-            argparser:
             for (String type : serverTypes) {
                 if (arg.equalsIgnoreCase(type)) {
                     selectedType = type;
-                    break argparser;
+                    break;
                 }
             }
             switch(arg.toLowerCase()) {
@@ -200,7 +199,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         }
 
                         text.appendText("\nTotal online players: ");
-                        TextComponentString playerCountText = new TextComponentString(String.valueOf(players.size()));
+                        TextComponentString playerCountText = new TextComponentString(Integer.toString(players.size()));
                         playerCountText.getStyle().setColor(TextFormatting.GRAY);
                         text.appendSibling(playerCountText);
 
@@ -278,8 +277,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     return Collections.EMPTY_LIST;
 
                 boolean containsServerType = arguments.stream().anyMatch((arg) -> {
-                    List<String> incompatibilities = new ArrayList<>();
-                    incompatibilities.addAll(serverTypes);
+                    List<String> incompatibilities = new ArrayList<>(serverTypes);
                     incompatibilities.add("group");
                     return incompatibilities.contains(arg);
                 });

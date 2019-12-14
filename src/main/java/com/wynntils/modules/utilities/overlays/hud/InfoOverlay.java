@@ -258,7 +258,7 @@ public abstract class InfoOverlay extends Overlay {
                 default:
                     // xXX, uXXXX, UXXXXXXXX
                     int codePoint = Integer.parseInt(escaped.substring(1), 16);
-                    if (Utils.isValidCodePoint(codePoint)) {
+                    if (Utils.StringUtils.isValidCodePoint(codePoint)) {
                         return new String(new int[]{ codePoint }, 0, 1);
                     }
                     return null;

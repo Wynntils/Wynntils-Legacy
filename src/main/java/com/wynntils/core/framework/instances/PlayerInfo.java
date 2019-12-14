@@ -8,7 +8,8 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -71,7 +72,7 @@ public class PlayerInfo {
             this.lastActionBar = actionBar;
 
             if (actionBar.contains("|") || actionBar.contains("_")) {
-                specialActionBar = Utils.getCutString(actionBar, "    ", "    " + TextFormatting.AQUA, false);
+                specialActionBar = StringUtils.getCutString(actionBar, "    ", "    " + TextFormatting.AQUA, false);
             } else {
                 specialActionBar = null;
             }
@@ -248,7 +249,7 @@ public class PlayerInfo {
      */
     public int getMoney() {
         if (mc.player == null) return 0;
-        return Utils.countMoney(mc.player.inventory);
+        return ItemUtils.countMoney(mc.player.inventory);
     }
 
     private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
@@ -277,7 +278,7 @@ public class PlayerInfo {
             Matcher nameMatcher = unprocessedNameRegex.matcher(it.getDisplayName());
             if (!nameMatcher.matches()) continue;
 
-            NBTTagList lore = Utils.getLoreTag(it);
+            NBTTagList lore = ItemUtils.getLoreTag(it);
             if (lore == null || lore.tagCount() == 0) continue;
 
             Matcher loreMatcher = unprocessedLoreRegex.matcher(lore.getStringTagAt(0));

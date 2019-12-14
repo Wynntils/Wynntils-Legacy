@@ -5,7 +5,7 @@
 package com.wynntils.modules.music.managers;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.instances.MusicPlayer;
 import com.wynntils.webapi.WebManager;
@@ -43,7 +43,7 @@ public class MusicManager {
         File[] listOfFiles = musicFolder.listFiles();
         if(listOfFiles.length >= 1) {
             for(File f : listOfFiles) {
-                downloadedMusics.put(Utils.toMD5(f.getName() + f.length()), new MusicProfile(f));
+                downloadedMusics.put(StringUtils.toMD5(f.getName() + f.length()), new MusicProfile(f));
             }
         }
 

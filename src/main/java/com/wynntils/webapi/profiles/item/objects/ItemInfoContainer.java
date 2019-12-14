@@ -54,9 +54,9 @@ public class ItemInfoContainer {
         Matcher m = COLOR_PATTERN.matcher(getArmorColor());
         if(!m.find()) return 0;
 
-        int r = Integer.valueOf(m.group(1));
-        int g = Integer.valueOf(m.group(2));
-        int b = Integer.valueOf(m.group(3));
+        int r = Integer.parseInt(m.group(1));
+        int g = Integer.parseInt(m.group(2));
+        int b = Integer.parseInt(m.group(3));
 
         return (r << 16) + (g << 8) + b;
     }
@@ -69,10 +69,10 @@ public class ItemInfoContainer {
         if(material.matches("(.*\\d.*)")) {
             String[] split = material.split(":");
 
-            ItemStack stack = new ItemStack(Item.getItemById(Integer.valueOf(split[0])));
+            ItemStack stack = new ItemStack(Item.getItemById(Integer.parseInt(split[0])));
             if(split.length <= 1) return stack;
 
-            stack.setItemDamage(Integer.valueOf(split[1]));
+            stack.setItemDamage(Integer.parseInt(split[1]));
             return stack;
         }
 

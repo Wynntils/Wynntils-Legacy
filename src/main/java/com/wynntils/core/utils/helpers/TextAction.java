@@ -1,6 +1,6 @@
 package com.wynntils.core.utils.helpers;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 
@@ -90,7 +90,7 @@ public class TextAction {
             }
             return;
         }
-        if (args.length == 4 && args[1].equals("dynamic") && args[2] != null && Utils.isValidInteger(args[3])) {
+        if (args.length == 4 && args[1].equals("dynamic") && args[2] != null && StringUtils.isValidInteger(args[3])) {
             ArrayList<Runnable> runnables = dynamicNameMap.get(args[2]);
             if (runnables == null) return;
             int index = Integer.parseInt(args[3]);

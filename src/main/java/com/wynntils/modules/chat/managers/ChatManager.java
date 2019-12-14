@@ -5,7 +5,7 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -87,7 +87,7 @@ public class ChatManager {
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
         //wynnic translator
-        if (Utils.hasWynnic(in.getUnformattedText())) {
+        if (StringUtils.hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
             boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
@@ -104,7 +104,7 @@ public class ChatManager {
                 String currentNonTranslated = "";
                 StringBuilder oldText = new StringBuilder();
                 for (char character : component.getUnformattedText().toCharArray()) {
-                    if (Utils.hasWynnic(String.valueOf(character))) {
+                    if (StringUtils.isWynnic(character)) {
                         if (previousWynnic) {
                             toAdd += currentNonTranslated;
                             oldText.append(currentNonTranslated);
@@ -117,9 +117,9 @@ public class ChatManager {
                             toAdd = "";
                             previousWynnic = true;
                         }
-                        String englishVersion = Utils.translateCharacterFromWynnic(character);
+                        String englishVersion = StringUtils.translateCharacterFromWynnic(character);
                         if (capital && englishVersion.matches("[a-z]")) {
-                            englishVersion = String.valueOf(Character.toUpperCase(englishVersion.charAt(0)));
+                            englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
                         }
 
                         if (".?!".contains(englishVersion)) {
@@ -129,14 +129,14 @@ public class ChatManager {
                         }
                         toAdd += englishVersion;
                         oldText.append(character);
-                    } else if (String.valueOf(character).matches(nonTranslatable) || String.valueOf(character).matches(optionalTranslatable)) {
+                    } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
                         if (previousWynnic) {
                             currentNonTranslated += character;
                         } else {
                             oldText.append(character);
                         }
 
-                        if (".?!".contains(String.valueOf(character))) {
+                        if (".?!".contains(Character.toString(character))) {
                             capital = true;
                         } else if (character != ' ') {
                             capital = false;
@@ -317,7 +317,7 @@ public class ChatManager {
                         hasMention = true;
                         String text = component.getUnformattedComponentText();
                         String playerName = ModCore.mc().player.getName();
-                        while (text.indexOf(playerName) > -1) {
+                        while (text.contains(playerName)) {
                             String section = text.substring(0, text.indexOf(playerName));
                             ITextComponent sectionComponent = new TextComponentString(section);
                             sectionComponent.setStyle(component.getStyle().createShallowCopy());
@@ -372,12 +372,12 @@ public class ChatManager {
                 } else if (isWynnic && character == '}') {
                     isWynnic = false;
                 } else if (isWynnic) {
-                    if (!String.valueOf(character).matches(nonTranslatable)) {
-                        if (String.valueOf(character).matches("[a-z]")) {
+                    if (!Character.toString(character).matches(nonTranslatable)) {
+                        if (Character.toString(character).matches("[a-z]")) {
                             newString.append((char) ((character) + 9275));
-                        } else if (String.valueOf(character).matches("[A-Z]")) {
+                        } else if (Character.toString(character).matches("[A-Z]")) {
                             newString.append((char) ((character) + 9307));
-                        } else if (String.valueOf(character).matches("[1-9]")) {
+                        } else if (Character.toString(character).matches("[1-9]")) {
                             newString.append((char) ((character) + 9283));
                         } else if (character == '.') {
                             newString.append("\uFF10");

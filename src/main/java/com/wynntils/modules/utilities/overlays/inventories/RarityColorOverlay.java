@@ -9,7 +9,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -51,7 +51,7 @@ public class RarityColorOverlay implements Listener {
                 continue;
 
             ItemStack is = s.getStack();
-            String lore = Utils.getStringLore(is);
+            String lore = ItemUtils.getStringLore(is);
             String name = is.getDisplayName();
             float r, g, b;
 
@@ -124,7 +124,7 @@ public class RarityColorOverlay implements Listener {
             }
 
             ItemStack is = s.getStack();
-            String lore = Utils.getStringLore(is);
+            String lore = ItemUtils.getStringLore(is);
             String name = is.getDisplayName();
             float r, g, b;
 
@@ -192,7 +192,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private boolean isPowder(ItemStack is) {
-        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(Utils.getStringLore(is)).contains("Effect on Weapons"));
+        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).contains("Effect on Weapons"));
     }
 
     private int getPowderTier(ItemStack is) {

@@ -5,7 +5,7 @@
 package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 import javax.annotation.Nullable;
@@ -91,7 +91,7 @@ public class WaypointProfile {
         }
 
         return (
-            sizeofInt + Utils.utf8Length(name) +  // Length prefixed name
+            sizeofInt + StringUtils.utf8Length(name) +  // Length prefixed name
             3 * sizeofDouble +  // x, y, z
             sizeofInt +  // zoomNeeded
             4 * sizeofFloat +  // colour r, g, b, a

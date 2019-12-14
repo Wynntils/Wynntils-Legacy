@@ -4,7 +4,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
@@ -304,7 +304,7 @@ public class ItemPage extends QuestBookPage {
 
                     ArrayList<String> lore = new ArrayList<>();
                     lore.add(pf.getGuideStack().getDisplayName());
-                    lore.addAll(Utils.getLore(pf.getGuideStack()));
+                    lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
 
                     hoveredText = lore;
                 } else {

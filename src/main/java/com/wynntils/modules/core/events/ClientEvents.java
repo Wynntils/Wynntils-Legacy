@@ -13,7 +13,7 @@ import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.instances.MainMenuButtons;
@@ -104,7 +104,7 @@ public class ClientEvents implements Listener {
             if(e.getMouseButton() == 0 && e.getSlotIn() != null &&  e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
                 PlayerInfo.getPlayerInfo().setClassId(e.getSlotId());
 
-                String classLore = Utils.getLore(e.getSlotIn().getStack()).get(1);
+                String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
                 String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
 
                 ClassType selectedClass = ClassType.NONE;

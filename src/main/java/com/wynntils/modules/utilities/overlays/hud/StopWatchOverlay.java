@@ -7,7 +7,7 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.LongPress;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -48,11 +48,11 @@ public class StopWatchOverlay extends Overlay {
         if((startTime == -1 && lastTime == -1) || longPressDetection.isFinished()) return;
 
         if(startTime != -1) {
-            drawString(Utils.millisToString(System.currentTimeMillis() - startTime), 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+            drawString(StringUtils.millisToString(System.currentTimeMillis() - startTime), 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
             return;
         }
 
-        drawString(Utils.millisToString(lastTime), 0, 0, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+        drawString(StringUtils.millisToString(lastTime), 0, 0, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
 }
