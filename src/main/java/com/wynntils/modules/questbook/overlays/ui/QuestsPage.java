@@ -97,7 +97,7 @@ public class QuestsPage extends QuestBookPage {
                 currentPage = pages;
             }
 
-            //but next and back button
+            // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 acceptNext = false;
@@ -122,10 +122,10 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
-            //calculating pages
+            // calculating pages
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            //drawing all quests
+            // drawing all quests
             int currentY = 12;
             if (questSearch.size() > 0) {
                 for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
@@ -269,7 +269,7 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
-            //Reload Quest Data button
+            // Reload Quest Data button
             if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
                 hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
                 render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
@@ -310,7 +310,7 @@ public class QuestsPage extends QuestBookPage {
 
                 String url = "https://wynncraft.gamepedia.com/";
                 String path = overQuest.getName();
-                //Link Overrides
+                // Link Overrides
                 switch (path) {
                     case "The House of Twain":
                     case "Tower of Ascension":

@@ -101,7 +101,7 @@ public class MountHorseManager {
     // Called on key press
     public static void mountHorseAndShowMessage() {
         String message = getMountHorseErrorMessage(mountHorse());
-        if(message == null) return;
+        if (message == null) return;
 
         GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
     }
@@ -109,7 +109,7 @@ public class MountHorseManager {
     // Called by event when a horse's metadata (name) is sent
     public static void mountHorseAndLogMessage() {
         String message = MountHorseManager.getMountHorseErrorMessage(MountHorseManager.mountHorse());
-        if(message == null) return;
+        if (message == null) return;
 
         Reference.LOGGER.warn("mountHorse failed onHorseSpawn. Reason: " + message);
     }

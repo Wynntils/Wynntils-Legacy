@@ -28,7 +28,7 @@ public class QuestBookPage extends GuiScreen {
     protected final ScreenRenderer render = new ScreenRenderer();
     private long time;
 
-    //Page specific information
+    // Page specific information
     private String title = "";
     private IconContainer icon;
     protected boolean requestOpening;
@@ -40,7 +40,7 @@ public class QuestBookPage extends GuiScreen {
     protected boolean acceptNext, acceptBack;
     protected int selected;
 
-    //Animation
+    // Animation
     protected long lastTick;
     protected boolean animationCompleted;
 
@@ -48,7 +48,7 @@ public class QuestBookPage extends GuiScreen {
     private long text_flicker;
     private long delay = Minecraft.getSystemTime();
 
-    //Colours
+    // Colours
     protected static final CustomColor background_1 = CustomColor.fromInt(0x000000, 0.3f);
     protected static final CustomColor background_2 = CustomColor.fromInt(0x000000, 0.2f);
     protected static final CustomColor background_3 = CustomColor.fromInt(0x00ff00, 0.3f);
@@ -98,7 +98,7 @@ public class QuestBookPage extends GuiScreen {
         int x = width / 2;
         int y = height / 2;
 
-        ScreenRenderer.beginGL(0,0);
+        ScreenRenderer.beginGL(0, 0);
         {
             if (requestOpening) {
                 float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
@@ -134,7 +134,7 @@ public class QuestBookPage extends GuiScreen {
             /*Render search bar when needed*/
             if (showSearchBar) {
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
-                //searchBar
+                // searchBar
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
                     render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else if (searchBarText.length() <= 0 && !searchBarFocused) {
@@ -196,7 +196,7 @@ public class QuestBookPage extends GuiScreen {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 currentPage++;
             }
-        } else if(mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
+        } else if (mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
                 delay = Minecraft.getSystemTime();
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
@@ -238,7 +238,7 @@ public class QuestBookPage extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
         {
             GlStateManager.disableLighting();
-            if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
+            if (hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
         }
         ScreenRenderer.endGL();
     }

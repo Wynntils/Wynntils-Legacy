@@ -43,7 +43,7 @@ public class MainMenuButtons {
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
 
-        if(lastButton == null || !resize) {
+        if (lastButton == null || !resize) {
             ServerData s = getWynncraftServerData(to.mc);
             FMLClientHandler.instance().setupServerList();
 
@@ -178,8 +178,7 @@ public class MainMenuButtons {
                     Validate.validState(bufferedimage.getHeight() == 64, "Must be 64 pixels high");
                     break label99;
                 }
-                catch (Throwable throwable)
-                {
+                catch (Throwable throwable) {
                     Reference.LOGGER.error("Invalid icon for server {} ({})", server.serverName, server.serverIP, throwable);
                     server.setBase64EncodedIconData(null);
                     serverList.saveServerList();
@@ -188,8 +187,7 @@ public class MainMenuButtons {
                 {
                     bytebuf.release();
 
-                    if (bytebuf1 != null)
-                    {
+                    if (bytebuf1 != null) {
                         bytebuf1.release();
                     }
                 }
@@ -197,8 +195,7 @@ public class MainMenuButtons {
                 return UNKNOWN_SERVER;
             }
 
-            if (icon == null)
-            {
+            if (icon == null) {
                 icon = new DynamicTexture(bufferedimage.getWidth(), bufferedimage.getHeight());
                 Minecraft.getMinecraft().getTextureManager().loadTexture(serverIcon, icon);
             }

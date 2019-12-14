@@ -47,7 +47,7 @@ public class CloudConfigurations {
     }
 
     private void startUploadQueue() {
-        if(runningTask != null && !runningTask.isDone() && !runningTask.isCancelled() || WebManager.getApiUrls() == null) return;
+        if (runningTask != null && !runningTask.isDone() && !runningTask.isCancelled() || WebManager.getApiUrls() == null) return;
 
         runningTask = service.scheduleAtFixedRate(() -> {
             List<ConfigContainer> uploading;
@@ -61,7 +61,7 @@ public class CloudConfigurations {
             Reference.LOGGER.info("Uploading configurations...");
 
             JsonArray body = new JsonArray();
-            for(ConfigContainer container : uploading) {
+            for (ConfigContainer container : uploading) {
                 body.add(gson.toJsonTree(container));
             }
 
@@ -85,9 +85,9 @@ public class CloudConfigurations {
                 }
 
                 JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
-                if(finalResult.has("result")) {
+                if (finalResult.has("result")) {
                     Reference.LOGGER.info("Configuration upload complete!");
-                }else{
+                } else {
                     Reference.LOGGER.info("Configuration upload failed!");
                 }
 

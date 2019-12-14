@@ -22,7 +22,7 @@ public class PlayerInfoReplacer extends GuiPlayerTabOverlay {
 
     @Override
     public void renderPlayerlist(int width, Scoreboard scoreboardIn, @Nullable ScoreObjective scoreObjectiveIn) {
-        if(FrameworkManager.getEventBus().post(new GuiOverlapEvent.PlayerInfoOverlap.RenderList(this))) return;
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.PlayerInfoOverlap.RenderList(this))) return;
 
         super.renderPlayerlist(width, scoreboardIn, scoreObjectiveIn);
     }

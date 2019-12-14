@@ -13,7 +13,7 @@ public class DataProfile {
     String location = "Waiting";
     boolean unknownLocation = false;
 
-    public DataProfile(){
+    public DataProfile() {
     }
 
     public String getLocation() {

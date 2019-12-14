@@ -66,13 +66,13 @@ public class ItemRequirementsContainer {
     }
 
     public ClassType getRealClass(ItemType type) {
-        if(classType != null) return classType;
+        if (classType != null) return classType;
 
-        if(type == ItemType.WAND) return ClassType.MAGE;
-        if(type == ItemType.BOW) return ClassType.ARCHER;
-        if(type == ItemType.SPEAR) return ClassType.WARRIOR;
-        if(type == ItemType.DAGGER) return ClassType.ASSASSIN;
-        if(type == ItemType.RELIK) return ClassType.SHAMAN;
+        if (type == ItemType.WAND) return ClassType.MAGE;
+        if (type == ItemType.BOW) return ClassType.ARCHER;
+        if (type == ItemType.SPEAR) return ClassType.WARRIOR;
+        if (type == ItemType.DAGGER) return ClassType.ASSASSIN;
+        if (type == ItemType.RELIK) return ClassType.SHAMAN;
 
         return null;
     }

@@ -44,11 +44,11 @@ public class SettingsUI extends UI {
     private HashSet<String> changedSettings = new HashSet<>();
     private List<String> searchText = (List<String>) Collections.EMPTY_LIST;
 
-    public UIEList holders = new UIEList(0.5f,0.5f,-170,-87);
-    public UIEList settings = new UIEList(0.5f,0.5f,5,-90);
+    public UIEList holders = new UIEList(0.5f, 0.5f, -170, -87);
+    public UIEList settings = new UIEList(0.5f, 0.5f, 5, -90);
 
-    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar,0.5f,0.5f,-178,-88, 161,false,-85,1,1f,0,null);
-    public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar,0.5f,0.5f,185,-100, 200,true,-95,-150,1f,0,null);
+    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar, 0.5f, 0.5f, -178, -88, 161, false, -85, 1, 1f, 0, null);
+    public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null);
 
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -180, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
@@ -71,9 +71,9 @@ public class SettingsUI extends UI {
         this.holders.visible = false;
         this.settings.visible = false;
 
-        for(ModuleContainer mcn : FrameworkManager.availableModules.values()) {
-            for(SettingsContainer scn : mcn.getRegisteredSettings().values()) {
-                if(!(scn.getHolder() instanceof Overlay)) {
+        for (ModuleContainer mcn : FrameworkManager.availableModules.values()) {
+            for (SettingsContainer scn : mcn.getRegisteredSettings().values()) {
+                if (!(scn.getHolder() instanceof Overlay)) {
                     if (!scn.getDisplayPath().equals("")) {
                         registeredSettings.put(scn.getDisplayPath(), scn);
                         sortedSettings.add(scn.getDisplayPath());
@@ -84,7 +84,7 @@ public class SettingsUI extends UI {
 
         Collections.sort(sortedSettings);
         holdersScrollbar.max = holdersScrollbar.min;
-        for(String path : sortedSettings) {
+        for (String path : sortedSettings) {
             holders.add(new HolderButton(path));
             holdersScrollbar.max -= 11;
         }
@@ -118,7 +118,7 @@ public class SettingsUI extends UI {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        if(settingsScrollbar.active) {
+        if (settingsScrollbar.active) {
             float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
             if (i != 0) {
                 i = MathHelper.clamp(i, -1, 1) * settingsScrollbar.precision * 8;
@@ -164,7 +164,7 @@ public class SettingsUI extends UI {
             setting.position.offsetX += settings.position.offsetX;
             setting.position.offsetY += settings.position.offsetY;
             setting.position.refresh();
-            if(setting.visible = setting.position.getDrawingY() < screenHeight/2+100 && setting.position.getDrawingY() > screenHeight/2-100-settingHeight){
+            if (setting.visible = setting.position.getDrawingY() < screenHeight/2+100 && setting.position.getDrawingY() > screenHeight/2-100-settingHeight) {
                 setting.elements.forEach(settingElement -> {
                     settingElement.position.anchorX = settings.position.anchorX;
                     settingElement.position.anchorY = settings.position.anchorY;
@@ -214,7 +214,7 @@ public class SettingsUI extends UI {
         }
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
-            if(setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
+            if (setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
                 List<String> lines = Arrays.asList(((SettingElement) setting).info.description().split("_nl"));
 //                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
@@ -242,10 +242,10 @@ public class SettingsUI extends UI {
                     settings.add(newSetting);
                     settingsScrollbar.max -= settingHeight;
                 } catch (Exception ignored) {
-                    //no @Setting
+                    // no @Setting
                 }
             }
-            if(settingsScrollbar.min - settingsScrollbar.max > 185) {
+            if (settingsScrollbar.min - settingsScrollbar.max > 185) {
                 settings.position.offsetY = (int)settingsScrollbar.getValue();
                 settingsScrollbar.active = true;
             }
@@ -337,7 +337,7 @@ public class SettingsUI extends UI {
 
         @Override
         public void render(int mouseX, int mouseY) {
-            if(!visible) return;
+            if (!visible) return;
             hovering = mouseX >= position.getDrawingX() && mouseX < position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY < position.getDrawingY()+height;
             active = !currentSettingsPath.equals(this.path);
             width = Math.max(this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
@@ -357,8 +357,8 @@ public class SettingsUI extends UI {
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
             if (visible && active && hovering) {
-                if(clickSound != null)
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
+                if (clickSound != null)
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
                 setCurrentSettingsPath(path);
             }
         }
@@ -393,7 +393,7 @@ public class SettingsUI extends UI {
         }
 
         private void updateValue() {
-            if(valueElement != null)
+            if (valueElement != null)
                 return;
 
             try {
@@ -408,9 +408,9 @@ public class SettingsUI extends UI {
                             e.printStackTrace();
                         }
                     });
-                    //((UIETextBox) valueElement).textField.setEnableBackgroundDrawing(false);
+                    // ((UIETextBox) valueElement).textField.setEnableBackgroundDrawing(false);
                     Setting.Limitations.StringLimit limit = field.getAnnotation(Setting.Limitations.StringLimit.class);
-                    if(limit != null)
+                    if (limit != null)
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
                     else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
                     // Set text again in case it was over default max length of 32
@@ -435,8 +435,8 @@ public class SettingsUI extends UI {
                     });
                 } else if (field.getType().isAssignableFrom(int.class)) {
                     Setting.Limitations.IntLimit limit = field.getAnnotation(Setting.Limitations.IntLimit.class);
-                    if(limit != null) {
-                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,limit.min(),limit.max(),limit.precision(),0,(ui, aFloat) -> {
+                    if (limit != null) {
+                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, limit.min(), limit.max(), limit.precision(), 0, (ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, (int)((UIESlider)valueElement).getValue(), false);
                                 changedSettings.add(currentSettingsPath);
@@ -449,8 +449,8 @@ public class SettingsUI extends UI {
                     }
                 } else if (field.getType().isAssignableFrom(float.class)) {
                     Setting.Limitations.FloatLimit limit = field.getAnnotation(Setting.Limitations.FloatLimit.class);
-                    if(limit != null) {
-                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,limit.min(),limit.max(),limit.precision(),0,(ui, aFloat) -> {
+                    if (limit != null) {
+                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, limit.min(), limit.max(), limit.precision(), 0, (ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, ((UIESlider) valueElement).getValue(), false);
                                 changedSettings.add(currentSettingsPath);
@@ -463,8 +463,8 @@ public class SettingsUI extends UI {
                     }
                 } else if (field.getType().isAssignableFrom(double.class)) {
                     Setting.Limitations.DoubleLimit limit = field.getAnnotation(Setting.Limitations.DoubleLimit.class);
-                    if(limit != null) {
-                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY,Textures.UIs.button_a,0f,0f,0,15,175,true,(float)limit.min(),(float)limit.max(),(float)limit.precision(),0,(ui, aFloat) -> {
+                    if (limit != null) {
+                        valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, (float)limit.min(), (float)limit.max(), (float)limit.precision(), 0, (ui, aFloat) -> {
                             try {
                                 registeredSettings.get(currentSettingsPath).setValue(field, (double)((UIESlider)valueElement).getValue(), false);
                                 changedSettings.add(currentSettingsPath);
@@ -475,7 +475,7 @@ public class SettingsUI extends UI {
                         ((UIESlider)valueElement).setValue((float)(double) value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }
-                } else if(field.getType().isAssignableFrom(CustomColor.class)) {
+                } else if (field.getType().isAssignableFrom(CustomColor.class)) {
                     valueElement = new UIEColorWheel(0, 0, 0, 17, 20, 20, true, (color) -> {
                         try{
                             registeredSettings.get(currentSettingsPath).setValue(field, color, false);

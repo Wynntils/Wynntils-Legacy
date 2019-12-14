@@ -16,7 +16,6 @@ public class WynnClassChangeEvent extends Event {
     ClassType oldClass;
     ClassType currentClass;
 
-
     public WynnClassChangeEvent(ClassType oldClass, ClassType currentClass) {
         this.oldClass = oldClass; this.currentClass = currentClass;
     }

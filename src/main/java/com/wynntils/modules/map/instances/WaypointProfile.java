@@ -323,7 +323,7 @@ public class WaypointProfile {
 
         private String displayName;
 
-        WaypointType(String displayName){
+        WaypointType(String displayName) {
             this.displayName = displayName;
         }
 

@@ -41,7 +41,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (Reference.onServer) {
             if (args.length >= 1) {
-                //String option = args[0];
+                // String option = args[0];
                 switch (args[0].toLowerCase()) {
                     case "list":
                     case "ls":
@@ -72,7 +72,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     break;
                 }
             }
-            switch(arg.toLowerCase()) {
+            switch (arg.toLowerCase()) {
                 case "group":
                 case "g":
                     options.add("group");
@@ -117,7 +117,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             try{
                 HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
 
-                if(options.contains("group") && finalSelectedType == null) {
+                if (options.contains("group") && finalSelectedType == null) {
                     TextComponentString toEdit = new TextComponentString("Available servers" +
                             (options.contains("count") ? String.format(" (%d)", onlinePlayers.size()): "") + ":\n");
 
@@ -127,20 +127,20 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     }
                     toEdit.appendSibling(getFilteredServerList(onlinePlayers, serverTypes.get(serverTypes.size() - 1), options));
 
-                    ChatOverlay.getChat().printUnloggedChatMessage(toEdit, messageId); //updates the message
+                    ChatOverlay.getChat().printUnloggedChatMessage(toEdit, messageId);  // updates the message
                     return;
                 }
-                
-                if(finalSelectedType == null) {
+
+                if (finalSelectedType == null) {
                     ChatOverlay.getChat().printUnloggedChatMessage(
                             getFilteredServerList(onlinePlayers, "", options), messageId
-                    ); //updates the message
+                    );  // updates the message
                     return;
                 }
 
                 ChatOverlay.getChat().printUnloggedChatMessage(
                         getFilteredServerList(onlinePlayers, finalSelectedType, options), messageId
-                ); //updates the message
+                );  // updates the message
             }catch (Exception ex) {
                 ChatOverlay.getChat().printUnloggedChatMessage(
                         new TextComponentString(
@@ -179,7 +179,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         new TextComponentString("Usage: /s info <serverID>"), messageId);
                 return;
             }
-            //args.length == 1 and no help
+            // args.length == 1 and no help
             try {
                 HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
                 for (String serverName : onlinePlayers.keySet()) {
@@ -252,7 +252,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             text.appendText(String.format("%s:\n", filter));
         }
 
-        if(serverCount == 0) {
+        if (serverCount == 0) {
             serverListText.appendText("none");
             serverListText.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.getStyle().setColor(TextFormatting.GRAY);

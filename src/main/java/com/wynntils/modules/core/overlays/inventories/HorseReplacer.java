@@ -44,7 +44,7 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
 
     @Override
     public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
             super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
@@ -57,7 +57,7 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
     }
 

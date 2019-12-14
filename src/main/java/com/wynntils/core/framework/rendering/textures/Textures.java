@@ -23,9 +23,9 @@ public class Textures {
         textureClasses.add(UIs.class);
         textureClasses.add(Map.class);
 
-        for(Class<?> clazz : textureClasses) {
+        for (Class<?> clazz : textureClasses) {
             String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase(Locale.ROOT) + "/";
-            for(Field f : clazz.getDeclaredFields()) {
+            for (Field f : clazz.getDeclaredFields()) {
                 try {
                     if (f.get(null) == null && f.getType().isAssignableFrom(AssetsTexture.class)) {
                         String file = path + f.getName() + ".png";

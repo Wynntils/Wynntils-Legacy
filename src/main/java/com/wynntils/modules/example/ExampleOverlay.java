@@ -15,24 +15,24 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
  * and will be configurable in the options
  */
 public class ExampleOverlay extends Overlay {
-    public ExampleOverlay() { //always have no parameters in the constructor and define values in "super"
+    public ExampleOverlay() {  // always have no parameters in the constructor and define values in "super"
         super(
-                "Example", //The name that'll be displayed in the options
-                20, //The width of the overlay(to be dragged in the options)
-                20, //The height of the overlay(to be dragged in the options)
-                true, //Should the overlay start visible
-                0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
-                0.5f, //Origin anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
-                0, //Origin offset from the anchor in pixels
-                0, //Origin offset from the anchor in pixels
-                null, // What the origin point of this overlay is, null makes it non-configurable
-                RenderGameOverlayEvent.ElementType.ALL); // The element type(s) that this overlay replaces - the framework will cancel the relevant event and only render the
+                "Example",  // The name that'll be displayed in the options
+                20,  // The width of the overlay(to be dragged in the options)
+                20,  // The height of the overlay(to be dragged in the options)
+                true,  // Should the overlay start visible
+                0.5f,  // Origin anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
+                0.5f,  // Origin anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
+                0,  // Origin offset from the anchor in pixels
+                0,  // Origin offset from the anchor in pixels
+                null,  // What the origin point of this overlay is, null makes it non-configurable
+                RenderGameOverlayEvent.ElementType.ALL);  // The element type(s) that this overlay replaces - the framework will cancel the relevant event and only render the
                                                          // overlay when the element would have been rendered
     }
 
-    @Setting.Limitations.FloatLimit(min = 0.0f, max = 69.420f) //Optional, Will set a limit on the float
-    @Setting(displayName = "Configurable Float Title", description = "This float determines what the speed of you understanding what this float is")//Will make this an configurable option
-    public float thisIsAUserConfigurableFloat = 43.235f; //This means that the default will be 43.235
+    @Setting.Limitations.FloatLimit(min = 0.0f, max = 69.420f)  // Optional, Will set a limit on the float
+    @Setting(displayName = "Configurable Float Title", description = "This float determines what the speed of you understanding what this float is")  // Will make this an configurable option
+    public float thisIsAUserConfigurableFloat = 43.235f;  // This means that the default will be 43.235
 
 
     @Override

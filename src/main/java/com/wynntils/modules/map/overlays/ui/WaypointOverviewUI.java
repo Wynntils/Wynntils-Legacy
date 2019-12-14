@@ -85,12 +85,12 @@ public class WaypointOverviewUI extends GuiScreen {
         }
         fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width / 2 - 185 + groupShift, 43, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 150 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 - 35 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 20 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Y", this.width/2 + 60 + groupShift, 43, 0xFFFFFF);
-        drawRect(this.width/2 - 185 - groupShift, 52,this.width/2 + 170 + groupShift,53, 0xFFFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "X", this.width/2 - 35 + groupShift, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 20 + groupShift, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Y", this.width/2 + 60 + groupShift, 43, 0xFFFFFF);
+        drawRect(this.width/2 - 185 - groupShift, 52, this.width/2 + 170 + groupShift, 53, 0xFFFFFFFF);
 
-        ScreenRenderer.beginGL(0,0);
+        ScreenRenderer.beginGL(0, 0);
         ArrayList<WaypointProfile> waypoints = getWaypoints();
         int hovered = getHoveredWaypoint(mouseX, mouseY);
         for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
@@ -391,7 +391,7 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift,54 + 25 * i,40,20,"Edit..."));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + 25 * i, 40, 20,"Edit..."));
             editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + 25 * i, 40, 20, "Delete"));
             GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + 25 * i, 9, 9, "\u028C");
             GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 65 + 25 * i, 9, 9, "v");

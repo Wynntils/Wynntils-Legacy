@@ -47,18 +47,16 @@ public class StringUtils {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
-    //ported from a really really old C# code because im lazy, dont judge -SHCM
+    // ported from a really really old C# code because im lazy, dont judge -SHCM
     public static String getCutString(String inputIN, String startIN, String endIN, boolean keepStartAndEndIN) {
         StringBuilder returning = new StringBuilder();
         StringBuilder read = new StringBuilder();
         boolean collecting = false;
 
         for (char chr : inputIN.toCharArray())
-            if (collecting)
-            {
+            if (collecting) {
                 returning.append(chr);
-                if (returning.toString().endsWith(endIN))
-                {
+                if (returning.toString().endsWith(endIN)) {
                     return (keepStartAndEndIN ? (startIN + returning) : returning.toString().replace(endIN, ""));
                 }
             }
@@ -87,7 +85,7 @@ public class StringUtils {
                 length = 0;
             }
             result.append(string).append(' ');
-            length += string.length() + 1; //+1 for the space following
+            length += string.length() + 1;  // +1 for the space following
         }
 
         return result.toString().split("\\|");

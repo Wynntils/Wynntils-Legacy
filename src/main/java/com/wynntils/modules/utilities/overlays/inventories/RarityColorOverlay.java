@@ -91,7 +91,7 @@ public class RarityColorOverlay implements Listener {
                 continue;
             }
 
-            //start rendering
+            // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
             ScreenRenderer.beginGL(0, 0); {
                 color(r, g, b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
@@ -176,7 +176,7 @@ public class RarityColorOverlay implements Listener {
                 continue;
             }
 
-            //start rendering
+            // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
             ScreenRenderer.beginGL(0, 0); {
                 color(r, g, b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);

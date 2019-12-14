@@ -26,7 +26,7 @@ public abstract class UIESlider extends UIEClickZone {
         super(anchorX, anchorY, offsetX, offsetY, width, height, active, null);
         this.onRelease = onRelease;
         this.backColor = backColor;
-        this.sliderButton = new UIEButton("",sliderButton,anchorX,anchorY,offsetX,offsetY,0,active,null);
+        this.sliderButton = new UIEButton("", sliderButton, anchorX, anchorY, offsetX, offsetY, 0, active, null);
         this.sliderButton.clickSound = null;
         this.min = min;
         this.max = max;
@@ -39,15 +39,15 @@ public abstract class UIESlider extends UIEClickZone {
         return Math.round((max - min) * progress * m) / m + min;
     }
     public void setValue(float val) {
-        this.progress = MathHelper.clamp((val-min)/(max-min),0f,1f);
+        this.progress = MathHelper.clamp((val-min)/(max-min), 0f, 1f);
     }
 
     @Override
     public void release(int mouseX, int mouseY, MouseButton button, UI ui) {
         super.release(mouseX, mouseY, button, ui);
-        if(moving && button == MouseButton.LEFT) {
+        if (moving && button == MouseButton.LEFT) {
             this.moving = false;
-            if(onRelease != null) {
+            if (onRelease != null) {
                 float m = 1f / precision;
                 this.onRelease.accept(ui, Math.round((max - min) * progress * m) / m + min);
             }
@@ -62,7 +62,7 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void render(int mouseX, int mouseY) {
             super.render(mouseX, mouseY);
-            if(this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+            if (this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
             this.sliderButton.active = this.active;
             this.sliderButton.position.copy(this.position);
             this.sliderButton.position.drawingX += MathHelper.fastFloor(progress * (width - sliderButton.width));
@@ -73,22 +73,22 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void clickMove(int mouseX, int mouseY, MouseButton button, long timeSinceLastClick, UI ui) {
             super.clickMove(mouseX, mouseY, button, timeSinceLastClick, ui);
-            if(moving && button == MouseButton.LEFT)
-                this.progress = Math.min(1f,Math.max(0f,((float)(mouseX - mouseOffset - this.position.getDrawingX())) / ((float)this.width - this.sliderButton.width)));
+            if (moving && button == MouseButton.LEFT)
+                this.progress = Math.min(1f, Math.max(0f, ((float)(mouseX - mouseOffset - this.position.getDrawingX())) / ((float)this.width - this.sliderButton.width)));
         }
 
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             super.click(mouseX, mouseY, button, ui);
-            if(button == MouseButton.LEFT && active && hovering) {
+            if (button == MouseButton.LEFT && active && hovering) {
                 old = progress;
                 this.moving = true;
-                if(mouseX >= this.sliderButton.position.getDrawingX() && mouseX <= this.sliderButton.position.getDrawingX() + this.sliderButton.width) {
+                if (mouseX >= this.sliderButton.position.getDrawingX() && mouseX <= this.sliderButton.position.getDrawingX() + this.sliderButton.width) {
                     this.mouseOffset = mouseX - this.sliderButton.position.getDrawingX();
                 } else {
                     this.mouseOffset = this.sliderButton.width/2;
                 }
-                clickMove(mouseX,mouseY,button,-1,ui);
+                clickMove(mouseX, mouseY, button, -1, ui);
             }
         }
     }
@@ -101,7 +101,7 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void render(int mouseX, int mouseY) {
             super.render(mouseX, mouseY);
-            if(this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+            if (this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
             this.sliderButton.active = this.active;
             this.sliderButton.position.copy(this.position);
             this.sliderButton.position.offsetY = MathHelper.fastFloor(progress * (height - sliderButton.height)) + this.position.offsetY;
@@ -113,22 +113,22 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void clickMove(int mouseX, int mouseY, MouseButton button, long timeSinceLastClick, UI ui) {
             super.clickMove(mouseX, mouseY, button, timeSinceLastClick, ui);
-            if(moving && button == MouseButton.LEFT)
-                this.progress = Math.min(1f,Math.max(0f,((float)(mouseY - mouseOffset - this.position.getDrawingY())) / ((float)this.height - this.sliderButton.height)));
+            if (moving && button == MouseButton.LEFT)
+                this.progress = Math.min(1f, Math.max(0f, ((float)(mouseY - mouseOffset - this.position.getDrawingY())) / ((float)this.height - this.sliderButton.height)));
         }
 
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             super.click(mouseX, mouseY, button, ui);
-            if(button == MouseButton.LEFT && active && hovering) {
+            if (button == MouseButton.LEFT && active && hovering) {
                 old = progress;
                 this.moving = true;
-                if(mouseY >= this.sliderButton.position.getDrawingY() && mouseY <= this.sliderButton.position.getDrawingY() + this.sliderButton.height) {
+                if (mouseY >= this.sliderButton.position.getDrawingY() && mouseY <= this.sliderButton.position.getDrawingY() + this.sliderButton.height) {
                     this.mouseOffset = mouseY - this.sliderButton.position.getDrawingY();
                 } else {
                     this.mouseOffset = this.sliderButton.height/2;
                 }
-                clickMove(mouseX,mouseY,button,-1,ui);
+                clickMove(mouseX, mouseY, button, -1, ui);
             }
         }
     }

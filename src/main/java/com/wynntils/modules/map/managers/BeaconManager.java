@@ -24,7 +24,7 @@ public class BeaconManager {
 
     public static void drawBeam(Location loc, CustomColor color) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        if(renderManager == null || renderManager.renderViewEntity == null) return;
+        if (renderManager == null || renderManager.renderViewEntity == null) return;
 
         float alpha = 1f;
 
@@ -32,15 +32,15 @@ public class BeaconManager {
         Vec3d playerVec = renderManager.renderViewEntity.getPositionVector();
 
         double distance = playerVec.distanceTo(positionVec);
-        if(distance <= 4f || distance > 4000f) return;
-        if(distance <= 8f) alpha = (float)(distance - 4f) / 3f;
+        if (distance <= 4f || distance > 4000f) return;
+        if (distance <= 8f) alpha = (float)(distance - 4f) / 3f;
 
-        if(alpha > 1) alpha = 1; //avoid excessive values
+        if (alpha > 1) alpha = 1;  // avoid excessive values
 
         alpha *= color.a;
 
         double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
-        if(distance > maxDistance) { //this will drag the beam to the visible area if outside of it
+        if (distance > maxDistance) {  // this will drag the beam to the visible area if outside of it
             Vec3d delta = positionVec.subtract(playerVec).normalize();
             positionVec = playerVec.add(delta.x * maxDistance, delta.y * maxDistance, delta.z * maxDistance);
         }
@@ -49,14 +49,14 @@ public class BeaconManager {
     }
 
     private static void drawBeam(double x, double y, double z, float alpha, CustomColor color) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(beamResource); //binds the texture
+        Minecraft.getMinecraft().renderEngine.bindTexture(beamResource);  // binds the texture
         glTexParameteri(3553, 10242, 10497);
 
-        //beacon light animation
+        // beacon light animation
         float time = Minecraft.getSystemTime() / 50F;
         float offset = -(-time * 0.2F - MathHelper.fastFloor(-time * 0.1F)) * 0.6F;
 
-        //positions
+        // positions
         double d1 = 256.0F * alpha;
         double d2 = -1f + offset;
         double d3 = 256.0F * alpha + d2;
@@ -67,7 +67,7 @@ public class BeaconManager {
         enableBlend();
         tryBlendFuncSeparate(770, 771, 1, 0);
 
-        //drawing
+        // drawing
         tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
         BufferBuilder builder = tessellator.getBuffer();
         {
@@ -90,7 +90,7 @@ public class BeaconManager {
         }
         tessellator.draw();
 
-        //reseting
+        // reseting
         disableBlend();
         enableLighting();
         enableTexture2D();

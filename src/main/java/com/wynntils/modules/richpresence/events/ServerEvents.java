@@ -58,7 +58,7 @@ public class ServerEvents implements Listener {
             ServerEvents.forceUpdate = false;
 
             for (TerritoryProfile pf : WebManager.getTerritories().values()) {
-                if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                     RichPresenceModule.getModule().getData().setLocation(pf.getFriendlyName());
                     RichPresenceModule.getModule().getData().setUnknownLocation(false);
 
@@ -66,13 +66,13 @@ public class ServerEvents implements Listener {
 
                     if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
 
-                    if(PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
+                    if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
                         ModCore.mc().addScheduledTask(() -> {
                             if (Reference.onWorld) {
                                 RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
                             }
                         });
-                    }else {
+                    } else {
                         ModCore.mc().addScheduledTask(() -> {
                             if (Reference.onWorld) {
                                 RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + RichPresenceModule.getModule().getData().getLocation(), getPlayerInfo(), currentTime);

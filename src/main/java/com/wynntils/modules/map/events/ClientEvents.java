@@ -34,15 +34,15 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void openChest(PlayerInteractEvent.RightClickBlock e) {
-        if(e.getPos() == null) return;
+        if (e.getPos() == null) return;
         lastLocation = new Location(e.getPos().getX(), e.getPos().getY(), e.getPos().getZ());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if(lastLocation == null) return;
+        if (lastLocation == null) return;
 
-        if(e.getGui().getLowerInv().getName().contains("Loot Chest ")) {
+        if (e.getGui().getLowerInv().getName().contains("Loot Chest ")) {
             String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
             if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
 
@@ -61,8 +61,8 @@ public class ClientEvents implements Listener {
                     wp = new WaypointProfile("Loot Chest T1", lastLocation.getX(), lastLocation.getY(), lastLocation.getZ(), CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T1, -1000);
                     break;
             }
-            if(wp != null) {
-                if(MapConfig.Waypoints.INSTANCE.waypoints.stream().anyMatch(c -> c.getX() == lastLocation.getX() && c.getY() == lastLocation.getY() && c.getZ() == lastLocation.getZ())) return;
+            if (wp != null) {
+                if (MapConfig.Waypoints.INSTANCE.waypoints.stream().anyMatch(c -> c.getX() == lastLocation.getX() && c.getY() == lastLocation.getY() && c.getZ() == lastLocation.getZ())) return;
 
                 wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T4);
                 MapConfig.Waypoints.INSTANCE.waypoints.add(wp);

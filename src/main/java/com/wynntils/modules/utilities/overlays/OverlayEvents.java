@@ -51,7 +51,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onPlayerInfoRender(GuiOverlapEvent.PlayerInfoOverlap.RenderList e) {
-        if(!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
+        if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
 
         e.setCanceled(true);
     }
@@ -465,10 +465,10 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
-            if (messageText.matches(".+ has logged into server (WC|HB|EU|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(TextFormatting.AQUA.toString())) { // À temp for Shaman
+            if (messageText.matches(".+ has logged into server (WC|HB|EU|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(TextFormatting.AQUA.toString())) {  // À temp for Shaman
                 String[] res = messageText.split(" ");
                 if (res.length == 9) {
-                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman"; // Temp replace for Shaman (Same changes as above)
+                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman";  // Temp replace for Shaman (Same changes as above)
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + TextFormatting.DARK_AQUA + "]");
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + " " + res[9] + TextFormatting.DARK_AQUA + "]");
@@ -550,7 +550,7 @@ public class OverlayEvents implements Listener {
 
             String newTerritoryArea = e.getNewTerritory().replaceAll(filterList, "").replaceAll(" {2,}", " ").trim();
             String oldTerritoryArea = e.getOldTerritory().replaceAll(filterList, "").replaceAll(" {2,}", " ").trim();
-            if(newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
+            if (newTerritoryArea.equalsIgnoreCase(oldTerritoryArea)) return;
 
             ToastOverlay.addToast(new Toast(Toast.ToastType.TERRITORY, "Now entering", newTerritoryArea));
         }

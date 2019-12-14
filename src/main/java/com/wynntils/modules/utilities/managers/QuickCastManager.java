@@ -45,7 +45,7 @@ public class QuickCastManager {
     }
 
     public static void castFirstSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(1, SPELL_LEFT, SPELL_RIGHT, SPELL_LEFT);
             return;
         }
@@ -54,7 +54,7 @@ public class QuickCastManager {
     }
 
     public static void castSecondSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(2, SPELL_LEFT, SPELL_LEFT, SPELL_LEFT);
             return;
         }
@@ -63,7 +63,7 @@ public class QuickCastManager {
     }
 
     public static void castThirdSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(3, SPELL_LEFT, SPELL_RIGHT, SPELL_RIGHT);
             return;
         }
@@ -72,7 +72,7 @@ public class QuickCastManager {
     }
 
     public static void castFourthSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(4, SPELL_LEFT, SPELL_LEFT, SPELL_RIGHT);
             return;
         }

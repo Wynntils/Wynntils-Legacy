@@ -10,11 +10,11 @@ import net.minecraft.item.Item;
 
 public enum ItemType {
 
-    WAND(Items.STICK, 0), //mage
-    SPEAR(Items.IRON_SHOVEL, 0), //warrior
-    DAGGER(Items.SHEARS, 0), //assassin
-    BOW(Items.BOW, 0), //archer
-    RELIK(Items.STONE_SHOVEL, 7), //shaman
+    WAND(Items.STICK, 0),  // mage
+    SPEAR(Items.IRON_SHOVEL, 0),  // warrior
+    DAGGER(Items.SHEARS, 0),  // assassin
+    BOW(Items.BOW, 0),  // archer
+    RELIK(Items.STONE_SHOVEL, 7),  // shaman
 
     HELMET(Items.LEATHER_HELMET, 0),
     CHESTPLATE(Items.LEATHER_CHESTPLATE, 0),

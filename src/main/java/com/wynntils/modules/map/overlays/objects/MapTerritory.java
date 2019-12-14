@@ -44,7 +44,7 @@ public class MapTerritory {
         float endX = ((mp.getTextureXPosition(territory.getEndX()) - minX) / (maxX - minX));
         float endY = ((mp.getTextureZPosition(territory.getEndZ()) - minZ) / (maxZ - minZ));
 
-        if((initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1)) {
+        if ((initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1)) {
             shouldRender = true;
 
             initX*=width; initY*=height;
@@ -63,7 +63,7 @@ public class MapTerritory {
 
         CustomColor color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) : StringUtils.colorFromHex(territory.getGuildColor());
 
-        if(MapConfig.WorldMap.INSTANCE.territoryArea) {
+        if (MapConfig.WorldMap.INSTANCE.territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
         }
@@ -73,11 +73,11 @@ public class MapTerritory {
 
         boolean Hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
 
-        if((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
+        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
-        if(MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
-        if(alpha <= 0) return;
+        if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
+        if (alpha <= 0) return;
 
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }

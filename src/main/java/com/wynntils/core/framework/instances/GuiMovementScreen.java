@@ -17,17 +17,17 @@ public class GuiMovementScreen extends GuiScreen {
             super.handleInput();
             return;
         }
-        if(Mouse.isCreated()) {
+        if (Mouse.isCreated()) {
             while (Mouse.next()) {
                 this.handleMouseInput();
             }
         }
 
-        if(Keyboard.isCreated()) {
+        if (Keyboard.isCreated()) {
             while(Keyboard.next()) {
 
-                for(KeyBinding key : mc.gameSettings.keyBindings) {
-                    if(key.getKeyCode() != Keyboard.getEventKey() || key.getKeyConflictContext() != WynntilsConflictContext.ALLOW_MOVEMENTS) continue;
+                for (KeyBinding key : mc.gameSettings.keyBindings) {
+                    if (key.getKeyCode() != Keyboard.getEventKey() || key.getKeyConflictContext() != WynntilsConflictContext.ALLOW_MOVEMENTS) continue;
 
                     KeyBinding.setKeyBindState(Keyboard.getEventKey(), Keyboard.getEventKeyState());
                     KeyBinding.onTick(Keyboard.getEventKey());

@@ -8,7 +8,6 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.eventhandler.GenericEvent;
 
-
 /**
  * triggered when a packet is sent to the client
  * is cancellable (you can avoid it to reach the client processor)

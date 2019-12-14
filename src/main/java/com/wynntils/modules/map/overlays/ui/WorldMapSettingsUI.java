@@ -119,8 +119,8 @@ public class WorldMapSettingsUI extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() || // DEFAULT: E
-                keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) { //DEFAULT: M
+        if (keyCode == Minecraft.getMinecraft().gameSettings.keyBindInventory.getKeyCode() ||  // DEFAULT: E
+                keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {  // DEFAULT: M
             Utils.displayGuiScreen(new MainWorldMapUI());
         }
         super.keyTyped(typedChar, keyCode);

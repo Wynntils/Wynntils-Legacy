@@ -32,7 +32,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent e) {
-        if(e.phase != TickEvent.Phase.START) return;
+        if (e.phase != TickEvent.Phase.START) return;
 
         RichPresenceModule.getModule().getRichPresence().runCallbacks();
     }

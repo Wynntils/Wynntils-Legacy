@@ -36,12 +36,12 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(!WebManager.isModerator(Minecraft.getMinecraft().player.getUniqueID())) return;
+        if (!WebManager.isModerator(Minecraft.getMinecraft().player.getUniqueID())) return;
 
         TextComponentString output;
 
-        if(args.length >= 1 && args[0].equalsIgnoreCase("broadcast")) {
-            if(args.length < 3) {
+        if (args.length >= 1 && args[0].equalsIgnoreCase("broadcast")) {
+            if (args.length < 3) {
                 output = new TextComponentString("Use: /wadmin broadcast <TITLE/MESSAGE> <message>");
                 output.getStyle().setColor(TextFormatting.RED);
 
@@ -52,7 +52,7 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
             String type = args[1].toUpperCase();
 
             StringJoiner message = new StringJoiner(" ");
-            for(int i = 2; i < args.length; i++) {
+            for (int i = 2; i < args.length; i++) {
                 message.add(args[i]);
             }
 

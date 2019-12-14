@@ -233,7 +233,7 @@ public class WebRequestHandler {
             }
 
             for (Request request : requests) {
-                if(request.currentlyHandling != 0) continue;
+                if (request.currentlyHandling != 0) continue;
 
                 anyRequests = true;
                 request.currentlyHandling = 1;

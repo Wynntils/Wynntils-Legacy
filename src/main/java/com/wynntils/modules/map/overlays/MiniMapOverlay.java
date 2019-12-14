@@ -48,27 +48,27 @@ public class MiniMapOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre e) {
-        if(!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL || !MapConfig.INSTANCE.enabled) return;
-        if(!MapModule.getModule().getMainMap().isReadyToUse()) return;
+        if (!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL || !MapConfig.INSTANCE.enabled) return;
+        if (!MapModule.getModule().getMainMap().isReadyToUse()) return;
 
         MapProfile map = MapModule.getModule().getMainMap();
 
-        //calculates the extra size to avoid rotation overpass
+        // calculates the extra size to avoid rotation overpass
         float extraFactor = 1;
         if (MapConfig.INSTANCE.followPlayerRotation && MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) extraFactor = 1.5f;
 
-        //updates the map size
+        // updates the map size
         int mapSize = MapConfig.INSTANCE.mapSize;
         staticSize = new Point(mapSize, mapSize);
 
         int zoom = MapConfig.INSTANCE.mapZoom;
 
-        //texture position
-        float minX = map.getTextureXPosition(mc.player.posX) - extraFactor * (mapSize/2f + zoom); // <--- min texture x point
-        float minZ = map.getTextureZPosition(mc.player.posZ) - extraFactor * (mapSize/2f + zoom); // <--- min texture z point
+        // texture position
+        float minX = map.getTextureXPosition(mc.player.posX) - extraFactor * (mapSize/2f + zoom);  // <--- min texture x point
+        float minZ = map.getTextureZPosition(mc.player.posZ) - extraFactor * (mapSize/2f + zoom);  // <--- min texture z point
 
-        float maxX = map.getTextureXPosition(mc.player.posX) + extraFactor * (mapSize/2f + zoom); // <--- max texture x point
-        float maxZ = map.getTextureZPosition(mc.player.posZ) + extraFactor * (mapSize/2f + zoom); // <--- max texture z point
+        float maxX = map.getTextureXPosition(mc.player.posX) + extraFactor * (mapSize/2f + zoom);  // <--- max texture x point
+        float maxZ = map.getTextureZPosition(mc.player.posZ) + extraFactor * (mapSize/2f + zoom);  // <--- max texture z point
 
         minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
         minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
@@ -76,28 +76,28 @@ public class MiniMapOverlay extends Overlay {
         float centerX = minX + ((maxX - minX)/2);
         float centerZ = minZ + ((maxZ - minZ)/2);
 
-        if(centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
+        if (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
 
         try{
             GlStateManager.enableAlpha();
             GlStateManager.enableTexture2D();
 
-            //textures & masks
-            if(MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
+            // textures & masks
+            if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 createMask(Textures.Masks.circle, 0, 0, mapSize, mapSize);
-            }else{
+            } else {
                 createMask(Textures.Masks.full, 0, 0, mapSize, mapSize);
             }
 
-            //map texture
+            // map texture
             map.bindTexture();
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-            //rotation axis
+            // rotation axis
             transformationOrigin(mapSize/2, mapSize/2);
-            if(MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
+            if (MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
-            //map quad
+            // map quad
             float extraSize = (extraFactor - 1f) * mapSize/2f;  // How many extra pixels multiplying by extraFactor added on each side
 
             int option = MapConfig.INSTANCE.renderUsingLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST;
@@ -126,7 +126,7 @@ public class MiniMapOverlay extends Overlay {
                 final float halfMapSize = mapSize / 2f;
                 final float scaleFactor = mapSize / (mapSize + 2f * zoom);
 
-                //TODO this needs to scale in even numbers to avoid distortion!
+                // TODO this needs to scale in even numbers to avoid distortion!
                 final float sizeMultiplier = 0.8f * MapConfig.INSTANCE.minimapIconSizeMultiplier * (1 - (1 - scaleFactor) * (1 - scaleFactor));
 
                 final double rotationRadians = Math.toRadians(mc.player.rotationYaw);
@@ -238,7 +238,7 @@ public class MiniMapOverlay extends Overlay {
 
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(drawingOrigin.x + dx, drawingOrigin.y + dz, 0);
-                        GlStateManager.rotate(angle,0,0,1);
+                        GlStateManager.rotate(angle, 0, 0, 1);
                         GlStateManager.translate(-drawingOrigin.x - dx, -drawingOrigin.y - dz, 0);
 
                         MapCompassIcon.pointer.renderAt(this, dx, dz, sizeMultiplier, 1f);
@@ -254,9 +254,9 @@ public class MiniMapOverlay extends Overlay {
             GlStateManager.disableBlend();
             clearMask();
 
-            if(MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
+            if (MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
 
-            //cursor & cursor rotation
+            // cursor & cursor rotation
             rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw));
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
@@ -279,8 +279,8 @@ public class MiniMapOverlay extends Overlay {
             } else if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Paper) {
                     drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 217, 217, 434, 438);
-                } else if(MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
-                    //todo texture
+                } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
+                    // todo texture
                 } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
                     drawRect(Textures.Map.gilded_map_textures, -1, -1, mapSize+1, mapSize+1, 0, 0, 262, 262);
                 }

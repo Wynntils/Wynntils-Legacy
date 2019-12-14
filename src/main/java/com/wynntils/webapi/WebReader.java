@@ -70,31 +70,31 @@ public class WebReader {
         values = new HashMap<>();
         lists = new HashMap<>();
         for (String str : data.split("\\r?\\n")) {
-            if(str.contains("[") && str.contains("]")) {
+            if (str.contains("[") && str.contains("]")) {
                 String[] split;
-                if(str.contains(" = ")) {
+                if (str.contains(" = ")) {
                     split = str.split(" = ");
-                }else if(str.contains("=")) {
+                } else if (str.contains("=")) {
                     split = str.split("=");
-                }else{
+                } else {
                     return false;
                 }
 
                 values.put(split[0].replace("[", "").replace("]", ""), split[1]);
 
-                if(split[1].contains(",")) {
+                if (split[1].contains(",")) {
                     String[] array = split[1].split(",");
 
                     ArrayList<String> values = new ArrayList<>();
-                    for(String x : array) {
-                        if(x.startsWith(" ")) {
+                    for (String x : array) {
+                        if (x.startsWith(" ")) {
                             x = x.substring(1);
                         }
                         values.add(x);
                     }
 
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
-                }else{
+                } else {
                     ArrayList<String> values = new ArrayList<>();
                     values.add(split[1]);
                     lists.put(split[0].replace("[", "").replace("]", ""), values);

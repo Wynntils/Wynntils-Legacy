@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ServerEvents implements Listener {
 
     @SubscribeEvent
-    public void joinServer(WynncraftServerEvent.Leave e){
+    public void joinServer(WynncraftServerEvent.Leave e) {
         CapeManager.downloaded.clear();
     }
 

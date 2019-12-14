@@ -50,7 +50,7 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if(!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
         if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
@@ -73,7 +73,7 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        if(!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
         IInventory upperInv = e.getGui().getUpperInv();
@@ -102,23 +102,23 @@ public class EmeraldCountOverlay implements Listener {
      * @param renderer the renderer
      */
     private static void drawTextMoneyAmount(int x, int y, int moneyAmount, ScreenRenderer renderer, CustomColor color) {
-        //rendering setup
+        // rendering setup
         disableLighting();
         color(1F, 1F, 1F, 1F);
 
-        //generating text
+        // generating text
         String moneyText = "";
-        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) { //plain text
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {  // plain text
             moneyText = formatAmount(moneyAmount) + EmeraldSymbols.EMERALDS;
-        }else{ //sliced text
+        } else {  // sliced text
             int[] moneySlices = calculateMoneyAmount(moneyAmount);
 
-            moneyText += formatAmount(moneySlices[2]) + EmeraldSymbols.LE + " "; //liquid emeralds
-            moneyText += formatAmount(moneySlices[1]) + EmeraldSymbols.BLOCKS + " "; //emerald blocks
-            moneyText += formatAmount(moneySlices[0]) + EmeraldSymbols.EMERALDS; //emeralds
+            moneyText += formatAmount(moneySlices[2]) + EmeraldSymbols.LE + " ";  // liquid emeralds
+            moneyText += formatAmount(moneySlices[1]) + EmeraldSymbols.BLOCKS + " ";  // emerald blocks
+            moneyText += formatAmount(moneySlices[0]) + EmeraldSymbols.EMERALDS;  // emeralds
         }
 
-        //rendering
+        // rendering
         ScreenRenderer.beginGL(x, y);
         {
             renderer.drawString(moneyText, 0, 0, color, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);

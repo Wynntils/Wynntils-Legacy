@@ -83,9 +83,9 @@ public class SocketEvents implements Listener {
                 PositionedSoundRecord.getMasterRecord(ENTITY_WITHER_HURT, 1f)
         );
 
-        if(e.getType() == BroadcastType.TITLE) {
+        if (e.getType() == BroadcastType.TITLE) {
             String title = message; String subtitle = "";
-            if(message.contains("::")) {
+            if (message.contains("::")) {
                 String[] split = message.split("::");
                 title = split[0];
                 subtitle = split[1];

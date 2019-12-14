@@ -59,7 +59,7 @@ public class AdvancedPlayer {
         AudioDevice var3 = this.audio;
         if (var3 != null) {
             var3.flush();
-            synchronized(this) {
+            synchronized (this) {
                 this.complete = !this.closed;
                 this.close();
             }
@@ -100,7 +100,7 @@ public class AdvancedPlayer {
                     return false;
                 } else {
                     SampleBuffer var3 = (SampleBuffer)this.decoder.decodeFrame(var2, this.bitstream);
-                    synchronized(this) {
+                    synchronized (this) {
                         var1 = this.audio;
                         if (var1 != null) {
                             var1.write(var3.getBuffer(), 0, var3.getBufferLength());
@@ -129,7 +129,7 @@ public class AdvancedPlayer {
     public boolean play(int var1, int var2) throws JavaLayerException {
         boolean var3 = true;
 
-        for(int var4 = var1; var4-- > 0 && var3; var3 = this.skipFrame()) {
+        for (int var4 = var1; var4-- > 0 && var3; var3 = this.skipFrame()) {
             ;
         }
 

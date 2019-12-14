@@ -49,7 +49,7 @@ public class UIETextBox extends UIEClickZone {
     @Override
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         this.textField.mouseClicked(mouseX, mouseY, button.ordinal());
-        if(textDisappearsOnNextClick && (mouseX >= this.textField.x && mouseX < this.textField.x + this.textField.width && mouseY >= this.textField.y && mouseY < this.textField.y + this.textField.height) && button == MouseButton.LEFT) {
+        if (textDisappearsOnNextClick && (mouseX >= this.textField.x && mouseX < this.textField.x + this.textField.width && mouseY >= this.textField.y && mouseY < this.textField.y + this.textField.height) && button == MouseButton.LEFT) {
             textField.setText("");
             textDisappearsOnNextClick = false;
         }

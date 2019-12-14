@@ -23,7 +23,7 @@ public class IngameMenuReplacer extends GuiIngameMenu {
 
     @Override
     public void actionPerformed(GuiButton btn) throws IOException {
-        if(FrameworkManager.getEventBus().post(new GuiOverlapEvent.IngameMenuOverlap.ActionPerformed(this, btn))) {
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.IngameMenuOverlap.ActionPerformed(this, btn))) {
             return;
         }
         super.actionPerformed(btn);

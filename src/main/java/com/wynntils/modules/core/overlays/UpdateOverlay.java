@@ -46,19 +46,19 @@ public class UpdateOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Post e) {
-        if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+        if (e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
 
-        if(Reference.developmentEnvironment || WebManager.getUpdate() == null || !WebManager.getUpdate().hasUpdate()) {
+        if (Reference.developmentEnvironment || WebManager.getUpdate() == null || !WebManager.getUpdate().hasUpdate()) {
             return;
         }
 
-        if(disappear) {
+        if (disappear) {
             return;
         }
 
-        if(timeout == 0) {
+        if (timeout == 0) {
             timeout = System.currentTimeMillis();
         }
 
@@ -82,12 +82,12 @@ public class UpdateOverlay extends Overlay {
 
         if (size > 0 && System.currentTimeMillis() - timeout < 35000) {
             size--;
-            if(size <= 0) {
+            if (size <= 0) {
                 acceptYesOrNo = true;
             }
-        }else if(size < 63 && System.currentTimeMillis() - timeout >= 35000) {
+        } else if (size < 63 && System.currentTimeMillis() - timeout >= 35000) {
             size++;
-            if(size >= 63) {
+            if (size >= 63) {
                 disappear = true;
                 acceptYesOrNo = false;
                 download = false;
@@ -115,8 +115,8 @@ public class UpdateOverlay extends Overlay {
     }
 
     @Override
-    public void tick(TickEvent.ClientTickEvent event, long ticks){
-        if(download && disappear) {
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {
+        if (download && disappear) {
             download = false;
 
             try {
@@ -134,7 +134,7 @@ public class UpdateOverlay extends Overlay {
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
                 DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
-                    if(x) {
+                    if (x) {
                         try {
                             String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
                             message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jar_name.split("_")[0].split("-")[1] : "Build " + jar_name.split("_")[1].replace(".jar", "");
@@ -151,8 +151,8 @@ public class UpdateOverlay extends Overlay {
                 ex.printStackTrace();
             }
         }
-        if(acceptYesOrNo) {
-            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+        if (acceptYesOrNo) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
                 disappear = true;
                 acceptYesOrNo = false;
                 download = true;
@@ -160,7 +160,7 @@ public class UpdateOverlay extends Overlay {
                 CoreDBConfig.INSTANCE.showChangelogs = true;
                 CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
                 CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-            }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 timeout = 35000;
                 acceptYesOrNo = false;
                 download = false;

@@ -112,7 +112,6 @@ public class WynnSocialEvent extends Event {
 
     }
 
-
     public static class FriendList extends Event {
         Collection<String> members;
         public final boolean isSingular;

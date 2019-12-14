@@ -77,7 +77,7 @@ public class OverlayConfig extends SettingsClass {
             b,
             c,
             d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }
@@ -115,7 +115,7 @@ public class OverlayConfig extends SettingsClass {
             b,
             c,
             d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }
@@ -178,7 +178,7 @@ public class OverlayConfig extends SettingsClass {
             a,
             b,
             c
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }

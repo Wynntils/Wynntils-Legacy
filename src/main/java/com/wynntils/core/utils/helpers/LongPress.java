@@ -20,17 +20,17 @@ public class LongPress {
     }
 
     public void tick(boolean isKeyDown) {
-        if(!isKeyDown) {
+        if (!isKeyDown) {
             endTime = 0;
             return;
         }
 
-        if(endTime == 0) {
+        if (endTime == 0) {
             endTime = System.currentTimeMillis() + timeout;
             return;
         }
 
-        if(System.currentTimeMillis() < endTime) return;
+        if (System.currentTimeMillis() < endTime) return;
 
         whenFinished.run();
     }

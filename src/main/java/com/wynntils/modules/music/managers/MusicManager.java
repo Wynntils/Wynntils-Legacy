@@ -35,14 +35,14 @@ public class MusicManager {
     }
 
     public static void checkForUpdates() {
-        if(!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!MusicConfig.INSTANCE.allowMusicModule) return;
 
         musicFolder = new File(Reference.MOD_STORAGE_ROOT, "sounds");
-        if(!musicFolder.exists() || !musicFolder.isDirectory()) musicFolder.mkdirs();
+        if (!musicFolder.exists() || !musicFolder.isDirectory()) musicFolder.mkdirs();
 
         File[] listOfFiles = musicFolder.listFiles();
-        if(listOfFiles.length >= 1) {
-            for(File f : listOfFiles) {
+        if (listOfFiles.length >= 1) {
+            for (File f : listOfFiles) {
                 downloadedMusics.put(StringUtils.toMD5(f.getName() + f.length()), new MusicProfile(f));
             }
         }
@@ -55,9 +55,9 @@ public class MusicManager {
     }
 
     public static void checkForMusic(String location) {
-        if(!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!MusicConfig.INSTANCE.allowMusicModule) return;
 
-        if(!isListUpdated) {
+        if (!isListUpdated) {
             checkForUpdates();
             return;
         }
@@ -68,36 +68,36 @@ public class MusicManager {
         Optional<MusicProfile> firstWord = Optional.empty();
         Optional<MusicProfile> lessPossible = Optional.empty();
 
-        for(MusicProfile mp : availableMusics.values()) {
-            if(mp.getName().contains("(") && mp.getName().contains(")")) {
+        for (MusicProfile mp : availableMusics.values()) {
+            if (mp.getName().contains("(") && mp.getName().contains(")")) {
                 Matcher mc = regex.matcher(mp.getName());
                 while(mc.find()) {
                     String value = mc.group(1).replace("(", "").replace(")", "");
                     String toSearch = location.contains(" ") ? location.split(" ")[0] : location;
-                    if(value.equalsIgnoreCase(location)) { //perfect match
+                    if (value.equalsIgnoreCase(location)) {  // perfect match
                         direct = Optional.of(mp);
-                    }else if(value.startsWith(toSearch)) { //match by first word
+                    } else if (value.startsWith(toSearch)) {  // match by first word
                         firstWord = Optional.of(mp);
-                    }else if(value.startsWith(location)) { //match by entire location
+                    } else if (value.startsWith(location)) {  // match by entire location
                         lessPossible = Optional.of(mp);
                     }
                 }
             }
         }
 
-        if(direct.isPresent()) { selected = direct.get();
-        }else if(firstWord.isPresent()) { selected = firstWord.get();
-        }else if(lessPossible.isPresent()) { selected = lessPossible.get(); }
+        if (direct.isPresent()) { selected = direct.get();
+        } else if (firstWord.isPresent()) { selected = firstWord.get();
+        } else if (lessPossible.isPresent()) { selected = lessPossible.get(); }
 
-        if(selected == null) return;
+        if (selected == null) return;
 
-        if(downloadedMusics.containsKey(selected.getAsHash()) && downloadedMusics.get(selected.getAsHash()).getFile().isPresent()) {
+        if (downloadedMusics.containsKey(selected.getAsHash()) && downloadedMusics.get(selected.getAsHash()).getFile().isPresent()) {
             player.play(downloadedMusics.get(selected.getAsHash()).getFile().get());
-        }else{
+        } else {
             final MusicProfile toDownlaod = selected;
             downloadedMusics.put(toDownlaod.getAsHash(), toDownlaod);
             DownloaderManager.queueDownload(selected.getNameWithoutMP3(), selected.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
-                if(c) {
+                if (c) {
                     downloadedMusics.replace(toDownlaod.getAsHash(), new MusicProfile(new File(musicFolder, toDownlaod.getName())));
                     checkForMusic(location);
                 }

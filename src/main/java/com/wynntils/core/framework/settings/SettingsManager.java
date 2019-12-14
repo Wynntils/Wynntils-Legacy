@@ -41,45 +41,45 @@ public class SettingsManager {
             .registerTypeAdapter(new TypeToken<ArrayList<PathWaypointProfile>>(){}.getType(), new PathWaypointProfile.Serializer())
             .create();
 
-        configFolder.mkdirs(); //if the config folder doesn't exists create the directory
+        configFolder.mkdirs();  // if the config folder doesn't exists create the directory
     }
 
     public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
-        if(info == null)
-            if(!(obj instanceof Overlay))
+        if (info == null)
+            if (!(obj instanceof Overlay))
                 return;
 
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
-        if(!f.exists()) f.mkdirs(); // check if the users folder exists
+        if (!f.exists()) f.mkdirs();  // check if the users folder exists
 
         f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config");
-        if(!f.exists()) f.createNewFile(); // create the config file if it doesn't exists
+        if (!f.exists()) f.createNewFile();  // create the config file if it doesn't exists
 
-        //HeyZeer0: Writting to file
+        // HeyZeer0: Writting to file
         OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8);
         gson.toJson(obj, fileWriter);
         fileWriter.close();
 
-        //HeyZeer0: Uploading file
-        if(WebManager.getAccount() != null) {
+        // HeyZeer0: Uploading file
+        if (WebManager.getAccount() != null) {
             WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(EncodingUtils.deflate(Files.readAllBytes(f.toPath()))), StandardCharsets.UTF_8));
         }
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws Exception {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
-        if(info == null)
-            if(!(obj instanceof Overlay))
+        if (info == null)
+            if (!(obj instanceof Overlay))
                 return obj;
 
         File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
-        if(!f.exists()) f.mkdirs(); // check if the users folder exists
+        if (!f.exists()) f.mkdirs();  // check if the users folder exists
 
         String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";
         f = new File(f, configFile);
 
-        if(!f.exists()) {
+        if (!f.exists()) {
             f.createNewFile();
             container.onCreateConfig();
             saveSettings(m, container.getHolder());
@@ -95,14 +95,14 @@ public class SettingsManager {
 
     public static SettingsHolder getCloudSettings(ModuleContainer m, SettingsHolder obj) {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
-        if(info == null)
-            if(!(obj instanceof Overlay))
+        if (info == null)
+            if (!(obj instanceof Overlay))
                 return obj;
 
         String name = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
 
-        if(WebManager.getAccount() == null) return null;
-        if(!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
+        if (WebManager.getAccount() == null) return null;
+        if (!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
 
         byte[] encodedFormat = Base64.getDecoder().decode(WebManager.getAccount().getEncondedConfigs().get(name));
         if (encodedFormat[0] == (byte) 0x78) {
@@ -126,7 +126,7 @@ public class SettingsManager {
 
         @Override
         public CustomColor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if(json.isJsonObject()) { /* HeyZeer0: this is just to convert old values to the new ones */
+            if (json.isJsonObject()) { /* HeyZeer0: this is just to convert old values to the new ones */
                 JsonObject obj = json.getAsJsonObject();
                 return new CustomColor(obj.get("r").getAsFloat(), obj.get("g").getAsFloat(), obj.get("b").getAsFloat(), obj.get("a").getAsFloat());
             }

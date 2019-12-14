@@ -29,8 +29,8 @@ public enum SpellType {
     }
 
     public static SpellType getSpell(String input) {
-        for(SpellType type : values()) {
-            if(type.regex.matcher(input).matches()) return type;
+        for (SpellType type : values()) {
+            if (type.regex.matcher(input).matches()) return type;
         }
 
         return null;

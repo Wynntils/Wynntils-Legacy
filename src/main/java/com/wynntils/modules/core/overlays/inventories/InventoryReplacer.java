@@ -40,7 +40,7 @@ public class InventoryReplacer extends GuiInventory {
 
     @Override
     public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
             super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
@@ -53,7 +53,7 @@ public class InventoryReplacer extends GuiInventory {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.KeyTyped(this, typedChar, keyCode)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
     }
 

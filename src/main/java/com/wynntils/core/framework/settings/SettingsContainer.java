@@ -30,7 +30,7 @@ public class SettingsContainer {
     public SettingsContainer(ModuleContainer m, SettingsHolder holder) {
         this.holder = holder;
         this.m = m;
-        this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main",m.getInfo().displayName());
+        this.displayPath = holder instanceof Overlay ? m.getInfo().displayName() + "/" + ((Overlay) holder).displayName : holder.getClass().getAnnotation(SettingsInfo.class).displayPath().replaceFirst("^Main", m.getInfo().displayName());
 
         for (Class<?> clazz = holder.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
             for (Field f : clazz.getDeclaredFields()) {
@@ -52,18 +52,18 @@ public class SettingsContainer {
     }
 
     public void tryToLoad() throws Exception {
-        if(fromCloud == null) {
+        if (fromCloud == null) {
             updateValues(SettingsManager.getSettings(m, holder, this));
             return;
         }
 
-        updateValues(fromCloud); //this makes the syncronization
+        updateValues(fromCloud);  // this makes the syncronization
     }
 
     public HashMap<Field, Object> getValues() throws Exception {
         HashMap<Field, Object> values = new HashMap<>();
 
-        for(Field f : fields) {
+        for (Field f : fields) {
             values.put(f, f.get(holder));
         }
 
@@ -81,21 +81,21 @@ public class SettingsContainer {
     }
 
     public void setValue(Field f, Object value) throws Exception {
-        setValue(f,value,true);
+        setValue(f, value, true);
     }
 
     public void setValue(Field f, Object value, boolean save) throws Exception {
         f.set(holder, value);
         holder.onSettingChanged(f.getName());
 
-        if(save) SettingsManager.saveSettings(m, holder);
+        if (save) SettingsManager.saveSettings(m, holder);
     }
 
     public void updateValues(SettingsHolder newH) throws Exception {
         boolean save = false;
 
         ArrayList<String> fieldsName = new ArrayList<>();
-        for(Field f2 : fields) { fieldsName.add(f2.getName()); }
+        for (Field f2 : fields) { fieldsName.add(f2.getName()); }
 
         for (Class<?> clazz = newH.getClass(); SettingsHolder.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
             for (Field f : clazz.getDeclaredFields()) {
@@ -109,7 +109,7 @@ public class SettingsContainer {
             }
         }
 
-        if(save) saveSettings();
+        if (save) saveSettings();
     }
 
     public void onCreateConfig() throws Exception {
@@ -123,10 +123,10 @@ public class SettingsContainer {
     }
 
     public boolean getConfigFromCloud(Field f) throws Exception {
-        if(fromCloud == null) return false;
+        if (fromCloud == null) return false;
 
         Setting c = f.getAnnotation(Setting.class);
-        if(c == null || !c.upload()) return false;
+        if (c == null || !c.upload()) return false;
 
         setValue(f, f.get(fromCloud), false);
         Reference.LOGGER.warn("Loaded configuration " + f.getName() + " from cloud!");

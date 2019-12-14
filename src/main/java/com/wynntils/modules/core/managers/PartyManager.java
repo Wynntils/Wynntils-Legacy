@@ -17,14 +17,14 @@ public class PartyManager {
     private static final Pattern listPattern = Pattern.compile("(§eParty members:|§eYou must be in a party to list\\.)");
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
         String entire = matcher.group(0);
-        if(entire.contains("You must be in")) { //clears the party
+        if (entire.contains("You must be in")) {  // clears the party
             PlayerInfo.getPlayerInfo().getPlayerParty().removeMember(Minecraft.getMinecraft().player.getName());
             return;
         }
 
         PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
-        for(ITextComponent components : text.getSiblings()){
-            if(components.getFormattedText().startsWith("§e")) continue;
+        for (ITextComponent components : text.getSiblings()) {
+            if (components.getFormattedText().startsWith("§e")) continue;
 
             boolean owner = components.getFormattedText().startsWith("§b");
             String member = components.getUnformattedText().contains(",") ? components.getUnformattedText().split(",")[0] : components.getUnformattedText();
@@ -40,29 +40,29 @@ public class PartyManager {
     }
 
     public static void handleMessages(ITextComponent component) {
-        if(component.getUnformattedText().startsWith("You have successfully joined the party.")) {
+        if (component.getUnformattedText().startsWith("You have successfully joined the party.")) {
             handlePartyList();
             return;
         }
-        if(component.getUnformattedText().startsWith("You have been removed from the party.")) {
+        if (component.getUnformattedText().startsWith("You have been removed from the party.")) {
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
             partyContainer.removeMember(Minecraft.getMinecraft().player.getName());
             return;
         }
-        if(component.getUnformattedText().startsWith("You have successfully created a party.")) {
+        if (component.getUnformattedText().startsWith("You have successfully created a party.")) {
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
             partyContainer.setOwner(Minecraft.getMinecraft().player.getName());
             partyContainer.addMember(Minecraft.getMinecraft().player.getName());
             return;
         }
-        if(component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has joined the party.")) {
+        if (component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has joined the party.")) {
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
 
             String member = component.getUnformattedText().split(" has joined the party.")[0];
             partyContainer.addMember(member);
             return;
         }
-        if(component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has left the party.")) {
+        if (component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has left the party.")) {
             handlePartyList();
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
 

@@ -23,7 +23,7 @@ public class WarManager {
      * @return if the mob should be filtered out
      */
     public static boolean filterMob(PacketEvent<SPacketSpawnObject> e) {
-        if(!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter || !Reference.onWars) return false;
+        if (!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter || !Reference.onWars) return false;
 
         return e.getPacket().getType() == 78;
     }
@@ -36,7 +36,7 @@ public class WarManager {
      * @return if the click should be allowed
      */
     public static boolean allowClick(PacketEvent<CPacketUseEntity> e) {
-        if(!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
+        if (!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
 
         Entity in = e.getPacket().getEntityFromWorld(Minecraft.getMinecraft().world);
         return in instanceof EntityArmorStand;

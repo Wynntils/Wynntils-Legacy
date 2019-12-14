@@ -19,9 +19,9 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 public class DailyReminderManager {
 
     public static void checkDailyReminder(EntityPlayer p) {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
+        if (System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GRAY);
 
@@ -50,17 +50,17 @@ public class DailyReminderManager {
     }
 
     public static void openedDaily() {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
         UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
         UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 
     public static void openedDailyInventory(GuiScreenEvent.InitGuiEvent.Post e) {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        if(e.getGui() instanceof GuiContainer && ((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
-            if(!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
+        if (e.getGui() instanceof GuiContainer && ((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
+            if (!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
                 UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
                 UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());
             }

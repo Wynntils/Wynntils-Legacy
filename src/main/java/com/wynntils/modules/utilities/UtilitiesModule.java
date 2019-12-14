@@ -31,7 +31,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
-        //Inventory Overlays
+        // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new SkillPointOverlay());
@@ -40,7 +40,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new IngredientFilterOverlay());
         registerEvents(new EmeraldCountOverlay());
 
-        //Real overlays
+        // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);

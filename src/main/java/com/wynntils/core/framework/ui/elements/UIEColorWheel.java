@@ -111,7 +111,7 @@ public class UIEColorWheel extends UIEClickZone {
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         textBox.click(mouseX, mouseY, button, ui);
 
-        if(hovering) mc.displayGuiScreen(new ColorPickerGUI());
+        if (hovering) mc.displayGuiScreen(new ColorPickerGUI());
     }
 
     public void keyTyped(char c, int i, UI ui) {
@@ -120,7 +120,7 @@ public class UIEColorWheel extends UIEClickZone {
 
     @Override
     public void render(int mouseX, int mouseY) {
-        drawRect(CommonColors.BLACK, position.drawingX, position.drawingY, position.drawingX + width+2, position.drawingY + height+2); // HeyZeer0: this makes a black box behind the color
+        drawRect(CommonColors.BLACK, position.drawingX, position.drawingY, position.drawingX + width+2, position.drawingY + height+2);  // HeyZeer0: this makes a black box behind the color
         drawRect(color, position.drawingX+1, position.drawingY+1, position.drawingX + width+1, position.drawingY + height+1);
 
         textBox.position.drawingX = position.drawingX + width + 5;
@@ -154,7 +154,7 @@ public class UIEColorWheel extends UIEClickZone {
 
         @Override
         protected void actionPerformed(GuiButton button) {
-            if(button == applyButton) {
+            if (button == applyButton) {
                 color = toChange;
 
                 mc.displayGuiScreen(backGui);
@@ -165,7 +165,7 @@ public class UIEColorWheel extends UIEClickZone {
                 } else {
                     textBox.setText(colorText);
                 }
-            }else if(button == cancelButton) {
+            } else if (button == cancelButton) {
                 mc.displayGuiScreen(backGui);
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
             }
@@ -303,9 +303,9 @@ public class UIEColorWheel extends UIEClickZone {
         @Override
         public void handleMouseInput() throws IOException {
             int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-            if(mDwehll > 0) {
+            if (mDwehll > 0) {
                 valueSlider.setSliderValue(Math.min(valueSlider.getSliderValue() + 0.1f, 1), true);
-            }else if(mDwehll < 0) {
+            } else if (mDwehll < 0) {
                 valueSlider.setSliderValue(Math.max(valueSlider.getSliderValue() - 0.1f, 0), true);
             }
 
@@ -323,13 +323,13 @@ public class UIEColorWheel extends UIEClickZone {
             if (v != 1 || a != 1) {
                 GlStateManager.color(v, v, v, a);
             }
-            drawRectF(Textures.UIs.color_wheel, (width/2f)-80, (height/2f)-93, (width/2f)+80, (height/2f)+67, 0, 0, 256, 256); //rgb wheel
+            drawRectF(Textures.UIs.color_wheel, (width/2f)-80, (height/2f)-93, (width/2f)+80, (height/2f)+67, 0, 0, 256, 256);  // rgb wheel
             if (v != 1 || a != 1) {
                 GlStateManager.color(1, 1, 1, 1);
             }
-            drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9); //cursor
-            drawRectF(CommonColors.BLACK, (width/2f)-11, (height/2f)+94, (width/2f)+11, (height/2f)+116); //current color back
-            drawRectF(toChange, (width/2f)-10, (height/2f)+95, (width/2f)+10, (height/2f)+115); //current color
+            drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9);  // cursor
+            drawRectF(CommonColors.BLACK, (width/2f)-11, (height/2f)+94, (width/2f)+11, (height/2f)+116);  // current color back
+            drawRectF(toChange, (width/2f)-10, (height/2f)+95, (width/2f)+10, (height/2f)+115);  // current color
 
             drawCenteredString(mc.fontRenderer, "Click to pick a color!", (width/2), (height/2)-110, 0xFFFFFF);
 

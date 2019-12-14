@@ -37,32 +37,32 @@ public class FileUpdater {
     }
 
     public FileUpdater startUpdating() throws NullPointerException {
-        if(reader == null) throw new NullPointerException("Web reader is null");
-        if(runnable == null) throw new NullPointerException("There is no specified runnable");
+        if (reader == null) throw new NullPointerException("Web reader is null");
+        if (runnable == null) throw new NullPointerException("There is no specified runnable");
 
         HashMap<String, String> values = reader.getValues();
 
         ArrayList<String> localFiles = new ArrayList<>();
-        for(File f : location.listFiles()) {
+        for (File f : location.listFiles()) {
             localFiles.add(f.getName());
         }
 
         int count = 0;
         boolean hasUpdatedSomething = false;
-        for(String fileName : values.keySet()) {
+        for (String fileName : values.keySet()) {
             count++;
 
             File f = new File(location, fileName);
-            if(f.exists()) {
+            if (f.exists()) {
                 if (StringUtils.toMD5(Long.toString(f.length())).equalsIgnoreCase(values.get(fileName))) {
                     localFiles.remove(fileName);
                     continue;
                 }
 
                 hasUpdatedSomething = true;
-                if(count == values.size()) {
+                if (count == values.size()) {
                     DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> runnable.run());
-                }else{
+                } else {
                     DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> {});
                 }
 
@@ -71,20 +71,20 @@ public class FileUpdater {
             }
 
             hasUpdatedSomething = true;
-            if(count == values.size()) {
+            if (count == values.size()) {
                 DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> runnable.run());
-            }else{
+            } else {
                 DownloaderManager.queueDownload(fileName, main_url + "/" + fileName, location, DownloadAction.SAVE, (b) -> {});
             }
         }
 
-        if(localFiles.size() > 0) {
-            for(String toRemove : localFiles) {
+        if (localFiles.size() > 0) {
+            for (String toRemove : localFiles) {
                 new File(location, toRemove).delete();
             }
         }
 
-        if(!hasUpdatedSomething) {
+        if (!hasUpdatedSomething) {
             runnable.run();
         }
 

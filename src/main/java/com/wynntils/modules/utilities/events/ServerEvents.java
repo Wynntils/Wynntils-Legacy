@@ -70,7 +70,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onResourcePackReceive(PacketEvent<SPacketResourcePackSend> e) {
-        if(!Reference.onServer) return;
+        if (!Reference.onServer) return;
 
         String resourcePack = e.getPacket().getURL();
         String hash = e.getPacket().getHash();
@@ -92,7 +92,7 @@ public class ServerEvents implements Listener {
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
 
-        if(loadedResourcePack && (  // Don't cancel if there isn't currently a server resource pack
+        if (loadedResourcePack && (  // Don't cancel if there isn't currently a server resource pack
                 Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() != null ||
                 Minecraft.getMinecraft().getCurrentServerData().getResourceMode() != ServerData.ServerResourceMode.ENABLED
         )) {
@@ -108,12 +108,12 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onSpawnObject(PacketEvent<SPacketSpawnObject> e) {
-        if(WarManager.filterMob(e)) e.setCanceled(true);
+        if (WarManager.filterMob(e)) e.setCanceled(true);
     }
 
     @SubscribeEvent
     public void onClickEntity(PacketEvent<CPacketUseEntity> e) {
-        if(WarManager.allowClick(e)) e.setCanceled(true);
+        if (WarManager.allowClick(e)) e.setCanceled(true);
     }
 
 }

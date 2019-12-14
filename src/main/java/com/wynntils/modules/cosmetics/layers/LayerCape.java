@@ -23,8 +23,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
     private final RenderPlayer playerRenderer;
 
-    public LayerCape(RenderPlayer playerRendererIn)
-    {
+    public LayerCape(RenderPlayer playerRendererIn) {
         this.playerRenderer = playerRendererIn;
     }
 
@@ -33,21 +32,21 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
 
-        //loading cape
+        // loading cape
         ResourceLocation rl;
         if (WebManager.hasCape(player.getUniqueID())) {
             rl = new ResourceLocation("wynntils:capes/" + player.getUniqueID().toString().replace("-", ""));
-        }else{ return; }
+        } else { return; }
 
-        //rendering verifications
-        if(rl == null || !player.hasPlayerInfo() || player.isInvisible()) return;
-        if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA) return;
+        // rendering verifications
+        if (rl == null || !player.hasPlayerInfo() || player.isInvisible()) return;
+        if (player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() == Items.ELYTRA) return;
 
-        //texture
+        // texture
         color(1.0F, 1.0F, 1.0F, 1.0F);
         playerRenderer.bindTexture(rl);
 
-        //rendering
+        // rendering
         { pushMatrix();
             translate(0.0F, 0.0F, 0.125F);
 
@@ -91,7 +90,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
     public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
         ModelRenderer bipedCape = new ModelRenderer(model, 0, 0);
-        bipedCape.setTextureSize(128, 64); // 128x64 Capes, double the default mc capes
+        bipedCape.setTextureSize(128, 64);  // 128x64 Capes, double the default mc capes
         bipedCape.addBox(-10.0F, 0.0F, -2.0F, 20, 32, 2);
 
         if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;

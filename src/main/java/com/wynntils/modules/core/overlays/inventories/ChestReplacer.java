@@ -21,7 +21,7 @@ public class ChestReplacer extends GuiChest {
     IInventory lowerInv;
     IInventory upperInv;
 
-    public ChestReplacer(IInventory upperInv, IInventory lowerInv){
+    public ChestReplacer(IInventory upperInv, IInventory lowerInv) {
         super(upperInv, lowerInv);
 
         this.lowerInv = lowerInv;
@@ -50,7 +50,7 @@ public class ChestReplacer extends GuiChest {
 
     @Override
     public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
             super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
@@ -62,7 +62,7 @@ public class ChestReplacer extends GuiChest {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.KeyTyped(this, typedChar, keyCode)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
     }
 

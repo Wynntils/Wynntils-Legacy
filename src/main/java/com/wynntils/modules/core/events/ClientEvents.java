@@ -68,25 +68,25 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void onGuiOpened(GuiOpenEvent e) {
-        if(e.getGui() instanceof GuiInventory) {
-            if(e.getGui() instanceof InventoryReplacer) return;
+        if (e.getGui() instanceof GuiInventory) {
+            if (e.getGui() instanceof InventoryReplacer) return;
 
             e.setGui(new InventoryReplacer(ModCore.mc().player));
             return;
         }
-        if(e.getGui() instanceof GuiChest) {
-            if(e.getGui() instanceof ChestReplacer) return;
+        if (e.getGui() instanceof GuiChest) {
+            if (e.getGui() instanceof ChestReplacer) return;
 
             e.setGui(new ChestReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
-        if(e.getGui() instanceof GuiScreenHorseInventory) {
-            if(e.getGui() instanceof HorseReplacer) return;
+        if (e.getGui() instanceof GuiScreenHorseInventory) {
+            if (e.getGui() instanceof HorseReplacer) return;
 
             e.setGui(new HorseReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
-        if(e.getGui() instanceof GuiIngameMenu) {
-            if(e.getGui() instanceof IngameMenuReplacer) return;
+        if (e.getGui() instanceof GuiIngameMenu) {
+            if (e.getGui() instanceof IngameMenuReplacer) return;
 
             e.setGui(new IngameMenuReplacer());
         }
@@ -100,8 +100,8 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if(e.getGui().getLowerInv().getName().contains("Select a Class")) {
-            if(e.getMouseButton() == 0 && e.getSlotIn() != null &&  e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
+        if (e.getGui().getLowerInv().getName().contains("Select a Class")) {
+            if (e.getMouseButton() == 0 && e.getSlotIn() != null &&  e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
                 PlayerInfo.getPlayerInfo().setClassId(e.getSlotId());
 
                 String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
@@ -112,7 +112,7 @@ public class ClientEvents implements Listener {
                 try{
                     selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
                 }catch (Exception ex) {
-                    switch(classS) {
+                    switch (classS) {
                         case "Hunter":
                             selectedClass = ClassType.ARCHER;
                             break;
@@ -141,12 +141,12 @@ public class ClientEvents implements Listener {
 //     */
 //    @SubscribeEvent
 //    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
-//        if(!Reference.onWorld || e.getEntityPlayer() == null) return;
+//        if (!Reference.onWorld || e.getEntityPlayer() == null) return;
 //
-//        //HeyZeer0: this verifies based if there's a barrier block below the player, it will also helps
-//        //if the player is inside a dungeon | Main Use = cutscene
+//        // HeyZeer0: this verifies based if there's a barrier block below the player, it will also helps
+//        // if the player is inside a dungeon | Main Use = cutscene
 //        EntityPlayer player = e.getEntityPlayer();
-//        if(!(player.world.getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock() instanceof BlockBarrier)) return;
+//        if (!(player.world.getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock() instanceof BlockBarrier)) return;
 //
 //        e.setCanceled(true);
 //    }
@@ -171,7 +171,7 @@ public class ClientEvents implements Listener {
     public void addMainMenuButtons(GuiScreenEvent.InitGuiEvent.Post e) {
         GuiScreen gui = e.getGui();
 
-        if(gui instanceof GuiMainMenu) {
+        if (gui instanceof GuiMainMenu) {
             boolean resize = lastScreen != null && lastScreen instanceof GuiMainMenu;
             MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList(), resize);
         }
@@ -185,7 +185,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if(gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+        if (gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }

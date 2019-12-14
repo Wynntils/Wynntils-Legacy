@@ -24,5 +24,4 @@ public class WynncraftServerEvent extends Event {
      */
     public static class Leave extends WynncraftServerEvent { }
 
-
 }

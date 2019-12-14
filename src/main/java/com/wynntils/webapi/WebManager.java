@@ -225,8 +225,8 @@ public class WebManager {
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
-        if(start) {
-            if(territoryUpdateThread == null) {
+        if (start) {
+            if (territoryUpdateThread == null) {
                 territoryUpdateThread = new TerritoryUpdateThread("Territory Update Thread");
                 territoryUpdateThread.start();
                 return;
@@ -280,7 +280,7 @@ public class WebManager {
     }
 
     public static void updateCurrentSplash() {
-        if(apiUrls == null || apiUrls.getList("Splashes") == null) return;
+        if (apiUrls == null || apiUrls.getList("Splashes") == null) return;
 
         List<String> splashes = apiUrls.getList("Splashes");
         currentSplash = splashes.get(Utils.getRandom().nextInt(splashes.size()));
@@ -334,7 +334,7 @@ public class WebManager {
 
         JsonObject obj = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
-        if(obj.has("error")) {
+        if (obj.has("error")) {
             return null;
         }
 
@@ -376,7 +376,7 @@ public class WebManager {
                 ItemProfile[] gItems = gson.fromJson(j, ItemProfile[].class);
 
                 HashMap<String, ItemProfile> citems = new HashMap<>();
-                for(ItemProfile prof : gItems) {
+                for (ItemProfile prof : gItems) {
                     prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
                     citems.put(prof.getDisplayName(), prof);
                 }
@@ -606,9 +606,9 @@ public class WebManager {
 
         ArrayList<MusicProfile> result = new ArrayList<>();
         JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonArray();
-        for(int i = 0; i < array.size(); i++) {
+        for (int i = 0; i < array.size(); i++) {
             JsonObject obj = array.get(i).getAsJsonObject();
-            if(!obj.has("name") || !obj.has("download_url") || !obj.has("size")) continue;
+            if (!obj.has("name") || !obj.has("download_url") || !obj.has("size")) continue;
 
             result.add(new MusicProfile(obj.get("name").getAsString(), obj.get("download_url").getAsString(), obj.get("size").getAsLong()));
         }
@@ -739,7 +739,7 @@ public class WebManager {
                 main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
                 JsonArray changesArray = main.getAsJsonObject().get("changeSet").getAsJsonObject().get("items").getAsJsonArray();
-                for(int i = 0; i < changesArray.size(); i++) {
+                for (int i = 0; i < changesArray.size(); i++) {
                     JsonObject obj = changesArray.get(i).getAsJsonObject();
 
                     changelog.add(obj.get("msg").getAsString());

@@ -70,24 +70,24 @@ public class MainWorldMapUI extends WorldMapUI {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        //HeyZeer0: This detects if the user is holding the map key;
-        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
+        // HeyZeer0: This detects if the user is holding the map key;
+        if (!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
 
-        //HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
-        if(holdingMapKey && !isHoldingMapKey()) {
+        // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
+        if (holdingMapKey && !isHoldingMapKey()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
             return;
         }
 
         updatePosition(mouseX, mouseY);
 
-        if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) { // Only request every 2 seconds!
+        if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) {  // Only request every 2 seconds!
             SocketManager.emitEvent("giveLocations");
 
             lastRequest = System.currentTimeMillis();
         }
 
-        //start rendering
+        // start rendering
         ScreenRenderer.beginGL(0, 0);
 
         drawMap(mouseX, mouseY, partialTicks);

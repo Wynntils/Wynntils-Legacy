@@ -56,14 +56,14 @@ public class IdentificationContainer {
     }
 
     public String getAsLongName(String shortName) {
-        if(shortName.startsWith("raw")) {
+        if (shortName.startsWith("raw")) {
             shortName = shortName.substring(3);
             shortName = Character.toLowerCase(shortName.charAt(0)) + shortName.substring(1);
         }
 
         StringBuilder nameBuilder = new StringBuilder();
-        for(char c : shortName.toCharArray()) {
-            if(Character.isUpperCase(c)) nameBuilder.append(" ").append(c);
+        for (char c : shortName.toCharArray()) {
+            if (Character.isUpperCase(c)) nameBuilder.append(" ").append(c);
             else nameBuilder.append(c);
         }
 

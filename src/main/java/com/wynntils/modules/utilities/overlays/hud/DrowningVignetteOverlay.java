@@ -30,9 +30,9 @@ public class DrowningVignetteOverlay extends Overlay {
             return;
         }
 
-        if(ScreenRenderer.mc.player.getAir() == 300 && animation >= 300) return;
+        if (ScreenRenderer.mc.player.getAir() == 300 && animation >= 300) return;
 
-        if(ScreenRenderer.mc.player.getAir() == 300) animation = Utils.easeOut(animation, 300, 1.5f, 20f);
+        if (ScreenRenderer.mc.player.getAir() == 300) animation = Utils.easeOut(animation, 300, 1.5f, 20f);
         else animation = ScreenRenderer.mc.player.getAir();
 
         float value = Math.abs((animation / 300.0f) - 1.0f);

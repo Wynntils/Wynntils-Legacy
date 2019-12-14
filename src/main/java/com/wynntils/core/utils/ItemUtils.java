@@ -50,7 +50,7 @@ public class ItemUtils {
         return lore;
     }
 
-    public static String getStringLore(ItemStack is){
+    public static String getStringLore(ItemStack is) {
         StringBuilder toReturn = new StringBuilder();
         for (String x : getLore(is)) {
             toReturn.append(x);

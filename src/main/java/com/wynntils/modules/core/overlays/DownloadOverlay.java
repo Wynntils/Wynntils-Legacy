@@ -32,7 +32,7 @@ public class DownloadOverlay extends Overlay {
     public static int size = 53;
 
     public DownloadOverlay() {
-        super("Downloading",20,20,true,1.0f,0.0f,0,0, null);
+        super("Downloading", 20, 20, true, 1.0f, 0.0f, 0, 0, null);
     }
 
     @Override
@@ -41,18 +41,18 @@ public class DownloadOverlay extends Overlay {
             return;
         }
 
-        if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
-            if(DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
-                if(timeToRestart == 0) {
+        if (DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
+            if (DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
+                if (timeToRestart == 0) {
                     timeToRestart = System.currentTimeMillis() + 10000;
                 }
-                if(timeToRestart - System.currentTimeMillis() <= 0) {
+                if (timeToRestart - System.currentTimeMillis() <= 0) {
                     mc.shutdown();
                     return;
                 }
 
-                drawRect(brackgroundRed, -172,0 - size, 0, 52 - size);
-                drawRect(boxRed, -170,0 - size, 0, 50 - size);
+                drawRect(brackgroundRed, -172, 0 - size, 0, 52 - size);
+                drawRect(boxRed, -170, 0 - size, 0, 50 - size);
                 drawString("Your game will be closed in", -84, 15 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 drawString(((timeToRestart - System.currentTimeMillis()) / 1000) + " seconds", -84, 25 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 return;
@@ -66,8 +66,8 @@ public class DownloadOverlay extends Overlay {
                 lastPhase = DownloaderManager.currentPhase;
             }
 
-            drawRect(background, -172,0 - size, 0, 52 - size);
-            drawRect(box, -170,0 - size, 0, 50 - size);
+            drawRect(background, -172, 0 - size, 0, 52 - size);
+            drawRect(box, -170, 0 - size, 0, 50 - size);
             drawString(lastTitle, -85, 5 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
             drawRect(back, -160, 20 - size, -10, 36 - size);

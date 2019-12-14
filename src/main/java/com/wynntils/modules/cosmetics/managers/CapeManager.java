@@ -28,8 +28,8 @@ public class CapeManager {
         url = WebManager.getApiUrls().get("Capes") + "/user/" + uuid.toString().replace("-", "");
         rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
 
-        //avoid extra downloading
-        if(downloaded.contains(rl.getPath())) { return; }
+        // avoid extra downloading
+        if (downloaded.contains(rl.getPath())) { return; }
         downloaded.add(rl.getPath());
 
         IImageBuffer ibuffer = new IImageBuffer() {

@@ -13,13 +13,13 @@ import net.minecraft.util.math.MathHelper;
  * essentially a port from Penner's ActionScript utility,
  * with a few added tweaks.</p>
  * <p>Examples:<pre>
- *    //no tween
+ *    // no tween
  *    Easing e1 = Easing.LINEAR;
  *
- *    //backOut tween, the overshoot is Easing.Back.DEFAULT_OVERSHOOT
+ *    // backOut tween, the overshoot is Easing.Back.DEFAULT_OVERSHOOT
  *    Easing e2 = Easing.BACK_OUT;
  *
- *    //backOut tween, the overshoot is 1.85f
+ *    // backOut tween, the overshoot is 1.85f
  *    Easing.Back e3 = new Easing.BackOut(1.85f);
  * </pre></p>
  * <a href="http://www.robertpenner.com/easing/">Robert Penner's Easing Functions</a>
@@ -264,7 +264,7 @@ public interface Easing {
             float s;
             if (a < Math.abs(c)) { a=c; s=p/4; }
             else s = p/(float)(2*Math.PI) * (float)Math.asin(c/a);
-            return -(a*(float)Math.pow(2,10*(t-=1)) * (float)Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+            return -(a*(float)Math.pow(2, 10*(t-=1)) * (float)Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
         }
     }
 
@@ -287,7 +287,7 @@ public interface Easing {
             float s;
             if (a < Math.abs(c)) { a=c; s=p/4; }
             else s = p/(float)(2*Math.PI) * (float)Math.asin(c/a);
-            return a*(float)Math.pow(2,-10*t) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p)) + c + b;
+            return a*(float)Math.pow(2, -10*t) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p)) + c + b;
         }
     }
 
@@ -310,8 +310,8 @@ public interface Easing {
             float s;
             if (a < Math.abs(c)) { a=c; s=p/4f; }
             else s = p/(float)(2*Math.PI) * (float)Math.asin(c/a);
-            if (t < 1) return -.5f*(a*(float)Math.pow(2,10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p ))) + b;
-            return a*(float)Math.pow(2,-10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p))*.5f + c + b;
+            if (t < 1) return -.5f*(a*(float)Math.pow(2, 10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p ))) + b;
+            return a*(float)Math.pow(2, -10*(t-=1)) * MathHelper.sin((float)((t*d-s)*(2*Math.PI)/p))*.5f + c + b;
         }
     }
 

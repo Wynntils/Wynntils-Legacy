@@ -43,8 +43,8 @@ public class QuestInfo {
         ArrayList<String> splittedDescription = new ArrayList<>();
         StringBuilder currentMessage = new StringBuilder();
         int chars = 0;
-        for(String x : currentDescription.split(" ")) {
-            if(chars + x.length() > 37) {
+        for (String x : currentDescription.split(" ")) {
+            if (chars + x.length() > 37) {
                 splittedDescription.add(currentMessage.toString());
                 currentMessage = new StringBuilder(x);
                 currentMessage.append(' ');
@@ -65,7 +65,7 @@ public class QuestInfo {
         lore.add(0, TextFormatting.BOLD + this.name);
 
         Matcher m = coordinatePattern.matcher(currentDescription);
-        if(m.find()) {
+        if (m.find()) {
             x = Integer.parseInt(m.group(1));
             z = Integer.parseInt(m.group(3));
         } else {

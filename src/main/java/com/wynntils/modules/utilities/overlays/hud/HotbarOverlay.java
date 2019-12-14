@@ -55,16 +55,16 @@ public class HotbarOverlay extends Overlay {
             int x = -88 + (i*20);
 
             String description = ItemUtils.getStringLore(stack);
-            if(UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
+            if (UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
-                if(description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
-                else if(description.contains(TextFormatting.LIGHT_PURPLE + "Rare")) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
-                else if(description.contains(TextFormatting.AQUA + "Legendary")) color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
-                else if(description.contains(TextFormatting.GREEN + "Set")) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
-                else if(description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
+                if (description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
+                else if (description.contains(TextFormatting.LIGHT_PURPLE + "Rare")) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
+                else if (description.contains(TextFormatting.AQUA + "Legendary")) color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
+                else if (description.contains(TextFormatting.GREEN + "Set")) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
+                else if (description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
 
-                if(color != null) {
+                if (color != null) {
                     color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);
                     drawRect(color, x, 3, x + 16, 19);
                 }

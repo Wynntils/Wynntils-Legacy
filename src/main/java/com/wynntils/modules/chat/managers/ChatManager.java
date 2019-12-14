@@ -52,8 +52,8 @@ public class ChatManager {
             in = newMessage;
         }
 
-        //timestamps
-        if(ChatConfig.INSTANCE.addTimestampsToChat) {
+        // timestamps
+        if (ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
                 try {
                     dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
@@ -82,11 +82,11 @@ public class ChatManager {
             in.getSiblings().addAll(0, timeStamp);
         }
 
-        //popup sound
-        if(in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
+        // popup sound
+        if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
-        //wynnic translator
+        // wynnic translator
         if (StringUtils.hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
@@ -217,7 +217,7 @@ public class ChatManager {
             in.getSiblings().addAll(newTextComponents);
         }
 
-        //clickable party invites
+        // clickable party invites
         if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -230,7 +230,7 @@ public class ChatManager {
             }
         }
 
-        //clickable trade messages
+        // clickable trade messages
         if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -243,7 +243,7 @@ public class ChatManager {
             }
         }
 
-        //clickable duel messages
+        // clickable duel messages
         if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
@@ -256,7 +256,7 @@ public class ChatManager {
             }
         }
 
-        //clickable coordinates
+        // clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
             String crdText;
             TextFormatting color;
@@ -265,7 +265,7 @@ public class ChatManager {
 
             for (ITextComponent texts: in.getSiblings()) {
                 Matcher m = coordinateReg.matcher(texts.getFormattedText());
-                if(!m.find())  continue;
+                if (!m.find())  continue;
 
                 int index = in.getSiblings().indexOf(texts);
 
@@ -273,10 +273,10 @@ public class ChatManager {
                 color = texts.getStyle().getColor();
                 in.getSiblings().remove(texts);
 
-                //Pre-text
+                // Pre-text
                 crdMsg.add(new TextComponentString(crdText.substring(0, m.start())));
 
-                //Coordinates:
+                // Coordinates:
                 command += crdText.substring(m.start(1), m.end(1)).replaceAll("[ ,]", "") + " ";
                 command += crdText.substring(m.start(3), m.end(3)).replaceAll("[ ,]", "");
                 ITextComponent clickableText = new TextComponentString(crdText.substring(m.start(), m.end()));
@@ -286,7 +286,7 @@ public class ChatManager {
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command)));
                 crdMsg.add(clickableText);
 
-                //Post-text
+                // Post-text
                 ITextComponent postText = new TextComponentString(crdText.substring(m.end()));
                 postText.getStyle().setColor(color);
                 crdMsg.add(postText);

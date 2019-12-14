@@ -54,7 +54,7 @@ public class FrameworkManager {
 
     public static void registerModule(Module module) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null) {
+        if (info == null) {
             return;
         }
 
@@ -65,7 +65,7 @@ public class FrameworkManager {
 
     public static void registerEvents(Module module, Listener listener) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null) {
+        if (info == null) {
             return;
         }
 
@@ -74,7 +74,7 @@ public class FrameworkManager {
 
     public static void registerSettings(Module module, Class<? extends SettingsHolder> settingsClass) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null)
+        if (info == null)
             return;
 
         availableModules.get(info.name()).registerSettings(settingsClass);
@@ -83,7 +83,7 @@ public class FrameworkManager {
 
     public static void registerOverlay(Module module, Overlay overlay, Priority priority) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null)
+        if (info == null)
             return;
 
         ModuleContainer mc = availableModules.get(info.name());
@@ -97,7 +97,7 @@ public class FrameworkManager {
 
     public static KeyHolder registerKeyBinding(Module module, KeyHolder holder) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null) {
+        if (info == null) {
             return null;
         }
 
@@ -135,7 +135,7 @@ public class FrameworkManager {
     }
 
     public static void triggerEvent(Event e) {
-        if(
+        if (
                 Reference.onServer
                 || e instanceof WynncraftServerEvent
                 || e instanceof TickEvent.RenderTickEvent
@@ -148,7 +148,7 @@ public class FrameworkManager {
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
-            if(e.getType() == RenderGameOverlayEvent.ElementType.AIR || //move it to somewhere else if you want, it seems pretty core to wynncraft tho..
+            if (e.getType() == RenderGameOverlayEvent.ElementType.AIR ||  // move it to somewhere else if you want, it seems pretty core to wynncraft tho..
                e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
                 e.setCanceled(true);
                 return;
@@ -156,7 +156,7 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
-                    if(!overlay.active) continue;
+                    if (!overlay.active) continue;
 
                     if (overlay.overrideElements.length != 0) {
                         boolean contained = false;
@@ -190,7 +190,7 @@ public class FrameworkManager {
             Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
-                    if(!overlay.active) continue;
+                    if (!overlay.active) continue;
 
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
@@ -208,7 +208,7 @@ public class FrameworkManager {
     }
 
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
-        if(e.phase == TickEvent.Phase.START || !Reference.onServer) return;
+        if (e.phase == TickEvent.Phase.START || !Reference.onServer) return;
 
         for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
             for (Overlay overlay : overlays) {
@@ -221,19 +221,19 @@ public class FrameworkManager {
     }
 
     public static void triggerKeyPress() {
-        if(Reference.onServer)
+        if (Reference.onServer)
             availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
 
     public static SettingsContainer getSettings(Module module, SettingsHolder holder) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
-        if(info == null) {
+        if (info == null) {
             return null;
         }
 
         SettingsInfo info2 = holder.getClass().getAnnotation(SettingsInfo.class);
-        if(info2 == null) {
-            if(holder instanceof Overlay)
+        if (info2 == null) {
+            if (holder instanceof Overlay)
                 return availableModules.get(info.name()).getRegisteredSettings().get("overlay" + ((Overlay) holder).displayName);
             else
                 return null;

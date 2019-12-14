@@ -14,7 +14,7 @@ public class CompassManager {
     private static Location compassLocation = null;
 
     public static Location getCompassLocation() {
-        if(compassLocation != null) compassLocation.setY(Minecraft.getMinecraft().player.posY);
+        if (compassLocation != null) compassLocation.setY(Minecraft.getMinecraft().player.posY);
         return compassLocation;
     }
 

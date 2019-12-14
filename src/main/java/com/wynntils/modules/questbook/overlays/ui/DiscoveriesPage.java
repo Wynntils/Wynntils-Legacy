@@ -84,19 +84,19 @@ public class DiscoveriesPage extends QuestBookPage {
                 }
             }
 
-            //territory discoveries
-            if(mouseX >= x - 135 && mouseX <= x - 105 && mouseY >= y + 35 && mouseY <= y + 65) {
+            // territory discoveries
+            if (mouseX >= x - 135 && mouseX <= x - 105 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 135, y + 35, x - 105, y + 65);
                 hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Territory Discoveries", TextFormatting.GRAY + "Click to " + (territory ? "hide" : "show"));
-            }else if (territory) {
+            } else if (territory) {
                 render.drawRect(selected_cube, x - 135, y + 35, x - 105, y + 65);
             } else {
                 render.drawRect(unselected_cube, x - 135, y + 35, x - 105, y + 65);
             }
             render.drawRect(Textures.UIs.quest_book, x - 132, y + 40, 305, 263, 24, 20);
 
-            //world discoveries
-            if(mouseX >= x - 95 && mouseX <= x - 65 && mouseY >= y + 35 && mouseY <= y + 65) {
+            // world discoveries
+            if (mouseX >= x - 95 && mouseX <= x - 65 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 95, y + 35, x - 65, y + 65);
                 hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] World Discoveries", TextFormatting.GRAY + "Click to " + (world ? "hide" : "show"));
             } else if (world) {
@@ -106,8 +106,8 @@ public class DiscoveriesPage extends QuestBookPage {
             }
             render.drawRect(Textures.UIs.quest_book, x - 89, y + 40, 307, 242, 18, 20);
 
-            //secret discoveries
-            if(mouseX >= x - 55 && mouseX <= x - 25 && mouseY >= y + 35 && mouseY <= y + 65) {
+            // secret discoveries
+            if (mouseX >= x - 55 && mouseX <= x - 25 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 55, y + 35, x - 25, y + 65);
                 hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Secret Discoveries", TextFormatting.GRAY + "Click to " + (secret ? "hide" : "show"));
             } else if (secret) {
@@ -117,7 +117,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
             render.drawRect(Textures.UIs.quest_book, x - 50, y + 41, 284, 284, 20, 18);
 
-            //pages
+            // pages
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int currentY = 12;

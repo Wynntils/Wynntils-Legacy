@@ -64,32 +64,32 @@ public class NametagManager {
     public static boolean checkForNametags(RenderLivingEvent.Specials.Pre e) {
         Entity entity =  e.getEntity();
 
-        if(!canRender(e.getEntity(), e.getRenderer().getRenderManager())) return true;
+        if (!canRender(e.getEntity(), e.getRenderer().getRenderManager())) return true;
 
         List<NametagLabel> customLabels = new ArrayList<>();
 
-        if(entity instanceof EntityPlayer) {
-            if(PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel); //friend
-            else if(PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel); //guild
+        if (entity instanceof EntityPlayer) {
+            if (PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel);  // friend
+            else if (PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel);  // guild
 
-            //wynncraft tags (Admin, Moderator, GM, Builder, etc.)
+            // wynncraft tags (Admin, Moderator, GM, Builder, etc.)
             if (entity.getTeam() != null && entity.getTeam().getName().matches("(tag|pvp)_.*")) {
-                if (!entity.getTeam().getName().contains("normal")) customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam())); //wynncraft staff
-                if (entity.getTeam().getName().matches("pvp_.*")) customLabels.add(huntedLabel); //hunted mode
+                if (!entity.getTeam().getName().contains("normal")) customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam()));  // wynncraft staff
+                if (entity.getTeam().getName().matches("pvp_.*")) customLabels.add(huntedLabel);  // hunted mode
             }
 
-            if(WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel); //developer
-            if(WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel); //helper
-            if(WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel); //contentTeam
-            if(WebManager.isDonator(entity.getUniqueID())) customLabels.add(donatorLabel); //donator
-            if(Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) customLabels.add(new NametagLabel(null, Utils.getPlayerHPBar((EntityPlayer)entity), 0.7f)); //war health
-            if(UtilitiesConfig.INSTANCE.showArmors) customLabels.addAll(getUserArmorLabels((EntityPlayer)entity)); // armors
-        }else if(!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) return false;
+            if (WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel);  // developer
+            if (WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel);  // helper
+            if (WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel);  // contentTeam
+            if (WebManager.isDonator(entity.getUniqueID())) customLabels.add(donatorLabel);  // donator
+            if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) customLabels.add(new NametagLabel(null, Utils.getPlayerHPBar((EntityPlayer)entity), 0.7f));  // war health
+            if (UtilitiesConfig.INSTANCE.showArmors) customLabels.addAll(getUserArmorLabels((EntityPlayer)entity));  // armors
+        } else if (!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) return false;
 
         double distance = entity.getDistanceSq(e.getRenderer().getRenderManager().renderViewEntity);
         double range = entity.isSneaking() ? 1024.0d : 4096.0d;
 
-        if(distance > range) return true;
+        if (distance > range) return true;
 
         alphaFunc(516, 0.1F);
         drawLabels(entity, entity.getDisplayName().getFormattedText(), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
@@ -101,17 +101,17 @@ public class NametagManager {
      * Check if the nametag should be rendered, used over checkForNametags
      */
     private static boolean canRender(Entity entity, RenderManager manager) {
-        if(entity.isBeingRidden()) return false;
-        if(!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
+        if (entity.isBeingRidden()) return false;
+        if (!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         boolean isVisible = !entity.isInvisibleToPlayer(player);
 
-        //we also need to consider the teams
-        if(entity != player) {
+        // we also need to consider the teams
+        if (entity != player) {
             Team entityTeam = entity.getTeam(); Team playerTeam = player.getTeam();
 
-            if(entityTeam != null) {
+            if (entityTeam != null) {
                 Team.EnumVisible visibility = entityTeam.getNameTagVisibility();
 
                 switch (visibility) {
@@ -132,7 +132,7 @@ public class NametagManager {
     private static void drawLabels(Entity entity, String entityName, double x, double y, double z, RenderManager renderManager, List<NametagLabel> labels) {
         double distance = entity.getDistanceSq(renderManager.renderViewEntity);
 
-        if(distance >= 4096.0d || entityName.isEmpty() || entityName.contains("\u0001")) return;
+        if (distance >= 4096.0d || entityName.isEmpty() || entityName.contains("\u0001")) return;
 
         boolean isSneaking = entity.isSneaking();
         float playerViewX = renderManager.playerViewX;
@@ -142,15 +142,15 @@ public class NametagManager {
         int offsetY = +10;
 
         float lastScale = 0;
-        //player labels
-        if(!labels.isEmpty() && entity instanceof EntityPlayer) {
-            for(NametagLabel label : labels) {
+        // player labels
+        if (!labels.isEmpty() && entity instanceof EntityPlayer) {
+            for (NametagLabel label : labels) {
                 offsetY-=10 * label.scale;
                 drawNametag(label.text, label.color, (float)x, (float) y + position, (float) z, offsetY, playerViewY, playerViewX, thirdPerson, isSneaking, label.scale);
             }
         }
 
-        //default label
+        // default label
         drawNametag(entityName, null, (float) x, (float) y + position, (float) z, offsetY-10, playerViewY, playerViewX, thirdPerson, isSneaking, 1);
     }
 
@@ -158,17 +158,17 @@ public class NametagManager {
      * Draws the nametag, don't call this, use checkForNametags to add more nametags
      */
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float scale) {
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer; //since our fontrender ignores bold or italic texts we need to use the mc one
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;  // since our fontrender ignores bold or italic texts we need to use the mc one
 
         pushMatrix();
         {
-            if(scale != 1) scale(scale, scale, scale);
+            if (scale != 1) scale(scale, scale, scale);
             verticalShift = (int)(verticalShift/scale);
 
-            ScreenRenderer.beginGL(0, 0); //we set to 0 because we don't want the ScreenRender to handle this thing
+            ScreenRenderer.beginGL(0, 0);  // we set to 0 because we don't want the ScreenRender to handle this thing
             {
-                //positions
-                translate(x / scale, y / scale, z / scale); //translates to the correct postion
+                // positions
+                translate(x / scale, y / scale, z / scale);  // translates to the correct postion
                 glNormal3f(0.0F, 1.0F, 0.0F);
                 rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
                 rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
@@ -176,25 +176,25 @@ public class NametagManager {
                 disableLighting();
                 depthMask(false);
 
-                //disable depth == will be visible through walls
-                if(!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
-                    if(Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth(); //this limit this feature to 7.5 blocks
+                // disable depth == will be visible through walls
+                if (!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
+                    if (Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth();  // this limit this feature to 7.5 blocks
                 }
 
                 int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input) / 2;
 
-                //Nametag Box
-                if(!UtilitiesConfig.INSTANCE.hideNametagBox) {
+                // Nametag Box
+                if (!UtilitiesConfig.INSTANCE.hideNametagBox) {
                     enableBlend();
                     tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
                     disableTexture2D();
                     Tessellator tesselator = Tessellator.getInstance();
 
-                    float r = color == null ? 0 : color.r; //red
-                    float g = color == null ? 0 : color.g; //green
-                    float b = color == null ? 0 : color.b; //blue
+                    float r = color == null ? 0 : color.r;  // red
+                    float g = color == null ? 0 : color.g;  // green
+                    float b = color == null ? 0 : color.b;  // blue
 
-                    //draws the box
+                    // draws the box
                     BufferBuilder vertexBuffer = tesselator.getBuffer();
                     {
                         vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -209,24 +209,24 @@ public class NametagManager {
 
                 depthMask(true);
 
-                //draws the label
-                if(!isSneaking && color != null) {
-                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                // draws the label
+                if (!isSneaking && color != null) {
+                    if (!UtilitiesConfig.INSTANCE.hideNametags)
                         renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-                    //renders twice to replace the areas that are overlaped by tile entities
+                    // renders twice to replace the areas that are overlaped by tile entities
                     enableDepth();
                     renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else {
-                    if(!UtilitiesConfig.INSTANCE.hideNametags)
+                    if (!UtilitiesConfig.INSTANCE.hideNametags)
                         fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
 
-                    //renders twice to replace the areas that are overlaped by tile entities
+                    // renders twice to replace the areas that are overlaped by tile entities
                     enableDepth();
                     fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
                 }
 
-                //returns back to normal
+                // returns back to normal
                 enableDepth();
                 enableLighting();
                 disableBlend();
@@ -246,10 +246,10 @@ public class NametagManager {
     private static List<NametagLabel> getUserArmorLabels(EntityPlayer player) {
         List<NametagLabel> labels = new ArrayList<>();
 
-        //detects if the user is looking into the player
-        if(Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
+        // detects if the user is looking into the player
+        if (Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
-        for(ItemStack is : player.getEquipmentAndArmor()) {
+        for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName() || !WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) continue;
 
             ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));

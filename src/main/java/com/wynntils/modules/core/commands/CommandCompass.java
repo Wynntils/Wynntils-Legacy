@@ -77,7 +77,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
         if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = {0, 0};
-            //check for north/south
+            // check for north/south
             switch (args[0].toLowerCase()) {
                 case "north":
                 case "northeast":
@@ -99,7 +99,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     break;
             }
 
-            //check for east/west
+            // check for east/west
             switch (args[0].toLowerCase()) {
                 case "east":
                 case "northeast":

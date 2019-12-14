@@ -23,7 +23,7 @@ public class MD5Verification {
             int numRead = fis.read(buffer);
 
             while (numRead != -1) {
-                if(numRead > 0) {
+                if (numRead > 0) {
                     md.update(buffer, 0, numRead);
                 }
                 numRead = fis.read(buffer);

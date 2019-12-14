@@ -15,21 +15,21 @@ import java.util.regex.Pattern;
 
 public class ChatTab implements Comparable<ChatTab> {
 
-    //stored variables
+    // stored variables
     String name, autoCommand;
     int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
     HashMap<String, Boolean> regexSettings;
 
-    //not stored ones
+    // not stored ones
     transient List<ChatLine> currentMessages = new ArrayList<>();
     transient List<String> sentMessages = new ArrayList<>();
     transient Pair<Integer, Integer> currentXAxis = new Pair<>(0, 0);
     transient boolean hasMentions = false;
     transient boolean hasNewMessages = false;
 
-    //spam filter
+    // spam filter
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
     transient int groupId = 0;
@@ -119,7 +119,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void clearMessages(boolean clearSent) {
-        if(clearSent) sentMessages.clear();
+        if (clearSent) sentMessages.clear();
         currentMessages.clear();
 
         hasMentions = false;
@@ -139,7 +139,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void setCurrentXAxis(int x1, int x2) {
-        if(currentXAxis.a == x1 && currentXAxis.b == x2) return;
+        if (currentXAxis.a == x1 && currentXAxis.b == x2) return;
 
         currentXAxis = new Pair<>(x1, x2);
     }

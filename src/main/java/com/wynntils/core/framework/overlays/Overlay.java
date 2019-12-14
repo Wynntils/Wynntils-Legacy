@@ -33,7 +33,7 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
 
     public Overlay(String displayName, int sizeX, int sizeY, boolean visible, float anchorX, float anchorY, int offsetX, int offsetY, OverlayGrowFrom growth, RenderGameOverlayEvent.ElementType... overrideElements) {
         this.displayName = displayName;
-        this.staticSize = new Point(sizeX,sizeY);
+        this.staticSize = new Point(sizeX, sizeY);
         this.visible = visible;
         this.overrideElements = overrideElements;
         this.position.anchorX = anchorX;
@@ -44,9 +44,9 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
         this.position.refresh(screen);
     }
 
-    public void render(RenderGameOverlayEvent.Pre event){}
-    public void render(RenderGameOverlayEvent.Post event){}
-    public void tick(TickEvent.ClientTickEvent event, long ticks){}
+    public void render(RenderGameOverlayEvent.Pre event) {}
+    public void render(RenderGameOverlayEvent.Post event) {}
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {}
 
     public PlayerInfo getPlayerInfo() {
         return PlayerInfo.getPlayerInfo();

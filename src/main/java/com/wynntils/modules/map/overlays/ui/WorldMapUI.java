@@ -54,9 +54,9 @@ public class WorldMapUI extends GuiMovementScreen {
     protected WorldMapUI() {
         mc = Minecraft.getMinecraft();
 
-        //HeyZeer0: Handles MiniMap markers provided by Wynn API
+        // HeyZeer0: Handles MiniMap markers provided by Wynn API
         List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
-        //HeyZeer0: Handles all waypoints
+        // HeyZeer0: Handles all waypoints
         List<MapIcon> wpMapIcons = MapIcon.getWaypoints();
         List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
         // Handles guild / party / friends
@@ -74,7 +74,7 @@ public class WorldMapUI extends GuiMovementScreen {
             icons.add(new WorldMapIcon(i));
         }
 
-        //HeyZeer0: Handles the territories
+        // HeyZeer0: Handles the territories
         territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
 
         updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
@@ -121,11 +121,11 @@ public class WorldMapUI extends GuiMovementScreen {
 
         MapProfile map = MapModule.getModule().getMainMap();
 
-        minX = map.getTextureXPosition(centerPositionX) - ((width)/2.0f) - (width*zoom/100.0f); // <--- min texture x point
-        minZ = map.getTextureZPosition(centerPositionZ) - ((height)/2.0f) - (height*zoom/100.0f); // <--- min texture z point
+        minX = map.getTextureXPosition(centerPositionX) - ((width)/2.0f) - (width*zoom/100.0f);  // <--- min texture x point
+        minZ = map.getTextureZPosition(centerPositionZ) - ((height)/2.0f) - (height*zoom/100.0f);  // <--- min texture z point
 
-        maxX = map.getTextureXPosition(centerPositionX) + ((width)/2.0f) + (width*zoom/100.0f); // <--- max texture x point
-        maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2.0f) + (height*zoom/100.0f); // <--- max texture z point
+        maxX = map.getTextureXPosition(centerPositionX) + ((width)/2.0f) + (width*zoom/100.0f);  // <--- max texture x point
+        maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2.0f) + (height*zoom/100.0f);  // <--- max texture z point
 
         forEachIcon(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
         territories.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
@@ -162,14 +162,14 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected float getScaleFactor(int zoom) {
         // How many blocks in one pixel
-        //TODO this needs to scale in even numbers to avoid distortion!
+        // TODO this needs to scale in even numbers to avoid distortion!
         return 1f / (1f + zoom / 50f);
     }
 
     protected void updatePosition(int mouseX, int mouseY, boolean canMove) {
-        //dragging
+        // dragging
         if (canMove && lastMouseX != -Integer.MAX_VALUE) {
-            float acceleration = 1f / getScaleFactor(); //<---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
+            float acceleration = 1f / getScaleFactor();  // <---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
             updateCenterPosition(centerPositionX += (lastMouseX - mouseX) * acceleration, centerPositionZ += (lastMouseY - mouseY) * acceleration);
         }
         lastMouseX = mouseX;
@@ -179,7 +179,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void drawMap(int mouseX, int mouseY, float partialTicks) {
         if (!Reference.onWorld || !MapModule.getModule().getMainMap().isReadyToUse()) return;
 
-        //texture
+        // texture
         renderer.drawRect(CommonColors.BLACK, 19, 19, width - 19, height - 19);
         renderer.drawRectF(Textures.Map.full_map, 10, 10, width - 10, height - 10, 1, 1, 511, 255);
         createMask();
@@ -193,7 +193,7 @@ public class WorldMapUI extends GuiMovementScreen {
             GlStateManager.color(1, 1, 1, 1f);
             GlStateManager.enableTexture2D();
 
-            map.bindTexture(); // <--- binds the texture
+            map.bindTexture();  // <--- binds the texture
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
 
@@ -226,7 +226,7 @@ public class WorldMapUI extends GuiMovementScreen {
         createMask();
 
         float scale = getScaleFactor();
-        //draw map icons
+        // draw map icons
         forEachIcon(i -> {
             if (i.getInfo().hasDynamicLocation()) resetIcon(i);
             i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
@@ -235,7 +235,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
         float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
 
-        if (playerPostionX > 0 && playerPostionX < 1 && playerPostionZ > 0 && playerPostionZ < 1) { // <--- player position
+        if (playerPostionX > 0 && playerPostionX < 1 && playerPostionZ > 0 && playerPostionZ < 1) {  // <--- player position
             playerPostionX = width * playerPostionX;
             playerPostionZ = height * playerPostionZ;
 
@@ -295,9 +295,9 @@ public class WorldMapUI extends GuiMovementScreen {
         clicking = Mouse.isButtonDown(0);
 
         int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-        if(mDwehll > 0) {
+        if (mDwehll > 0) {
             zoomBy(+1);
-        }else if(mDwehll < 0) {
+        } else if (mDwehll < 0) {
             zoomBy(-1);
         }
 

@@ -23,7 +23,7 @@ public class Position {
     }
 
     public void refresh(ScaledResolution screen) {
-        if(screen == null) return;
+        if (screen == null) return;
         drawingX = offsetX + MathHelper.fastFloor(anchorX*screen.getScaledWidth());
         drawingY = offsetY + MathHelper.fastFloor(anchorY*screen.getScaledHeight());
     }

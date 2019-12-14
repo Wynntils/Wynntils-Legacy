@@ -31,7 +31,7 @@ public class IdentificationOrderer {
      * @return the group id, if not present returns -1
      */
     public int getGroup(String id) {
-        if(organizedGroups == null) organizeGroups();
+        if (organizedGroups == null) organizeGroups();
 
         return organizedGroups.getOrDefault(getOrder(id), -1);
     }
@@ -45,19 +45,19 @@ public class IdentificationOrderer {
      */
     public List<String> order(HashMap<String, String> holder, boolean groups) {
         List<String> result = new ArrayList<>();
-        if(holder.isEmpty()) return result;
+        if (holder.isEmpty()) return result;
 
-        //order based on the priority first
+        // order based on the priority first
         List<Map.Entry<String, String>> ordered = holder.entrySet().stream()
                 .sorted(Comparator.comparingInt(c -> getOrder(c.getKey())))
                 .collect(Collectors.toList());
 
-        if(groups) {
-            int lastGroup = getGroup(ordered.get(0).getKey()); //first key group to avoid wrong spaces
+        if (groups) {
+            int lastGroup = getGroup(ordered.get(0).getKey());  // first key group to avoid wrong spaces
             for (Map.Entry<String, String> keys : ordered) {
-                int currentGroup = getGroup(keys.getKey()); //next key group
+                int currentGroup = getGroup(keys.getKey());  // next key group
 
-                if (currentGroup != lastGroup) result.add(" "); //adds a space before if the group is different
+                if (currentGroup != lastGroup) result.add(" ");  // adds a space before if the group is different
 
                 result.add(keys.getValue());
                 lastGroup = currentGroup;
@@ -72,7 +72,7 @@ public class IdentificationOrderer {
 
     private void organizeGroups() {
         organizedGroups = new HashMap<>();
-        for(int id = 0; id < groups.size(); id++) {
+        for (int id = 0; id < groups.size(); id++) {
             String groupRange = groups.get(id);
 
             String[] split = groupRange.split("-");
@@ -80,8 +80,8 @@ public class IdentificationOrderer {
             int min = Integer.parseInt(split[0]);
             int max = Integer.parseInt(split[1]);
 
-            //register each range into a reference
-            for(int i = min; i <= max; i++) {
+            // register each range into a reference
+            for (int i = min; i <= max; i++) {
                 organizedGroups.put(i, id);
             }
         }

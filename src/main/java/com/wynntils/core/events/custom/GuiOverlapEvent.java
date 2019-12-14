@@ -88,8 +88,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
-            public boolean isCancelable()
-            {
+            public boolean isCancelable() {
                 return true;
             }
 
@@ -201,8 +200,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
-            public boolean isCancelable()
-            {
+            public boolean isCancelable() {
                 return true;
             }
 
@@ -354,8 +352,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
-            public boolean isCancelable()
-            {
+            public boolean isCancelable() {
                 return true;
             }
 

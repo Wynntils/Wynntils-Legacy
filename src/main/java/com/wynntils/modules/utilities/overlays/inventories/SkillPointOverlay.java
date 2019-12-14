@@ -13,11 +13,11 @@ public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         String lore = ItemUtils.getStringLore(e.getGui().getSlotUnderMouse().getStack());
-        if(!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
-        if(!lore.contains("points")) return;
+        if (!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
+        if (!lore.contains("points")) return;
 
         lore = lore.replace("§", "");
         String[] tokens = lore.split("[0-9]{1,3} points");

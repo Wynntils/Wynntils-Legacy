@@ -14,7 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class StopWatchOverlay extends Overlay {
 
-    //detects if the key is pressed for 2s and clean the stopwatch
+    // detects if the key is pressed for 2s and clean the stopwatch
     private static final LongPress longPressDetection = new LongPress(2000, () -> {
         startTime = -1; lastTime = -1;
     });
@@ -23,7 +23,7 @@ public class StopWatchOverlay extends Overlay {
     private static long lastTime = -1;
 
     public static void start() {
-        if(startTime == -1) {
+        if (startTime == -1) {
             startTime = System.currentTimeMillis();
             return;
         }
@@ -45,9 +45,9 @@ public class StopWatchOverlay extends Overlay {
         public void render(RenderGameOverlayEvent.Pre event) {
         longPressDetection.tick(KeyManager.getStopwatchKey().getKeyBinding().isKeyDown());
 
-        if((startTime == -1 && lastTime == -1) || longPressDetection.isFinished()) return;
+        if ((startTime == -1 && lastTime == -1) || longPressDetection.isFinished()) return;
 
-        if(startTime != -1) {
+        if (startTime != -1) {
             drawString(StringUtils.millisToString(System.currentTimeMillis() - startTime), 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
             return;
         }

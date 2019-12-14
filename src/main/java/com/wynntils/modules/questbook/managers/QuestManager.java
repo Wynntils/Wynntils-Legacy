@@ -77,7 +77,7 @@ public class QuestManager {
     }
 
     public static void executeQueue() {
-        if(!analyseRequested || (Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
+        if (!analyseRequested || (Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
         long currentTime = System.currentTimeMillis();
         if (currentTime > readRequestTime + (interrupted ? INTERRUPT_TIMEOUT : ANALYZE_MIN_TIMEOUT)) {
             readRequestTime = currentTime;
@@ -89,7 +89,7 @@ public class QuestManager {
     }
 
     private static void readQuestBook(boolean fullSearch, boolean forceDiscoveries, boolean forceMiniquests) {
-        if(currentInventory != null && currentInventory.isOpen()) {
+        if (currentInventory != null && currentInventory.isOpen()) {
             currentInventory.close();
         }
 
@@ -106,15 +106,15 @@ public class QuestManager {
         HashSet<String> previouslyIncompleteMiniQuests = new HashSet<>(incompleteMiniQuests);
 
         fakeInventory.onReceiveItems(i -> {
-            if (i.getWindowTitle().contains("Quests")) { //Quests
+            if (i.getWindowTitle().contains("Quests")) {  // Quests
                 boolean isMiniquests = i.getWindowTitle().contains("Mini-Quests");
                 Pair<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
                 Pair<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.EQUALS);
                 Pair<Integer, ItemStack> quests = i.findItem("Quests", FilterType.CONTAINS);
                 Pair<Integer, ItemStack> miniquests = i.findItem("Mini-Quests", FilterType.CONTAINS);
 
-                //lore
-                if(discoveries != null) {
+                // lore
+                if (discoveries != null) {
                     discoveryLore = ItemUtils.getLore(discoveries.b);
                     discoveryLore.removeAll(Arrays.asList("", null));
                 }
@@ -132,13 +132,13 @@ public class QuestManager {
                 ModCore.mc().addScheduledTask(() -> {
                     // parsing
                     for (ItemStack item : items) {
-                        if (!item.hasDisplayName()) continue; // not a valid quest
+                        if (!item.hasDisplayName()) continue;  // not a valid quest
 
                         List<String> lore = ItemUtils.getLore(item);
-                        if (lore.isEmpty()) continue; // not a valid quest
+                        if (lore.isEmpty()) continue;  // not a valid quest
 
                         List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
-                        if (!realLore.contains("Right click to track")) continue; // not a valid quest
+                        if (!realLore.contains("Right click to track")) continue;  // not a valid quest
 
                         String displayName = StringUtils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
 
@@ -188,7 +188,7 @@ public class QuestManager {
 
                     QuestBookPages.QUESTS.getPage().updateSearch();
                 });
-                //pagination
+                // pagination
                 if (next != null && (fullSearch || (isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0)) {
                     i.clickItem(next.a, 1, ClickType.PICKUP);
                 } else {
@@ -205,11 +205,11 @@ public class QuestManager {
                         i.close();
                     }
                 }
-            } else if (i.getWindowTitle().contains("Discoveries")) { //Discoveries
+            } else if (i.getWindowTitle().contains("Discoveries")) {  // Discoveries
                 Pair<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
                 Pair<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
 
-                //lore
+                // lore
                 if (sDiscoveries != null) {
                     secretdiscoveryLore = ItemUtils.getLore(sDiscoveries.b);
                     secretdiscoveryLore.removeAll(Arrays.asList("", null));
@@ -218,11 +218,11 @@ public class QuestManager {
                 NonNullList<ItemStack> items = NonNullList.create();
                 items.addAll(i.getItems());
                 ModCore.mc().addScheduledTask(() -> {
-                    for (ItemStack item : items) { // parsing discoveries
-                        if (!item.hasDisplayName()) continue; // not a valid discovery
+                    for (ItemStack item : items) {  // parsing discoveries
+                        if (!item.hasDisplayName()) continue;  // not a valid discovery
 
                         List<String> lore = ItemUtils.getLore(item);
-                        if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue; // not a valid discovery
+                        if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue;  // not a valid discovery
 
                         String displayName = item.getDisplayName();
                         displayName = StringUtils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
@@ -244,14 +244,14 @@ public class QuestManager {
 
                     QuestBookPages.DISCOVERIES.getPage().updateSearch();
                 });
-                //pagination
+                // pagination
                 if (next != null) i.clickItem(next.a, 1, ClickType.PICKUP);
                 else if (!secretDiscoveries && sDiscoveries != null) {
                     secretDiscoveries = true;
                     i.clickItem(sDiscoveries.a, 1, ClickType.PICKUP);
                 }
                 else i.close();
-            }else i.close();
+            } else i.close();
         });
         fakeInventory.onClose(c -> {
             currentInventory = null;
@@ -272,7 +272,7 @@ public class QuestManager {
 
             readRequestTime = System.currentTimeMillis();
 
-            if(Reference.developmentEnvironment) {
+            if (Reference.developmentEnvironment) {
                 sendMessage(TextFormatting.GRAY + "[Quest book analyzed in " + (System.currentTimeMillis() - ms) + "ms]");
             } else {
                 sendMessage(TextFormatting.GRAY + "[Quest book analyzed]");
@@ -350,7 +350,7 @@ public class QuestManager {
     public static void wasBookOpened() {
         interrupted = false;
 
-        if(bookOpened) return;
+        if (bookOpened) return;
 
         requestFullSearch();
     }
@@ -382,7 +382,7 @@ public class QuestManager {
 
     /**
      * After the next analysis is finish the runnable will be executed
-     * 
+     *
      * @param runnable the runnable to run
      */
     public static void onFinished(Runnable runnable) {

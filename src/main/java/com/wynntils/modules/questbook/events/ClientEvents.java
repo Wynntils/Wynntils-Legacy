@@ -36,7 +36,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if(e.getCurrentClass() == ClassType.NONE) return;
+        if (e.getCurrentClass() == ClassType.NONE) return;
 
         QuestManager.clearData();
     }
@@ -50,7 +50,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void clickOnQuestBookItem(PacketEvent<CPacketPlayerTryUseItem> e) {
-        if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
+        if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
@@ -60,7 +60,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void clickOnQuestBookItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
-        if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
+        if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
@@ -70,7 +70,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void clickOnQuestBookEntity(PacketEvent<CPacketUseEntity> e) {
-        if(!QuestBookConfig.INSTANCE.allowCustomQuestbook
+        if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
                 || Minecraft.getMinecraft().player.inventory.currentItem != 7) return;
 
@@ -80,11 +80,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void updateQuestBook(TickEvent.ClientTickEvent e) {
-        if(e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || Minecraft.getMinecraft().player.inventory == null) return;
-        if(Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
+        if (e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || Minecraft.getMinecraft().player.inventory == null) return;
+        if (Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
         QuestManager.executeQueue();
-        if(openQuestBook) {
+        if (openQuestBook) {
             openQuestBook = false;
 
             QuestBookPages.MAIN.getPage().open(true);

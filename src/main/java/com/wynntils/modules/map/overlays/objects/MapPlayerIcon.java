@@ -88,11 +88,11 @@ public class MapPlayerIcon extends MapIcon {
             float sizeX = getSizeX() * sizeMultiplier;
             float sizeZ = getSizeZ() * sizeMultiplier;
 
-            //boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
+            // boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
 
             ResourceLocation res = getResource();
 
-            //TODO somehow this doesn't works on the MiniMap
+            // TODO somehow this doesn't works on the MiniMap
             CommonColors outlineColor = null;
             if (profile.isInParty())
                 outlineColor = CommonColors.YELLOW;

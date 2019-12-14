@@ -32,8 +32,8 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
-        if(e.getGui() instanceof GuiChat) {
-            if(e.getGui() instanceof ChatGUI) return;
+        if (e.getGui() instanceof GuiChat) {
+            if (e.getGui() instanceof ChatGUI) return;
             String defaultText = (String) ReflectionFields.GuiChat_defaultInputFieldText.getValue(e.getGui());
 
             e.setGui(new ChatGUI(defaultText));
@@ -58,8 +58,8 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void commandReplacements(ClientChatEvent e) {
-        if(e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
-        else if(e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
+        if (e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
+        else if (e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
     }
 
 
@@ -70,7 +70,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onSendMessage(ClientChatEvent e) {
-        if(e.getMessage().startsWith("/")) return;
+        if (e.getMessage().startsWith("/")) return;
 
         Pair<String, Boolean> message = ChatManager.applyUpdatesToServer(e.getMessage());
         e.setMessage(message.a);
@@ -78,12 +78,12 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         }
 
-        if(!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty()) e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());
+        if (!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty()) e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());
     }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent e) {
-        if(!Reference.onWorld) return;
+        if (!Reference.onWorld) return;
 
         HeldItemChatManager.onTick();
     }

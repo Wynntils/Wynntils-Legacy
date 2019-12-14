@@ -128,7 +128,7 @@ public class PlayerInfo {
     }
 
     public void updatePlayerClass(ClassType currentClass) {
-        if(currentClass != ClassType.NONE) {
+        if (currentClass != ClassType.NONE) {
             CoreDBConfig.INSTANCE.lastClass = currentClass;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
         }
@@ -238,7 +238,7 @@ public class PlayerInfo {
     }
 
     public static PlayerInfo getPlayerInfo() {
-        if(instance == null)
+        if (instance == null)
             return new PlayerInfo(Minecraft.getMinecraft());
         else
             return instance;

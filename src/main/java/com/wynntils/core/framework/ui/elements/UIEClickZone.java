@@ -23,7 +23,7 @@ public class UIEClickZone extends UIElement {
     protected boolean hovering = false;
     public boolean isHovering() { return hovering; }
 
-    public UIEClickZone(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, BiConsumer<UI,MouseButton> onClick) {
+    public UIEClickZone(float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, BiConsumer<UI, MouseButton> onClick) {
         super(anchorX, anchorY, offsetX, offsetY);
         this.onClick = onClick;
         this.width = width;
@@ -42,20 +42,20 @@ public class UIEClickZone extends UIElement {
     }
 
     public void click(boolean hovering, MouseButton button, UI ui) {
-        if(active && hovering) {
-            if(clickSound != null)
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
-            if(onClick != null)
-                onClick.accept(ui,button);
+        if (active && hovering) {
+            if (clickSound != null)
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+            if (onClick != null)
+                onClick.accept(ui, button);
         }
     }
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-        if(active && hovering) {
-            if(clickSound != null)
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound,1f));
-            if(onClick != null)
-                onClick.accept(ui,button);
+        if (active && hovering) {
+            if (clickSound != null)
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+            if (onClick != null)
+                onClick.accept(ui, button);
         }
     }
 

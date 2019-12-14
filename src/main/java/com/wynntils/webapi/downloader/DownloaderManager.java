@@ -71,10 +71,10 @@ public class DownloaderManager {
     }
 
     public static void startDownloading() {
-        if(!Reference.onServer) {
+        if (!Reference.onServer) {
             return;
         }
-        if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
+        if (futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
             return;
         }
 
@@ -89,12 +89,12 @@ public class DownloaderManager {
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.connect();
 
-                if(st.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
                     return;
                 }
 
-                if(!pf.getLocation().exists()) {
+                if (!pf.getLocation().exists()) {
                     pf.getLocation().mkdirs();
                 }
 
@@ -121,8 +121,8 @@ public class DownloaderManager {
                 fos.close();
                 fis.close();
 
-                //unzipping all files
-                if(pf.getAction() == DownloadAction.UNZIP) {
+                // unzipping all files
+                if (pf.getAction() == DownloadAction.UNZIP) {
                     currentPhase = DownloadPhase.UNZIPPING;
 
                     byte[] buffer = new byte[1024];
@@ -137,7 +137,7 @@ public class DownloaderManager {
 
                         File newFile = new File(pf.getLocation(), ze.getName());
 
-                        if(ze.isDirectory()) {
+                        if (ze.isDirectory()) {
                             newFile.mkdir();
                             continue;
                         }
@@ -161,14 +161,14 @@ public class DownloaderManager {
                     zin.close();
 
                     File zip = new File(pf.getLocation(), urlParts[urlParts.length - 1]);
-                    if(zip.exists()) { zip.delete(); }
+                    if (zip.exists()) { zip.delete(); }
                 }
 
                 pf.onFinish.accept(true);
                 futureDownloads.remove(0);
-                if(futureDownloads.size() <= 0) {
+                if (futureDownloads.size() <= 0) {
                     currentPhase = DownloadPhase.WAITING;
-                }else{
+                } else {
                     next = true;
                 }
                 progression = 0;

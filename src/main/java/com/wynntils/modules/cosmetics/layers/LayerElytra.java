@@ -43,9 +43,9 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
 
-        if(!WebManager.hasElytra(player.getUniqueID())) return;
+        if (!WebManager.hasElytra(player.getUniqueID())) return;
 
-        //texture
+        // texture
         ResourceLocation elytra;
         if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
             elytra = player.getLocationElytra();
@@ -62,7 +62,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
         renderPlayer.bindTexture(elytra);
 
-        //rendering
+        // rendering
         { pushMatrix();
             translate(0.0F, 0.0F, 0.125F);
 

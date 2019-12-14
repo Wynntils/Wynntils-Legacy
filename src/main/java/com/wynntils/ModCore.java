@@ -65,20 +65,20 @@ public class ModCore {
     public void postInit(FMLPostInitializationEvent e) {
 
         HashMap<String, String> conflicts = new HashMap<>();
-        for(ModContainer mod : Loader.instance().getActiveModList()) {
-            if(!mod.getModId().equalsIgnoreCase("labymod")) continue;
+        for (ModContainer mod : Loader.instance().getActiveModList()) {
+            if (!mod.getModId().equalsIgnoreCase("labymod")) continue;
 
             conflicts.put(mod.getName(), mod.getVersion());
         }
 
-        if(!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
+        if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
 
         FrameworkManager.postEnableModules();
         FrameworkManager.registerCommands();
         Textures.loadTextures();
         Mappings.loadMappings();
 
-        //HeyZeer0: This will reload our cache if a texture or similar is applied
+        // HeyZeer0: This will reload our cache if a texture or similar is applied
         ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
             Textures.loadTextures();
             Mappings.loadMappings();

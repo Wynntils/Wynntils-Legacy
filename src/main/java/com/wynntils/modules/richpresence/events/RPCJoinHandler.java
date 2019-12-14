@@ -98,7 +98,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
     public void onChatMessage(ClientChatReceivedEvent e) {
         if (e.getType() != ChatType.CHAT && e.getType() != ChatType.SYSTEM) return;
 
-        //handles the invitation
+        // handles the invitation
         if (lastSecret != null && e.getMessage().getUnformattedText().startsWith("You have been invited to join " + lastSecret.getOwner())) {
             Minecraft.getMinecraft().player.sendChatMessage("/party join " + lastSecret.getOwner());
 

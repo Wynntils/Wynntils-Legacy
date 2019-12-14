@@ -24,12 +24,12 @@ public class ChatGUI extends GuiChat {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if(ChatOverlay.getChat().getOverTabId() > -1) {
-            if(mouseButton == 1) mc.displayGuiScreen(new TabGUI(ChatOverlay.getChat().getOverTabId()));
+        if (ChatOverlay.getChat().getOverTabId() > -1) {
+            if (mouseButton == 1) mc.displayGuiScreen(new TabGUI(ChatOverlay.getChat().getOverTabId()));
             else ChatOverlay.getChat().setCurrentTab(ChatOverlay.getChat().getOverTabId());
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
         }
-        else if(ChatOverlay.getChat().getOverTabId() == -2) {
+        else if (ChatOverlay.getChat().getOverTabId() == -2) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             mc.displayGuiScreen(new TabGUI(-2)) ;
         }
@@ -38,7 +38,7 @@ public class ChatGUI extends GuiChat {
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(inputField.getText().isEmpty() && keyCode == Keyboard.KEY_TAB) ChatOverlay.getChat().switchTabs();
+        if (inputField.getText().isEmpty() && keyCode == Keyboard.KEY_TAB) ChatOverlay.getChat().switchTabs();
         super.keyTyped(typedChar, keyCode);
     }
 

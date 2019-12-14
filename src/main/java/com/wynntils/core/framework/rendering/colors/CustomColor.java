@@ -10,19 +10,18 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Arrays;
 
-
 /** CustomColor
  * will represent color or complex colors
  * in a more efficient way than awt's Color or minecraft's color ints.
  */
 public class CustomColor {
     public float
-            r, // The RED   value of the color(0.0f -> 1.0f)
-            g, // The GREEN value of the color(0.0f -> 1.0f)
-            b, // The BLUE  value of the color(0.0f -> 1.0f)
-            a; // The ALPHA value of the color(0.0f -> 1.0f)
+            r,  // The RED   value of the color(0.0f -> 1.0f)
+            g,  // The GREEN value of the color(0.0f -> 1.0f)
+            b,  // The BLUE  value of the color(0.0f -> 1.0f)
+            a;  // The ALPHA value of the color(0.0f -> 1.0f)
 
-    public CustomColor(float r, float g, float b) { this(r,g,b,1.0f); }
+    public CustomColor(float r, float g, float b) { this(r, g, b, 1.0f); }
 
     public CustomColor(float r, float g, float b, float a) {
         this.r = r;
@@ -31,7 +30,7 @@ public class CustomColor {
         this.a = a;
     }
 
-    public CustomColor(){}
+    public CustomColor() {}
 
     public CustomColor(CustomColor c) { this(c.r, c.g, c.b, c.a); }
 
@@ -39,7 +38,7 @@ public class CustomColor {
      * Will set the color to OpenGL's active color
      */
     public void applyColor() {
-        GlStateManager.color(r,g,b,a);
+        GlStateManager.color(r, g, b, a);
     }
 
     public CustomColor setA(float a) {
@@ -52,7 +51,7 @@ public class CustomColor {
         String withoutHash = string.trim();
         if (withoutHash.startsWith("#")) withoutHash = withoutHash.substring(1).trim();
         if (withoutHash.equals("")) return new CustomColor(0, 0, 0, a);
-        if(withoutHash.length() == 6) {
+        if (withoutHash.length() == 6) {
             try {
                 return fromInt(Integer.parseInt(withoutHash, 16), a);
             } catch (Exception ignored) { }
@@ -90,7 +89,7 @@ public class CustomColor {
         float v2 = v * (1 - s * (vh - vi));
         float v3 = v * (1 - s * (1 - (vh - vi)));
 
-        switch(vi) {
+        switch (vi) {
             case 0: return new CustomColor(v, v3, v1, a);
             case 1: return new CustomColor(v2, v, v1, a);
             case 2: return new CustomColor(v1, v, v3, a);

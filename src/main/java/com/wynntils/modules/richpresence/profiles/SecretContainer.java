@@ -24,7 +24,7 @@ public class SecretContainer {
     }
 
     public SecretContainer(String hash) {
-        if(!hash.contains("::")) return;
+        if (!hash.contains("::")) return;
 
         String[] splitted = hash.split("::");
         owner = splitted[0];

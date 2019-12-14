@@ -49,27 +49,27 @@ public class ItemIdentificationOverlay implements Listener {
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
     @SubscribeEvent
     public void onInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
     @SubscribeEvent
     public void onHorse(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if(e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
     private static void replaceLore(ItemStack stack) {
-        if(!stack.hasDisplayName() || !stack.hasTagCompound()) return;
+        if (!stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;
 
@@ -83,7 +83,7 @@ public class ItemIdentificationOverlay implements Listener {
             return;
         }
 
-        //check if item is a valid item if not ignore it
+        // check if item is a valid item if not ignore it
         if (!nbt.hasKey("wynntils") && WebManager.getItems().get(itemName) == null) {
             nbt.setBoolean("wynntilsIgnore", true);
             return;
@@ -91,23 +91,23 @@ public class ItemIdentificationOverlay implements Listener {
 
         NBTTagCompound wynntils = generateData(stack);
 
-        //perfect name
-        if(wynntils.hasKey("isPerfect")) {
+        // perfect name
+        if (wynntils.hasKey("isPerfect")) {
             stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + wynntils.getString("originName"), false));
         }
 
-        //update only if should update, this is decided on generateDate
-        if(!wynntils.getBoolean("shouldUpdate")) return;
+        // update only if should update, this is decided on generateDate
+        if (!wynntils.getBoolean("shouldUpdate")) return;
 
         wynntils.setBoolean("shouldUpdate", false);
 
-        //objects
+        // objects
         SelectedIdentification idType = SelectedIdentification.valueOf(wynntils.getString("currentType"));
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         List<String> newLore = new ArrayList<>();
 
-        //generating id lores
+        // generating id lores
         HashMap<String, String> idLore = new HashMap<>();
 
         double cumRelative = 0;
@@ -115,10 +115,10 @@ public class ItemIdentificationOverlay implements Listener {
         boolean hadAnyIDs = false;
         boolean hasInvalidIDs = false;
 
-        if(wynntils.hasKey("ids")) {
+        if (wynntils.hasKey("ids")) {
             NBTTagCompound ids = wynntils.getCompoundTag("ids");
-            for(String idName : ids.getKeySet()) {
-                if(!item.getStatuses().containsKey(idName)) continue;
+            for (String idName : ids.getKeySet()) {
+                if (!item.getStatuses().containsKey(idName)) continue;
                 hadAnyIDs = true;
 
                 IdentificationContainer id = item.getStatuses().get(idName);
@@ -139,33 +139,33 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
 
-        //copying some parts of the old lore (stops on ids, powder or quality)
+        // copying some parts of the old lore (stops on ids, powder or quality)
         boolean ignoreNext = false;
         for (String oldLore : ItemUtils.getLore(stack)) {
-            if(ignoreNext) {
+            if (ignoreNext) {
                 ignoreNext = false;
                 continue;
             }
 
             String rawLore = getTextWithoutFormattingCodes(oldLore);
-            //market stuff
-            if(rawLore.contains("Price:")) {
+            // market stuff
+            if (rawLore.contains("Price:")) {
                 ignoreNext = true;
 
                 NBTTagCompound market = wynntils.getCompoundTag("marketInfo");
 
                 newLore.add(GOLD + "Price:");
                 String mLore = GOLD + " - " + GRAY;
-                if(market.hasKey("quantity")) {
+                if (market.hasKey("quantity")) {
                     mLore += market.getInteger("quantity") + " x ";
                 }
 
                 int[] money = calculateMoneyAmount(market.getInteger("price"));
                 String price = "";
-                if(money[3] != 0) price += money[3] + "stx ";
-                if(money[2] != 0) price += money[2] + EmeraldSymbols.LE + " ";
-                if(money[1] != 0) price += money[1] + EmeraldSymbols.BLOCKS + " ";
-                if(money[0] != 0) price += money[0] + EmeraldSymbols.EMERALDS + " ";
+                if (money[3] != 0) price += money[3] + "stx ";
+                if (money[2] != 0) price += money[2] + EmeraldSymbols.LE + " ";
+                if (money[1] != 0) price += money[1] + EmeraldSymbols.BLOCKS + " ";
+                if (money[0] != 0) price += money[0] + EmeraldSymbols.EMERALDS + " ";
 
                 price = price.substring(0, price.length() - 1);
 
@@ -176,35 +176,35 @@ public class ItemIdentificationOverlay implements Listener {
                 continue;
             }
 
-            //stop on id if the item has ids
-            if(idLore.size() > 0) {
-                if(rawLore.startsWith("+") || rawLore.startsWith("-")) break;
+            // stop on id if the item has ids
+            if (idLore.size() > 0) {
+                if (rawLore.startsWith("+") || rawLore.startsWith("-")) break;
 
                 newLore.add(oldLore);
                 continue;
             }
 
-            //stop on powders if the item has powders
-            if(wynntils.hasKey("powderSlots") && oldLore.contains("] Powder Slots")) {
+            // stop on powders if the item has powders
+            if (wynntils.hasKey("powderSlots") && oldLore.contains("] Powder Slots")) {
                 break;
             }
 
-            //stop on quality if there's no other
+            // stop on quality if there's no other
             Matcher m = ITEM_QUALITY.matcher(rawLore);
-            if(m.matches()) break;
+            if (m.matches()) break;
 
             newLore.add(oldLore);
         }
 
-        //add item lores
-        if(idLore.size() > 0) {
+        // add item lores
+        if (idLore.size() > 0) {
             newLore.addAll(IdentificationOrderer.INSTANCE.order(idLore,
                     UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
 
             newLore.add(" ");
 
-            //major ids
-            if(item.getMajorIds().size() > 0) {
+            // major ids
+            if (item.getMajorIds().size() > 0) {
                 for (MajorIdentification majorId : item.getMajorIds()) {
                     Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
                 }
@@ -212,14 +212,14 @@ public class ItemIdentificationOverlay implements Listener {
             }
         }
 
-        //powder lore
-        if(wynntils.hasKey("powderSlots")) newLore.add(wynntils.getString("powderSlots"));
+        // powder lore
+        if (wynntils.hasKey("powderSlots")) newLore.add(wynntils.getString("powderSlots"));
 
-        //quality lore
+        // quality lore
         String quality = item.getTier().asLore();
 
-        //adds reroll amount if the item is not identified
-        if(!item.isIdentified()) {
+        // adds reroll amount if the item is not identified
+        if (!item.isIdentified()) {
             int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0) + 1;
             if (rollAmount != 0) quality += " [" + rollAmount + "] ";
 
@@ -230,25 +230,25 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         newLore.add(quality);
-        if(item.getRestriction() != null) newLore.add(RED + "Untradable Item");
+        if (item.getRestriction() != null) newLore.add(RED + "Untradable Item");
 
-        //item lore
-        if(!item.getLore().isEmpty()) {
+        // item lore
+        if (!item.getLore().isEmpty()) {
             Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
         }
 
-        //special displayname
+        // special displayname
         String specialDisplay = "";
         if (hadAnyIDs && nonFixedIDs != 0) {
-            if(idType == SelectedIdentification.PERCENTAGES) {
+            if (idType == SelectedIdentification.PERCENTAGES) {
                 double mean = (cumRelative * 100) / nonFixedIDs;
 
-                //perfect item
-                if(mean >= 100 && !item.isIdentified()) wynntils.setBoolean("isPerfect", true);
+                // perfect item
+                if (mean >= 100 && !item.isIdentified()) wynntils.setBoolean("isPerfect", true);
 
-                if(mean >= 97d) specialDisplay += AQUA;
-                else if(mean >= 80d) specialDisplay += GREEN;
-                else if(mean >= 30) specialDisplay += YELLOW;
+                if (mean >= 97d) specialDisplay += AQUA;
+                else if (mean >= 80d) specialDisplay += GREEN;
+                else if (mean >= 30) specialDisplay += YELLOW;
                 else specialDisplay += RED;
 
                 specialDisplay += " [" + (hasInvalidIDs ? "~" : Integer.toString((int) mean)) + "%]";
@@ -257,7 +257,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         stack.setStackDisplayName(item.getTier().getColor() + item.getDisplayName() + specialDisplay);
 
-        //applying lore
+        // applying lore
         NBTTagCompound compound = nbt.getCompoundTag("display");
         NBTTagList list = new NBTTagList();
 
@@ -360,15 +360,15 @@ public class ItemIdentificationOverlay implements Listener {
 
     private static NBTTagCompound generateData(ItemStack stack) {
         SelectedIdentification idType;
-        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = SelectedIdentification.MIN_MAX;
-        else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = SelectedIdentification.UPGRADE_CHANCES;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = SelectedIdentification.MIN_MAX;
+        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = SelectedIdentification.UPGRADE_CHANCES;
         else idType = SelectedIdentification.PERCENTAGES;
 
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
             NBTTagCompound compound = stack.getTagCompound().getCompoundTag("wynntils");
 
-            //check for updates
-            if(!compound.getString("currentType").equals(idType.toString())) {
+            // check for updates
+            if (!compound.getString("currentType").equals(idType.toString())) {
                 compound.setBoolean("shouldUpdate", true);
                 compound.setString("currentType", idType.toString());
 
@@ -380,18 +380,18 @@ public class ItemIdentificationOverlay implements Listener {
 
         NBTTagCompound mainTag = new NBTTagCompound();
 
-        { //main data
-            mainTag.setString("originName", StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()))); //this replace allow market items to be scanned
+        {  // main data
+            mainTag.setString("originName", StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())));  // this replace allow market items to be scanned
             mainTag.setString("currentType", idType.toString());
             mainTag.setBoolean("shouldUpdate", true);
         }
 
         NBTTagCompound idTag = new NBTTagCompound();
-        { //lore data
+        {  // lore data
             for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
 
-                //ids
+                // ids
                 { Matcher idMatcher = ID_PATTERN.matcher(lColor);
                     if (idMatcher.find()) {
                         String idName = idMatcher.group("ID");
@@ -406,7 +406,7 @@ public class ItemIdentificationOverlay implements Listener {
                     }
                 }
 
-                //rerolls
+                // rerolls
                 { Matcher rerollMatcher = ITEM_QUALITY.matcher(lColor);
                     if (rerollMatcher.find()) {
                         if (rerollMatcher.group("Rolls") == null) continue;
@@ -416,16 +416,16 @@ public class ItemIdentificationOverlay implements Listener {
                     }
                 }
 
-                //powders
-                if(lColor.contains("] Powder Slots")) mainTag.setString("powderSlots", loreLine);
+                // powders
+                if (lColor.contains("] Powder Slots")) mainTag.setString("powderSlots", loreLine);
 
-                //market
+                // market
                 { Matcher market = MARKET_PRICE.matcher(lColor);
                     if (!market.find()) continue;
 
                     NBTTagCompound marketTag = new NBTTagCompound();
 
-                    if(market.group("Quantity") != null)
+                    if (market.group("Quantity") != null)
                         marketTag.setInteger("quantity", Integer.parseInt(market.group("Quantity").replace(",", "")));
 
                     marketTag.setInteger("price", Integer.parseInt(market.group("Value").replace(",", "")));
@@ -435,10 +435,10 @@ public class ItemIdentificationOverlay implements Listener {
 
             }
 
-            if(idTag.getSize() > 0) mainTag.setTag("ids", idTag);
+            if (idTag.getSize() > 0) mainTag.setTag("ids", idTag);
         }
 
-        //update compound
+        // update compound
         NBTTagCompound stackCompound = stack.getTagCompound();
         stackCompound.setTag("wynntils", mainTag);
 
@@ -451,7 +451,7 @@ public class ItemIdentificationOverlay implements Listener {
         String[] splitName = longIdName.split(" ");
         StringBuilder result = new StringBuilder(raw ? "raw" : "");
         for (String r : splitName) {
-            if (r.startsWith("[")) continue; //ignore ids
+            if (r.startsWith("[")) continue;  // ignore ids
             result.append(Character.toUpperCase(r.charAt(0))).append(r.substring(1).toLowerCase(Locale.ROOT));
         }
 

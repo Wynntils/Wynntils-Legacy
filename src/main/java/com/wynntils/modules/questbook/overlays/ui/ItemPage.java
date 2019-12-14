@@ -81,57 +81,57 @@ public class ItemPage extends QuestBookPage {
 
         ScreenRenderer.beginGL(0, 0);
         {
-            //order buttons
+            // order buttons
             render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
+            if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                 selected = 1;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
-            }else{
-                if(selected == 1) selected = 0;
-                if(byAlphabetical) {
+            } else {
+                if (selected == 1) selected = 0;
+                if (byAlphabetical) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 254, 259, 7, 7);
                 }
             }
 
             render.drawString("Level Order (100-0)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
+            if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                 selected = 2;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
-            }else{
-                if(selected == 2) selected = 0;
-                if(byLevel) {
+            } else {
+                if (selected == 2) selected = 0;
+                if (byLevel) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 254, 259, 7, 7);
                 }
             }
 
             render.drawString("Rarity Order (MYTH-NORM)", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
+            if (posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
                 selected = 3;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
-            }else{
-                if(selected == 3) selected = 0;
-                if(byRarity) {
+            } else {
+                if (selected == 3) selected = 0;
+                if (byRarity) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 254, 259, 7, 7);
                 }
             }
 
-            //filter ++
+            // filter ++
             render.drawString("Item Filter", x - 84, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int placed = 0;
             int plusY = 0;
             for (int i = 0; i < 12; i++) {
-                if(placed + 1 >= 7) {
+                if (placed + 1 >= 7) {
                     placed = 0;
                     plusY ++;
                 }
@@ -141,45 +141,45 @@ public class ItemPage extends QuestBookPage {
                 int minX = x - 123 + (placed * 20);
                 int minY = y + 34 + (plusY * 20);
 
-                if(mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
+                if (mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
                     render.drawRect(selected_cube, maxX, maxY, minX, minY);
 
                     selected = (i + 1) * 10;
-                }else{
-                    if(selected == (i + 1) * 10) selected = 0;
+                } else {
+                    if (selected == (i + 1) * 10) selected = 0;
 
-                    if(i == 0 && allowHelmet) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 1 && allowChestplate) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 2 && allowLeggings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 3 && allowBoots) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 4 && allowWands) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 8 && allowReliks) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 9 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 10 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 11 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    if (i == 0 && allowHelmet) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 1 && allowChestplate) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 2 && allowLeggings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 3 && allowBoots) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 4 && allowWands) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 8 && allowReliks) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 9 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 10 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 11 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                     else render.drawRect(unselected_cube, maxX, maxY, minX, minY);
                 }
 
-                if(i == 0) render.drawItemStack(helmetIcon, maxX, minY, false);
-                else if(i == 1) render.drawItemStack(chestplateIcon, maxX, minY, false);
-                else if(i == 2) render.drawItemStack(leggingsIcon, maxX, minY, false);
-                else if(i == 3) render.drawItemStack(bootsIcon, maxX, minY, false);
-                else if(i == 4) render.drawItemStack(wandsIcon, maxX, minY, false);
-                else if(i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
-                else if(i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
-                else if(i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
-                else if(i == 8) render.drawItemStack(relikIcon, maxX, minY, false);
-                else if(i == 9) render.drawItemStack(necklaceIcon, maxX, minY, false);
-                else if(i == 10) render.drawItemStack(ringsIcon, maxX, minY, false);
-                else if(i == 11) render.drawItemStack(braceletsIcon, maxX, minY, false);
+                if (i == 0) render.drawItemStack(helmetIcon, maxX, minY, false);
+                else if (i == 1) render.drawItemStack(chestplateIcon, maxX, minY, false);
+                else if (i == 2) render.drawItemStack(leggingsIcon, maxX, minY, false);
+                else if (i == 3) render.drawItemStack(bootsIcon, maxX, minY, false);
+                else if (i == 4) render.drawItemStack(wandsIcon, maxX, minY, false);
+                else if (i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
+                else if (i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
+                else if (i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
+                else if (i == 8) render.drawItemStack(relikIcon, maxX, minY, false);
+                else if (i == 9) render.drawItemStack(necklaceIcon, maxX, minY, false);
+                else if (i == 10) render.drawItemStack(ringsIcon, maxX, minY, false);
+                else if (i == 11) render.drawItemStack(braceletsIcon, maxX, minY, false);
 
                 placed++;
             }
 
-            //back to menu button
+            // back to menu button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                 hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
@@ -189,19 +189,19 @@ public class ItemPage extends QuestBookPage {
 
             render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            //page counter including search
+            // page counter including search
             int pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
             if (pages < currentPage) {
                 currentPage = pages;
             }
 
-            if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
-            if(byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
-            if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
+            if (byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
+            if (byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
+            if (byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            //but next and back button
+            // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 acceptNext = false;
@@ -226,7 +226,7 @@ public class ItemPage extends QuestBookPage {
                 }
             }
 
-            //available items
+            // available items
             int placedCubes = 0;
             int currentY = 0;
             for (int i = ((currentPage - 1) * 42); i < 42 * currentPage; i++) {
@@ -358,8 +358,8 @@ public class ItemPage extends QuestBookPage {
                 byLevel = true;
                 byRarity = false;
             }
-        } else if(selected == 3) {
-            if(!byRarity) {
+        } else if (selected == 3) {
+            if (!byRarity) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 byRarity = true;
                 byAlphabetical = false;

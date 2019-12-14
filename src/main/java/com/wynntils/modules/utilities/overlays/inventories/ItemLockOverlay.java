@@ -21,53 +21,53 @@ public class ItemLockOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if(!Reference.onWorld) return;
+        if (!Reference.onWorld) return;
 
-        for(Slot s : e.getGui().inventorySlots.inventorySlots) {
-            if(s.slotNumber <= 4) continue;
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            if (s.slotNumber <= 4) continue;
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
 
-        if(e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
             e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if(!Reference.onWorld) return;
+        if (!Reference.onWorld) return;
 
-        for(Slot s : e.getGui().inventorySlots.inventorySlots) {
-            if(s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            if (s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
 
-        if(e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
             e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onHorseGui(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if(!Reference.onWorld) return;
+        if (!Reference.onWorld) return;
 
-        for(Slot s : e.getGui().inventorySlots.inventorySlots) {
-            if(s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            if (s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
 
-        if(e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
+        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
             e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     private void renderItemLock(Slot s, int guiLeft, int guiTop) {
-        if(!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
-        if(!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) return;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) return;
 
         ScreenRenderer.beginGL(0, 0);
 
-        //HeyZeer0: this will make the lock appear over the item
+        // HeyZeer0: this will make the lock appear over the item
         GlStateManager.translate(0, 0, 260);
 
         ScreenRenderer r = new ScreenRenderer();

@@ -29,7 +29,7 @@ public class RichProfile {
 
             DiscordRichPresence.DiscordEventHandlers handler = new DiscordRichPresence.DiscordEventHandlers();
             handler.ready = user -> {
-                System.out.println("DISCORD READY"); // HeyZeer0: for a random reason, it doesn't seems to work without this println
+                System.out.println("DISCORD READY");  // HeyZeer0: for a random reason, it doesn't seems to work without this println
                 if (WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(user.userId, user.username + "#" + user.discriminator);
             };
             handler.joinGame = new RPCJoinHandler();
@@ -72,7 +72,7 @@ public class RichProfile {
         richPresence.startTimestamp = date.toInstant().getEpochSecond();
         richPresence.largeImageKey = "wynn";
 
-        if(joinSecret != null) {
+        if (joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
             richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
@@ -108,7 +108,7 @@ public class RichProfile {
         richPresence.startTimestamp = date.toInstant().getEpochSecond();
         richPresence.smallImageKey = "wynn";
 
-        if(joinSecret != null) {
+        if (joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
             richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
@@ -141,7 +141,7 @@ public class RichProfile {
         richPresence.endTimestamp = date.toInstant().getEpochSecond();
         richPresence.largeImageKey = "wynn";
 
-        if(joinSecret != null) {
+        if (joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
             richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
@@ -177,7 +177,7 @@ public class RichProfile {
         richPresence.endTimestamp = date.toInstant().getEpochSecond();
         richPresence.smallImageKey = "wynn";
 
-        if(joinSecret != null) {
+        if (joinSecret != null) {
             richPresence.joinSecret = joinSecret.toString();
             richPresence.partyId = joinSecret.id;
             richPresence.partySize = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();

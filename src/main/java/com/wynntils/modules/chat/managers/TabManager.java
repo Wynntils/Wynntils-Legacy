@@ -22,10 +22,10 @@ public class TabManager {
     public static void startTabs() {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
 
-        if(!ChatConfig.INSTANCE.registeredDefaultTabs) {
-            availableTabs.add(new ChatTab("Global", ".*",null, "", true, 0));
-            availableTabs.add(new ChatTab("Guild", DEFAULT_GUILD_REGEX,null, "/g", false, 1));
-            availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX,null, "/p", false, 2));
+        if (!ChatConfig.INSTANCE.registeredDefaultTabs) {
+            availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
+            availableTabs.add(new ChatTab("Guild", DEFAULT_GUILD_REGEX, null, "/g", false, 1));
+            availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX, null, "/p", false, 2));
 
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
             Collections.sort(availableTabs);
@@ -47,16 +47,16 @@ public class TabManager {
                 case a:
                     availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
                     availableTabs.add(new ChatTab("Guild", DEFAULT_GUILD_REGEX, null, "/g", false, 1));
-                    availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX, null,"/p", false, 2));
+                    availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX, null, "/p", false, 2));
                     break;
                 case b:
-                    availableTabs.add(new ChatTab("Global", ".*", null,"", true, 0));
-                    availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", null,"", false, 1));
-                    availableTabs.add(new ChatTab("G/P", DEFAULT_GUILD_REGEX + "|" + DEFAULT_PARTY_REGEX,null, "/g", false, 2));
-                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]",null, "/r", false, 3));
+                    availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
+                    availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", null, "", false, 1));
+                    availableTabs.add(new ChatTab("G/P", DEFAULT_GUILD_REGEX + "|" + DEFAULT_PARTY_REGEX, null, "/g", false, 2));
+                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", null, "/r", false, 3));
                     break;
                 case vanilla:
-                    availableTabs.add(new ChatTab("All", ".*", null,"", false, 0));
+                    availableTabs.add(new ChatTab("All", ".*", null, "", false, 0));
                     break;
             }
 
@@ -76,7 +76,7 @@ public class TabManager {
     }
 
     public static int deleteTab(int id) {
-        if(id > availableTabs.size()) return 0;
+        if (id > availableTabs.size()) return 0;
 
         availableTabs.remove(id);
         saveConfigs();
@@ -88,7 +88,7 @@ public class TabManager {
     }
 
     public static ChatTab getTabById(int id) {
-        if(availableTabs.size() <= id || availableTabs.get(id) == null) return getTabById(id-1);
+        if (availableTabs.size() <= id || availableTabs.get(id) == null) return getTabById(id-1);
         return availableTabs.get(id);
     }
 

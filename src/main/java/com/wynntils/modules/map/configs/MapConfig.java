@@ -118,7 +118,7 @@ public class MapConfig extends SettingsClass {
     public static class Waypoints extends SettingsClass {
         public static Waypoints INSTANCE;
 
-        //HeyZeer0: this stores all waypoints
+        // HeyZeer0: this stores all waypoints
         @Setting(upload = true)
         public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
 
@@ -136,7 +136,7 @@ public class MapConfig extends SettingsClass {
             TIER_4(1),
             NONE(0);
 
-            private int tierArrayIndex; //Array starts at 1 :P
+            private int tierArrayIndex;  // Array starts at 1 :P
             private String[] tiers = new String[]{"IV", "III", "II", "I"};
 
             ChestTiers(int tierArrayIndex) {

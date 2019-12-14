@@ -34,7 +34,7 @@ public class ActionBarOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if(!Reference.onWorld) return;
+        if (!Reference.onWorld) return;
         if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
             String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
             if (lastActionBar == null) return;
@@ -57,8 +57,8 @@ public class ActionBarOverlay extends Overlay {
             String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
             String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
             String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
-            //Order:
-            //Powder % | RLR | Sprint | and if there is nothing more coordinates
+            // Order:
+            // Powder % | RLR | Sprint | and if there is nothing more coordinates
             if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
                 drawString(lCoord, (0 - ScreenRenderer.mc.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
                 drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);

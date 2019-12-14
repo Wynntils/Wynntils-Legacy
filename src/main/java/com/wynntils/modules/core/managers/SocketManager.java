@@ -109,7 +109,7 @@ public class SocketManager {
             FrameworkManager.getEventBus().post(new SocketEvent.OtherPlayerEvent.Left(StringUtils.uuidFromString(uuid), username));
         }).on("broadcast", (Object... args) -> {
             BroadcastType type = BroadcastType.valueOf((String)args[0]);
-            if(type == null) type = BroadcastType.MESSAGE;
+            if (type == null) type = BroadcastType.MESSAGE;
 
             FrameworkManager.getEventBus().post(new SocketEvent.BroadcastEvent(type, (String)args[1]));
         }).on("unfriend", (Object... args) -> {
@@ -126,7 +126,7 @@ public class SocketManager {
     }
 
     public static void emitEvent(String eventName, Object... options) {
-        if(socket == null) return;
+        if (socket == null) return;
 
         socket.emit(eventName, options);
     }

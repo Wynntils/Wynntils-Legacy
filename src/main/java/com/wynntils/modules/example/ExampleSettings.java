@@ -32,8 +32,8 @@ public class ExampleSettings extends SettingsClass {
      */
     @Override
     public void onSettingChanged(String name) {
-        if(name.equals("myField")) {
-            //do something
+        if (name.equals("myField")) {
+            // do something
         }
     }
 

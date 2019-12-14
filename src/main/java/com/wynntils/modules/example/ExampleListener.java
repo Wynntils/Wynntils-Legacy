@@ -40,7 +40,7 @@ public class ExampleListener implements Listener {
 
     /**
      * The EventHandler annotation is required and a priority can be requested
-     * Priority NORMAL // default
+     * Priority NORMAL  // default
      *
      * @param e Requested Event
      */

@@ -253,7 +253,7 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if(name.equalsIgnoreCase("addItemIdentificationSpacing"))
+        if (name.equalsIgnoreCase("addItemIdentificationSpacing"))
             WebManager.getDirectItems().forEach(ItemProfile::clearGuideStack);
     }
 

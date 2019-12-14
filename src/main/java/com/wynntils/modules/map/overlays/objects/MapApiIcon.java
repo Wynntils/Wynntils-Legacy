@@ -81,7 +81,7 @@ public class MapApiIcon extends MapTextureIcon {
         }
     }});
 
-    public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()){{
+    public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()) {{
         for (HashMap.Entry<String, String> entry : MAPMARKERNAME_TRANSLATION.entrySet()) {
             this.put(entry.getValue(), entry.getKey());
         }

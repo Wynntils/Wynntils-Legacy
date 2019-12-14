@@ -51,13 +51,13 @@ public class WynntilsAccount {
     }
 
     public void updateDiscord(String id, String username) {
-        if(!ready || WebManager.getApiUrls() == null) return;
+        if (!ready || WebManager.getApiUrls() == null) return;
 
         service.submit(() -> {
             try {
                 URLConnection st = new URL(WebManager.getApiUrls().get("UserAccount") + "updateDiscord/" + token).openConnection();
 
-                //HeyZeer0: Request below
+                // HeyZeer0: Request below
                 JsonObject body = new JsonObject();
                 body.addProperty("id", id);
                 body.addProperty("username", username);
@@ -87,7 +87,7 @@ public class WynntilsAccount {
     }
 
     public void uploadConfig(String fileName, String base64) {
-        if(!ready || configurationUploader == null) return;
+        if (!ready || configurationUploader == null) return;
 
         configurationUploader.queueConfig(fileName, base64);
     }

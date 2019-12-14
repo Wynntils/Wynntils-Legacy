@@ -32,7 +32,7 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg == null) return;
+        if (msg == null) return;
 
         boolean cancel = MinecraftForge.EVENT_BUS.post(new PacketEvent<>((Packet<?>) msg, ModCore.mc().getConnection()));
 

@@ -35,11 +35,11 @@ public class MainPage extends QuestBookPage {
         ScreenRenderer.beginGL(0, 0);
         {
             int right = (posX + 80);
-            if(posX >= 0) right = 80;
+            if (posX >= 0) right = 80;
 
             int up = (posY) + 30;
-            if(posY >= 109) up = 109;
-            if(posY <= -109) up = -109;
+            if (posY >= 109) up = 109;
+            if (posY <= -109) up = -109;
 
             GuiInventory.drawEntityOnScreen(x + 80, y + 30, 30, right, up, Minecraft.getMinecraft().player);
         }
@@ -87,7 +87,7 @@ public class MainPage extends QuestBookPage {
                 currentPage = pages;
             }
 
-            //but next and back button
+            // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
                 acceptNext = false;

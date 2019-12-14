@@ -28,83 +28,83 @@ public class SmartFontRenderer extends FontRenderer {
     private static final CustomColor[] minecraftColors = MinecraftChatColors.set.copySet();
     private static HashMap<Integer, CustomColor> colors = new HashMap<>();
 
-    //TODO document
+    // TODO document
     public SmartFontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode) {
         super(gameSettingsIn, location, textureManagerIn, unicode);
     }
 
     public SmartFontRenderer() {
-        super(Minecraft.getMinecraft().gameSettings,new ResourceLocation("textures/font/ascii.png"),Minecraft.getMinecraft().getTextureManager(),false);
+        super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().getTextureManager(), false);
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
-        if(customColor == CommonColors.RAINBOW) {
+        if (customColor == CommonColors.RAINBOW) {
             return drawRainbowText(text, x, y, alignment, shadow);
         }
         String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "");
         switch (alignment) {
             case MIDDLE:
-                return drawString(text,x - getStringWidth(drawnText)/2,y,customColor,TextAlignment.LEFT_RIGHT,shadow);
+                return drawString(text, x - getStringWidth(drawnText)/2, y, customColor, TextAlignment.LEFT_RIGHT, shadow);
             case RIGHT_LEFT:
-                return drawString(text,x - getStringWidth(drawnText),y,customColor,TextAlignment.LEFT_RIGHT,shadow);
+                return drawString(text, x - getStringWidth(drawnText), y, customColor, TextAlignment.LEFT_RIGHT, shadow);
             default:
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
                 switch (shadow) {
                     case OUTLINE:
-                        CustomColor shadowColor = new CustomColor(0,0,0,customColor.a);
+                        CustomColor shadowColor = new CustomColor(0, 0, 0, customColor.a);
                         posX = x-1;
                         posY = y;
-                        drawChars(text,shadowColor,true);
+                        drawChars(text, shadowColor, true);
                         posX = x+1;
                         posY = y;
-                        drawChars(text,shadowColor,true);
+                        drawChars(text, shadowColor, true);
                         posX = x;
                         posY = y-1;
-                        drawChars(text,shadowColor,true);
+                        drawChars(text, shadowColor, true);
                         posX = x;
                         posY = y+1;
-                        drawChars(text,shadowColor,true);
+                        drawChars(text, shadowColor, true);
 
                         posX = x;
                         posY = y;
 
-                        return drawChars(text,customColor,false);
+                        return drawChars(text, customColor, false);
 
                     case NORMAL:
                         posX = x+1;
                         posY = y+1;
 
-                        drawChars(text, new CustomColor(0,0,0,customColor.a),true);
+                        drawChars(text, new CustomColor(0, 0, 0, customColor.a), true);
 
                         posX = x;
                         posY = y;
 
-                        return drawChars(text,customColor,false);
+                        return drawChars(text, customColor, false);
 
                     case NONE: default:
                         posX = x;
                         posY = y;
 
-                        return drawChars(text,customColor,false);
+                        return drawChars(text, customColor, false);
                 }
         }
 
     }
 
     private float drawRainbowText(String input, float x, float y, TextAlignment alignment, TextShadow shadow) {
-        if(alignment == TextAlignment.MIDDLE)
+        if (alignment == TextAlignment.MIDDLE)
             return drawRainbowText(input, x - getStringWidth(input)/2, y, TextAlignment.LEFT_RIGHT, shadow);
-        else if(alignment == TextAlignment.RIGHT_LEFT)
+        else if (alignment == TextAlignment.RIGHT_LEFT)
             return drawRainbowText(input, x - getStringWidth(input), y, TextAlignment.LEFT_RIGHT, shadow);
 
         posX = x; posY = y;
 
-        for(char c : input.toCharArray()) {
+        for (char c : input.toCharArray()) {
             long dif = ((long)posX * 10) - ((long)posY * 10);
 
-            //color settings
+            // color settings
             long time = System.currentTimeMillis() - dif;
             float z = 2000.0F;
             int color = Color.HSBtoRGB((float) (time % (int) z) / z, 0.8F, 0.8F);
@@ -113,7 +113,7 @@ public class SmartFontRenderer extends FontRenderer {
             float blue = (float)(color >> 8 & 255) / 255.0F;
             float green = (float)(color & 255) / 255.0F;
 
-            //rendering shadows
+            // rendering shadows
             float originPosX = posX; float originPosY = posY;
             switch (shadow) {
                 case OUTLINE:
@@ -143,7 +143,7 @@ public class SmartFontRenderer extends FontRenderer {
                     break;
             }
 
-            //rendering the text
+            // rendering the text
             GlStateManager.color(red, green, blue, 1);
             float charLength = renderChar(c);
             posX += charLength + CHAR_SPACING;
@@ -153,8 +153,8 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     private float drawChars(String text, CustomColor color, boolean forceColor) {
-        if(text.isEmpty()) return -CHAR_SPACING;
-        if(text.startsWith("§") && text.length() > 1) {
+        if (text.isEmpty()) return -CHAR_SPACING;
+        if (text.startsWith("§") && text.length() > 1) {
             String withoutSelector = text.substring(1);
             String textToRender;
             CustomColor colorToRender;
@@ -217,11 +217,9 @@ public class SmartFontRenderer extends FontRenderer {
         return minecraftColors[0xF];
     }
 
-    private float renderChar(char ch)
-    {
-        if (ch == 160) return 4.0F; // forge: display nbsp as space. MC-2595
-        if (ch == 32)
-        {
+    private float renderChar(char ch) {
+        if (ch == 160) return 4.0F;  // forge: display nbsp as space. MC-2595
+        if (ch == 32) {
             return 4.0F;
         }
         else
@@ -232,11 +230,11 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public enum TextAlignment {
-        LEFT_RIGHT,MIDDLE,RIGHT_LEFT
+        LEFT_RIGHT, MIDDLE, RIGHT_LEFT
     }
 
     public enum TextShadow {
-        NONE,NORMAL,OUTLINE
+        NONE, NORMAL, OUTLINE
     }
 
 }

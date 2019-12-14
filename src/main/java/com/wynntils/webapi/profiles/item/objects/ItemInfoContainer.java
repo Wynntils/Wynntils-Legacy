@@ -49,10 +49,10 @@ public class ItemInfoContainer {
     }
 
     public int getArmorColorAsInt() {
-        if(armorColor == null) return 0;
+        if (armorColor == null) return 0;
 
         Matcher m = COLOR_PATTERN.matcher(getArmorColor());
-        if(!m.find()) return 0;
+        if (!m.find()) return 0;
 
         int r = Integer.parseInt(m.group(1));
         int g = Integer.parseInt(m.group(2));
@@ -62,15 +62,15 @@ public class ItemInfoContainer {
     }
 
     public ItemStack asItemStack() {
-        if(material == null) {
+        if (material == null) {
             return new ItemStack(type.getDefaultItem(), 1, type.getMeta());
         }
 
-        if(material.matches("(.*\\d.*)")) {
+        if (material.matches("(.*\\d.*)")) {
             String[] split = material.split(":");
 
             ItemStack stack = new ItemStack(Item.getItemById(Integer.parseInt(split[0])));
-            if(split.length <= 1) return stack;
+            if (split.length <= 1) return stack;
 
             stack.setItemDamage(Integer.parseInt(split[1]));
             return stack;

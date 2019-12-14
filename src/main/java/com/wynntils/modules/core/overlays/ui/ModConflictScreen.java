@@ -31,7 +31,7 @@ public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
         int offset = (errorScreen.height/2) - (40 + 10*conflictMods.size());
         errorScreen.drawCenteredString(fontRenderer, "Wynntils has detected the following mods:", errorScreen.width/2, offset, 0xFFFFFF);
         offset+=10;
-        for(String x : conflictMods.keySet()) {
+        for (String x : conflictMods.keySet()) {
             offset+=10;
             errorScreen.drawCenteredString(fontRenderer, "§f§l" + x + "§f§o (" + conflictMods.get(x) + ")", errorScreen.width/2, offset, 0xFFFFFF);
         }

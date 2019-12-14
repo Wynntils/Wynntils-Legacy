@@ -32,7 +32,7 @@ public class MusicPlayer {
     boolean paused = false;
 
     public void play(File f) {
-        if(currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
+        if (currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
 
         // Queue the music change to the game update ticker
         if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange) {
@@ -45,7 +45,7 @@ public class MusicPlayer {
     }
 
     public void stop() {
-        if(!active || currentPlayer == null) return;
+        if (!active || currentPlayer == null) return;
 
         currentPlayer.stop();
         active = false;
@@ -54,7 +54,7 @@ public class MusicPlayer {
     }
 
     private void checkForTheEnd() {
-        if(!active) return;
+        if (!active) return;
 
         nextMusic = currentMusic;
         currentMusic = null;
@@ -65,10 +65,10 @@ public class MusicPlayer {
     }
 
     public void setVolume(float volume) {
-        if(!active || currentPlayer == null) return;
-        if(currentPlayer.getAudioDevice() == null) return;
+        if (!active || currentPlayer == null) return;
+        if (currentPlayer.getAudioDevice() == null) return;
 
-        if(currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
+        if (currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
             JavaSoundAudioDevice dv = (JavaSoundAudioDevice) currentPlayer.getAudioDevice();
             dv.setLineGain(volume);
             currentVolume = volume;
@@ -87,48 +87,48 @@ public class MusicPlayer {
         paused = !paused;
 
 
-        if(!paused) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
-        if(paused) stop();
+        if (!paused) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
+        if (paused) stop();
     }
 
     public void setupController() {
         active = true;
 
-        if(nextMusic != null) {
-            if(currentMusic == null) {
+        if (nextMusic != null) {
+            if (currentMusic == null) {
                 currentMusic = nextMusic;
                 nextMusic = null;
                 startReproduction();
-            }else{
-                if(currentVolume <= -30) {
+            } else {
+                if (currentVolume <= -30) {
                     currentMusic = nextMusic;
                     nextMusic = null;
                     startReproduction();
-                }else{
+                } else {
                     setVolume(getCurrentVolume() - 0.2f);
                 }
             }
-        }else{
-            if(getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                if(getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+        } else {
+            if (getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if (getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
                     setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
-                }else{ setVolume(getCurrentVolume() - 0.2f); }
-            }else if(getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                if(getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                } else { setVolume(getCurrentVolume() - 0.2f); }
+            } else if (getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                if (getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
                     setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
-                }else{ setVolume(getCurrentVolume() + 0.2f); }
+                } else { setVolume(getCurrentVolume() + 0.2f); }
             }
         }
     }
 
     @SuppressWarnings("deprecation")
     private void startReproduction() {
-        if(currentPlayer != null) {
+        if (currentPlayer != null) {
             currentPlayer.stop();
-            if(musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();
+            if (musicPlayer != null && musicPlayer.isAlive()) musicPlayer.stop();
         }
 
-        if(paused) return;
+        if (paused) return;
 
         musicPlayer = new Thread(() -> {
             try{

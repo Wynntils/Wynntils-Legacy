@@ -84,12 +84,12 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
-        if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
+        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
         waitingForFriendList = true;
 
-        if(WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
+        if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
@@ -97,7 +97,7 @@ public class ServerEvents implements Listener {
 
         SocketManager.emitEvent("join world", e.getWorld());
 
-        PartyManager.handlePartyList(); //party list here
+        PartyManager.handlePartyList();  // party list here
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -116,19 +116,19 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void chatMessage(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
+        if (e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
-        PartyManager.handleMessages(e.getMessage()); //party messages here
+        PartyManager.handleMessages(e.getMessage());  // party messages here
 
         String messageText = e.getMessage().getUnformattedText();
-        if(messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
+        if (messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
             String[] splited = messageText.split(":");
 
             String[] friends;
-            if(splited[1].contains(",")) {
+            if (splited[1].contains(",")) {
                 friends = splited[1].substring(1).split(", ");
-            }else{ friends = new String[] {splited[1].substring(1)}; }
+            } else { friends = new String[] {splited[1].substring(1)}; }
 
             HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
             HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
@@ -137,12 +137,12 @@ public class ServerEvents implements Listener {
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.intersection(friendsList, newFriendsList), false));
 
-            if(waitingForFriendList) e.setCanceled(true);
+            if (waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
             return;
         }
-        if(messageText.startsWith("#") && messageText.contains(" XP -")) {
-            if(waitingForGuildList) e.setCanceled(true);
+        if (messageText.startsWith("#") && messageText.contains(" XP -")) {
+            if (waitingForGuildList) e.setCanceled(true);
 
             String[] splitMessage = messageText.split(" ");
             if (PlayerInfo.getPlayerInfo().getGuildList().add(splitMessage[1])) {
@@ -150,15 +150,15 @@ public class ServerEvents implements Listener {
             }
             return;
         }
-        if(!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
+        if (!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
             String[] splittedText = messageText.split(" ");
-            if(!splittedText[1].equalsIgnoreCase("has")) return;
+            if (!splittedText[1].equalsIgnoreCase("has")) return;
 
-            if(splittedText[2].equalsIgnoreCase("joined")) {
+            if (splittedText[2].equalsIgnoreCase("joined")) {
                 if (PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
                 }
-            } else if(splittedText[2].equalsIgnoreCase("kicked")) {
+            } else if (splittedText[2].equalsIgnoreCase("kicked")) {
                 if (PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
                 }
@@ -176,17 +176,17 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
-        if(e.getMessage().startsWith("/friend add ")) {
+        if (e.getMessage().startsWith("/friend add ")) {
             String addedFriend = e.getMessage().replace("/friend add ", "");
             if (PlayerInfo.getPlayerInfo().getFriendList().add(addedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
             }
-        }else if(e.getMessage().startsWith("/friend remove ")) {
+        } else if (e.getMessage().startsWith("/friend remove ")) {
             String removedFriend = e.getMessage().replace("/friend remove ", "");
             if (PlayerInfo.getPlayerInfo().getFriendList().remove(removedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
             }
-        }else if(e.getMessage().startsWith("/guild list")) {
+        } else if (e.getMessage().startsWith("/guild list")) {
             waitingForGuildList = false;
         }
     }
@@ -205,8 +205,8 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void onJoinLobby(RenderPlayerEvent.Post e) {
-        if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
-            if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+        if (CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
+            if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
             CoreDBConfig.INSTANCE.showChangelogs = false;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());

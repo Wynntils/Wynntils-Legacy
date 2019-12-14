@@ -20,7 +20,7 @@ public class ExternalTexture extends Texture {
 
     public ExternalTexture(File file, boolean load) {
         this.file = file;
-        if(load) load();
+        if (load) load();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ExternalTexture extends Texture {
 
     @Override
     public ActionResult unload() {
-        if(!loaded) return ActionResult.ISSUE;
+        if (!loaded) return ActionResult.ISSUE;
         TextureUtil.deleteTexture(glID);
         loaded = false;
         return ActionResult.SUCCESS;
@@ -55,7 +55,7 @@ public class ExternalTexture extends Texture {
 
     @Override
     public ActionResult bind() {
-        if(!loaded) return ActionResult.ERROR;
+        if (!loaded) return ActionResult.ERROR;
         GlStateManager.bindTexture(glID);
         return ActionResult.SUCCESS;
     }

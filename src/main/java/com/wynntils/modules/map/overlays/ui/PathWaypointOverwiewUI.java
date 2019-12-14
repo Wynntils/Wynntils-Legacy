@@ -48,11 +48,11 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
         fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 185, 39, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width/2 - 150, 39, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 + 20, 39, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 60, 39, 0xFFFFFF);
-        drawRect(this.width/2 - 185, 48,this.width/2 + 170,49, 0xFFFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "X", this.width/2 + 20, 39, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 60, 39, 0xFFFFFF);
+        drawRect(this.width/2 - 185, 48, this.width/2 + 170, 49, 0xFFFFFFFF);
 
-        ScreenRenderer.beginGL(0,0);
+        ScreenRenderer.beginGL(0, 0);
         for (int i = 0; i < Math.min(pageHeight, paths.size() - pageHeight * page); i++) {
             PathWaypointProfile wp = paths.get(page * pageHeight + i);
 
@@ -108,7 +108,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         this.buttonList.removeAll(editButtons);
         editButtons.clear();
         for (int i = 0; i < Math.min(pageHeight, paths.size() - pageHeight * page); i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85,50 + 25 * i,40,20,"Edit..."));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85, 50 + 25 * i, 40, 20,"Edit..."));
             editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130, 50 + 25 * i, 40, 20, "Delete"));
         }
         this.buttonList.addAll(editButtons);

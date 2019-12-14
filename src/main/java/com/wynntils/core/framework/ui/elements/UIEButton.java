@@ -35,41 +35,41 @@ public class UIEButton extends UIEClickZone {
 
     @Override
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
-        if(button == MouseButton.LEFT)
+        if (button == MouseButton.LEFT)
             super.click(mouseX, mouseY, button, ui);
     }
 
     @Override
     public void render(int mouseX, int mouseY) {
         super.render(mouseX, mouseY);
-        if(!visible) return;
+        if (!visible) return;
 
         width = (int) Math.max(this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, texture == null ? 0 : texture.width);
 
         if (!active) {
-            if(texture != null) {
+            if (texture != null) {
                 drawRect(texture, this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0.5f, (2.0f / 3.0f), 0.5f, 1f);
                 drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0f, (2.0f / 3.0f), 0.5f, 1f);
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, (2.0f / 3.0f), 1f, 1f);
             }
-            if(text != null && !text.equals(""))
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            if (text != null && !text.equals(""))
+                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         } else if (hovering) {
-            if(texture != null) {
+            if (texture != null) {
                 drawRect(texture, this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0.5f, (1.0f / 3.0f), 0.5f, (2.0f / 3.0f));
                 drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0f, (1.0f / 3.0f), 0.5f, (2.0f / 3.0f));
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, (1.0f / 3.0f), 1f, (2.0f / 3.0f));
             }
-            if(text != null && !text.equals(""))
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            if (text != null && !text.equals(""))
+                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         } else {
-            if(texture != null) {
+            if (texture != null) {
                 drawRect(texture, this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0.5f, 0f, 0.5f, (1.0f / 3.0f));
                 drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0f, 0f, 0.5f, (1.0f / 3.0f));
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, 0f, 1f, (1.0f / 3.0f));
             }
-            if(text != null && !text.equals(""))
-                drawString(text,this.position.getDrawingX()+width/2,this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            if (text != null && !text.equals(""))
+                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         }
     }
 
@@ -90,7 +90,7 @@ public class UIEButton extends UIEClickZone {
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-            if(active && hovering && (button == MouseButton.LEFT || button == MouseButton.RIGHT)) {
+            if (active && hovering && (button == MouseButton.LEFT || button == MouseButton.RIGHT)) {
                 this.value = !value;
                 super.click(true, button, ui);
             }
@@ -140,8 +140,8 @@ public class UIEButton extends UIEClickZone {
         }
 
         public String getValueDisplayName() {
-            for(Field f : e.getFields())
-                if(f.getType().isAssignableFrom(String.class) && f.getName().equals("displayName")) //This might be flipped
+            for (Field f : e.getFields())
+                if (f.getType().isAssignableFrom(String.class) && f.getName().equals("displayName"))  // This might be flipped
                     try {
                         return (String) f.get(value);
                     } catch (Exception e) {

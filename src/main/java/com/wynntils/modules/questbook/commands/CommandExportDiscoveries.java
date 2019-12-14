@@ -51,7 +51,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
         command.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exportDiscoveries"));
         if (!Reference.onWorld)
             throw new CommandException("You need to be in a Wynncraft world to run %s", command);
-        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE) 
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE)
             throw new CommandException("You need to select a class to run %s", command);
 
         File exportFolder = new File(Reference.MOD_STORAGE_ROOT, "export");

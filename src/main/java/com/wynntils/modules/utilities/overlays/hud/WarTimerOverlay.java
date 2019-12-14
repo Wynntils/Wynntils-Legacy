@@ -84,7 +84,7 @@ public class WarTimerOverlay extends Overlay {
             }
         }
     }
-    
+
     private void renderTimer(int seconds) {
         if (seconds < 60) {
             drawString(seconds + " second" + (seconds != 1 ? "s" : ""), 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
@@ -157,7 +157,7 @@ public class WarTimerOverlay extends Overlay {
                 if (territory == null) {
                     EntityPlayerSP pl = ModCore.mc().player;
                     for (TerritoryProfile pf : WebManager.getTerritories().values()) {
-                        if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                        if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             territory = pf.getFriendlyName();
                             return;
                         }

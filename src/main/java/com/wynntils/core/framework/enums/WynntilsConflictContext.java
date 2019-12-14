@@ -19,5 +19,4 @@ public enum WynntilsConflictContext implements IKeyConflictContext {
         }
     }
 
-
 }

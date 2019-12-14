@@ -27,10 +27,10 @@ public class KeyManager {
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
-            if(ModCore.mc().gameSettings.gammaSetting < 1000) {
+            if (ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
-            }else{
+            } else {
                 ModCore.mc().gameSettings.gammaSetting = lastGamma;
             }
         });
