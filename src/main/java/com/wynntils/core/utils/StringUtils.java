@@ -31,92 +31,13 @@ public class StringUtils {
             .trim();
     }
 
-    /**
-     * Removes the invisible character À
-     *
-     * @param input string
-     * @return input string without the invisible character
-     */
-    public static String stripInvisibleChar(String input) {
-        return input.replace("À", "");
-    }
-
-    /**
-     * Removes the percentage box (e.g. [96%])
-     *
-     * @param input string
-     * @return input string without the percentage box
-     */
-    public static String stripPercentage(String input) {
-        return input.replaceAll(" \\[\\d{1,3}%\\]", "");
-    }
-
-    /**
-     * Removes the "Perfect"-rainbow from input string
-     *
-     * @param input string
-     * @return input string without the "Perfect"-rainbow
-     */
-    public static String stripPerfect(String input) {
-        return TextFormatting.getTextWithoutFormattingCodes(input).replace("Perfect ", "");
-    }
-
-    /**
-     * Removes characters from input string based on extended.
-     *
-     * @param input string
-     * @param extended
-     *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
-     *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
-     *      2 - Removes invisible characters and colours.
-     *      3 - Removes colours.
-     * @return input string with removed characters
-     */
-    public static String stripExtended(String input, int extended) {
-        switch (extended) {
-            default:
-            case 0:
-                input = stripPercentage(input);
-            case 1:
-                input = stripPerfect(input);
-            case 2:
-                input = stripInvisibleChar(input);
-            case 3:
-                return TextFormatting.getTextWithoutFormattingCodes(input);
-        }
-    }
-
-    /**
-     * Returns a cut string after x characters
-     *
-     * @param x
-     *        Original String
-     * @param amount
-     *        The max string char amount
-     *
-     * @return Original string cut after x characters
-     */
-    public static String removeAfterChar(String x, int amount) {
-        String toReturn = x;
-        if (toReturn.length() > amount) {
-            toReturn = toReturn.substring(0, toReturn.length() - (toReturn.length() - amount));
-            toReturn = toReturn + "...";
-        }
-        return toReturn;
-    }
-
-    public static String arrayWithCommas(ArrayList<String> values) {
-        return org.apache.commons.lang3.StringUtils.joinWith(", ", values.toArray()) + ".";
-    }
-
-
     public static String firstCharToUpper(String[] array) {
         StringBuilder result = new StringBuilder();
 
         result.append(array[0].toLowerCase());
 
         for (int i = 1; i < array.length; i++) {
-            result.append(org.apache.commons.lang3.StringUtils.capitalize(array[i]));
+            result.append(capitalizeFirst(array[i]));
         }
 
         return result.toString();
