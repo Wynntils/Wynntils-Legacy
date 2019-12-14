@@ -248,7 +248,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "View all your found", TextFormatting.GRAY + "discoveries.",  "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "View all your found", TextFormatting.GRAY + "discoveries.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override

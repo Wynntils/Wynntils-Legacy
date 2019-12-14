@@ -105,7 +105,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Minimap Texture Style", description = "What should the texture of the minimap be?", order = 0)
         public TextureType textureType = TextureType.Paper;
 
-        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?" ,order = 1)
+        @Setting(displayName = "Pointer Style", description = "What should the texture of the pointer be?", order = 1)
         public PointerType pointerStyle = PointerType.ARROW;
 
         @Setting(displayName = "Pointer Colour", description = "What should the colour of the pointer be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)

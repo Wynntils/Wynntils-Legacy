@@ -332,7 +332,7 @@ public class ScreenRenderer {
      */
     public float drawString(String text, float x, float y, CustomColor color, SmartFontRenderer.TextAlignment alignment, SmartFontRenderer.TextShadow shadow) {
         if(!rendering) return -1f;
-        float f = fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y ,color,alignment,shadow);
+        float f = fontRenderer.drawString(text,drawingOrigin.x + x,drawingOrigin.y + y, color, alignment, shadow);
         GlStateManager.color(1.0f,1.0f,1.0f,1.0f);
         return f;
     }
@@ -683,7 +683,7 @@ public class ScreenRenderer {
      * @param y2 bottom right on screen
      * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
      */
-    public void drawProgressBar(CustomColor backColor ,CustomColor color, int x1, int y1, int x2, int y2, float progress) {
+    public void drawProgressBar(CustomColor backColor, CustomColor color, int x1, int y1, int x2, int y2, float progress) {
         drawRect(backColor,x1,y1,x2,y2);
 
         float xMin  = Math.min(x1, x2),

@@ -19,7 +19,7 @@ public class UIETextBox extends UIEClickZone {
 
     public UIETextBox(float anchorX, float anchorY, int offsetX, int offsetY, int width, boolean active, String text, boolean textDisappearsOnNextClick, BiConsumer<UI, String> onTextChanged) {
         super(anchorX, anchorY, offsetX, offsetY, width, SmartFontRenderer.CHAR_HEIGHT, active, null);
-        this.textField = new GuiTextField(this.getId(), ScreenRenderer.fontRenderer, this.position.getDrawingX(), this.position.getDrawingY(), width,20);
+        this.textField = new GuiTextField(this.getId(), ScreenRenderer.fontRenderer, this.position.getDrawingX(), this.position.getDrawingY(), width, 20);
         this.textField.setText(text);
         this.textDisappearsOnNextClick = textDisappearsOnNextClick;
         this.onTextChanged = onTextChanged;
@@ -37,8 +37,8 @@ public class UIETextBox extends UIEClickZone {
 
     public void keyTyped(char c, int i, UI ui) {
         String old = textField.getText();
-        this.textField.textboxKeyTyped(c,i);
-        this.onTextChanged.accept(ui,old);
+        this.textField.textboxKeyTyped(c, i);
+        this.onTextChanged.accept(ui, old);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class UIETextBox extends UIEClickZone {
 
     @Override
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
-        this.textField.mouseClicked(mouseX,mouseY,button.ordinal());
+        this.textField.mouseClicked(mouseX, mouseY, button.ordinal());
         if(textDisappearsOnNextClick && (mouseX >= this.textField.x && mouseX < this.textField.x + this.textField.width && mouseY >= this.textField.y && mouseY < this.textField.y + this.textField.height) && button == MouseButton.LEFT) {
             textField.setText("");
             textDisappearsOnNextClick = false;

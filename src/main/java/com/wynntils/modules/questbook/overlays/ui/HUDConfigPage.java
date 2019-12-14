@@ -24,6 +24,6 @@ public class HUDConfigPage extends QuestBookPage {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various",  TextFormatting.GRAY + "Wynntils overlays.", "",  TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various", TextFormatting.GRAY + "Wynntils overlays.", "", TextFormatting.GREEN + "Left click to select");
     }
 }

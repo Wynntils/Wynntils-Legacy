@@ -44,7 +44,7 @@ public class UIEButton extends UIEClickZone {
         super.render(mouseX, mouseY);
         if(!visible) return;
 
-        width = (int) Math.max( this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, texture == null ? 0 : texture.width);
+        width = (int) Math.max(this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, texture == null ? 0 : texture.width);
 
         if (!active) {
             if(texture != null) {

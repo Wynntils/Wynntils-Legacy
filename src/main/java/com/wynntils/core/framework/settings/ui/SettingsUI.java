@@ -340,7 +340,7 @@ public class SettingsUI extends UI {
             if(!visible) return;
             hovering = mouseX >= position.getDrawingX() && mouseX < position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY < position.getDrawingY()+height;
             active = !currentSettingsPath.equals(this.path);
-            width = Math.max( this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
+            width = Math.max(this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
 
             CustomColor color = !active ? TEXTCOLOR_NOTACTIVE : hovering ? TEXTCOLOR_HOVERING : (!searchText.isEmpty() && !isSearched) ? TEXTCOLOR_UNSEARCHED : TEXTCOLOR_NORMAL;
             drawString(text, this.position.getDrawingX()+width/2f, this.position.getDrawingY()+height/2f-4f, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);

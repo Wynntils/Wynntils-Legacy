@@ -62,8 +62,8 @@ public class UpdateOverlay extends Overlay {
             timeout = System.currentTimeMillis();
         }
 
-        drawRect(background, -172,0 - size, 0, 62 - size);
-        drawRect(box, -170,0 - size, 0, 60 - size);
+        drawRect(background, -172, 0 - size, 0, 62 - size);
+        drawRect(box, -170, 0 - size, 0, 60 - size);
 
         drawString("Wynntils " + TextFormatting.GREEN + "v" + Reference.VERSION + " - " + TextFormatting.WHITE + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
         if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
@@ -74,8 +74,8 @@ public class UpdateOverlay extends Overlay {
 
         drawString("Download automagically? " + TextFormatting.GREEN + "(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
-        drawRect(yes, -155,40 - size, -95, 55 - size);
-        drawRect(no, -75 ,40 - size, -15, 55 - size);
+        drawRect(yes, -155, 40 - size, -95, 55 - size);
+        drawRect(no, -75, 40 - size, -15, 55 - size);
 
         drawString("Yes (y)", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         drawString("No (n)", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);

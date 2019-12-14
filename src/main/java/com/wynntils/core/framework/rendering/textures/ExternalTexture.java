@@ -33,7 +33,7 @@ public class ExternalTexture extends Texture {
             this.glID = TextureUtil.glGenTextures();
             width = img.getWidth();
             height = img.getHeight();
-            TextureUtil.uploadTextureImageAllocate(glID,img,false,false);
+            TextureUtil.uploadTextureImageAllocate(glID, img, false, false);
             loaded = true;
             return ActionResult.SUCCESS;
         } catch (Exception e) {

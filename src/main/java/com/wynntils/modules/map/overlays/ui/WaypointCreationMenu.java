@@ -97,15 +97,15 @@ public class WaypointCreationMenu extends UI {
         zCoordField.setText(Integer.toString(initialZ));
         yCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getY()));
 
-        nameFieldLabel = new GuiLabel(mc.fontRenderer,0,this.width/2 - 80,this.height/2 - 81,40,10,0xFFFFFF);
+        nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width/2 - 80, this.height/2 - 81, 40, 10, 0xFFFFFF);
         nameFieldLabel.addLine("Waypoint Name:");
-        xCoordFieldLabel = new GuiLabel(mc.fontRenderer,1,this.width/2 - 75,this.height/2 - 24,40,10,0xFFFFFF);
+        xCoordFieldLabel = new GuiLabel(mc.fontRenderer, 1, this.width/2 - 75, this.height/2 - 24, 40, 10, 0xFFFFFF);
         xCoordFieldLabel.addLine("X");
-        yCoordFieldLabel = new GuiLabel(mc.fontRenderer,2,this.width/2 + 45,this.height/2 - 24,40,10,0xFFFFFF);
+        yCoordFieldLabel = new GuiLabel(mc.fontRenderer, 2, this.width/2 + 45, this.height/2 - 24, 40, 10, 0xFFFFFF);
         yCoordFieldLabel.addLine("Y");
-        zCoordFieldLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 15,this.height/2 - 24,40,10,0xFFFFFF);
+        zCoordFieldLabel = new GuiLabel(mc.fontRenderer, 3, this.width/2 - 15, this.height/2 - 24, 40, 10, 0xFFFFFF);
         zCoordFieldLabel.addLine("Z");
-        coordinatesLabel = new GuiLabel(mc.fontRenderer,3,this.width/2 - 80,this.height/2 - 41,40,10,0xFFFFFF);
+        coordinatesLabel = new GuiLabel(mc.fontRenderer, 3, this.width/2 - 80, this.height/2 - 41, 40, 10, 0xFFFFFF);
         coordinatesLabel.addLine("Coordinates:");
 
         boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
@@ -218,8 +218,8 @@ public class WaypointCreationMenu extends UI {
         zCoordFieldLabel.drawLabel(mc, mouseX, mouseY);
         coordinatesLabel.drawLabel(mc, mouseX, mouseY);
 
-        fontRenderer.drawString("Icon:", this.width/2 - 80,this.height/2,0xFFFFFF, true);
-        fontRenderer.drawString("Colour:", this.width/2,this.height/2,0xFFFFFF, true);
+        fontRenderer.drawString("Icon:", this.width/2 - 80, this.height/2, 0xFFFFFF, true);
+        fontRenderer.drawString("Colour:", this.width/2, this.height/2, 0xFFFFFF, true);
 
         float centreX = this.width / 2f - 60 + 9;
         float centreZ = this.height / 2f + 10 + 9;
@@ -248,7 +248,7 @@ public class WaypointCreationMenu extends UI {
         super.keyTyped(typedChar, keyCode);
         nameField.textboxKeyTyped(typedChar, keyCode);
         xCoordField.textboxKeyTyped(typedChar, keyCode);
-        yCoordField.textboxKeyTyped(typedChar,keyCode);
+        yCoordField.textboxKeyTyped(typedChar, keyCode);
         zCoordField.textboxKeyTyped(typedChar, keyCode);
         isAllValidInformation();
     }

@@ -51,7 +51,7 @@ public enum ReflectionFields {
 
     public void setValue(Object parent, Object value) {
         try{
-            field.set(parent,value);
+            field.set(parent, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -176,7 +176,7 @@ public class IdentificationContainer {
             return perfectChance = Fraction.getFraction(131 - perfectRawRoll, 101);
         }
 
-        return perfectChance = Fraction.getFraction( perfectRawRoll - 69, 61);
+        return perfectChance = Fraction.getFraction(perfectRawRoll - 69, 61);
     }
 
     /**

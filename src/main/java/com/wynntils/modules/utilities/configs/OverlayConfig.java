@@ -373,7 +373,7 @@ public class OverlayConfig extends SettingsClass {
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
-        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?", order = 0)
+        @Setting(displayName = "Territory Feed", description = "Should the territory feed be displayed?", order = 0)
         public boolean enabled = true;
 
         @Setting(displayName = "Animation Length", description = "How long (in seconds) should messages on the territory feed be displayed?")

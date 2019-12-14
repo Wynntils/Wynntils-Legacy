@@ -98,7 +98,7 @@ public class TabGUI extends GuiScreen {
         simpleRegexSettings.add(allRegex = new GuiCheckBox(10,x - 100, y - 25, "All", false));
         simpleRegexSettings.add(localRegex = new GuiCheckBox(11,x - 50, y - 25, "Local", false));
         simpleRegexSettings.add(guildRegex = new GuiCheckBox(12,x, y - 25, "Guild", false));
-        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13, x + 50 , y - 25, "Party", false));
+        simpleRegexSettings.add(partyRegex = new GuiCheckBox(13, x + 50, y - 25, "Party", false));
         simpleRegexSettings.add(shoutsRegex = new GuiCheckBox(14,x - 100, y - 10, "Shouts", false));
         simpleRegexSettings.add(pmRegex = new GuiCheckBox(15,x - 50, y - 10, "PMs", false));
         buttonList.addAll(simpleRegexSettings);
