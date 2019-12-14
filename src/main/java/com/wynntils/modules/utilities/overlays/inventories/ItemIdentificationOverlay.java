@@ -15,6 +15,7 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
+import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
@@ -69,17 +70,23 @@ public class ItemIdentificationOverlay implements Listener {
 
     private static void replaceLore(ItemStack stack) {
         if(!stack.hasDisplayName() || !stack.hasTagCompound()) return;
-        if(stack.getTagCompound().hasKey("wynntilsIgnore")) return;
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt.hasKey("wynntilsIgnore")) return;
+
+        String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+
+        // Check if unidentified item.
+        if (itemName.contains("Unidentified")) {
+            // Add possible identifications
+            nbt.setBoolean("wynntilsIgnore", true);
+            addItemGuesses(stack);
+            return;
+        }
 
         //check if item is a valid item if not ignore it
-        if(!stack.getTagCompound().hasKey("wynntils")) {
-            String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())); //this replace allows market items to be scanned
-            ItemProfile item = WebManager.getItems().getOrDefault(itemName, null);
-            if(item == null) {
-                NBTTagCompound compound = stack.getTagCompound();
-                compound.setBoolean("wynntilsIgnore", true);
-                return;
-            }
+        if (!nbt.hasKey("wynntils") && WebManager.getItems().get(itemName) == null) {
+            nbt.setBoolean("wynntilsIgnore", true);
+            return;
         }
 
         NBTTagCompound wynntils = generateData(stack);
@@ -251,15 +258,65 @@ public class ItemIdentificationOverlay implements Listener {
         stack.setStackDisplayName(item.getTier().getColor() + item.getDisplayName() + specialDisplay);
 
         //applying lore
-        NBTTagCompound compound = stack.getTagCompound().getCompoundTag("display");
+        NBTTagCompound compound = nbt.getCompoundTag("display");
         NBTTagList list = new NBTTagList();
 
         newLore.forEach(c -> list.appendTag(new NBTTagString(c)));
 
         compound.setTag("Lore", list);
 
-        stack.getTagCompound().setTag("wynntils", wynntils);
-        stack.getTagCompound().setTag("display", compound);
+        nbt.setTag("wynntils", wynntils);
+        nbt.setTag("display", compound);
+    }
+
+    private static void addItemGuesses(ItemStack stack) {
+        String name = StringUtils.normalizeBadString(stack.getDisplayName());
+        String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
+        String level = null;
+
+        List<String> lore = ItemUtils.getLore(stack);
+
+        for (String aLore : lore) {
+            if (aLore.contains("Lv. Range")) {
+                level = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
+                break;
+            }
+        }
+
+        if (itemType == null || level == null) return;
+
+        ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
+        if (igp == null) return;
+
+        HashMap<String, String> rarityMap = igp.getItems().get(itemType);
+        if (rarityMap == null) return;
+
+        String items = null;
+        String color = null;
+
+        if (name.startsWith(AQUA.toString())) {
+            items = rarityMap.get("Legendary");
+            color = AQUA.toString();
+        } else if (name.startsWith(LIGHT_PURPLE.toString())) {
+            items = rarityMap.get("Rare");
+            color = LIGHT_PURPLE.toString();
+        } else if (name.startsWith(YELLOW.toString())) {
+            items = rarityMap.get("Unique");
+            color = YELLOW.toString();
+        } else if (name.startsWith(DARK_PURPLE.toString())) {
+            items = rarityMap.get("Mythic");
+            color = DARK_PURPLE.toString();
+        } else if (name.startsWith(RED.toString())) {
+            items = rarityMap.get("Fabled");
+            color = RED.toString();
+        } else if (name.startsWith(GREEN.toString())) {
+            items = rarityMap.get("Set");
+            color = GREEN.toString();
+        }
+
+        if (items == null) return;
+
+        ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + color + items));
     }
 
     private static String getIDLore(IdentificationContainer id, int currentValue, String idName, SelectedIdentification idType) {
