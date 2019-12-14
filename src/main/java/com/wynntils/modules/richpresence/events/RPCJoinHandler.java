@@ -16,7 +16,6 @@ import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;

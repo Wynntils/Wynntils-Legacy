@@ -184,7 +184,7 @@ public class ItemProfile {
                 for (String idName : statuses.keySet()) {
                     IdentificationContainer id = statuses.get(idName);
 
-                    statusLore.put(idName, id.getAsLore(idName));
+                    statusLore.put(idName, getIDLore(id, idName));
                 }
 
                 itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
@@ -241,6 +241,18 @@ public class ItemProfile {
         int defense = defenseTypes.get(type);
 
         return defense < 0 ? "" + defense : "+" + defense;
+    }
+
+    private static String getIDLore(IdentificationContainer id, String idName) {
+        int baseValue = id.getBaseValue();
+        String lore;
+        if(id.isFixed() || baseValue == 0)
+            lore = (baseValue < 0 ? RED.toString() : baseValue > 0 ? GREEN + "+" : GRAY.toString()) + baseValue;
+        else
+            lore = ((id.getMin() < 0 ? RED.toString() : GREEN + "+") + id.getMin()) +
+                ((id.getMax() < 0 ? DARK_RED + " to " + RED : DARK_GREEN + " to " + GREEN + "+") + id.getMax());
+
+        return lore + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
     }
 
 }

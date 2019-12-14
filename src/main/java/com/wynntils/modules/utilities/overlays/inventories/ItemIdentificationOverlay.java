@@ -10,18 +10,20 @@ import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.RainbowText;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.lang3.math.Fraction;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
@@ -69,7 +71,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         //check if item is a valid item if not ignore it
         if(!stack.getTagCompound().hasKey("wynntils")) {
-            String itemName = getTextWithoutFormattingCodes(stack.getDisplayName()).replace("À", ""); //this replace allows market items to be scanned
+            String itemName = Utils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())); //this replace allows market items to be scanned
             ItemProfile item = WebManager.getItems().getOrDefault(itemName, null);
             if(item == null) {
                 NBTTagCompound compound = stack.getTagCompound();
@@ -98,20 +100,35 @@ public class ItemIdentificationOverlay implements Listener {
 
         //generating id lores
         HashMap<String, String> idLore = new HashMap<>();
-        double specialAmount = 0;
+
+        double cumRelative = 0;
+        int nonFixedIDs = 0;
+        boolean hadAnyIDs = false;
+        boolean hasInvalidIDs = false;
+
         if(wynntils.hasKey("ids")) {
             NBTTagCompound ids = wynntils.getCompoundTag("ids");
             for(String idName : ids.getKeySet()) {
                 if(!item.getStatuses().containsKey(idName)) continue;
+                hadAnyIDs = true;
 
-                Pair<String, Double> lore = item.getStatuses().get(idName).getAsLore(
-                        idName, ids.getInteger(idName), idType
-                );
+                IdentificationContainer id = item.getStatuses().get(idName);
+                int currentValue = ids.getInteger(idName);
 
-                specialAmount += lore.b;
-                idLore.put(idName, lore.a);
+                idLore.put(idName, getIDLore(id, currentValue, idName, idType));
+
+                if (!id.isFixed() && id.getBaseValue() != 0) {
+                    double relativeValue = id.getRelativeValue(currentValue);
+                    if (relativeValue > 1 || relativeValue < 0) {
+                        hasInvalidIDs = true;
+                        relativeValue = MathHelper.clamp(relativeValue, 0, 1);
+                    }
+                    cumRelative += relativeValue;
+                    ++nonFixedIDs;
+                }
             }
         }
+
 
         //copying some parts of the old lore (stops on ids, powder or quality)
         boolean ignoreNext = false;
@@ -213,9 +230,9 @@ public class ItemIdentificationOverlay implements Listener {
 
         //special displayname
         String specialDisplay = "";
-        if(specialAmount != 0) {
+        if (hadAnyIDs && nonFixedIDs != 0) {
             if(idType == SelectedIdentification.PERCENTAGES) {
-                double mean = specialAmount / (double)idLore.size();
+                double mean = (cumRelative * 100) / nonFixedIDs;
 
                 //perfect item
                 if(mean >= 100 && !item.isIdentified()) wynntils.setBoolean("isPerfect", true);
@@ -225,7 +242,7 @@ public class ItemIdentificationOverlay implements Listener {
                 else if(mean >= 30) specialDisplay += YELLOW;
                 else specialDisplay += RED;
 
-                specialDisplay += " [" + (int)mean + "%]";
+                specialDisplay += " [" + (hasInvalidIDs ? "~" : Integer.toString((int) mean)) + "%]";
             }
         }
 
@@ -243,10 +260,49 @@ public class ItemIdentificationOverlay implements Listener {
         stack.getTagCompound().setTag("display", compound);
     }
 
+    private static String getIDLore(IdentificationContainer id, int currentValue, String idName, SelectedIdentification idType) {
+        String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString()) + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+        int baseValue = id.getBaseValue();
+        if (id.isFixed() || baseValue == 0) return lore;
+
+        int min = id.getMin();
+        int max = id.getMax();
+
+        String suffix;
+
+        switch (idType) {
+            case MIN_MAX:  // [min, max]
+                if (baseValue < 0) suffix = DARK_RED + "[" + RED + "" + min + ", " + max + DARK_RED + "]";
+                else suffix = DARK_GREEN + "[" + GREEN + "" + min + ", " + max + DARK_GREEN + "]";
+                break;
+
+            case UPGRADE_CHANCES:  // ⇧% ⇩% ★%
+                IdentificationContainer.ReidentificationChances chances = id.getChances(currentValue);
+                double increasePct = chances.increase.getNumerator() * 100D / chances.increase.getDenominator();
+                double decreasePct = chances.decrease.getNumerator() * 100D / chances.decrease.getDenominator();
+                double perfectPct = id.getPerfectChance().multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
+                suffix = String.format(
+                    AQUA + "\u21E7%.0f%% " + RED + "\u21E9%.0f%% " + GOLD + "\u2605%.1f%%",
+                    increasePct, decreasePct, perfectPct
+                );
+                break;
+
+            default:  // [id%]
+                double value = id.getRelativeValue(currentValue) * 100;
+                if (value >= 97d) suffix = AQUA.toString();
+                else if (value >= 80d) suffix = GREEN.toString();
+                else if (value >= 30) suffix = YELLOW.toString();
+                else suffix = RED.toString();
+                suffix += "[" + (value > 100 || value < 0 ? "~" : Integer.toString((int) value)) + "%]";
+        }
+
+        return lore + " " + suffix;
+    }
+
     private static NBTTagCompound generateData(ItemStack stack) {
         SelectedIdentification idType;
         if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = SelectedIdentification.MIN_MAX;
-        //else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = SelectedIdentification.UPGRADE_CHANCES; //TODO needs better math
+        else if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = SelectedIdentification.UPGRADE_CHANCES;
         else idType = SelectedIdentification.PERCENTAGES;
 
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
@@ -266,7 +322,7 @@ public class ItemIdentificationOverlay implements Listener {
         NBTTagCompound mainTag = new NBTTagCompound();
 
         { //main data
-            mainTag.setString("originName", getTextWithoutFormattingCodes(stack.getDisplayName()).replace("À", "")); //this replace allow market items to be scanned
+            mainTag.setString("originName", Utils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()))); //this replace allow market items to be scanned
             mainTag.setString("currentType", idType.toString());
             mainTag.setBoolean("shouldUpdate", true);
         }

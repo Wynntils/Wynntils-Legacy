@@ -25,6 +25,7 @@ import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
@@ -376,6 +377,7 @@ public class WebManager {
 
                 HashMap<String, ItemProfile> citems = new HashMap<>();
                 for(ItemProfile prof : gItems) {
+                    prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
                     citems.put(prof.getDisplayName(), prof);
                 }
 
