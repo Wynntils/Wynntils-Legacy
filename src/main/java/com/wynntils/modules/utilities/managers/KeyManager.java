@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.framework.ui.UI;
@@ -13,6 +14,10 @@ import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.network.play.client.CPacketClickWindow;
 import org.lwjgl.input.Keyboard;
 
 public class KeyManager {
@@ -59,6 +64,17 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Cast Fourth Spell", Keyboard.KEY_V, "Wynntils", true, QuickCastManager::castFourthSpell);
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
+
+        CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", true, () -> {
+            if (!Reference.onWorld) return;
+
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            player.connection.sendPacket(new CPacketClickWindow(
+                    player.inventoryContainer.windowId,
+                    13, 0, ClickType.PICKUP, player.inventory.getStackInSlot(13),
+                    player.inventoryContainer.getNextTransactionID(player.inventory)
+            ));
+        });
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
     }
