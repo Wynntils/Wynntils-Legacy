@@ -253,6 +253,8 @@ public class ClientEvents implements Listener {
         SocketManager.emitEvent("add party member", e.getMember());
     }
 
+    long lastRequest;
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickHandler(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END || !Reference.onWorld) return;
@@ -260,8 +262,10 @@ public class ClientEvents implements Listener {
         EntityPlayer player = Minecraft.getMinecraft().player;
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
 
-        if (lastPosition != currentPosition) {
+        if (lastPosition != currentPosition && System.currentTimeMillis() - lastRequest >= 2000) {
             SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+            lastRequest = System.currentTimeMillis();
+
         }
 
         lastPosition = currentPosition;
