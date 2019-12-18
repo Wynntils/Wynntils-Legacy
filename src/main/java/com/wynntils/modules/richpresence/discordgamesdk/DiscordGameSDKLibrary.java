@@ -4,9 +4,9 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.ptr.PointerByReference;
-import com.wynntils.Reference;
+import com.wynntils.modules.richpresence.profiles.RichProfile;
 
-import java.io.File;
+import java.util.Collections;
 
 /**
  * JNA Wrapper for library <b>DiscordGameSDK</b><br>
@@ -21,11 +21,9 @@ import java.io.File;
  * <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public interface DiscordGameSDKLibrary extends Library {
-    String JNA_LIBRARY_NAME = "discord_game_sdk";
-    File LIB_FILE = new File(new File(Reference.MOD_STORAGE_ROOT, "natives"), System.mapLibraryName(JNA_LIBRARY_NAME));
-    String LIB_PATH = LIB_FILE.getAbsolutePath();
-    NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(LIB_PATH);
-    DiscordGameSDKLibrary INSTANCE = Native.loadLibrary(LIB_PATH, DiscordGameSDKLibrary.class);
+    public static final String JNA_LIBRARY_NAME = RichProfile.GAME_SDK_FILE.getAbsolutePath();
+    public static final NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(JNA_LIBRARY_NAME, Collections.singletonMap("classloader", DiscordGameSDKLibrary.class.getClassLoader()));
+    public static final DiscordGameSDKLibrary INSTANCE = Native.loadLibrary(JNA_LIBRARY_NAME, DiscordGameSDKLibrary.class);
 
     /**
      * <i>native declaration : line 27</i><br>

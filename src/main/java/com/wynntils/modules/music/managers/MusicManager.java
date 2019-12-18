@@ -71,7 +71,7 @@ public class MusicManager {
         for (MusicProfile mp : availableMusics.values()) {
             if (mp.getName().contains("(") && mp.getName().contains(")")) {
                 Matcher mc = regex.matcher(mp.getName());
-                while(mc.find()) {
+                while (mc.find()) {
                     String value = mc.group(1).replace("(", "").replace(")", "");
                     String toSearch = location.contains(" ") ? location.split(" ")[0] : location;
                     if (value.equalsIgnoreCase(location)) {  // perfect match

@@ -4,6 +4,7 @@
 
 package com.wynntils;
 
+import com.sun.jna.Platform;
 import net.minecraft.client.multiplayer.ServerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +20,8 @@ public class Reference {
     public static String VERSION = "";
     public static int BUILD_NUMBER = -1;
     public static final File MOD_STORAGE_ROOT = new File("wynntils");
-    public static final File MOD_ASSETS_ROOT = new File(MOD_STORAGE_ROOT, "assets");
+    public static final File NATIVES_ROOT = new File(Reference.MOD_STORAGE_ROOT, "natives");
+    public static final File PLATFORM_NATIVES_ROOT = new File(NATIVES_ROOT, Platform.RESOURCE_PREFIX);
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
 
     private static String userWorld = null;

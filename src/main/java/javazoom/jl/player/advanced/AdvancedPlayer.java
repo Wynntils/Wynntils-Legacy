@@ -52,7 +52,7 @@ public class AdvancedPlayer {
             this.listener.playbackStarted(this.createEvent(PlaybackEvent.STARTED));
         }
 
-        while(var1-- > 0 && var2) {
+        while (var1-- > 0 && var2) {
             var2 = this.decodeFrame();
         }
 

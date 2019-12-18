@@ -45,6 +45,8 @@ import java.util.*;
 
 public class WebManager {
 
+    public static final File API_CACHE_ROOT = new File(Reference.MOD_STORAGE_ROOT, "apicache");
+
     private static @Nullable WebReader apiUrls;
 
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
@@ -79,7 +81,6 @@ public class WebManager {
     private static WebRequestHandler handler = new WebRequestHandler();
 
     private static final int REQUEST_TIMEOUT_MILLIS = 16000;
-    private static final File apiCacheFolder = new File(Reference.MOD_STORAGE_ROOT.getPath(), "apicache");
 
     public static void reset() {
         apiUrls = null;
@@ -262,7 +263,7 @@ public class WebManager {
     public static void updateTerritories(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("Territory");
         handler.addRequest(new WebRequestHandler.Request(url, "territory")
-            .cacheTo(new File(apiCacheFolder, "territories.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
             .handleJsonObject(json -> {
                 if (!json.has("territories")) return false;
 
@@ -299,7 +300,7 @@ public class WebManager {
 
         String url = apiUrls == null ? null : apiUrls.get("GuildList");
         handler.addRequest(new WebRequestHandler.Request(url, "guild_list")
-            .cacheTo(new File(apiCacheFolder, "guilds.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "guilds.json"))
             .handleJsonObject(json -> {
                 if (!json.has("guilds")) return false;
                 Type type = new TypeToken<ArrayList<String>>() {
@@ -370,7 +371,7 @@ public class WebManager {
     public static void updateItemList(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("NewItemList");
         handler.addRequest(new WebRequestHandler.Request(url, "new_item_list")
-            .cacheTo(new File(apiCacheFolder, "new_items.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "new_items.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("newItemList"))
             .handleJsonArray(j -> {
                 ItemProfile[] gItems = gson.fromJson(j, ItemProfile[].class);
@@ -395,7 +396,7 @@ public class WebManager {
     public static void updateIdentificationOrderer(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("IdentificationOrder");
         handler.addRequest(new WebRequestHandler.Request(url, "identification_order")
-                .cacheTo(new File(apiCacheFolder, "identification_order.json"))
+                .cacheTo(new File(API_CACHE_ROOT, "identification_order.json"))
                 .handleJsonObject(j -> {
                     IdentificationOrderer.INSTANCE = gson.fromJson(j, IdentificationOrderer.class);
                     return true;
@@ -409,7 +410,7 @@ public class WebManager {
     public static void updateMapMarkers(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
         handler.addRequest(new WebRequestHandler.Request(url, "map_markers")
-            .cacheTo(new File(apiCacheFolder, "map_markers.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "map_markers.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
             .handleJsonObject(main -> {
                 JsonArray jsonArray = main.getAsJsonArray("locations");
@@ -431,7 +432,7 @@ public class WebManager {
     public static void updateMapRefineries(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("RefineryLocations");
         handler.addRequest(new WebRequestHandler.Request(url, "map_markers.refineries")
-            .cacheTo(new File(apiCacheFolder, "map_refineries.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "map_refineries.json"))
             .handleJson(j -> {
                 if (!j.isJsonArray()) return false;
                 JsonArray jsonArray = j.getAsJsonArray();
@@ -452,7 +453,7 @@ public class WebManager {
     public static void updateItemGuesses(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("ItemGuesses");
         handler.addRequest(new WebRequestHandler.Request(url, "item_guesses")
-            .cacheTo(new File(apiCacheFolder, "item_guesses.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "item_guesses.json"))
             .handleJsonObject(json -> {
                 Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
                 }.getType();
@@ -470,7 +471,7 @@ public class WebManager {
     public static void updatePlayerProfile(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
         handler.addRequest(new WebRequestHandler.Request(url, "player_profile")
-            .cacheTo(new File(apiCacheFolder, "player_stats.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
             .handleJsonObject(json -> {
                 Type type = new TypeToken<PlayerStatsProfile>() {
                 }.getType();
@@ -488,7 +489,7 @@ public class WebManager {
     public static void updateUsersRoles(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUsersRoles";
         handler.addRequest(new WebRequestHandler.Request(url, "user_account.roles")
-            .cacheTo(new File(apiCacheFolder, "user_roles.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "user_roles.json"))
             .handleJsonObject(main -> {
                 GsonBuilder builder = new GsonBuilder();
                 builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -516,7 +517,7 @@ public class WebManager {
     public static void updateUsersModels(WebRequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUserModels";
         handler.addRequest(new WebRequestHandler.Request(url, "user_account.models")
-            .cacheTo(new File(apiCacheFolder, "user_models.json"))
+            .cacheTo(new File(API_CACHE_ROOT, "user_models.json"))
             .handleJsonObject(main -> {
                 GsonBuilder builder = new GsonBuilder();
                 builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
@@ -762,7 +763,7 @@ public class WebManager {
     private static void tryReloadApiUrls(boolean async, boolean inSetup) {
         if (apiUrls == null) {
             handler.addRequest(new WebRequestHandler.Request("https://api.wynntils.com/webapi", "webapi")
-                .cacheTo(new File(apiCacheFolder, "webapi.txt"))
+                .cacheTo(new File(API_CACHE_ROOT, "webapi.txt"))
                 .handleWebReader(reader -> {
                     apiUrls = reader;
                     if (!inSetup) {

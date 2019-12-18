@@ -47,7 +47,7 @@ public class GameUpdateOverlay extends Overlay {
         int lines = 0;
 
         Iterator<MessageContainer> messages = messageQueue.iterator();
-        while(messages.hasNext()) {
+        while (messages.hasNext()) {
             MessageContainer message = messages.next();
 
             if (message.getRemainingTime() <= 0.0f) messages.remove();  // remove the message if the time has come

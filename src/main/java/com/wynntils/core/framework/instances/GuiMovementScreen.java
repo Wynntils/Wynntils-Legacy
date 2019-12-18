@@ -24,7 +24,7 @@ public class GuiMovementScreen extends GuiScreen {
         }
 
         if (Keyboard.isCreated()) {
-            while(Keyboard.next()) {
+            while (Keyboard.next()) {
 
                 for (KeyBinding key : mc.gameSettings.keyBindings) {
                     if (key.getKeyCode() != Keyboard.getEventKey() || key.getKeyConflictContext() != WynntilsConflictContext.ALLOW_MOVEMENTS) continue;

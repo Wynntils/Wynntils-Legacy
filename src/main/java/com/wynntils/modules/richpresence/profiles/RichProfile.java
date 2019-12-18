@@ -18,9 +18,13 @@ import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 
 public class RichProfile {
+
+    public static final File GAME_SDK_FILE = new File(Reference.PLATFORM_NATIVES_ROOT, System.mapLibraryName("discord_game_sdk"));
 
     IDiscordCore.ByReference discordCore = null;
     IDiscordActivityManager activityManager = null;
@@ -39,26 +43,34 @@ public class RichProfile {
     long applicationID = 0;
 
     public RichProfile(long id) {
-        File natives = new File(Reference.MOD_STORAGE_ROOT, "natives");
-        File file = new File(natives, System.mapLibraryName("discord_game_sdk"));
         WebRequestHandler handler = new WebRequestHandler();
-        handler.addRequest(new WebRequestHandler.Request(WebManager.getApiUrls().get("RichPresence") + "versioning.php", "richpresence_versioning")
-            .cacheTo(new File(natives, "richpresence_versioning.txt"))
+        String apiRoot = WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("RichPresence");
+        String url = apiRoot == null ? null : apiRoot + "versioning.php";
+        handler.addRequest(new WebRequestHandler.Request(url, "richpresence_versioning")
+            .cacheTo(new File(Reference.NATIVES_ROOT, "richpresence_versioning.txt"))
             .handleWebReader(reader -> {
                 String md5 = reader.get(Platform.RESOURCE_PREFIX);
-                if (!file.exists() || !new MD5Verification(file).equals(md5)) {
-                    DownloaderManager.queueDownload("Discord Game SDK", WebManager.getApiUrls().get("RichPresence") + Platform.RESOURCE_PREFIX + "/" + System.mapLibraryName("discord_game_sdk"), new File(Reference.MOD_STORAGE_ROOT, "natives"), DownloadAction.SAVE, (success) -> {
-                        if (success) {
-                            ModCore.mc().addScheduledTask(() -> {
-                                setup(id);
-                            });
-                        } else {
-                            setDisabled();
-                        }
-                    });
-                } else {
+                if (md5 != null && GAME_SDK_FILE.exists() && new MD5Verification(GAME_SDK_FILE).equals(md5)) {
                     setup(id);
+                    return true;
                 }
+
+                if (md5 == null || apiRoot == null) {
+                    // No sdk on this platform or webapi is down
+                    setDisabled();
+                    return true;
+                }
+
+                DownloaderManager.queueDownload("Discord Game SDK", apiRoot + Platform.RESOURCE_PREFIX + "/" + System.mapLibraryName("discord_game_sdk"), Reference.PLATFORM_NATIVES_ROOT, DownloadAction.SAVE, (success) -> {
+                    if (!success) {
+                        setDisabled();
+                        return;
+                    }
+
+                    ModCore.mc().addScheduledTask(() -> {
+                        setup(id);
+                    });
+                });
                 return true;
         }));
         handler.dispatchAsync();
@@ -399,14 +411,16 @@ public class RichProfile {
         if (string == null) {
             return new byte[size];
         }
-        byte[] array = Native.toByteArray(string);
-        byte[] newArray = new byte[size];
-        System.arraycopy(array, 0, newArray, 0, array.length);
-        return newArray;
+        byte[] encoded = string.getBytes(StandardCharsets.UTF_8);
+        if (encoded.length >= size) {
+            Reference.LOGGER.error("[RichPresence] Truncating string because it would be too long (From {} to {} bytes)", encoded.length + 1, size);
+            encoded[size - 1] = 0;
+        }
+        return Arrays.copyOf(encoded, size);
     }
 
     private String bytesToString(byte[] bytes) {
-        return Native.toString(bytes);
+        return Native.toString(bytes, StandardCharsets.UTF_8.name());
     }
 
 }
