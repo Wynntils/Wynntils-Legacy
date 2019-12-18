@@ -21,9 +21,11 @@ import java.io.File;
  * <a href="http://jna.dev.java.net/">JNA</a>.
  */
 public interface DiscordGameSDKLibrary extends Library {
-    public static final String JNA_LIBRARY_NAME = "discord_game_sdk";
-    public static final NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(new File(new File(Reference.MOD_STORAGE_ROOT, "natives"), System.mapLibraryName("discord_game_sdk")).getAbsolutePath());
-    public static final DiscordGameSDKLibrary INSTANCE = (DiscordGameSDKLibrary) Native.loadLibrary(DiscordGameSDKLibrary.JNA_LIBRARY_NAME, DiscordGameSDKLibrary.class);
+    String JNA_LIBRARY_NAME = "discord_game_sdk";
+    File LIB_FILE = new File(new File(Reference.MOD_STORAGE_ROOT, "natives"), System.mapLibraryName(JNA_LIBRARY_NAME));
+    String LIB_PATH = LIB_FILE.getAbsolutePath();
+    NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(LIB_PATH);
+    DiscordGameSDKLibrary INSTANCE = Native.loadLibrary(LIB_PATH, DiscordGameSDKLibrary.class);
 
     /**
      * <i>native declaration : line 27</i><br>
