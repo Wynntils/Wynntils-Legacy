@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.richpresence.events;
 
+import com.sun.jna.Pointer;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -13,7 +14,7 @@ import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.instances.FakeInventory;
 import com.wynntils.modules.richpresence.RichPresenceModule;
-import com.wynntils.modules.richpresence.discordrpc.DiscordRichPresence;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityEvents;
 import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.OnJoinGame {
+public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_callback {
 
     private static final Pattern dmRegex = Pattern.compile("§7(\\[(.*) ➤ (.*)\\])(.*)");
 
@@ -46,7 +47,7 @@ public class RPCJoinHandler implements DiscordRichPresence.DiscordEventHandlers.
         FrameworkManager.getEventBus().register(this);
     }
 
-    public void accept(String joinSecret) {
+    public void apply(Pointer eventData, String joinSecret) {
         lastSecret = new SecretContainer(joinSecret);
         if (lastSecret.getOwner().isEmpty() || lastSecret.getRandomHash().isEmpty() || lastSecret.getWorldType().equals("HB") && WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getTag() != PlayerTag.HERO)
             return;
