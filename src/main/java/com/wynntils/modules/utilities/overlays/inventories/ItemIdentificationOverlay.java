@@ -20,6 +20,7 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -196,20 +197,20 @@ public class ItemIdentificationOverlay implements Listener {
             newLore.add(oldLore);
         }
 
-        // add item lores
+        // add id lores
         if (idLore.size() > 0) {
             newLore.addAll(IdentificationOrderer.INSTANCE.order(idLore,
                     UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
 
             newLore.add(" ");
+        }
 
-            // major ids
-            if (item.getMajorIds().size() > 0) {
-                for (MajorIdentification majorId : item.getMajorIds()) {
-                    Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
-                }
-                newLore.add(" ");
+        // major ids
+        if (item.getMajorIds().size() > 0) {
+            for (MajorIdentification majorId : item.getMajorIds()) {
+                Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
             }
+            newLore.add(" ");
         }
 
         // powder lore
@@ -232,8 +233,21 @@ public class ItemIdentificationOverlay implements Listener {
         newLore.add(quality);
         if (item.getRestriction() != null) newLore.add(RED + "Untradable Item");
 
+        //merchant & dungeon purchase offers
+        if (wynntils.hasKey("purchaseInfo")) {
+            newLore.add(" ");
+            newLore.add(GOLD + "Price:");
+
+            NBTTagList purchaseInfo = wynntils.getTagList("purchaseInfo", 8 /* means NBTTagString */);
+            for (NBTBase nbtBase : purchaseInfo) {
+                newLore.add(((NBTTagString) nbtBase).getString());
+            }
+        }
+
         // item lore
         if (!item.getLore().isEmpty()) {
+            if(wynntils.hasKey("purchaseInfo")) newLore.add(" ");
+
             Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
         }
 
@@ -387,6 +401,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         NBTTagCompound idTag = new NBTTagCompound();
+        NBTTagList purchaseInfo = new NBTTagList();
         {  // lore data
             for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
@@ -419,6 +434,12 @@ public class ItemIdentificationOverlay implements Listener {
                 // powders
                 if (lColor.contains("] Powder Slots")) mainTag.setString("powderSlots", loreLine);
 
+                //dungeon and merchant prices
+                if (lColor.startsWith(" - ✔") || lColor.startsWith(" - ✖")) {
+                    purchaseInfo.appendTag(new NBTTagString(loreLine));
+                    continue;
+                }
+
                 // market
                 { Matcher market = MARKET_PRICE.matcher(lColor);
                     if (!market.find()) continue;
@@ -436,6 +457,7 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             if (idTag.getSize() > 0) mainTag.setTag("ids", idTag);
+            if(purchaseInfo.tagCount() > 0) mainTag.setTag("purchaseInfo", purchaseInfo);
         }
 
         // update compound
