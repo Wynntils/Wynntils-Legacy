@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.framework.enums.SelectedIdentification;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -13,6 +12,8 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.RainbowText;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.enums.IdentificationType;
+import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -24,9 +25,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.math.Fraction;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
@@ -103,7 +102,7 @@ public class ItemIdentificationOverlay implements Listener {
         wynntils.setBoolean("shouldUpdate", false);
 
         // objects
-        SelectedIdentification idType = SelectedIdentification.valueOf(wynntils.getString("currentType"));
+        IdentificationType idType = IdentificationType.valueOf(wynntils.getString("currentType"));
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         List<String> newLore = new ArrayList<>();
@@ -112,33 +111,31 @@ public class ItemIdentificationOverlay implements Listener {
         HashMap<String, String> idLore = new HashMap<>();
 
         double cumRelative = 0;
-        int nonFixedIDs = 0;
-        boolean hadAnyIDs = false;
-        boolean hasInvalidIDs = false;
+        int idAmount = 0;
 
         if (wynntils.hasKey("ids")) {
             NBTTagCompound ids = wynntils.getCompoundTag("ids");
             for (String idName : ids.getKeySet()) {
                 if (!item.getStatuses().containsKey(idName)) continue;
-                hadAnyIDs = true;
 
                 IdentificationContainer id = item.getStatuses().get(idName);
                 int currentValue = ids.getInteger(idName);
 
-                idLore.put(idName, getIDLore(id, currentValue, idName, idType));
+                String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
+                        + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
 
-                if (!id.isFixed() && id.getBaseValue() != 0) {
-                    double relativeValue = id.getRelativeValue(currentValue);
-                    if (relativeValue > 1 || relativeValue < 0) {
-                        hasInvalidIDs = true;
-                        relativeValue = MathHelper.clamp(relativeValue, 0, 1);
-                    }
-                    cumRelative += relativeValue;
-                    ++nonFixedIDs;
+                if(id.isFixed()) {
+                    idLore.put(idName, lore);
+                    continue;
                 }
+
+                IdentificationResult result = idType.identify(id, currentValue);
+                idLore.put(idName, lore + " " + result.getLore());
+
+                cumRelative += result.getAmount();
+                idAmount++;
             }
         }
-
 
         // copying some parts of the old lore (stops on ids, powder or quality)
         boolean ignoreNext = false;
@@ -222,10 +219,10 @@ public class ItemIdentificationOverlay implements Listener {
         // adds reroll amount if the item is not identified
         if (!item.isIdentified()) {
             int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
-            if (rollAmount != 0) quality += " [" + rollAmount + "] ";
+            if (rollAmount != 0) quality += " [" + rollAmount + "]";
 
-            quality += GREEN + "["
-                    + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount+1))
+            quality += GREEN + " ["
+                    + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount))
                     + EmeraldSymbols.E + "]";
         }
 
@@ -252,20 +249,8 @@ public class ItemIdentificationOverlay implements Listener {
 
         // special displayname
         String specialDisplay = "";
-        if (hadAnyIDs && nonFixedIDs != 0) {
-            if (idType == SelectedIdentification.PERCENTAGES) {
-                double mean = (cumRelative * 100) / nonFixedIDs;
-
-                // perfect item
-                if (mean >= 100 && !item.isIdentified()) wynntils.setBoolean("isPerfect", true);
-
-                if (mean >= 97d) specialDisplay += AQUA;
-                else if (mean >= 80d) specialDisplay += GREEN;
-                else if (mean >= 30) specialDisplay += YELLOW;
-                else specialDisplay += RED;
-
-                specialDisplay += " [" + (hasInvalidIDs ? "~" : Integer.toString((int) mean)) + "%]";
-            }
+        if (idAmount > 0 && cumRelative > 0) {
+            specialDisplay = " " + idType.getTitle(cumRelative/(double)idAmount);
         }
 
         stack.setStackDisplayName(item.getTier().getColor() + item.getDisplayName() + specialDisplay);
@@ -332,50 +317,11 @@ public class ItemIdentificationOverlay implements Listener {
         ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + color + items));
     }
 
-    private static String getIDLore(IdentificationContainer id, int currentValue, String idName, SelectedIdentification idType) {
-        String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString()) + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
-        int baseValue = id.getBaseValue();
-        if (id.isFixed() || baseValue == 0) return lore;
-
-        int min = id.getMin();
-        int max = id.getMax();
-
-        String suffix;
-
-        switch (idType) {
-            case MIN_MAX:  // [min, max]
-                if (baseValue < 0) suffix = DARK_RED + "[" + RED + "" + min + ", " + max + DARK_RED + "]";
-                else suffix = DARK_GREEN + "[" + GREEN + "" + min + ", " + max + DARK_GREEN + "]";
-                break;
-
-            case UPGRADE_CHANCES:  // ⇧% ⇩% ★%
-                IdentificationContainer.ReidentificationChances chances = id.getChances(currentValue);
-                double increasePct = chances.increase.getNumerator() * 100D / chances.increase.getDenominator();
-                double decreasePct = chances.decrease.getNumerator() * 100D / chances.decrease.getDenominator();
-                double perfectPct = id.getPerfectChance().multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
-                suffix = String.format(
-                    AQUA + "\u21E7%.0f%% " + RED + "\u21E9%.0f%% " + GOLD + "\u2605%.1f%%",
-                    increasePct, decreasePct, perfectPct
-                );
-                break;
-
-            default:  // [id%]
-                double value = id.getRelativeValue(currentValue) * 100;
-                if (value >= 97d) suffix = AQUA.toString();
-                else if (value >= 80d) suffix = GREEN.toString();
-                else if (value >= 30) suffix = YELLOW.toString();
-                else suffix = RED.toString();
-                suffix += "[" + (value > 100 || value < 0 ? "~" : Integer.toString((int) value)) + "%]";
-        }
-
-        return lore + " " + suffix;
-    }
-
     private static NBTTagCompound generateData(ItemStack stack) {
-        SelectedIdentification idType;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = SelectedIdentification.MIN_MAX;
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = SelectedIdentification.UPGRADE_CHANCES;
-        else idType = SelectedIdentification.PERCENTAGES;
+        IdentificationType idType;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = IdentificationType.MIN_MAX;
+        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = IdentificationType.UPGRADE_CHANCES;
+        else idType = IdentificationType.PERCENTAGES;
 
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
             NBTTagCompound compound = stack.getTagCompound().getCompoundTag("wynntils");

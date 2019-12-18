@@ -5,19 +5,19 @@
 package com.wynntils.webapi.profiles.item.objects;
 
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.webapi.profiles.item.enums.IdentificationType;
+import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import org.apache.commons.lang3.math.Fraction;
 
 public class IdentificationContainer {
 
-    private IdentificationType type;
+    private IdentificationModifier type;
     private int baseValue;
     private boolean isFixed;
 
-    private transient int min, max;
+    private transient int min, max = 0;
     private transient Fraction perfectChance;
 
-    public IdentificationContainer(IdentificationType type, int baseValue, boolean isFixed) {
+    public IdentificationContainer(IdentificationModifier type, int baseValue, boolean isFixed) {
         this.type = type; this.baseValue = baseValue; this.isFixed = isFixed;
         calculateMinMax();
     }
@@ -35,7 +35,7 @@ public class IdentificationContainer {
         if (max == 0) max = (int) Math.signum(baseValue);
     }
 
-    public IdentificationType getType() {
+    public IdentificationModifier getType() {
         return type;
     }
 
@@ -52,7 +52,7 @@ public class IdentificationContainer {
     }
 
     public boolean isFixed() {
-        return isFixed;
+        return (min == 0) || isFixed;
     }
 
     public String getAsLongName(String shortName) {
@@ -177,19 +177,6 @@ public class IdentificationContainer {
         }
 
         return perfectChance = Fraction.getFraction(perfectRawRoll - 69, 61);
-    }
-
-    /**
-     * How good an identification is. 0 means the worst, 1 means perfect.
-     *
-     * @param currentValue The current value of this identification
-     * @return A double from 0 to 1 of how good this identification is
-     */
-    public double getRelativeValue(int currentValue) {
-        if (isFixed || baseValue == 0) return currentValue == baseValue ? 1 : 0;
-        if (currentValue == max) return 1;
-        if (max == min) return 0;
-        return (currentValue - min) / (double) (max - min);
     }
 
     /**

@@ -4,7 +4,7 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
-public enum IdentificationType {
+public enum IdentificationModifier {
 
     INTEGER(""),
     PERCENTAGE("%"),
@@ -14,7 +14,7 @@ public enum IdentificationType {
 
     String inGame;
 
-    IdentificationType(String inGame) {
+    IdentificationModifier(String inGame) {
         this.inGame = inGame;
     }
 
