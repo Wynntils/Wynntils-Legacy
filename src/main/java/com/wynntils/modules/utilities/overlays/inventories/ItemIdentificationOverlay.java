@@ -221,13 +221,12 @@ public class ItemIdentificationOverlay implements Listener {
 
         // adds reroll amount if the item is not identified
         if (!item.isIdentified()) {
-            int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0) + 1;
+            int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
             if (rollAmount != 0) quality += " [" + rollAmount + "] ";
 
-            quality +=
-                    GREEN + "["
-                            + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount))
-                            + EmeraldSymbols.E + "]";
+            quality += GREEN + "["
+                    + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount+1))
+                    + EmeraldSymbols.E + "]";
         }
 
         newLore.add(quality);
@@ -246,7 +245,7 @@ public class ItemIdentificationOverlay implements Listener {
 
         // item lore
         if (!item.getLore().isEmpty()) {
-            if(wynntils.hasKey("purchaseInfo")) newLore.add(" ");
+            if (wynntils.hasKey("purchaseInfo")) newLore.add(" ");
 
             Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
         }
@@ -447,7 +446,9 @@ public class ItemIdentificationOverlay implements Listener {
                     NBTTagCompound marketTag = new NBTTagCompound();
 
                     if (market.group("Quantity") != null)
-                        marketTag.setInteger("quantity", Integer.parseInt(market.group("Quantity").replace(",", "")));
+                        marketTag.setInteger("quantity", Integer.parseInt(
+                                market.group("Quantity").replace(",", "").replace(" x ", "")
+                        ));
 
                     marketTag.setInteger("price", Integer.parseInt(market.group("Value").replace(",", "")));
 
