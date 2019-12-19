@@ -351,7 +351,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private boolean checkDropState(int slot, int key) {
+    private static boolean checkDropState(int slot, int key) {
         if (!Reference.onWorld) return false;
 
         if (key == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
@@ -362,7 +362,7 @@ public class ClientEvents implements Listener {
         return false;
     }
 
-    private void checkLockState(int slot) {
+    private static void checkLockState(int slot) {
         if (!Reference.onWorld) return;
 
         if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) {

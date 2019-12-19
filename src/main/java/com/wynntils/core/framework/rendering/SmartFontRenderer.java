@@ -187,7 +187,7 @@ public class SmartFontRenderer extends FontRenderer {
         return charLength + CHAR_SPACING + drawChars(text.substring(1), color, forceColor);
     }
 
-    private CustomColor decodeCommonColor(String text) {
+    private static CustomColor decodeCommonColor(String text) {
         char hexChar = text.length() > 0 ? text.charAt(0) : '\0';
 
         if ('0' <= hexChar && hexChar <= '9') return minecraftColors[hexChar - '0'];
@@ -197,7 +197,7 @@ public class SmartFontRenderer extends FontRenderer {
         return null;
     }
 
-    private CustomColor decodeCustomColor(String text) {
+    private static CustomColor decodeCustomColor(String text) {
         String[] s2 = text.split(",");
         try {
             float r = Float.parseFloat(s2[0]);

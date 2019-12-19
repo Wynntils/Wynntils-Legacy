@@ -126,7 +126,7 @@ public class PlayerInfoOverlay extends Overlay {
         return lastPlayers;
     }
 
-    private String wrapText(String input, int maxLength) {
+    private static String wrapText(String input, int maxLength) {
         if (fontRenderer.getStringWidth(input) <= maxLength) return input;
 
         StringBuilder builder = new StringBuilder();

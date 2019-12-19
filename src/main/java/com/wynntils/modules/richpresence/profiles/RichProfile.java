@@ -88,9 +88,11 @@ public class RichProfile {
 
             IDiscordUserEvents.ByReference userEvents = new IDiscordUserEvents.ByReference();
             userEvents.on_current_user_update = eventData -> {
+                if (WebManager.getAccount() == null) return;
                 DiscordUser user = new DiscordUser();
-                discordCore.get_user_manager.apply(discordCore).get_current_user.apply(discordCore.get_user_manager.apply(discordCore), user);
-                if (WebManager.getAccount() != null) WebManager.getAccount().updateDiscord(Long.toString(user.id), bytesToString(user.username) + "#" + bytesToString(user.discriminator));
+                IDiscordUserManager userManager = discordCore.get_user_manager.apply(discordCore);
+                userManager.get_current_user.apply(userManager, user);
+                WebManager.getAccount().updateDiscord(Long.toString(user.id), bytesToString(user.username) + "#" + bytesToString(user.discriminator));
             };
             IDiscordActivityEvents.ByReference activityEvents = new IDiscordActivityEvents.ByReference();
             activityEvents.on_activity_join = new RPCJoinHandler();
@@ -396,6 +398,8 @@ public class RichProfile {
     public void disconnectRichPresence() {
         if (disabled) return;
         discordCore.destroy.apply(discordCore);
+        discordCore = null;
+        disabled = true;
     }
 
     /**
@@ -412,7 +416,7 @@ public class RichProfile {
         return disabled;
     }
 
-    private byte[] toBytes(String string, int size) {
+    private static byte[] toBytes(String string, int size) {
         if (string == null) {
             return new byte[size];
         }
@@ -424,7 +428,7 @@ public class RichProfile {
         return Arrays.copyOf(encoded, size);
     }
 
-    private Memory toCString(String string) {
+    private static Memory toCString(String string) {
         if (string == null) return null;
         byte[] asBytes = string.getBytes(StandardCharsets.UTF_8);
         Memory cString = new Memory(asBytes.length + 1);
@@ -433,7 +437,7 @@ public class RichProfile {
         return cString;
     }
 
-    private String bytesToString(byte[] bytes) {
+    private static String bytesToString(byte[] bytes) {
         return Native.toString(bytes, StandardCharsets.UTF_8.name());
     }
 

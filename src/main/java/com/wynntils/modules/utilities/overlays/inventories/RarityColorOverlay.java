@@ -8,11 +8,13 @@ import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -20,6 +22,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
 
 import static net.minecraft.client.renderer.GlStateManager.color;
 import static net.minecraft.client.renderer.GlStateManager.glTexEnvi;
@@ -53,48 +57,48 @@ public class RarityColorOverlay implements Listener {
             ItemStack is = s.getStack();
             String lore = ItemUtils.getStringLore(is);
             String name = is.getDisplayName();
-            float r, g, b;
+            CustomColor colour;
 
             if (is.isEmpty()) {
                 continue;
             } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
             } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
             } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
             } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
             } else if (lore.contains(TextFormatting.LIGHT_PURPLE + "Rare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.rareHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.rareHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.rareHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
             } else if (lore.contains(TextFormatting.YELLOW + "Unique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
             } else if (lore.contains(TextFormatting.GREEN + "Set") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.setHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.setHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.setHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
             } else if (lore.contains(TextFormatting.WHITE + "Normal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
-                r = UtilitiesConfig.Items.INSTANCE.normalHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.normalHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.normalHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.normalHighlightColor;
             } else if (name.matches("^(" + TextFormatting.DARK_AQUA + ".*%.*)$")) {
-                r = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
             } else if (name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫" + TextFormatting.DARK_GRAY + "✫✫" + TextFormatting.GOLD + "]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
-                r = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor;
             } else if ((name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫✫" + TextFormatting.DARK_GRAY + "✫" + TextFormatting.GOLD + "]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight || name.endsWith(TextFormatting.DARK_PURPLE + " [" + TextFormatting.LIGHT_PURPLE + "✫✫" + TextFormatting.DARK_GRAY + "✫" + TextFormatting.DARK_PURPLE + "]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight) && !(is.getCount() == 0)) {
-                r = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor;
             } else if ((name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫✫✫" + TextFormatting.GOLD + "]") || name.endsWith(TextFormatting.DARK_AQUA + " [" + TextFormatting.AQUA + "✫✫✫" + TextFormatting.DARK_AQUA + "]")) && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
-                r = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor.b;
+                colour = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor;
             } else if (isPowder(is)) {
                 if (UtilitiesConfig.Items.INSTANCE.minPowderTier == 0 || getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                     continue;
-                r = getPowderColor(is)[0];
-                g = getPowderColor(is)[1];
-                b = getPowderColor(is)[2];
+                colour = getPowderColor(is);
             } else {
                 continue;
             }
 
+            if (colour == null) continue;
+
             // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
             ScreenRenderer.beginGL(0, 0); {
-                color(r, g, b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
+                color(colour.r, colour.g, colour.b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
                 glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                 RenderHelper.disableStandardItemLighting();
 
@@ -106,7 +110,7 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    public void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
+    public static void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
         int playerInvSlotNumber = 0;
 
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
@@ -169,9 +173,11 @@ public class RarityColorOverlay implements Listener {
             } else if (isPowder(is)) {
                 if (UtilitiesConfig.Items.INSTANCE.minPowderTier == 0 || getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier)
                     continue;
-                r = getPowderColor(is)[0];
-                g = getPowderColor(is)[1];
-                b = getPowderColor(is)[2];
+                CustomColor powderColour = getPowderColor(is);
+                if (powderColour == null) continue;
+                r = powderColour.r;
+                g = powderColour.g;
+                b = powderColour.b;
             } else {
                 continue;
             }
@@ -191,11 +197,11 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    private boolean isPowder(ItemStack is) {
-        return (is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).contains("Effect on Weapons"));
+    private static boolean isPowder(ItemStack is) {
+        return (is.getItem() == Items.DYE && is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).contains("Effect on Weapons"));
     }
 
-    private int getPowderTier(ItemStack is) {
+    private static int getPowderTier(ItemStack is) {
         if (is.getDisplayName().endsWith("III")) {
             return 3;
         } else if (is.getDisplayName().endsWith("IV")) {
@@ -211,26 +217,24 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    private float[] getPowderColor(ItemStack is) {
-        float[] returnVal;
-        if (is.getDisplayName().startsWith(TextFormatting.YELLOW.toString())) {
-            // Lightning
-            returnVal = new float[]{1f, 1f, 0.333f};
-        } else if (is.getDisplayName().startsWith(TextFormatting.AQUA.toString())) {
-            // Water
-            returnVal = new float[]{0.333f, 1f, 1f};
-        } else if (is.getDisplayName().startsWith(TextFormatting.WHITE.toString())) {
-            // Air
-            returnVal = new float[]{1f, 1f, 1f};
-        } else if (is.getDisplayName().startsWith(TextFormatting.DARK_GREEN.toString())) {
-            // Earth
-            returnVal = new float[]{0f, 0.666f, 0f};
-        } else {
-            // Fire
-            returnVal = new float[]{1f, 0.333f, 0.333f};
-        }
+    private static final HashMap<Character, CustomColor> POWDER_COLOUR_MAP = new HashMap<>(10);
+    static {
+        // Lightning
+        POWDER_COLOUR_MAP.put(TextFormatting.YELLOW.toString().charAt(1), new CustomColor(1, 1, 1 / 3f));
+        // Water
+        POWDER_COLOUR_MAP.put(TextFormatting.AQUA.toString().charAt(1), new CustomColor(1 / 3f, 1, 1));
+        // Air
+        POWDER_COLOUR_MAP.put(TextFormatting.WHITE.toString().charAt(1), new CustomColor(1, 1, 1));
+        // Earth
+        POWDER_COLOUR_MAP.put(TextFormatting.DARK_GREEN.toString().charAt(1), new CustomColor(0, 2 / 3f, 0));
+        // Fire
+        POWDER_COLOUR_MAP.put(TextFormatting.RED.toString().charAt(1), new CustomColor(1, 1 / 3f, 1 / 3f));
+    }
 
-        return returnVal;
+    private static CustomColor getPowderColor(ItemStack is) {
+        String name = is.getDisplayName();
+        if (name.length() < 2 || name.charAt(0) != '§') return null;
+        return POWDER_COLOUR_MAP.get(name.charAt(1));
     }
 
     public static void setProfessionFilter(String s) {

@@ -246,7 +246,7 @@ public class ItemProfile {
     private static String getIDLore(IdentificationContainer id, String idName) {
         int baseValue = id.getBaseValue();
         String lore;
-        if (id.isFixed() || baseValue == 0)
+        if (id.hasConstantValue())
             lore = (baseValue < 0 ? RED.toString() : baseValue > 0 ? GREEN + "+" : GRAY.toString()) + baseValue;
         else
             lore = ((id.getMin() < 0 ? RED.toString() : GREEN + "+") + id.getMin()) +
