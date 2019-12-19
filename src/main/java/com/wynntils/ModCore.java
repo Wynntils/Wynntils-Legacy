@@ -74,7 +74,6 @@ public class ModCore {
         if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
 
         FrameworkManager.postEnableModules();
-        FrameworkManager.registerCommands();
         Textures.loadTextures();
         Mappings.loadMappings();
 
