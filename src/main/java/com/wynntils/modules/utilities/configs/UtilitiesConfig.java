@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
@@ -258,6 +259,8 @@ public class UtilitiesConfig extends SettingsClass {
     public void onSettingChanged(String name) {
         if (name.equalsIgnoreCase("addItemIdentificationSpacing"))
             WebManager.getDirectItems().forEach(ItemProfile::clearGuideStack);
+        if (name.equalsIgnoreCase("changeWindowTitle")) 
+            ServerEvents.onWindowTitleSettingChanged();
     }
 
 }

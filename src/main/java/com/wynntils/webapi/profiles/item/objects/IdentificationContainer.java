@@ -14,7 +14,7 @@ public class IdentificationContainer {
     private int baseValue;
     private boolean isFixed;
 
-    private transient int min, max = 0;
+    private transient int min, max;
     private transient Fraction perfectChance;
 
     public IdentificationContainer(IdentificationModifier type, int baseValue, boolean isFixed) {
@@ -23,16 +23,13 @@ public class IdentificationContainer {
     }
 
     public void calculateMinMax() {
-        if (isFixed) {
+        if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;
             return;
         }
 
         min = (int) Math.round(baseValue * (baseValue < 0 ? 1.3 : 0.3));
-        if (min == 0) min = (int) Math.signum(baseValue);
-
         max = (int) Math.round(baseValue * (baseValue < 0 ? 0.7 : 1.3));
-        if (max == 0) max = (int) Math.signum(baseValue);
     }
 
     public IdentificationModifier getType() {
@@ -52,10 +49,14 @@ public class IdentificationContainer {
     }
 
     public boolean isFixed() {
-        return (min == max) || isFixed;
+        return isFixed;
     }
 
-    public String getAsLongName(String shortName) {
+    public boolean hasConstantValue() {
+        return isFixed || min == max;
+    }
+
+    public static String getAsLongName(String shortName) {
         if (shortName.startsWith("raw")) {
             shortName = shortName.substring(3);
             shortName = Character.toLowerCase(shortName.charAt(0)) + shortName.substring(1);
@@ -71,7 +72,7 @@ public class IdentificationContainer {
     }
 
     public static class ReidentificationChances {
-        // All fractions 0 to 1
+        // All fractions 0 to 1; decrease + remain + increase = 1
         public final Fraction decrease;  // Chance to decrease
         public final Fraction remain;  // Chance to remain the same (Usually 1/61 or 1/131)
         public final Fraction increase;  // Chance to increase
@@ -88,9 +89,7 @@ public class IdentificationContainer {
      * @return A {@link ReidentificationChances} of the result (All from 0 to 1)
      */
     public strictfp ReidentificationChances getChances(int currentValue) {
-        // Special case baseValue 1 because min == 1, even though round(1 * 0.3) == 0 (It's clamped to 1)
-        // And baseValue 0 to avoid / 0, and baseValue -1 because it's faster
-        if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
+        if (hasConstantValue()) {
             return new ReidentificationChances(
                 currentValue > baseValue ? Fraction.ONE : Fraction.ZERO,
                 currentValue == baseValue ? Fraction.ONE : Fraction.ZERO,
@@ -144,9 +143,12 @@ public class IdentificationContainer {
             increase = Fraction.getFraction(higherRawRoll - 69, 61);
         }
 
+        int remainNumerator = Math.abs(higherRawRoll - lowerRawRoll) - 1;
+        // assert remainNumerator >= 0 : "Reid math is wrong";
+
         return new ReidentificationChances(
             decrease,
-            Fraction.getFraction(Math.max(Math.abs(higherRawRoll - lowerRawRoll) - 1, 0), baseValue > 0 ? 101 : 61),
+            Fraction.getFraction(remainNumerator, baseValue > 0 ? 101 : 61),
             increase
         );
     }
@@ -157,7 +159,7 @@ public class IdentificationContainer {
     public strictfp Fraction getPerfectChance() {
         if (perfectChance != null) return perfectChance;
 
-        if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
+        if (hasConstantValue()) {
             return perfectChance = Fraction.ONE;
         }
 
@@ -181,10 +183,10 @@ public class IdentificationContainer {
 
     /**
      * @param currentValue Current value of this identification
-     * @return true if this is a valid value (If false, the API is wrong)
+     * @return true if this is a valid value (If false, the API is probably wrong)
      */
     public boolean isValidValue(int currentValue) {
-        return getChances(currentValue).remain.compareTo(Fraction.ZERO) != 0;
+        return getChances(currentValue).remain.getNumerator() != 0;  // Not a 0% chance to remain as this value after reid
     }
 
 }

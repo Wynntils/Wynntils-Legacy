@@ -157,7 +157,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         });
     }
 
-    private void serverInfo(MinecraftServer server, ICommandSender sender, String[] args) {
+    private static void serverInfo(MinecraftServer server, ICommandSender sender, String[] args) {
         int messageId = Utils.getRandom().nextInt(Integer.MAX_VALUE);
         ChatOverlay.getChat().printUnloggedChatMessage(
                 new TextComponentString(TextFormatting.GRAY + "Calculating Server Information..."
@@ -226,7 +226,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         });
     }
 
-    private TextComponentString getFilteredServerList(HashMap<String, ArrayList<String>> onlinePlayers,
+    private static TextComponentString getFilteredServerList(HashMap<String, ArrayList<String>> onlinePlayers,
                                                        String filter,
                                                        List<String> options) {
         TextComponentString text = new TextComponentString("");
@@ -274,7 +274,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             case "l":
                 List<String> arguments = Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
                 if (arguments.size() > 1 && arguments.get(0).equals("help"))
-                    return Collections.EMPTY_LIST;
+                    return Collections.emptyList();
 
                 boolean containsServerType = arguments.stream().anyMatch((arg) -> {
                     List<String> incompatibilities = new ArrayList<>(serverTypes);
@@ -308,7 +308,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
                 return getListOfStringsMatchingLastWord(args, possibleArguments);
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override

@@ -42,7 +42,7 @@ public class SettingsUI extends UI {
     private Map<String, SettingsContainer> registeredSettings = new HashMap<>();
     private List<String> sortedSettings = new ArrayList<>();
     private HashSet<String> changedSettings = new HashSet<>();
-    private List<String> searchText = (List<String>) Collections.EMPTY_LIST;
+    private List<String> searchText = Collections.emptyList();
 
     public UIEList holders = new UIEList(0.5f, 0.5f, -170, -87);
     public UIEList settings = new UIEList(0.5f, 0.5f, 5, -90);

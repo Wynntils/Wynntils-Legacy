@@ -152,7 +152,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         }
     }
 
-    private void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
+    private static void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
         TextComponentString prefixText = new TextComponentString(prefix);
         prefixText.getStyle().setColor(TextFormatting.DARK_GRAY);
         text.appendSibling(prefixText);
@@ -168,7 +168,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         text.appendSibling(descriptionText);
     }
 
-    private void handleModVersion(ICommandSender sender) {
+    private static void handleModVersion(ICommandSender sender) {
         if (Reference.developmentEnvironment) {
             TextComponentString text = new TextComponentString("Wynntils is running in a development environment.");
             text.getStyle().setColor(TextFormatting.GOLD);

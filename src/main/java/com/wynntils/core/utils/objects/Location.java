@@ -6,40 +6,39 @@ package com.wynntils.core.utils.objects;
 
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Arrays;
+import javax.vecmath.*;
 
-public class Location {
-
-    double x, y, z;
+public class Location extends Point3d {
 
     public Location(double x, double y, double z) {
-        this.x = x; this.y = y; this.z = z;
+        super(x, y, z);
     }
 
-    public Location(BlockPos from) {
-        this.x = from.getX(); this.y = from.getY(); this.z = from.getZ();
+    public Location(Tuple3d t) {
+        super(t);
     }
 
-    public double getX() {
-        return x;
+    public Location(Tuple3f t) {
+        super(t);
     }
 
-    public double getY() {
-        return y;
+    public Location(Tuple3i t) {
+        super(t.x, t.y, t.z);
     }
 
-    public double getZ() {
-        return z;
+    // Convert from net.minecraft.util.math vectors (Don't import so the names aren't confusing)
+    public Location(net.minecraft.util.math.Vec3i v) {
+        super(v.getX(), v.getY(), v.getZ());
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public Location(net.minecraft.util.math.Vec3d v) {
+        super(v.x, v.y, v.z);
     }
 
-    public Location add(Location loc) {
-        x += loc.getX();
-        y += loc.getY();
-        z += loc.getZ();
+    public Location add(Point3d loc) {
+        x += loc.x;
+        y += loc.y;
+        z += loc.z;
 
         return this;
     }
@@ -52,15 +51,19 @@ public class Location {
         return this;
     }
 
-    public Location substract(Location loc) {
-        x -= loc.getX();
-        y -= loc.getY();
-        z -= loc.getZ();
+    // An egregious circumvention of the type system; Should have two signatures:
+    // public void subtract(Vector3d) and public Vector3d subtract(Point3d), but that would
+    // be confusing for method chaining, so just subtract *anything*, and this location might become
+    // a vector if we subtracted another location.
+    public Location subtract(Tuple3d loc) {
+        x -= loc.x;
+        y -= loc.y;
+        z -= loc.z;
 
         return this;
     }
 
-    public Location substract(double x, double y, double z) {
+    public Location subtract(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
@@ -68,7 +71,7 @@ public class Location {
         return this;
     }
 
-    public Location substract(double amount) {
+    public Location subtract(double amount) {
         this.x -= amount;
         this.y -= amount;
         this.z -= amount;
@@ -76,10 +79,10 @@ public class Location {
         return this;
     }
 
-    public Location multiply(Location loc) {
-        x *= loc.getX();
-        y *= loc.getY();
-        z *= loc.getZ();
+    public Location multiply(Tuple3d loc) {
+        x *= loc.x;
+        y *= loc.y;
+        z *= loc.z;
 
         return this;
     }
@@ -100,31 +103,27 @@ public class Location {
         return this;
     }
 
-    public double distance(Location to) {
-        return Math.sqrt(
-                Math.pow(x - to.getX(), 2) +
-                Math.pow(y - to.getY(), 2) +
-                Math.pow(z - to.getZ(), 2)
-        );
+    public final BlockPos toBlockPos() {
+        return new BlockPos(x, y, z);
     }
 
-    public BlockPos toBlockPos() {
-        return new BlockPos(x, y, z);
+    public final net.minecraft.util.math.Vec3d toMinecraftVec3d() {
+        return new net.minecraft.util.math.Vec3d(x, y, z);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
 
-        if (obj instanceof Location) {
-            Location loc = (Location) obj;
-            return x == loc.x && y == loc.y && z == loc.z;
+        if (obj instanceof Tuple3d) {
+            return equals((Tuple3d) obj);
         }
         return false;
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(new double[]{ x, y, z });
+    public boolean equals(Tuple3d other) {
+        if (other == null) return false;
+        return x == other.x && y == other.y && z == other.z;
     }
+
 }

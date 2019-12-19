@@ -24,7 +24,7 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-    private static KeyHolder mapKey;
+    private KeyHolder mapKey;
     private MapProfile mainMap;
 
     @Override
