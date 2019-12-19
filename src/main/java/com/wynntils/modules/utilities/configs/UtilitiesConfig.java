@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
@@ -72,6 +73,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Indicate Newly Added Items to the Game", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
     public boolean showNewItems = false;
+
+    @Setting(displayName = "Change Window Title When on Wynncraft", description = "Should the mod change the window title to Wynncraft when on Wynncraft?")
+    public boolean changeWindowTitle = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -255,6 +259,8 @@ public class UtilitiesConfig extends SettingsClass {
     public void onSettingChanged(String name) {
         if (name.equalsIgnoreCase("addItemIdentificationSpacing"))
             WebManager.getDirectItems().forEach(ItemProfile::clearGuideStack);
+        if (name.equalsIgnoreCase("changeWindowTitle")) 
+            ServerEvents.onWindowTitleSettingChanged();
     }
 
 }

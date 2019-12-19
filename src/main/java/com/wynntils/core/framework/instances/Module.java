@@ -10,6 +10,8 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.ICommand;
+import net.minecraftforge.client.ClientCommandHandler;
 import org.apache.logging.log4j.Logger;
 
 public abstract class Module {
@@ -48,6 +50,10 @@ public abstract class Module {
 
     public KeyHolder registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {
         return FrameworkManager.registerKeyBinding(this, new KeyHolder(name, key, tab, press, onPress));
+    }
+
+    public void registerCommand(ICommand command) {
+        ClientCommandHandler.instance.registerCommand(command);
     }
 
     public Minecraft getMinecraft() {

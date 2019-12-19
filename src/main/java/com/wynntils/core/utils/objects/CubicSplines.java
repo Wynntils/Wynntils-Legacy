@@ -86,7 +86,7 @@ public final class CubicSplines {
         return cubics;
     }
 
-    public class Spline3D implements DoubleFunction<Location> {
+    public final static class Spline3D implements DoubleFunction<Location> {
 
         private ArrayList<Point3d> points;
         private Cubic[] xCubics;
@@ -158,6 +158,10 @@ public final class CubicSplines {
         public Location apply(int index, double t) {
             if (dirty) recalculateAllCubics();
 
+            return applyUnchecked(index, t);
+        }
+
+        private Location applyUnchecked(int index, double t) {
             return new Location(xCubics[index].applyAsDouble(t), yCubics[index].applyAsDouble(t), zCubics[index].applyAsDouble(t));
         }
 
@@ -175,6 +179,8 @@ public final class CubicSplines {
          * @return A list of values of this function sampled at monotonically increasing values
          */
         public List<Location> sample(int sampleRate) {
+            if (dirty) recalculateAllCubics();
+
             ArrayList<Location> result = new ArrayList<>();
             for (int i = 0; i < points.size() - 1; ++i) {
                 double chordLength = distanceAt(i);
@@ -183,7 +189,7 @@ public final class CubicSplines {
                 result.add(new Location(points.get(i)));
                 double currentSample = samplePeriod;
                 while (currentSample < 0.999) {
-                    result.add(apply(i, currentSample));
+                    result.add(applyUnchecked(i, currentSample));
                     currentSample += samplePeriod;
                 }
             }
