@@ -4,8 +4,7 @@
 
 package com.wynntils.modules.map.managers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
@@ -14,11 +13,17 @@ import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.rendering.PointRenderer;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LootRunManager {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+        .setPrettyPrinting()
+        .registerTypeAdapter(LootRunPath.class, new LootRunPathSerializer())
+        .create();
     private static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
     private static LootRunPath activePath = null;
@@ -80,7 +85,6 @@ public class LootRunManager {
     }
 
     public static void stopRecording() {
-        recordingPath.normalizePath();
         activePath = recordingPath;
     }
 
@@ -92,7 +96,7 @@ public class LootRunManager {
         if(!isRecording()) return;
 
         Location to = new Location(x + .5d, y + .1d, z + .5d);
-        if(recordingPath.getPoints().size() == 0) {
+        if (recordingPath.isEmpty()) {
             recordingPath.addPoint(to);
             return;
         }
@@ -110,13 +114,41 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if(activePath != null) {
-            PointRenderer.drawLines(activePath.getPoints(), MinecraftChatColors.AQUA);
+            PointRenderer.drawLines(activePath.getNormalizedPoints(), MinecraftChatColors.AQUA);
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
         }
         if(recordingPath != null) {
-            PointRenderer.drawLines(recordingPath.getPoints(), CommonColors.RED);
+            PointRenderer.drawLines(recordingPath.getNormalizedPoints(), CommonColors.RED);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, CommonColors.RED));
         }
+    }
+
+    public static class LootRunPathSerializer implements JsonDeserializer<LootRunPath>, JsonSerializer<LootRunPath> {
+
+        private static class Intermediary {
+            public List<Location> points;
+            public ArrayList<Location> chests;
+
+            Intermediary(LootRunPath fromPath) {
+                this.points = fromPath.getPoints();
+                this.chests = fromPath.getChests();
+            }
+
+            LootRunPath toPath() {
+                return new LootRunPath(points, chests);
+            }
+        }
+
+        @Override
+        public LootRunPath deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return context.<Intermediary>deserialize(json, Intermediary.class).toPath();
+        }
+
+        @Override
+        public JsonElement serialize(LootRunPath src, Type typeOfSrc, JsonSerializationContext context) {
+            return context.serialize(new Intermediary(src), Intermediary.class);
+        }
+
     }
 
 }

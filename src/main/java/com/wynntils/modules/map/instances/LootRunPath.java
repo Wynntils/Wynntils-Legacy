@@ -4,26 +4,48 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.wynntils.core.utils.objects.CubicSplines;
 import com.wynntils.core.utils.objects.Location;
 
+import javax.vecmath.Point3d;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class LootRunPath {
 
-    ArrayList<Location> points;
+    CubicSplines.Spline3D spline;
     ArrayList<Location> chests;
 
-    public LootRunPath(ArrayList<Location> points, ArrayList<Location> chests) {
-        this.points = points;
+    transient List<Location> lastSample;
+    transient boolean needToResample = true;
+
+    public LootRunPath(Collection<? extends Point3d> points, ArrayList<Location> chests) {
+        this.spline = new CubicSplines.Spline3D(points);
         this.chests = chests;
     }
 
     public LootRunPath() {
-        this(new ArrayList<>(), new ArrayList<>());
+        this(Collections.emptyList(), new ArrayList<>());
     }
 
-    public void addPoint(Location loc) {
-        points.add(loc);
+    public void addPoint(Point3d loc) {
+        needToResample = true;
+        spline.addPoint(loc);
+    }
+
+    public void addPoints(Collection<? extends Point3d> points) {
+        needToResample = true;
+        spline.addPoints(points);
+    }
+
+    public void addPointToFront(Location loc) {
+        addPointsToFront(Collections.singletonList(loc));
+    }
+
+    public void addPointsToFront(Collection<? extends Point3d> points) {
+        spline.addPoints(0, points);
     }
 
     public void addChest(Location loc) {
@@ -34,12 +56,19 @@ public class LootRunPath {
         return chests;
     }
 
-    public ArrayList<Location> getPoints() {
-        return points;
+    public List<Location> getPoints() {
+        return spline.getPoints();
     }
 
-    public void normalizePath() {
-        //TODO normalize calculations
+    public List<Location> getNormalizedPoints() {
+        if (needToResample) {
+            lastSample = spline.sample();
+        }
+        return lastSample;
+    }
+
+    public boolean isEmpty() {
+        return getPoints().isEmpty();
     }
 
 }

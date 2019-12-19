@@ -18,6 +18,10 @@ public final class CubicSplines {
     public static <T> Cubic[] calculate1DSpline(List<T> points, ToDoubleFunction<T> getDimension) {
         if (points.isEmpty()) {
             return new Cubic[0];
+        } else if (points.size() == 1) {
+            return new Cubic[]{
+                new Cubic(getDimension.applyAsDouble(points.get(0)), 0, 0, 0)  // Constant cubic for the single point
+            };
         }
 
         /*
@@ -88,11 +92,11 @@ public final class CubicSplines {
 
     public final static class Spline3D implements DoubleFunction<Location> {
 
-        private ArrayList<Point3d> points;
-        private Cubic[] xCubics;
-        private Cubic[] yCubics;
-        private Cubic[] zCubics;
-        private boolean dirty;
+        private ArrayList<Location> points;
+        private transient Cubic[] xCubics;
+        private transient Cubic[] yCubics;
+        private transient Cubic[] zCubics;
+        private transient boolean dirty;
 
         public Spline3D() {
             this(Collections.emptyList());
@@ -103,23 +107,43 @@ public final class CubicSplines {
         }
 
         public void setPoints(Collection<? extends Point3d> points) {
-            this.points = points == null ? new ArrayList<>() : new ArrayList<>(points);
             dirty = true;
+            if (points == null) {
+                this.points = new ArrayList<>();
+                return;
+            }
+            this.points = new ArrayList<>(points.size());
+            for (Point3d point : points) {
+                this.points.add(new Location(point));
+            }
         }
 
         public void addPoint(Point3d point) {
-            points.add(point);
             dirty = true;
+            points.add(new Location(point));
         }
 
         public void addPoints(Collection<? extends Point3d> newPoints) {
-            points.addAll(newPoints);
+            if (newPoints == null || newPoints.isEmpty()) return;
             dirty = true;
+            points.ensureCapacity(points.size() + newPoints.size());
+            for (Point3d point : newPoints) {
+                points.add(new Location(point));
+            }
         }
 
         public void addPoints(int index, Collection<? extends Point3d> newPoints) {
-            points.addAll(index, newPoints);
+            if (newPoints == null || newPoints.isEmpty()) return;
             dirty = true;
+            ArrayList<Location> copy = new ArrayList<>(newPoints.size());
+            for (Point3d point : newPoints) {
+                copy.add(new Location(point));
+            }
+            points.addAll(index, copy);
+        }
+
+        public List<Location> getPoints() {
+            return Collections.unmodifiableList(points);
         }
 
         private void recalculateAllCubics() {
@@ -179,6 +203,12 @@ public final class CubicSplines {
          * @return A list of values of this function sampled at monotonically increasing values
          */
         public List<Location> sample(int sampleRate) {
+            if (points.isEmpty()) {
+                return Collections.emptyList();
+            } else if (points.size() == 1) {
+                return Collections.singletonList(points.get(0));
+            }
+
             if (dirty) recalculateAllCubics();
 
             ArrayList<Location> result = new ArrayList<>();
