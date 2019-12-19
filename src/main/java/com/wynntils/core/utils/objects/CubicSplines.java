@@ -150,6 +150,8 @@ public final class CubicSplines {
             xCubics = calculate1DSpline(points, Tuple3d::getX);
             yCubics = calculate1DSpline(points, Tuple3d::getY);
             zCubics = calculate1DSpline(points, Tuple3d::getZ);
+
+            dirty = false;
         }
 
         /**

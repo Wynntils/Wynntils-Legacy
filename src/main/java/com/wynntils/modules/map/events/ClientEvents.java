@@ -54,9 +54,12 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (lastLocation == null) return;
-        if(!e.getGui().getLowerInv().getName().contains("Loot Chest")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Loot Chest")) {
+            lastLocation = null;
+            return;
+        }
 
-        LootRunManager.addChest(lastLocation); //add chest to the current lootrun recording
+        LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
 
         String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
         if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;

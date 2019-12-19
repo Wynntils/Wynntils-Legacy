@@ -46,17 +46,17 @@ public class LootRunManager {
     }
 
     public static boolean loadFromFile(String lootRunName) {
-        if(!STORAGE_FOLDER.exists()) return false;
+        if (!STORAGE_FOLDER.exists()) return false;
 
         File file = new File(STORAGE_FOLDER, lootRunName + ".json");
-        if(!file.exists()) return false;
+        if (!file.exists()) return false;
 
-        try{
+        try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
 
             reader.close();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
@@ -65,17 +65,17 @@ public class LootRunManager {
     }
 
     public static boolean saveToFile(String lootRunName) {
-        if(!STORAGE_FOLDER.exists()) STORAGE_FOLDER.mkdirs();
+        if (!STORAGE_FOLDER.exists()) STORAGE_FOLDER.mkdirs();
 
-        try{
+        try {
             File file = new File(STORAGE_FOLDER, lootRunName + ".json");
-            if(!file.exists()) file.createNewFile();
+            if (!file.exists()) file.createNewFile();
 
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
             GSON.toJson(new LootRunPathIntermediary(recordingPath), writer);
 
             writer.close();
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
@@ -124,17 +124,17 @@ public class LootRunManager {
     }
 
     public static void addChest(BlockPos pos) {
-        if(!isRecording()) return;
+        if (!isRecording()) return;
 
         recordingPath.addChest(pos);
     }
 
     public static void renderActivePaths() {
-        if(activePath != null) {
+        if (activePath != null) {
             PointRenderer.drawLines(activePath.getSmoothPoints(), MinecraftChatColors.AQUA);
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
         }
-        if(recordingPath != null) {
+        if (recordingPath != null) {
             PointRenderer.drawLines(recordingPath.getSmoothPoints(), CommonColors.RED);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, CommonColors.RED));
         }
