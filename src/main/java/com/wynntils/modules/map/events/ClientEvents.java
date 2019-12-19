@@ -17,8 +17,11 @@ import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -27,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents implements Listener {
 
-    Location lastLocation = null;
+    BlockPos lastLocation = null;
 
     @SubscribeEvent
     public void renderWorld(RenderWorldLastEvent e) {
@@ -39,16 +42,18 @@ public class ClientEvents implements Listener {
         BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), MapConfig.INSTANCE.compassBeaconColor);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void openChest(PlayerInteractEvent.RightClickBlock e) {
-        if (e.getPos() == null) return;
-        lastLocation = new Location(e.getPos().getX(), e.getPos().getY(), e.getPos().getZ());
+        if (e.getPos() == null || e.isCanceled()) return;
+        BlockPos pos = e.getPos();
+        IBlockState state = e.getEntityPlayer().world.getBlockState(pos);
+        if (!(state.getBlock() instanceof BlockContainer)) return;
+        lastLocation = pos.toImmutable();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (lastLocation == null) return;
-
         if(!e.getGui().getLowerInv().getName().contains("Loot Chest")) return;
 
         LootRunManager.addChest(lastLocation); //add chest to the current lootrun recording
@@ -84,12 +89,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void recordLootRun(TickEvent.ClientTickEvent e) {
-        if(!Reference.onWorld || e.phase != TickEvent.Phase.END || !LootRunManager.isRecording()) return;
+        if (!Reference.onWorld || e.phase != TickEvent.Phase.END || !LootRunManager.isRecording()) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if(player == null) return;
+        if (player == null) return;
 
-        LootRunManager.recordMovement(player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+        LootRunManager.recordMovement(player.posX, player.posY, player.posZ);
     }
 
 }

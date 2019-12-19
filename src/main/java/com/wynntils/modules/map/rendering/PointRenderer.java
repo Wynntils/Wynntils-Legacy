@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -65,12 +66,15 @@ public class PointRenderer {
         GlStateManager.popMatrix();
     }
 
-    public static void drawCube(Location point, CustomColor color) {
+    public static void drawCube(BlockPos point, CustomColor color) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
-        Location c = new Location(point.getX() - renderManager.viewerPosX,
-                point.getY() - renderManager.viewerPosY,
-                point.getZ() - renderManager.viewerPosZ);
+        Location pointLocation = new Location(point);
+        Location c = new Location(
+            pointLocation.x - renderManager.viewerPosX,
+            pointLocation.y - renderManager.viewerPosY,
+            pointLocation.z - renderManager.viewerPosZ
+        );
 
         GlStateManager.pushMatrix();
 

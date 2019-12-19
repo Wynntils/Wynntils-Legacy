@@ -6,13 +6,20 @@ package com.wynntils.modules.map.commands;
 
 import com.wynntils.modules.map.managers.LootRunManager;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
-import static net.minecraft.util.text.TextFormatting.GREEN;
-import static net.minecraft.util.text.TextFormatting.RED;
+import java.util.*;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 public class CommandLootRun extends CommandBase implements IClientCommand {
 
@@ -28,7 +35,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/lootrun <load/save/record>";
+        return "lootrun <load/save/hide/record/stop/list/clear/help>";
     }
 
     @Override
@@ -37,66 +44,131 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
-        if(args.length == 0) {
-            sender.sendMessage(new TextComponentString(RED + "Use: /lootrun <load/save/record/clear>"));
-            return;
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (args.length == 0) {
+            throw new WrongUsageException("/lootrun <load/save/hide/record/stop/list/clear/help>");
         }
 
-        if (args[0].equalsIgnoreCase("load")) {
-            if(args.length < 2) {
-                sender.sendMessage(new TextComponentString(RED + "Use: /lootrun load [name]"));
+        switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "load": {
+                if (args.length < 2) {
+                    throw new WrongUsageException("/lootrun load [name]");
+                }
+                String name = args[1];
+                boolean result = LootRunManager.loadFromFile(name);
+
+                String message;
+                if (result) message = GREEN + "Loaded LootRun " + name + " successfully!";
+                else message = RED + "The specified LootRun doesn't exists!";
+
+                sender.sendMessage(new TextComponentString(message));
                 return;
             }
-            String name = args[1];
-            boolean result = LootRunManager.loadFromFile(name);
+            case "save": {
+                if (args.length < 2) {
+                    throw new WrongUsageException("/lootrun save [name]");
+                }
+                String name = args[1];
 
-            String message;
-            if(result) message = GREEN + "Loaded LootRun " + name + " successfully!";
-            else message = RED + "The specified LootRun doesn't exists!";
+                boolean result = LootRunManager.saveToFile(name);
 
-            sender.sendMessage(new TextComponentString(message));
-            return;
-        }
-        if (args[0].equalsIgnoreCase("save")) {
-            if(args.length < 2) {
-                sender.sendMessage(new TextComponentString(RED + "Use: /lootrun save [name]"));
+                String message;
+                if (result) {
+                    message = GREEN + "Saved LootRun " + name + " successfully!";
+                    LootRunManager.stopRecording();
+                } else {
+                    message = RED + "An error occured while trying to save your LootRun route!";
+                }
+
+                sender.sendMessage(new TextComponentString(message));
                 return;
             }
-            String name = args[1];
+            case "hide":
+                LootRunManager.hide();
 
-            boolean result = LootRunManager.saveToFile(name);
+                sender.sendMessage(new TextComponentString(GREEN + "Your active lootrun has been hidden!"));
+            case "record": {
+                String message;
+                if (LootRunManager.isRecording()) {
+                    message = RED + "Already recording... Please clear with /lootrun save or /lootrun stop";
+                } else {
+                    message = GREEN + "Started to record your current movements! " + RED + "Red means recording.";
+                    LootRunManager.startRecording();
+                }
 
-            String message;
-            if(result) message = GREEN + "Saved LootRun " + name + " successfully!";
-            else message = RED + "An error occured while trying to save your LootRun route!";
-
-            sender.sendMessage(new TextComponentString(message));
-            return;
-        }
-        if (args[0].equalsIgnoreCase("clear")) {
-            LootRunManager.clear();
-
-            sender.sendMessage(new TextComponentString(GREEN + "Cleaned current LootRun points!"));
-            return;
-        }
-        if (args[0].equalsIgnoreCase("record")) {
-            boolean result = LootRunManager.isRecording();
-
-            String message;
-            if(result) {
-                message = GREEN + "Stoped to record your movements!";
-                LootRunManager.stopRecording();
-            } else {
-                message = GREEN + "Started to record your current movements! " + RED + "Red means recording.";
-                LootRunManager.startRecording();
+                sender.sendMessage(new TextComponentString(message));
+                return;
             }
+            case "stop": {
+                String message;
+                if (LootRunManager.isRecording()) {
+                    message = GREEN + "Stopped to record your movements!";
+                    LootRunManager.stopRecording();
+                } else {
+                    message = RED + "Not recording a lootrun!";
 
-            sender.sendMessage(new TextComponentString(message));
-            return;
+                }
+
+                sender.sendMessage(new TextComponentString(message));
+                return;
+            }
+            case "list": {
+                StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored lootruns:");
+                List<String> lootruns = LootRunManager.getStoredLootruns();
+                if (lootruns.isEmpty()) {
+                    message.append('\n').append(GRAY).append("You currently have no saved lootruns!");
+                } else {
+                    for (String lootrun : lootruns) {
+                        message.append('\n').append(WHITE).append(lootrun);
+                    }
+                }
+                ITextComponent messageText = new TextComponentString(message.toString());
+                if (!LootRunManager.STORAGE_FOLDER.exists()) {
+                    LootRunManager.STORAGE_FOLDER.mkdirs();
+                }
+                messageText.getStyle()
+                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
+                        "Lootruns are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick to open!"
+                    )))
+                    .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getAbsolutePath()));
+                sender.sendMessage(messageText);
+                return;
+            }
+            case "clear":
+                LootRunManager.clear();
+
+                sender.sendMessage(new TextComponentString(GREEN + "Cleared current LootRun points!"));
+                return;
+            case "help": {
+                // TODO
+            }
+            default:
+                throw new WrongUsageException("/lootrun <load/save/hide/record/stop/list/clear/help>");
         }
+    }
 
-        sender.sendMessage(new TextComponentString(RED + "Use: /lootrun <load/save/record/clear>"));
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
+        if (args.length == 0) {
+            return new ArrayList<>(Arrays.asList("load", "save", "hide", "record", "stop", "list", "help"));
+        }
+        switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "load":
+            case "save":
+                if (args.length > 2) return Collections.emptyList();
+                return getListOfStringsMatchingLastWord(args, LootRunManager.getStoredLootruns());
+            case "list":
+            case "help":
+            case "record":
+            case "stop":
+            case "clear":
+                if (args.length > 1) return Collections.emptyList();
+                // getTabCompletions() result *must* be settable or crash
+                return new ArrayList<>(Collections.singletonList(args[0].toLowerCase(Locale.ROOT)));
+            default:
+                if (args.length > 1) return Collections.emptyList();
+                return getListOfStringsMatchingLastWord(args, "load", "save", "record", "list", "help");
+        }
     }
 
 }

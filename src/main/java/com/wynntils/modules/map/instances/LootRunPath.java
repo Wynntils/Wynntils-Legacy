@@ -6,28 +6,31 @@ package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.utils.objects.CubicSplines;
 import com.wynntils.core.utils.objects.Location;
+import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Point3d;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class LootRunPath {
 
-    CubicSplines.Spline3D spline;
-    ArrayList<Location> chests;
+    private CubicSplines.Spline3D spline;
+    private LinkedHashSet<BlockPos> chests;
 
-    transient List<Location> lastSample;
-    transient boolean needToResample = true;
+    private transient List<Location> lastSample;
+    private transient boolean needToResample = true;
 
-    public LootRunPath(Collection<? extends Point3d> points, ArrayList<Location> chests) {
+    public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests) {
         this.spline = new CubicSplines.Spline3D(points);
-        this.chests = chests;
+        this.chests = new LinkedHashSet<>(chests == null ? 11 : Math.max(2 * chests.size(), 11));
+        if (chests != null) {
+            for (BlockPos pos : chests) {
+                this.chests.add(pos.toImmutable());
+            }
+        }
     }
 
     public LootRunPath() {
-        this(Collections.emptyList(), new ArrayList<>());
+        this(Collections.emptyList(), Collections.emptyList());
     }
 
     public void addPoint(Point3d loc) {
@@ -48,19 +51,24 @@ public class LootRunPath {
         spline.addPoints(0, points);
     }
 
-    public void addChest(Location loc) {
-        chests.add(loc);
+    public void addChest(BlockPos loc) {
+        chests.add(loc.toImmutable());
     }
 
-    public ArrayList<Location> getChests() {
-        return chests;
+    public Set<BlockPos> getChests() {
+        return Collections.unmodifiableSet(chests);
     }
 
     public List<Location> getPoints() {
         return spline.getPoints();
     }
 
-    public List<Location> getNormalizedPoints() {
+    public Location getLastPoint() {
+        List<Location> points = getPoints();
+        return points.isEmpty() ? null : points.get(points.size() - 1);
+    }
+
+    public List<Location> getSmoothPoints() {
         if (needToResample) {
             lastSample = spline.sample();
         }
