@@ -73,6 +73,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Indicate Newly Added Items to the Game", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
     public boolean showNewItems = false;
 
+    @Setting(displayName = "Change Window Title When on Wynncraft", description = "Should the mod change the window title to Wynncraft when on Wynncraft?")
+    public boolean changeWindowTitle = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

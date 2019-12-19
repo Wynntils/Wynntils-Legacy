@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.events;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -20,6 +21,7 @@ import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.lwjgl.opengl.Display;
 
 import java.util.concurrent.ExecutionException;
 
@@ -27,9 +29,14 @@ public class ServerEvents implements Listener {
 
     private static boolean loadedResourcePack = false;
 
+    private static String oldWindowTitle = "";
+
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
         loadedResourcePack = false;
+        ModCore.mc().addScheduledTask(() -> {
+            Display.setTitle(oldWindowTitle);
+        });
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -65,6 +72,13 @@ public class ServerEvents implements Listener {
                 UtilitiesConfig.INSTANCE.lastServerResourcePackHash = "";
                 UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
             }
+        }
+
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
+            ModCore.mc().addScheduledTask(() -> {
+                oldWindowTitle = Display.getTitle();
+                Display.setTitle("Wynncraft");
+            });
         }
     }
 
