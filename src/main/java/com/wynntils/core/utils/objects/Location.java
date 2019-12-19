@@ -6,81 +6,63 @@ package com.wynntils.core.utils.objects;
 
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Arrays;
+import javax.vecmath.Point3d;
+import javax.vecmath.Tuple3d;
+import javax.vecmath.Vector3d;
 
-public class Location {
-
-    double x, y, z;
+public class Location extends Point3d {
 
     public Location(double x, double y, double z) {
-        this.x = x; this.y = y; this.z = z;
+        super(x, y, z);
     }
 
-    public double getX() {
-        return x;
+    public Location(Tuple3d t) {
+        super(t);
     }
 
-    public double getY() {
-        return y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void add(Location loc) {
-        x += loc.getX();
-        y += loc.getY();
-        z += loc.getZ();
-    }
-
-    public void add(double x, double y, double z) {
+    public final void add(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;
     }
 
-    public void substract(Location loc) {
-        x -= loc.getX();
-        y -= loc.getY();
-        z -= loc.getZ();
+    public final void subtract(Vector3d loc) {
+        x -= loc.x;
+        y -= loc.y;
+        z -= loc.z;
     }
 
-    public void substract(double x, double y, double z) {
+    public final void subtract(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
     }
 
-    public void substract(double amount) {
+    public final void subtract(double amount) {
         this.x -= amount;
         this.y -= amount;
         this.z -= amount;
     }
 
-    public void multiply(Location loc) {
-        x *= loc.getX();
-        y *= loc.getY();
-        z *= loc.getZ();
+    public final void multiply(Tuple3d loc) {
+        x *= loc.x;
+        y *= loc.y;
+        z *= loc.z;
     }
 
-    public void multiply(double x, double y, double z) {
+    public final void multiply(double x, double y, double z) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
     }
 
-    public void multiply(double amount) {
+    public final void multiply(double amount) {
         this.x *= amount;
         this.y *= amount;
         this.z *= amount;
     }
 
-    public BlockPos toBlockPos() {
+    public final BlockPos toBlockPos() {
         return new BlockPos(x, y, z);
     }
 
@@ -88,15 +70,14 @@ public class Location {
     public boolean equals(Object obj) {
         if (this == obj) return true;
 
-        if (obj instanceof Location) {
-            Location loc = (Location) obj;
-            return x == loc.x && y == loc.y && z == loc.z;
+        if (obj instanceof Tuple3d) {
+            return equals((Tuple3d) obj);
         }
         return false;
     }
 
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(new double[]{ x, y, z });
+    public boolean equals(Tuple3d other) {
+        if (other == null) return false;
+        return x == other.x && y == other.y && z == other.z;
     }
 }
