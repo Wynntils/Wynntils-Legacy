@@ -149,9 +149,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
-        if (args.length == 0) {
-            return new ArrayList<>(Arrays.asList("load", "save", "hide", "record", "stop", "list", "help"));
-        }
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "load":
             case "save":
@@ -162,12 +159,13 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "record":
             case "stop":
             case "clear":
+            case "hide":
                 if (args.length > 1) return Collections.emptyList();
                 // getTabCompletions() result *must* be settable or crash
                 return new ArrayList<>(Collections.singletonList(args[0].toLowerCase(Locale.ROOT)));
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "record", "list", "help");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "record", "list", "stop", "clear", "hide", "help");
         }
     }
 
