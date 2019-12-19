@@ -10,9 +10,10 @@ import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.richpresence.RichPresenceModule;
+import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -102,12 +103,19 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             case "discord":
                 TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
                 msg.getStyle().setColor(TextFormatting.GOLD);
-                WebReader apiUrls = WebManager.getApiUrls();
-                TextComponentString link = new TextComponentString(apiUrls == null ? "<Wynntils servers are down>" : apiUrls.get("DiscordInvite"));
-                link.getStyle()
-                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")))
-                        .setColor(TextFormatting.DARK_AQUA);
+                String discordInvite = WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("DiscordInvite");
+                TextComponentString link = new TextComponentString(discordInvite == null ? "<Wynntils servers are down>" : discordInvite);
+                link.getStyle().setColor(TextFormatting.DARK_AQUA);
+                if (discordInvite != null) {
+                    link.getStyle()
+                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, discordInvite))
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")));
+
+                    RichProfile.OverlayManager o = RichPresenceModule.getModule().getRichPresence().getOverlayManager();
+                    if (o != null) {
+                        o.openGuildInvite(discordInvite.replace("https://discord.gg/", ""));
+                    }
+                }
                 sender.sendMessage(msg.appendSibling(link));
                 break;
             case "version":

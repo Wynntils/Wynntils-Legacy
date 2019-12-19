@@ -4,8 +4,11 @@
 
 package com.wynntils.modules.richpresence.profiles;
 
+import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -21,26 +24,28 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.function.IntConsumer;
 
 public class RichProfile {
 
     public static final File GAME_SDK_FILE = new File(Reference.PLATFORM_NATIVES_ROOT, System.mapLibraryName("discord_game_sdk"));
 
-    IDiscordCore.ByReference discordCore = null;
-    IDiscordActivityManager activityManager = null;
-    Thread shutdown = new Thread(this::disconnectRichPresence);
+    private IDiscordCore discordCore = null;
+    private OverlayManager overlayManager = null;
+    private IDiscordActivityManager activityManager = null;
+    private Thread shutdown = new Thread(this::disconnectRichPresence);
 
-    SecretContainer joinSecret = null;
+    private SecretContainer joinSecret = null;
 
-    DiscordActivity lastStructure = null;
+    private DiscordActivity lastStructure = null;
 
-    boolean disabled = false;
-    boolean ready = false;
-    DiscordActivity activityToUseWhenReady = null;
+    private boolean disabled = false;
+    private boolean ready = false;
+    private DiscordActivity activityToUseWhenReady = null;
 
-    boolean updatedDiscordUser = false;
+    private boolean updatedDiscordUser = false;
 
-    long applicationID = 0;
+    private long applicationID = 0;
 
     public RichProfile(long id) {
         WebRequestHandler handler = new WebRequestHandler();
@@ -108,8 +113,8 @@ public class RichProfile {
             createParams.activity_events = activityEvents;
             createParams.flags = DiscordGameSDKLibrary.EDiscordCreateFlags.DiscordCreateFlags_NoRequireDiscord;
 
-            discordCore = new IDiscordCore.ByReference();
-            IDiscordCore.ByReference[] array = new IDiscordCore.ByReference[] { discordCore };
+            overlayManager = null;
+            IDiscordCore.ByReference[] array = new IDiscordCore.ByReference[] { new IDiscordCore.ByReference() };
             gameSDK.DiscordCreate(DiscordGameSDKLibrary.DISCORD_VERSION, createParams, array);
             discordCore = array[0];
             // get_user_manager is needed so the current user update is fired
@@ -419,8 +424,74 @@ public class RichProfile {
         return Arrays.copyOf(encoded, size);
     }
 
+    private Memory toCString(String string) {
+        if (string == null) return null;
+        byte[] asBytes = string.getBytes(StandardCharsets.UTF_8);
+        Memory cString = new Memory(asBytes.length + 1);
+        cString.write(0, asBytes, 0, asBytes.length);
+        cString.setByte(asBytes.length, (byte) 0);
+        return cString;
+    }
+
     private String bytesToString(byte[] bytes) {
         return Native.toString(bytes, StandardCharsets.UTF_8.name());
+    }
+
+    public OverlayManager getOverlayManager() {
+        if (disabled || discordCore == null) return overlayManager = null;
+        if (overlayManager == null) overlayManager = new OverlayManager();
+        return overlayManager;
+    }
+
+    public class OverlayManager {
+
+        private IDiscordOverlayManager overlayManager = null;
+
+        private OverlayManager() { }
+
+        private boolean cantCreate() {
+            if (RichProfile.this.disabled || discordCore == null || !ready) {
+                overlayManager = null;
+                return true;
+            }
+            if (overlayManager == null) {
+                overlayManager = discordCore.get_overlay_manager.apply(discordCore);
+            }
+            return overlayManager == null;
+        }
+
+        /**
+         * @see <a href="https://discordapp.com/developers/docs/game-sdk/overlay#isenabled">Docs</a>
+         *
+         * @return null if the discord SDK is disabled, otherwise true if overlays can appear,
+         *         else false (they will open in the main Discord client)
+         */
+        public Boolean isEnabled() {
+            if (cantCreate()) return null;
+            IntByReference ref = new IntByReference();
+            overlayManager.is_enabled.apply(overlayManager, ref.getPointer());
+            return ref.getValue() != 0;
+        }
+
+        public boolean openGuildInvite(String code) {
+            return openGuildInvite(code, null);
+        }
+
+        /**
+         *
+         * @see <a href="https://discordapp.com/developers/docs/game-sdk/overlay#openguildinvite">Docs</a>
+         *
+         * @param code End part of the discord guild invite link (e.g., "foo" for "discord.gg/foo")
+         * @param callback Takes a value from {@link com.wynntils.modules.richpresence.discordgamesdk.DiscordGameSDKLibrary.EDiscordResult}
+         * @return true if attempting to open the invite
+         */
+        public boolean openGuildInvite(String code, IntConsumer callback) {
+            if (callback == null) return openGuildInvite(code, c -> {});
+            if (cantCreate()) return false;
+            overlayManager.open_guild_invite.apply(overlayManager, toCString(code), Pointer.NULL, (null_pointer, result) -> callback.accept(result));
+            return true;
+        }
+
     }
 
 }
