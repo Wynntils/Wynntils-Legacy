@@ -34,9 +34,11 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
         loadedResourcePack = false;
-        ModCore.mc().addScheduledTask(() -> {
-            Display.setTitle(oldWindowTitle);
-        });
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
+            ModCore.mc().addScheduledTask(() -> {
+                Display.setTitle(oldWindowTitle);
+            });
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -74,11 +76,19 @@ public class ServerEvents implements Listener {
             }
         }
 
+        oldWindowTitle = Display.getTitle();
         if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
             ModCore.mc().addScheduledTask(() -> {
-                oldWindowTitle = Display.getTitle();
                 Display.setTitle("Wynncraft");
             });
+        }
+    }
+
+    public static void onWindowTitleSettingChanged() {
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && !Display.getTitle().equals("Wynncraft")) {
+            Display.setTitle("Wynncraft");
+        } else if (!UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && Display.getTitle().equals("Wynncraft")) {
+            Display.setTitle(oldWindowTitle);
         }
     }
 
