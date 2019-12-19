@@ -16,6 +16,10 @@ public class Location {
         this.x = x; this.y = y; this.z = z;
     }
 
+    public Location(BlockPos from) {
+        this.x = from.getX(); this.y = from.getY(); this.z = from.getZ();
+    }
+
     public double getX() {
         return x;
     }
@@ -32,52 +36,76 @@ public class Location {
         this.y = y;
     }
 
-    public void add(Location loc) {
+    public Location add(Location loc) {
         x += loc.getX();
         y += loc.getY();
         z += loc.getZ();
+
+        return this;
     }
 
-    public void add(double x, double y, double z) {
+    public Location add(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;
+
+        return this;
     }
 
-    public void substract(Location loc) {
+    public Location substract(Location loc) {
         x -= loc.getX();
         y -= loc.getY();
         z -= loc.getZ();
+
+        return this;
     }
 
-    public void substract(double x, double y, double z) {
+    public Location substract(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
+
+        return this;
     }
 
-    public void substract(double amount) {
+    public Location substract(double amount) {
         this.x -= amount;
         this.y -= amount;
         this.z -= amount;
+
+        return this;
     }
 
-    public void multiply(Location loc) {
+    public Location multiply(Location loc) {
         x *= loc.getX();
         y *= loc.getY();
         z *= loc.getZ();
+
+        return this;
     }
 
-    public void multiply(double x, double y, double z) {
+    public Location multiply(double x, double y, double z) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
+
+        return this;
     }
 
-    public void multiply(double amount) {
+    public Location multiply(double amount) {
         this.x *= amount;
         this.y *= amount;
         this.z *= amount;
+
+        return this;
+    }
+
+    public double distance(Location to) {
+        return Math.sqrt(
+                Math.pow(x - to.getX(), 2) +
+                Math.pow(y - to.getY(), 2) +
+                Math.pow(z - to.getZ(), 2)
+        );
     }
 
     public BlockPos toBlockPos() {

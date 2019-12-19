@@ -52,7 +52,7 @@ public class IdentificationContainer {
     }
 
     public boolean isFixed() {
-        return (min == 0) || isFixed;
+        return (min == max) || isFixed;
     }
 
     public String getAsLongName(String shortName) {
