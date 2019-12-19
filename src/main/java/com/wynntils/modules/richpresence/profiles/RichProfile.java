@@ -19,6 +19,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebRequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+import net.minecraft.client.gui.GuiScreen;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -42,6 +43,7 @@ public class RichProfile {
     private boolean disabled = false;
     private boolean ready = false;
     private DiscordActivity activityToUseWhenReady = null;
+    private boolean isBlankGuiOpen = false;
 
     private boolean updatedDiscordUser = false;
 
@@ -94,6 +96,20 @@ public class RichProfile {
             };
             IDiscordActivityEvents.ByReference activityEvents = new IDiscordActivityEvents.ByReference();
             activityEvents.on_activity_join = new RPCJoinHandler();
+            IDiscordOverlayEvents.ByReference overlayEvents = new IDiscordOverlayEvents.ByReference();
+            overlayEvents.on_toggle = (callbackData, closedAsByte) -> {
+                boolean opened = closedAsByte == 0;
+                if (opened && ModCore.mc().currentScreen == null) {
+                    ModCore.mc().displayGuiScreen(new GuiScreen() {
+                        public void onGuiClosed() {
+                            isBlankGuiOpen = false;
+                        }
+                    });
+                    isBlankGuiOpen = true;
+                } else if (!opened && isBlankGuiOpen) {
+                    ModCore.mc().displayGuiScreen(null);
+                }
+            };
 
             DiscordCreateParams createParams = new DiscordCreateParams();
             createParams.application_version = DiscordGameSDKLibrary.DISCORD_APPLICATION_MANAGER_VERSION;
@@ -111,6 +127,7 @@ public class RichProfile {
             createParams.client_id = id;
             createParams.user_events = userEvents;
             createParams.activity_events = activityEvents;
+            createParams.overlay_events = overlayEvents;
             createParams.flags = DiscordGameSDKLibrary.EDiscordCreateFlags.DiscordCreateFlags_NoRequireDiscord;
 
             overlayManager = null;
@@ -120,6 +137,7 @@ public class RichProfile {
             // get_user_manager is needed so the current user update is fired
             discordCore.get_user_manager.apply(discordCore);
             activityManager = discordCore.get_activity_manager.apply(discordCore);
+            getOverlayManager().overlayManager = discordCore.get_overlay_manager.apply(discordCore);
 
             Runtime.getRuntime().addShutdownHook(shutdown);
             ready = true;
@@ -453,9 +471,6 @@ public class RichProfile {
             if (RichProfile.this.disabled || discordCore == null || !ready) {
                 overlayManager = null;
                 return true;
-            }
-            if (overlayManager == null) {
-                overlayManager = discordCore.get_overlay_manager.apply(discordCore);
             }
             return overlayManager == null;
         }
