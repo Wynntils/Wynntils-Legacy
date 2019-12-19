@@ -45,6 +45,13 @@ public class ServerEvents implements Listener {
     public void joinServer(WynncraftServerEvent.Login ev) {
         if (!Reference.onLobby) return;
 
+        oldWindowTitle = Display.getTitle();
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
+            ModCore.mc().addScheduledTask(() -> {
+                Display.setTitle("Wynncraft");
+            });
+        }
+
         if (loadedResourcePack &&
                 Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() == null &&
                 Minecraft.getMinecraft().getCurrentServerData().getResourceMode() == ServerData.ServerResourceMode.ENABLED
@@ -74,13 +81,6 @@ public class ServerEvents implements Listener {
                 UtilitiesConfig.INSTANCE.lastServerResourcePackHash = "";
                 UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
             }
-        }
-
-        oldWindowTitle = Display.getTitle();
-        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
-            ModCore.mc().addScheduledTask(() -> {
-                Display.setTitle("Wynncraft");
-            });
         }
     }
 
