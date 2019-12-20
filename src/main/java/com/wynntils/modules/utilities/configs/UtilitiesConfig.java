@@ -79,7 +79,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean changeWindowTitle = true;
 
     @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo when on Wynncraft?")
-    public boolean changeWindowIcon = true;
+    public boolean changeWindowIcon = false;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";

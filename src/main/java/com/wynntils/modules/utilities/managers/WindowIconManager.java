@@ -5,27 +5,41 @@ import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ServerIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.multiplayer.ServerData;
 import org.lwjgl.opengl.Display;
 
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
 public class WindowIconManager {
 
-    private static ServerIcon currentServerIcon = null;
     private static boolean setToServerIcon = false;
+    private static boolean serverIconInvalid = false;
 
-    public static synchronized void deleteIcon() {
-        if (currentServerIcon != null) currentServerIcon.delete();
-        currentServerIcon = null;
-        if (setToServerIcon) {
-            ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft());
-            setToServerIcon = false;
-        }
+    private static void deleteIcon() {
+        ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft());
+        setToServerIcon = false;
+        serverIconInvalid = false;
     }
 
-    private static synchronized void setIcon(DynamicTexture icon) {
-        int[] aint = icon.getTextureData();  // 64x64
+    private static void setIcon() {
+        BufferedImage bufferedimage;
+        ServerData server = Minecraft.getMinecraft().getCurrentServerData();
+        String base64;
+        if (server == null || (base64 = server.getBase64EncodedIconData()) == null) {
+            serverIconInvalid = true;
+            return;
+        }
+        try {
+            bufferedimage = ServerIcon.parseServerIcon(base64);
+        } catch (Throwable throwable) {
+            Reference.LOGGER.error("Invalid icon for server {} ({})", server.serverName, server.serverIP, throwable);
+            serverIconInvalid = true;
+            return;
+        }
+
+
+        int[] aint = bufferedimage.getRGB(0, 0, 64, 64, null, 0, 64);  // 64x64
         ByteBuffer bytebuffer64 = ByteBuffer.allocate(4 * aint.length);
         ByteBuffer bytebuffer32 = ByteBuffer.allocate(aint.length);
         ByteBuffer bytebuffer16 = ByteBuffer.allocate(aint.length / 4);
@@ -55,37 +69,15 @@ public class WindowIconManager {
 
         Display.setIcon(new ByteBuffer[]{ bytebuffer64, bytebuffer32, bytebuffer16 });
         setToServerIcon = true;
-    }
-
-    public static synchronized void createIcon() {
-        if (currentServerIcon != null) currentServerIcon.delete();
-        currentServerIcon = null;
-        if (UtilitiesConfig.INSTANCE.changeWindowIcon && Reference.onServer) {
-            currentServerIcon = new ServerIcon(Minecraft.getMinecraft().getCurrentServerData(), true);
-            currentServerIcon.onDone(c -> {
-                if (c != null && UtilitiesConfig.INSTANCE.changeWindowIcon) {
-                    setIcon(c.getIcon());
-                    if (currentServerIcon != null) currentServerIcon.delete();
-                    currentServerIcon = null;
-                }
-            });
-            currentServerIcon.getServerIcon();
-            ServerIcon.ping();
-        } else if (setToServerIcon) {
-            deleteIcon();
-        }
+        serverIconInvalid = false;
     }
 
     public static synchronized void update() {
         if (UtilitiesConfig.INSTANCE.changeWindowIcon && Reference.onServer) {
-            if (!setToServerIcon) {
-                if (currentServerIcon == null) {
-                    createIcon();
-                } else {
-                    ServerIcon.ping();
-                }
+            if (!setToServerIcon && !serverIconInvalid) {
+                setIcon();
             }
-        } else {
+        } else if (setToServerIcon) {
             deleteIcon();
         }
     }
