@@ -17,7 +17,10 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -70,6 +73,15 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
                 String name = args[1];
 
+                if(!LootRunManager.isRecording()) {
+                    sender.sendMessage(new TextComponentString(RED + "You're not recording a path!"));
+                    return;
+                }
+                if(LootRunManager.getRecordingPath().getChests().isEmpty()) {
+                    sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a LootRun!"));
+                    return;
+                }
+
                 boolean result = LootRunManager.saveToFile(name);
 
                 String message;
@@ -106,7 +118,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     LootRunManager.stopRecording();
                 } else {
                     message = RED + "Not recording a lootrun!";
-
                 }
 
                 sender.sendMessage(new TextComponentString(message));

@@ -4,7 +4,8 @@
 
 package com.wynntils.modules.map.managers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
@@ -53,7 +54,8 @@ public class LootRunManager {
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            if(path.getChests().size() == 0) return false;
 
             reader.close();
         } catch (Exception ex) {
