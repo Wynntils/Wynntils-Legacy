@@ -13,6 +13,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -257,29 +258,36 @@ public class ChatManager {
         }
 
         // clickable coordinates
-        if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getFormattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getUnformattedText()).find()) {
             String crdText;
-            TextFormatting color;
+            Style style;
             String command = "/compass ";
             List<ITextComponent> crdMsg = new ArrayList<>();
 
             for (ITextComponent texts: in.getSiblings()) {
-                Matcher m = coordinateReg.matcher(texts.getFormattedText());
+                Matcher m = coordinateReg.matcher(texts.getUnformattedText());
                 if (!m.find())  continue;
+
+                // Most likely only needed during the Wynnter Fair for the message with how many more players are required to join.
+                // As far as i could find all other messages from the Wynnter Fair use text components properly.
+                if (m.start() > 0 && texts.getUnformattedText().charAt(m.start() - 1) == '§') continue;
 
                 int index = in.getSiblings().indexOf(texts);
 
-                crdText = texts.getFormattedText();
-                color = texts.getStyle().getColor();
+                crdText = texts.getUnformattedText();
+                style = texts.getStyle();
                 in.getSiblings().remove(texts);
 
                 // Pre-text
-                crdMsg.add(new TextComponentString(crdText.substring(0, m.start())));
+                ITextComponent preText = new TextComponentString(crdText.substring(0, m.start()));
+                preText.setStyle(style.createShallowCopy());
+                crdMsg.add(preText);
 
                 // Coordinates:
                 command += crdText.substring(m.start(1), m.end(1)).replaceAll("[ ,]", "") + " ";
                 command += crdText.substring(m.start(3), m.end(3)).replaceAll("[ ,]", "");
                 ITextComponent clickableText = new TextComponentString(crdText.substring(m.start(), m.end()));
+                clickableText.setStyle(style.createShallowCopy());
                 clickableText.getStyle()
                         .setColor(TextFormatting.DARK_AQUA)
                         .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
@@ -288,7 +296,7 @@ public class ChatManager {
 
                 // Post-text
                 ITextComponent postText = new TextComponentString(crdText.substring(m.end()));
-                postText.getStyle().setColor(color);
+                postText.setStyle(style.createShallowCopy());
                 crdMsg.add(postText);
 
                 in.getSiblings().addAll(index, crdMsg);
