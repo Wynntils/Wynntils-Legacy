@@ -136,7 +136,7 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (activePath != null) {
-            PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getSmoothPoints(), .5f);
+            PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
         }
         if (recordingPath != null) {

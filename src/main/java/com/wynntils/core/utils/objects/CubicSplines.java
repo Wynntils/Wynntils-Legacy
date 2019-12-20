@@ -1,7 +1,10 @@
 package com.wynntils.core.utils.objects;
 
+import com.wynntils.core.utils.objects.Functions.Cubic;
+
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
+import javax.vecmath.Vector3d;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -191,7 +194,22 @@ public final class CubicSplines {
             return new Location(xCubics[index].applyAsDouble(t), yCubics[index].applyAsDouble(t), zCubics[index].applyAsDouble(t));
         }
 
-        private static final int DEFAULT_SAMPLE_RATE = 10;  // How many samples per block
+        public Vector3d derivative(double t) {
+            t *= points.size();
+            return derivative((int) Math.floor(t), t % 1);
+        }
+
+        public Vector3d derivative(int index, double t) {
+            if (dirty) recalculateAllCubics();
+
+            return derivativeUnchecked(index, t);
+        }
+
+        private Vector3d derivativeUnchecked(int index, double t) {
+            return new Vector3d(xCubics[index].derivative().applyAsDouble(t), yCubics[index].derivative().applyAsDouble(t), zCubics[index].derivative().applyAsDouble(t));
+        }
+
+        private static final double DEFAULT_SAMPLE_RATE = 10;  // How many samples per block
 
         public List<Location> sample() {
             return sample(DEFAULT_SAMPLE_RATE);
@@ -204,7 +222,7 @@ public final class CubicSplines {
          * @param sampleRate The resolution of the sample (per block/metre)
          * @return A list of values of this function sampled at monotonically increasing values
          */
-        public List<Location> sample(int sampleRate) {
+        public List<Location> sample(double sampleRate) {
             if (points.isEmpty()) {
                 return Collections.emptyList();
             } else if (points.size() == 1) {
@@ -226,6 +244,34 @@ public final class CubicSplines {
                 }
             }
             result.add(new Location(points.get(points.size() - 1)));
+
+            return result;
+        }
+
+        public List<Vector3d> sampleDerivative() {
+            return sampleDerivative(DEFAULT_SAMPLE_RATE);
+        }
+
+        public List<Vector3d> sampleDerivative(double sampleRate) {
+            if (points.size() <= 1) {
+                return Collections.emptyList();
+            }
+
+            if (dirty) recalculateAllCubics();
+
+            ArrayList<Vector3d> result = new ArrayList<>();
+            for (int i = 0; i < points.size() - 1; ++i) {
+                double chordLength = distanceAt(i);
+                double oneBlock = 1 / chordLength;
+                double samplePeriod = oneBlock / sampleRate;
+                result.add(derivativeUnchecked(i, 0));
+                double currentSample = samplePeriod;
+                while (currentSample < 0.999) {
+                    result.add(derivativeUnchecked(i, currentSample));
+                    currentSample += samplePeriod;
+                }
+            }
+            result.add(derivativeUnchecked(points.size() - 2, 1));
 
             return result;
         }

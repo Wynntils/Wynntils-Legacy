@@ -9,6 +9,7 @@ import com.wynntils.core.utils.objects.Location;
 import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
 import java.util.*;
 
 public class LootRunPath {
@@ -16,8 +17,10 @@ public class LootRunPath {
     private CubicSplines.Spline3D spline;
     private LinkedHashSet<BlockPos> chests;
 
-    private transient List<Location> lastSample;
-    private transient boolean needToResample = true;
+    private transient List<Location> lastSmoothSample;
+    private transient List<Vector3d> lastSmoothDerivative;
+    private transient List<Location> lastRoughSample;
+    private transient List<Vector3d> lastRoughDerivative;
 
     public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests) {
         this.spline = new CubicSplines.Spline3D(points);
@@ -34,12 +37,12 @@ public class LootRunPath {
     }
 
     public void addPoint(Point3d loc) {
-        needToResample = true;
+        changed();
         spline.addPoint(loc);
     }
 
     public void addPoints(Collection<? extends Point3d> points) {
-        needToResample = true;
+        changed();
         spline.addPoints(points);
     }
 
@@ -48,6 +51,7 @@ public class LootRunPath {
     }
 
     public void addPointsToFront(Collection<? extends Point3d> points) {
+        changed();
         spline.addPoints(0, points);
     }
 
@@ -68,11 +72,39 @@ public class LootRunPath {
         return points.isEmpty() ? null : points.get(points.size() - 1);
     }
 
+    private void changed() {
+        lastSmoothSample = null;
+        lastSmoothDerivative = null;
+        lastRoughSample = null;
+        lastRoughDerivative = null;
+    }
+
     public List<Location> getSmoothPoints() {
-        if (needToResample) {
-            lastSample = spline.sample();
+        if (lastSmoothSample == null) {
+            lastSmoothSample = spline.sample();
         }
-        return lastSample;
+        return lastSmoothSample;
+    }
+
+    public List<Vector3d> getSmoothDirections() {
+        if (lastSmoothDerivative == null) {
+            lastSmoothDerivative = spline.sampleDerivative();
+        }
+        return lastSmoothDerivative;
+    }
+
+    public List<Location> getRoughPoints() {
+        if (lastRoughSample == null) {
+            lastRoughSample = spline.sample(1);
+        }
+        return lastRoughSample;
+    }
+
+    public List<Vector3d> getRoughDirections() {
+        if (lastRoughDerivative == null) {
+            lastRoughDerivative = spline.sampleDerivative(1);
+        }
+        return lastRoughDerivative;
     }
 
     public boolean isEmpty() {
