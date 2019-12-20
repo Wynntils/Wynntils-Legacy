@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.rendering.PointRenderer;
@@ -135,7 +136,7 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (activePath != null) {
-            PointRenderer.drawLines(activePath.getSmoothPoints(), MinecraftChatColors.AQUA);
+            PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getSmoothPoints(), .5f);
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
         }
         if (recordingPath != null) {

@@ -22,6 +22,7 @@ public class Textures {
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
         textureClasses.add(Map.class);
+        textureClasses.add(World.class);
 
         for (Class<?> clazz : textureClasses) {
             String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase(Locale.ROOT) + "/";
@@ -86,5 +87,11 @@ public class Textures {
         public static AssetsTexture quest_book;
 
         public static AssetsTexture tab_overlay;
+    }
+
+    public static class World {
+
+        public static AssetsTexture path_arrow;
+
     }
 }

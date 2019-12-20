@@ -6,7 +6,10 @@ package com.wynntils.core.utils.objects;
 
 import net.minecraft.util.math.BlockPos;
 
-import javax.vecmath.*;
+import javax.vecmath.Point3d;
+import javax.vecmath.Tuple3d;
+import javax.vecmath.Tuple3f;
+import javax.vecmath.Tuple3i;
 
 public class Location extends Point3d {
 
@@ -106,6 +109,7 @@ public class Location extends Point3d {
     public final BlockPos toBlockPos() {
         return new BlockPos(x, y, z);
     }
+
 
     public final net.minecraft.util.math.Vec3d toMinecraftVec3d() {
         return new net.minecraft.util.math.Vec3d(x, y, z);

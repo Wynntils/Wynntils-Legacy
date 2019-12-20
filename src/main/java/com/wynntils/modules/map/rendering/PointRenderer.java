@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.rendering;
 
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,6 +22,48 @@ import org.lwjgl.opengl.GL11;
 import java.util.List;
 
 public class PointRenderer {
+
+    public static void drawTexturedLines(Texture texture, List<Location> points, float width) {
+        Location toCompare = points.get(0);
+        for(Location loc : points) {
+            Vec3d start = new Vec3d((int)loc.x, loc.y-.1f, (int)loc.z);
+            Vec3d end = new Vec3d((int)toCompare.x, toCompare.y+1f, (int)toCompare.z);
+
+            drawTexturedLine(texture, start, end, width);
+
+            toCompare = loc;
+        }
+    }
+
+    public static void drawTexturedLine(Texture texture, Vec3d start, Vec3d end, float width) {
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+
+        //TODO make this vector actually point to the next one correctly
+        //direction
+        Vec3d normal = start.crossProduct(end).normalize();
+        Vec3d scaled = normal.scale(width);
+
+        //we need 4 points for rendering
+        Vec3d p1 = start.add(scaled);
+        Vec3d p2 = start.subtract(scaled);
+        Vec3d p3 = end.add(scaled);
+        Vec3d p4 = end.subtract(scaled);
+
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        texture.bind();
+
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder buffer = tess.getBuffer();
+
+        { buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+            buffer.pos(p1.x - renderManager.viewerPosX, p1.y - renderManager.viewerPosY, p1.z - renderManager.viewerPosZ).tex(0f, 0f).endVertex();
+            buffer.pos(p3.x - renderManager.viewerPosX, p3.y - renderManager.viewerPosY, p3.z - renderManager.viewerPosZ).tex(1f, 0f).endVertex();
+            buffer.pos(p4.x - renderManager.viewerPosX, p4.y - renderManager.viewerPosY, p4.z - renderManager.viewerPosZ).tex(1f, 1f).endVertex();
+            buffer.pos(p2.x - renderManager.viewerPosX, p2.y - renderManager.viewerPosY, p2.z - renderManager.viewerPosZ).tex(0f, 1f).endVertex();
+
+        } tess.draw();
+    }
 
     public static void drawLines(List<Location> locations, CustomColor color) {
         EntityPlayer player = Minecraft.getMinecraft().player;
