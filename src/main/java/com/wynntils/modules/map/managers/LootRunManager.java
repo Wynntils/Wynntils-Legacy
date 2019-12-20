@@ -57,6 +57,8 @@ public class LootRunManager {
             LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
             if(path.getChests().size() == 0) return false;
 
+            activePath = path;
+
             reader.close();
         } catch (Exception ex) {
             ex.printStackTrace();
