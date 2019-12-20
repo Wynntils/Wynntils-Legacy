@@ -9,6 +9,7 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.utilities.events.ServerEvents;
+import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
@@ -76,6 +77,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Change Window Title When on Wynncraft", description = "Should the mod change the window title to Wynncraft when on Wynncraft?")
     public boolean changeWindowTitle = true;
+
+    @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo when on Wynncraft?")
+    public boolean changeWindowIcon = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -259,8 +263,11 @@ public class UtilitiesConfig extends SettingsClass {
     public void onSettingChanged(String name) {
         if (name.equalsIgnoreCase("addItemIdentificationSpacing"))
             WebManager.getDirectItems().forEach(ItemProfile::clearGuideStack);
-        if (name.equalsIgnoreCase("changeWindowTitle")) 
+        else if (name.equalsIgnoreCase("changeWindowTitle"))
             ServerEvents.onWindowTitleSettingChanged();
+        else if (name.equalsIgnoreCase("changeWindowIcon")) {
+            WindowIconManager.update();
+        }
     }
 
 }

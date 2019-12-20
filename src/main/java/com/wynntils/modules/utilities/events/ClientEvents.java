@@ -18,10 +18,7 @@ import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.modules.utilities.managers.DailyReminderManager;
-import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.utilities.managers.MountHorseManager;
-import com.wynntils.modules.utilities.managers.NametagManager;
+import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -66,6 +63,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
+        if (Reference.onServer) WindowIconManager.update();
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);

@@ -12,6 +12,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.WarManager;
+import com.wynntils.modules.utilities.managers.WindowIconManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
@@ -34,6 +35,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
+        WindowIconManager.update();
         loadedResourcePack = false;
         if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
             ModCore.mc().addScheduledTask(() -> {
@@ -44,6 +46,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinServer(WynncraftServerEvent.Login ev) {
+        WindowIconManager.update();
         if (!Reference.onLobby) return;
 
         String title = Display.getTitle();
@@ -90,6 +93,7 @@ public class ServerEvents implements Listener {
 
     public static void onWindowTitleSettingChanged() {
         if (UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && !Display.getTitle().equals("Wynncraft")) {
+            oldWindowTitle = Display.getTitle();
             Display.setTitle("Wynncraft");
         } else if (!UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && Display.getTitle().equals("Wynncraft")) {
             Display.setTitle(oldWindowTitle);
