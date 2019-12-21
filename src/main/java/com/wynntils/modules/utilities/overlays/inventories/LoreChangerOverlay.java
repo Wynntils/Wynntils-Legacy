@@ -111,7 +111,7 @@ public class LoreChangerOverlay implements Listener {
             stack.getTagCompound().setBoolean("showWynnic", true);
         }
 
-        if (stack.getTagCompound().getBoolean("showWynnic") && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (stack.hasTagCompound() && stack.getTagCompound().getBoolean("showWynnic") && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             NBTTagCompound tag = stack.getTagCompound();
             if (tag.hasKey("originalLore")) {
                 NBTTagCompound displayTag = tag.getCompoundTag("display");
