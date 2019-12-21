@@ -35,6 +35,8 @@ public class CoreModule extends Module {
         registerCommand(new CommandCompass());
         registerCommand(new CommandForceUpdate());
         registerCommand(new CommandServer());
+        registerCommand(new CommandTerritory());
+        registerCommand(new CommandToken());
         registerCommand(new CommandWynntils());
 
         TabManager.replaceTabOrderer();
