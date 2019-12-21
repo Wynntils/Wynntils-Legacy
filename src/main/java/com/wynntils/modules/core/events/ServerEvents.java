@@ -212,7 +212,7 @@ public class ServerEvents implements Listener {
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major, false), major));
+            ChangelogUI.loadChangelogAndShow(major);
         }
     }
 

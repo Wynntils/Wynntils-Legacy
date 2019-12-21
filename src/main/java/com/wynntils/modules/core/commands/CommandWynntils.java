@@ -128,15 +128,13 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 break;
             case "changelog":
                 new Delay(() -> {
-                    boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-                    Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major, false), major));
+                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE);
                 }, 1);
                 break;
             case "changelogmajor":
                 new Delay(() -> {
-                    Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(true, false), true));
+                    ChangelogUI.loadChangelogAndShow(true);
                 }, 1);
-
                 break;
             case "debug":
                 if (!Reference.developmentEnvironment) {

@@ -62,7 +62,7 @@ public class UpdateAvailableScreen extends GuiScreen {
         } else if (button.id == 3) {
             // View changelog
             boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            mc.displayGuiScreen(new ChangelogUI(this, WebManager.getChangelog(major, true), major));
+            ChangelogUI.loadChangelogAndShow(this, major);
         }
     }
 

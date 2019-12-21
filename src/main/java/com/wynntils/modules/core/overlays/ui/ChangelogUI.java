@@ -11,8 +11,10 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
@@ -20,6 +22,8 @@ import org.lwjgl.input.Mouse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ChangelogUI extends GuiScreen {
 
@@ -34,18 +38,17 @@ public class ChangelogUI extends GuiScreen {
 
     boolean major;
 
-    public ChangelogUI(ArrayList<String> changelogContent, boolean major) {
+    public ChangelogUI(List<String> changelogContent, boolean major) {
         this(null, changelogContent, major);
     }
 
-    public ChangelogUI(GuiScreen previousGui, ArrayList<String> changelogContent, boolean major) {
+    public ChangelogUI(GuiScreen previousGui, List<String> changelogContent, boolean major) {
         this.previousGui = previousGui;
 
         this.major = major;
 
         if (changelogContent == null || changelogContent.isEmpty()) {
-            changelogContent = new ArrayList<>();
-            changelogContent.add("<Error>");
+            changelogContent = Collections.singletonList("<Error>");
         }
 
         for (String rawText : changelogContent)
@@ -55,6 +58,29 @@ public class ChangelogUI extends GuiScreen {
         else {
             scrollbarSize = (int)(118 * Math.pow(0.5d, this.changelogContent.size()/15f));
         }
+    }
+
+    public static void loadChangelogAndShow(boolean major) {
+        loadChangelogAndShow(null, major);
+    }
+
+    public static void loadChangelogAndShow(GuiScreen previousGui, boolean major) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
+        mc.displayGuiScreen(loadingScreen);
+
+        Utils.runAsync(() -> {
+            if (mc.currentScreen != loadingScreen) return;
+            ArrayList<String> changelog = WebManager.getChangelog(major, false);
+            if (mc.currentScreen != loadingScreen) return;
+
+            mc.addScheduledTask(() -> {
+                if (mc.currentScreen == loadingScreen) {
+                    mc.displayGuiScreen(new ChangelogUI(previousGui, changelog, major));
+                }
+            });
+        });
     }
 
     @Override
