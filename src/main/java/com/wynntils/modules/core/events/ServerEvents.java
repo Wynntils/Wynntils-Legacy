@@ -212,7 +212,7 @@ public class ServerEvents implements Listener {
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            ChangelogUI.loadChangelogAndShow(major);
+            ChangelogUI.loadChangelogAndShow(major, false);
         }
     }
 

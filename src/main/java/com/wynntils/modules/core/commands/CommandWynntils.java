@@ -84,7 +84,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 text.appendText("\n");
                 addCommandDescription(text, "-wynntils", " version", "This shows the installed Wynntils version.");
                 text.appendText("\n");
-                addCommandDescription(text, "-wynntils", " changelog [major]", "This shows the latest changelog of your installed version.");
+                addCommandDescription(text, "-wynntils", " changelog [major/latest]", "This shows the changelog of your installed version.");
                 text.appendText("\n");
                 addCommandDescription(text, "-wynntils", " reloadapi", "This reloads all API data.");
                 text.appendText("\n");
@@ -128,12 +128,17 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 break;
             case "changelog":
                 new Delay(() -> {
-                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE);
+                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, false);
+                }, 1);
+                break;
+            case "changeloglatest":
+                new Delay(() -> {
+                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, true);
                 }, 1);
                 break;
             case "changelogmajor":
                 new Delay(() -> {
-                    ChangelogUI.loadChangelogAndShow(true);
+                    ChangelogUI.loadChangelogAndShow(true, false);
                 }, 1);
                 break;
             case "debug":

@@ -60,11 +60,11 @@ public class ChangelogUI extends GuiScreen {
         }
     }
 
-    public static void loadChangelogAndShow(boolean major) {
-        loadChangelogAndShow(null, major);
+    public static void loadChangelogAndShow(boolean major, boolean forceLatest) {
+        loadChangelogAndShow(null, major, forceLatest);
     }
 
-    public static void loadChangelogAndShow(GuiScreen previousGui, boolean major) {
+    public static void loadChangelogAndShow(GuiScreen previousGui, boolean major, boolean forceLatest) {
         Minecraft mc = Minecraft.getMinecraft();
 
         GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
@@ -72,7 +72,7 @@ public class ChangelogUI extends GuiScreen {
 
         Utils.runAsync(() -> {
             if (mc.currentScreen != loadingScreen) return;
-            ArrayList<String> changelog = WebManager.getChangelog(major, false);
+            ArrayList<String> changelog = WebManager.getChangelog(major, forceLatest);
             if (mc.currentScreen != loadingScreen) return;
 
             mc.addScheduledTask(() -> {
