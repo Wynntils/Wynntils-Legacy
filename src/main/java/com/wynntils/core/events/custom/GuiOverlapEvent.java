@@ -85,7 +85,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             public HandleMouseClick(InventoryReplacer guiInventory, Slot slotIn, int slotId, int mouseButton, ClickType type)  {
                 super(guiInventory);
 
-                this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
+                this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
             public boolean isCancelable() {
@@ -197,7 +197,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             public HandleMouseClick(ChestReplacer guiChest, Slot slotIn, int slotId, int mouseButton, ClickType type)  {
                 super(guiChest);
 
-                this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
+                this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
             public boolean isCancelable() {
@@ -349,7 +349,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             public HandleMouseClick(HorseReplacer guiHorse, Slot slotIn, int slotId, int mouseButton, ClickType type)  {
                 super(guiHorse);
 
-                this.slotId = slotId; this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
+                this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
             public boolean isCancelable() {
