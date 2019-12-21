@@ -69,7 +69,7 @@ public class LoreChangerOverlay implements Listener {
         }
 
         // Wynnic Translator
-        if (!stack.getTagCompound().getBoolean("showWynnic") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (stack.hasTagCompound() && !stack.getTagCompound().getBoolean("showWynnic") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if (StringUtils.hasWynnic(ItemUtils.getStringLore(stack))) {
                 NBTTagList loreList = ItemUtils.getLoreTag(stack);
                 if (loreList != null) {
