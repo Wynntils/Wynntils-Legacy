@@ -30,6 +30,7 @@ import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -697,25 +698,47 @@ public class WebManager {
         }
     }
 
+    private static final Comparator<String> SEM_VER_COMPARATOR = (a, b) -> {
+        String[] aParts = StringUtils.split(a, '.');
+        String[] bParts = StringUtils.split(b, '.');
+        for (int i = 0, sz = Math.min(aParts.length, bParts.length); i < sz; ++i) {
+            String aPartS = aParts[i];
+            String bPartS = bParts[i];
+            boolean aValid = !aPartS.startsWith("-") && Utils.StringUtils.isValidInteger(aPartS);
+            boolean bValid = !bPartS.startsWith("-") && Utils.StringUtils.isValidInteger(bPartS);
+            if (!aValid || !bValid) {
+                return aValid ? +1 : bValid ? -1 : 0;
+            }
+            int aPart = Integer.parseInt(aPartS);
+            int bPart = Integer.parseInt(bPartS);
+            if (aPart != bPart) {
+                return aPart - bPart;
+            }
+        }
+        return aParts.length - bParts.length;
+    };
+
     /**
      * Fetches a hand written changelog from the Wynntils API (if download stream is set to stable)
      * Fetches current build changes from Jenkins (Wynntils-DEV)
      *
      * @return an ArrayList of ChangelogProfile's
      */
-    public static ArrayList<String> getChangelog(boolean major) {
+    public static ArrayList<String> getChangelog(boolean major, boolean forceLatest) {
         if (apiUrls == null) return null;
 
-        JsonObject main = null;
         boolean failed = false;
 
         if (major) {
+            HashMap<String, ArrayList<String>> changelogs = null;
+            Type type = new TypeToken<HashMap<String, ArrayList<String>>>() { }.getType();
             try {
                 URLConnection st = new URL(apiUrls.get("Changelog")).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
                 st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-                main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
+
+                changelogs = gson.fromJson(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8), type);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 failed = true;
@@ -725,32 +748,46 @@ public class WebManager {
                 Reference.LOGGER.warn("Error while fetching changelog");
                 return null;
             }
+            if (!forceLatest && changelogs.containsKey(Reference.VERSION)) {
+                return changelogs.get(Reference.VERSION);
+            }
 
-            Type type = new TypeToken<ArrayList<String>>() { }.getType();
-            return gson.fromJson(main.getAsJsonArray(Reference.VERSION), type);
+            return changelogs.get(Collections.max(changelogs.keySet(), SEM_VER_COMPARATOR));
         }
 
-        ArrayList<String> changelog = new ArrayList<>();
         try {
-            URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=changeSet[items[msg]]").openConnection();
+            String base = apiUrls.get("DevJars");
+            if (!forceLatest && Reference.BUILD_NUMBER != -1) {
+                base = StringUtils.removeEnd(base, "lastSuccessfulBuild/") + Reference.BUILD_NUMBER + "/";
+            }
+
+            URLConnection st = new URL(base + "api/json?tree=changeSet[items[msg]]").openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-            if (st.getContentType().contains("application/json")) {
-                main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
-                JsonArray changesArray = main.getAsJsonObject().get("changeSet").getAsJsonObject().get("items").getAsJsonArray();
-                for (int i = 0; i < changesArray.size(); i++) {
-                    JsonObject obj = changesArray.get(i).getAsJsonObject();
-
-                    changelog.add(obj.get("msg").getAsString());
-                }
+            if (!st.getContentType().contains("application/json")) {
+                throw new RuntimeException("DevJars/api/json does not have Content-Type application/json; Found " + st.getContentType());
             }
+
+            JsonArray changesArray = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8))
+                .getAsJsonObject().getAsJsonObject("changeSet").getAsJsonArray("items");
+
+            ArrayList<String> changelog = new ArrayList<>(changesArray.size());
+            for (JsonElement el : changesArray) {
+                changelog.add(el.getAsJsonObject().get("msg").getAsString());
+            }
+
+            return changelog;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return changelog;
+        if (!forceLatest) {
+            return getChangelog(false, true);
+        }
+
+        return null;
     }
 
     /**
