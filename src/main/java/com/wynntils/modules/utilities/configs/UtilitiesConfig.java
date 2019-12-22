@@ -203,7 +203,7 @@ public class UtilitiesConfig extends SettingsClass {
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
 
         @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
-        public CustomColor fabledHighlightColor = new CustomColor(1, .58f, .49f);
+        public CustomColor fabledHighlightColor = new CustomColor(1, 1/3f, 1/3f);
 
         @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
         public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
