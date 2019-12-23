@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillPointOverlay implements Listener {
 	
-	private static final String colourPattern = "(?i)§[0-9A-FK-OR]";
+    private static final String colourPattern = "(?i)§[0-9A-FK-OR]";
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
