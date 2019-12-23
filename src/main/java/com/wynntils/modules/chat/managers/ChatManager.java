@@ -43,6 +43,8 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static ITextComponent processRealMessage(ITextComponent in) {
+        ITextComponent original = in.createCopy();
+
         // Reorginizing
         if (!in.getUnformattedComponentText().isEmpty()) {
             ITextComponent newMessage = new TextComponentString("");
@@ -91,7 +93,7 @@ public class ChatManager {
         if (StringUtils.hasWynnic(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
-            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(in.getFormattedText()).find();
+            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
             boolean foundStart = false;
             boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
             boolean previousWynnic = false;
