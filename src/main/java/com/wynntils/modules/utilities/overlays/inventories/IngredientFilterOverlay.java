@@ -1,6 +1,7 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -16,7 +17,7 @@ public class IngredientFilterOverlay implements Listener {
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!UtilitiesConfig.Items.INSTANCE.filterEnabled) return;
+        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.filterEnabled) return;
 
         e.getButtonList().add(
                 new GuiButton(11,
