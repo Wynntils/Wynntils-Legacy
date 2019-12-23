@@ -183,7 +183,7 @@ public class EmeraldCountOverlay implements Listener {
     private static void drawOneIcon(Item i, int x, int y, String text, ScreenRenderer renderer) {
         int textureHeightScale = (int) inventoryTexture.height/256;
         int textureWidthScale = (int) inventoryTexture.width/256;
-    	renderer.drawRect(inventoryTexture, x, y, x+24, y+24, textureWidthScale*142, textureHeightScale*190, textureWidthScale*165, textureHeightScale*167);
+    	renderer.drawRect(inventoryTexture, x, y, x+24, y+24, textureWidthScale*141, textureHeightScale*190, textureWidthScale*165, textureHeightScale*166);
 
         int textWidth = ScreenRenderer.fontRenderer.getStringWidth(text);
         renderer.drawItemStack(new ItemStack(i), x + 4, y + 4, textWidth > 18 ? "" : text);
