@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
-
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillPointOverlay implements Listener {
