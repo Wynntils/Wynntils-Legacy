@@ -11,8 +11,8 @@ import com.wynntils.core.utils.ItemUtils;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillPointOverlay implements Listener {
-
-    private static final String colourPattern = "(?i)§[0-9A-FK-OR]";
+	
+	private static final String colourPattern = "(?i)§[0-9A-FK-OR]";
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
@@ -21,7 +21,7 @@ public class SkillPointOverlay implements Listener {
         String lore = ItemUtils.getStringLore(e.getGui().getSlotUnderMouse().getStack());
         String name = e.getGui().getSlotUnderMouse().getStack().getDisplayName();
         if (!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
-
+        
         String value;
         if (name.contains("Upgrade")) {// Skill Points
 
