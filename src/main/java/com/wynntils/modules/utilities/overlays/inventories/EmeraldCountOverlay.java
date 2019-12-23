@@ -96,10 +96,10 @@ public class EmeraldCountOverlay implements Listener {
     /**
      * Renders the money amount on the specified x and y as text
      *
-     * @param x the X position in the cartesian plane
-     * @param y the Y position in the cartesian plane
+     * @param x           the X position in the cartesian plane
+     * @param y           the Y position in the cartesian plane
      * @param moneyAmount the money amount
-     * @param renderer the renderer
+     * @param renderer    the renderer
      */
     private static void drawTextMoneyAmount(int x, int y, int moneyAmount, ScreenRenderer renderer, CustomColor color) {
         // rendering setup
@@ -108,14 +108,14 @@ public class EmeraldCountOverlay implements Listener {
 
         // generating text
         String moneyText = "";
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {  // plain text
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) { // plain text
             moneyText = formatAmount(moneyAmount) + EmeraldSymbols.EMERALDS;
-        } else {  // sliced text
+        } else { // sliced text
             int[] moneySlices = calculateMoneyAmount(moneyAmount);
 
-            moneyText += formatAmount(moneySlices[2]) + EmeraldSymbols.LE + " ";  // liquid emeralds
-            moneyText += formatAmount(moneySlices[1]) + EmeraldSymbols.BLOCKS + " ";  // emerald blocks
-            moneyText += formatAmount(moneySlices[0]) + EmeraldSymbols.EMERALDS;  // emeralds
+            moneyText += formatAmount(moneySlices[2]) + EmeraldSymbols.LE + " "; // liquid emeralds
+            moneyText += formatAmount(moneySlices[1]) + EmeraldSymbols.BLOCKS + " "; // emerald blocks
+            moneyText += formatAmount(moneySlices[0]) + EmeraldSymbols.EMERALDS; // emeralds
         }
 
         // rendering
@@ -132,10 +132,10 @@ public class EmeraldCountOverlay implements Listener {
     /**
      * Renders the money amount as 0 to 3 icons (LEs, blocks and emeralds) with numbers in potion effect boxes
      *
-     * @param x x of first box
-     * @param y y of first box
+     * @param x           x of first box
+     * @param y           y of first box
      * @param moneyAmount amount of money to render
-     * @param renderer the renderer
+     * @param renderer    the renderer
      */
     private static void drawIconsMoneyAmount(int x, int y, int moneyAmount, ScreenRenderer renderer) {
         String emeraldAmount = null;
@@ -181,9 +181,9 @@ public class EmeraldCountOverlay implements Listener {
     }
 
     private static void drawOneIcon(Item i, int x, int y, String text, ScreenRenderer renderer) {
-        int textureHeightScale = (int) inventoryTexture.height/256;
-        int textureWidthScale = (int) inventoryTexture.width/256;
-    	renderer.drawRect(inventoryTexture, x, y, x+24, y+24, textureWidthScale*141, textureHeightScale*190, textureWidthScale*165, textureHeightScale*166);
+        int textureHeightScale = (int) inventoryTexture.height / 256;
+        int textureWidthScale = (int) inventoryTexture.width / 256;
+        renderer.drawRect(inventoryTexture, x, y, x + 24, y + 24, textureWidthScale * 141, textureHeightScale * 190, textureWidthScale * 165, textureHeightScale * 166);
 
         int textWidth = ScreenRenderer.fontRenderer.getStringWidth(text);
         renderer.drawItemStack(new ItemStack(i), x + 4, y + 4, textWidth > 18 ? "" : text);
@@ -206,25 +206,25 @@ public class EmeraldCountOverlay implements Listener {
         return ItemIdentificationOverlay.decimalFormat.format(value);
     }
 
-    private static final String[] suffixes = { "", "k", "m", "b", "t" };  // kilo, million, billion, trillion (short scale)
+    private static final String[] suffixes = { "", "k", "m", "b", "t" }; // kilo, million, billion, trillion (short scale)
     private static final DecimalFormat fractionalFormat = new DecimalFormat("#.#");
 
     /**
      * Format a value using decimal suffixes to 1 decimal place (To be displayed as count)
      *
      * E.g.:
-     *     1.0 -> "1"
-     *     1.23 -> "1.2"
-     *     0.75 -> "0.8"
-     *     0.74 -> null
-     *     0 -> null
-     *     100.0 -> "100"
-     *     1000.0 -> "1k"
-     *     800.0 -> "0.8k"
-     *     749_000.0 -> "750k"
-     *     750_000.0 -> "0.8m"
-     *     1_000_000.0 -> "1m"
-     *     1_200_000.0 -> "1.2m"
+     * 1.0 -> "1"
+     * 1.23 -> "1.2"
+     * 0.75 -> "0.8"
+     * 0.74 -> null
+     * 0 -> null
+     * 100.0 -> "100"
+     * 1000.0 -> "1k"
+     * 800.0 -> "0.8k"
+     * 749_000.0 -> "750k"
+     * 750_000.0 -> "0.8m"
+     * 1_000_000.0 -> "1m"
+     * 1_200_000.0 -> "1.2m"
      */
     private static String formatAmount(double value) {
         if (value < 0.75) return null;
