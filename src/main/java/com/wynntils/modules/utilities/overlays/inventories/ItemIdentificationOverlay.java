@@ -90,6 +90,15 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         NBTTagCompound wynntils = generateData(stack);
+        ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
+
+        //block if the item is not the real item
+        ItemStack comparation = item.getGuideStack();
+        if(!comparation.isItemEqual(stack)) {
+            nbt.setBoolean("wynntilsIgnore", true);
+            nbt.removeTag("wynntils");
+            return;
+        }
 
         // perfect name
         if (wynntils.hasKey("isPerfect")) {
@@ -103,7 +112,6 @@ public class ItemIdentificationOverlay implements Listener {
 
         // objects
         IdentificationType idType = IdentificationType.valueOf(wynntils.getString("currentType"));
-        ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         List<String> newLore = new ArrayList<>();
 
