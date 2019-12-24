@@ -30,10 +30,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SettingsUI extends UI {
     private GuiScreen parentScreen;
@@ -178,7 +176,7 @@ public class SettingsUI extends UI {
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
                 ScreenRenderer.scale(0.8f);
-                String name = setting.info.displayName();
+                String name = setting.field.info.displayName();
                 render.drawString(
                     name,
                     (setting.position.getDrawingX() + 34f) / 0.8f, (setting.position.getDrawingY() + 4.5f) / 0.8f,
@@ -215,7 +213,7 @@ public class SettingsUI extends UI {
         ScreenRenderer.resetScale();
         settings.elements.forEach(setting -> {
             if (setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
-                List<String> lines = Arrays.asList(((SettingElement) setting).info.description().split("_nl"));
+                List<String> lines = Arrays.asList(((SettingElement) setting).field.info.description().split("_nl"));
 //                GuiUtils.drawHoveringText(lines, setting.position.getDrawingX()-10, screenHeight/2-100, 0, screenHeight, 170, render.fontRenderer);
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
             }
@@ -232,18 +230,15 @@ public class SettingsUI extends UI {
         settings.elements.clear();
         settingsScrollbar.max = settingsScrollbar.min;
         try {
-            List<Field> notSorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
-            List<Field> sorted = notSorted.stream().filter(c -> c.getAnnotation(Setting.class) != null && !c.getAnnotation(Setting.class).displayName().isEmpty()).sorted(Comparator.comparing(o -> o.getAnnotation(Setting.class).displayName())).sorted(Comparator.comparingInt(o -> o.getAnnotation(Setting.class).order())).collect(Collectors.toList());
+            List<SettingsContainer.SettingField> sorted = new ArrayList<>(registeredSettings.get(path).getValues().keySet());
+            sorted.removeIf(c -> c.info.displayName().isEmpty());
+            sorted.sort(Comparator.<SettingsContainer.SettingField>comparingInt(o -> o.info.order()).thenComparing(o -> o.field.getName()));
 
-            for (Field field : sorted) {
-                try {
-                    SettingElement newSetting = new SettingElement(field);
-                    newSetting.isSearched = doesMatchSearch(newSetting);
-                    settings.add(newSetting);
-                    settingsScrollbar.max -= settingHeight;
-                } catch (Exception ignored) {
-                    // no @Setting
-                }
+            for (SettingsContainer.SettingField field : sorted) {
+                SettingElement newSetting = new SettingElement(field);
+                newSetting.isSearched = doesMatchSearch(newSetting);
+                settings.add(newSetting);
+                settingsScrollbar.max -= settingHeight;
             }
             if (settingsScrollbar.min - settingsScrollbar.max > 185) {
                 settings.position.offsetY = (int)settingsScrollbar.getValue();
@@ -291,7 +286,7 @@ public class SettingsUI extends UI {
     }
 
     private boolean doesMatchSearch(SettingElement setting) {
-        return doesMatchSearch(setting.info);
+        return doesMatchSearch(setting.field.info);
     }
 
     private boolean doesMatchSearch(String settingPath) {
@@ -299,14 +294,14 @@ public class SettingsUI extends UI {
         if (doesStringMatchSearch(settingPath)) {
             return true;
         }
-        Set<Field> settings;
+        Set<SettingsContainer.SettingField> settings;
         try {
             settings = registeredSettings.get(settingPath).getValues().keySet();
         } catch (Exception ignored) {
             return false;
         }
-        for (Field setting : settings) {
-            if (doesMatchSearch(setting.getAnnotation(Setting.class))) {
+        for (SettingsContainer.SettingField setting : settings) {
+            if (doesMatchSearch(setting.info)) {
                 return true;
             }
         }
@@ -365,17 +360,13 @@ public class SettingsUI extends UI {
     }
     public static final int settingHeight = 45;
     private class SettingElement extends UIEList {
-        public Field field;
-        public Setting info;
+        public SettingsContainer.SettingField field;
         public UIElement valueElement;
         public boolean isSearched = false;
 
-        public SettingElement(Field field) throws NullPointerException {
+        public SettingElement(SettingsContainer.SettingField field) {
             super(0f, 0f, 0, 0);
             this.field = field;
-
-            this.info = field.getAnnotation(Setting.class);
-            if (info == null) throw new NullPointerException();
 
             this.position.offsetY = settingHeight * settings.elements.size();
 
@@ -398,47 +389,48 @@ public class SettingsUI extends UI {
 
             try {
                 Object value = registeredSettings.get(currentSettingsPath).getValues().get(field);
+                Class<?> type = field.field.getType();
                 if (value instanceof String) {
                     String text = ((String) value).replace("§", "&");
                     valueElement = new UIETextBox(0f, 0f, 0, 16, 170, true, text, false, (ui, oldString) -> {
                         try {
-                            registeredSettings.get(currentSettingsPath).setValue(field, ((UIETextBox) valueElement).getText().replace("&", "§"), false);
+                            registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIETextBox) valueElement).getText().replace("&", "§"));
                             changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
                     // ((UIETextBox) valueElement).textField.setEnableBackgroundDrawing(false);
-                    Setting.Limitations.StringLimit limit = field.getAnnotation(Setting.Limitations.StringLimit.class);
+                    Setting.Limitations.StringLimit limit = field.field.getAnnotation(Setting.Limitations.StringLimit.class);
                     if (limit != null)
                         ((UIETextBox) valueElement).textField.setMaxStringLength(limit.maxLength());
                     else ((UIETextBox) valueElement).textField.setMaxStringLength(120);
                     // Set text again in case it was over default max length of 32
                     ((UIETextBox) valueElement).setText(text);
-                } else if (field.getType().isAssignableFrom(boolean.class)) {
+                } else if (type.isAssignableFrom(boolean.class)) {
                     valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
-                            registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Toggle) valueElement).value, false);
+                            registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIEButton.Toggle) valueElement).value);
                             changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
                 } else if (value instanceof Enum) {
-                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) field.getType(), (Enum) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) type, (Enum) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
-                            registeredSettings.get(currentSettingsPath).setValue(field, ((UIEButton.Enum) valueElement).value, false);
+                            registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIEButton.Enum) valueElement).value);
                             changedSettings.add(currentSettingsPath);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
-                } else if (field.getType().isAssignableFrom(int.class)) {
-                    Setting.Limitations.IntLimit limit = field.getAnnotation(Setting.Limitations.IntLimit.class);
+                } else if (type.isAssignableFrom(int.class)) {
+                    Setting.Limitations.IntLimit limit = field.field.getAnnotation(Setting.Limitations.IntLimit.class);
                     if (limit != null) {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, limit.min(), limit.max(), limit.precision(), 0, (ui, aFloat) -> {
                             try {
-                                registeredSettings.get(currentSettingsPath).setValue(field, (int)((UIESlider)valueElement).getValue(), false);
+                                registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, (int)((UIESlider)valueElement).getValue());
                                 changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -447,12 +439,12 @@ public class SettingsUI extends UI {
                         ((UIESlider)valueElement).setValue((int)value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#");
                     }
-                } else if (field.getType().isAssignableFrom(float.class)) {
-                    Setting.Limitations.FloatLimit limit = field.getAnnotation(Setting.Limitations.FloatLimit.class);
+                } else if (type.isAssignableFrom(float.class)) {
+                    Setting.Limitations.FloatLimit limit = field.field.getAnnotation(Setting.Limitations.FloatLimit.class);
                     if (limit != null) {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, limit.min(), limit.max(), limit.precision(), 0, (ui, aFloat) -> {
                             try {
-                                registeredSettings.get(currentSettingsPath).setValue(field, ((UIESlider) valueElement).getValue(), false);
+                                registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIESlider) valueElement).getValue());
                                 changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -461,12 +453,12 @@ public class SettingsUI extends UI {
                         ((UIESlider)valueElement).setValue((float)value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }
-                } else if (field.getType().isAssignableFrom(double.class)) {
-                    Setting.Limitations.DoubleLimit limit = field.getAnnotation(Setting.Limitations.DoubleLimit.class);
+                } else if (type.isAssignableFrom(double.class)) {
+                    Setting.Limitations.DoubleLimit limit = field.field.getAnnotation(Setting.Limitations.DoubleLimit.class);
                     if (limit != null) {
                         valueElement = new UIESlider.Horizontal(CommonColors.GRAY, Textures.UIs.button_a, 0f, 0f, 0, 15, 175, true, (float)limit.min(), (float)limit.max(), (float)limit.precision(), 0, (ui, aFloat) -> {
                             try {
-                                registeredSettings.get(currentSettingsPath).setValue(field, (double)((UIESlider)valueElement).getValue(), false);
+                                registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, (double)((UIESlider)valueElement).getValue());
                                 changedSettings.add(currentSettingsPath);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -475,14 +467,14 @@ public class SettingsUI extends UI {
                         ((UIESlider)valueElement).setValue((float)(double) value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }
-                } else if (field.getType().isAssignableFrom(CustomColor.class)) {
+                } else if (type.isAssignableFrom(CustomColor.class)) {
                     valueElement = new UIEColorWheel(0, 0, 0, 17, 20, 20, true, (color) -> {
-                        try{
-                            registeredSettings.get(currentSettingsPath).setValue(field, color, false);
+                        try {
+                            registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, color);
                             changedSettings.add(currentSettingsPath);
-                        }catch (Exception ex) { ex.printStackTrace(); }
+                        } catch (Exception ex) { ex.printStackTrace(); }
                     }, SettingsUI.this);
-                    Setting.Features.CustomColorFeatures features = field.getAnnotation(Setting.Features.CustomColorFeatures.class);
+                    Setting.Features.CustomColorFeatures features = field.field.getAnnotation(Setting.Features.CustomColorFeatures.class);
                     if (features != null) {
                         if (features.allowAlpha()) {
                             ((UIEColorWheel) valueElement).allowAlpha();

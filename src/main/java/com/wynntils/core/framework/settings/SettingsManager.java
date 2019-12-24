@@ -44,7 +44,7 @@ public class SettingsManager {
         configFolder.mkdirs();  // if the config folder doesn't exists create the directory
     }
 
-    public static void saveSettings(ModuleContainer m, SettingsHolder obj) throws Exception {
+    public static void saveSettings(ModuleContainer m, SettingsHolder obj, boolean localOnly) throws IOException {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
         if (info == null)
             if (!(obj instanceof Overlay))
@@ -56,18 +56,18 @@ public class SettingsManager {
         f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config");
         if (!f.exists()) f.createNewFile();  // create the config file if it doesn't exists
 
-        // HeyZeer0: Writting to file
+        // HeyZeer0: Writing to file
         OutputStreamWriter fileWriter = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8);
         gson.toJson(obj, fileWriter);
         fileWriter.close();
 
         // HeyZeer0: Uploading file
-        if (WebManager.getAccount() != null) {
+        if (!localOnly && WebManager.getAccount() != null) {
             WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(EncodingUtils.deflate(Files.readAllBytes(f.toPath()))), StandardCharsets.UTF_8));
         }
     }
 
-    public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws Exception {
+    public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws IOException {
         SettingsInfo info = obj.getClass().getAnnotation(SettingsInfo.class);
         if (info == null)
             if (!(obj instanceof Overlay))
@@ -82,7 +82,7 @@ public class SettingsManager {
         if (!f.exists()) {
             f.createNewFile();
             container.onCreateConfig();
-            saveSettings(m, container.getHolder());
+            saveSettings(m, container.getHolder(), true);
             return obj;
         }
 

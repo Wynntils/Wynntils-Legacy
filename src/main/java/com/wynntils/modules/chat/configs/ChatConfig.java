@@ -42,8 +42,10 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Show Held Item Chat Message", description = "Should the details of your compass and soul points be shown in chat whilst you are holding them?")
     public boolean heldItemChat = true;
 
+    @Setting
     public boolean registeredDefaultTabs = false;
 
+    @Setting
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
     @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All")

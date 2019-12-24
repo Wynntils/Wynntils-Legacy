@@ -19,7 +19,7 @@ public class ToastOverlay extends Overlay {
     private static int DISPLAY_AMNT = 3;
     private static ArrayList<Toast> toastList = new ArrayList<>();
     private static Toast[] displayedToast = new Toast[DISPLAY_AMNT];
-    public int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
+    public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
     public ToastOverlay() {
         super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);

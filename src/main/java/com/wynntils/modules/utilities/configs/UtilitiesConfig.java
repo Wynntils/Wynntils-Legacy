@@ -90,7 +90,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(upload = false)
     public String lastServerResourcePackHash = "";
 
-    @Setting()
+    @Setting
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
     @SettingsInfo(name = "wars", displayPath = "Wars")
@@ -112,7 +112,7 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Data extends SettingsClass {
         public static Data INSTANCE;
 
-
+        @Setting
         public long dailyReminder = 0L;
 
         @Override

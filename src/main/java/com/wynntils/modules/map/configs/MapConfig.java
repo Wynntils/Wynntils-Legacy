@@ -71,7 +71,9 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
     public int mapZoom = 30;
 
+    @Setting
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons(false);
+    @Setting
     public HashMap<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
 
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
@@ -232,6 +234,7 @@ public class MapConfig extends SettingsClass {
         return enabledIcons;
     }
 
+    @Setting
     public IconTexture iconTexture = IconTexture.Classic;
     public enum IconTexture {
         Classic, Medieval

@@ -23,8 +23,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class ActionBarOverlay extends Overlay {
 
-    public int y = 0;
-
 //    @Setting(displayName = "Text Shadow", description = "The Action Bar Text shadow type")
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
