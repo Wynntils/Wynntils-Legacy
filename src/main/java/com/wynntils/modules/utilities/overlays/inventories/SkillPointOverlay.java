@@ -36,8 +36,6 @@ public class SkillPointOverlay implements Listener {
                 }
                 String[] numbers = lore.split(" ");
                 value = numbers[0];
-
-                System.out.println(value);
             } else if (name.contains("Profession")) { // Profession Icons
                 lore = lore.replaceAll(colourPattern, "");
 
@@ -60,7 +58,6 @@ public class SkillPointOverlay implements Listener {
 
             try {
                 int count = Integer.parseInt(value);
-                System.out.println("Updating " + stack + " to " + count);
                 stack.setCount(count == 0 ? 1 : count);
             } catch (Exception ex) {
                 ex.printStackTrace();
