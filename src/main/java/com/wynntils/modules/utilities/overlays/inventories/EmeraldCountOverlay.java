@@ -53,19 +53,23 @@ public class EmeraldCountOverlay implements Listener {
         if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
-        if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
+        if (lowerInv.getName().contains("Quests")) return;
+        
+        boolean drawForGUI = true;
+        if (lowerInv.getName().contains("points") || lowerInv.getName().contains("Shop") || lowerInv.getName().contains("Blacksmith")) 
+            drawForGUI = false;
 
         IInventory upperInv = e.getGui().getUpperInv();
 
         ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
+            if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory && drawForGUI)
                 drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
                 drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
             return;
         }
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
+        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory && drawForGUI)
             drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
             drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
