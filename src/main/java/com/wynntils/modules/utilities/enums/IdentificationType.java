@@ -45,7 +45,6 @@ public enum IdentificationType implements IIdentificationAnalyser {
         }
 
         int normalize(double amount) {
-            System.out.println(amount);
             if(amount < 0d) return -1;
             if(amount > 1d) return -1;
 

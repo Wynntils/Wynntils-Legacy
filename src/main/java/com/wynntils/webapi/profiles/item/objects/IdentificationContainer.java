@@ -108,29 +108,40 @@ public class IdentificationContainer {
 
         int increaseDirection = baseValue > 0 ? +1 : -1;
 
-        double lowerRawRollUnrounded = (currentValue * 100D - 50) / baseValue;
         int lowerRawRoll;
-        if (baseValue > 0) {
-            lowerRawRoll = (int) Math.floor(lowerRawRollUnrounded);
-            if (lowerRawRollUnrounded == lowerRawRoll) --lowerRawRoll;
+
+        if (currentValue != min) {
+            double lowerRawRollUnrounded = (currentValue * 100D - 50) / baseValue;
+            if (baseValue > 0) {
+                lowerRawRoll = (int) Math.floor(lowerRawRollUnrounded);
+                if (lowerRawRollUnrounded == lowerRawRoll) --lowerRawRoll;
+            } else {
+                lowerRawRoll = (int) Math.ceil(lowerRawRollUnrounded);
+                if (lowerRawRollUnrounded == lowerRawRoll) ++lowerRawRoll;
+            }
+
+            if (Math.round(baseValue * (lowerRawRoll / 100D)) >= currentValue) {
+                lowerRawRoll -= increaseDirection;
+            } else if (Math.round(baseValue * ((lowerRawRoll + increaseDirection) / 100D)) < currentValue) {
+                lowerRawRoll += increaseDirection;
+            }
         } else {
-            lowerRawRoll = (int) Math.ceil(lowerRawRollUnrounded);
-            if (lowerRawRollUnrounded == lowerRawRoll) ++lowerRawRoll;
+            lowerRawRoll = baseValue > 0 ? 29 : 131;
         }
 
-        if (Math.round(baseValue * (lowerRawRoll / 100D)) >= currentValue) {
-            lowerRawRoll -= increaseDirection;
-        } else if (Math.round(baseValue * ((lowerRawRoll + increaseDirection) / 100D)) < currentValue) {
-            lowerRawRoll += increaseDirection;
-        }
+        int higherRawRoll;
 
-        double higherRawRollUnrounded = (currentValue * 100D + 50) / baseValue;
-        int higherRawRoll = baseValue > 0 ? (int) Math.ceil(higherRawRollUnrounded) : (int) Math.floor(higherRawRollUnrounded);
+        if (currentValue != max) {
+            double higherRawRollUnrounded = (currentValue * 100D + 50) / baseValue;
+             higherRawRoll = baseValue > 0 ? (int) Math.ceil(higherRawRollUnrounded) : (int) Math.floor(higherRawRollUnrounded);
 
-        if (Math.round(baseValue * (higherRawRoll / 100D)) < max) {
-            higherRawRoll += increaseDirection;
-        } else if (Math.round(baseValue * ((higherRawRoll - increaseDirection) / 100D)) >= max) {
-            higherRawRoll -= increaseDirection;
+            if (Math.round(baseValue * (higherRawRoll / 100D)) < max) {
+                higherRawRoll += increaseDirection;
+            } else if (Math.round(baseValue * ((higherRawRoll - increaseDirection) / 100D)) >= max) {
+                higherRawRoll -= increaseDirection;
+            }
+        } else {
+            higherRawRoll = baseValue > 0 ? 131 : 69;
         }
 
         Fraction decrease, increase;
@@ -154,29 +165,8 @@ public class IdentificationContainer {
     /**
      * @return The chance for this identification to become perfect (From 0 to 1)
      */
-    public strictfp Fraction getPerfectChance() {
-        if (perfectChance != null) return perfectChance;
-
-        if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
-            return perfectChance = Fraction.ONE;
-        }
-
-        int increaseDirection = baseValue > 0 ? +1 : -1;
-
-        double perfectRawRollUnrounded = (max * 100D - 50) / baseValue;
-        int perfectRawRoll = baseValue > 0 ? (int) Math.ceil(perfectRawRollUnrounded) : (int) Math.floor(perfectRawRollUnrounded);
-
-        if (Math.round(baseValue * (perfectRawRoll / 100D)) < max) {
-            perfectRawRoll += increaseDirection;
-        } else if (Math.round(baseValue * ((perfectRawRoll - increaseDirection) / 100D)) >= max) {
-            perfectRawRoll -= increaseDirection;
-        }
-
-        if (baseValue > 0) {
-            return perfectChance = Fraction.getFraction(131 - perfectRawRoll, 101);
-        }
-
-        return perfectChance = Fraction.getFraction(perfectRawRoll - 69, 61);
+    public Fraction getPerfectChance() {
+        return perfectChance == null ? (perfectChance = getChances(max).remain) : perfectChance;
     }
 
     /**
