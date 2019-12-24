@@ -250,7 +250,7 @@ public class WebRequestHandler {
                 return null;
             }
 
-            Thread t = new Thread(() -> handleDispatch(thisDispatch, groupedRequests, 0));
+            Thread t = new Thread(() -> handleDispatch(thisDispatch, groupedRequests, 0), "wynntils-webrequesthandler");
             t.start();
             return t;
         }

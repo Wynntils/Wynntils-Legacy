@@ -186,7 +186,7 @@ public class UpdateOverlay extends Overlay {
             } catch (IOException ex) {
                 Reference.LOGGER.error("Unable to apply Wynntils update.", ex);
             }
-        }));
+        }, "wynntils-autoupdate-applier"));
     }
 
     public static boolean isDownloading() {

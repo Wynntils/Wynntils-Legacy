@@ -146,7 +146,7 @@ public class ServerIcon {
         try {
             bufferedimage = parseServerIcon(lastIcon);
         } catch (Throwable throwable) {
-            Reference.LOGGER.error("Invalid icon for server {} ({})", server.serverName, server.serverIP, throwable);
+            Reference.LOGGER.error("Invalid icon for server " + server.serverName + " (" + server.serverIP + ")", throwable);
             server.setBase64EncodedIconData(null);
             onDone();
             return null;

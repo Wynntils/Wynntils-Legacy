@@ -31,10 +31,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Utils {
 
@@ -48,8 +45,8 @@ public class Utils {
      * @param timeUnit the time unit
      * @param amount the amount of the specified time unit
      */
-    public static void runAfter(Runnable r, TimeUnit timeUnit, long amount) {
-        executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
+    public static ScheduledFuture<?> runAfter(Runnable r, TimeUnit timeUnit, long amount) {
+        return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
     /**
@@ -63,8 +60,12 @@ public class Utils {
         return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
-    public static void runAsync(Runnable r) {
-        executorService.submit(r);
+    public static Future<?> runAsync(Runnable r) {
+        return executorService.submit(r);
+    }
+
+    public static <T> Future<T> runAsync(Callable<T> r) {
+        return executorService.submit(r);
     }
 
     private static final String[] directions = new String[]{ "N", "NE", "E", "SE", "S", "SW", "W", "NW" };

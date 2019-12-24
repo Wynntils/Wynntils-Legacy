@@ -732,8 +732,10 @@ public class WebManager {
         if (major) {
             HashMap<String, ArrayList<String>> changelogs = null;
             Type type = new TypeToken<HashMap<String, ArrayList<String>>>() { }.getType();
+            String url = apiUrls.get("Changelog");
+            Reference.LOGGER.info("Requesting changelog from " + url);
             try {
-                URLConnection st = new URL(apiUrls.get("Changelog")).openConnection();
+                URLConnection st = new URL(url).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
                 st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -756,12 +758,14 @@ public class WebManager {
         }
 
         try {
-            String base = apiUrls.get("DevJars");
+            String url = apiUrls.get("DevJars");
             if (!forceLatest && Reference.BUILD_NUMBER != -1) {
-                base = StringUtils.removeEnd(base, "lastSuccessfulBuild/") + Reference.BUILD_NUMBER + "/";
+                url = StringUtils.removeEnd(url, "lastSuccessfulBuild/") + Reference.BUILD_NUMBER + "/";
             }
+            url += "api/json?tree=changeSet[items[msg]]";
+            Reference.LOGGER.info("Requesting changelog from " + url);
 
-            URLConnection st = new URL(base + "api/json?tree=changeSet[items[msg]]").openConnection();
+            URLConnection st = new URL(url).openConnection();
             st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);

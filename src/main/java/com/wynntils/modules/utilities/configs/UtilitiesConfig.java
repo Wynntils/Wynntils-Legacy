@@ -78,7 +78,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Change Window Title When on Wynncraft", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
     public boolean changeWindowTitle = true;
 
-    @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo while on the server?")
+    @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\nThis does not work on macOS systems")
     public boolean changeWindowIcon = false;
 
     @Setting(upload = false)

@@ -6,6 +6,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ServerIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.util.Util;
 import org.lwjgl.opengl.Display;
 
 import java.awt.image.BufferedImage;
@@ -33,7 +34,7 @@ public class WindowIconManager {
         try {
             bufferedimage = ServerIcon.parseServerIcon(base64);
         } catch (Throwable throwable) {
-            Reference.LOGGER.error("Invalid icon for server {} ({})", server.serverName, server.serverIP, throwable);
+            Reference.LOGGER.error("Invalid icon for server " + server.serverName + " (" + server.serverIP + ")", throwable);
             serverIconInvalid = true;
             return;
         }
@@ -73,6 +74,8 @@ public class WindowIconManager {
     }
 
     public static synchronized void update() {
+        if (Util.getOSType() == Util.EnumOS.OSX) return;  // Does not work on macOS
+
         if (UtilitiesConfig.INSTANCE.changeWindowIcon && Reference.onServer) {
             if (!setToServerIcon && !serverIconInvalid) {
                 setIcon();

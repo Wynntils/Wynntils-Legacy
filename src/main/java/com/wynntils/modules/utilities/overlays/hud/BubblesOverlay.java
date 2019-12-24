@@ -57,14 +57,17 @@ public class BubblesOverlay extends Overlay {
             case Liquid:
                 drawDefaultBar(0, 5, 40, 49);
                 break;
-            case Saphire:
+            case Sapphire:
                 drawDefaultBar(0, 5, 50, 59);
                 break;
-            case a: drawDefaultBar(0, 5, 10, 19);
+            case a:
+                drawDefaultBar(0, 5, 10, 19);
                 break;
-            case b: drawDefaultBar(0, 5, 20, 29);
+            case b:
+                drawDefaultBar(0, 5, 20, 29);
                 break;
-            case c: drawDefaultBar(0, 5, 30, 39);
+            case c:
+                drawDefaultBar(0, 5, 30, 39);
                 break;
         }
     }

@@ -45,7 +45,7 @@ public class UpdateProfile {
                 ex.printStackTrace();
                 updateCheckFailed = true;
             }
-        }).start();
+        }, "wynntils-updateprofile").start();
     }
 
     public boolean hasUpdate() {

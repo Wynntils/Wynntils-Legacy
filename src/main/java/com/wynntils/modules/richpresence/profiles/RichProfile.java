@@ -34,7 +34,7 @@ public class RichProfile {
     private IDiscordCore discordCore = null;
     private OverlayManager overlayManager = null;
     private IDiscordActivityManager activityManager = null;
-    private Thread shutdown = new Thread(this::disconnectRichPresence);
+    private Thread shutdown = new Thread(this::disconnectRichPresence, "wynntils-disconnect-richpresence");
 
     private SecretContainer joinSecret = null;
 
@@ -436,7 +436,7 @@ public class RichProfile {
         }
         byte[] encoded = string.getBytes(StandardCharsets.UTF_8);
         if (encoded.length >= size) {
-            Reference.LOGGER.error("[RichPresence] Truncating string because it would be too long (From {} to {} bytes)", encoded.length + 1, size);
+            Reference.LOGGER.error("[RichPresence] Truncating string because it would be too long (From " + (encoded.length + 1) + " to " + size + " bytes)");
             encoded[size - 1] = 0;
         }
         return Arrays.copyOf(encoded, size);

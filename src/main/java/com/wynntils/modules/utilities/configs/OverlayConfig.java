@@ -203,7 +203,7 @@ public class OverlayConfig extends SettingsClass {
         public enum BubbleTexture {
             Wynn,
             Liquid,
-            Saphire,
+            Sapphire,
             a,
             b,
             c

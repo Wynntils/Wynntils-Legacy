@@ -28,8 +28,9 @@ public class Reference {
 
     public static synchronized void setUserWorld(String uw) {
         ServerData currentServer = ModCore.mc().getCurrentServerData();
-        onServer = !ModCore.mc().isSingleplayer() && currentServer != null && currentServer.serverIP.toLowerCase(Locale.ROOT).contains("wynncraft");
-        onEuServer = onServer && currentServer.serverIP.toLowerCase(Locale.ROOT).startsWith("eu");
+        String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
+        onServer = !ModCore.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
+        onEuServer = onServer && lowerIP.startsWith("eu");
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;

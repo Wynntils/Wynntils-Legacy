@@ -79,7 +79,7 @@ public class LowHealthVignetteOverlay extends Overlay {
             case Growing:
                 value = threshold - currentHealth * INTENSITY;
                 break;
-            default:
+            case Static:
                 value = INTENSITY;
                 break;
         }

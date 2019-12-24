@@ -43,6 +43,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public class ServerEvents implements Listener {
 
@@ -199,20 +200,34 @@ public class ServerEvents implements Listener {
         PacketQueue.checkResponse(e.getPacket());
     }
 
+    private static boolean triedToShowChangelog = false;
+
     /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
      */
     @SubscribeEvent
     public void onJoinLobby(RenderPlayerEvent.Post e) {
-        if (CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
+        if (Reference.onServer && CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
-            CoreDBConfig.INSTANCE.showChangelogs = false;
-            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            synchronized (this) {
+                if (triedToShowChangelog) return;
+                triedToShowChangelog = true;
+            }
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            ChangelogUI.loadChangelogAndShow(major, false);
+            new Thread(() -> {
+                List<String> changelog = WebManager.getChangelog(major, false);
+                if (changelog != null) {
+                    Minecraft.getMinecraft().addScheduledTask(() -> {
+                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(changelog, major));
+                        // Showed changelog; Don't show next time.
+                        CoreDBConfig.INSTANCE.showChangelogs = false;
+                        CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+                    });
+                }
+            }, "wynntils-changelog-downloader").start();
         }
     }
 

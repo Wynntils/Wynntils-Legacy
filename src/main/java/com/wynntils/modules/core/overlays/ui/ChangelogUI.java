@@ -11,7 +11,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
@@ -64,23 +63,43 @@ public class ChangelogUI extends GuiScreen {
         loadChangelogAndShow(null, major, forceLatest);
     }
 
+    /**
+     * Displays an intermediary loading screen (Currently just a changelog that says "Loading...")
+     * whilst a web request is made in a separate thread.
+     *
+     * @param previousGui The gui to return to when exiting both the loading GUI and the changelog when it opens
+     * @param major {@link WebManager#getChangelog(boolean, boolean)}'s first argument (Stable or CE?)
+     * @param forceLatest {@link WebManager#getChangelog(boolean, boolean)}'s second argument (Latest or current changelog?)
+     */
     public static void loadChangelogAndShow(GuiScreen previousGui, boolean major, boolean forceLatest) {
         Minecraft mc = Minecraft.getMinecraft();
 
         GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
         mc.displayGuiScreen(loadingScreen);
+        if (mc.currentScreen != loadingScreen) {
+            // Changed by an event handler
+            return;
+        }
 
-        Utils.runAsync(() -> {
-            if (mc.currentScreen != loadingScreen) return;
+        new Thread(() -> {
+            if (mc.currentScreen != loadingScreen) {
+                return;
+            }
             ArrayList<String> changelog = WebManager.getChangelog(major, forceLatest);
-            if (mc.currentScreen != loadingScreen) return;
+            if (mc.currentScreen != loadingScreen) {
+                return;
+            }
 
             mc.addScheduledTask(() -> {
-                if (mc.currentScreen == loadingScreen) {
-                    mc.displayGuiScreen(new ChangelogUI(previousGui, changelog, major));
+                if (mc.currentScreen != loadingScreen) {
+                    return;
                 }
+
+                ChangelogUI gui = new ChangelogUI(previousGui, changelog, major);
+                mc.displayGuiScreen(gui);
             });
-        });
+
+        }, "wynntils-changelog").start();
     }
 
     @Override

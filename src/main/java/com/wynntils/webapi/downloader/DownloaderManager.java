@@ -175,7 +175,7 @@ public class DownloaderManager {
 
                 startDownloading();
             }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0); }
-        }).start();
+        }, "wynntils-download-manager").start();
     }
 
 }

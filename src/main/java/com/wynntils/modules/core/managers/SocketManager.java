@@ -85,7 +85,7 @@ public class SocketManager {
         socket.on(Socket.EVENT_CONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ConnectionEvent());
         }).on(Socket.EVENT_CONNECT_ERROR, (Object... args) -> {
-            Reference.LOGGER.error("Socket failed to connect: {}", args[0]);
+            Reference.LOGGER.error("Socket failed to connect:", args[0]);
         }).on(Socket.EVENT_RECONNECT, (Object... args) -> {
             FrameworkManager.getEventBus().post(new SocketEvent.ReConnectionEvent());
         }).on("update player location on map", (Object... args) -> {
