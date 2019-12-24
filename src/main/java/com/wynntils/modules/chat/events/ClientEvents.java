@@ -91,7 +91,7 @@ public class ClientEvents implements Listener {
     private static class OnChangeToEUClick implements Runnable {
         @Override
         public void run() {
-            ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), Reference.ServerIPS.eu, "Wynncraft"));
+            ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), Reference.ServerIPS.eu, "Wynncraft"), false);
         }
     }
 

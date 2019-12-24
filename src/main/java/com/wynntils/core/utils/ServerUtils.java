@@ -1,6 +1,7 @@
 package com.wynntils.core.utils;
 
 import com.wynntils.Reference;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
@@ -8,6 +9,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.resources.ResourcePackRepository;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -17,7 +20,15 @@ import java.util.Objects;
 public class ServerUtils {
 
     public static void connect(ServerData serverData) {
-        connect(new GuiMultiplayer(new GuiMainMenu()), serverData);
+        connect(serverData, true);
+    }
+
+    public static void connect(ServerData serverData, boolean unloadCurrentServerResourcePack) {
+        connect(new GuiMultiplayer(new GuiMainMenu()), serverData, unloadCurrentServerResourcePack);
+    }
+
+    public static void connect(GuiScreen backGui, ServerData serverData) {
+        connect(backGui, serverData, false);
     }
 
     /**
@@ -25,18 +36,28 @@ public class ServerUtils {
      *
      * @param backGui GUI to return to on failure
      * @param serverData The server to connect to
+     * @param unloadCurrentServerResourcePack If false, retain the same server resource pack between disconnecting and connecting
      */
-    public static void connect(GuiScreen backGui, ServerData serverData) {
-        disconnect(false);
+    public static void connect(GuiScreen backGui, ServerData serverData, boolean unloadCurrentServerResourcePack) {
+        disconnect(false, unloadCurrentServerResourcePack);
         FMLClientHandler.instance().connectToServer(backGui, serverData);
+    }
+
+    public static void disconnect() {
+        disconnect(true);
+    }
+
+    public static void disconnect(boolean switchGui) {
+        disconnect(switchGui, false);
     }
 
     /**
      * Disconnect from the current server
      *
      * @param switchGui If true, the current gui is changed (to the main menu in singleplayer, or multiplayer gui)
+     * @param unloadServerPack if false, disconnect without refreshing resources by unloading the server resource pack
      */
-    public static void disconnect(boolean switchGui) {
+    public static void disconnect(boolean switchGui, boolean unloadServerPack) {
         Minecraft mc = Minecraft.getMinecraft();
 
         WorldClient world = mc.world;
@@ -46,7 +67,11 @@ public class ServerUtils {
         boolean realms = !singlePlayer && mc.isConnectedToRealms();
 
         world.sendQuittingDisconnectingPacket();
-        mc.loadWorld(null);
+        if (unloadServerPack) {
+            mc.loadWorld(null);
+        } else {
+            loadWorldWithoutUnloadingServerResourcePack(null);
+        }
 
         if (!switchGui) return;
         if (singlePlayer) {
@@ -58,6 +83,27 @@ public class ServerUtils {
         } else {
             mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
         }
+    }
+
+    public static void loadWorldWithoutUnloadingServerResourcePack(WorldClient world) {
+        loadWorldWithoutUnloadingServerResourcePack(world, "");
+    }
+
+    private static ResourcePackRepository wontUnload = null;
+
+    public static synchronized void loadWorldWithoutUnloadingServerResourcePack(WorldClient world, String loadingMessage) {
+        ResourcePackRepository original = Minecraft.getMinecraft().getResourcePackRepository();
+        if (wontUnload == null) {
+            wontUnload = new ResourcePackRepository(original.getDirResourcepacks(), null, null, null, new GameSettings()) {
+                @Override
+                public void clearResourcePack() {
+                    // Don't
+                }
+            };
+        }
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), wontUnload);
+        Minecraft.getMinecraft().loadWorld(world, loadingMessage);
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), original);
     }
 
     public static ServerData getWynncraftServerData(boolean addNew) {

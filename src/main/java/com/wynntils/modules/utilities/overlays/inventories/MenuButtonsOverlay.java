@@ -90,7 +90,7 @@ public class MenuButtonsOverlay implements Listener {
                 int bid = b.id;
                 if (bid == 1 || (0 <= bid - 760 && bid - 760 < ips.length)) b.enabled = false;
             });
-            ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), ips[id - 760], "Wynncraft"));
+            ServerUtils.connect(ServerUtils.changeServerIP(Minecraft.getMinecraft().getCurrentServerData(), ips[id - 760], "Wynncraft"), false);
             return;
         }
         switch (id) {
