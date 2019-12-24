@@ -31,7 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class WynntilsAccount {
 
-    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Accounts").build());
+    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-accounts-%d").build());
 
     String token;
     boolean ready = false;

@@ -18,7 +18,7 @@ public class WindowIconManager {
     private static boolean serverIconInvalid = false;
 
     private static void deleteIcon() {
-        ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft());
+        Minecraft.getMinecraft().addScheduledTask(() -> ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft()));
         setToServerIcon = false;
         serverIconInvalid = false;
     }
@@ -41,9 +41,10 @@ public class WindowIconManager {
 
 
         int[] aint = bufferedimage.getRGB(0, 0, 64, 64, null, 0, 64);  // 64x64
-        ByteBuffer bytebuffer64 = ByteBuffer.allocate(4 * aint.length);
-        ByteBuffer bytebuffer32 = ByteBuffer.allocate(aint.length);
-        ByteBuffer bytebuffer16 = ByteBuffer.allocate(aint.length / 4);
+        ByteBuffer bytebuffer128 = ByteBuffer.allocateDirect(16 * aint.length);
+        ByteBuffer bytebuffer64 = ByteBuffer.allocateDirect(4 * aint.length);
+        ByteBuffer bytebuffer32 = ByteBuffer.allocateDirect(aint.length);
+        ByteBuffer bytebuffer16 = ByteBuffer.allocateDirect(aint.length / 4);
 
         int w = 64;
         int y = 0;
@@ -64,11 +65,26 @@ public class WindowIconManager {
             }
         }
 
+        for (y = 0; y < 128; y += 2) {
+            ByteBuffer row = ByteBuffer.allocate(128 * 4);
+            for (x = 0; x < 128; x += 2) {
+                int argb = aint[y / 2 * w + x / 2];
+                int rgba = argb << 8 | argb >> 24 & 255;
+                row.putInt(rgba);
+                row.putInt(rgba);
+            }
+            row.flip();
+            bytebuffer128.put(row);
+            row.rewind();
+            bytebuffer128.put(row);
+        }
+
+        bytebuffer128.flip();
         bytebuffer64.flip();
         bytebuffer32.flip();
         bytebuffer16.flip();
 
-        Display.setIcon(new ByteBuffer[]{ bytebuffer64, bytebuffer32, bytebuffer16 });
+        Minecraft.getMinecraft().addScheduledTask(() -> Display.setIcon(new ByteBuffer[]{ bytebuffer128, bytebuffer64, bytebuffer32, bytebuffer16 }));
         setToServerIcon = true;
         serverIconInvalid = false;
     }

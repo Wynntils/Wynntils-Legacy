@@ -1,5 +1,6 @@
 package com.wynntils.webapi;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -183,7 +184,7 @@ public class WebRequestHandler {
         }
     }
 
-    private ExecutorService pool = Executors.newFixedThreadPool(4);
+    private ExecutorService pool = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("wynntils-web-request-pool-%d").build());
     private ArrayList<Request> requests = new ArrayList<>();
     private int maxParallelGroup = 0;
     private int dispatchId = 0;

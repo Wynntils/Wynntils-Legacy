@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.richpresence.events;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WarStageEvent;
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerEvents implements Listener {
 
-    public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    public static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-richpresence-location-updater").build());
     public static ScheduledFuture updateTimer;
 
     /**

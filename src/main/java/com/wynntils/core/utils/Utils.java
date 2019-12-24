@@ -35,7 +35,7 @@ import java.util.concurrent.*;
 
 public class Utils {
 
-    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
+    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
 
     /**
