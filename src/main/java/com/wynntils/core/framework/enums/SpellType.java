@@ -30,7 +30,7 @@ public enum SpellType {
 
     public static SpellType getSpell(String input) {
         for (SpellType type : values()) {
-            if (type.regex.matcher(input).matches()) return type;
+            if (type.regex.matcher(input).find()) return type;
         }
 
         return null;
