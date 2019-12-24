@@ -64,7 +64,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean autoResource = true;
 
     @Setting(displayName = "Apply Wynncraft Resource Pack During Minecraft Load", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
-    public boolean autoResourceOnLoad = true;
+    public boolean autoResourceOnLoad = false;
 
     @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
