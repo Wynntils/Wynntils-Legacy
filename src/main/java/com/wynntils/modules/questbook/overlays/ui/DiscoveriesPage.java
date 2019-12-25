@@ -107,7 +107,7 @@ public class DiscoveriesPage extends QuestBookPage {
             // territory discoveries
             if (mouseX >= x - 135 && mouseX <= x - 105 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 135, y + 35, x - 105, y + 65);
-                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Territory Discoveries", TextFormatting.GRAY + "Click to " + (territory ? "hide" : "show"));
+                hoveredText = Arrays.asList(TextFormatting.WHITE + "[>] Territory Discoveries", TextFormatting.GRAY + "Click to " + (territory ? "hide" : "show"));
             } else if (territory) {
                 render.drawRect(selected_cube, x - 135, y + 35, x - 105, y + 65);
             } else {
@@ -118,7 +118,7 @@ public class DiscoveriesPage extends QuestBookPage {
             // world discoveries
             if (mouseX >= x - 95 && mouseX <= x - 65 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 95, y + 35, x - 65, y + 65);
-                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] World Discoveries", TextFormatting.GRAY + "Click to " + (world ? "hide" : "show"));
+                hoveredText = Arrays.asList(TextFormatting.YELLOW + "[>] World Discoveries", TextFormatting.GRAY + "Click to " + (world ? "hide" : "show"));
             } else if (world) {
                 render.drawRect(selected_cube, x - 95, y + 35, x - 65, y + 65);
             } else {
@@ -129,7 +129,7 @@ public class DiscoveriesPage extends QuestBookPage {
             // secret discoveries
             if (mouseX >= x - 55 && mouseX <= x - 25 && mouseY >= y + 35 && mouseY <= y + 65) {
                 render.drawRect(selected_cube_2, x - 55, y + 35, x - 25, y + 65);
-                hoveredText = Arrays.asList(TextFormatting.GREEN + "[>] Secret Discoveries", TextFormatting.GRAY + "Click to " + (secret ? "hide" : "show"));
+                hoveredText = Arrays.asList(TextFormatting.AQUA + "[>] Secret Discoveries", TextFormatting.GRAY + "Click to " + (secret ? "hide" : "show"));
             } else if (secret) {
                 render.drawRect(selected_cube, x - 55, y + 35, x - 25, y + 65);
             } else {
