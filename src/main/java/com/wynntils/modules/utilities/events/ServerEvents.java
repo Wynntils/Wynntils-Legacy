@@ -87,7 +87,9 @@ public class ServerEvents implements Listener {
         MinecraftForge.EVENT_BUS.register(new Object() {
             @SubscribeEvent(priority = EventPriority.LOWEST)
             public void onFirstGui(GuiScreenEvent.DrawScreenEvent.Post e) {
-                ServerResourcePackManager.loadServerResourcePack();
+                if (UtilitiesConfig.INSTANCE.autoResourceOnLoad) {
+                    ServerResourcePackManager.loadServerResourcePack();
+                }
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         });
