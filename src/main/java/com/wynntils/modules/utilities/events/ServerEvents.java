@@ -13,14 +13,13 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.ServerResourcePackManager;
 import com.wynntils.modules.utilities.managers.WarManager;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.Display;
@@ -84,17 +83,14 @@ public class ServerEvents implements Listener {
         if (WarManager.allowClick(e)) e.setCanceled(true);
     }
 
-    @SubscribeEvent
-    public void onMainMenu(GuiScreenEvent.DrawScreenEvent.Post e) {
-        if (!(e.getGui() instanceof GuiMainMenu)) return;
-
-        boolean loadedServerResourcePack = Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() != null;
-        if (UtilitiesConfig.INSTANCE.autoResourceOnLoad) {
-            if (!loadedServerResourcePack)
+    static {
+        MinecraftForge.EVENT_BUS.register(new Object() {
+            @SubscribeEvent(priority = EventPriority.LOWEST)
+            public void onFirstGui(GuiScreenEvent.DrawScreenEvent.Post e) {
                 ServerResourcePackManager.loadServerResourcePack();
-        } else if (loadedServerResourcePack) {
-            Minecraft.getMinecraft().getResourcePackRepository().clearResourcePack();
-        }
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        });
     }
 
 }

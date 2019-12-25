@@ -89,19 +89,20 @@ public class ServerUtils {
         loadWorldWithoutUnloadingServerResourcePack(world, "");
     }
 
-    private static ResourcePackRepository wontUnload = null;
+    private static class FakeResourcePackRepositoryHolder {
+        // Will only be created by classloader when used
+        static final ResourcePackRepository instance = new ResourcePackRepository(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks(), null, null, null, new GameSettings()) {
+            @Override
+            public void clearResourcePack() {
+                // Don't
+            }
+        };
+    }
 
     public static synchronized void loadWorldWithoutUnloadingServerResourcePack(WorldClient world, String loadingMessage) {
         ResourcePackRepository original = Minecraft.getMinecraft().getResourcePackRepository();
-        if (wontUnload == null) {
-            wontUnload = new ResourcePackRepository(original.getDirResourcepacks(), null, null, null, new GameSettings()) {
-                @Override
-                public void clearResourcePack() {
-                    // Don't
-                }
-            };
-        }
-        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), wontUnload);
+
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), FakeResourcePackRepositoryHolder.instance);
         Minecraft.getMinecraft().loadWorld(world, loadingMessage);
         ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), original);
     }

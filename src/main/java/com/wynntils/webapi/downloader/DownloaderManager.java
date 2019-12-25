@@ -142,7 +142,7 @@ public class DownloaderManager {
                             continue;
                         }
 
-                        new File(newFile.getParent()).mkdirs();
+                        newFile.getParentFile().mkdirs();
 
                         FileOutputStream fout = new FileOutputStream(newFile);
                         while ((length = zin.read(buffer)) > 0) {

@@ -91,7 +91,7 @@ public class Utils {
      */
     public static void copyFile(File sourceFile, File destFile) throws IOException {
         if (destFile == null || !destFile.exists()) {
-            destFile = new File(new File(sourceFile.getParent(), "mods"), "Wynntils.jar");
+            destFile = new File(new File(sourceFile.getParentFile(), "mods"), "Wynntils.jar");
             sourceFile.renameTo(destFile);
             return;
         }

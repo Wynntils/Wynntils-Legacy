@@ -26,7 +26,7 @@ public class ServerResourcePackManager {
                 return;
             }
 
-            loadServerResourcePack();
+            downloadServerResourcePack();
         }
     }
 
@@ -45,7 +45,7 @@ public class ServerResourcePackManager {
                 String lastHash = UtilitiesConfig.INSTANCE.lastServerResourcePackHash;
                 Reference.LOGGER.info(
                     "New server resource pack: \"server-resource-packs/" + fileName + "\"#" + hash + " from \"" + resourcePack +
-                    "\" (Was \"server-resource-packs/" + fileName + "\"#" + lastHash + " from \"" + lastPack + "\")"
+                    "\" (Was \"server-resource-packs/" + DigestUtils.sha1Hex(lastPack) + "\"#" + lastHash + " from \"" + lastPack + "\")"
                 );
             }
             UtilitiesConfig.INSTANCE.lastServerResourcePack = resourcePack;
@@ -56,7 +56,7 @@ public class ServerResourcePackManager {
         IResourcePack current = Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack();
         if (current != null && current.getPackName().equals(fileName)) {
             boolean hashMatches = false;
-            try (InputStream is = new FileInputStream(new File(fileName))) {
+            try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
                 hashMatches = DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
             } catch (IOException err) { }
 
@@ -77,7 +77,7 @@ public class ServerResourcePackManager {
         String fileName = DigestUtils.sha1Hex(resourcePack);
         if (!current.getPackName().equals(fileName)) return false;
 
-        try (InputStream is = new FileInputStream(new File(fileName))) {
+        try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
             return DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
         } catch (IOException err) { }
 
@@ -85,6 +85,25 @@ public class ServerResourcePackManager {
     }
 
     public static void loadServerResourcePack() {
+        // Does not download if not found / invalid
+        if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) return;
+        String resourcePack = UtilitiesConfig.INSTANCE.lastServerResourcePack;
+        String hash = UtilitiesConfig.INSTANCE.lastServerResourcePackHash;
+        String fileName = DigestUtils.sha1Hex(resourcePack);
+
+        File f = new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName);
+
+        boolean valid = false;
+        try (InputStream is = new FileInputStream(f)) {
+            valid = DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
+        } catch (IOException err) { }
+
+        if (!valid) return;
+
+        Minecraft.getMinecraft().getResourcePackRepository().setServerResourcePack(f);
+    }
+
+    public static void downloadServerResourcePack() {
         if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) return;
         try {
             Minecraft.getMinecraft().getResourcePackRepository().downloadResourcePack(UtilitiesConfig.INSTANCE.lastServerResourcePack, UtilitiesConfig.INSTANCE.lastServerResourcePackHash).get();
