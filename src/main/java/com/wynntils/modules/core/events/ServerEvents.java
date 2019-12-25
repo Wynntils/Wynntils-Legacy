@@ -87,17 +87,21 @@ public class ServerEvents implements Listener {
     public void joinWorldEvent(WynnWorldEvent.Join e) {
         if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
         if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        SocketManager.emitEvent("join world", e.getWorld()); //update socket world
 
-        waitingForFriendList = true;
+        if(Reference.onWars || Reference.onServer) return; //avoid dispatching commands while in wars/nether
 
+        //guild members
         if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
+
+        //friends
+        waitingForFriendList = true;
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
 
-        SocketManager.emitEvent("join world", e.getWorld());
-
+        //party members
         PartyManager.handlePartyList();  // party list here
     }
 
