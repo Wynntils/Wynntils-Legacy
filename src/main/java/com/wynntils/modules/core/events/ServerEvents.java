@@ -89,7 +89,7 @@ public class ServerEvents implements Listener {
         if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
         SocketManager.emitEvent("join world", e.getWorld()); //update socket world
 
-        if(Reference.onWars || Reference.onServer) return; //avoid dispatching commands while in wars/nether
+        if(Reference.onWars || Reference.onNether) return; //avoid dispatching commands while in wars/nether
 
         //guild members
         if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
