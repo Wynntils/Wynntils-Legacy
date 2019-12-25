@@ -17,14 +17,15 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.*;
 
+
 public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
-    private DiscoveryInfo overDiscovery;
     private boolean territory = true;
     private boolean world = true;
     private boolean secret = true;
@@ -48,8 +49,27 @@ public class DiscoveriesPage extends QuestBookPage {
             render.drawString("You can also use the filters", x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("below.", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
+            //Discoveries Icon at top of page
+            boolean hoveringOverDiscoveries = posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100;
+            render.drawRect(Textures.UIs.quest_book, x - 86, y - 100, 0, 255 + (hoveringOverDiscoveries ? 16 : 0), 16, 16);
+            if (hoveringOverDiscoveries) {
+                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+                    hoveredText = new ArrayList<>(QuestManager.secretdiscoveryLore);
+
+                    hoveredText.add(0, TextFormatting.AQUA + "" + TextFormatting.BOLD + "Secret Discoveries");
+                    hoveredText.add(" ");
+                    hoveredText.add(TextFormatting.GREEN + "Release shift to see regular Discoveries!");
+                } else {
+                    hoveredText = new ArrayList<>(QuestManager.discoveryLore);
+
+                    hoveredText.add(0, TextFormatting.GOLD + "" + TextFormatting.BOLD + "Discoveries");
+                    hoveredText.add(" ");
+                    hoveredText.add(TextFormatting.GREEN + "Hold shift to see Secret Discoveries!");
+                }
+            }
+            
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Quests", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the quests", "", TextFormatting.GREEN + "Left click to select");
+                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
             } else {
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
@@ -201,7 +221,7 @@ public class DiscoveriesPage extends QuestBookPage {
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookPages.QUESTS.getPage().open(false);
+            QuestBookPages.MAIN.getPage().open(false);
             return;
         } else if (posX >= 105 && posX <= 135 && posY >= -65 && posY <= -35) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));

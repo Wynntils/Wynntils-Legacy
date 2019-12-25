@@ -22,7 +22,6 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Desktop;
@@ -63,6 +62,7 @@ public class QuestsPage extends QuestBookPage {
             render.drawString("You can pin/unpin a quest", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("by clicking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
+            // Return to Main Menu
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                 hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
@@ -70,24 +70,11 @@ public class QuestsPage extends QuestBookPage {
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
             }
 
-            boolean hoveringOverDiscoveries = posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100;
-            render.drawRect(Textures.UIs.quest_book, x - 97, y - 100, 0, 255 + (hoveringOverDiscoveries ? 16 : 0), 16, 16);
-            if (hoveringOverDiscoveries) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-                    hoveredText = new ArrayList<>(QuestManager.secretdiscoveryLore);
-                    hoveredText.add(0, "Secret Discoveries:");
-                } else {
-                    hoveredText = new ArrayList<>(QuestManager.discoveryLore);
-                    hoveredText.add(" ");
-                    hoveredText.add(TextFormatting.GREEN + "Hold shift to see Secret Discoveries!");
-                    hoveredText.add(TextFormatting.GREEN + "Click to see all of your Discoveries!");
-                }
-            }
-
-            render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
-            if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
+            // Mini-Quest and Quest Switcher
+            render.drawRect(Textures.UIs.quest_book, x - 86, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
+            if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
                 hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.miniquestsLore : QuestManager.questsLore);
-                hoveredText.add(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
+                hoveredText.add(0, showingMiniQuests ? TextFormatting.BOLD + "Mini-Quests" : TextFormatting.AQUA + "" + TextFormatting.BOLD + "Quests");
                 hoveredText.add(" ");
                 hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
             }
@@ -363,11 +350,7 @@ public class QuestsPage extends QuestBookPage {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestBookPages.MAIN.getPage().open(false);
             return;
-        } else if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestBookPages.DISCOVERIES.getPage().open(false);
-            return;
-        } else if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
+        } else if (posX >= 72 && posX <= 86 && posY >= 85 & posY <= 100) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
             searchBarText = "";

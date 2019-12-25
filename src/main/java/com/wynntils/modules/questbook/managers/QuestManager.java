@@ -116,15 +116,12 @@ public class QuestManager {
                 // lore
                 if (discoveries != null) {
                     discoveryLore = ItemUtils.getLore(discoveries.b);
-                    discoveryLore.removeAll(Arrays.asList("", null));
                 }
                 if (quests != null) {
                     questsLore = ItemUtils.getLore(quests.b);
-                    questsLore.removeAll(Arrays.asList("", null));
                 }
                 if (miniquests != null) {
                     miniquestsLore = ItemUtils.getLore(miniquests.b);
-                    miniquestsLore.removeAll(Arrays.asList("", null));
                 }
 
                 NonNullList<ItemStack> items = NonNullList.create();
@@ -212,7 +209,6 @@ public class QuestManager {
                 // lore
                 if (sDiscoveries != null) {
                     secretdiscoveryLore = ItemUtils.getLore(sDiscoveries.b);
-                    secretdiscoveryLore.removeAll(Arrays.asList("", null));
                 }
 
                 NonNullList<ItemStack> items = NonNullList.create();
