@@ -66,6 +66,7 @@ public class BeaconManager {
         disableCull();
         enableBlend();
         tryBlendFuncSeparate(770, 771, 1, 0);
+        color(1f, 1f, 1f, 1f);
 
         // drawing
         tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -95,6 +96,7 @@ public class BeaconManager {
         enableLighting();
         enableTexture2D();
         enableDepth();
+        color(1f, 1f, 1f, 1f);
     }
 
 }
