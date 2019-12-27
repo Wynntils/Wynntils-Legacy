@@ -22,7 +22,6 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 import java.util.*;
 
-
 public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
