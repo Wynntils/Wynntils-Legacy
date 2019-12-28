@@ -59,8 +59,8 @@ public class UtilitiesModule extends Module {
         registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._3(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
+        registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
         registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
-
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -85,6 +85,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.TerritoryFeed.class);
         registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.PlayerInfo.class);
+        registerSettings(OverlayConfig.ConsumableTimer.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);

@@ -42,7 +42,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
-    private final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
     private final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
@@ -427,7 +427,7 @@ public class ItemIdentificationOverlay implements Listener {
         return mainTag;
     }
 
-    private static String toShortIdName(String longIdName, boolean raw) {
+    public static String toShortIdName(String longIdName, boolean raw) {
         String[] splitName = longIdName.split(" ");
         StringBuilder result = new StringBuilder(raw ? "raw" : "");
         for (String r : splitName) {

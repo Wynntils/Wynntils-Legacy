@@ -9,13 +9,16 @@ import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.objects.Position;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.Point;
+import java.awt.*;
+
+import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.*;
 
 public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
 
@@ -52,6 +55,10 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
         return PlayerInfo.getPlayerInfo();
     }
 
+    public SmartFontRenderer.TextAlignment getAlignment() {
+        return growth.getAlignment();
+    }
+
     @Override
     public void saveSettings(Module m) {
         try {
@@ -65,8 +72,21 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     }
 
     public enum OverlayGrowFrom {
-        TOP_LEFT,    TOP_CENTRE,    TOP_RIGHT,
-        MIDDLE_LEFT, MIDDLE_CENTRE, MIDDLE_RIGHT,
-        BOTTOM_LEFT, BOTTOM_CENTRE, BOTTOM_RIGHT
+
+        TOP_LEFT    (LEFT_RIGHT), TOP_CENTRE    (MIDDLE), TOP_RIGHT    (RIGHT_LEFT),
+        MIDDLE_LEFT (LEFT_RIGHT), MIDDLE_CENTRE (MIDDLE), MIDDLE_RIGHT (RIGHT_LEFT),
+        BOTTOM_LEFT (LEFT_RIGHT), BOTTOM_CENTRE (MIDDLE), BOTTOM_RIGHT (RIGHT_LEFT);
+
+        SmartFontRenderer.TextAlignment alignment;
+
+        OverlayGrowFrom(SmartFontRenderer.TextAlignment alignment) {
+            this.alignment = alignment;
+        }
+
+        public SmartFontRenderer.TextAlignment getAlignment() {
+            return alignment;
+        }
+
     }
+
 }

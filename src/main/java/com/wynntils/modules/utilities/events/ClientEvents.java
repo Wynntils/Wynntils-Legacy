@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -19,6 +20,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
+import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -380,6 +382,10 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+
+        //consumable timer
+        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
+
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -394,6 +400,10 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+
+        //consumable timer
+        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
+
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -408,6 +418,10 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
+
+        //consumable timer
+        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
+
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -425,6 +439,11 @@ public class ClientEvents implements Listener {
         if (e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
 
         e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onClassChange(WynnClassChangeEvent e) {
+        ConsumableTimerOverlay.clearConsumables(); //clear consumable list
     }
 
 }

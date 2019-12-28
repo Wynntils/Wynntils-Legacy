@@ -8,7 +8,7 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import org.apache.commons.lang3.math.Fraction;
 
-public class IdentificationContainer {
+public class  IdentificationContainer {
 
     private IdentificationModifier type;
     private int baseValue;
@@ -55,7 +55,7 @@ public class IdentificationContainer {
         return (min == max) || isFixed;
     }
 
-    public String getAsLongName(String shortName) {
+    public static String getAsLongName(String shortName) {
         if (shortName.startsWith("raw")) {
             shortName = shortName.substring(3);
             shortName = Character.toLowerCase(shortName.charAt(0)) + shortName.substring(1);

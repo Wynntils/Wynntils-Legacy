@@ -151,6 +151,12 @@ public class StringUtils {
         return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
+    public static String timeLeft(long duration) {
+        long minute = (duration / (1000 * 60)) % 60,
+             second = (duration / 1000) % 60;
+
+        return String.format("%02d:%02d", minute, second);
+    }
 
     /**
      * @return `true` if `c` is a valid Unicode code point (in [0, 0x10FFFF] and not a surrogate)

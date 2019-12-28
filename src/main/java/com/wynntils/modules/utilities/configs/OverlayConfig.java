@@ -488,4 +488,12 @@ public class OverlayConfig extends SettingsClass {
         public float backgroundAlpha = 0.3f;
 
     }
+
+    @SettingsInfo(name = "consumable_timer_settings", displayPath = "Overlays/Consumable Timer")
+    public static class ConsumableTimer extends SettingsClass {
+        public static ConsumableTimer INSTANCE;
+
+        @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
+        public boolean showEffects = true;
+    }
 }
