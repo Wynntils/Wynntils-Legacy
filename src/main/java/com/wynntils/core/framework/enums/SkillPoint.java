@@ -28,7 +28,7 @@ public enum SkillPoint {
     }
 
     public String getAsName() {
-        return color + symbol + " " + name();
+        return color + symbol + " " + StringUtils.capitalizeFirst(name().toLowerCase());
     }
 
     public static SkillPoint findSkillPoint(String input) {
