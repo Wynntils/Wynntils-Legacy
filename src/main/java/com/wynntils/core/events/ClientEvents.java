@@ -42,7 +42,6 @@ public class ClientEvents {
     private boolean inClassSelection = false;
     private String lastWorld = "";
     private boolean acceptLeft = false;
-    private static boolean guisClosed = false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
@@ -161,11 +160,6 @@ public class ClientEvents {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END) return;
 
-        if (Reference.onWorld && guisClosed && ModCore.mc().currentScreen == null) {
-            Keyboard.enableRepeatEvents(true);
-        }
-        guisClosed = false;
-
         ScreenRenderer.refresh();
         if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
         FrameworkManager.triggerHudTick(e);
@@ -181,22 +175,6 @@ public class ClientEvents {
             }
             Reference.onServer = false;
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onGuiClosed(GuiOpenEvent e) {
-        if (Reference.onWorld) {
-            // Enable repeat events when no GUIs are open
-            boolean closingGui = e.getGui() == null;
-            boolean openingGui = ModCore.mc().currentScreen == null;
-            if (closingGui && !openingGui) {
-                // Closing all GUIs
-                guisClosed = true;
-            } else if (openingGui && !closingGui) {
-                // Opening first GUI
-                Keyboard.enableRepeatEvents(false);
-            }
         }
     }
 
