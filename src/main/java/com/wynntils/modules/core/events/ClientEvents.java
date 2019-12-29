@@ -8,10 +8,10 @@ import com.google.gson.Gson;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
-import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
@@ -43,6 +43,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Collection;
 import java.util.Locale;
+
+import static com.wynntils.core.framework.instances.PlayerInfo.getPlayerInfo;
 
 public class ClientEvents implements Listener {
 
@@ -92,49 +94,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    /**
-     * Detects the user class based on the class selection GUI
-     * This detection happens when the user click on an item that contains the class name pattern, inside the class selection GUI
-     *
-     * @param e Represents the click event
-     */
-    @SubscribeEvent
-    public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (e.getGui().getLowerInv().getName().contains("Select a Class")) {
-            if (e.getMouseButton() == 0 && e.getSlotIn() != null &&  e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
-                PlayerInfo.getPlayerInfo().setClassId(e.getSlotId());
-
-                String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
-                String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
-
-                ClassType selectedClass = ClassType.NONE;
-
-                try{
-                    selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
-                }catch (Exception ex) {
-                    switch (classS) {
-                        case "Hunter":
-                            selectedClass = ClassType.ARCHER;
-                            break;
-                        case "Knight":
-                            selectedClass = ClassType.WARRIOR;
-                            break;
-                        case "Dark Wizard":
-                            selectedClass = ClassType.MAGE;
-                            break;
-                        case "Ninja":
-                            selectedClass = ClassType.ASSASSIN;
-                            break;
-                        case "Skyseer":
-                            selectedClass = ClassType.SHAMAN;
-                            break;
-                    }
-                }
-
-                PlayerInfo.getPlayerInfo().updatePlayerClass(selectedClass);
-            }
-        }
-    }
+    long lastPosRequest;
 
 //    /**
 //     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
@@ -190,7 +150,72 @@ public class ClientEvents implements Listener {
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }
 
-    int lastPosition = 0;
+    long lastHealthRequest;
+    int lastPosition = 0, lastHealth = 0, lastMaxHealth = 0;
+
+    @SubscribeEvent
+    public void joinGuild(WynnSocialEvent.Guild.Join e) {
+        GuildAndFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
+    }
+
+    @SubscribeEvent
+    public void leaveGuild(WynnSocialEvent.Guild.Leave e) {
+        GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
+    }
+
+    @SubscribeEvent
+    public void leaveParty(WynnSocialEvent.Party.Leave e) {
+        SocketManager.emitEvent("remove party member", e.getMember());
+    }
+
+    @SubscribeEvent
+    public void joinParty(WynnSocialEvent.Party.Join e) {
+        SocketManager.emitEvent("add party member", e.getMember());
+    }
+
+    /**
+     * Detects the user class based on the class selection GUI
+     * This detection happens when the user click on an item that contains the class name pattern, inside the class selection GUI
+     *
+     * @param e Represents the click event
+     */
+    @SubscribeEvent
+    public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (e.getGui().getLowerInv().getName().contains("Select a Class")) {
+            if (e.getMouseButton() == 0 && e.getSlotIn() != null && e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
+                getPlayerInfo().setClassId(e.getSlotId());
+
+                String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
+                String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
+
+                ClassType selectedClass = ClassType.NONE;
+
+                try {
+                    selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
+                } catch (Exception ex) {
+                    switch (classS) {
+                        case "Hunter":
+                            selectedClass = ClassType.ARCHER;
+                            break;
+                        case "Knight":
+                            selectedClass = ClassType.WARRIOR;
+                            break;
+                        case "Dark Wizard":
+                            selectedClass = ClassType.MAGE;
+                            break;
+                        case "Ninja":
+                            selectedClass = ClassType.ASSASSIN;
+                            break;
+                        case "Skyseer":
+                            selectedClass = ClassType.SHAMAN;
+                            break;
+                    }
+                }
+
+                getPlayerInfo().updatePlayerClass(selectedClass);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void addFriend(WynnSocialEvent.FriendList.Add e) {
@@ -203,7 +228,7 @@ public class ClientEvents implements Listener {
             }
         } else {
             // Friends list updated
-            String json = new Gson().toJson(PlayerInfo.getPlayerInfo().getFriendList());
+            String json = new Gson().toJson(getPlayerInfo().getFriendList());
             SocketManager.emitEvent("update friends", json);
 
             for (String name : newFriends) {
@@ -226,34 +251,12 @@ public class ClientEvents implements Listener {
         } else {
             // Friends list updated; Socket managed in addFriend
             for (String name : removedFriends) {
-                SocketManager.emitEvent(name, false, As.FRIEND, false);
+                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
             }
 
             GuildAndFriendManager.tryResolveNames();
         }
     }
-
-    @SubscribeEvent
-    public void joinGuild(WynnSocialEvent.Guild.Join e) {
-        GuildAndFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
-    }
-
-    @SubscribeEvent
-    public void leaveGuild(WynnSocialEvent.Guild.Leave e) {
-        GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
-    }
-
-    @SubscribeEvent
-    public void leaveParty(WynnSocialEvent.Party.Leave e) {
-        SocketManager.emitEvent("remove party member", e.getMember());
-    }
-
-    @SubscribeEvent
-    public void joinParty(WynnSocialEvent.Party.Join e) {
-        SocketManager.emitEvent("add party member", e.getMember());
-    }
-
-    long lastRequest;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickHandler(TickEvent.ClientTickEvent e) {
@@ -262,13 +265,21 @@ public class ClientEvents implements Listener {
         EntityPlayer player = Minecraft.getMinecraft().player;
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
 
-        if (lastPosition != currentPosition && System.currentTimeMillis() - lastRequest >= 2000) {
-            SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
-            lastRequest = System.currentTimeMillis();
+        if (System.currentTimeMillis() - lastPosRequest >= 2000)
+            if (lastPosition != currentPosition) {
+                lastPosition = currentPosition;
+                SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
+                lastPosRequest = System.currentTimeMillis();
+            }
 
-        }
+        if (System.currentTimeMillis() - lastHealthRequest >= 2000)
+            if ((getPlayerInfo().getCurrentHealth() != lastHealth || getPlayerInfo().getMaxHealth() != lastMaxHealth)) {
+                lastHealth = getPlayerInfo().getCurrentHealth();
+                lastMaxHealth = getPlayerInfo().getMaxHealth();
+                SocketManager.emitEvent("healthUpdate", lastHealth, lastMaxHealth);
+                lastHealthRequest = System.currentTimeMillis();
+            }
 
-        lastPosition = currentPosition;
     }
 
     @SubscribeEvent
@@ -289,6 +300,11 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void leaveWynncraft(WynncraftServerEvent.Leave e) {
         SocketManager.disconnectSocket();
+    }
+
+    @SubscribeEvent
+    public void classChange(WynnClassChangeEvent e) {
+        SocketManager.emitEvent("changeClass", e.getCurrentClass());
     }
 
 }

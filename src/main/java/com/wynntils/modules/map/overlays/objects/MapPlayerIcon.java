@@ -92,7 +92,6 @@ public class MapPlayerIcon extends MapIcon {
 
             ResourceLocation res = getResource();
 
-            // TODO somehow this doesn't works on the MiniMap
             CommonColors outlineColor = null;
             if (profile.isInParty())
                 outlineColor = CommonColors.YELLOW;
