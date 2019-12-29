@@ -179,7 +179,7 @@ public class ConsumableTimerOverlay extends Overlay {
             if(!consumable.hasEffect(entry.getKey())) continue;
 
             entry.getValue().sumAmount(-consumable.getEffect(entry.getKey()).getCurrentAmount());
-            if(entry.getValue().getCurrentAmount() > 0) continue;
+            if(entry.getValue().getCurrentAmount() != 0) continue;
 
             it.remove();
         }
