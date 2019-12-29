@@ -6,7 +6,6 @@ package com.wynntils.modules.core.events;
 
 import com.google.gson.Gson;
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnSocialEvent;
@@ -260,7 +259,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void tickHandler(TickEvent.ClientTickEvent e) {
-        if (e.phase != TickEvent.Phase.END || !Reference.onWorld) return;
+        if (e.phase != TickEvent.Phase.END) return;
 
         EntityPlayer player = Minecraft.getMinecraft().player;
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
