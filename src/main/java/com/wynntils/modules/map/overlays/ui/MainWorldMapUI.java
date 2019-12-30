@@ -29,20 +29,16 @@ public class MainWorldMapUI extends WorldMapUI {
     private GuiButtonImage helpBtn;
 
     private boolean holdingMapKey = false;
-    private long creationTime;
+    private long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
 
     public MainWorldMapUI() {
         super();
-
-        creationTime = System.currentTimeMillis();
     }
 
     public MainWorldMapUI(float startX, float startZ) {
-        this();
-
-        updateCenterPosition(startX, startZ);
+        super(startX, startZ);
     }
 
     @Override
@@ -79,7 +75,11 @@ public class MainWorldMapUI extends WorldMapUI {
             return;
         }
 
-        updatePosition(mouseX, mouseY);
+        if (Mouse.isButtonDown(1)) {
+            updateCenterPositionWithPlayerPosition();
+        } else {
+            updatePosition(mouseX, mouseY);
+        }
 
         if (MapConfig.WorldMap.INSTANCE.showFriends && System.currentTimeMillis() - lastRequest >= 2000) {  // Only request every 2 seconds!
             SocketManager.emitEvent("giveLocations");
@@ -116,7 +116,7 @@ public class MainWorldMapUI extends WorldMapUI {
             super.mouseClicked(mouseX, mouseY, mouseButton);
             return;
         } else if (mouseButton == 1) {
-            updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
+            updateCenterPositionWithPlayerPosition();
             return;
         } else if (mouseButton == 2) {
             // Set compass to middle clicked location

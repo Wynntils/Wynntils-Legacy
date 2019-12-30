@@ -71,16 +71,12 @@ public class WorldMapIcon {
     public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
         if (!shouldRender || renderer == null) return;
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
 
         info.renderAt(renderer, axisX, axisZ, multi, blockScale);
 
         GlStateManager.color(1, 1, 1, 1);
-
-        GlStateManager.popMatrix();
     }
 
     public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {

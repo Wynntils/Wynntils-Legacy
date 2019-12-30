@@ -5,7 +5,6 @@
 package com.wynntils.core.events;
 
 import com.mojang.authlib.GameProfile;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -31,7 +30,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 import java.util.UUID;

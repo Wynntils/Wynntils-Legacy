@@ -43,17 +43,35 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected ScreenRenderer renderer = new ScreenRenderer();
 
-    protected float centerPositionX;
-    protected float centerPositionZ;
+    protected float centerPositionX = Float.NaN;
+    protected float centerPositionZ = Float.NaN;
     protected int zoom = 0;
 
-    protected List<WorldMapIcon> icons;
+    protected List<WorldMapIcon> icons = new ArrayList<>();
     protected WorldMapIcon compassIcon;
     protected List<MapTerritory> territories;
 
     protected WorldMapUI() {
+        this((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
+    }
+
+    protected WorldMapUI(float startX, float startZ) {
         mc = Minecraft.getMinecraft();
 
+        // HeyZeer0: Handles the territories
+        territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
+
+        // Also creates icons
+        updateCenterPosition(startX, startZ);
+
+        if (MapConfig.INSTANCE.hideCompletedQuests) {
+            // Request analyse if not already done to
+            // hide completed quests
+            QuestManager.wasBookOpened();
+        }
+    }
+
+    protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
         List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
         // HeyZeer0: Handles all waypoints
@@ -64,25 +82,17 @@ public class WorldMapUI extends GuiMovementScreen {
         // Handles compass
         compassIcon = new WorldMapIcon(MapIcon.getCompass());
 
-        icons = new ArrayList<>(apiMapIcons.size() + wpMapIcons.size() + pathWpMapIcons.size() + friendsIcons.size());
+        icons.clear();
+
         for (MapIcon i : Iterables.concat(
             apiMapIcons,
             wpMapIcons,
             pathWpMapIcons,
             friendsIcons
         )) {
-            icons.add(new WorldMapIcon(i));
-        }
-
-        // HeyZeer0: Handles the territories
-        territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
-
-        updateCenterPosition((float)mc.player.posX, (float)mc.player.posZ);
-
-        if (MapConfig.INSTANCE.hideCompletedQuests) {
-            // Request analyse if not already done to
-            // hide completed quests
-            QuestManager.wasBookOpened();
+            if (i.isEnabled(false)) {
+                icons.add(new WorldMapIcon(i));
+            }
         }
     }
 
@@ -116,6 +126,13 @@ public class WorldMapUI extends GuiMovementScreen {
             c.accept(compassIcon);
     }
 
+    protected void updateCenterPositionWithPlayerPosition() {
+        float newX = (float) mc.player.posX;
+        float newZ = (float) mc.player.posZ;
+        if (newX == centerPositionX && newZ == centerPositionZ) return;
+        updateCenterPosition(newX, newZ);
+    }
+
     protected void updateCenterPosition(float centerPositionX, float centerPositionZ) {
         this.centerPositionX = centerPositionX; this.centerPositionZ = centerPositionZ;
 
@@ -126,6 +143,8 @@ public class WorldMapUI extends GuiMovementScreen {
 
         maxX = map.getTextureXPosition(centerPositionX) + ((width)/2.0f) + (width*zoom/100.0f);  // <--- max texture x point
         maxZ = map.getTextureZPosition(centerPositionZ) + ((height)/2.0f) + (height*zoom/100.0f);  // <--- max texture z point
+
+        createIcons();
 
         forEachIcon(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
         territories.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
@@ -153,7 +172,7 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void updatePosition(int mouseX, int mouseY) {
-        updatePosition(mouseX, mouseY, clicking);
+        updatePosition(mouseX, mouseY, clicking[0]);
     }
 
     protected float getScaleFactor() {
@@ -170,7 +189,7 @@ public class WorldMapUI extends GuiMovementScreen {
         // dragging
         if (canMove && lastMouseX != -Integer.MAX_VALUE) {
             float acceleration = 1f / getScaleFactor();  // <---- this is basically 1.0~10 || Min = 1.0 Max = 2.0
-            updateCenterPosition(centerPositionX += (lastMouseX - mouseX) * acceleration, centerPositionZ += (lastMouseY - mouseY) * acceleration);
+            updateCenterPosition(centerPositionX + (lastMouseX - mouseX) * acceleration, centerPositionZ + (lastMouseY - mouseY) * acceleration);
         }
         lastMouseX = mouseX;
         lastMouseY = mouseY;
@@ -227,6 +246,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         // draw map icons
+        GlStateManager.enableBlend();
         forEachIcon(i -> {
             if (i.getInfo().hasDynamicLocation()) resetIcon(i);
             i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
@@ -288,11 +308,12 @@ public class WorldMapUI extends GuiMovementScreen {
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
-    protected boolean clicking = false;
+    protected boolean[] clicking = new boolean[]{ false, false };
 
     @Override
     public void handleMouseInput() throws IOException {
-        clicking = Mouse.isButtonDown(0);
+        clicking[0] = Mouse.isButtonDown(0);
+        clicking[1] = Mouse.isButtonDown(1);
 
         int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
         if (mDwehll > 0) {

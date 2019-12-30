@@ -79,16 +79,12 @@ public class MapPlayerIcon extends MapIcon {
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
-        color(1.0F, 1.0F, 1.0F, 1.0F);
         enableAlpha();
-        disableBlend();
         disableBlend();
 
         { pushMatrix();
             float sizeX = getSizeX() * sizeMultiplier;
             float sizeZ = getSizeZ() * sizeMultiplier;
-
-            // boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
 
             ResourceLocation res = getResource();
 
@@ -121,6 +117,8 @@ public class MapPlayerIcon extends MapIcon {
                 drawScaledCustomSizeModalRect(-sizeX, -sizeZ, 40.0F, 8, 8, 8, sizeX * 2f, sizeZ * 2f, 64.0F, 64.0F);
 
         } popMatrix();
+
+        enableBlend();
     }
 
     @Override
