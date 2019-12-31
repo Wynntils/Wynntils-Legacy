@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.framework.rendering.colors;
 
 import javax.annotation.Nullable;

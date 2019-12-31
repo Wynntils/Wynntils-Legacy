@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.framework.ui.elements;
 
 import net.minecraft.client.Minecraft;

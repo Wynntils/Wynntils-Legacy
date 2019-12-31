@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.managers;
 
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +14,7 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.UUID;
 

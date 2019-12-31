@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.webapi;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;

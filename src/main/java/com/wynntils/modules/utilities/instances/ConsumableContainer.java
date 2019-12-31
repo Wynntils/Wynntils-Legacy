@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.utilities.instances;
 
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
