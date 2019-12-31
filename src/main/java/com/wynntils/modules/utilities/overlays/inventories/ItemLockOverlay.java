@@ -61,7 +61,7 @@ public class ItemLockOverlay implements Listener {
             e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
-    private void renderItemLock(Slot s, int guiLeft, int guiTop) {
+    private static void renderItemLock(Slot s, int guiLeft, int guiTop) {
         if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
         if (!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) return;
 

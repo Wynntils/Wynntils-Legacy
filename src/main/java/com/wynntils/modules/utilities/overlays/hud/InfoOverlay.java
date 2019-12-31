@@ -289,11 +289,11 @@ public abstract class InfoOverlay extends Overlay {
         }
     }
 
-    public String doFormat(String format) {
+    public static String doFormat(String format) {
         return doFormat(format, new InfoFormatter());
     }
 
-    private String doFormat(String format, InfoFormatter formatter) {
+    private static String doFormat(String format, InfoFormatter formatter) {
         return formatter.doFormat(format);
     }
 }

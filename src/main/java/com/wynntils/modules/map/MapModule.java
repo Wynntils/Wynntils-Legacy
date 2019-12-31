@@ -10,6 +10,7 @@ import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.map.commands.CommandLootRun;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -23,7 +24,7 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-    private static KeyHolder mapKey;
+    private KeyHolder mapKey;
     private MapProfile mainMap;
 
     @Override
@@ -42,6 +43,8 @@ public class MapModule extends Module {
         registerSettings(MapConfig.WorldMap.class);
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
+
+        registerCommand(new CommandLootRun());
 
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
             if (Reference.onWorld) {

@@ -130,7 +130,7 @@ public class ItemIdentificationOverlay implements Listener {
                 String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
                         + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
 
-                if(id.isFixed()) {
+                if (id.hasConstantValue()) {
                     idLore.put(idName, lore);
                     continue;
                 }
@@ -415,7 +415,7 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             if (idTag.getSize() > 0) mainTag.setTag("ids", idTag);
-            if(purchaseInfo.tagCount() > 0) mainTag.setTag("purchaseInfo", purchaseInfo);
+            if (purchaseInfo.tagCount() > 0) mainTag.setTag("purchaseInfo", purchaseInfo);
         }
 
         // update compound

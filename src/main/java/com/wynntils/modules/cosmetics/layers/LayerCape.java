@@ -87,7 +87,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
         } popMatrix();
     }
 
-    public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
+    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
         ModelRenderer bipedCape = new ModelRenderer(model, 0, 0);
         bipedCape.setTextureSize(128, 64);  // 128x64 Capes, double the default mc capes
         bipedCape.addBox(-10.0F, 0.0F, -2.0F, 20, 32, 2);

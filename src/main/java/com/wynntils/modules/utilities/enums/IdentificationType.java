@@ -38,15 +38,15 @@ public enum IdentificationType implements IIdentificationAnalyser {
         }
 
         String getColor(double amount) {
-            if(amount >= 96d) return AQUA.toString();
-            if(amount >= 80d) return GREEN.toString();
-            if(amount >= 30d) return YELLOW.toString();
+            if (amount >= 96d) return AQUA.toString();
+            if (amount >= 80d) return GREEN.toString();
+            if (amount >= 30d) return YELLOW.toString();
             return RED.toString();
         }
 
         int normalize(double amount) {
-            if(amount < 0d) return -1;
-            if(amount > 1d) return -1;
+            if (amount < 0d) return -1;
+            if (amount > 1d) return -1;
 
             return (int)(amount * 100);
         }

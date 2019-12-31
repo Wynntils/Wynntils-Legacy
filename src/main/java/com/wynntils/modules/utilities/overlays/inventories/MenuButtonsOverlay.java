@@ -44,7 +44,7 @@ public class MenuButtonsOverlay implements Listener {
      * Removes the "Advancements", "Statistics" and "Open to LAN" buttons.
      * Also makes "Options..." and "Mod Options..." grey and "Disconnect" red.
      */
-    private void removeDefaultButtons(List<GuiButton> buttonList) {
+    private static void removeDefaultButtons(List<GuiButton> buttonList) {
         buttonList.removeIf(b -> {
             if (b.id >= 5 && b.id <= 7) return true;
             if (b.id == 1) {
