@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -174,8 +175,16 @@ public class MapConfig extends SettingsClass {
     public static class LootRun extends SettingsClass {
         public static LootRun INSTANCE;
 
-        @Setting(displayName = "Loot Run Path Type", description = "Should the path should be drawn using textures or lines?")
+        @Setting(displayName = "Loot Run Path Type", description = "Should the path should be drawn using textures or lines?", order = 1)
         public PathType pathType = PathType.TEXTURED;
+
+        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed loot run be?\n\nOnly applicable when \"Loot Run Path Type\" is LINES", order = 2)
+        @Setting.Features.CustomColorFeatures(allowAlpha = true)
+        public CustomColor activePathColour = MinecraftChatColors.AQUA;
+
+        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recordfing loot run be?", order = 3)
+        @Setting.Features.CustomColorFeatures(allowAlpha = true)
+        public CustomColor recordingPathColour = CommonColors.RED;
 
         public enum PathType {
 

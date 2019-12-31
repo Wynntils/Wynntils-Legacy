@@ -34,6 +34,9 @@ public class PointRenderer {
 
         GlStateManager.disableCull();
         GlStateManager.color(1f, 1f, 1f, 1f);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+
         texture.bind();
 
         for (int i = 0; i < points.size(); ++i) {
@@ -50,16 +53,21 @@ public class PointRenderer {
         }
 
         GlStateManager.enableCull();
+        GlStateManager.disableBlend();
     }
 
     public static void drawTexturedLine(Texture texture, Point3d start, Point3d end, float width) {
         GlStateManager.disableCull();
         GlStateManager.color(1f, 1f, 1f, 1f);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+
         texture.bind();
 
         drawTexturedLine(start, end, width);
 
         GlStateManager.enableCull();
+        GlStateManager.disableBlend();
     }
 
     private static void drawTexturedLine(Point3d start, Point3d end, float width) {
@@ -103,58 +111,46 @@ public class PointRenderer {
         } tess.draw();
     }
 
-    public static void drawLines(List<Location> locations, Location player, CustomColor color) {
+    public static void drawLines(List<Location> locations, CustomColor color) {
         if (locations.isEmpty()) return;
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
-
-        Tessellator tess = Tessellator.getInstance();
-        BufferBuilder buffer = tess.getBuffer();
-
-        GlStateManager.pushMatrix();
 
         GlStateManager.glLineWidth(3f);
         GlStateManager.depthMask(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        color.applyColor();
 
-        Location toCompare = locations.get(0);
-        for(Location loc : locations) {
-            if(player.distance(loc) >= maxDistance) continue;
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder buffer = tess.getBuffer();
 
-            buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR); {
-                buffer.pos(
-                        (loc.getX()) - renderManager.viewerPosX,
-                        (loc.getY()) - renderManager.viewerPosY,
-                        (loc.getZ()) - renderManager.viewerPosZ)
-                        .color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(
-                        (toCompare.getX()) - renderManager.viewerPosX,
-                        (toCompare.getY()) - renderManager.viewerPosY,
-                        (toCompare.getZ()) - renderManager.viewerPosZ)
-                        .color(color.r, color.g, color.b, color.a).endVertex();
-            } tess.draw();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-renderManager.viewerPosX, -renderManager.viewerPosY, -renderManager.viewerPosZ);
 
-            toCompare = loc;
-        }
+        { buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+
+            for (Location loc : locations) {
+                buffer.pos(loc.x, loc.y, loc.z).endVertex();
+            }
+        } tess.draw();
+
+        GlStateManager.popMatrix();
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
         GlStateManager.depthMask(true);
-
-        GlStateManager.popMatrix();
+        GlStateManager.color(1f, 1f, 1f, 1f);
     }
 
     public static void drawCube(BlockPos point, CustomColor color) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
-        Location pointLocation = new Location(point);
         Location c = new Location(
-            pointLocation.x - renderManager.viewerPosX,
-            pointLocation.y - renderManager.viewerPosY,
-            pointLocation.z - renderManager.viewerPosZ
+            point.getX() - renderManager.viewerPosX,
+            point.getY() - renderManager.viewerPosY,
+            point.getZ() - renderManager.viewerPosZ
         );
 
         GlStateManager.pushMatrix();
@@ -163,7 +159,7 @@ public class PointRenderer {
         GlStateManager.depthMask(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
         RenderGlobal.drawBoundingBox(c.getX(), c.getY(), c.getZ(), c.getX()+1, c.getY()+1, c.getZ()+1, color.r, color.g, color.b, color.a);
 

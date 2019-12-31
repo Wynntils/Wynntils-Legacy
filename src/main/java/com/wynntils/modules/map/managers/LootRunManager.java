@@ -7,14 +7,11 @@ package com.wynntils.modules.map.managers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wynntils.Reference;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.rendering.PointRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.*;
@@ -138,16 +135,19 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (activePath != null) {
-            if(MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED)
+            if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
+                // MapConfig.LootRun.INSTANCE.activePathColour.applyColor();
                 PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
-            else PointRenderer.drawLines(activePath.getSmoothPoints(), new Location(Minecraft.getMinecraft().player), MinecraftChatColors.AQUA);
+            } else {
+                PointRenderer.drawLines(activePath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.activePathColour);
+            }
 
-            activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
+            activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
         }
 
         if (recordingPath != null) {
-            PointRenderer.drawLines(recordingPath.getSmoothPoints(), new Location(Minecraft.getMinecraft().player), CommonColors.RED);
-            recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, CommonColors.RED));
+            PointRenderer.drawLines(recordingPath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.recordingPathColour);
+            recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
         }
     }
 
