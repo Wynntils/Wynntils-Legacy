@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.rendering.PointRenderer;
 import net.minecraft.util.math.BlockPos;
@@ -136,9 +137,13 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (activePath != null) {
-            PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
+            if(MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED)
+                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
+            else PointRenderer.drawLines(activePath.getSmoothPoints(), MinecraftChatColors.AQUA);
+
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MinecraftChatColors.AQUA));
         }
+
         if (recordingPath != null) {
             PointRenderer.drawLines(recordingPath.getSmoothPoints(), CommonColors.RED);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, CommonColors.RED));

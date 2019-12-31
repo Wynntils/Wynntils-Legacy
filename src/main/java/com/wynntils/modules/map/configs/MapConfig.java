@@ -73,6 +73,7 @@ public class MapConfig extends SettingsClass {
 
     @Setting
     public HashMap<String, Boolean> enabledMapIcons = resetMapIcons(false);
+
     @Setting
     public HashMap<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
 
@@ -169,6 +170,21 @@ public class MapConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "lootrun", displayPath = "Map/Loot Run")
+    public static class LootRun extends SettingsClass {
+        public static LootRun INSTANCE;
+
+        @Setting(displayName = "Loot Run Path Type", description = "Should the path should be drawn using textures or lines?")
+        public PathType pathType = PathType.TEXTURED;
+
+        public enum PathType {
+
+            TEXTURED,
+            LINE
+
+        }
+
+    }
 
     public enum MapFormat {
         SQUARE, CIRCLE

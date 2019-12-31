@@ -14,12 +14,14 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.*;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
 import java.util.List;
 
 public class PointRenderer {
@@ -35,10 +37,10 @@ public class PointRenderer {
             Point3d start = new Point3d(points.get(i));
             Vector3d direction = new Vector3d(directions.get(i));
             Point3d end = new Point3d(points.get(i));
-            start.y += .1;
+            start.y -= .1;
             direction.normalize();
             end.add(direction);
-            end.y += .2;
+            end.y -= .2;
             drawTexturedLine(start, end, width);
         }
 
@@ -99,7 +101,6 @@ public class PointRenderer {
     public static void drawLines(List<Location> locations, CustomColor color) {
         if (locations.isEmpty()) return;
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
         Tessellator tess = Tessellator.getInstance();
@@ -115,10 +116,6 @@ public class PointRenderer {
 
         Location toCompare = locations.get(0);
         for(Location loc : locations) {
-
-            Vec3d start1 = new Vec3d(loc.toBlockPos());
-            Vec3d end1 = new Vec3d(toCompare.toBlockPos());
-
             buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR); {
                 buffer.pos(
                         (loc.getX()) - renderManager.viewerPosX,
