@@ -29,12 +29,17 @@ public class PointRenderer {
     public static void drawTexturedLines(Texture texture, List<Location> points, List<Vector3d> directions, float width) {
         if (points.size() <= 1) return;
 
+        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
+        Point3d player = new Point3d(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
+
         GlStateManager.disableCull();
         GlStateManager.color(1f, 1f, 1f, 1f);
         texture.bind();
 
         for (int i = 0; i < points.size(); ++i) {
             Point3d start = new Point3d(points.get(i));
+            if(start.distance(player) > maxDistance) continue;
+
             Vector3d direction = new Vector3d(directions.get(i));
             Point3d end = new Point3d(points.get(i));
             start.y -= .1;
@@ -98,10 +103,11 @@ public class PointRenderer {
         } tess.draw();
     }
 
-    public static void drawLines(List<Location> locations, CustomColor color) {
+    public static void drawLines(List<Location> locations, Location player, CustomColor color) {
         if (locations.isEmpty()) return;
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buffer = tess.getBuffer();
@@ -116,6 +122,8 @@ public class PointRenderer {
 
         Location toCompare = locations.get(0);
         for(Location loc : locations) {
+            if(player.distance(loc) >= maxDistance) continue;
+
             buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR); {
                 buffer.pos(
                         (loc.getX()) - renderManager.viewerPosX,

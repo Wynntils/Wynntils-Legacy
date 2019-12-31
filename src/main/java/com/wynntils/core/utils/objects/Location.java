@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils.objects;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Point3d;
@@ -15,6 +16,10 @@ public class Location extends Point3d {
 
     public Location(double x, double y, double z) {
         super(x, y, z);
+    }
+
+    public Location(Entity entity) {
+        super(entity.posX, entity.posY, entity.posZ);
     }
 
     public Location(Tuple3d t) {
