@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.core.framework.enums.ClassType;

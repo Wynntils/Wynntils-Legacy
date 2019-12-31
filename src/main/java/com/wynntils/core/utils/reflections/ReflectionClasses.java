@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.utils.reflections;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;

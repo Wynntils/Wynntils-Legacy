@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.commands;
 
 import com.google.common.collect.Lists;
