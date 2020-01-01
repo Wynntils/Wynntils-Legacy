@@ -49,54 +49,54 @@ public class BeaconManager {
     }
 
     private static void drawBeam(double x, double y, double z, float alpha, CustomColor color) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(beamResource);  // binds the texture
-        glTexParameteri(3553, 10242, 10497);
-
-        // beacon light animation
-        float time = Minecraft.getSystemTime() / 50F;
-        float offset = -(-time * 0.2F - MathHelper.fastFloor(-time * 0.1F)) * 0.6F;
-
-        // positions
-        double d1 = 256.0F * alpha;
-        double d2 = -1f + offset;
-        double d3 = 256.0F * alpha + d2;
-
-        disableLighting();
-        enableDepth();
-        disableCull();
-        enableBlend();
-        tryBlendFuncSeparate(770, 771, 1, 0);
-        color(1f, 1f, 1f, 1f);
-
-        // drawing
-        tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-        BufferBuilder builder = tessellator.getBuffer();
+        pushAttrib();
         {
-            builder.pos(x + .2d, y + d1, z + .2d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y     , z + .2d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y     , z + .2d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y + d1, z + .2d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y + d1, z + .8d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y     , z + .8d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y     , z + .8d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y + d1, z + .8d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y + d1, z + .2d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y     , z + .2d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y     , z + .8d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .8d, y + d1, z + .8d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y + d1, z + .8d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y     , z + .8d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y     , z + .2d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
-            builder.pos(x + .2d, y + d1, z + .2d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
-        }
-        tessellator.draw();
+            Minecraft.getMinecraft().renderEngine.bindTexture(beamResource);  // binds the texture
+            glTexParameteri(3553, 10242, 10497);
 
-        // reseting
-        disableBlend();
-        enableLighting();
-        enableTexture2D();
-        enableDepth();
-        color(1f, 1f, 1f, 1f);
+            // beacon light animation
+            float time = Minecraft.getSystemTime() / 50F;
+            float offset = -(-time * 0.2F - MathHelper.fastFloor(-time * 0.1F)) * 0.6F;
+
+            // positions
+            double d1 = 256.0F * alpha;
+            double d2 = -1f + offset;
+            double d3 = 256.0F * alpha + d2;
+
+            disableLighting();
+            enableDepth();
+            disableCull();
+            enableBlend();
+            tryBlendFuncSeparate(770, 771, 1, 0);
+            color(1f, 1f, 1f, 1f);
+
+            // drawing
+            tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            BufferBuilder builder = tessellator.getBuffer();
+            {
+                builder.pos(x + .2d, y + d1, z + .2d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y, z + .2d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y, z + .2d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y + d1, z + .2d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y + d1, z + .8d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y, z + .8d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y, z + .8d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y + d1, z + .8d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y + d1, z + .2d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y, z + .2d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y, z + .8d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .8d, y + d1, z + .8d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y + d1, z + .8d).tex(1d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y, z + .8d).tex(1d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y, z + .2d).tex(0d, d2).color(color.r, color.g, color.b, alpha).endVertex();
+                builder.pos(x + .2d, y + d1, z + .2d).tex(0d, d3).color(color.r, color.g, color.b, alpha).endVertex();
+            }
+            tessellator.draw();
+
+            // reseting
+            color(1f, 1f, 1f, 1f);
+        }
+        popAttrib();
     }
 
 }
