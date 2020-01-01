@@ -76,9 +76,25 @@ public class LootRunManager {
             if (!file.exists()) file.createNewFile();
 
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            GSON.toJson(new LootRunPathIntermediary(recordingPath), writer);
+            GSON.toJson(new LootRunPathIntermediary(activePath), writer);
 
             writer.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean delete(String lootRunName) {
+        if (!STORAGE_FOLDER.exists()) return false;
+
+        try{
+            File f = new File(STORAGE_FOLDER, lootRunName + ".json");
+            if(!f.exists()) return false;
+
+            f.delete();
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -136,8 +152,8 @@ public class LootRunManager {
     public static void renderActivePaths() {
         if (activePath != null) {
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
-                MapConfig.LootRun.INSTANCE.activePathColour.applyColor();
-                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
+                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(),
+                        activePath.getRoughDirections(), MapConfig.LootRun.INSTANCE.activePathColour, .5f);
             } else {
                 PointRenderer.drawLines(activePath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.activePathColour);
             }

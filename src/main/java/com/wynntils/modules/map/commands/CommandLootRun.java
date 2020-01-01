@@ -17,7 +17,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +48,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            throw new WrongUsageException("/lootrun <load/save/hide/record/stop/list/clear/help>");
+            throw new WrongUsageException("/lootrun <load/save/delete/record/list/clear/help>");
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
@@ -73,11 +72,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
                 String name = args[1];
 
-                if (!LootRunManager.isRecording()) {
-                    sender.sendMessage(new TextComponentString(RED + "You're not currently recording a path!"));
+                if (LootRunManager.isRecording()) {
+                    sender.sendMessage(new TextComponentString(RED + "You're currently recording a lootrun, to save it first stop recording with /lootrun record!"));
                     return;
                 }
-                if (LootRunManager.getRecordingPath().getChests().isEmpty()) {
+                if (LootRunManager.getActivePath().getChests().isEmpty()) {
                     sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a loot run path!"));
                     return;
                 }
@@ -87,7 +86,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String message;
                 if (result) {
                     message = GREEN + "Saved loot run " + name + " successfully!";
-                    LootRunManager.stopRecording();
                 } else {
                     message = RED + "An error occurred while trying to save your loot run path!";
                 }
@@ -95,34 +93,32 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
-            case "hide":
-                if (LootRunManager.getActivePath() == null) {
-                    sender.sendMessage(new TextComponentString(RED + "You have no active loot run to hide!"));
-                    return;
+            case "delete": {
+                if (args.length < 2) {
+                    throw new WrongUsageException("/lootrun delete [name]");
                 }
+                String name = args[1];
 
-                LootRunManager.hide();
+                boolean result = LootRunManager.delete(name);
 
-                sender.sendMessage(new TextComponentString(GREEN + "Your active loot run has been hidden!"));
-            case "record": {
                 String message;
-                if (LootRunManager.isRecording()) {
-                    message = RED + "Already recording... Please clear using /lootrun save or /lootrun stop.";
+                if (result) {
+                    message = GREEN + "Deleted run " + name + " successfully!";
                 } else {
-                    message = GREEN + "Started to record your current movements! " + RED + "Red means recording.";
-                    LootRunManager.startRecording();
+                    message = RED + "The provided lootrun doesn't exists!";
                 }
 
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
-            case "stop": {
+            case "record": {
                 String message;
                 if (LootRunManager.isRecording()) {
-                    message = GREEN + "Stopped to record your movements!";
+                    message = GREEN + "Stopped to record your movements!\n" + AQUA + "Save your lootrun with /lootrun save <name> or delete with /lootrun clear";
                     LootRunManager.stopRecording();
                 } else {
-                    message = RED + "Not recording a loot run!";
+                    message = GREEN + "Started to record your current movements!\n" + RED + "Use the command again to stop.";
+                    LootRunManager.startRecording();
                 }
 
                 sender.sendMessage(new TextComponentString(message));
@@ -164,17 +160,16 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     GOLD + "Loot run recording help\n" +
                     DARK_GRAY + "/lootrun " + RED + "load <name> " + GRAY + "Loads a saved loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "save <name> " + GRAY + "Save the currently recording loot run as the given name\n" +
-                    DARK_GRAY + "/lootrun " + RED + "hide " + GRAY + "Hide the currently loaded loot run\n" +
-                    DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start recording a new loot run\n" +
-                    DARK_GRAY + "/lootrun " + RED + "stop " + GRAY + "Stop recording\n" +
+                    DARK_GRAY + "/lootrun " + RED + "delete <name> " + GRAY + "Delete a previously saved lootrun\n" +
+                    DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
-                    DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears the currently loaded loot run and the loot run being recorded\n" +
+                    DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +
                     DARK_GRAY + "/lootrun " + RED + "help " + GRAY + "View this help message"
                 ));
                 return;
             }
             default:
-                throw new WrongUsageException("/lootrun <load/save/hide/record/stop/list/clear/help>");
+                throw new WrongUsageException("/lootrun <load/save/delete/record/list/help/clear>");
         }
     }
 
@@ -183,20 +178,15 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "load":
             case "save":
+            case "delete":
                 if (args.length > 2) return Collections.emptyList();
                 return getListOfStringsMatchingLastWord(args, LootRunManager.getStoredLootruns());
             case "list":
             case "help":
             case "record":
-            case "stop":
-            case "clear":
-            case "hide":
-                if (args.length > 1) return Collections.emptyList();
-                // getTabCompletions() result *must* be settable or crash
-                return new ArrayList<>(Collections.singletonList(args[0].toLowerCase(Locale.ROOT)));
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "record", "list", "stop", "clear", "hide", "help");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "record", "list", "clear", "help");
         }
     }
 
