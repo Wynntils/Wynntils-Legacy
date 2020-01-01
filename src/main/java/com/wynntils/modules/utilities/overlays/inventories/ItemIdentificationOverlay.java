@@ -227,9 +227,8 @@ public class ItemIdentificationOverlay implements Listener {
             for (String idName : ids.getKeySet()) {
                 bonusOrder.put(idName, ids.getString(idName));
             }
-            IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.INSTANCE.addSetBonusSpacing);
 
-            newLore.addAll(bonusOrder.values());
+            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.INSTANCE.addSetBonusSpacing));
             newLore.add(" ");
         }
 
