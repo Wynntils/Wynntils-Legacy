@@ -95,6 +95,7 @@ public class BeaconManager {
 
             // reseting
             color(1f, 1f, 1f, 1f);
+            disableBlend();
         }
         popAttrib();
     }
