@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.rendering;
 
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class PointRenderer {
 
-    public static void drawTexturedLines(Texture texture, List<Location> points, List<Vector3d> directions, float width) {
+    public static void drawTexturedLines(Texture texture, List<Location> points, List<Vector3d> directions, CustomColor color, float width) {
         if (points.size() <= 1) return;
 
         double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
@@ -49,14 +50,14 @@ public class PointRenderer {
             direction.normalize();
             end.add(direction);
             end.y -= .2;
-            drawTexturedLine(start, end, width);
+            drawTexturedLine(start, end, color, width);
         }
 
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
     }
 
-    public static void drawTexturedLine(Texture texture, Point3d start, Point3d end, float width) {
+    public static void drawTexturedLine(Texture texture, Point3d start, Point3d end, CommonColors color, float width) {
         GlStateManager.disableCull();
         GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.enableBlend();
@@ -64,13 +65,13 @@ public class PointRenderer {
 
         texture.bind();
 
-        drawTexturedLine(start, end, width);
+        drawTexturedLine(start, end, color, width);
 
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
     }
 
-    private static void drawTexturedLine(Point3d start, Point3d end, float width) {
+    private static void drawTexturedLine(Point3d start, Point3d end, CustomColor color, float width) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
         Vector3d direction = new Vector3d(start);
@@ -101,12 +102,16 @@ public class PointRenderer {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buffer = tess.getBuffer();
 
-        { buffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX);
+        { buffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-            buffer.pos(p1.x - renderManager.viewerPosX, p1.y - renderManager.viewerPosY, p1.z - renderManager.viewerPosZ).tex(0f, 0f).endVertex();
-            buffer.pos(p3.x - renderManager.viewerPosX, p3.y - renderManager.viewerPosY, p3.z - renderManager.viewerPosZ).tex(1f, 0f).endVertex();
-            buffer.pos(p4.x - renderManager.viewerPosX, p4.y - renderManager.viewerPosY, p4.z - renderManager.viewerPosZ).tex(1f, 1f).endVertex();
-            buffer.pos(p2.x - renderManager.viewerPosX, p2.y - renderManager.viewerPosY, p2.z - renderManager.viewerPosZ).tex(0f, 1f).endVertex();
+            buffer.pos(p1.x - renderManager.viewerPosX, p1.y - renderManager.viewerPosY, p1.z - renderManager.viewerPosZ)
+                    .tex(0f, 0f).color(color.r, color.g, color.b, color.a).endVertex();
+            buffer.pos(p3.x - renderManager.viewerPosX, p3.y - renderManager.viewerPosY, p3.z - renderManager.viewerPosZ)
+                    .tex(1f, 0f).color(color.r, color.g, color.b, color.a).endVertex();
+            buffer.pos(p4.x - renderManager.viewerPosX, p4.y - renderManager.viewerPosY, p4.z - renderManager.viewerPosZ)
+                    .tex(1f, 1f).color(color.r, color.g, color.b, color.a).endVertex();
+            buffer.pos(p2.x - renderManager.viewerPosX, p2.y - renderManager.viewerPosY, p2.z - renderManager.viewerPosZ)
+                    .tex(0f, 1f).color(color.r, color.g, color.b, color.a).endVertex();
 
         } tess.draw();
     }
