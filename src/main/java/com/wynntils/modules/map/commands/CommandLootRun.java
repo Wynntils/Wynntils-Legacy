@@ -61,7 +61,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 boolean result = LootRunManager.loadFromFile(name);
 
                 String message;
-                if (result) message = GREEN + "Loaded loot run " + name + "successfully!";
+                if (result) message = GREEN + "Loaded loot run " + name + " successfully!";
                 else message = RED + "The specified loot run doesn't exist!";
 
                 sender.sendMessage(new TextComponentString(message));
@@ -86,7 +86,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String message;
                 if (result) {
-                    message = GREEN + "Saved loot run " + name + "successfully!";
+                    message = GREEN + "Saved loot run " + name + " successfully!";
                     LootRunManager.stopRecording();
                 } else {
                     message = RED + "An error occurred while trying to save your loot run path!";
