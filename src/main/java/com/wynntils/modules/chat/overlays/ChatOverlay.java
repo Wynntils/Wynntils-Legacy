@@ -293,7 +293,7 @@ public class ChatOverlay extends GuiNewChat {
         int thisGroupId = noProcessing ? 0 : tab.increaseCurrentGroupId();
         int chatWidth = MathHelper.floor((float)getChatWidth() / getChatScale());
         List<ITextComponent> list = GuiUtilRenderComponents.splitText(displayedMessage, chatWidth, mc.fontRenderer, false, false);
-        boolean flag = getChatOpen();
+        boolean flag = tab == getCurrentTab() && getChatOpen();
 
         for (ITextComponent itextcomponent : list) {
             if (flag && scrollPos > 0) {
@@ -412,7 +412,26 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void deleteChatLine(int id) {
-        TabManager.getAvailableTabs().forEach(tab -> tab.getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id));
+        ChatTab currentTab = getCurrentTab();
+
+        TabManager.getAvailableTabs().forEach(tab -> {
+            if (tab == currentTab) return;
+            tab.getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id);
+        });
+
+        int[] count = { 0 };
+        currentTab.getCurrentMessages().removeIf(chatline -> {
+            if (chatline.getChatLineID() == id) {
+                ++count[0];
+                return true;
+            }
+            return false;
+        });
+
+        if (scrollPos > 0 && getChatOpen() && count[0] > 0) {
+            isScrolled = true;
+            scroll(-count[0]);
+        }
     }
 
     public int getChatWidth() {
