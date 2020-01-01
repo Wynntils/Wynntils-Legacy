@@ -14,6 +14,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
@@ -69,7 +70,7 @@ public class MapConfig extends SettingsClass {
     public float minimapIconSizeMultiplier = 1f;
 
     @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?", order = 13)
-    @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 5)
+    @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
     @Setting

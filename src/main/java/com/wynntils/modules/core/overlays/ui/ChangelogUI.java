@@ -118,7 +118,7 @@ public class ChangelogUI extends GuiScreen {
         renderer.drawRect(new CustomColor(0.917f, 0.8666f, 0.760f), (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
 
         // text area
-        ScreenRenderer.createMask(Textures.Masks.full, middleX - 110, middleY - 71, middleX + 95, middleY + 84, 10, 10, 11, 11);
+        ScreenRenderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
         float scrollPercent = scrollbarPosition/(118f - scrollbarSize);
 
         int textX = (int)middleX - 105;

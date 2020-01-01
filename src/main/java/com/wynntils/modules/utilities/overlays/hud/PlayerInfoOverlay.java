@@ -48,11 +48,8 @@ public class PlayerInfoOverlay extends Overlay {
         { scale(yScale);
 
             {  // mask
-                createMask(Textures.Masks.full,
-                        -(int) (178 * animationProgress),
-                        0,
-                        (int) (178 * animationProgress),
-                        222, 0, 0, 1, 1);
+                int halfWidth = (int) (178 * animationProgress);
+                enableScissorTestX(-halfWidth, 2 * halfWidth);
 
                 color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
                 drawRect(Textures.UIs.tab_overlay, -178, 0, 178, 216, 28, 6, 385, 222);
@@ -87,7 +84,7 @@ public class PlayerInfoOverlay extends Overlay {
                     }
                 }
 
-            } clearMask();
+            } disableScissorTest();
 
             color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
             {  // paper rolls

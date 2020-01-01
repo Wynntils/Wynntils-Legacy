@@ -52,7 +52,7 @@ public class Textures {
         public static AssetsTexture bars_bubbles;
         public static AssetsTexture hotbar;
         public static AssetsTexture toast;
-        public static AssetsTexture proffesions;
+        public static AssetsTexture professions;
     }
 
     public static class Map {

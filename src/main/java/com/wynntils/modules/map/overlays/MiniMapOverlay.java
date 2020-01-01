@@ -31,8 +31,8 @@ public class MiniMapOverlay extends Overlay {
         super("Mini Map", 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
-    private static final int MAX_ZOOM = 100;  // Note that this is the most zoomed out
-    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
+    public static final int MAX_ZOOM = 100;  // Note that this is the most zoomed out
+    public static final int MIN_ZOOM = -10;  // And this is the most zoomed in
     private static final double ZOOM_SCALE_FACTOR = 1.05;
 
     public static void zoomBy(int by) {
@@ -78,15 +78,15 @@ public class MiniMapOverlay extends Overlay {
 
         if (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
 
-        try{
+        try {
             GlStateManager.enableAlpha();
             GlStateManager.enableTexture2D();
 
             // textures & masks
-            if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
-                createMask(Textures.Masks.circle, 0, 0, mapSize, mapSize);
+            if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.SQUARE) {
+                enableScissorTest(mapSize, mapSize);
             } else {
-                createMask(Textures.Masks.full, 0, 0, mapSize, mapSize);
+                createMask(Textures.Masks.circle, 0, 0, mapSize, mapSize);
             }
 
             // map texture
@@ -108,7 +108,7 @@ public class MiniMapOverlay extends Overlay {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
-                bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+                bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX);
 
                 bufferbuilder.pos(position.getDrawingX() - extraSize, position.getDrawingY() + mapSize + extraSize, 0).tex(minX, maxZ).endVertex();
                 bufferbuilder.pos(position.getDrawingX() + mapSize + extraSize, position.getDrawingY() + mapSize + extraSize, 0).tex(maxX, maxZ).endVertex();
@@ -252,6 +252,7 @@ public class MiniMapOverlay extends Overlay {
 
             GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
+            disableScissorTest();
             clearMask();
 
             if (MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(mc.player.rotationYaw));
@@ -322,7 +323,9 @@ public class MiniMapOverlay extends Overlay {
                         mapSize / 2f, mapSize + 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE
                 );
             }
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

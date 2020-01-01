@@ -241,16 +241,11 @@ public class QuestsPage extends QuestBookPage {
                             scrollAmount = 0;
                         }
 
-                        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+                        ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
                         {
-                            // Scissor test is in screen coordinates, so y is inverted and scale needs to be manually applied
-                            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-                            double scaleW = Minecraft.getMinecraft().displayWidth / res.getScaledWidth_double();
-                            double scaleH = Minecraft.getMinecraft().displayHeight / res.getScaledHeight_double();
-                            GL11.glScissor((int) ((x + 26 + ScreenRenderer.drawingOrigin().x) * scaleW), (int) ((y + 87 - currentY - ScreenRenderer.drawingOrigin().y) * scaleH), (int) ((13 + 133 - 2 - 26) * scaleW), (int) ((96 - 87) * scaleH));
                             render.drawString(name, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                         }
-                        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+                        ScreenRenderer.disableScissorTest();
                     } else {
                         render.drawString(name, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                     }

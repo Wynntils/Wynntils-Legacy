@@ -150,11 +150,11 @@ public class SettingsUI extends UI {
             int y = el.position.offsetY + holders.position.offsetY;
             el.visible = -99 <= y && y <= +73;
         });
-        ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 - 165, screenHeight / 2 - 88, screenWidth / 2 - 25, screenHeight / 2 + 73);
+        ScreenRenderer.enableScissorTest(screenWidth / 2 - 165, screenHeight / 2 - 88, 140, 161);
         holders.render(mouseX, mouseY);
-        ScreenRenderer.clearMask();
+        // ScreenRenderer.disableScissorTest();  // reenabled on the next line, no need to disable unless this changes
 
-        ScreenRenderer.createMask(Textures.Masks.full, screenWidth / 2 + 5, screenHeight / 2 - 100, screenWidth / 2 + 185, screenHeight / 2 + 100);
+        ScreenRenderer.enableScissorTest(screenWidth / 2 + 5, screenHeight / 2 - 100, 180, 200);
         settings.elements.forEach(setting_ -> {
             SettingElement setting = (SettingElement) setting_;
             setting.position.anchorX = settings.position.anchorX;
@@ -193,7 +193,7 @@ public class SettingsUI extends UI {
             setting.position.offsetX -= settings.position.offsetX;
             setting.position.offsetY -= settings.position.offsetY;
         });
-        ScreenRenderer.clearMask();
+        ScreenRenderer.disableScissorTest();
     }
 
     @Override

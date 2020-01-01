@@ -136,7 +136,7 @@ public class RichProfile {
             IDiscordCore.ByReference[] array = new IDiscordCore.ByReference[] { new IDiscordCore.ByReference() };
             gameSDK.DiscordCreate(DiscordGameSDKLibrary.DISCORD_VERSION, createParams, array);
             discordCore = array[0];
-            if (discordCore == null) {
+            if (discordCore == null || discordCore.get_user_manager == null) {
                 // Discord client not running
                 setDisabled();
                 return;

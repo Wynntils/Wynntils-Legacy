@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ public class ScreenRenderer {
     private static float scale = 1.0f;
     private static float rotation = 0;
     private static boolean mask = false;
+    private static boolean scissorTest = false;
     private static Point drawingOrigin = new Point(0, 0); public static Point drawingOrigin() { return drawingOrigin; }
     private static Point transformationOrigin = new Point(0, 0);
     public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
@@ -49,7 +51,7 @@ public class ScreenRenderer {
      * updates the screen resolution to match the window
      * size and sets the font renderer in until its ok.
      * Do not call this method from anywhere in the mod
-     * except cf.wynntils.core.events.ClientEvents@onTick!
+     * except {@link com.wynntils.core.events.ClientEvents#onTick(TickEvent.ClientTickEvent)} !
      */
     public static void refresh() {
         mc = Minecraft.getMinecraft();
@@ -101,14 +103,9 @@ public class ScreenRenderer {
         if (!rendering) return;
         resetScale();
         resetRotation();
-        if (mask) {
-            GlStateManager.depthMask(true);
-            GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
-            GlStateManager.enableDepth();
-            GlStateManager.depthFunc(GL_LEQUAL);
-            GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
-            mask = false;
-        }
+        clearMask();
+        disableScissorTest();
+
         drawingOrigin = new Point(0, 0);
         transformationOrigin = new Point(0, 0);
         GlStateManager.popMatrix();
@@ -257,7 +254,7 @@ public class ScreenRenderer {
      * this and before the next {clearMask()}(or {endGL()})
      * and is not inside the mask.
      * A mask, is a clear and white texture where anything
-     * while will allow drawing.
+     * white will allow drawing.
      *
      * @param texture mask texture(please use Textures.Masks)
      * @param x1 bottom-left x(on screen)
@@ -316,6 +313,74 @@ public class ScreenRenderer {
         GlStateManager.depthFunc(GL_LEQUAL);
         GlStateManager.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
         mask = false;
+    }
+
+    private static void enableScissorTest() {
+        if (!scissorTest) {
+            glEnable(GL_SCISSOR_TEST);
+            scissorTest = true;
+        }
+    }
+
+    /**
+     * Enables the scissor test so that only things drawn within the rectangle
+     * (x, y) and (x + width, y + height) are drawn. Does *not* respect rotation, but is fast.
+     *
+     * @param x Starting coordinate x (relative to drawing origin, 0 at the left)
+     * @param y Starting coordinate y (relative to drawing origin, in regular coordinates, so 0 is at the top)
+     * @param width Width of box
+     * @param height Height of box
+     */
+    public static void enableScissorTest(int x, int y, int width, int height) {
+        if (!rendering) return;
+
+        enableScissorTest();
+
+        // Scissor test is in screen coordinates, so y is inverted and scale needs to be manually applied
+        int scale = screen.getScaleFactor();
+        glScissor((x + drawingOrigin.x) * scale, mc.displayHeight - (y + drawingOrigin.y + height) * scale, width * scale, height * scale);
+    }
+
+    /**
+     * As {@link #enableScissorTest(int, int, int, int)}, but from the drawing origin
+     */
+    public static void enableScissorTest(int width, int height) {
+        enableScissorTest(0, 0, width, height);
+    }
+
+    /**
+     * As {@link #enableScissorTest(int, int, int, int)}, but allow any y,
+     * so anything with x coordinate in [x, x + width] will be drawn
+     */
+    public static void enableScissorTestX(int x, int width) {
+        if (!rendering) return;
+
+        enableScissorTest();
+        int scale = screen.getScaleFactor();
+        glScissor((x + drawingOrigin.x) * scale, 0, width * scale, mc.displayHeight);
+    }
+
+    /**
+     * As {@link #enableScissorTest(int, int, int, int)}, but allow any x,
+     * so anything with y coordinate in [y, y + height] will be drawn
+     */
+    public static void enableScissorTestY(int y, int height) {
+        if (!rendering) return;
+
+        enableScissorTest();
+        int scale = screen.getScaleFactor();
+        glScissor(0, mc.displayHeight - (y + drawingOrigin.y + height) * scale, mc.displayWidth, height * scale);
+    }
+
+    /**
+     * Allow drawing outside the previously defined scissor rectangle
+     * (By {@link #enableScissorTest(int, int, int, int)} or similar methods) again
+     */
+    public static void disableScissorTest() {
+        if (scissorTest) {
+            glDisable(GL_SCISSOR_TEST);
+            scissorTest = false;
+        }
     }
 
     /** float drawString
