@@ -61,8 +61,8 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 boolean result = LootRunManager.loadFromFile(name);
 
                 String message;
-                if (result) message = GREEN + "Loaded LootRun " + name + " successfully!";
-                else message = RED + "The specified LootRun doesn't exists!";
+                if (result) message = GREEN + "Loaded loot run " + name + "successfully!";
+                else message = RED + "The specified loot run doesn't exist!";
 
                 sender.sendMessage(new TextComponentString(message));
                 return;
@@ -74,11 +74,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String name = args[1];
 
                 if(!LootRunManager.isRecording()) {
-                    sender.sendMessage(new TextComponentString(RED + "You're not recording a path!"));
+                    sender.sendMessage(new TextComponentString(RED + "You're not currently recording a path!"));
                     return;
                 }
                 if(LootRunManager.getRecordingPath().getChests().isEmpty()) {
-                    sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a LootRun!"));
+                    sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a loot run path!"));
                     return;
                 }
 
@@ -86,10 +86,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String message;
                 if (result) {
-                    message = GREEN + "Saved LootRun " + name + " successfully!";
+                    message = GREEN + "Saved loot run " + name + "successfully!";
                     LootRunManager.stopRecording();
                 } else {
-                    message = RED + "An error occured while trying to save your LootRun route!";
+                    message = RED + "An error occurred while trying to save your loot run path!";
                 }
 
                 sender.sendMessage(new TextComponentString(message));
@@ -98,11 +98,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "hide":
                 LootRunManager.hide();
 
-                sender.sendMessage(new TextComponentString(GREEN + "Your active lootrun has been hidden!"));
+                sender.sendMessage(new TextComponentString(GREEN + "Your active loot run has been hidden!"));
             case "record": {
                 String message;
                 if (LootRunManager.isRecording()) {
-                    message = RED + "Already recording... Please clear with /lootrun save or /lootrun stop";
+                    message = RED + "Already recording... Please clear using /lootrun save or /lootrun stop.";
                 } else {
                     message = GREEN + "Started to record your current movements! " + RED + "Red means recording.";
                     LootRunManager.startRecording();
@@ -117,17 +117,17 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     message = GREEN + "Stopped to record your movements!";
                     LootRunManager.stopRecording();
                 } else {
-                    message = RED + "Not recording a lootrun!";
+                    message = RED + "Not recording a loot run!";
                 }
 
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
             case "list": {
-                StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored lootruns:");
+                StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
                 List<String> lootruns = LootRunManager.getStoredLootruns();
                 if (lootruns.isEmpty()) {
-                    message.append('\n').append(GRAY).append("You currently have no saved lootruns!");
+                    message.append('\n').append(GRAY).append("You currently have no saved loot runs!");
                 } else {
                     for (String lootrun : lootruns) {
                         message.append('\n').append(WHITE).append(lootrun);
@@ -139,7 +139,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
                 messageText.getStyle()
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
-                        "Lootruns are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick to open!"
+                        "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick to open!"
                     )))
                     .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getAbsolutePath()));
                 sender.sendMessage(messageText);
@@ -148,7 +148,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "clear":
                 LootRunManager.clear();
 
-                sender.sendMessage(new TextComponentString(GREEN + "Cleared current LootRun points!"));
+                sender.sendMessage(new TextComponentString(GREEN + "Cleared current loot run points!"));
                 return;
             case "help": {
                 // TODO

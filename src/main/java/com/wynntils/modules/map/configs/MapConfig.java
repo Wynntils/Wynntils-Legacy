@@ -175,14 +175,14 @@ public class MapConfig extends SettingsClass {
     public static class LootRun extends SettingsClass {
         public static LootRun INSTANCE;
 
-        @Setting(displayName = "Loot Run Path Type", description = "Should the path should be drawn using textures or lines?", order = 1)
+        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?\n\n§8Available options are textures and lines.", order = 1)
         public PathType pathType = PathType.TEXTURED;
 
-        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed loot run be?\n\nOnly applicable when \"Loot Run Path Type\" is LINES", order = 2)
+        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed path be?\n\n§8This option is only applicable when \"Loot Run Path Type\" is set to LINES.", order = 2)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor activePathColour = MinecraftChatColors.AQUA;
 
-        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recordfing loot run be?", order = 3)
+        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?", order = 3)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor recordingPathColour = CommonColors.RED;
 
