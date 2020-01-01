@@ -219,6 +219,20 @@ public class ItemIdentificationOverlay implements Listener {
         // Powder lore
         if (wynntils.hasKey("powderSlots")) newLore.add(wynntils.getString("powderSlots"));
 
+        //Set Bonus
+        if (wynntils.hasKey("setBonus")) {
+            NBTTagCompound ids = wynntils.getCompoundTag("setBonus");
+
+            HashMap<String, String> bonusOrder = new HashMap<>();
+            for (String idName : ids.getKeySet()) {
+                bonusOrder.put(idName, ids.getString(idName));
+            }
+            IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.INSTANCE.addSetBonusSpacing);
+
+            newLore.addAll(bonusOrder.values());
+            newLore.add(" ");
+        }
+
         // Quality lore
         String quality = item.getTier().asLore();
 
@@ -357,12 +371,20 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         NBTTagCompound idTag = new NBTTagCompound();
+        NBTTagCompound setBonus = new NBTTagCompound();
         NBTTagList purchaseInfo = new NBTTagList();
         {  // lore data
+            boolean isBonus = false;
             for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
 
-                // ids
+                //set bonus detection
+                if(lColor.contains("Set Bonus:")) {
+                    isBonus = true;
+                    continue;
+                }
+
+                // ids and set bonus
                 { Matcher idMatcher = ID_PATTERN.matcher(lColor);
                     if (idMatcher.find()) {
                         String idName = idMatcher.group("ID");
@@ -372,6 +394,11 @@ public class ItemIdentificationOverlay implements Listener {
                         if (spell != null) idName = idName.replaceAll(spell.getRegex().pattern(), spell.getShortName());
 
                         String shortIdName = toShortIdName(idName, isRaw);
+
+                        if(isBonus) {
+                            setBonus.setString(shortIdName, loreLine);
+                            continue;
+                        }
                         idTag.setInteger(shortIdName, Integer.parseInt(idMatcher.group("Value")));
                         continue;
                     }
@@ -415,6 +442,7 @@ public class ItemIdentificationOverlay implements Listener {
             }
 
             if (idTag.getSize() > 0) mainTag.setTag("ids", idTag);
+            if (setBonus.getSize() > 0) mainTag.setTag("setBonus", setBonus);
             if (purchaseInfo.tagCount() > 0) mainTag.setTag("purchaseInfo", purchaseInfo);
         }
 

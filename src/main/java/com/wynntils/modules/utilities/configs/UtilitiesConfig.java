@@ -75,6 +75,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
     public boolean addItemIdentificationSpacing = true;
 
+    @Setting(displayName = "Categorize Set bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
+    public boolean addSetBonusSpacing = true;
+
     @Setting(displayName = "Indicate Newly Added Items to the Game", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
     public boolean showNewItems = false;
 
