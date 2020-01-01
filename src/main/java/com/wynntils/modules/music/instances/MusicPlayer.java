@@ -131,7 +131,7 @@ public class MusicPlayer {
         if (paused) return;
 
         musicPlayer = new Thread(() -> {
-            try{
+            try {
                 FileInputStream fis = new FileInputStream(currentMusic);
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 currentPlayer = new AdvancedPlayer(bis);
@@ -146,7 +146,7 @@ public class MusicPlayer {
 
                 fis.close();
                 bis.close();
-            }catch (Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) { ex.printStackTrace(); }
         });
         musicPlayer.setName("Wynntils - Music Reproducer"); musicPlayer.start();
     }

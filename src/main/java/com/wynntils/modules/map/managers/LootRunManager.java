@@ -55,7 +55,7 @@ public class LootRunManager {
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
-            if(path.getChests().size() == 0) return false;
+            if (path.getChests().size() == 0) return false;
 
             activePath = path;
 

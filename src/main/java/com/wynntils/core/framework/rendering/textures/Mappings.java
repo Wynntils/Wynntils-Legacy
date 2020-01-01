@@ -28,13 +28,13 @@ public class Mappings {
             String mainPath = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase() + "/data/";
 
             for (Field f : clazz.getDeclaredFields()) {
-                try{
+                try {
                     if (f.get(null) != null || !f.getType().isAssignableFrom(JsonObject.class)) continue;
 
                     ResourceLocation rc = new ResourceLocation(mainPath + f.getName() + ".json");
                     f.set(null, new JsonParser().parse(IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8)));
 
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }

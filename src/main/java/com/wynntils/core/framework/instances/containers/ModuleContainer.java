@@ -80,7 +80,7 @@ public class ModuleContainer {
                 try {
                     field.set(null, holder.getConstructor().newInstance());
                     registeredSettings.put(info.name(), new SettingsContainer(this, (SettingsHolder) field.get(null)));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return;

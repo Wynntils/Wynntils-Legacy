@@ -77,7 +77,7 @@ public final class CubicSplines {
         delta[chords] = (3 * (p1 - p0) - delta[chords - 1]) * gamma[chords];
 
         D[chords] = delta[chords];
-        for(int i = chords - 1; i >= 0; i--) {
+        for (int i = chords - 1; i >= 0; i--) {
             D[i] = delta[i] - gamma[i] * D[i + 1];
         }
 

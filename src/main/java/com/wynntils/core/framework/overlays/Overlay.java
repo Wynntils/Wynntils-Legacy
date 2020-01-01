@@ -63,7 +63,7 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public void saveSettings(Module m) {
         try {
             FrameworkManager.getSettings(m == null ? module.getModule() : m, this).saveSettings();
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     @Override

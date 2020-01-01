@@ -383,7 +383,7 @@ public class ClientEvents implements Listener {
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        //consumable timer
+        // consumable timer
         Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
 
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
@@ -401,7 +401,7 @@ public class ClientEvents implements Listener {
     public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        //consumable timer
+        // consumable timer
         Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
 
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
@@ -419,7 +419,7 @@ public class ClientEvents implements Listener {
     public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        //consumable timer
+        // consumable timer
         Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
 
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
@@ -443,7 +443,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ConsumableTimerOverlay.clearConsumables(); //clear consumable list
+        ConsumableTimerOverlay.clearConsumables(); // clear consumable list
     }
 
 }

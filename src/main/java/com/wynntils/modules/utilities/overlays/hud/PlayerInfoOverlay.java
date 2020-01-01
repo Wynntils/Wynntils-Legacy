@@ -116,7 +116,7 @@ public class PlayerInfoOverlay extends Overlay {
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
                 .sortedCopy(Minecraft.getMinecraft().player.connection.getPlayerInfoMap());
 
-        if(players.isEmpty()) return lastPlayers;
+        if (players.isEmpty()) return lastPlayers;
 
         lastPlayers = players.stream()
                 .filter(c -> c.getDisplayName() != null)

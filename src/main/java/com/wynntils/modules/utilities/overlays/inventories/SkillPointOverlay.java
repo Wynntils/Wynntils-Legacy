@@ -18,9 +18,9 @@ public class SkillPointOverlay implements Listener {
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
         if (!e.getGui().getLowerInv().getName().contains("skill points remaining")) return;
 
-        for(int i = 0; i < e.getGui().getLowerInv().getSizeInventory(); i++) {
+        for (int i = 0; i < e.getGui().getLowerInv().getSizeInventory(); i++) {
             ItemStack stack = e.getGui().getLowerInv().getStackInSlot(i);
-            if(stack.isEmpty() || !stack.hasDisplayName() || stack.getTagCompound().hasKey("wynntilsAnalyzed")) continue; //display name also checks for tag compound
+            if (stack.isEmpty() || !stack.hasDisplayName() || stack.getTagCompound().hasKey("wynntilsAnalyzed")) continue; // display name also checks for tag compound
 
             stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
             String lore = ItemUtils.getStringLore(stack);

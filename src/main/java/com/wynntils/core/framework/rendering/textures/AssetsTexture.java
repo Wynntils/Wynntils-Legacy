@@ -33,7 +33,7 @@ public class AssetsTexture extends Texture {
             height = img.getHeight();
             loaded = true;
             return ActionResult.SUCCESS;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             width = -1; height = -1;
             loaded = false;

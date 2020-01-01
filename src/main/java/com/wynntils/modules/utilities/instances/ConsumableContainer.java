@@ -74,7 +74,7 @@ public class ConsumableContainer {
      * @param expirationTime the provided time in milliseconds
      */
     public void setExpirationTime(long expirationTime) {
-        this.expirationTime = expirationTime + 1000; //extra 1s to include the ping
+        this.expirationTime = expirationTime + 1000; // extra 1s to include the ping
     }
 
     /**

@@ -324,7 +324,9 @@ public class ScreenRenderer {
 
     /**
      * Enables the scissor test so that only things drawn within the rectangle
-     * (x, y) and (x + width, y + height) are drawn. Does *not* respect rotation, but is fast.
+     * (x, y) and (x + width, y + height) are drawn, including the start and excluding the end.
+     * In other words, a width x height box, starting from (x, y)
+     * Does *not* respect rotation, but is fast.
      *
      * @param x Starting coordinate x (relative to drawing origin, 0 at the left)
      * @param y Starting coordinate y (relative to drawing origin, in regular coordinates, so 0 is at the top)
@@ -350,7 +352,7 @@ public class ScreenRenderer {
 
     /**
      * As {@link #enableScissorTest(int, int, int, int)}, but allow any y,
-     * so anything with x coordinate in [x, x + width] will be drawn
+     * so anything with x coordinate in [x, x + width) will be drawn
      */
     public static void enableScissorTestX(int x, int width) {
         if (!rendering) return;
@@ -362,7 +364,7 @@ public class ScreenRenderer {
 
     /**
      * As {@link #enableScissorTest(int, int, int, int)}, but allow any x,
-     * so anything with y coordinate in [y, y + height] will be drawn
+     * so anything with y coordinate in [y, y + height) will be drawn
      */
     public static void enableScissorTestY(int y, int height) {
         if (!rendering) return;

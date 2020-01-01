@@ -32,7 +32,7 @@ public class Textures {
                         String file = path + f.getName() + ".png";
                         f.set(null, new AssetsTexture(new ResourceLocation(file)));
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

@@ -73,11 +73,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
                 String name = args[1];
 
-                if(!LootRunManager.isRecording()) {
+                if (!LootRunManager.isRecording()) {
                     sender.sendMessage(new TextComponentString(RED + "You're not currently recording a path!"));
                     return;
                 }
-                if(LootRunManager.getRecordingPath().getChests().isEmpty()) {
+                if (LootRunManager.getRecordingPath().getChests().isEmpty()) {
                     sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a loot run path!"));
                     return;
                 }

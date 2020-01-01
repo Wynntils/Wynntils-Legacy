@@ -32,7 +32,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
 
-        if(!WebManager.hasCape(player.getUniqueID())) return;
+        if (!WebManager.hasCape(player.getUniqueID())) return;
 
         // loading cape
         ResourceLocation rl = new ResourceLocation("wynntils:capes/" + player.getUniqueID().toString().replace("-", ""));

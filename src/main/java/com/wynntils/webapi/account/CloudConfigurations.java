@@ -78,7 +78,7 @@ public class CloudConfigurations {
                 try {
                     outputStream = st.getOutputStream();
                     IOUtils.write(bodyBytes, outputStream);
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 } finally {
                     IOUtils.closeQuietly(outputStream);

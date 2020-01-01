@@ -41,50 +41,50 @@ public class ConsumableTimerOverlay extends Overlay {
     }
 
     public static void clearConsumables() {
-        //assigns a new object to avoid CME
+        // assigns a new object to avoid CME
         activeConsumables = new ArrayList<>();
         activeEffects = new HashMap<>();
     }
 
     public static void addConsumable(ItemStack stack) {
-        if(stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for the nbt data
-        if(stack.getItem() != Items.DIAMOND_AXE && stack.getItem() != Items.POTIONITEM) return; //foods and scrolls have DIAMOND_AXE as their items
+        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for the nbt data
+        if (stack.getItem() != Items.DIAMOND_AXE && stack.getItem() != Items.POTIONITEM) return; // foods and scrolls have DIAMOND_AXE as their items
 
-        //vanilla potions needs a special verification, they DON'T start with dark aqua
-        if(!stack.getDisplayName().startsWith(DARK_AQUA.toString())) {
+        // vanilla potions needs a special verification, they DON'T start with dark aqua
+        if (!stack.getDisplayName().startsWith(DARK_AQUA.toString())) {
             String displayName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
             SkillPoint sp = SkillPoint.findSkillPoint(displayName);
-            if(sp == null) return;
+            if (sp == null) return;
 
             ConsumableContainer consumable = new ConsumableContainer(sp.getAsName());
 
             List<String> itemLore = ItemUtils.getLore(stack);
-            for(String line : itemLore) {
+            for (String line : itemLore) {
                 line = TextFormatting.getTextWithoutFormattingCodes(line);
 
-                //duration | - Duration: <group1> Seconds
+                // duration | - Duration: <group1> Seconds
                 Matcher m = DURATION_PATTERN.matcher(line);
-                if(m.matches() && m.group(1) != null) {
+                if (m.matches() && m.group(1) != null) {
                     consumable.setExpirationTime(
                             Minecraft.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
-                    ); //currentMillis + (seconds * 1000)
+                    ); // currentMillis + (seconds * 1000)
                     continue;
                 }
 
-                //effects | - Effect: <id>
+                // effects | - Effect: <id>
                 m = EFFECT_PATTERN.matcher(line);
-                if(!m.matches()) continue; //continues if not a valid effect
+                if (!m.matches()) continue; // continues if not a valid effect
 
                 String id = m.group(1);
-                if(id == null || id.isEmpty()) continue; //continues if id is null or empty
+                if (id == null || id.isEmpty()) continue; // continues if id is null or empty
 
-                //removing skill point symbols
-                for(SkillPoint skillPoint : SkillPoint.values()) {
+                // removing skill point symbols
+                for (SkillPoint skillPoint : SkillPoint.values()) {
                     id = id.replace(skillPoint.getSymbol() + " ", "");
                 }
 
                 m = ItemIdentificationOverlay.ID_PATTERN.matcher(id);
-                if(!m.matches()) continue; //continues if the effect is not a valid id
+                if (!m.matches()) continue; // continues if the effect is not a valid id
 
                 verifyIdentification(m, consumable);
             }
@@ -94,39 +94,39 @@ public class ConsumableTimerOverlay extends Overlay {
             return;
         }
 
-        //crafted items
+        // crafted items
         String name;
-        if(stack.getItem() == Items.POTIONITEM)
+        if (stack.getItem() == Items.POTIONITEM)
             name = LIGHT_PURPLE + "Ⓛ Potion";
-        else if(stack.getItemDamage() >= 70 && stack.getItemDamage() <= 75) //food, 70 <= damage <= 75
+        else if (stack.getItemDamage() >= 70 && stack.getItemDamage() <= 75) // food, 70 <= damage <= 75
             name = GOLD + "Ⓐ Food";
-        else if(stack.getItemDamage() >= 42 && stack.getItemDamage() <= 44) //scrolls, 42 <= damage <= 44
+        else if (stack.getItemDamage() >= 42 && stack.getItemDamage() <= 44) // scrolls, 42 <= damage <= 44
             name = YELLOW + "Ⓔ Scroll";
-        else return; //breaks if not valid
+        else return; // breaks if not valid
 
         ConsumableContainer consumable = new ConsumableContainer(name);
 
         List<String> itemLore = ItemUtils.getLore(stack);
-        for(String line : itemLore) {
-            line = TextFormatting.getTextWithoutFormattingCodes(line); //remove colors
+        for (String line : itemLore) {
+            line = TextFormatting.getTextWithoutFormattingCodes(line); // remove colors
 
-            //duration | - Duration: <group1> Seconds
+            // duration | - Duration: <group1> Seconds
             Matcher m = DURATION_PATTERN.matcher(line);
-            if(m.matches() && m.group(1) != null) {
+            if (m.matches() && m.group(1) != null) {
                 consumable.setExpirationTime(
                         Minecraft.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
-                ); //currentMillis + (seconds * 1000)
+                ); // currentMillis + (seconds * 1000)
                 continue;
             }
 
-            //effects | <Value><Suffix> <ID>
+            // effects | <Value><Suffix> <ID>
             m = ItemIdentificationOverlay.ID_PATTERN.matcher(line);
-            if(!m.matches()) continue; //continues if not a valid effect
+            if (!m.matches()) continue; // continues if not a valid effect
 
             verifyIdentification(m, consumable);
         }
 
-        if(!consumable.isValid()) return;
+        if (!consumable.isValid()) return;
 
         activeConsumables.add(consumable);
         updateActiveEffects();
@@ -143,27 +143,27 @@ public class ConsumableTimerOverlay extends Overlay {
         String shortIdName = ItemIdentificationOverlay.toShortIdName(idName, isRaw);
 
         IdentificationModifier modifier = IdentificationModifier.INTEGER;
-        if(!isRaw) {
-            //loop through all modifier options to find a valid one
-            for(IdentificationModifier mod : IdentificationModifier.values()) {
-                if(mod.getInGame().isEmpty() || !suffix.contains(mod.getInGame())) continue;
+        if (!isRaw) {
+            // loop through all modifier options to find a valid one
+            for (IdentificationModifier mod : IdentificationModifier.values()) {
+                if (mod.getInGame().isEmpty() || !suffix.contains(mod.getInGame())) continue;
 
                 modifier = mod;
                 break;
             }
         }
 
-        //finish by adding the effect to the container
+        // finish by adding the effect to the container
         consumable.addEffect(shortIdName, Integer.parseInt(m.group("Value")), modifier);
     }
 
     private static void updateActiveEffects() {
         HashMap<String, IdentificationHolder> effects = new HashMap<>();
-        for(ConsumableContainer consumable : activeConsumables) {
-            for(String cEf : consumable.getEffects().keySet()) {
+        for (ConsumableContainer consumable : activeConsumables) {
+            for (String cEf : consumable.getEffects().keySet()) {
                 IdentificationHolder holder = consumable.getEffects().get(cEf);
 
-                if(effects.containsKey(cEf)) {
+                if (effects.containsKey(cEf)) {
                     effects.get(cEf).sumAmount(holder.getCurrentAmount());
                     continue;
                 }
@@ -178,12 +178,12 @@ public class ConsumableTimerOverlay extends Overlay {
 
     private static void removeActiveEffect(ConsumableContainer consumable) {
         Iterator<Map.Entry<String, IdentificationHolder>> it = activeEffects.entrySet().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Map.Entry<String, IdentificationHolder> entry = it.next();
-            if(!consumable.hasEffect(entry.getKey())) continue;
+            if (!consumable.hasEffect(entry.getKey())) continue;
 
             entry.getValue().sumAmount(-consumable.getEffect(entry.getKey()).getCurrentAmount());
-            if(entry.getValue().getCurrentAmount() != 0) continue;
+            if (entry.getValue().getCurrentAmount() != 0) continue;
 
             it.remove();
         }
@@ -193,16 +193,16 @@ public class ConsumableTimerOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         event.setCanceled(false);
 
-        if(activeConsumables.isEmpty()) return;
+        if (activeConsumables.isEmpty()) return;
 
         Iterator<ConsumableContainer> it = activeConsumables.iterator();
 
-        //id names
+        // id names
         int extraY = 0;
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             ConsumableContainer consumable = it.next();
-            if(consumable.hasExpired()) { //remove if expired
-                removeActiveEffect(consumable); //update active effects
+            if (consumable.hasExpired()) { // remove if expired
+                removeActiveEffect(consumable); // update active effects
                 it.remove();
                 continue;
             }
@@ -213,8 +213,8 @@ public class ConsumableTimerOverlay extends Overlay {
             extraY+=10;
         }
 
-        //effects
-        if(!OverlayConfig.ConsumableTimer.INSTANCE.showEffects || activeEffects.isEmpty()) return;
+        // effects
+        if (!OverlayConfig.ConsumableTimer.INSTANCE.showEffects || activeEffects.isEmpty()) return;
         extraY+=10;
 
         for (Map.Entry<String, IdentificationHolder> entry : activeEffects.entrySet()) {

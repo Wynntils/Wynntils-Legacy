@@ -41,7 +41,7 @@ public class PointRenderer {
 
         for (int i = 0; i < points.size(); ++i) {
             Point3d start = new Point3d(points.get(i));
-            if(start.distance(player) > maxDistance) continue;
+            if (start.distance(player) > maxDistance) continue;
 
             Vector3d direction = new Vector3d(directions.get(i));
             Point3d end = new Point3d(points.get(i));

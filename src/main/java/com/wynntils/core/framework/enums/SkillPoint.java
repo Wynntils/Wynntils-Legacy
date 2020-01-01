@@ -36,8 +36,8 @@ public enum SkillPoint {
     }
 
     public static SkillPoint findSkillPoint(String input) {
-        for(SkillPoint point : values()) {
-            if(!point.regexMatcher.matcher(input).matches()) continue;
+        for (SkillPoint point : values()) {
+            if (!point.regexMatcher.matcher(input).matches()) continue;
 
             return point;
         }

@@ -207,7 +207,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float minX = this.minX / (float)map.getImageWidth(); float maxX = this.maxX / (float)map.getImageWidth();
         float minZ = this.minZ / (float)map.getImageHeight(); float maxZ = this.maxZ / (float)map.getImageHeight();
 
-        try{
+        try {
             GlStateManager.enableAlpha();
             GlStateManager.color(1, 1, 1, 1f);
             GlStateManager.enableTexture2D();
@@ -231,7 +231,7 @@ public class WorldMapUI extends GuiMovementScreen {
                 tessellator.draw();
             }
 
-        }catch (Exception ignored) {}
+        } catch (Exception ignored) {}
 
         clearMask();
     }

@@ -259,7 +259,7 @@ public class ItemIdentificationOverlay implements Listener {
             specialDisplay = " " + idType.getTitle(cumRelative/(double)idAmount);
         }
 
-        //check for item perfection
+        // check for item perfection
         if (cumRelative/idAmount >= 1d && idType == IdentificationType.PERCENTAGES) {
             wynntils.setBoolean("isPerfect", true);
         }
@@ -390,7 +390,7 @@ public class ItemIdentificationOverlay implements Listener {
                 // powders
                 if (lColor.contains("] Powder Slots")) mainTag.setString("powderSlots", loreLine);
 
-                //dungeon and merchant prices
+                // dungeon and merchant prices
                 if (lColor.startsWith(" - ✔") || lColor.startsWith(" - ✖")) {
                     purchaseInfo.appendTag(new NBTTagString(loreLine));
                     continue;

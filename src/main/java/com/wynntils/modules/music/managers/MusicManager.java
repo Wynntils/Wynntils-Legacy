@@ -47,11 +47,11 @@ public class MusicManager {
             }
         }
 
-        try{
+        try {
             WebManager.getCurrentAvailableSongs().forEach(c -> availableMusics.put(c.getAsHash(), c));
 
             isListUpdated = true;
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public static void checkForMusic(String location) {

@@ -23,7 +23,7 @@ public class UpdateProfile {
 
     public UpdateProfile() {
         new Thread(() -> {
-            try{
+            try {
                 MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
                     String cuttingEdgeMd5 = WebManager.getCuttingEdgeJarFileMD5();
@@ -41,7 +41,7 @@ public class UpdateProfile {
                     }
                 }
 
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 updateCheckFailed = true;
             }

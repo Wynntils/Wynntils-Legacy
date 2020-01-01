@@ -84,7 +84,7 @@ public class DownloaderManager {
         progression = 0;
 
         new Thread(() -> {
-            try{
+            try {
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.connect();
@@ -174,7 +174,13 @@ public class DownloaderManager {
                 progression = 0;
 
                 startDownloading();
-            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                pf.onFinish.accept(false);
+                currentPhase = DownloadPhase.WAITING;
+                progression = 0;
+                futureDownloads.remove(0);
+            }
         }, "wynntils-download-manager").start();
     }
 
