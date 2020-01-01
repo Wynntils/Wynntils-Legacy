@@ -96,6 +96,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 return;
             }
             case "hide":
+                if (LootRunManager.getActivePath() == null) {
+                    sender.sendMessage(new TextComponentString(RED + "You have no active loot run to hide!"));
+                    return;
+                }
+
                 LootRunManager.hide();
 
                 sender.sendMessage(new TextComponentString(GREEN + "Your active loot run has been hidden!"));
@@ -139,19 +144,34 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
                 messageText.getStyle()
                     .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
-                        "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick to open!"
+                        "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick here to open!"
                     )))
                     .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getAbsolutePath()));
                 sender.sendMessage(messageText);
                 return;
             }
             case "clear":
+                if (!LootRunManager.isRecording() && LootRunManager.getActivePath() == null) {
+                    sender.sendMessage(new TextComponentString(RED + "You have no loot runs to clear!"));
+                    return;
+                }
                 LootRunManager.clear();
 
-                sender.sendMessage(new TextComponentString(GREEN + "Cleared current loot run points!"));
+                sender.sendMessage(new TextComponentString(GREEN + "Cleared current loot runs!"));
                 return;
             case "help": {
-                // TODO
+                sender.sendMessage(new TextComponentString(
+                    GOLD + "Loot run recording help\n" +
+                    DARK_GRAY + "/lootrun " + RED + "load <name> " + GRAY + "Loads a saved loot run\n" +
+                    DARK_GRAY + "/lootrun " + RED + "save <name> " + GRAY + "Save the currently recording loot run as the given name\n" +
+                    DARK_GRAY + "/lootrun " + RED + "hide " + GRAY + "Hide the currently loaded loot run\n" +
+                    DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start recording a new loot run\n" +
+                    DARK_GRAY + "/lootrun " + RED + "stop " + GRAY + "Stop recording\n" +
+                    DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
+                    DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears the currently loaded loot run and the loot run being recorded\n" +
+                    DARK_GRAY + "/lootrun " + RED + "help " + GRAY + "View this help message"
+                ));
+                return;
             }
             default:
                 throw new WrongUsageException("/lootrun <load/save/hide/record/stop/list/clear/help>");
