@@ -199,9 +199,9 @@ public class WorldMapUI extends GuiMovementScreen {
         if (!Reference.onWorld || !MapModule.getModule().getMainMap().isReadyToUse()) return;
 
         // texture
-        renderer.drawRect(CommonColors.BLACK, 19, 19, width - 19, height - 19);
         renderer.drawRectF(Textures.Map.full_map, 10, 10, width - 10, height - 10, 1, 1, 511, 255);
         createMask();
+        renderer.drawRect(CommonColors.BLACK, 10, 10, width - 10, height - 10);
 
         MapProfile map = MapModule.getModule().getMainMap();
         float minX = this.minX / (float)map.getImageWidth(); float maxX = this.maxX / (float)map.getImageWidth();
