@@ -76,9 +76,25 @@ public class LootRunManager {
             if (!file.exists()) file.createNewFile();
 
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            GSON.toJson(new LootRunPathIntermediary(recordingPath), writer);
+            GSON.toJson(new LootRunPathIntermediary(activePath), writer);
 
             writer.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean delete(String lootRunName) {
+        if (!STORAGE_FOLDER.exists()) return false;
+
+        try{
+            File f = new File(STORAGE_FOLDER, lootRunName + ".json");
+            if(!f.exists()) return false;
+
+            f.delete();
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
