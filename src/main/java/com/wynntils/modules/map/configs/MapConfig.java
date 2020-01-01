@@ -179,7 +179,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?\n\n§8Available options are textures and lines.", order = 1)
         public PathType pathType = PathType.TEXTURED;
 
-        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed path be?\n\n§8This option is only applicable when \"Loot Run Path Type\" is set to LINES.", order = 2)
+        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed path be?", order = 2)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor activePathColour = MinecraftChatColors.AQUA;
 

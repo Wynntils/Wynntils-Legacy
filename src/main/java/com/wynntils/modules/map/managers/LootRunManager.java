@@ -136,7 +136,7 @@ public class LootRunManager {
     public static void renderActivePaths() {
         if (activePath != null) {
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
-                // MapConfig.LootRun.INSTANCE.activePathColour.applyColor();
+                MapConfig.LootRun.INSTANCE.activePathColour.applyColor();
                 PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(), activePath.getRoughDirections(), .5f);
             } else {
                 PointRenderer.drawLines(activePath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.activePathColour);

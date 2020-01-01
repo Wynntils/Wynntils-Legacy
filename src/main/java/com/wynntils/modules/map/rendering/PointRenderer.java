@@ -33,7 +33,6 @@ public class PointRenderer {
         Point3d player = new Point3d(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
 
         GlStateManager.disableCull();
-        GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -58,7 +57,6 @@ public class PointRenderer {
 
     public static void drawTexturedLine(Texture texture, Point3d start, Point3d end, float width) {
         GlStateManager.disableCull();
-        GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
