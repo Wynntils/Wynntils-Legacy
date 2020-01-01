@@ -10,6 +10,8 @@ public interface Function extends DoubleUnaryOperator {
 
     double applyAsDouble(double x);
 
-    Function derivative();
+    default Function derivative() {
+        throw new UnsupportedOperationException();
+    }
 
 }

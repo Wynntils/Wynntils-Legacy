@@ -98,12 +98,34 @@ public final class CubicSplines {
         return cubics;
     }
 
-    public final static class Spline3D implements DoubleFunction<Location> {
+    private static final class TangentModulusFunction implements Function {
+        Functions.Quartic modSq;
+
+        TangentModulusFunction(Cubic x, Cubic y, Cubic z) {
+            // tangent = sqrt(x' ** 2 + y' ** 2 + z' ** 2)
+            Functions.Quartic xPart = squareQuadratic(x.derivative());
+            Functions.Quartic yPart = squareQuadratic(y.derivative());
+            Functions.Quartic zPart = squareQuadratic(z.derivative());
+            modSq = new Functions.Quartic(xPart.a + yPart.a + zPart.a, xPart.b + yPart.b + zPart.b, xPart.c + yPart.c + zPart.c, xPart.d + yPart.d + zPart.d, xPart.e + yPart.e + zPart.e);
+        }
+
+        static Functions.Quartic squareQuadratic(Functions.Quadratic f) {
+            return new Functions.Quartic(f.a * f.a, 2 * f.a * f.b, 2 * f.a * f.c + f.b * f.b, 2 * f.b * f.c, f.c * f.c);
+        }
+
+        @Override
+        public double applyAsDouble(double x) {
+            return Math.sqrt(modSq.applyAsDouble(x));
+        }
+    }
+
+    public static final class Spline3D implements DoubleFunction<Location> {
 
         private ArrayList<Location> points;
         private transient Cubic[] xCubics;
         private transient Cubic[] yCubics;
         private transient Cubic[] zCubics;
+        private transient TangentModulusFunction[] tangents;
         private transient boolean dirty;
 
         public Spline3D() {
@@ -158,6 +180,11 @@ public final class CubicSplines {
             xCubics = calculate1DSpline(points, Tuple3d::getX);
             yCubics = calculate1DSpline(points, Tuple3d::getY);
             zCubics = calculate1DSpline(points, Tuple3d::getZ);
+
+            tangents = new TangentModulusFunction[xCubics.length];
+            for (int i = 0; i < tangents.length; ++i) {
+                tangents[i] = new TangentModulusFunction(xCubics[i], yCubics[i], zCubics[i]);
+            }
 
             dirty = false;
         }
@@ -216,7 +243,7 @@ public final class CubicSplines {
 
         private static final double DEFAULT_SAMPLE_RATE = 10;  // How many samples per block
 
-        public List<Location> sample() {
+        public Pair<List<Location>, List<Vector3d>> sample() {
             return sample(DEFAULT_SAMPLE_RATE);
         }
 
@@ -225,60 +252,43 @@ public final class CubicSplines {
          * and there are `sampleRate` samples per block between each point
          *
          * @param sampleRate The resolution of the sample (per block/metre)
-         * @return A list of values of this function sampled at monotonically increasing values
+         * @return A list pairs of values of this function and its derivative sampled at monotonically increasing values
          */
-        public List<Location> sample(double sampleRate) {
+        public Pair<List<Location>, List<Vector3d>> sample(double sampleRate) {
             if (points.isEmpty()) {
-                return Collections.emptyList();
+                return new Pair<>(Collections.emptyList(), Collections.emptyList());
             } else if (points.size() == 1) {
-                return Collections.singletonList(points.get(0));
+                return new Pair<>(Collections.singletonList(points.get(0)), Collections.singletonList(new Vector3d()));
             }
 
             if (dirty) recalculateAllCubics();
 
-            ArrayList<Location> result = new ArrayList<>();
+            ArrayList<Location> values = new ArrayList<>();
+            ArrayList<Vector3d> derivatives = new ArrayList<>();
+            double integral = 0;
             for (int i = 0; i < points.size() - 1; ++i) {
                 double chordLength = distanceAt(i);
                 double oneBlock = 1 / chordLength;
-                double samplePeriod = oneBlock / sampleRate;
-                result.add(new Location(points.get(i)));
-                double currentSample = samplePeriod;
-                while (currentSample < 0.999) {
-                    result.add(applyUnchecked(i, currentSample));
-                    currentSample += samplePeriod;
+                double testPeriod = oneBlock / (sampleRate * 10);
+                TangentModulusFunction tangent = tangents[i];
+                double lastT = 0;
+                double lastIntegralValue = 0;
+                for (double t = 0; t != 1; t = Math.min(t + testPeriod, 1)) {
+                    double F = tangent.applyAsDouble(t);
+                    integral += (t - lastT) * 0.5 * (F + lastIntegralValue);
+                    if (integral >= 0) {
+                        values.add(applyUnchecked(i, t));
+                        derivatives.add(derivativeUnchecked(i, t));
+                        integral -= 1 / sampleRate;
+                    }
+                    lastIntegralValue = F;
+                    lastT = t;
                 }
             }
-            result.add(new Location(points.get(points.size() - 1)));
+            values.add(new Location(points.get(points.size() - 1)));
+            derivatives.add(derivativeUnchecked(xCubics.length - 1, 1));
 
-            return result;
-        }
-
-        public List<Vector3d> sampleDerivative() {
-            return sampleDerivative(DEFAULT_SAMPLE_RATE);
-        }
-
-        public List<Vector3d> sampleDerivative(double sampleRate) {
-            if (points.size() <= 1) {
-                return Collections.emptyList();
-            }
-
-            if (dirty) recalculateAllCubics();
-
-            ArrayList<Vector3d> result = new ArrayList<>();
-            for (int i = 0; i < points.size() - 1; ++i) {
-                double chordLength = distanceAt(i);
-                double oneBlock = 1 / chordLength;
-                double samplePeriod = oneBlock / sampleRate;
-                result.add(derivativeUnchecked(i, 0));
-                double currentSample = samplePeriod;
-                while (currentSample < 0.999) {
-                    result.add(derivativeUnchecked(i, currentSample));
-                    currentSample += samplePeriod;
-                }
-            }
-            result.add(derivativeUnchecked(points.size() - 2, 1));
-
-            return result;
+            return new Pair<>(values, derivatives);
         }
 
     }

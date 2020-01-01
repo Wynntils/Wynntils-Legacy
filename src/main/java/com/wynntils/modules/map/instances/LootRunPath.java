@@ -6,6 +6,7 @@ package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.utils.objects.CubicSplines;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.Pair;
 import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Point3d;
@@ -81,28 +82,36 @@ public class LootRunPath {
 
     public List<Location> getSmoothPoints() {
         if (lastSmoothSample == null) {
-            lastSmoothSample = spline.sample();
+            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
+            lastSmoothSample = smooth.a;
+            lastSmoothDerivative = smooth.b;
         }
         return lastSmoothSample;
     }
 
     public List<Vector3d> getSmoothDirections() {
         if (lastSmoothDerivative == null) {
-            lastSmoothDerivative = spline.sampleDerivative();
+            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
+            lastSmoothSample = smooth.a;
+            lastSmoothDerivative = smooth.b;
         }
         return lastSmoothDerivative;
     }
 
     public List<Location> getRoughPoints() {
         if (lastRoughSample == null) {
-            lastRoughSample = spline.sample(1);
+            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
+            lastRoughSample = rough.a;
+            lastRoughDerivative = rough.b;
         }
         return lastRoughSample;
     }
 
     public List<Vector3d> getRoughDirections() {
         if (lastRoughDerivative == null) {
-            lastRoughDerivative = spline.sampleDerivative(1);
+            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
+            lastRoughSample = rough.a;
+            lastRoughDerivative = rough.b;
         }
         return lastRoughDerivative;
     }

@@ -100,4 +100,29 @@ public class Functions {
         }
     }
 
+    /**
+     * f(x) = e * x*x*x*x + d * x*x*x + c * x*x + b * x + a
+     */
+    public static final class Quartic implements Function {
+        public final double a, b, c, d, e;
+
+        public Quartic(double a, double b, double c, double d, double e) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+        }
+
+        @Override
+        public double applyAsDouble(double t) {
+            return ((((e * t) + d * t) + c) * t + b) * t + a;
+        }
+
+        @Override
+        public Cubic derivative() {
+            return new Cubic(b, 2 * c, 3 * d, 4 * e);
+        }
+    }
+
 }
