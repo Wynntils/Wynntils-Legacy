@@ -221,6 +221,9 @@ public class ItemIdentificationOverlay implements Listener {
 
         //Set Bonus
         if (wynntils.hasKey("setBonus")) {
+            if(wynntils.hasKey("powderSlots")) newLore.add(" ");
+
+            newLore.add(GREEN + "Set Bonus:");
             NBTTagCompound ids = wynntils.getCompoundTag("setBonus");
 
             HashMap<String, String> bonusOrder = new HashMap<>();
