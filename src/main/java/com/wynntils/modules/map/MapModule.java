@@ -50,7 +50,7 @@ public class MapModule extends Module {
 
         registerCommand(new CommandLootRun());
 
-        waypointKey = registerKeyBinding("New waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
+        waypointKey = registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
             if (Reference.onWorld)
                 Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
         });
