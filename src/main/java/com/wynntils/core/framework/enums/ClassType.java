@@ -6,6 +6,6 @@ package com.wynntils.core.framework.enums;
 
 public enum ClassType {
 
-    MAGE, ARCHER, WARRIOR, ASSASSIN, NONE
+    MAGE, ARCHER, WARRIOR, ASSASSIN, SHAMAN, NONE
 
 }

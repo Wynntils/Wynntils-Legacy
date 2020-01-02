@@ -11,6 +11,7 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -124,10 +125,17 @@ public class TabGUI extends GuiScreen {
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y + 5, 10, 10, 0xFFFFFF));
         regexLabel.addLine(I18n.format("wynntils.chat.tabgui.button.regex") + TextFormatting.RED + " *");
         regexLabel.visible = false;
-        labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 110, y - 65, 10, 10, 0xFFFFFF));
+        labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
         autoCommand.addLine(I18n.format("wynntils.chat.tabgui.button.auto_command"));
-        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 65, 10, 10, 0xFFFFFF));
+        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
         orderNb.addLine(I18n.format("wynntils.chat.tabgui.button.order_number"));
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     @Override
@@ -137,9 +145,9 @@ public class TabGUI extends GuiScreen {
         if(button == closeButton) mc.displayGuiScreen(new ChatGUI());
         else if(button == saveButton) {
             if (id == -2) {
-                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0));
+                TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0));
             } else {
-                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.valueOf(orderNbField.getText()) : 0);
+                TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0);
             }
             mc.displayGuiScreen(new ChatGUI());
         }else if(button == deleteButton) {

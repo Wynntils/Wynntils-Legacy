@@ -25,13 +25,13 @@ public class DailyReminderManager {
         if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GRAY);
-            
+
             TextComponentString openingBracket = new TextComponentString("[");
             openingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.appendSibling(openingBracket);
-            
+
             text.appendText("!");
-            
+
             TextComponentString closingBracket = new TextComponentString("] ");
             closingBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
             text.appendSibling(closingBracket);

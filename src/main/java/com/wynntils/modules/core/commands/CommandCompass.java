@@ -4,8 +4,10 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.core.utils.Location;
-import net.minecraft.client.resources.I18n;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -20,6 +22,7 @@ import net.minecraftforge.client.IClientCommand;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
@@ -125,7 +128,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             String dir = args[0];
             if (dir.length() <= 2) {
                 //dir = dir.toUpperCase();
-                switch (dir.toLowerCase()) {
+                switch (dir.toLowerCase(Locale.ROOT)) {
                     case "n":
                         dir = "North";
                         break;
@@ -159,37 +162,76 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.now_pointing");
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText(" ");
-            
+
             TextComponentString directionText = new TextComponentString(dir);
             directionText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(directionText);
-            
+
             text.appendText(".");
             sender.sendMessage(text);
-        } else if (args.length == 2 && args[0].matches("(-?(?!0)\\d+)|0") && args[1].matches("(-?(?!0)\\d+)|0")) {
+        } else if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
+            int x = 0;
+            int z = 0;
+            boolean invalid = false;
+            if (args[0].charAt(0) == '~') {
+                x = (int) Minecraft.getMinecraft().player.posX;
+                if (args[0].length() != 1) {
+                    String offset = args[0].substring(1);
+                    if (!Utils.isValidInteger(offset)) {
+                        invalid = true;
+                    } else {
+                        x += Integer.parseInt(offset);
+                    }
+                }
+            } else if (!Utils.isValidInteger(args[0])) {
+                invalid = true;
+            } else {
+                x = Integer.parseInt(args[0]);
+            }
+            if (!invalid) {
+                if (args[1].charAt(0) == '~') {
+                    z = ((int) Minecraft.getMinecraft().player.posZ);
+                    if (args[1].length() != 1) {
+                        String offset = args[1].substring(1);
+                        if (!Utils.isValidInteger(offset)) {
+                            invalid = true;
+                        } else {
+                            z += Integer.parseInt(offset);
+                        }
+                    }
+                } else if (!Utils.isValidInteger(args[1])) {
+                    invalid = true;
+                } else {
+                    z = Integer.parseInt(args[1]);
+                }
+            }
+            if (invalid) {
+                throw new CommandException("The coordinate passed was too big");
+            }
+
+            CompassManager.setCompassLocation(new Location(x, 0, z));
             TextComponentTranslation text = new TextComponentTranslation("wynntils.commands.compass.now_pointing");
-            CompassManager.setCompassLocation(new Location(Integer.valueOf(args[0]), 0, Integer.valueOf(args[1])));
 
             text.getStyle().setColor(TextFormatting.GREEN);
             text.appendText(" (");
-            
+
             TextComponentString xCoordinateText = new TextComponentString(args[0]);
             xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(xCoordinateText);
-            
+
             text.appendText(", ");
-            
-            TextComponentString zCoordinateText = new TextComponentString(args[1]);
+
+            TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
             zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
             text.appendSibling(zCoordinateText);
-            
+
             text.appendText(").");
             sender.sendMessage(text);
         } else {
             throw new CommandException("Invalid arguments: /compass [<x> <z> | <" + I18n.format("wynntils.commands.compass.direction") + "> | clear]");
         }
     }
-    
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {

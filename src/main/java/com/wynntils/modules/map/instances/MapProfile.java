@@ -6,7 +6,9 @@ package com.wynntils.modules.map.instances;
 
 import com.wynntils.Reference;
 import com.wynntils.core.utils.MD5Verification;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
+import com.wynntils.webapi.WebRequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,29 +40,38 @@ public class MapProfile {
     }
 
     public void updateMap() {
-        if (url == null) return;
-
-        try {
-            WebReader reader = new WebReader(url);
-
-            centerX = Double.valueOf(reader.get("CenterX"));
-            centerZ = Double.valueOf(reader.get("CenterZ"));
-            if (!downloadDirect) {
-                if (new MD5Verification(mapFile).equals(reader.get("MD5"))) {
-                    readyToUse = true;
-                    return;
-                }
+        if (url == null) {
+            WebReader apiUrls = WebManager.getApiUrls();
+            if (apiUrls != null) {
+                url = apiUrls.get("MainMap");
             }
+        }
 
-            DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, c -> readyToUse = c);
-        }catch (Exception ex) { ex.printStackTrace(); }
+        WebRequestHandler handler = new WebRequestHandler();
+        handler.addRequest(new WebRequestHandler.Request(url, "main_map.info")
+            .cacheTo(new File(mapLocation, "main-map.txt"))
+            .handleWebReader(reader -> {
+                centerX = Double.parseDouble(reader.get("CenterX"));
+                centerZ = Double.parseDouble(reader.get("CenterZ"));
+                if (!downloadDirect) {
+                    if (new MD5Verification(mapFile).equals(reader.get("MD5"))) {
+                        readyToUse = true;
+                        return true;
+                    }
+                }
+
+                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, c -> readyToUse = c);
+                return true;
+            })
+        );
+        handler.dispatchAsync();
     }
 
     private void setTexture() throws Exception {
         BufferedImage img = ImageIO.read(mapFile);
         imageHeight = img.getHeight(); imageWidth = img.getWidth();
 
-        textureId = TextureUtil.uploadTextureImageAllocate(TextureUtil.glGenTextures(), ImageIO.read(mapFile), false, false);
+        textureId = TextureUtil.uploadTextureImageAllocate(TextureUtil.glGenTextures(), img, false, false);
     }
 
     public void bindTexture() throws Exception {

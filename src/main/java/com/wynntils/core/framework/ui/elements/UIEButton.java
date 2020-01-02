@@ -93,7 +93,7 @@ public class UIEButton extends UIEClickZone {
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-            if(active && hovering && button == MouseButton.LEFT) {
+            if(active && hovering && (button == MouseButton.LEFT || button == MouseButton.RIGHT)) {
                 this.value = !value;
                 super.click(true, button, ui);
             }
@@ -109,10 +109,10 @@ public class UIEButton extends UIEClickZone {
 
     public static class Enum extends UIEButton {
         public Class<? extends java.lang.Enum> e;
-        public Object value;
+        public java.lang.Enum value;
         public Function<String, String> displayTextFunc;
 
-        public Enum(Function<String, String> displayTextFunc, Texture texture, Class<? extends java.lang.Enum> e, Object value, float anchorX, float anchorY, int offsetX, int offsetY, int setWidth, boolean active, BiConsumer<UI, MouseButton> onClick) {
+        public Enum(Function<String, String> displayTextFunc, Texture texture, Class<? extends java.lang.Enum> e, java.lang.Enum value, float anchorX, float anchorY, int offsetX, int offsetY, int setWidth, boolean active, BiConsumer<UI, MouseButton> onClick) {
             super("", texture, anchorX, anchorY, offsetX, offsetY, setWidth, active, onClick);
             this.displayTextFunc = displayTextFunc;
             this.e = e;
@@ -123,9 +123,19 @@ public class UIEButton extends UIEClickZone {
         @Override
         public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
-            if(active && hovering && button == MouseButton.LEFT) {
-                Object[] eArr = e.getEnumConstants();
-                int i = ArrayUtils.indexOf(eArr,value) + 1;
+            int delta = 0;
+            if (active && hovering) {
+                if (button == MouseButton.LEFT) {
+                    delta = +1;
+                } else if (button == MouseButton.RIGHT) {
+                    delta = -1;
+                }
+            }
+            if (delta != 0) {
+                java.lang.Enum[] eArr = e.getEnumConstants();
+                int oldIndex = ArrayUtils.indexOf(eArr, value);
+                int i = oldIndex == -1 ? 0 : oldIndex + delta;
+                if (i == -1) i = eArr.length - 1;
                 this.value = eArr[i >= eArr.length ? 0 : i];
                 this.text = displayTextFunc.apply(getValueDisplayName());
                 super.click(true, button, ui);
@@ -133,7 +143,7 @@ public class UIEButton extends UIEClickZone {
         }
 
         public String getValueDisplayName() {
-            for(Field f : value.getClass().getFields())
+            for(Field f : e.getFields())
                 if(f.getType().isAssignableFrom(String.class) && f.getName().equals("displayName")) //This might be flipped
                     try {
                         return I18n.format((String) f.get(value));
@@ -141,7 +151,7 @@ public class UIEButton extends UIEClickZone {
                         e.printStackTrace();
                     }
 
-            return ((java.lang.Enum)value).name();
+            return value.name();
         }
     }
 }

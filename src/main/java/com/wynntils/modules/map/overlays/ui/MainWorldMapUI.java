@@ -2,6 +2,7 @@ package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Location;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -14,6 +15,7 @@ import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,12 +30,18 @@ public class MainWorldMapUI extends WorldMapUI {
     private boolean holdingMapKey = false;
     private long creationTime;
     private long lastClickTime = Integer.MAX_VALUE;
-    private static final long doubleClickTime = (long) Utils.getDoubleClickTime();
+    private static final long doubleClickTime = Utils.getDoubleClickTime();
 
     public MainWorldMapUI() {
         super();
 
         creationTime = System.currentTimeMillis();
+    }
+
+    public MainWorldMapUI(float startX, float startZ) {
+        this();
+
+        updateCenterPosition(startX, startZ);
     }
 
     @Override
@@ -43,17 +51,27 @@ public class MainWorldMapUI extends WorldMapUI {
         this.buttonList.add(settingsBtn = new GuiButton(1, 22, 23, 60, 18, I18n.format("wynntils.map.ui.world_map.button.markers")));
         this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, I18n.format("wynntils.map.ui.world_map.button.waypoints")));
         this.buttonList.add(pathWaypointMenuBtn = new GuiButton(3, 22, 69, 60, 18, I18n.format("wynntils.map.ui.world_map.button.paths")));
-        this.buttonList.add(addWaypointBtn = new GuiButtonImage(2, 24, 92, 14, 14, 0, 0, 0, Textures.Map.map_options.resourceLocation));
-        this.buttonList.add(helpBtn = new GuiButtonImage(3, 24, height - 34, 11, 16, 0, 72, 0, Textures.Map.map_options.resourceLocation));
+        this.buttonList.add(addWaypointBtn = new GuiButtonImageBetter(2, 24, 92, 14, 14, 0, 0, Textures.Map.map_options.resourceLocation));
+        this.buttonList.add(helpBtn = new GuiButtonImageBetter(3, 24, height - 34, 11, 16, 0, 72, Textures.Map.map_options.resourceLocation));
+    }
+
+    private static boolean isHoldingMapKey() {
+        int mapKey = MapModule.getModule().getMapKey().getKey();
+        if (mapKey == 0) return false;  // Unknown key
+        if (-100 <= mapKey && mapKey <= -85) {
+            // Mouse key
+            return Mouse.isButtonDown(mapKey + 100);
+        }
+        return Keyboard.isKeyDown(mapKey);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //HeyZeer0: This detects if the user is holding the map key;
-        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) holdingMapKey = true;
+        if(!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
 
         //HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
-        if(holdingMapKey && !Keyboard.isKeyDown(MapModule.getModule().getMapKey().getKeyBinding().getKeyCode())) {
+        if(holdingMapKey && !isHoldingMapKey()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
             return;
         }

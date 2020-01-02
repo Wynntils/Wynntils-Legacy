@@ -9,7 +9,7 @@ import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.CoreModule;
-import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.webapi.WebManager;
@@ -46,15 +46,11 @@ public class KeyManager {
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
 
         zoomInKey = CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", true, () -> {
-            if (MapConfig.INSTANCE.mapZoom >= 5) {
-                MapConfig.INSTANCE.mapZoom -= 5;
-            }
+            MiniMapOverlay.zoomBy(+1);
         });
 
         zoomOutKey = CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", true, () -> {
-            if (MapConfig.INSTANCE.mapZoom <= 95) {
-                MapConfig.INSTANCE.mapZoom += 5;
-            }
+            MiniMapOverlay.zoomBy(-1);
         });
 
         CoreModule.getModule().registerKeyBinding("Cast First Spell", Keyboard.KEY_Z, "Wynntils", true, QuickCastManager::castFirstSpell);

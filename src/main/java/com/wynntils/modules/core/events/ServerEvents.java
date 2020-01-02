@@ -16,6 +16,8 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.webapi.WebManager;
@@ -52,7 +54,8 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
-        WebManager.checkForUpdates();
+        WebManager.tryReloadApiUrls(true);
+        WebManager.checkForUpdatesOnJoin();
         DownloaderManager.startDownloading();
     }
 
@@ -79,6 +82,8 @@ public class ServerEvents implements Listener {
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+
+        PartyManager.handlePartyList(); //party list here
     }
 
     /**
@@ -94,6 +99,8 @@ public class ServerEvents implements Listener {
         if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
+        PartyManager.handleMessages(e.getMessage()); //party messages here
+
         if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
             String[] splited = e.getMessage().getUnformattedText().split(":");
 
@@ -144,6 +151,15 @@ public class ServerEvents implements Listener {
     }
 
     /**
+     * Verifies the response from packet queue
+     * @param e
+     */
+    @SubscribeEvent
+    public void onReceivePacket(PacketEvent e) {
+        PacketQueue.checkResponse(e.getPacket());
+    }
+
+    /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
      *
@@ -167,7 +183,9 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
-        if (CompassManager.getCompassLocation() != null) {
+        if (Minecraft.getMinecraft().player == null) {
+            CompassManager.reset();
+        } else if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }
     }

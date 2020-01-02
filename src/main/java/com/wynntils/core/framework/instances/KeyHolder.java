@@ -9,18 +9,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class KeyHolder {
 
-    String name, tab;
-    int key;
-    Runnable onAction;
-
-    boolean press;
-
-    KeyBinding keyBinding;
+    private Runnable onAction;
+    private boolean press;
+    private KeyBinding keyBinding;
 
     public KeyHolder(String name, int key, String tab, boolean press, Runnable onAction) {
-        this.name = name;
-        this.key = key;
-        this.tab = tab;
         this.onAction = onAction;
         this.press = press;
 
@@ -38,6 +31,18 @@ public class KeyHolder {
 
     public KeyBinding getKeyBinding() {
         return keyBinding;
+    }
+
+    public String getName() {
+        return keyBinding.getKeyDescription();
+    }
+
+    public String getTab() {
+        return keyBinding.getKeyCategory();
+    }
+
+    public int getKey() {
+        return keyBinding.getKeyCode();
     }
 
 }

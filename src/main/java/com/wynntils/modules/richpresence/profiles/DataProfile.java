@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.richpresence.profiles;
 
+import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 
@@ -24,7 +25,9 @@ public class DataProfile {
     }
 
     public void setLocation(String value) {
-        FrameworkManager.getEventBus().post(new WynnTerritoryChangeEvent(location, value));
+        ModCore.mc().addScheduledTask(() -> {
+            FrameworkManager.getEventBus().post(new WynnTerritoryChangeEvent(location, value));
+        });
         location = value;
     }
 

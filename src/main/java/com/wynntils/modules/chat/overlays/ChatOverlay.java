@@ -149,7 +149,7 @@ public class ChatOverlay extends GuiNewChat {
                 else
                     renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 13, 16);
 
-                renderer.drawString("+", 6, 6, MinecraftChatColors.ORANGE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                renderer.drawString("+", 6, 6, MinecraftChatColors.GOLD, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
                 ScreenRenderer.endGL();
 
@@ -187,6 +187,14 @@ public class ChatOverlay extends GuiNewChat {
     public void printChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId) {
         setChatLine(chatComponent, chatLineId, mc.ingameGUI.getUpdateCounter(), false);
         LOGGER.info("[CHAT] " + chatComponent.getUnformattedText().replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
+    }
+
+    public void printUnloggedChatMessage(ITextComponent chatComponent) {
+        printUnloggedChatMessage(chatComponent, 0);
+    }
+
+    public void printUnloggedChatMessage(ITextComponent chatComponent, int chatLineId) {
+        setChatLine(chatComponent, chatLineId, mc.ingameGUI.getUpdateCounter(), false);
     }
 
     private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly) {
@@ -452,7 +460,7 @@ public class ChatOverlay extends GuiNewChat {
             .replaceFirst(TextFormatting.DARK_GRAY + "\\[" + TextFormatting.RESET + TextFormatting.RED + "Invalid Format" + TextFormatting.RESET + TextFormatting.DARK_GRAY + "] ", ""));
     }
 
-    public class GroupedChatLine extends ChatLine {
+    public static class GroupedChatLine extends ChatLine {
         int groupId;
         public GroupedChatLine(int updateCounterCreatedIn, ITextComponent lineStringIn, int chatLineIDIn, int groupId) {
             super(updateCounterCreatedIn, lineStringIn, chatLineIDIn);

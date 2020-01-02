@@ -5,8 +5,8 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -14,17 +14,12 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +28,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RarityColorOverlay implements Listener {
 
-    private static final ResourceLocation RESOURCE = new ResourceLocation(Reference.MOD_ID, "textures/overlays/rarity.png");
     private static String professionFilter = "-";
 
     @SubscribeEvent
@@ -67,6 +61,8 @@ public class RarityColorOverlay implements Listener {
                 continue;
             } else if (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards")) {
                 continue;
+            } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+                r = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.b;
             } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.b;
             } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
@@ -109,30 +105,9 @@ public class RarityColorOverlay implements Listener {
         }
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) {
-            final String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
+            final String E = "\u00B2", B = "\u00BD", L = "\u00BC";
 
-            int blocks = 0, liquid = 0, emeralds = 0;
-
-            for (int i = 0; i < Minecraft.getMinecraft().player.inventory.getSizeInventory(); i++) {
-                ItemStack it = Minecraft.getMinecraft().player.inventory.getStackInSlot(i);
-                if (it == null || it.isEmpty()) {
-                    continue;
-                }
-
-                if (it.getItem() == Items.EMERALD) {
-                    emeralds += it.getCount();
-                    continue;
-                }
-                if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                    blocks += it.getCount();
-                    continue;
-                }
-                if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                    liquid += it.getCount();
-                }
-            }
-
-            int money = (liquid * 4096) + (blocks * 64) + emeralds, leAmount = 0, blockAmount = 0;
+            int money = PlayerInfo.getPlayerInfo().getMoney(), leAmount = 0, blockAmount = 0;
 
             GlStateManager.disableLighting();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -192,6 +167,8 @@ public class RarityColorOverlay implements Listener {
                 continue;
             } else if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 r = 0.078f; g = 0.35f; b = 0.8f;
+            } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+                r = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor.b;
             } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
                 r = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.r; g = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.g; b = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor.b;
             } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
@@ -247,48 +224,8 @@ public class RarityColorOverlay implements Listener {
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest) {
             if (!lowerInv.getName().contains("Quests") && !lowerInv.getName().contains("points") && !lowerInv.getName().contains("Servers")) {
-                int LWRblocks = 0, LWRliquid = 0, LWRemeralds = 0, LWRleAmount = 0, LWRblockAmount = 0;
-                int UPRblocks = 0, UPRliquid = 0, UPRemeralds = 0, UPRleAmount = 0, UPRblockAmount = 0;
-
-                for (int i = 0; i < lowerInv.getSizeInventory(); i++) {
-                    ItemStack it = lowerInv.getStackInSlot(i);
-                    if (it.isEmpty()) {
-                        continue;
-                    }
-
-                    if (it.getItem() == Items.EMERALD) {
-                        LWRemeralds += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                        LWRblocks += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                        LWRliquid += it.getCount();
-                    }
-                }
-                for (int i = 0; i < upperInv.getSizeInventory(); i++) {
-                    ItemStack it = upperInv.getStackInSlot(i);
-                    if (it.isEmpty()) {
-                        continue;
-                    }
-
-                    if (it.getItem() == Items.EMERALD) {
-                        UPRemeralds += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Item.getItemFromBlock(Blocks.EMERALD_BLOCK)) {
-                        UPRblocks += it.getCount();
-                        continue;
-                    }
-                    if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                        UPRliquid += it.getCount();
-                    }
-                }
-
-                int LWRmoney = (LWRliquid * 4096) + (LWRblocks * 64) + LWRemeralds;
-                int UPRmoney = (UPRliquid * 4096) + (UPRblocks * 64) + UPRemeralds;
+                int LWRmoney = Utils.countMoney(lowerInv);
+                int UPRmoney = Utils.countMoney(upperInv);
 
                 GlStateManager.disableLighting();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1F);
@@ -308,13 +245,13 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.endGL();
 
                     } else {
-                        if (LWRmoney != 0) {
-                            LWRleAmount = (int) Math.floor(LWRmoney / 4096);
-                            LWRmoney -= LWRleAmount * 4096;
 
-                            LWRblockAmount = (int) Math.floor(LWRmoney / 64);
-                            LWRmoney -= LWRblockAmount * 64;
-                        }
+                        int LWRleAmount = LWRmoney / 4096;
+                        LWRmoney %= 4096;
+
+                        int LWRblockAmount = LWRmoney / 64;
+                        LWRmoney %= 64;
+
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);
@@ -337,13 +274,12 @@ public class RarityColorOverlay implements Listener {
                         ScreenRenderer.endGL();
 
                     } else {
-                        if (UPRmoney != 0) {
-                            UPRleAmount = (int) Math.floor(UPRmoney / 4096);
-                            UPRmoney -= UPRleAmount * 4096;
+                        int UPRleAmount = UPRmoney / 4096;
+                        UPRmoney %= 4096;
 
-                            UPRblockAmount = (int) Math.floor(UPRmoney / 64);
-                            UPRmoney -= UPRblockAmount * 64;
-                        }
+                        int UPRblockAmount = UPRmoney / 64;
+                        UPRmoney %= 64;
+
                         ScreenRenderer.beginGL(0, 0);
                         {
                             ScreenRenderer.scale(0.9f);

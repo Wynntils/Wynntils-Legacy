@@ -11,16 +11,15 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ActionBarOverlay extends Overlay {
 
@@ -98,42 +97,38 @@ public class ActionBarOverlay extends Overlay {
 
     private boolean renderItemName(ScaledResolution scaledRes) {
         ScreenRenderer.mc.gameSettings.heldItemTooltips = false;
-        try {
-            int remainingHighlightTicks = (int) ReflectionHelper.findField(GuiIngame.class, "remainingHighlightTicks", "field_92017_k").get(Minecraft.getMinecraft().ingameGUI);
-            ItemStack highlightingItemStack = (ItemStack) ReflectionHelper.findField(GuiIngame.class, "highlightingItemStack", "field_92016_l").get(Minecraft.getMinecraft().ingameGUI);
+        int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
+        ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 
-            if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
-                String s = highlightingItemStack.getDisplayName();
+        if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
+            String s = highlightingItemStack.getDisplayName();
 
-                if (highlightingItemStack.hasDisplayName()) {
-                    s = TextFormatting.ITALIC + s;
-                }
-
-                int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - ScreenRenderer.mc.fontRenderer.getStringWidth(s) / 2) + position.offsetX;
-                int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY + (OverlayConfig.INSTANCE.splitCoordinates ? -11 : 0);
-
-                if (!ScreenRenderer.mc.playerController.shouldDrawHUD()) {
-                    j += 14;
-                }
-
-                int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
-
-                if (k > 255) {
-                    k = 255;
-                }
-
-                if (k > 0) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    ScreenRenderer.mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
-                    GlStateManager.disableBlend();
-                    GlStateManager.popMatrix();
-                    return true;
-                }
+            if (highlightingItemStack.hasDisplayName()) {
+                s = TextFormatting.ITALIC + s;
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+
+            int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - ScreenRenderer.mc.fontRenderer.getStringWidth(s) / 2) + position.offsetX;
+            int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY + (OverlayConfig.INSTANCE.splitCoordinates ? -11 : 0);
+
+            if (!ScreenRenderer.mc.playerController.shouldDrawHUD()) {
+                j += 14;
+            }
+
+            int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
+
+            if (k > 255) {
+                k = 255;
+            }
+
+            if (k > 0) {
+                GlStateManager.pushMatrix();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                ScreenRenderer.mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
+                GlStateManager.disableBlend();
+                GlStateManager.popMatrix();
+                return true;
+            }
         }
         return false;
     }

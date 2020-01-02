@@ -34,9 +34,18 @@ public class ServerEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinServer(WynncraftServerEvent.Login ev) {
         if (!Reference.onLobby) return;
+
+        if (loadedResourcePack &&
+                Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() == null &&
+                Minecraft.getMinecraft().getCurrentServerData().getResourceMode() == ServerData.ServerResourceMode.ENABLED
+        ) {
+            // Not actually loaded resource pack
+            loadedResourcePack = false;
+        }
+
         if (!loadedResourcePack && UtilitiesConfig.INSTANCE.autoResource && !UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) {
-            if (Minecraft.getMinecraft().getCurrentServerData().getResourceMode() == ServerData.ServerResourceMode.DISABLED) {
-                Reference.LOGGER.warn("Did not auto apply Wynncraft server resource pack because resource packs are disabled");
+            if (Minecraft.getMinecraft().getCurrentServerData().getResourceMode() != ServerData.ServerResourceMode.ENABLED) {
+                Reference.LOGGER.warn("Did not auto apply Wynncraft server resource pack because resource packs have not been enabled");
                 return;
             }
 
@@ -82,7 +91,10 @@ public class ServerEvents implements Listener {
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
 
-        if(loadedResourcePack) {
+        if(loadedResourcePack && (  // Don't cancel if there isn't currently a server resource pack
+                Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() != null ||
+                Minecraft.getMinecraft().getCurrentServerData().getResourceMode() != ServerData.ServerResourceMode.ENABLED
+        )) {
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
 

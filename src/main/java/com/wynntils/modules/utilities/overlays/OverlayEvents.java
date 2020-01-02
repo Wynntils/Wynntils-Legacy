@@ -41,12 +41,12 @@ public class OverlayEvents implements Listener {
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
     }
-    
+
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
     }
-    
+
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
         WarTimerOverlay.onTitle(e);
@@ -86,7 +86,7 @@ public class OverlayEvents implements Listener {
                         if (!PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage().equals("")) {
                             if (oldxp < PlayerInfo.getPlayerInfo().getCurrentXP()) {
                                 DecimalFormat df = new DecimalFormat("0.0");
-                                float xpchange = Float.valueOf(PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage()) - Float.valueOf(oldxppercent);
+                                float xpchange = Float.parseFloat(PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage()) - Float.parseFloat(oldxppercent);
                                 GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expMessageFormat
                                         .replace("%xo%", Integer.toString(oldxp))
                                         .replace("%xn%", Integer.toString(PlayerInfo.getPlayerInfo().getCurrentXP()))
@@ -135,7 +135,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (!Reference.onWorld) return;
-        if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
+        if (e.getMessage().getUnformattedText().split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 TextComponentTranslation text = new TextComponentTranslation("wynntils.utilities.overlays.game_update.wrong_timestamp");
                 text.getStyle().setColor(TextFormatting.DARK_RED);
@@ -144,15 +144,15 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("There is no room for a horse.")) {
+            if (e.getMessage().getUnformattedText().equals("There is no room for a horse.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.horse.no_room"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("Since you interacted with your inventory, your horse has despawned.")) {
+            } else if (e.getMessage().getUnformattedText().equals("Since you interacted with your inventory, your horse has despawned.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.horse.despawned"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("Your horse is scared to come out right now, too many mobs are nearby.")) {
+            } else if (e.getMessage().getUnformattedText().equals("Your horse is scared to come out right now, too many mobs are nearby.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.horse.too_many_mobs"));
                 e.setCanceled(true);
                 return;
@@ -161,17 +161,17 @@ public class OverlayEvents implements Listener {
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
             if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && e.getMessage().getFormattedText().matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$") && !e.getMessage().getUnformattedText().contains("Powder Manual")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, I18n.format("wynntils.utilities.overlays.toasts.quest_completed"), TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).trim().replace("Mini-Quest - ", "")));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, I18n.format("wynntils.utilities.overlays.toasts.quest_completed"), e.getMessage().getUnformattedText().trim().replace("Mini-Quest - ", "")));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && e.getMessage().getFormattedText().matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?((?![0-9]).)*" + TextFormatting.RESET + "$") && !e.getMessage().getUnformattedText().contains("Battle Summary") && !e.getMessage().getUnformattedText().contains("Powder Manual")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, I18n.format("wynntils.utilities.overlays.toasts.area_discovered"), TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).trim()));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, I18n.format("wynntils.utilities.overlays.toasts.area_discovered"), e.getMessage().getUnformattedText().trim()));
             } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && e.getMessage().getFormattedText().matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, I18n.format("wynntils.utilities.overlays.toasts.discovery_found"), TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).trim()));
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, I18n.format("wynntils.utilities.overlays.toasts.discovery_found"), e.getMessage().getUnformattedText().trim()));
             }
         }
 
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCombat) {
             // GENERAL
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("You don't have enough mana to do that spell!")) {
+            if (e.getMessage().getUnformattedText().equals("You don't have enough mana to do that spell!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Not enough mana.");
                 e.setCanceled(true);
                 return;
@@ -180,157 +180,163 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // POTIONS
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\]")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()));
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❤\\]")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + e.getMessage().getUnformattedText());
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ✺ for \\d+ seconds\\]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.mana_pot", inMessage[0].replace("[+", ""), inMessage[3], "✺")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.strength_pot", inMessage[0].replace("[+", ""), inMessage[4], "✤")));
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ✤ Strength for \\d+ seconds]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_GREEN + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.strength_pot", inMessage[0].replace("[+", ""), inMessage[4], "✤")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.agility_pot", inMessage[0].replace("[+", ""), inMessage[4], "❋")));
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❋ Agility for \\d+ seconds]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
+                GameUpdateOverlay.queueMessage(TextFormatting.WHITE + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.agility_pot", inMessage[0].replace("[+", ""), inMessage[4], "❋")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ✦ Dexterity for \\d+ seconds]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.dexterity_pot", inMessage[0].replace("[+", ""), inMessage[4], "✦")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❉ Intelligence for \\d+ seconds]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❉ Intelligence for \\d+ seconds]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.intelligence_pot", inMessage[0].replace("[+", ""), inMessage[4], "❉")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ✹ Defense for \\d+ seconds]")) {
-                String[] inMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ✹ Defence for \\d+ seconds]")) {
+                String[] inMessage = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + TextFormatting.getTextWithoutFormattingCodes(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.defense_pot", inMessage[0].replace("[+", ""), inMessage[4], "✹")));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("You already have that potion active...")) {
+            } else if (e.getMessage().getUnformattedText().equals("You already have that potion active...")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.combat.pot_already_active"));
                 e.setCanceled(true);
                 return;
             // MAGE
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("Sorry, you can't teleport... Try moving away from blocks.")) {
+            } else if (e.getMessage().getUnformattedText().equals("Sorry, you can't teleport... Try moving away from blocks.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.combat.cant_teleport"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ gave you \\[\\+\\d+ ❤\\]")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.cleared_effects"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.cleared_effects") + " (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + e.getMessage().getFormattedText().split(" ")[0].substring(2) + " ❤]");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.cleared_effects"));
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.removed_fire"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ gave you \\[\\+\\d+ ❤\\] Cleared all potion effects Removed all fire\\.")) {
                 String[] res = e.getMessage().getFormattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[3].substring(2) + " ❤] " + TextFormatting.GRAY + "(" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.cleared_effects") + " (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.removed_fire") + " (" + TextFormatting.AQUA + res[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ ❤\\]\\.")) {
+                String msg = e.getMessage().getUnformattedText();
+                msg = msg.substring(0, msg.length() - 1);
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + msg);
+                e.setCanceled(true);
+                return;
             // ARCHER
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("+3 minutes speed boost.")) {
+            } else if (e.getMessage().getUnformattedText().equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.speed_boost"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ gave you \\+3 minutes speed boost\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ gave you \\+3 minutes speed boost\\.")) {
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.speed_boost") + " (" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
             // WARRIOR
-            else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ has given you 10% resistance\\.")) {
+            else if (e.getMessage().getUnformattedText().matches(".+ has given you 10% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.10_resistance") + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
-            else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ has given you 15% resistance\\.")) {
+            else if (e.getMessage().getUnformattedText().matches(".+ has given you 15% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.15_resistance") + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
-            else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ has given you 20% resistance and 10% strength\\.")) {
+            else if (e.getMessage().getUnformattedText().matches(".+ has given you 20% resistance and 10% strength\\.")) {
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.combat.20_resistance") + TextFormatting.GRAY + "(" + e.getMessage().getFormattedText().split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("You still have \\d+ unused skill points! Click with your compass to use them!")) {
+            if (e.getMessage().getUnformattedText().matches("You still have \\d+ unused skill points! Click with your compass to use them!")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.other.skill_points_available", res[3]));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ is now level \\d+")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ is now level \\d+")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.other.combat_level_up", res[0], res[4]));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ is now level \\d+ in [" + PROF_COOKING + "-" + PROF_ALCHEMISM + "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ is now level \\d+ in [" + PROF_COOKING + "-" + PROF_ALCHEMISM + "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(I18n.format("wynntils.utilities.overlays.game_update.redir.other.profession_level_up", res[0], res[6], res[7], res[4]));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("You must identify this item before using it.")) {
+            } else if (e.getMessage().getUnformattedText().equals("You must identify this item before using it.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.not_identified"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ is not a .+ weapon\\. You must use a .+\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ is not a .+ weapon\\. You must use a .+\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.not_class"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ is for level \\d+\\+ only\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches(".+ is for combat level \\d+\\+ only\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.too_low_level"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches(".+ requires your .+ skill to be at least \\d+\\.")) {
-                String[] res = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).split(" ");
+            } else if (e.getMessage().getUnformattedText().matches(".+ requires your .+ skill to be at least \\d+\\.")) {
+                String[] res = e.getMessage().getUnformattedText().split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.skill_too_low", res[res.length - 7]));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("This potion is for Lv\\. \\d+\\+ only\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches("This potion is for Combat Lv\\. \\d+\\+ only\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.too_low_level_potion"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("[Please empty some space in your inventory first]")) {
+            } else if (e.getMessage().getUnformattedText().equals("[Please empty some space in your inventory first]")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + I18n.format("wynntils.utilities.overlays.game_update.redir.other.full_inventory"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("You have never been to that area!")) {
+            } else if (e.getMessage().getUnformattedText().equals("You have never been to that area!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.other.not_visited"));
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectSoulPoint) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("As the sun rises, you feel a little bit safer...")) {
+            if (e.getMessage().getUnformattedText().equals("As the sun rises, you feel a little bit safer...")) {
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("\\[\\+\\d+ Soul Points?\\]")) {
+            } else if (e.getMessage().getUnformattedText().matches("\\[\\+\\d+ Soul Points?\\]")) {
                 e.setCanceled(true);
                 String[] res = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).replace("[", "").replace("]", "").split(" ");
                 if (res[2].equals("Point")) {
@@ -342,7 +348,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
+            if (e.getMessage().getUnformattedText().matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
                 String[] res = e.getMessage().getUnformattedText().split(" ");
                 String digit = res[5];
                 String timeframe = res[6].replace(".", "");
@@ -360,26 +366,26 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectQuest) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).startsWith("[Quest Book Updated]")) {
+            if (e.getMessage().getUnformattedText().startsWith("[Quest Book Updated]")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + I18n.format("wynntils.utilities.overlays.game_update.redir.quest.updated"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).startsWith("[New Quest Started:")) {
+            } else if (e.getMessage().getUnformattedText().startsWith("[New Quest Started:")) {
                 GameUpdateOverlay.queueMessage(e.getMessage().getFormattedText().replace("[", "").replace("]", "").replace(TextFormatting.RESET.toString(), "").replace("New Quest Started: ", I18n.format("wynntils.utilities.overlays.game_update.redir.quest.started")));
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectMerchants) {
-            if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("Item Identifier: Okay, I'll identify them now!")) {
+            if (e.getMessage().getUnformattedText().equals("Item Identifier: Okay, I'll identify them now!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.identifying"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("Item Identifier: It is done\\. Your items? (has|have) been identified\\. The magic (it|they) contains? will now blossom\\.")) {
+            } else if (e.getMessage().getUnformattedText().matches("Item Identifier: It is done\\. Your items? (has|have) been identified\\. The magic (it|they) contains? will now blossom\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.identified"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).startsWith("Blacksmith: You ")) {
+            } else if (e.getMessage().getUnformattedText().startsWith("Blacksmith: You ")) {
                 boolean sold = e.getMessage().getFormattedText().split(" ")[2].equals("sold");
                 String[] res = e.getMessage().getFormattedText().split("§");
                 int countCommon = 0;
@@ -426,48 +432,49 @@ public class OverlayEvents implements Listener {
                     }
                 }
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, and armour.")) {
+            } else if (e.getMessage().getUnformattedText().equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, and armour.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.not_weapon"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).equals("You can't scrap this item!")) {
+            } else if (e.getMessage().getUnformattedText().equals("You can't scrap this item!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.cant_scrap"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("^.+ Merchant: Thank you for your business. Come again!")) {
+            } else if (e.getMessage().getUnformattedText().matches("^.+ Merchant: Thank you for your business. Come again!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.purchased"));
                 e.setCanceled(true);
                 return;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText()).matches("^.+ Merchant: I'm afraid you cannot afford that item.")) {
+            } else if (e.getMessage().getUnformattedText().matches("^.+ Merchant: I'm afraid you cannot afford that item.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + I18n.format("wynntils.utilities.overlays.game_update.redir.merchant.cant_afford"));
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginLocal) {
-            String colorStrippedMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.matches("^\\[.+\\] .+ has just logged in!")) {
-                if (colorStrippedMessage.startsWith("[HERO]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_PURPLE + "[" + TextFormatting.LIGHT_PURPLE + "HERO" + TextFormatting.DARK_PURPLE + "] " + TextFormatting.LIGHT_PURPLE + colorStrippedMessage.split(" ")[1]);
+            String message = e.getMessage().getUnformattedText();
+            if (message.matches("^\\[.+\\] .+ has just logged in!")) {
+                if (message.startsWith("[HERO]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_PURPLE + "[" + TextFormatting.LIGHT_PURPLE + "HERO" + TextFormatting.DARK_PURPLE + "] " + TextFormatting.LIGHT_PURPLE + message.split(" ")[1]);
                     e.setCanceled(true);
                     return;
-                } else if (colorStrippedMessage.startsWith("[VIP+]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + "VIP+" + TextFormatting.DARK_AQUA + "] " + TextFormatting.AQUA + colorStrippedMessage.split(" ")[1]);
+                } else if (message.startsWith("[VIP+]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + "VIP+" + TextFormatting.DARK_AQUA + "] " + TextFormatting.AQUA + message.split(" ")[1]);
                     e.setCanceled(true);
                     return;
-                } else if (colorStrippedMessage.startsWith("[VIP]")) {
-                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + "VIP" + TextFormatting.DARK_GREEN + "] " + TextFormatting.GREEN + colorStrippedMessage.split(" ")[1]);
+                } else if (message.startsWith("[VIP]")) {
+                    GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + "VIP" + TextFormatting.DARK_GREEN + "] " + TextFormatting.GREEN + message.split(" ")[1]);
                     e.setCanceled(true);
                     return;
                 }
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
-            String colorStrippedMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText());
+            String colorStrippedMessage = e.getMessage().getUnformattedText();
             // Not sure on the nether server format -Bedo
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.GREEN.toString())) {
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && e.getMessage().getFormattedText().startsWith(TextFormatting.GREEN.toString())) {
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
+                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman";
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + TextFormatting.DARK_GREEN + "]");
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_GREEN + res[0] + " [" + TextFormatting.GREEN + res[5] + TextFormatting.DARK_GREEN + "/" + TextFormatting.GREEN + res[8] + " " + res[9] + TextFormatting.DARK_GREEN + "]");
@@ -481,10 +488,11 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
-            String colorStrippedMessage = TextFormatting.getTextWithoutFormattingCodes(e.getMessage().getFormattedText());
-            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter)") && e.getMessage().getFormattedText().startsWith(TextFormatting.AQUA.toString())) {
+            String colorStrippedMessage = e.getMessage().getUnformattedText();
+            if (colorStrippedMessage.matches(".+ has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman)À?") && e.getMessage().getFormattedText().startsWith(TextFormatting.AQUA.toString())) { // À temp for Shaman
                 String[] res = colorStrippedMessage.split(" ");
                 if (res.length == 9) {
+                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman"; // Temp replace for Shaman (Same changes as above)
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + TextFormatting.DARK_AQUA + "]");
                 } else if (res.length == 10) {
                     GameUpdateOverlay.queueMessage(TextFormatting.GREEN + "→ " + TextFormatting.DARK_AQUA + res[0] + " [" + TextFormatting.AQUA + res[5] + TextFormatting.DARK_AQUA + "/" + TextFormatting.AQUA + res[8] + " " + res[9] + TextFormatting.DARK_AQUA + "]");
@@ -584,6 +592,6 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        GameUpdateOverlay.resetMessages();
+        ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
     }
 }

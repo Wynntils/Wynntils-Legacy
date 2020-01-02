@@ -72,7 +72,7 @@ public class BubblesOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_bubbles,-91, y1, 91, y2, ty1, ty2, (flip ? -amount : amount) / 300);
-        drawString((mc.player.getAir() / 3 <= 0 ? 0 : mc.player.getAir()/3) + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
+        drawString(Integer.toString(Math.max(mc.player.getAir() / 3, 0)), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 
 }

@@ -26,7 +26,7 @@ public class SecretContainer {
 
         String[] splitted = hash.split("::");
         owner = splitted[0];
-        world = Integer.valueOf(splitted[2]);
+        world = Integer.parseInt(splitted[2]);
         randomHash = splitted[1];
     }
 

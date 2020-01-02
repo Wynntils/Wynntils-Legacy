@@ -3,6 +3,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -235,6 +237,10 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_TAB) {
+            Utils.tab(nameField, colorWheel.textBox.textField);
+            return;
+        }
         super.keyTyped(typedChar, keyCode);
         colorWheel.keyTyped(typedChar, keyCode, null);
         nameField.textboxKeyTyped(typedChar, keyCode);

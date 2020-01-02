@@ -39,6 +39,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "wynntils.config.chat.filter_territory_enter.display_name", description = "wynntils.config.chat.filter_territory_enter.description")
     public boolean filterTerritoryEnter = true;
 
+    @Setting(displayName = "Show Held Item Chat Message", description = "Should the details of your compass and soul points be shown in chat whilst you are holding them?")
+    public boolean heldItemChat = true;
+
     public boolean registeredDefaultTabs = false;
 
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
