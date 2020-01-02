@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.inventory.ClickType;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HorseReplacer extends GuiScreenHorseInventory  {
 
@@ -42,7 +44,7 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
 
     @Override
     public void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HandleMouseClick(this, slotIn, slotId, mouseButton, type)))
             super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
@@ -55,13 +57,17 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        if(!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
+        if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);
     }
 
     @Override
     public void renderToolTip(ItemStack stack, int x, int y) {
         super.renderToolTip(stack, x, y);
+    }
+
+    public List<GuiButton> getButtonList() {
+        return buttonList;
     }
 
 }

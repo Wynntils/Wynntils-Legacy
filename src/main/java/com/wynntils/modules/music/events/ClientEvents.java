@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.music.events;
@@ -18,19 +18,19 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        if(e.getNewTerritory().equals("Waiting")) return;
+        if (e.getNewTerritory().equals("Waiting")) return;
 
         MusicManager.checkForMusic(e.getNewTerritory());
     }
 
     @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
-        if(e.getCurrentClass() == ClassType.NONE) MusicManager.getPlayer().stop();
+        if (e.getCurrentClass() == ClassType.NONE) MusicManager.getPlayer().stop();
     }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent e) {
-        if(e.phase == TickEvent.Phase.START) return;
+        if (e.phase == TickEvent.Phase.START) return;
 
         MusicManager.getPlayer().setupController();
     }

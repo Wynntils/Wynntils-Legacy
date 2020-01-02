@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils;
@@ -9,6 +9,8 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.ModuleManager;
+import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -16,9 +18,7 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -41,18 +41,19 @@ public class ModCore {
         Reference.VERSION = e.getModMetadata().version;
         String[] splitDescription = e.getModMetadata().description.split(" ");
         try {
-            Reference.BUILD_NUMBER = Integer.valueOf(splitDescription[splitDescription.length - 1]);
+            Reference.BUILD_NUMBER = Integer.parseInt(splitDescription[splitDescription.length - 1]);
         } catch (NumberFormatException ignored) {}
 
         jarFile = e.getSourceFile();
 
         Reference.developmentEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        // Reference.developmentEnvironment = false;  // Uncomment to test updater
 
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
-        WebManager.setupWebApi();
         WebManager.setupUserAccount();
+        WebManager.setupWebApi(true);
 
         CoreManager.setupCore();
         ModuleManager.initModules();
@@ -64,29 +65,42 @@ public class ModCore {
     public void postInit(FMLPostInitializationEvent e) {
 
         HashMap<String, String> conflicts = new HashMap<>();
-        for(ModContainer mod : Loader.instance().getActiveModList()) {
-            if(!mod.getModId().equalsIgnoreCase("labymod")) continue;
+        for (ModContainer mod : Loader.instance().getActiveModList()) {
+            if (!mod.getModId().equalsIgnoreCase("labymod")) continue;
 
             conflicts.put(mod.getName(), mod.getVersion());
         }
 
-        if(!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
+        if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
 
         FrameworkManager.postEnableModules();
-        FrameworkManager.registerCommands();
         Textures.loadTextures();
         Mappings.loadMappings();
 
-        //HeyZeer0: This will reload our cache if a texture or similar is applied
+        // HeyZeer0: This will reload our cache if a texture or similar is applied
         ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
             Textures.loadTextures();
             Mappings.loadMappings();
         });
 
         if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {
-            MapConfig.INSTANCE.enabledMapIcons = MapConfig.INSTANCE.resetMapIcons();
+            MapConfig.INSTANCE.enabledMapIcons = MapConfig.resetMapIcons(false);
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
         }
+
+        FMLCommonHandler.instance().registerCrashCallable(new ICrashCallable() {
+            @Override
+            public String getLabel() {
+                return "Wynntils Version";
+            }
+
+            @Override
+            public String call() {
+                UpdateStream stream = CoreDBConfig.INSTANCE == null ? null : CoreDBConfig.INSTANCE.updateStream;
+                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env");
+            }
+        });
+
     }
 
     public static Minecraft mc() {

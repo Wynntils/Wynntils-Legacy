@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.instances.containers;
@@ -44,16 +44,16 @@ public class ModuleContainer {
     }
 
     public void triggerKeyBinding() {
-        if(!getModule().isActive()) {
+        if (!getModule().isActive()) {
             return;
         }
-        if(keyHolders.size() <= 0) {
+        if (keyHolders.size() <= 0) {
             return;
         }
         keyHolders.forEach(k -> {
-            if(k.isPress() && k.getKeyBinding().isPressed()) {
+            if (k.isPress() && k.getKeyBinding().isPressed()) {
                 k.getOnAction().run();
-            }else if(!k.isPress() && k.getKeyBinding().isKeyDown()) {
+            } else if (!k.isPress() && k.getKeyBinding().isKeyDown()) {
                 k.getOnAction().run();
             }
         });
@@ -71,16 +71,16 @@ public class ModuleContainer {
 
     public void registerSettings(Class<? extends SettingsHolder> holder) {
         SettingsInfo info = holder.getAnnotation(SettingsInfo.class);
-        if(info == null) {
+        if (info == null) {
             return;
         }
 
-        for(Field field : holder.getDeclaredFields()){
-            if(field.getType() == holder && Modifier.isStatic(field.getModifiers())) {
+        for (Field field : holder.getDeclaredFields()) {
+            if (field.getType() == holder && Modifier.isStatic(field.getModifiers())) {
                 try {
                     field.set(null, holder.getConstructor().newInstance());
                     registeredSettings.put(info.name(), new SettingsContainer(this, (SettingsHolder) field.get(null)));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return;

@@ -1,11 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.enums;
 
 public enum ActionResult {
 
-    SUCCESS,ISSUE,ERROR
+    SUCCESS, ISSUE, ERROR
 
 }

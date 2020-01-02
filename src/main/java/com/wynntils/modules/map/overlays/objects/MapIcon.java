@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -17,6 +17,9 @@ public abstract class MapIcon {
      * If {@link #getZoomNeeded()} returns this, the icon will always be visible
      */
     public static final int ANY_ZOOM = -1000;
+
+    // This position definitely wont be rendered on the map
+    public static final int NO_LOCATION = Integer.MIN_VALUE / 2;
 
     /**
      * @return The x coordinate in the Minecraft world of this icon
@@ -49,9 +52,11 @@ public abstract class MapIcon {
     public abstract int getZoomNeeded();
 
     /**
+     * @param forMinimap If true, return whether enabled for minimap instead of main map
+     *
      * @return Whether this icon should be rendered or not (Usually based on a config)
      */
-    public abstract boolean isEnabled();
+    public abstract boolean isEnabled(boolean forMinimap);
 
     /**
      * Render this icon
@@ -84,4 +89,14 @@ public abstract class MapIcon {
     public static List<MapIcon> getPathWaypoints() {
         return MapPathWaypointIcon.getPathWaypoints();
     }
+
+    public static List<MapIcon> getPlayers() {
+        return MapPlayerIcon.getPlayers();
+    }
+
+    /**
+     * If true, the location will be queried every time this icon is drawn, like in the minimap
+     */
+    public abstract boolean hasDynamicLocation();
+
 }

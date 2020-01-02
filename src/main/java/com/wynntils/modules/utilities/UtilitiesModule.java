@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities;
@@ -20,6 +20,7 @@ import com.wynntils.modules.utilities.overlays.inventories.*;
 public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
+    private GameUpdateOverlay gameUpdateOverlay;
 
     public void onEnable() {
         module = this;
@@ -30,15 +31,17 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
-        //Inventory Overlays
+        // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new MenuButtonsOverlay());
         registerEvents(new IngredientFilterOverlay());
+        registerEvents(new EmeraldCountOverlay());
+        registerEvents(new LoreChangerOverlay());
 
-        //Real overlays
+        // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
@@ -48,15 +51,16 @@ public class UtilitiesModule extends Module {
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
-        registerOverlay(new GameUpdateOverlay(), Priority.NORMAL);
+        registerOverlay(gameUpdateOverlay = new GameUpdateOverlay(), Priority.NORMAL);
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
-        registerOverlay(new InfoOverlay._1(), Priority.LOW);
-        registerOverlay(new InfoOverlay._2(), Priority.LOW);
-        registerOverlay(new InfoOverlay._3(), Priority.LOW);
-        registerOverlay(new InfoOverlay._4(), Priority.LOW);
-
+        registerOverlay(new InfoOverlay._1(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._3(), Priority.NORMAL);
+        registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
+        registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
+        registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -66,6 +70,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
+        registerSettings(UtilitiesConfig.Market.class);
 
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);
@@ -79,6 +84,8 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.GameUpdate.class);
         registerSettings(OverlayConfig.TerritoryFeed.class);
         registerSettings(OverlayConfig.InfoOverlays.class);
+        registerSettings(OverlayConfig.PlayerInfo.class);
+        registerSettings(OverlayConfig.ConsumableTimer.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
@@ -88,4 +95,9 @@ public class UtilitiesModule extends Module {
     public static UtilitiesModule getModule() {
         return module;
     }
+
+    public GameUpdateOverlay getGameUpdateOverlay() {
+        return gameUpdateOverlay;
+    }
+
 }

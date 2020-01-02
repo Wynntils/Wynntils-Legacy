@@ -1,18 +1,19 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
-import com.wynntils.core.utils.Delay;
+import com.wynntils.core.utils.helpers.Delay;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
-import com.wynntils.modules.questbook.managers.QuestManager;
+import com.wynntils.modules.richpresence.RichPresenceModule;
+import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -48,111 +49,135 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length >= 1) {
-            switch (String.join("", args).toLowerCase()) {
-                case "donate":
-                    TextComponentString c = new TextComponentString("You can donate to Wynntils at: ");
-                    c.getStyle().setColor(TextFormatting.AQUA);
-                    TextComponentString url = new TextComponentString("https://www.patreon.com/Wynntils");
-                    url.getStyle()
-                            .setColor(TextFormatting.LIGHT_PURPLE)
-                            .setUnderlined(true)
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/Wynntils"))
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to open in your browser.")));
+        if (args.length <= 0) {
+            execute(server, sender, new String[]{"help"});
+            return;
+        }
 
-                    sender.sendMessage(c.appendSibling(url));
-                    break;
-                case "help":
-                    TextComponentString text = new TextComponentString("");
-                    text.getStyle().setColor(TextFormatting.GOLD);
-                    text.appendText("Wynntils' command list: ");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " help", "This shows a list of all available commands for Wynntils.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " discord", "This provides you with an invite to our Discord server.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " version", "This shows the installed Wynntils version.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " changelog [major]", "This shows the latest changelog of your installed version.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " reloadapi", "This reloads all API data.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-wynntils", " donate", "This provides our Patreon link.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-", "token", "This provides a clickable token for you to create a Wynntils account to manage your cosmetics.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-", "forceupdate", "This downloads and installs the latest successful build.");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-", "compass", "This makes your compass point towards an x and z or a direction (e.g. north, SE).");
-                    text.appendText("\n");
-                    addCommandDescription(text, "-", "territory", "This makes your compass point towards a specified territory.");
-                    sender.sendMessage(text);
-                    break;
-                    /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
-                case "discord":
-                    TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
-                    msg.getStyle().setColor(TextFormatting.GOLD);
-                    WebReader apiUrls = WebManager.getApiUrls();
-                    TextComponentString link = new TextComponentString(apiUrls == null ? "<Wynntils servers are down>" : apiUrls.get("DiscordInvite"));
+        if (TextAction.isCommandPrefix(args[0])) {
+            TextAction.processCommand(args);
+            return;
+        }
+
+        switch (String.join("", args).toLowerCase()) {
+            case "donate":
+                TextComponentString c = new TextComponentString("You can donate to Wynntils at: ");
+                c.getStyle().setColor(TextFormatting.AQUA);
+                TextComponentString url = new TextComponentString("https://www.patreon.com/Wynntils");
+                url.getStyle()
+                        .setColor(TextFormatting.LIGHT_PURPLE)
+                        .setUnderlined(true)
+                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/Wynntils"))
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to open in your browser.")));
+
+                sender.sendMessage(c.appendSibling(url));
+                break;
+            case "help":
+            case "help1":
+                TextComponentString text = new TextComponentString("");
+                text.getStyle().setColor(TextFormatting.GOLD);
+                text.appendText("Wynntils' command list: ");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " help", "This shows a list of all available commands for Wynntils.");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " discord", "This provides you with an invite to our Discord server.");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " version", "This shows the installed Wynntils version.");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " changelog [major/latest]", "This shows the changelog of your installed version.");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " reloadapi", "This reloads all API data.");
+                text.appendText("\n");
+                addCommandDescription(text, "-wynntils", " donate", "This provides our Patreon link.");
+                text.appendText("\n");
+                addCommandDescription(text, "-", "token", "This provides a clickable token for you to create a Wynntils account to manage your cosmetics.");
+                text.appendText("\n");
+                addCommandDescription(text, "-", "forceupdate", "This downloads and installs the latest successful build.");
+                text.appendText("\n");
+                addCommandDescription(text, "-", "compass", "This makes your compass point towards an x and z or a direction (e.g. north, SE).");
+                text.appendText("\n");
+                addCommandDescription(text, "-", "territory", "This makes your compass point towards a specified territory.");
+                sender.sendMessage(text);
+                break;
+                /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
+            case "discord":
+                TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
+                msg.getStyle().setColor(TextFormatting.GOLD);
+                String discordInvite = WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("DiscordInvite");
+                TextComponentString link = new TextComponentString(discordInvite == null ? "<Wynntils servers are down>" : discordInvite);
+                link.getStyle().setColor(TextFormatting.DARK_AQUA);
+                if (discordInvite != null) {
                     link.getStyle()
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, WebManager.getApiUrls().get("DiscordInvite")))
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")))
-                            .setColor(TextFormatting.DARK_AQUA);
-                    sender.sendMessage(msg.appendSibling(link));
-                    break;
-                case "version":
-                    handleModVersion(sender);
-                    break;
-                case "reloadapi":
-                    WebManager.reset();
-                    WebManager.setupWebApi();
-                    break;
-                case "changelog":
-                    new Delay(() -> {
-                        boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
-                    }, 1);
-                    break;
-                case "changelogmajor":
-                    new Delay(() -> {
-                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(true), true));
-                    }, 1);
-                    break;
-                case "debug":
-                    QuestManager.requestAnalyse();
-                    break;
-                default:
-                    throw new CommandException("Invalid argument. Use /wynntils help for more info.");
-            }
-        } else {
-            throw new CommandException("Missing arguments. Use /wynntils help for more info.");
+                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, discordInvite))
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")));
+
+                    RichProfile.OverlayManager o = RichPresenceModule.getModule().getRichPresence().getOverlayManager();
+                    if (o != null) {
+                        o.openGuildInvite(discordInvite.replace("https://discord.gg/", ""));
+                    }
+                }
+                sender.sendMessage(msg.appendSibling(link));
+                break;
+            case "version":
+                handleModVersion(sender);
+                break;
+            case "reloadapi":
+                WebManager.reset();
+                WebManager.setupUserAccount();
+                WebManager.setupWebApi(false);
+                break;
+            case "changelog":
+                new Delay(() -> {
+                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, false);
+                }, 1);
+                break;
+            case "changeloglatest":
+                new Delay(() -> {
+                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, true);
+                }, 1);
+                break;
+            case "changelogmajor":
+                new Delay(() -> {
+                    ChangelogUI.loadChangelogAndShow(true, false);
+                }, 1);
+                break;
+            case "debug":
+                if (!Reference.developmentEnvironment) {
+                    ITextComponent message = new TextComponentString(TextFormatting.RED + "You can't use this command outside a development environment");
+
+                    Minecraft.getMinecraft().player.sendMessage(message);
+                    return;
+                }
+                break;
+            default:
+                execute(server, sender, new String[] {"help"});
         }
     }
-    
-    private void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
+
+    private static void addCommandDescription(ITextComponent text, String prefix, String name, String description) {
         TextComponentString prefixText = new TextComponentString(prefix);
         prefixText.getStyle().setColor(TextFormatting.DARK_GRAY);
         text.appendSibling(prefixText);
-        
+
         TextComponentString nameText = new TextComponentString(name);
         nameText.getStyle().setColor(TextFormatting.RED);
         text.appendSibling(nameText);
-        
+
         text.appendText(" ");
-        
+
         TextComponentString descriptionText = new TextComponentString(description);
         descriptionText.getStyle().setColor(TextFormatting.GRAY);
         text.appendSibling(descriptionText);
     }
 
-    private void handleModVersion(ICommandSender sender) {
+    private static void handleModVersion(ICommandSender sender) {
         if (Reference.developmentEnvironment) {
             TextComponentString text = new TextComponentString("Wynntils is running in a development environment.");
             text.getStyle().setColor(TextFormatting.GOLD);
             sender.sendMessage(text);
             return;
         }
-        
+
         TextComponentString releaseStreamText = null;
         TextComponentString buildText = null;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
@@ -171,7 +196,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString versionText = new TextComponentString("");
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
-        
+
         TextComponentString updateCheckText = null;
         TextFormatting color = null;
         if (WebManager.getUpdate().updateCheckFailed()) {
@@ -187,7 +212,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         updateCheckText.getStyle().setColor(color);
         sender.sendMessage(updateCheckText);
     }
-    
+
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
         if (args.length == 1) {

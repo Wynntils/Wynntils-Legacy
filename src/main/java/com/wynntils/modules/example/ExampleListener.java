@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.example;
@@ -40,7 +40,7 @@ public class ExampleListener implements Listener {
 
     /**
      * The EventHandler annotation is required and a priority can be requested
-     * Priority NORMAL // default
+     * Priority NORMAL  // default
      *
      * @param e Requested Event
      */

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles.guild;
@@ -38,7 +38,7 @@ public class GuildMember {
         return joinedFriendly;
     }
 
-    public static enum Rank {
+    public enum Rank {
 
         RECRUIT,
 
@@ -48,7 +48,7 @@ public class GuildMember {
 
         CHIEF,
 
-        OWNER;
+        OWNER
     }
 
 }

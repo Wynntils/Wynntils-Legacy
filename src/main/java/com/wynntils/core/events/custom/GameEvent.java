@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.events.custom;
@@ -62,7 +62,7 @@ public class GameEvent extends Event {
      * Called when a quest is completed
      */
     public static class QuestCompleted extends GameEvent {
-
+        public static class MiniQuestCompleted extends QuestCompleted { }
     }
 
 }

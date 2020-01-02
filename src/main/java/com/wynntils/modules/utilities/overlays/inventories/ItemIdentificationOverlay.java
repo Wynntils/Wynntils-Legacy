@@ -1,511 +1,483 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.RainbowText;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.helpers.RainbowText;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.enums.IdentificationType;
+import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.IInventory;
+import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 public class ItemIdentificationOverlay implements Listener {
 
-    private final static Pattern BRACKETS = Pattern.compile("\\[.*?\\]");
-    private final static Pattern ID_PERCENTAGES = Pattern.compile("( \\[\\d{1,3}%\\]$)|( (" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")" + TextFormatting.BOLD + "[\\u21E9\\u21E7\\u21EA]" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.AQUA + "|" + TextFormatting.RED + ")\\d+\\.\\d+%)|( (" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\[(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")[-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + "),(" + TextFormatting.GREEN + "|" + TextFormatting.RED + ") [-+]?\\d+(" + TextFormatting.DARK_GREEN + "|" + TextFormatting.DARK_RED + ")\\])|( (" + TextFormatting.GREEN + "|" + TextFormatting.RED + ")\\[[-+]?\\d+ SP\\])");
+    private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
+    private final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
+
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
-    public final static String E = new String(new char[]{(char) 0xB2}), B = new String(new char[]{(char) 0xBD}), L = new String(new char[]{(char) 0xBC});
 
     @SubscribeEvent
     public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-        }
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+
+        replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
     @SubscribeEvent
-    public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-        }
+    public void onInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+
+        replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
     @SubscribeEvent
-    public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if (Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && e.getGuiInventory().getSlotUnderMouse() != null && e.getGuiInventory().getSlotUnderMouse().getHasStack()) {
-            drawHoverGuess(e.getGuiInventory().getSlotUnderMouse().getStack());
-            drawHoverItem(e.getGuiInventory().getSlotUnderMouse().getStack(), e.getGuiInventory().getSlotUnderMouse().inventory);
-        }
+    public void onHorse(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
+
+        replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
-    public void drawHoverGuess(ItemStack stack){
-        if (stack.isEmpty() || !stack.hasDisplayName()) {
+    private static void replaceLore(ItemStack stack) {
+        if (!stack.hasDisplayName() || !stack.hasTagCompound()) return;
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt.hasKey("wynntilsIgnore")) return;
+
+        String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+
+        // Check if unidentified item.
+        if (itemName.contains("Unidentified")) {
+            // Add possible identifications
+            nbt.setBoolean("wynntilsIgnore", true);
+            addItemGuesses(stack);
             return;
         }
 
-        if (stack.getDisplayName().contains("Soul Point")) {
-            List<String> lore = Utils.getLore(stack);
-            if (lore != null && !lore.isEmpty()) {
-                if (lore.get(lore.size() - 1).contains("Time until next soul point: ")) {
-                    lore.remove(lore.size() - 1);
-                    lore.remove(lore.size() - 1);
+        // Check if item is a valid item if not ignore it
+        if (!nbt.hasKey("wynntils") && WebManager.getItems().get(itemName) == null) {
+            nbt.setBoolean("wynntilsIgnore", true);
+            return;
+        }
+
+        NBTTagCompound wynntils = generateData(stack);
+        ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
+
+        // Block if the item is not the real item
+        ItemStack comparation = item.getGuideStack();
+        if (!comparation.isItemEqual(stack)) {
+            nbt.setBoolean("wynntilsIgnore", true);
+            nbt.removeTag("wynntils");
+            return;
+        }
+
+        // Perfect name
+        if (wynntils.hasKey("isPerfect")) {
+            stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + wynntils.getString("originName"), true));
+        }
+
+        // Update only if should update, this is decided on generateDate
+        if (!wynntils.getBoolean("shouldUpdate")) return;
+        wynntils.setBoolean("shouldUpdate", false);
+
+        // Objects
+        IdentificationType idType = IdentificationType.valueOf(wynntils.getString("currentType"));
+        List<String> newLore = new ArrayList<>();
+
+        // Generating id lores
+        HashMap<String, String> idLore = new HashMap<>();
+
+        double cumRelative = 0;
+        int idAmount = 0;
+
+        if (wynntils.hasKey("ids")) {
+            NBTTagCompound ids = wynntils.getCompoundTag("ids");
+            for (String idName : ids.getKeySet()) {
+                if (!item.getStatuses().containsKey(idName)) continue;
+
+                IdentificationContainer id = item.getStatuses().get(idName);
+                int currentValue = ids.getInteger(idName);
+
+                String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
+                        + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+
+                if (id.hasConstantValue()) {
+                    idLore.put(idName, lore);
+                    continue;
                 }
-                long worldTimeTicks = ModCore.mc().world.getWorldTime();
-                long currentTime = worldTimeTicks % 24000;
-                long minutesUntilSoulPoint = Math.floorDiv(currentTime, 1200);
-                currentTime -= (minutesUntilSoulPoint * 1200);
-                long secondsUntilSoulPoint = Math.floorDiv(currentTime, 20);
-                minutesUntilSoulPoint = 20 - minutesUntilSoulPoint - 1;
-                secondsUntilSoulPoint = 60 - secondsUntilSoulPoint - 1;
-                lore.add("");
-                lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
-                NBTTagCompound nbt = stack.getTagCompound();
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                NBTTagList tag = new NBTTagList();
-                lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-                display.setTag("Lore", tag);
-                nbt.setTag("display", display);
-                stack.setTagCompound(nbt);
-                return;
+
+                IdentificationResult result = idType.identify(id, currentValue);
+                idLore.put(idName, lore + " " + result.getLore());
+
+                cumRelative += result.getAmount();
+                idAmount++;
             }
         }
 
-        if (!stack.getDisplayName().contains("Unidentified")) {
-            return;
+        // Copying some parts of the old lore (stops on ids, powder or quality)
+        boolean ignoreNext = false;
+        for (String oldLore : ItemUtils.getLore(stack)) {
+            if (ignoreNext) {
+                ignoreNext = false;
+                continue;
+            }
+
+            String rawLore = getTextWithoutFormattingCodes(oldLore);
+            // market stuff
+            if (rawLore.contains("Price:")) {
+                ignoreNext = true;
+
+                NBTTagCompound market = wynntils.getCompoundTag("marketInfo");
+
+                newLore.add(GOLD + "Price:");
+                String mLore = GOLD + " - " + GRAY;
+                if (market.hasKey("quantity")) {
+                    mLore += market.getInteger("quantity") + " x ";
+                }
+
+                int[] money = calculateMoneyAmount(market.getInteger("price"));
+                String price = "";
+                if (money[3] != 0) price += money[3] + "stx ";
+                if (money[2] != 0) price += money[2] + EmeraldSymbols.LE + " ";
+                if (money[1] != 0) price += money[1] + EmeraldSymbols.BLOCKS + " ";
+                if (money[0] != 0) price += money[0] + EmeraldSymbols.EMERALDS + " ";
+
+                price = price.substring(0, price.length() - 1);
+
+                mLore += "" + WHITE + decimalFormat.format(market.getInteger("price")) + EmeraldSymbols.EMERALDS;
+                mLore += DARK_GRAY + " (" + price + ")";
+
+                newLore.add(mLore);
+                continue;
+            }
+
+            // Stop on id if the item has ids
+            if (idLore.size() > 0) {
+                if (rawLore.startsWith("+") || rawLore.startsWith("-")) break;
+
+                newLore.add(oldLore);
+                continue;
+            }
+
+            // Stop on powders if the item has powders
+            if (wynntils.hasKey("powderSlots") && oldLore.contains("] Powder Slots")) {
+                break;
+            }
+
+            // Stop on quality if there's no other
+            Matcher m = ITEM_QUALITY.matcher(rawLore);
+            if (m.matches()) break;
+
+            newLore.add(oldLore);
         }
 
-        String displayWC = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
-        String itemType = displayWC.split(" ")[1];
+        // Add id lores
+        if (idLore.size() > 0) {
+            newLore.addAll(IdentificationOrderer.INSTANCE.order(idLore,
+                    UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
+
+            newLore.add(" ");
+        }
+
+        // Major ids
+        if (item.getMajorIds().size() > 0) {
+            for (MajorIdentification majorId : item.getMajorIds()) {
+                Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
+            }
+            newLore.add(" ");
+        }
+
+        // Powder lore
+        if (wynntils.hasKey("powderSlots")) newLore.add(wynntils.getString("powderSlots"));
+
+        //Set Bonus
+        if (wynntils.hasKey("setBonus")) {
+            if(wynntils.hasKey("powderSlots")) newLore.add(" ");
+
+            newLore.add(GREEN + "Set Bonus:");
+            NBTTagCompound ids = wynntils.getCompoundTag("setBonus");
+
+            HashMap<String, String> bonusOrder = new HashMap<>();
+            for (String idName : ids.getKeySet()) {
+                bonusOrder.put(idName, ids.getString(idName));
+            }
+
+            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.INSTANCE.addSetBonusSpacing));
+            newLore.add(" ");
+        }
+
+        // Quality lore
+        String quality = item.getTier().asLore();
+
+        // adds reroll amount if the item is not identified
+        if (!item.isIdentified()) {
+            int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
+            if (rollAmount != 0) quality += " [" + rollAmount + "]";
+
+            quality += GREEN + " ["
+                    + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount))
+                    + EmeraldSymbols.E + "]";
+        }
+
+        newLore.add(quality);
+        if (item.getRestriction() != null) newLore.add(RED + "Untradable Item");
+
+        // Merchant & dungeon purchase offers
+        if (wynntils.hasKey("purchaseInfo")) {
+            newLore.add(" ");
+            newLore.add(GOLD + "Price:");
+
+            NBTTagList purchaseInfo = wynntils.getTagList("purchaseInfo", 8 /* means NBTTagString */);
+            for (NBTBase nbtBase : purchaseInfo) {
+                newLore.add(((NBTTagString) nbtBase).getString());
+            }
+        }
+
+        // Item lore
+        if (!item.getLore().isEmpty()) {
+            if (wynntils.hasKey("purchaseInfo")) newLore.add(" ");
+
+            Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
+        }
+
+        // Special displayname
+        String specialDisplay = "";
+        if (idAmount > 0 && cumRelative > 0) {
+            specialDisplay = " " + idType.getTitle(cumRelative/(double)idAmount);
+        }
+
+        // check for item perfection
+        if (cumRelative/idAmount >= 1d && idType == IdentificationType.PERCENTAGES) {
+            wynntils.setBoolean("isPerfect", true);
+        }
+
+        stack.setStackDisplayName(item.getTier().getColor() + item.getDisplayName() + specialDisplay);
+
+        // Applying lore
+        NBTTagCompound compound = nbt.getCompoundTag("display");
+        NBTTagList list = new NBTTagList();
+
+        newLore.forEach(c -> list.appendTag(new NBTTagString(c)));
+
+        compound.setTag("Lore", list);
+
+        nbt.setTag("wynntils", wynntils);
+        nbt.setTag("display", compound);
+    }
+
+    private static void addItemGuesses(ItemStack stack) {
+        String name = StringUtils.normalizeBadString(stack.getDisplayName());
+        String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
         String level = null;
 
-        List<String> lore = Utils.getLore(stack);
+        List<String> lore = ItemUtils.getLore(stack);
 
         for (String aLore : lore) {
             if (aLore.contains("Lv. Range")) {
-                level = TextFormatting.getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
+                level = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }
 
-        if (itemType == null || level == null) {
-            return;
-        }
-
-        if (!WebManager.getItemGuesses().containsKey(level)) {
-            return;
-        }
+        if (itemType == null || level == null) return;
 
         ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
-        if (igp == null || !igp.getItems().containsKey(itemType)) {
-            return;
-        }
+        if (igp == null) return;
+
+        HashMap<String, String> rarityMap = igp.getItems().get(itemType);
+        if (rarityMap == null) return;
 
         String items = null;
-        TextFormatting color = null;
+        String color = null;
 
-        if (stack.getDisplayName().startsWith(TextFormatting.AQUA.toString()) && igp.getItems().get(itemType).containsKey("Legendary")) {
-            items = igp.getItems().get(itemType).get("Legendary");
-            color = TextFormatting.AQUA;
-        } else if (stack.getDisplayName().startsWith(TextFormatting.LIGHT_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Rare")) {
-            items = igp.getItems().get(itemType).get("Rare");
-            color = TextFormatting.LIGHT_PURPLE;
-        } else if (stack.getDisplayName().startsWith(TextFormatting.YELLOW.toString()) && igp.getItems().get(itemType).containsKey("Unique")) {
-            items = igp.getItems().get(itemType).get("Unique");
-            color = TextFormatting.YELLOW;
-        } else if (stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) && igp.getItems().get(itemType).containsKey("Mythic")) {
-            items = igp.getItems().get(itemType).get("Mythic");
-            color = TextFormatting.DARK_PURPLE;
-        } else if (stack.getDisplayName().startsWith(TextFormatting.GREEN.toString()) && igp.getItems().get(itemType).containsKey("Set")) {
-            items = igp.getItems().get(itemType).get("Set");
-            color = TextFormatting.GREEN;
+        if (name.startsWith(AQUA.toString())) {
+            items = rarityMap.get("Legendary");
+            color = AQUA.toString();
+        } else if (name.startsWith(LIGHT_PURPLE.toString())) {
+            items = rarityMap.get("Rare");
+            color = LIGHT_PURPLE.toString();
+        } else if (name.startsWith(YELLOW.toString())) {
+            items = rarityMap.get("Unique");
+            color = YELLOW.toString();
+        } else if (name.startsWith(DARK_PURPLE.toString())) {
+            items = rarityMap.get("Mythic");
+            color = DARK_PURPLE.toString();
+        } else if (name.startsWith(RED.toString())) {
+            items = rarityMap.get("Fabled");
+            color = RED.toString();
+        } else if (name.startsWith(GREEN.toString())) {
+            items = rarityMap.get("Set");
+            color = GREEN.toString();
         }
 
-        if (items != null) {
-            if (lore.get(lore.size() - 1).contains("7Possibilities")) {
-                return;
-            }
-            lore.add(TextFormatting.GREEN + "- " + TextFormatting.GRAY + "Possibilities: " + color + items);
+        if (items == null) return;
 
-            NBTTagCompound nbt = stack.getTagCompound();
-            NBTTagCompound display = nbt.getCompoundTag("display");
-            NBTTagList tag = new NBTTagList();
-
-            lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-
-            display.setTag("Lore", tag);
-            nbt.setTag("display", display);
-            stack.setTagCompound(nbt);
-        }
+        ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + color + items));
     }
 
-    public static void drawHoverItem(ItemStack stack, IInventory inventory) {
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("rainbowTitle")) {
-            stack.setStackDisplayName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
-            stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + stack.getTagCompound().getString("rainbowTitle"), false));
-            if (stack.getTagCompound().hasKey("rainbowTitleExtra"))
-                stack.setStackDisplayName(stack.getDisplayName() + stack.getTagCompound().getString("rainbowTitleExtra"));
+    private static NBTTagCompound generateData(ItemStack stack) {
+        IdentificationType idType;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = IdentificationType.MIN_MAX;
+        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = IdentificationType.UPGRADE_CHANCES;
+        else idType = IdentificationType.PERCENTAGES;
+
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
+            NBTTagCompound compound = stack.getTagCompound().getCompoundTag("wynntils");
+
+            // check for updates
+            if (!compound.getString("currentType").equals(idType.toString())) {
+                compound.setBoolean("shouldUpdate", true);
+                compound.setString("currentType", idType.toString());
+
+                stack.getTagCompound().setTag("wynntils", compound);
+            }
+
+            return compound;
         }
-        if(stack.hasTagCompound() && stack.getTagCompound().hasKey("verifiedWynntils") && stack.getTagCompound().getBoolean("showChances") == Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) && stack.getTagCompound().getBoolean("showRanges") == Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) return;
-        boolean showChances = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
-        boolean showRanges = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
-        if (!WebManager.getItems().containsKey(Utils.stripExtended(cleanse(stack.getDisplayName()), 1)))
-            return;
+        NBTTagCompound mainTag = new NBTTagCompound();
 
-        ItemProfile wItem = WebManager.getItems().get(Utils.stripExtended(cleanse(stack.getDisplayName()), 1));
-
-        if (wItem.isIdentified()) {
-            return;
+        {  // main data
+            mainTag.setString("originName", StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())));  // this replace allow market items to be scanned
+            mainTag.setString("currentType", idType.toString());
+            mainTag.setBoolean("shouldUpdate", true);
         }
 
-        int total = 0;
-        int identifications = 0;
-        double chanceUp = 0;
-        double chanceDown = 0;
-        int totalSP = 0;
+        NBTTagCompound idTag = new NBTTagCompound();
+        NBTTagCompound setBonus = new NBTTagCompound();
+        NBTTagList purchaseInfo = new NBTTagList();
+        {  // lore data
+            boolean isBonus = false;
+            for (String loreLine : ItemUtils.getLore(stack)) {
+                String lColor = getTextWithoutFormattingCodes(loreLine);
 
-        List <String> actualLore = Utils.getLore(stack);
-        List <Integer> statOrderMem = new ArrayList<>();
-
-        for (int i = 0; i < actualLore.size(); i++) {
-            String lore = cleanse(actualLore.get(i));
-            String wColor = TextFormatting.getTextWithoutFormattingCodes(lore);
-
-            if(wColor.matches(".*(Mythic|Legendary|Rare|Unique|Set) Item.*") && !lore.contains(E)) {
-                int rerollValue = 0;
-
-                //thanks dukiooo for this Math
-                if(wColor.contains("Mythic")) {
-                    rerollValue = (int)Math.ceil(90.0D + wItem.getLevel() * 18);
-                }else if(wColor.contains("Legendary")) {
-                    rerollValue = (int)Math.ceil(40D + wItem.getLevel() * 5.2);
-                }else if(wColor.contains("Rare")) {
-                    rerollValue = (int)Math.ceil(15D + wItem.getLevel() * 1.2d);
-                }else if(wColor.contains("Set")) {
-                    rerollValue = (int)Math.ceil(12D + wItem.getLevel() * 1.6d);
-                }else if(wColor.contains("Unique")) {
-                    rerollValue = (int)Math.ceil(5D + wItem.getLevel() * 0.5d);
-                }
-
-                int alreadyRolled = 1;
-                Matcher m = BRACKETS.matcher(wColor);
-                if(m.find()) {
-                    alreadyRolled = Integer.valueOf(m.group().replace("[", "").replace("]", ""));
-                }
-
-                for(int bb = 1; bb <= alreadyRolled; bb++) rerollValue *= 5;
-
-                actualLore.set(i, lore + TextFormatting.GREEN + " [" + decimalFormat.format(rerollValue) + E + "]");
-                break;
-            }
-
-            if (lore.contains("Set") && lore.contains("Bonus")) {
-                break;
-            }
-
-            if (!wColor.startsWith("+") && !wColor.startsWith("-")) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            String[] values = wColor.split(" ");
-
-            if (values.length < 2) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            String pField = StringUtils.join(Arrays.copyOfRange(values, 1, values.length), " ").replace("*", "");
-
-            if (pField == null) {
-                actualLore.set(i, lore);
-                continue;
-            }
-
-            boolean raw = !lore.contains("%");
-
-            try {
-                int amount = Integer.valueOf(values[0].replace("*", "").replace("%", "").replace("/3s", "").replace("/4s", "").replace("tier ", ""));
-
-                String fieldName;
-                if (raw) {
-                    fieldName = Utils.getFieldName("raw" + pField);
-                    if (fieldName == null) {
-                        fieldName = Utils.getFieldName(pField);
-                    }
-                } else {
-                    fieldName = Utils.getFieldName(pField);
-                }
-
-                if (fieldName == null) {
-                    actualLore.set(i, lore);
-                    statOrderMem.add(1000);
+                //set bonus detection
+                if(lColor.contains("Set Bonus:")) {
+                    isBonus = true;
                     continue;
                 }
 
-                Field f = wItem.getClass().getField(fieldName);
-                if (f == null) {
-                    actualLore.set(i, lore);
-                    continue;
-                }
+                // ids and set bonus
+                { Matcher idMatcher = ID_PATTERN.matcher(lColor);
+                    if (idMatcher.find()) {
+                        String idName = idMatcher.group("ID");
+                        boolean isRaw = idMatcher.group("Suffix") == null;
 
-                int itemVal = Integer.valueOf(String.valueOf(f.get(wItem)));
-                int min;
-                int max;
-                if (amount < 0) {
-                    max = (int) Math.min(Math.round(itemVal * 1.3d), -1);
-                    min = (int) Math.min(Math.round(itemVal * 0.7d), -1);
-                } else {
-                    max = (int) Math.max(Math.round(itemVal * 1.3d), 1);
-                    min = (int) Math.max(Math.round(itemVal * 0.3d), 1);
-                }
+                        SpellType spell = SpellType.getSpell(idName);
+                        if (spell != null) idName = idName.replaceAll(spell.getRegex().pattern(), spell.getShortName());
 
-                if (max == min) {
-                    actualLore.set(i, lore);
-                } else
+                        String shortIdName = toShortIdName(idName, isRaw);
 
-
-                if (showChances) {
-                    float downPercent;
-                    float upPercent;
-                    float bestPercent;
-                    if (amount < 0) {
-                        downPercent = 0;
-                        upPercent = 0;
-                        bestPercent = 0;
-                        for (double j = 70; j <= 130; j++) {
-                            if (Math.round(itemVal * (j / 100)) < amount) {
-                                downPercent++;
-                            } else if (Math.round(itemVal * (j / 100)) > amount) {
-                                upPercent++;
-                            }
-                            if (Math.round(itemVal * (j / 100)) == min) {
-                                bestPercent++;
-                            }
+                        if(isBonus) {
+                            setBonus.setString(shortIdName, loreLine);
+                            continue;
                         }
-                        downPercent = downPercent / 0.61f;
-                        upPercent = upPercent / 0.61f;
-                        bestPercent = bestPercent / 0.61f;
-
-                        // Equations for calculating percent chances (not used currently because of a weird offset issue)
-                        //downPercent = (amount == max ? 0 : 100 - (float) (((Math.ceil(((amount - 0.5d) / itemVal) * 100) - 70) / 61) * 100));
-                        //upPercent = (amount == min ? 0 : (float) (((Math.ceil(((amount + 0.5d) / itemVal) * 100) - 69) / 61) * 100) );
-                        //bestPercent = (float) (((Math.ceil(((min * 100d) - 50d) / itemVal) - 70) / 61) * 100);
-                    } else {
-                        downPercent = 0;
-                        upPercent = 0;
-                        bestPercent = 0;
-                        for (double j = 30; j <= 130; j++) {
-                            if (Math.round(itemVal * (j / 100)) < amount) {
-                                downPercent++;
-                            } else if (Math.round(itemVal * (j / 100)) > amount) {
-                                upPercent++;
-                            }
-                            if (Math.round(itemVal * (j / 100)) == max) {
-                                bestPercent++;
-                            }
-                        }
-                        downPercent = downPercent / 1.01f;
-                        upPercent = upPercent / 1.01f;
-                        bestPercent = bestPercent / 1.01f;
-
-                        // Equations for calculating percent chances (not used currently because of a weird offset issue)
-                        //downPercent = (amount == min ? 0 : (float) (((Math.ceil(((amount - 0.5d) / itemVal) * 100) - 30) / 101) * 100) );
-                        //upPercent =  (amount == max ? 0 : 100 - (float) (((Math.ceil(((amount + 0.5d) / itemVal) * 100) - 30) / 101) * 100));
-                        //bestPercent = 100 - (float) (((Math.ceil(((max - 0.5d) / itemVal) * 100) - 30) / 101) * 100);
+                        idTag.setInteger(shortIdName, Integer.parseInt(idMatcher.group("Value")));
+                        continue;
                     }
-
-                    lore += " " + TextFormatting.RED.toString() + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", downPercent) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", upPercent) + "% " + TextFormatting.AQUA + TextFormatting.BOLD + "\u21EA" + TextFormatting.RESET + TextFormatting.AQUA + String.format("%.1f", bestPercent) + "%";
-                    identifications += 1;
-
-                    chanceUp = chanceUp + ((1 - chanceUp) * (upPercent / 100));
-                    chanceDown = chanceDown + ((1 - chanceDown) * (downPercent / 100));
-                } else if (showRanges) {
-                    lore += " " + (amount < 0 ? TextFormatting.DARK_RED + "[" + TextFormatting.RED + max + TextFormatting.DARK_RED + "," + TextFormatting.RED + " " + min + TextFormatting.DARK_RED + "]" : TextFormatting.DARK_GREEN + "[" + TextFormatting.GREEN + min + TextFormatting.DARK_GREEN + "," + TextFormatting.GREEN +" " + max + TextFormatting.DARK_GREEN + "]");
-                    switch (fieldName) {
-                        case "agilityPoints":
-                        case "intelligencePoints":
-                        case "defensePoints":
-                        case "strengthPoints":
-                        case "dexterityPoints":
-                            totalSP += amount;
-                            break;
-                        default:
-                            break;
-                    }
-                    identifications++;
-                } else {
-                    double intVal = (double) (max - min);
-                    double pVal = (double) (amount - min);
-                    int percent = (int) ((pVal / intVal) * 100);
-
-                    TextFormatting color;
-
-                    if (amount < 0) percent = 100 - percent;
-
-                    if (percent >= 97) {
-                        color = TextFormatting.AQUA;
-                    } else if (percent >= 80) {
-                        color = TextFormatting.GREEN;
-                    } else if (percent >= 30) {
-                        color = TextFormatting.YELLOW;
-                    } else {
-                        color = TextFormatting.RED;
-                    }
-
-                    lore += color + " [" + percent + "%]";
-                    total += percent;
-                    identifications += 1;
                 }
 
+                // rerolls
+                { Matcher rerollMatcher = ITEM_QUALITY.matcher(lColor);
+                    if (rerollMatcher.find()) {
+                        if (rerollMatcher.group("Rolls") == null) continue;
 
-                int idRank = Utils.getFieldRank(fieldName);
-                if (statOrderMem.isEmpty()){
-                    statOrderMem.add(idRank);
-                    actualLore.set(i, lore);
+                        mainTag.setInteger("rerollAmount", Integer.parseInt(rerollMatcher.group("Rolls")));
+                        continue;
+                    }
+                }
+
+                // powders
+                if (lColor.contains("] Powder Slots")) mainTag.setString("powderSlots", loreLine);
+
+                // dungeon and merchant prices
+                if (lColor.startsWith(" - ✔") || lColor.startsWith(" - ✖")) {
+                    purchaseInfo.appendTag(new NBTTagString(loreLine));
                     continue;
                 }
-                boolean notRepositioned = true;
-                for (int j = statOrderMem.size() -1; j >= 0; j--) {
-                    if (idRank < statOrderMem.get(j)) {
-                        statOrderMem.add(j+1, idRank);
-                        actualLore.add(i-(j+1), lore);
-                        actualLore.remove(i+1);
-                        notRepositioned = false;
-                        break;
-                    }
-                }
-                if (notRepositioned) {
-                    statOrderMem.add(0, idRank);
-                    actualLore.set(i, lore);
+
+                // market
+                { Matcher market = MARKET_PRICE.matcher(lColor);
+                    if (!market.find()) continue;
+
+                    NBTTagCompound marketTag = new NBTTagCompound();
+
+                    if (market.group("Quantity") != null)
+                        marketTag.setInteger("quantity", Integer.parseInt(
+                                market.group("Quantity").replace(",", "").replace(" x ", "")
+                        ));
+
+                    marketTag.setInteger("price", Integer.parseInt(market.group("Value").replace(",", "")));
+
+                    mainTag.setTag("marketInfo", marketTag);
                 }
 
-            } catch (Exception ex) {
-                actualLore.set(i, lore);
             }
+
+            if (idTag.getSize() > 0) mainTag.setTag("ids", idTag);
+            if (setBonus.getSize() > 0) mainTag.setTag("setBonus", setBonus);
+            if (purchaseInfo.tagCount() > 0) mainTag.setTag("purchaseInfo", purchaseInfo);
         }
 
-        if(!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        // update compound
+        NBTTagCompound stackCompound = stack.getTagCompound();
+        stackCompound.setTag("wynntils", mainTag);
 
-        NBTTagCompound nbt = stack.getTagCompound();
-        nbt.setBoolean("verifiedWynntils", true);
-        nbt.setBoolean("showChances", showChances);
-        nbt.setBoolean("showRanges", showRanges);
+        stack.setTagCompound(stackCompound);
 
-        if (identifications > 0) {
-            int average = total / identifications;
-            if (average >= 100) nbt.setString("rainbowTitle", "");
-            if (showChances) {
+        return mainTag;
+    }
 
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                NBTTagList tag = new NBTTagList();
-
-                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-
-                String name;
-                if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(cleanse(display.getString("Name")));
-                } else {
-                    name = cleanse(display.getString("Name"));
-                }
-
-                display.setTag("Lore", tag);
-                if (!nbt.hasKey("rainbowTitle")) {
-                    display.setString("Name", name + " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
-                } else {
-                    nbt.setString("rainbowTitleExtra", " " + TextFormatting.RED + TextFormatting.BOLD + "\u21E9" + TextFormatting.RESET + TextFormatting.RED + String.format("%.1f", (chanceDown / (chanceDown + chanceUp)) * 100) + "% " + TextFormatting.GREEN + TextFormatting.BOLD + "\u21E7" + TextFormatting.RESET + TextFormatting.GREEN + String.format("%.1f", (chanceUp / (chanceDown + chanceUp)) * 100) + "%");
-                }
-                nbt.setTag("display", display);
-            } else if (showRanges) {
-                String Extra = "";
-
-                if (totalSP > 0) {
-                    Extra += " " + TextFormatting.GREEN + "[" + totalSP + " SP]";
-                } else if (totalSP < 0) {
-                    Extra += " " + TextFormatting.RED +"[" + totalSP + " SP]";
-                }
-
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                NBTTagList tag = new NBTTagList();
-
-                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-
-                String name;
-                if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
-                } else {
-                    name = cleanse(display.getString("Name"));
-                }
-
-                display.setTag("Lore", tag);
-                if (!nbt.hasKey("rainbowTitle")) {
-                    display.setString("Name", name + Extra);
-                } else {
-                    nbt.setString("rainbowTitleExtra", Extra);
-                }
-                nbt.setTag("display", display);
-            } else {
-                TextFormatting color;
-                if (average >= 97) {
-                    color = TextFormatting.AQUA;
-                } else if (average >= 80) {
-                    color = TextFormatting.GREEN;
-                } else if (average >= 30) {
-                    color = TextFormatting.YELLOW;
-                } else {
-                    color = TextFormatting.RED;
-                }
-
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                NBTTagList tag = new NBTTagList();
-
-                actualLore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-
-                String name;
-                if (nbt.hasKey("rainbowTitle")) {
-                    name = Utils.stripPerfect(TextFormatting.getTextWithoutFormattingCodes(cleanse(display.getString("Name"))));
-                } else {
-                    name = cleanse(display.getString("Name"));
-                }
-
-                display.setTag("Lore", tag);
-                display.setString("Name", name + color + " [" + average + "%]");
-
-                if(average >= 100) nbt.setString("rainbowTitle", name);
-
-                nbt.setTag("display", display);
-                nbt.setString("rainbowTitleExtra", "");
-            }
+    public static String toShortIdName(String longIdName, boolean raw) {
+        String[] splitName = longIdName.split(" ");
+        StringBuilder result = new StringBuilder(raw ? "raw" : "");
+        for (String r : splitName) {
+            if (r.startsWith("[")) continue;  // ignore ids
+            result.append(Character.toUpperCase(r.charAt(0))).append(r.substring(1).toLowerCase(Locale.ROOT));
         }
 
-        stack.setTagCompound(nbt);
+        if (result.length() == 0) return "";
+        result.setCharAt(0, Character.toLowerCase(result.charAt(0)));
+        return result.toString();
     }
 
-    private static String cleanse(String str){
-        return ID_PERCENTAGES.matcher(str).replaceAll("");
+    /**
+     * Calculates the amount of emeralds, emerald blocks and liquid emeralds in the player inventory
+     *
+     * @param money the amount of money to process
+     * @return an array with the values in the respective order of emeralds[0], emerald blocks[1], liquid emeralds[2], stx[3]
+     */
+    private static int[] calculateMoneyAmount(int money) {
+        return new int[] { money % 64, (money / 64) % 64, (money / 4096) % 64, money / (64 * 4096) };
     }
+
 }

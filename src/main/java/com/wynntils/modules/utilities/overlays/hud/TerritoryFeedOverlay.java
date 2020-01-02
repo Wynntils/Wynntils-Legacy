@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.core.framework.overlays.Overlay;
@@ -43,7 +47,7 @@ public class TerritoryFeedOverlay extends Overlay {
     }
 
     public static void queueMessage(String message) {
-        if(!OverlayConfig.TerritoryFeed.INSTANCE.enabled) return;
+        if (!OverlayConfig.TerritoryFeed.INSTANCE.enabled) return;
 
         LogManager.getFormatterLogger("TerritoryFeed").info("Message Queued: " + message);
         messageList.add(message);

@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.instances;
 
 public enum IconContainer {
@@ -6,7 +10,7 @@ public enum IconContainer {
     settingsPageIcon(283, 304, 221, 263, true),
     itemGuideIcon(307, 325, 221, 261, true),
     hudConfigIcon(262, 283, 261, 303, true),
-    discoveriesIcon(206, 221, 252, 267, false);
+    discoveriesIcon(0, 16, 255, 287, true);
 
     private int x1, x2, y1, y2;
     private boolean highlightVariant;

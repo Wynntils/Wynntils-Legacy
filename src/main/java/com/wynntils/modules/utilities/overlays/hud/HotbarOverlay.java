@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -9,7 +9,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -54,18 +54,19 @@ public class HotbarOverlay extends Overlay {
 
             int x = -88 + (i*20);
 
-            String description = Utils.getStringLore(stack);
-            if(UtilitiesConfig.Items.INSTANCE.highlighItemsInHotbar && !description.isEmpty()) {
+            String description = ItemUtils.getStringLore(stack);
+            if (UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
-                if(description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
-                else if(description.contains(TextFormatting.LIGHT_PURPLE + "Rare")) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
-                else if(description.contains(TextFormatting.AQUA + "Legendary")) color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
-                else if(description.contains(TextFormatting.GREEN + "Set")) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
-                else if(description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
+                if (description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
+                else if (description.contains(TextFormatting.LIGHT_PURPLE + "Rare")) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
+                else if (description.contains(TextFormatting.AQUA + "Legendary")) color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
+                else if (description.contains(TextFormatting.RED + "Fabled")) color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
+                else if (description.contains(TextFormatting.GREEN + "Set")) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
+                else if (description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
 
-                if(color != null) {
-                    color.setA(0.3f);
+                if (color != null) {
+                    color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);
                     drawRect(color, x, 3, x + 16, 19);
                 }
             }

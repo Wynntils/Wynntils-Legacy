@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 0, minor: 2, revision: 7)
+def versionObj = new Version(major: 1, minor: 0, revision: 3)
 
 version = versionObj.toString()
 group = "com.wynntils"
@@ -43,7 +43,10 @@ configurations {
 }
 
 dependencies {
-    embed fileTree(dir: 'lib', include: ['*.jar'])
+    embed "javazoom:jlayer:1.0.1"
+    compile ('io.socket:socket.io-client:0.8.3') {
+//        exclude group: 'org.json', module: 'json'
+    }
 }
 
 processResources {
@@ -60,7 +63,7 @@ processResources {
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
-        attributes 'FMLAT': 'wynntils_at.cfg'
+        attributes [:]
     }
 }
 
@@ -73,8 +76,6 @@ shadowJar {
     classifier = null
     version = null
     configurations = [project.configurations.compile]
-    relocate "org.slf4j", "cf.wynntils.relocate.org.slf4j"
-    relocate "org.json", "cf.wybbtuls.relocate.org.json"
 }
 
 task wrapper(type: Wrapper) {
@@ -82,7 +83,7 @@ task wrapper(type: Wrapper) {
 }
 
 class Version {
-    static String major, minor, revision
+    int major, minor, revision
 
     static String getBuild() {
         System.getenv("BUILD_NUMBER") ?: System.getProperty("BUILD_NUMBER") ?: "DEV"
@@ -93,6 +94,6 @@ class Version {
     }
 
     String toString() {
-        "${major}.${minor}.${revision}_$build"
+        "${major}.${minor}.${revision}_$build-MC1.12.2"
     }
 }

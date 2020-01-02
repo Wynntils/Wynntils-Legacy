@@ -1,8 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles;
+
+import com.wynntils.core.utils.StringUtils;
 
 public class MapMarkerProfile {
 
@@ -12,12 +14,13 @@ public class MapMarkerProfile {
     int z;
     String icon;
 
-    public MapMarkerProfile(String name, int x, int y, int z, String icon){
+    public MapMarkerProfile(String name, int x, int y, int z, String icon) {
         this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
         this.icon = icon;
+        ensureNormalized();
     }
 
     public String getName() {
@@ -36,8 +39,13 @@ public class MapMarkerProfile {
         return z;
     }
 
-    public String getIcon(){
-        return icon.replace(".png", "");
+    public String getIcon() {
+        return icon;
+    }
+
+    public void ensureNormalized() {
+        if (name != null) name = StringUtils.normalizeBadString(name);
+        icon = icon.replace(".png", "");
     }
 
 }

@@ -1,10 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.core.utils.Location;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
@@ -43,20 +43,28 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0) {
+        if (args.length <= 0) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
         }
-        String territoryName = StringUtils.join(args, " ");
+
+        String territoryName;
+        if (args.length == 1) {
+            territoryName = args[0].replace('_', ' ');
+        } else {
+            territoryName = StringUtils.join(args, " ");
+        }
+        String finalTerritoryName = territoryName;
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
 
-        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(territoryName)).findFirst();
-        if(!selectedTerritory.isPresent()) {
+        Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(finalTerritoryName)).findFirst();
+        if (!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
         }
+
         Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 
         TerritoryProfile tp = selectedTerritory.get();
@@ -64,7 +72,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         int xMiddle = tp.getStartX() + ((tp.getEndX() - tp.getStartX())/2);
         int zMiddle = tp.getStartZ() + ((tp.getEndZ() - tp.getStartZ())/2);
 
-        CompassManager.setCompassLocation(new Location(xMiddle, 0, zMiddle)); //update compass location
+        CompassManager.setCompassLocation(new Location(xMiddle, 0, zMiddle));  // update compass location
 
         TextComponentString success = new TextComponentString("The compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
         success.getStyle().setColor(TextFormatting.GREEN);
@@ -84,7 +92,11 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos targetPos) {
-        if (args.length >= 1) {
+        if (args.length == 1) {
+            return getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map((territoryProfile) ->
+                territoryProfile.getFriendlyName().replace(' ', '_')
+            ).collect(Collectors.toList()));
+        } else if (args.length > 1) {
             String temp = String.join(" ", args).toLowerCase();
             List<String> result = getListOfStringsMatchingLastWord(args, WebManager.getTerritories().values().stream().map(territoryProfile -> {
                 if (args.length <= territoryProfile.getFriendlyName().split(" ").length && territoryProfile.getFriendlyName().toLowerCase().startsWith(temp)) {
@@ -95,6 +107,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
             result.removeAll(Arrays.asList("", null));
             return result.stream().distinct().collect(Collectors.toList());
         }
+
         return Collections.emptyList();
     }
 

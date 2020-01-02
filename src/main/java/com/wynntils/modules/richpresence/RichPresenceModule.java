@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.richpresence;
@@ -22,7 +22,7 @@ public class RichPresenceModule extends Module {
 
     public void onEnable() {
         try {
-            richPresence = new RichProfile("387266678607577088");
+            richPresence = new RichProfile(387266678607577088L);
         } catch (Exception e) {
             e.printStackTrace();
         }

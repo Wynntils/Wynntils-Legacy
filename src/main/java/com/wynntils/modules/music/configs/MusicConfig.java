@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.music.configs;
@@ -29,8 +29,8 @@ public class MusicConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if(!allowMusicModule && Reference.onWorld) MusicManager.getPlayer().stop();
-        if(allowMusicModule && Reference.onWorld) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
+        if (!allowMusicModule && Reference.onWorld) MusicManager.getPlayer().stop();
+        if (allowMusicModule && Reference.onWorld) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.events.custom;
@@ -8,14 +8,13 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.eventhandler.GenericEvent;
 
-
 /**
  * triggered when a packet is sent to the client
  * is cancellable (you can avoid it to reach the client processor)
  *
  */
 public class PacketEvent<T extends Packet<?>> extends GenericEvent<T> {
-    
+
     T packet;
     NetHandlerPlayClient playClient;
 

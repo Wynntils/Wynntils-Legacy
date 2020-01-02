@@ -1,28 +1,35 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class ItemPage extends QuestBookPage {
 
@@ -40,21 +47,30 @@ public class ItemPage extends QuestBookPage {
     private boolean allowDaggers = true;
     private boolean allowSpears = true;
     private boolean allowBows = true;
+    private boolean allowReliks = true;
     private boolean allowNecklaces = true;
     private boolean allowBracelets = true;
     private boolean allowRings = true;
 
-    private final ItemStack helmetIcon = new ItemStack(Items.DIAMOND_HELMET);
-    private final ItemStack chestplateIcon = new ItemStack(Items.DIAMOND_CHESTPLATE);
-    private final ItemStack leggingsIcon = new ItemStack(Items.DIAMOND_LEGGINGS);
-    private final ItemStack bootsIcon = new ItemStack(Items.DIAMOND_BOOTS);
-    private final ItemStack wandsIcon = new ItemStack(Items.STICK);
-    private final ItemStack daggersIcon = new ItemStack(Items.SHEARS);
-    private final ItemStack spearsIcon = new ItemStack(Items.IRON_SHOVEL);
-    private final ItemStack bowsIcon = new ItemStack(Items.BOW);
-    private final ItemStack necklaceIcon = new ItemStack(Blocks.GLASS_PANE);
-    private final ItemStack braceletsIcon = new ItemStack(Blocks.SPRUCE_FENCE);
-    private final ItemStack ringsIcon = new ItemStack(Blocks.STAINED_GLASS);
+    private static final ItemStack helmetIcon = new ItemStack(ItemType.HELMET.getDefaultItem());
+    private static final ItemStack chestplateIcon = new ItemStack(ItemType.CHESTPLATE.getDefaultItem());
+    private static final ItemStack leggingsIcon = new ItemStack(ItemType.LEGGINGS.getDefaultItem());
+    private static final ItemStack bootsIcon = new ItemStack(ItemType.BOOTS.getDefaultItem());
+    private static final ItemStack wandsIcon = new ItemStack(ItemType.WAND.getDefaultItem());
+    private static final ItemStack daggersIcon = new ItemStack(ItemType.DAGGER.getDefaultItem());
+    private static final ItemStack spearsIcon = new ItemStack(ItemType.SPEAR.getDefaultItem());
+    private static final ItemStack bowsIcon = new ItemStack(ItemType.BOW.getDefaultItem());
+    private static final ItemStack relikIcon = new ItemStack(ItemType.RELIK.getDefaultItem(), 1, ItemType.RELIK.getMeta());
+    private static final ItemStack ringsIcon = new ItemStack(ItemType.RING.getDefaultItem());
+    private static final ItemStack necklaceIcon = new ItemStack(ItemType.NECKLACE.getDefaultItem());
+    private static final ItemStack braceletsIcon = new ItemStack(ItemType.BRACELET.getDefaultItem());
+
+    static {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setBoolean("Unbreakable", true);
+
+        relikIcon.setTagCompound(compound);
+    }
 
     public ItemPage() {
         super("Item Guide", true, IconContainer.itemGuideIcon);
@@ -69,57 +85,57 @@ public class ItemPage extends QuestBookPage {
 
         ScreenRenderer.beginGL(0, 0);
         {
-            //order buttons
+            // order buttons
             render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
+            if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                 selected = 1;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
-            }else{
-                if(selected == 1) selected = 0;
-                if(byAlphabetical) {
+            } else {
+                if (selected == 1) selected = 0;
+                if (byAlphabetical) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 254, 259, 7, 7);
                 }
             }
 
             render.drawString("Level Order (100-0)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
+            if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                 selected = 2;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
-            }else{
-                if(selected == 2) selected = 0;
-                if(byLevel) {
+            } else {
+                if (selected == 2) selected = 0;
+                if (byLevel) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 254, 259, 7, 7);
                 }
             }
 
             render.drawString("Rarity Order (MYTH-NORM)", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if(posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
+            if (posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
                 selected = 3;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
-            }else{
-                if(selected == 3) selected = 0;
-                if(byRarity) {
+            } else {
+                if (selected == 3) selected = 0;
+                if (byRarity) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 246, 259, 7, 7);
-                }else{
+                } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 254, 259, 7, 7);
                 }
             }
 
-            //filter ++
+            // filter ++
             render.drawString("Item Filter", x - 84, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int placed = 0;
             int plusY = 0;
-            for (int i = 0; i < 11; i++) {
-                if(placed + 1 >= 7) {
+            for (int i = 0; i < 12; i++) {
+                if (placed + 1 >= 7) {
                     placed = 0;
                     plusY ++;
                 }
@@ -129,43 +145,45 @@ public class ItemPage extends QuestBookPage {
                 int minX = x - 123 + (placed * 20);
                 int minY = y + 34 + (plusY * 20);
 
-                if(mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
+                if (mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
                     render.drawRect(selected_cube, maxX, maxY, minX, minY);
 
                     selected = (i + 1) * 10;
-                }else{
-                    if(selected == (i + 1) * 10) selected = 0;
+                } else {
+                    if (selected == (i + 1) * 10) selected = 0;
 
-                    if(i == 0 && allowHelmet) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 1 && allowChestplate) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 2 && allowLeggings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 3 && allowBoots) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 4 && allowWands) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 8 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 9 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
-                    else if(i == 10 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    if (i == 0 && allowHelmet) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 1 && allowChestplate) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 2 && allowLeggings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 3 && allowBoots) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 4 && allowWands) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 5 && allowDaggers) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 6 && allowSpears) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 7 && allowBows) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 8 && allowReliks) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 9 && allowNecklaces) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 10 && allowRings) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
+                    else if (i == 11 && allowBracelets) render.drawRect(selected_cube_2, maxX, maxY, minX, minY);
                     else render.drawRect(unselected_cube, maxX, maxY, minX, minY);
                 }
 
-                if(i == 0) render.drawItemStack(helmetIcon, maxX, minY, false);
-                else if(i == 1) render.drawItemStack(chestplateIcon, maxX, minY, false);
-                else if(i == 2) render.drawItemStack(leggingsIcon, maxX, minY, false);
-                else if(i == 3) render.drawItemStack(bootsIcon, maxX, minY, false);
-                else if(i == 4) render.drawItemStack(wandsIcon, maxX, minY, false);
-                else if(i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
-                else if(i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
-                else if(i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
-                else if(i == 8) render.drawItemStack(necklaceIcon, maxX, minY, false);
-                else if(i == 9) render.drawItemStack(ringsIcon, maxX, minY, false);
-                else if(i == 10) render.drawItemStack(braceletsIcon, maxX, minY, false);
+                if (i == 0) render.drawItemStack(helmetIcon, maxX, minY, false);
+                else if (i == 1) render.drawItemStack(chestplateIcon, maxX, minY, false);
+                else if (i == 2) render.drawItemStack(leggingsIcon, maxX, minY, false);
+                else if (i == 3) render.drawItemStack(bootsIcon, maxX, minY, false);
+                else if (i == 4) render.drawItemStack(wandsIcon, maxX, minY, false);
+                else if (i == 5) render.drawItemStack(daggersIcon, maxX, minY, false);
+                else if (i == 6) render.drawItemStack(spearsIcon, maxX, minY, false);
+                else if (i == 7) render.drawItemStack(bowsIcon, maxX, minY, false);
+                else if (i == 8) render.drawItemStack(relikIcon, maxX, minY, false);
+                else if (i == 9) render.drawItemStack(necklaceIcon, maxX, minY, false);
+                else if (i == 10) render.drawItemStack(ringsIcon, maxX, minY, false);
+                else if (i == 11) render.drawItemStack(braceletsIcon, maxX, minY, false);
 
                 placed++;
             }
 
-            //back to menu button
+            // back to menu button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                 hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
@@ -175,19 +193,19 @@ public class ItemPage extends QuestBookPage {
 
             render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            //page counter including search
+            // page counter including search
             int pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
             if (pages < currentPage) {
                 currentPage = pages;
             }
 
-            if(byAlphabetical) itemSearch.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
-            if(byLevel) itemSearch.sort(Comparator.comparingInt(ItemProfile::getLevel).reversed());
-            if(byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getId()));
+            if (byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
+            if (byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
+            if (byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            //but next and back button
+            // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 acceptNext = false;
@@ -212,7 +230,7 @@ public class ItemPage extends QuestBookPage {
                 }
             }
 
-            //available items
+            // available items
             int placedCubes = 0;
             int currentY = 0;
             for (int i = ((currentPage - 1) * 42); i < 42 * currentPage; i++) {
@@ -238,6 +256,11 @@ public class ItemPage extends QuestBookPage {
                         r = 0.3f;
                         g = 0;
                         b = 0.3f;
+                        break;
+                    case FABLED:
+                        r = 1f;
+                        g = 0.58f;
+                        b = 0.49f;
                         break;
                     case LEGENDARY:
                         r = 0;
@@ -278,20 +301,27 @@ public class ItemPage extends QuestBookPage {
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    if (pf.asStack() != null) {
-                        render.drawItemStack(pf.asStack().a, maxX, maxY, false);
-                    } else { continue; }
 
-                    hoveredText = pf.asStack().b;
+                    if (pf.getGuideStack().isEmpty()) continue;
+
+                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
+
+                    ArrayList<String> lore = new ArrayList<>();
+                    lore.add(pf.getGuideStack().getDisplayName());
+                    lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
+
+                    hoveredText = lore;
                 } else {
+
                     GlStateManager.color(r, g, b, 1.0f);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                    if (pf.asStack() != null) {
-                        render.drawItemStack(pf.asStack().a, maxX, maxY, false);
-                    } else { continue; }
+
+                    if (pf.getGuideStack().isEmpty()) continue;
+
+                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
                 }
 
                 placedCubes++;
@@ -332,8 +362,8 @@ public class ItemPage extends QuestBookPage {
                 byLevel = true;
                 byRarity = false;
             }
-        } else if(selected == 3) {
-            if(!byRarity) {
+        } else if (selected == 3) {
+            if (!byRarity) {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 byRarity = true;
                 byAlphabetical = false;
@@ -366,12 +396,15 @@ public class ItemPage extends QuestBookPage {
                     allowBows = !allowBows;
                     break;
                 case 9:
-                    allowNecklaces = !allowNecklaces;
+                    allowReliks = !allowReliks;
                     break;
                 case 10:
-                    allowRings = !allowRings;
+                    allowNecklaces = !allowNecklaces;
                     break;
                 case 11:
+                    allowRings = !allowRings;
+                    break;
+                case 12:
                     allowBracelets = !allowBracelets;
                     break;
                 default:
@@ -384,28 +417,38 @@ public class ItemPage extends QuestBookPage {
     }
 
     @Override
-    public void searchUpdate(String currentText) {
-        ArrayList<ItemProfile> items = new ArrayList<>(WebManager.getDirectItems());
+    protected void searchUpdate(String currentText) {
+        itemSearch = new ArrayList<>(WebManager.getDirectItems());
 
-        itemSearch = currentText != null && !currentText.isEmpty() ? (ArrayList<ItemProfile>)items.stream().filter(c -> doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase())).collect(Collectors.toList()) : items;
+        itemSearch.removeIf(c -> {
+            if (c.getItemInfo().getType() == null) return true;
+              switch (c.getItemInfo().getType()) {
+                  case HELMET: return !allowHelmet;
+                  case CHESTPLATE: return !allowChestplate;
+                  case BOOTS: return !allowBoots;
+                  case LEGGINGS: return !allowLeggings;
+                  case WAND: return !allowWands;
+                  case SPEAR: return !allowSpears;
+                  case DAGGER: return !allowDaggers;
+                  case BOW: return !allowBows;
+                  case RELIK: return !allowReliks;
+                  case RING: return !allowRings;
+                  case NECKLACE: return !allowNecklaces;
+                  case BRACELET: return !allowBracelets;
 
-        itemSearch = (ArrayList<ItemProfile>)itemSearch.stream().filter(c -> {
-            if(allowHelmet && c.getType() != null && c.getType().equalsIgnoreCase("Helmet")) return true;
-            if(allowChestplate && c.getType() != null && c.getType().equalsIgnoreCase("Chestplate")) return true;
-            if(allowBoots && c.getType() != null && c.getType().equalsIgnoreCase("Boots")) return true;
-            if(allowLeggings && c.getType() != null && c.getType().equalsIgnoreCase("Leggings")) return true;
-            if(allowWands && c.getType() != null && c.getType().equalsIgnoreCase("Wand")) return true;
-            if(allowSpears && c.getType() != null && c.getType().equalsIgnoreCase("Spear")) return true;
-            if(allowDaggers && c.getType() != null && c.getType().equalsIgnoreCase("Dagger")) return true;
-            if(allowBows && c.getType() != null && c.getType().equalsIgnoreCase("Bow")) return true;
-            if(allowBracelets && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Bracelet")) return true;
-            if(allowRings && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Ring")) return true;
-            return allowNecklaces && c.getAccessoryType() != null && c.getAccessoryType().equalsIgnoreCase("Necklace");
-        }).collect(Collectors.toList());
+                  default: return true;
+              }
+        });
+
+        if (currentText != null && !currentText.isEmpty()) {
+            String lowerText = currentText.toLowerCase();
+            itemSearch.removeIf(c -> !doesSearchMatch(c.getDisplayName().toLowerCase(), lowerText));
+        }
     }
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.",  "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
+
 }

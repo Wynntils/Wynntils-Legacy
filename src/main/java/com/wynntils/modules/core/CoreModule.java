@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core;
@@ -7,9 +7,12 @@ package com.wynntils.modules.core;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import com.wynntils.modules.core.commands.*;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
+import com.wynntils.modules.core.events.SocketEvents;
+import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 
@@ -21,11 +24,22 @@ public class CoreModule extends Module {
     public void onEnable() {
         registerEvents(new ClientEvents());
         registerEvents(new ServerEvents());
+        registerEvents(new SocketEvents());
 
         registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
 
         registerSettings(CoreDBConfig.class);
+
+        registerCommand(new CommandAdmin());
+        registerCommand(new CommandCompass());
+        registerCommand(new CommandForceUpdate());
+        registerCommand(new CommandServer());
+        registerCommand(new CommandTerritory());
+        registerCommand(new CommandToken());
+        registerCommand(new CommandWynntils());
+
+        TabManager.replaceTabOrderer();
 
         module = this;
     }

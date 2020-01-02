@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.downloader;
@@ -11,6 +11,7 @@ import com.wynntils.webapi.downloader.enums.DownloadPhase;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -70,10 +71,10 @@ public class DownloaderManager {
     }
 
     public static void startDownloading() {
-        if(!Reference.onServer) {
+        if (!Reference.onServer) {
             return;
         }
-        if(futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
+        if (futureDownloads.size() <= 0 || (currentPhase != DownloadPhase.WAITING && !next)) {
             return;
         }
 
@@ -83,36 +84,36 @@ public class DownloaderManager {
         progression = 0;
 
         new Thread(() -> {
-            try{
+            try {
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();
                 st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
                 st.connect();
 
-                if(st.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0);
                     return;
                 }
-                
-                if(!pf.getLocation().exists()) {
+
+                if (!pf.getLocation().exists()) {
                     pf.getLocation().mkdirs();
                 }
 
-                String[] urlSplited = pf.getUrl().split("/");
+                String[] urlParts = pf.getUrl().split("/");
 
-                int fileLenght = st.getContentLength();
+                int fileLength = st.getContentLength();
 
-                File fileSaved = new File(pf.getLocation(), urlSplited[urlSplited.length - 1].replace("%20", " "));
+                File fileSaved = new File(pf.getLocation(), URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
 
                 InputStream fis = st.getInputStream();
                 OutputStream fos = new FileOutputStream(fileSaved);
 
-                byte data[] = new byte[1024];
+                byte[] data = new byte[1024];
                 long total = 0;
                 int count;
 
                 while ((count = fis.read(data)) != -1) {
                     total += count;
-                    progression = (int)(total * 100 / fileLenght);
+                    progression = (int)(total * 100 / fileLength);
                     fos.write(data, 0, count);
                 }
 
@@ -120,11 +121,11 @@ public class DownloaderManager {
                 fos.close();
                 fis.close();
 
-                //unzipping all files
-                if(pf.getAction() == DownloadAction.UNZIP) {
+                // unzipping all files
+                if (pf.getAction() == DownloadAction.UNZIP) {
                     currentPhase = DownloadPhase.UNZIPPING;
 
-                    byte buffer[] = new byte[1024];
+                    byte[] buffer = new byte[1024];
                     FileInputStream fin = new FileInputStream(fileSaved);
                     ZipInputStream zin = new ZipInputStream(fin);
                     FileChannel channel = fin.getChannel();
@@ -136,12 +137,12 @@ public class DownloaderManager {
 
                         File newFile = new File(pf.getLocation(), ze.getName());
 
-                        if(ze.isDirectory()) {
+                        if (ze.isDirectory()) {
                             newFile.mkdir();
                             continue;
                         }
 
-                        new File(newFile.getParent()).mkdirs();
+                        newFile.getParentFile().mkdirs();
 
                         FileOutputStream fout = new FileOutputStream(newFile);
                         while ((length = zin.read(buffer)) > 0) {
@@ -159,22 +160,28 @@ public class DownloaderManager {
                     zin.closeEntry();
                     zin.close();
 
-                    File zip = new File(pf.getLocation(), urlSplited[urlSplited.length - 1]);
-                    if(zip.exists()) { zip.delete(); }
+                    File zip = new File(pf.getLocation(), urlParts[urlParts.length - 1]);
+                    if (zip.exists()) { zip.delete(); }
                 }
 
                 pf.onFinish.accept(true);
                 futureDownloads.remove(0);
-                if(futureDownloads.size() <= 0) {
+                if (futureDownloads.size() <= 0) {
                     currentPhase = DownloadPhase.WAITING;
-                }else{
+                } else {
                     next = true;
                 }
                 progression = 0;
 
                 startDownloading();
-            }catch (Exception ex) { ex.printStackTrace(); pf.onFinish.accept(false); currentPhase = DownloadPhase.WAITING; progression = 0; futureDownloads.remove(0); }
-        }).start();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                pf.onFinish.accept(false);
+                currentPhase = DownloadPhase.WAITING;
+                progression = 0;
+                futureDownloads.remove(0);
+            }
+        }, "wynntils-download-manager").start();
     }
 
 }

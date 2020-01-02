@@ -1,6 +1,11 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.enums;
 
 public enum OverlayRotation {
+
     NORMAL(0),
     ONE_QUARTER(90),
     THREE_QUARTERS(270);
@@ -14,4 +19,5 @@ public enum OverlayRotation {
     public int getDegrees() {
         return degrees;
     }
+
 }

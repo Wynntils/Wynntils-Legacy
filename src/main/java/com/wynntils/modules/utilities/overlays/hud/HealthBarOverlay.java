@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -11,7 +11,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.annotations.Setting;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -24,7 +24,7 @@ public class HealthBarOverlay extends Overlay {
     }
 
 //    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-//    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
+//    @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
 //    public float animated = 2f;
 
     /* Temp in UtilitiesConfig so users can change textures on the fly
@@ -36,7 +36,7 @@ public class HealthBarOverlay extends Overlay {
     public boolean flip = false;
 
     @Setting(displayName = "Text Position", description = "The position offset of the text")
-    public Pair<Integer,Integer> textPositionOffset = new Pair<>(-40,-10);
+    public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
     public CustomColor textColor = CommonColors.RED;
@@ -60,13 +60,13 @@ public class HealthBarOverlay extends Overlay {
         switch (OverlayConfig.Health.INSTANCE.healthTexture) {
             case Wynn: drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
-            case a: drawDefaultBar(-1,7,18,33, textColor);
+            case a: drawDefaultBar(-1, 7, 18, 33, textColor);
                 break;
-            case b: drawDefaultBar(-1,8,34,51, textColor);
+            case b: drawDefaultBar(-1, 8, 34, 51, textColor);
                 break;
-            case c: drawDefaultBar(-1,7,52,67, textColor);
+            case c: drawDefaultBar(-1, 7, 52, 67, textColor);
                 break;
-            case d: drawDefaultBar(-1,7,68,83, textColor);
+            case d: drawDefaultBar(-1, 7, 68, 83, textColor);
                 break;
             case Grune: drawDefaultBar(-1, 7, 84, 99, CommonColors.GREEN);
                 break;

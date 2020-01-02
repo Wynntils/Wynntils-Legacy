@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.Reference;
@@ -6,7 +10,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.Easing;
+import com.wynntils.core.utils.reference.Easing;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -28,19 +32,19 @@ public class QuestBookPage extends GuiScreen {
     protected final ScreenRenderer render = new ScreenRenderer();
     private long time;
 
-    //Page specific information
+    // Page specific information
     private String title = "";
     private IconContainer icon;
     protected boolean requestOpening;
 
     private boolean showSearchBar;
-    private String searchBarText;
+    protected String searchBarText;
     private boolean searchBarFocused;
     protected int currentPage;
     protected boolean acceptNext, acceptBack;
     protected int selected;
 
-    //Animation
+    // Animation
     protected long lastTick;
     protected boolean animationCompleted;
 
@@ -48,14 +52,15 @@ public class QuestBookPage extends GuiScreen {
     private long text_flicker;
     private long delay = Minecraft.getSystemTime();
 
-    //Colours
-    protected static final CustomColor background_1 = CustomColor.fromString("000000", 0.3f);
-    protected static final CustomColor background_2 = CustomColor.fromString("000000", 0.2f);
-    protected static final CustomColor background_3 = CustomColor.fromString("00ff00", 0.3f);
-    protected static final CustomColor background_4 = CustomColor.fromString("008f00", 0.2f);
+    // Colours
+    protected static final CustomColor background_1 = CustomColor.fromInt(0x000000, 0.3f);
+    protected static final CustomColor background_2 = CustomColor.fromInt(0x000000, 0.2f);
+    protected static final CustomColor background_3 = CustomColor.fromInt(0x00ff00, 0.3f);
+    protected static final CustomColor background_4 = CustomColor.fromInt(0x008f00, 0.2f);
+
     protected static final CustomColor unselected_cube = new CustomColor(0, 0, 0, 0.2f);
     protected static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
-    protected static final CustomColor selected_cube_2 = CustomColor.fromString("#adf8b3", 0.3f);
+    protected static final CustomColor selected_cube_2 = CustomColor.fromInt(0xadf8b3, 0.3f);
 
     /**
      * Base class for all questbook pages
@@ -80,7 +85,14 @@ public class QuestBookPage extends GuiScreen {
         searchUpdate("");
         time = Minecraft.getSystemTime();
         text_flicker = Minecraft.getSystemTime();
-        lastTick = Minecraft.getMinecraft().world.getWorldTime();
+        lastTick = Minecraft.getSystemTime();
+
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
     }
 
     @Override
@@ -90,7 +102,7 @@ public class QuestBookPage extends GuiScreen {
         int x = width / 2;
         int y = height / 2;
 
-        ScreenRenderer.beginGL(0,0);
+        ScreenRenderer.beginGL(0, 0);
         {
             if (requestOpening) {
                 float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
@@ -126,7 +138,7 @@ public class QuestBookPage extends GuiScreen {
             /*Render search bar when needed*/
             if (showSearchBar) {
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
-                //searchBar
+                // searchBar
                 if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
                     render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 } else if (searchBarText.length() <= 0 && !searchBarFocused) {
@@ -155,6 +167,7 @@ public class QuestBookPage extends GuiScreen {
                 }
             }
         }
+
         ScreenRenderer.endGL();
     }
 
@@ -169,7 +182,7 @@ public class QuestBookPage extends GuiScreen {
                 searchBarFocused = true;
                 if (mouseButton == 1) {
                     searchBarText = "";
-                    searchUpdate(searchBarText);
+                    updateSearch();
                 }
             } else {
                 searchBarFocused = false;
@@ -181,13 +194,13 @@ public class QuestBookPage extends GuiScreen {
     public void handleMouseInput() throws IOException {
         int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 100)) {
+        if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptNext) {
                 delay = Minecraft.getSystemTime();
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                 currentPage++;
             }
-        } else if(mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 100)) {
+        } else if (mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
                 delay = Minecraft.getSystemTime();
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
@@ -220,7 +233,7 @@ public class QuestBookPage extends GuiScreen {
                 keepForTime = true;
             }
             currentPage = 1;
-            searchUpdate(searchBarText);
+            updateSearch();
         }
         super.keyTyped(typedChar, keyCode);
     }
@@ -229,7 +242,7 @@ public class QuestBookPage extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
         {
             GlStateManager.disableLighting();
-            if(hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
+            if (hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
         }
         ScreenRenderer.endGL();
     }

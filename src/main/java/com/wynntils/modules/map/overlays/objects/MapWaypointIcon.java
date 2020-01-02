@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -6,6 +10,7 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -17,14 +22,14 @@ public class MapWaypointIcon extends MapTextureIcon {
     public static final int HIDDEN_ZOOM = -1;
 
     private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
-    private static int[] sizeMapping = null;
+    private static int[] sizeMapping;
     private static int waypointTypesCount;
     private static final int texPosXIndex = 0;
     private static final int texPosZIndex = 1;
     private static final int texSizeXIndex = 2;
     private static final int texSizeZIndex = 3;
 
-    private static void setSize(WaypointProfile.WaypointType type, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
+    private static void setSize(WaypointType type, int texPosX, int texPosZ, int texSizeX, int texSizeZ) {
         assert type.ordinal() < waypointTypesCount;
         int i = type.ordinal() * 4;
         sizeMapping[i + texPosXIndex] = texPosX;
@@ -33,31 +38,33 @@ public class MapWaypointIcon extends MapTextureIcon {
         sizeMapping[i + texSizeZIndex] = texSizeZ;
     }
 
-    private static void initialise() {
-        if (sizeMapping != null) return;
-        waypointTypesCount = WaypointProfile.WaypointType.class.getEnumConstants().length;
+    static {
+        waypointTypesCount = WaypointType.class.getEnumConstants().length;
 
-        assert waypointTypesCount == 9 : "If you added a new waypoint type, specify the dimensions here";
+        assert waypointTypesCount == 13 : "If you added a new waypoint type, specify the dimensions here";
 
         sizeMapping = new int[waypointTypesCount * 4];
 
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T1, 136, 35, 154, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T2, 118, 35, 136, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T3,  82, 35, 100, 53);
-        setSize(WaypointProfile.WaypointType.LOOTCHEST_T4, 100, 35, 118, 53);
-        setSize(WaypointProfile.WaypointType.DIAMOND, 172, 37, 190, 55);
-        setSize(WaypointProfile.WaypointType.FLAG, 154, 36, 172, 54);
-        setSize(WaypointProfile.WaypointType.SIGN, 190, 36, 208, 54);
-        setSize(WaypointProfile.WaypointType.STAR, 208, 36, 226, 54);
-        setSize(WaypointProfile.WaypointType.TURRET, 226, 36, 244, 54);
+        setSize(WaypointType.LOOTCHEST_T1, 136, 35, 154, 53);
+        setSize(WaypointType.LOOTCHEST_T2, 118, 35, 136, 53);
+        setSize(WaypointType.LOOTCHEST_T3,  82, 35, 100, 53);
+        setSize(WaypointType.LOOTCHEST_T4, 100, 35, 118, 53);
+        setSize(WaypointType.DIAMOND, 172, 37, 190, 55);
+        setSize(WaypointType.FLAG, 154, 36, 172, 54);
+        setSize(WaypointType.SIGN, 190, 36, 208, 54);
+        setSize(WaypointType.STAR, 208, 36, 226, 54);
+        setSize(WaypointType.TURRET, 226, 36, 244, 54);
+        setSize(WaypointType.FARMING, 24, 53, 42, 71);
+        setSize(WaypointType.FISHING, 42, 53, 60, 71);
+        setSize(WaypointType.MINING, 60, 53, 78, 71);
+        setSize(WaypointType.WOODCUTTING, 78, 53, 96, 71);
     }
 
     private WaypointProfile wp;
 
     public MapWaypointIcon(WaypointProfile wp) {
-        initialise();
-
-        assert wp.getType().ordinal() < waypointTypesCount : "Invalid enum value in WaypointProfile.WaypointType: " + wp.getType().ordinal();
+        WaypointType type = wp.getType();
+        assert type.ordinal() < waypointTypesCount : "Invalid enum value in WaypointType: " + wp.getType().ordinal();
 
         this.wp = wp;
     }
@@ -65,11 +72,11 @@ public class MapWaypointIcon extends MapTextureIcon {
     /**
      * Return a MapWaypointIcon that can render a WaypointType being free from position information
      */
-    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type) {
+    public static MapWaypointIcon getFree(WaypointType type) {
         return getFree(type, null);
     }
 
-    public static MapWaypointIcon getFree(WaypointProfile.WaypointType type, CustomColor color) {
+    public static MapWaypointIcon getFree(WaypointType type, CustomColor color) {
         return new MapWaypointIcon(new WaypointProfile("", 0, 0, 0, color, type, 0));
     }
 
@@ -119,7 +126,7 @@ public class MapWaypointIcon extends MapTextureIcon {
         return wp.getZoomNeeded();
     }
 
-    @Override public boolean isEnabled() {
+    @Override public boolean isEnabled(boolean forMinimap) {
         return wp.getZoomNeeded() != HIDDEN_ZOOM;
     }
 
@@ -128,7 +135,7 @@ public class MapWaypointIcon extends MapTextureIcon {
         CustomColor color = wp.getColor();
         if (color != null) {
             GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
-            GL11.glColor4f(color.r, color.g, color.b, color.a);
+            GL11.glColor4f(color.r, color.g, color.b, color.a * currentColorBuf.get(3));
         }
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
         if (color != null) {

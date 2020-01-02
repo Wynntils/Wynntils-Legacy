@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.cosmetics;
@@ -25,6 +25,7 @@ public class CosmeticsModule extends Module {
 
     public void postEnable() {
         Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
+
         for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
             render.addLayer(new LayerCape(render));
             render.addLayer(new LayerElytra(render));

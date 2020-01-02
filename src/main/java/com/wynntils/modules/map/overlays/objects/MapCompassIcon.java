@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -7,12 +7,12 @@ package com.wynntils.modules.map.overlays.objects;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.map.configs.MapConfig;
 
 public class MapCompassIcon extends MapTextureIcon {
-    private static MapCompassIcon instance = null;
+    private static final MapCompassIcon instance = new MapCompassIcon();
 
     public static MapCompassIcon getCompass() {
-        if (instance == null && Textures.Map.map_icons != null) instance = new MapCompassIcon();
         return instance;
     }
 
@@ -23,12 +23,12 @@ public class MapCompassIcon extends MapTextureIcon {
     }
 
     @Override public int getPosX() {
-        if (!isEnabled()) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return NO_LOCATION;
         return (int) CompassManager.getCompassLocation().getX();
     }
 
     @Override public int getPosZ() {
-        if (!isEnabled()) return Integer.MIN_VALUE;
+        if (!isEnabled(false)) return NO_LOCATION;
         return (int) CompassManager.getCompassLocation().getZ();
     }
 
@@ -66,8 +66,9 @@ public class MapCompassIcon extends MapTextureIcon {
         return ANY_ZOOM;
     }
 
-    @Override public boolean isEnabled() {
-        return CompassManager.getCompassLocation() != null;
+    @Override public boolean isEnabled(boolean forMinimap) {
+        return MapConfig.Waypoints.INSTANCE.compassMarker && CompassManager.getCompassLocation() != null;
     }
 
+    public static final MapTextureIcon pointer = createStaticIcon(Textures.Map.map_icons, 14, 53, 24, 61, 5, 4);
 }

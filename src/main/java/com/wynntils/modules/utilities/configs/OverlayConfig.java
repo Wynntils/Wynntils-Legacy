@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.configs;
@@ -77,11 +77,10 @@ public class OverlayConfig extends SettingsClass {
             b,
             c,
             d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }
-
 
     @SettingsInfo(name = "mana_settings", displayPath = "Overlays/Mana")
     public static class Mana extends SettingsClass {
@@ -116,7 +115,7 @@ public class OverlayConfig extends SettingsClass {
             b,
             c,
             d
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }
@@ -179,7 +178,7 @@ public class OverlayConfig extends SettingsClass {
             a,
             b,
             c
-            //following the format, to add more textures, register them here with a name and create a special case in the render method
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
     }
@@ -204,13 +203,12 @@ public class OverlayConfig extends SettingsClass {
         public enum BubbleTexture {
             Wynn,
             Liquid,
-            Saphire,
+            Sapphire,
             a,
             b,
             c
         }
     }
-
 
     @SettingsInfo(name = "leveling_settings", displayPath = "Overlays/Leveling")
     public static class Leveling extends SettingsClass {
@@ -362,11 +360,11 @@ public class OverlayConfig extends SettingsClass {
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
     }
-    
+
     @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
-        
+
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
@@ -375,7 +373,7 @@ public class OverlayConfig extends SettingsClass {
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
-        @Setting(displayName = "Territory Feed" ,description = "Should the territory feed be displayed?", order = 0)
+        @Setting(displayName = "Territory Feed", description = "Should the territory feed be displayed?", order = 0)
         public boolean enabled = true;
 
         @Setting(displayName = "Animation Length", description = "How long (in seconds) should messages on the territory feed be displayed?")
@@ -434,42 +432,68 @@ public class OverlayConfig extends SettingsClass {
         public String info4Format = "";
 
         @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
-        public Presets preset = Presets.COORDS;
+        public Presets preset = Presets.CLICK_ME;
 
         @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
 
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
         @Override
         public void onSettingChanged(String name) {
-            if ("preset".equals(name) && preset.getValue() != null && Minecraft.getMinecraft().currentScreen instanceof SettingsUI) {
-                Utils.copyToClipboard(preset.getValue());
+            if ("preset".equals(name)) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
             }
         }
 
         public enum Presets {
-            CLICK_ME("Click Me", null),
-            COORDS("Coords", "%x% %z% (%y%)"),
+            CLICK_ME("Click me to copy to clipboard", null),
+            COORDS("Coordinates", "%x% %z% (%y%)"),
             ACTIONBAR_COORDS("Actionbar Coordinates", "&7%x% &a%dir% &7%z%"),
             FPS("FPS Counter", "FPS: %fps%"),
-            CLASS("Class", "%Class%\\nLevel %lvl%");
+            CLASS("Class", "%Class%\\nLevel %lvl%"),
+            LOCATION("Location", "[%world%] %location%"),
+            BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
+            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
+            PING("Ping", "%ping%ms/15s"),
+            BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
+            BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm");
 
-            private String name;
-            private String value;
+            public final String displayName;
+            public final String value;
 
-            Presets(String name, String value) {
-                this.name = name;
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
                 this.value = value;
             }
-
-            @Override
-            public String toString() {
-                return name;
-            }
-
-            public String getValue() {
-                return value;
-            }
         }
+    }
+
+    @SettingsInfo(name = "player_info_settings", displayPath = "Overlays/Player Info")
+    public static class PlayerInfo extends SettingsClass {
+        public static PlayerInfo INSTANCE;
+
+        @Setting(displayName = "Replace Vanilla Player List", description = "Should the vanilla player list be replaced with Wynntils' custom list?", order = 1)
+        public boolean replaceVanilla = true;
+
+        @Setting(displayName = "Player List Transparency", description = "How transparent should the custom player list be?", order = 2)
+        @Setting.Limitations.FloatLimit(min = .0f, max = 1f)
+        public float backgroundAlpha = 0.3f;
+
+    }
+
+    @SettingsInfo(name = "consumable_timer_settings", displayPath = "Overlays/Consumable Timer")
+    public static class ConsumableTimer extends SettingsClass {
+        public static ConsumableTimer INSTANCE;
+
+        @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
+        public boolean showEffects = true;
     }
 }

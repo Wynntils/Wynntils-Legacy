@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.account;
@@ -18,6 +18,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -25,38 +26,46 @@ import java.util.concurrent.TimeUnit;
 
 public class CloudConfigurations {
 
-    ScheduledExecutorService service;
-    ScheduledFuture runningTask;
-    String token;
+    private ScheduledExecutorService service;
+    private ScheduledFuture runningTask;
+    private String token;
 
-    Gson gson = new Gson();
+    private Gson gson = new Gson();
 
     public CloudConfigurations(ScheduledExecutorService service, String token) {
         this.service = service; this.token = token;
     }
 
-    List<ConfigContainer> toUpload = Collections.synchronizedList(new ArrayList<>());
+    private final List<ConfigContainer> toUpload = new ArrayList<>();
 
     public void queueConfig(String fileName, String base64) {
-        toUpload.add(new ConfigContainer(fileName, base64));
+        synchronized (toUpload) {
+            toUpload.add(new ConfigContainer(fileName, base64));
 
-        startUploadQueue();
+            startUploadQueue();
+        }
     }
 
     private void startUploadQueue() {
-        if(runningTask != null && !runningTask.isDone() && !runningTask.isCancelled() || WebManager.getApiUrls() == null) return;
+        if (runningTask != null && !runningTask.isDone() && !runningTask.isCancelled() || WebManager.getApiUrls() == null) return;
 
         runningTask = service.scheduleAtFixedRate(() -> {
-            if(toUpload.size() == 0) return;
+            List<ConfigContainer> uploading;
+            synchronized (toUpload) {
+                uploading = removeDuplicates(toUpload);
+                toUpload.clear();
+            }
+
+            if (uploading.isEmpty()) return;
 
             Reference.LOGGER.info("Uploading configurations...");
 
             JsonArray body = new JsonArray();
-            for(ConfigContainer container : toUpload) {
+            for (ConfigContainer container : uploading) {
                 body.add(gson.toJsonTree(container));
             }
 
-            try{
+            try {
                 URLConnection st = new URL(WebManager.getApiUrls().get("UserAccount") + "uploadConfig/" + token).openConnection();
 
                 byte[] bodyBytes = body.toString().getBytes(StandardCharsets.UTF_8);
@@ -69,30 +78,52 @@ public class CloudConfigurations {
                 try {
                     outputStream = st.getOutputStream();
                     IOUtils.write(bodyBytes, outputStream);
-                }catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 } finally {
                     IOUtils.closeQuietly(outputStream);
                 }
 
                 JsonObject finalResult = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
-                if(finalResult.has("result")) {
+                if (finalResult.has("result")) {
                     Reference.LOGGER.info("Configuration upload complete!");
-                }else{
+                } else {
                     Reference.LOGGER.info("Configuration upload failed!");
                 }
 
-                toUpload.clear();
-            }catch (Exception ex) { ex.printStackTrace(); }
+            } catch (Exception ex) {
+                ex.printStackTrace();
 
-        },0, 10, TimeUnit.SECONDS);
+                synchronized (toUpload) {
+                    toUpload.addAll(0, uploading);
+                }
+            }
+
+        }, 0, 10, TimeUnit.SECONDS);
     }
 
-    private class ConfigContainer {
+    private static List<ConfigContainer> removeDuplicates(List<ConfigContainer> toUpload) {
+        HashSet<String> seen = new HashSet<>(toUpload.size() * 2);
+
+        ArrayList<ConfigContainer> withoutDuplicates = new ArrayList<>(toUpload.size());
+
+        // Newer configs trump older configs so reverse iterate
+        for (int i = toUpload.size(); i-- > 0; ) {
+            ConfigContainer cc = toUpload.get(i);
+            if (seen.add(cc.fileName)) {
+                withoutDuplicates.add(cc);
+            }
+        }
+
+        Collections.reverse(withoutDuplicates);
+        return withoutDuplicates;
+    }
+
+    private static class ConfigContainer {
 
         String fileName, base64;
 
-        public ConfigContainer(String fileName, String base64) {
+        ConfigContainer(String fileName, String base64) {
             this.fileName = fileName; this.base64 = base64;
         }
 

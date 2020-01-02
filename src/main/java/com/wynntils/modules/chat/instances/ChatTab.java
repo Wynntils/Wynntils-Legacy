@@ -1,10 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.chat.instances;
 
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.util.text.ITextComponent;
 
@@ -15,24 +15,27 @@ import java.util.regex.Pattern;
 
 public class ChatTab implements Comparable<ChatTab> {
 
-    //stored variables
+    // stored variables
     String name, autoCommand;
     int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
     HashMap<String, Boolean> regexSettings;
 
-    //not stored ones
+    // not stored ones
     transient List<ChatLine> currentMessages = new ArrayList<>();
     transient List<String> sentMessages = new ArrayList<>();
     transient Pair<Integer, Integer> currentXAxis = new Pair<>(0, 0);
     transient boolean hasMentions = false;
     transient boolean hasNewMessages = false;
 
-    //spam filter
+    // spam filter
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
     transient int groupId = 0;
+
+    @SuppressWarnings("unused")
+    private ChatTab() {}
 
     public ChatTab(String name, String regexFinder, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
@@ -102,9 +105,9 @@ public class ChatTab implements Comparable<ChatTab> {
         currentMessages.add(0, msg);
     }
 
-    public boolean addSentMessage(String msg) {
+    public void addSentMessage(String msg) {
         hasNewMessages = true;
-        return sentMessages.add(msg);
+        sentMessages.add(msg);
     }
 
     public List<ChatLine> getCurrentMessages() {
@@ -116,12 +119,11 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void clearMessages(boolean clearSent) {
-        if(sentMessages == null) sentMessages = new ArrayList<>();
-        if(currentMessages == null) currentMessages = new ArrayList<>();
-        //this thing above avoids the gson glitch that sets both arrays to null
-
-        if(clearSent) sentMessages.clear();
+        if (clearSent) sentMessages.clear();
         currentMessages.clear();
+
+        hasMentions = false;
+        hasNewMessages = false;
     }
 
     public void pushMention() {
@@ -137,10 +139,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void setCurrentXAxis(int x1, int x2) {
-        if(currentXAxis == null) currentXAxis = new Pair<>(0, 0);
-        //this thing above avoids the gson glitch that sets the axis pair to null
-
-        if(currentXAxis.a == x1 && currentXAxis.b == x2) return;
+        if (currentXAxis.a == x1 && currentXAxis.b == x2) return;
 
         currentXAxis = new Pair<>(x1, x2);
     }

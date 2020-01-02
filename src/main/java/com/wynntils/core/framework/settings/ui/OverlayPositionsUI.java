@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.settings.ui;
@@ -42,8 +42,8 @@ public class OverlayPositionsUI extends UI {
 
     public int GRID_SIZE_VERTICAL, GRID_SIZE_HORIZONTAL;
 
-    public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a,0.5f,0.5f,13,0,-10,true,(ui, mouseButton) -> {
-        for(OverlayButton settingsContainer : registeredOverlaySettings) {
+    public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, 13, 0, -10, true, (ui, mouseButton) -> {
+        for (OverlayButton settingsContainer : registeredOverlaySettings) {
             try {
                 settingsContainer.getOverlaySettings().tryToLoad();
             } catch (Exception ex) {
@@ -53,14 +53,16 @@ public class OverlayPositionsUI extends UI {
         onClose();
     });
 
-    public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a,0.5f,0.5f,-48,0,-10,true,(ui, mouseButton) -> {
-        for(OverlayButton settingsContainer : registeredOverlaySettings) {
-            // Convert offset -> anchor, then save
-            Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
-            overlay.position.anchorX = (float) (((overlay.position.anchorX * ScreenRenderer.screen.getScaledWidth_double()) + (double) overlay.position.offsetX) / ScreenRenderer.screen.getScaledWidth_double());
-            overlay.position.anchorY = (float) (((overlay.position.anchorY * ScreenRenderer.screen.getScaledHeight_double()) + (double) overlay.position.offsetY) / ScreenRenderer.screen.getScaledHeight_double());
-            overlay.position.offsetX = 0;
-            overlay.position.offsetY = 0;
+    public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a, 0.5f, 0.5f, -48, 0, -10, true, (ui, mouseButton) -> {
+        for (OverlayButton settingsContainer : registeredOverlaySettings) {
+            if (!settingsContainer.getOverlaySettings().isReset()) {
+                // Convert offset -> anchor, then save
+                Overlay overlay = ((Overlay) settingsContainer.getOverlaySettings().getHolder());
+                overlay.position.anchorX = (float) (((overlay.position.anchorX * ScreenRenderer.screen.getScaledWidth_double()) + (double) overlay.position.offsetX) / ScreenRenderer.screen.getScaledWidth_double());
+                overlay.position.anchorY = (float) (((overlay.position.anchorY * ScreenRenderer.screen.getScaledHeight_double()) + (double) overlay.position.offsetY) / ScreenRenderer.screen.getScaledHeight_double());
+                overlay.position.offsetX = 0;
+                overlay.position.offsetY = 0;
+            }
             try {
                 settingsContainer.getOverlaySettings().saveSettings();
             } catch (Exception ex) {
@@ -70,8 +72,8 @@ public class OverlayPositionsUI extends UI {
         onClose();
     });
 
-    public UIEButton resetButton = new UIEButton("Default", Textures.UIs.button_a,0.5f,0.5f,-22,15,-10,true,(ui, mouseButton) -> {
-        for(OverlayButton settingsContainer : registeredOverlaySettings) {
+    public UIEButton resetButton = new UIEButton("Default", Textures.UIs.button_a, 0.5f, 0.5f, -22, 15, -10, true, (ui, mouseButton) -> {
+        for (OverlayButton settingsContainer : registeredOverlaySettings) {
             try {
                 settingsContainer.getOverlaySettings().resetValues();
                 reloadButtons = true;
@@ -89,8 +91,8 @@ public class OverlayPositionsUI extends UI {
     public void onInit() {
         registeredOverlaySettings.clear();
 
-        for(ModuleContainer moduleContainer : FrameworkManager.availableModules.values()) {
-            for(SettingsContainer settingsContainer : moduleContainer.getRegisteredSettings().values()) {
+        for (ModuleContainer moduleContainer : FrameworkManager.availableModules.values()) {
+            for (SettingsContainer settingsContainer : moduleContainer.getRegisteredSettings().values()) {
                 if (settingsContainer.getHolder() instanceof Overlay) {
                     if (((Overlay) settingsContainer.getHolder()).growth != null) {
                         registeredOverlaySettings.add(new OverlayButton(settingsContainer));
@@ -142,7 +144,7 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
-        if(reloadButtons || (shiftDown && !Keyboard.isKeyDown(42)))
+        if (reloadButtons || (shiftDown && !Keyboard.isKeyDown(42)))
             onInit();
     }
 
@@ -408,7 +410,7 @@ public class OverlayPositionsUI extends UI {
         }
     }
 
-    private class StringDrawing {
+    private static class StringDrawing {
         public String string;
         public int x;
         public int y;

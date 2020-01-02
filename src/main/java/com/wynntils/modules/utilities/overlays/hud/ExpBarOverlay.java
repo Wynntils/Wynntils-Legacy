@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -11,7 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.annotations.Setting;
-import com.wynntils.core.utils.Pair;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -23,7 +23,7 @@ public class ExpBarOverlay extends Overlay {
 
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen? (0 for instant)")
+    @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen? (0 for instant)")
     public float animated = 2f;
 
     /*
@@ -35,10 +35,10 @@ public class ExpBarOverlay extends Overlay {
     public boolean flip = false;
 
     @Setting(displayName = "Level Number Position", description = "The position offset of the level number")
-    public Pair<Integer,Integer> textPositionOffset = new Pair<>(0,-6);
+    public Pair<Integer, Integer> textPositionOffset = new Pair<>(0, -6);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CustomColor.fromString("aaff00",1f);
+    public CustomColor textColor = CustomColor.fromInt(0xaaff00, 1f);
 
     private static float exp = 0.0f;
 
@@ -64,17 +64,17 @@ public class ExpBarOverlay extends Overlay {
             case Emerald:
                 drawDefaultBar(0, 5, 50, 59);
                 break;
-            case a: drawDefaultBar(0,5,10,19);
+            case a: drawDefaultBar(0, 5, 10, 19);
                 break;
-            case b: drawDefaultBar(0,5,20,29);
+            case b: drawDefaultBar(0, 5, 20, 29);
                 break;
-            case c: drawDefaultBar(0,5,30,39);
+            case c: drawDefaultBar(0, 5, 30, 39);
                 break;
         }
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
-        drawProgressBar(Textures.Overlays.bars_exp,-91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
+        drawProgressBar(Textures.Overlays.bars_exp, -91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
         drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 }

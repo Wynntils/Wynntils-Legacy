@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.events.custom;
@@ -15,7 +15,6 @@ public class WynnClassChangeEvent extends Event {
 
     ClassType oldClass;
     ClassType currentClass;
-
 
     public WynnClassChangeEvent(ClassType oldClass, ClassType currentClass) {
         this.oldClass = oldClass; this.currentClass = currentClass;

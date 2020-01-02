@@ -1,11 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.utils.Position;
+import com.wynntils.core.utils.objects.Position;
 
 public abstract class UIElement extends ScreenRenderer {
     private int id;

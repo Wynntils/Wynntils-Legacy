@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map;
@@ -10,6 +10,7 @@ import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.map.commands.CommandLootRun;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -23,7 +24,7 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-    private static KeyHolder mapKey;
+    private KeyHolder mapKey;
     private MapProfile mainMap;
 
     @Override
@@ -40,14 +41,19 @@ public class MapModule extends Module {
         registerSettings(MapConfig.Textures.class);
         registerSettings(MapConfig.Waypoints.class);
         registerSettings(MapConfig.WorldMap.class);
+        registerSettings(MapConfig.LootRun.class);
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
+        registerCommand(new CommandLootRun());
+
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
-            if (Reference.onWorld && WebManager.getApiUrls() != null) {
-                // If ApiUrls is null, Wynntils server is down and map
-                // will never be loaded
-                Utils.displayGuiScreen(new MainWorldMapUI());
+            if (Reference.onWorld) {
+                if (WebManager.getApiUrls() == null) {
+                    WebManager.tryReloadApiUrls(true);
+                } else {
+                    Utils.displayGuiScreen(new MainWorldMapUI());
+                }
             }
         });
     }

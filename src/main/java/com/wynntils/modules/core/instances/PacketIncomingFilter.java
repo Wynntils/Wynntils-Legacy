@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.instances;
@@ -22,7 +22,7 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
     /**
      * Dispatch a packet incoming event to be checked before reaching the
      * interpretator
-     * 
+     *
      * @see PacketEvent for more information about these events
      *
      *
@@ -32,9 +32,9 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg == null) return;
+        if (msg == null) return;
 
-        boolean cancel = MinecraftForge.EVENT_BUS.post(new PacketEvent<Packet<?>>((Packet<?>) msg, ModCore.mc().getConnection()));
+        boolean cancel = MinecraftForge.EVENT_BUS.post(new PacketEvent<>((Packet<?>) msg, ModCore.mc().getConnection()));
 
         if (msg instanceof SPacketEntityVelocity) {
             SPacketEntityVelocity velocity = (SPacketEntityVelocity) msg;

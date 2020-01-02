@@ -1,15 +1,15 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -30,9 +30,9 @@ public class DrowningVignetteOverlay extends Overlay {
             return;
         }
 
-        if(ScreenRenderer.mc.player.getAir() == 300 && animation >= 300) return;
+        if (ScreenRenderer.mc.player.getAir() == 300 && animation >= 300) return;
 
-        if(ScreenRenderer.mc.player.getAir() == 300) animation = Utils.easeOut(animation, 300, 1.5f, 20f);
+        if (ScreenRenderer.mc.player.getAir() == 300) animation = Utils.easeOut(animation, 300, 1.5f, 20f);
         else animation = ScreenRenderer.mc.player.getAir();
 
         float value = Math.abs((animation / 300.0f) - 1.0f);
@@ -53,9 +53,9 @@ public class DrowningVignetteOverlay extends Overlay {
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {
                 bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-                bufferbuilder.pos(0.0D, (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
-                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), (double) ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
-                bufferbuilder.pos((double) ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
+                bufferbuilder.pos(0.0D, ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(0.0D, 1.0D).endVertex();
+                bufferbuilder.pos(ScreenRenderer.screen.getScaledWidth(), ScreenRenderer.screen.getScaledHeight(), -90.0D).tex(1.0D, 1.0D).endVertex();
+                bufferbuilder.pos(ScreenRenderer.screen.getScaledWidth(), 0.0D, -90.0D).tex(1.0D, 0.0D).endVertex();
                 bufferbuilder.pos(0.0D, 0.0D, -90.0D).tex(0.0D, 0.0D).endVertex();
             }
             tessellator.draw();

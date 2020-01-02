@@ -1,10 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 
 import java.io.File;
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class MusicProfile {
     }
 
     public String getAsHash() {
-        return Utils.toMD5(name + size);
+        return StringUtils.toMD5(name + size);
     }
 
     public boolean equalsTo(MusicProfile mp) {

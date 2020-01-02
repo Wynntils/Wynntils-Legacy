@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -47,13 +47,13 @@ public class GameUpdateOverlay extends Overlay {
         int lines = 0;
 
         Iterator<MessageContainer> messages = messageQueue.iterator();
-        while(messages.hasNext()) {
+        while (messages.hasNext()) {
             MessageContainer message = messages.next();
 
-            if(message.getRemainingTime() <= 0.0f) messages.remove(); //remove the message if the time has come
-            if(lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break; //breaks the loop if the limit was reached
+            if (message.getRemainingTime() <= 0.0f) messages.remove();  // remove the message if the time has come
+            if (lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break;  // breaks the loop if the limit was reached
 
-            if(OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
+            if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
                         (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),

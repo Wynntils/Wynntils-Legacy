@@ -1,25 +1,26 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.instances;
 
+import com.google.gson.*;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PathWaypointProfile {
+
     public String name;
     public boolean isCircular = false;
     public boolean isEnabled = true;
-    private CustomColor color = CommonColors.RED;
+    private CustomColor color = new CustomColor(CommonColors.RED);
 
-    private int minX;
-    private int minZ;
-    private int maxX;
-    private int maxZ;
-    private int posX;
-    private int posZ;
-    private float sizeX;
-    private float sizeZ;
+    private transient int minX, minZ, maxX, maxZ, posX, posZ;
+    private transient float sizeX, sizeZ;
 
     private List<PathPoint> points = new ArrayList<>();
 
@@ -29,6 +30,19 @@ public class PathWaypointProfile {
 
     public PathWaypointProfile(String name) {
         this.name = name == null ? "Path" : name;
+        recalculateBounds();
+    }
+
+    public PathWaypointProfile(String name, boolean isCircular, boolean isEnabled, CustomColor color) {
+        this(name, isCircular, isEnabled, color, null);
+    }
+
+    public PathWaypointProfile(String name, boolean isCircular, boolean isEnabled, CustomColor color, List<PathPoint> points) {
+        this.name = name == null ? "Path" : name;
+        this.isCircular = isCircular;
+        this.isEnabled = isEnabled;
+        setColor(color);
+        this.points = points == null ? new ArrayList<>() : new ArrayList<>(points);
         recalculateBounds();
     }
 
@@ -127,9 +141,10 @@ public class PathWaypointProfile {
         return color;
     }
 
-    public void setColor(CustomColor color) {
-        if (color == null) return;
-        this.color = color;
+    public PathWaypointProfile setColor(CustomColor color) {
+        if (color == null) return this;
+        this.color = new CustomColor(color);
+        return this;
     }
 
     private void recalculateBounds() {
@@ -172,4 +187,96 @@ public class PathWaypointProfile {
             return z;
         }
     }
+
+    public static class Serializer implements JsonDeserializer<ArrayList<PathWaypointProfile>>, JsonSerializer<ArrayList<PathWaypointProfile>> {
+
+        @Override
+        public ArrayList<PathWaypointProfile> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (!json.isJsonArray()) {
+                throw new JsonParseException("Path waypoints not an array");
+            }
+            JsonArray arr = (JsonArray) json;
+            ArrayList<PathWaypointProfile> deserialized = new ArrayList<>(arr.size());
+            for (JsonElement obj : arr) {
+                if (!obj.isJsonObject()) {
+                    throw new JsonParseException("Path waypoint item is not an object");
+                }
+                deserialized.add(deserializeOne((JsonObject) obj, context));
+            }
+
+            return deserialized;
+        }
+
+        private static PathWaypointProfile deserializeOne(JsonObject o, JsonDeserializationContext context) {
+            JsonElement nameEl = o.get("name");
+            JsonElement isCircularEl = o.get("isCircular");
+            JsonElement isEnabledEl = o.get("isEnabled");
+            JsonElement pointsEl = o.get("points");
+            JsonElement colourEl = o.get("color");
+
+            String name = nameEl == null || !nameEl.isJsonPrimitive() || !((JsonPrimitive) nameEl).isString() ? null : nameEl.getAsString();
+            boolean isCircular = isCircularEl == null || !isCircularEl.isJsonPrimitive() || !((JsonPrimitive) isCircularEl).isBoolean() ? false : isCircularEl.getAsBoolean();
+            boolean isEnabled = isEnabledEl == null || !isEnabledEl.isJsonPrimitive() || !((JsonPrimitive) isEnabledEl).isBoolean() ? true : isEnabledEl.getAsBoolean();
+            CustomColor colour = colourEl == null ? CommonColors.RED : context.deserialize(colourEl, CustomColor.class);
+
+            ArrayList<PathPoint> points = new ArrayList<>();
+
+            if (pointsEl != null && pointsEl.isJsonArray() && ((JsonArray) pointsEl).size() != 0) {
+                JsonArray pointsJson = (JsonArray) pointsEl;
+                if (pointsJson.size() != 0) {
+                    if (pointsJson.get(0).isJsonObject()) {
+                        // Old style, [{ x, z }, ...]
+                        points.ensureCapacity(pointsJson.size());
+                        for (JsonElement el : pointsJson) {
+                            if (el.isJsonObject()) {
+                                JsonElement x = ((JsonObject) el).get("x");
+                                JsonElement z = ((JsonObject) el).get("z");
+                                if (x != null && x.isJsonPrimitive() && ((JsonPrimitive) x).isNumber() && z != null && z.isJsonPrimitive() && ((JsonPrimitive) z).isNumber()) {
+                                    points.add(new PathPoint(x.getAsNumber().intValue(), z.getAsNumber().intValue()));
+                                }
+                            }
+                        }
+                    } else {
+                        // New style, [x1, z1, x2, z2, ...]
+                        points.ensureCapacity(pointsJson.size() / 2);
+                        for (int i = 0, size = pointsJson.size(); i + 1 < size;) {
+                            JsonElement x = pointsJson.get(i++);
+                            JsonElement z = pointsJson.get(i++);
+                            if (x != null && x.isJsonPrimitive() && ((JsonPrimitive) x).isNumber() && z != null && z.isJsonPrimitive() && ((JsonPrimitive) z).isNumber()) {
+                                points.add(new PathPoint(x.getAsNumber().intValue(), z.getAsNumber().intValue()));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new PathWaypointProfile(name, isCircular, isEnabled, colour, points);
+        }
+
+        @Override
+        public JsonElement serialize(ArrayList<PathWaypointProfile> src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonArray serialized = new JsonArray();
+            for (PathWaypointProfile wp : src) {
+                serialized.add(serializeOne(wp, context));
+            }
+            return serialized;
+        }
+
+        private static JsonObject serializeOne(PathWaypointProfile wp, JsonSerializationContext context) {
+            JsonObject serialized = new JsonObject();
+            serialized.addProperty("name", wp.name);
+            serialized.addProperty("isCircular", wp.isCircular);
+            serialized.addProperty("isEnabled", wp.isEnabled);
+            serialized.add("color", context.serialize(wp.color, CustomColor.class));
+            JsonArray points = new JsonArray();
+            for (PathPoint point : wp.points) {
+                points.add(point.x);
+                points.add(point.z);
+            }
+            serialized.add("points", points);
+            return serialized;
+        }
+
+    }
+
 }

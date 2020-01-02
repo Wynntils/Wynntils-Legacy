@@ -1,102 +1,98 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.events;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.ServerResourcePackManager;
 import com.wynntils.modules.utilities.managers.WarManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
+import com.wynntils.modules.utilities.managers.WindowIconManager;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
+import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
 import net.minecraft.network.play.server.SPacketSpawnObject;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.codec.digest.DigestUtils;
-
-import java.util.concurrent.ExecutionException;
+import org.lwjgl.opengl.Display;
 
 public class ServerEvents implements Listener {
 
-    private static boolean loadedResourcePack = false;
+    private static String oldWindowTitle = "Minecraft " + ForgeVersion.mcVersion;
 
     @SubscribeEvent
     public void leaveServer(WynncraftServerEvent.Leave e) {
-        loadedResourcePack = false;
+        WindowIconManager.update();
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
+            ModCore.mc().addScheduledTask(() -> {
+                Display.setTitle(oldWindowTitle);
+            });
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinServer(WynncraftServerEvent.Login ev) {
-        if (!Reference.onLobby) return;
-        if (!loadedResourcePack && UtilitiesConfig.INSTANCE.autoResource && !UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) {
-            if (Minecraft.getMinecraft().getCurrentServerData().getResourceMode() == ServerData.ServerResourceMode.DISABLED) {
-                Reference.LOGGER.warn("Did not auto apply Wynncraft server resource pack because resource packs are disabled");
-                return;
-            }
+        WindowIconManager.update();
 
-            String resourcePack = UtilitiesConfig.INSTANCE.lastServerResourcePack;
-            String hash = UtilitiesConfig.INSTANCE.lastServerResourcePackHash;
+        String title = Display.getTitle();
+        if (!title.equals("Wynncraft")) {
+            oldWindowTitle = title;
+        }
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
+            ModCore.mc().addScheduledTask(() -> {
+                Display.setTitle("Wynncraft");
+            });
+        }
 
-            try {
-                Minecraft.getMinecraft().getResourcePackRepository().downloadResourcePack(resourcePack, hash).get();
-                loadedResourcePack = true;
-            } catch (InterruptedException ignored) {
-            } catch (ExecutionException e) {
-                Reference.LOGGER.error("Could not load server resource pack");
-                e.printStackTrace();
+        ServerResourcePackManager.applyOnServerJoin();
+    }
 
-                UtilitiesConfig.INSTANCE.lastServerResourcePack = "";
-                UtilitiesConfig.INSTANCE.lastServerResourcePackHash = "";
-                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-            }
+    public static void onWindowTitleSettingChanged() {
+        if (UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && !Display.getTitle().equals("Wynncraft")) {
+            oldWindowTitle = Display.getTitle();
+            Display.setTitle("Wynncraft");
+        } else if (!UtilitiesConfig.INSTANCE.changeWindowTitle && Reference.onServer && Display.getTitle().equals("Wynncraft")) {
+            Display.setTitle(oldWindowTitle);
         }
     }
 
     @SubscribeEvent
     public void onResourcePackReceive(PacketEvent<SPacketResourcePackSend> e) {
-        if(!Reference.onServer) return;
-
-        String resourcePack = e.getPacket().getURL();
-        String hash = e.getPacket().getHash();
-        if (!resourcePack.equals(UtilitiesConfig.INSTANCE.lastServerResourcePack) || !hash.equalsIgnoreCase(UtilitiesConfig.INSTANCE.lastServerResourcePackHash)) {
-            if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) {
-                Reference.LOGGER.info("Found server resource pack: \"server-resource-packs/" + DigestUtils.sha1Hex(resourcePack) + "\"#" + hash + " from \"" + resourcePack + "\"");
-            } else {
-                String lastPack = UtilitiesConfig.INSTANCE.lastServerResourcePack;
-                String lastHash = UtilitiesConfig.INSTANCE.lastServerResourcePackHash;
-                Reference.LOGGER.info(
-                        "New server resource pack: \"server-resource-packs/" + DigestUtils.sha1Hex(resourcePack) + "\"#" + hash + " from \"" + resourcePack +
-                        "\" (Was \"server-resource-packs/" + DigestUtils.sha1Hex(lastPack) + "\"#" + lastHash + " from \"" + lastPack + "\")"
-                );
-                // Loaded old resource pack, so don't cancel to load the new one
-                loadedResourcePack = false;
-            }
-            UtilitiesConfig.INSTANCE.lastServerResourcePack = resourcePack;
-            UtilitiesConfig.INSTANCE.lastServerResourcePackHash = hash;
-            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-        }
-
-        if(loadedResourcePack) {
+        if (ServerResourcePackManager.shouldCancelResourcePackLoad(e.getPacket())) {
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.ACCEPTED));
             e.getPlayClient().sendPacket(new CPacketResourcePackStatus(CPacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
-
             e.setCanceled(true);
-            return;
         }
-
-        loadedResourcePack = true;
     }
 
     @SubscribeEvent
     public void onSpawnObject(PacketEvent<SPacketSpawnObject> e) {
-        if(WarManager.filterMob(e)) e.setCanceled(true);
+        if (WarManager.filterMob(e)) e.setCanceled(true);
     }
 
+    @SubscribeEvent
+    public void onClickEntity(PacketEvent<CPacketUseEntity> e) {
+        if (WarManager.allowClick(e)) e.setCanceled(true);
+    }
+
+    static {
+        MinecraftForge.EVENT_BUS.register(new Object() {
+            @SubscribeEvent(priority = EventPriority.LOWEST)
+            public void onFirstGui(GuiScreenEvent.DrawScreenEvent.Post e) {
+                if (UtilitiesConfig.INSTANCE.autoResourceOnLoad) {
+                    ServerResourcePackManager.loadServerResourcePack();
+                }
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        });
+    }
 
 }

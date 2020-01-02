@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.chat.configs;
@@ -39,8 +39,13 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.")
     public boolean filterTerritoryEnter = true;
 
+    @Setting(displayName = "Show Held Item Chat Message", description = "Should the details of your compass and soul points be shown in chat whilst you are holding them?")
+    public boolean heldItemChat = true;
+
+    @Setting
     public boolean registeredDefaultTabs = false;
 
+    @Setting
     public ArrayList<ChatTab> available_tabs = new ArrayList<>();
 
     @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All")
@@ -51,6 +56,12 @@ public class ChatConfig extends SettingsClass {
 
     @Setting(displayName = "Clickable Coordinates", description = "Should coordinates displayed in chat be clickable as a '/compass' command?")
     public boolean clickableCoordinates = true;
+
+    @Setting(displayName = "Clickable Trade Message", description = "Should the trade message become clickable?")
+    public boolean clickableTradeMessage = true;
+
+    @Setting(displayName = "Clickable Duel Message", description = "Should the duel message become clickable?")
+    public boolean clickableDuelMessage = true;
 
     public enum Presets {
         a,

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.instances;
@@ -16,7 +16,7 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
 
     /**
      * Dispatch a packet outgoing event to be checked before actually being sent
-     * 
+     *
      * @see PacketEvent for more information about these events
      *
      *
@@ -29,12 +29,12 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
 
         boolean noEvent = false;
 
-        if (FakeInventory.ignoreNextUserClick) {
-            FakeInventory.ignoreNextUserClick = false;
+        Packet<?> packet = (Packet<?>) msg;
+        if (packet == FakeInventory.ignoredPacket) {
             noEvent = true;
         }
 
-        if (!noEvent && FrameworkManager.getEventBus().post(new PacketEvent<Packet<?>>((Packet<?>) msg, ModCore.mc().getConnection()))) return;
+        if (!noEvent && FrameworkManager.getEventBus().post(new PacketEvent<Packet<?>>(packet, ModCore.mc().getConnection()))) return;
 
         super.write(ctx, msg, promise);
     }

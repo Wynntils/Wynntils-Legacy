@@ -1,26 +1,35 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.events;
 
+import com.google.common.collect.Sets;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
@@ -32,18 +41,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public class ServerEvents implements Listener {
 
     /**
-     * Does 4 different things and is triggered when the user joins Wynncraft:
+     * Does 5 different things and is triggered when the user joins Wynncraft:
      *  - Register the pipeline that intercepts INCOMING Packets
      *  @see PacketIncomingFilter
      *  - Register the pipline that intercepts OUTGOING Packets
      *  @see PacketOutgoingFilter
      *  - Check if the mod has an update available
      *  - Check if there is anything on the download queue
+     *  - Updates the overlayPlayerList to the Wynntils Version
      *
      * @param e Represents the event
      */
@@ -52,7 +64,11 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
-        WebManager.checkForUpdates();
+        GuiIngame ingameGui = Minecraft.getMinecraft().ingameGUI;
+        ReflectionFields.GuiIngame_overlayPlayerList.setValue(ingameGui, new PlayerInfoReplacer(Minecraft.getMinecraft(), ingameGui));
+
+        WebManager.tryReloadApiUrls(true);
+        WebManager.checkForUpdatesOnJoin();
         DownloaderManager.startDownloading();
     }
 
@@ -69,17 +85,31 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if(PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
-        if(CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
+        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        SocketManager.emitEvent("join world", e.getWorld()); // update socket world
 
-        waitingForFriendList = true;
+        if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
 
-        if(WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
+        // guild members
+        if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
             Minecraft.getMinecraft().player.sendChatMessage("/guild list");
         }
+
+        // friends
+        waitingForFriendList = true;
         Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+
+        // party members
+        PartyManager.handlePartyList();  // party list here
     }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void leaveWorldEvent(WynnWorldEvent.Leave e) {
+        SocketManager.emitEvent("leave world");
+    }
+
 
     /**
      * Detects and register the current friend list of the user
@@ -91,36 +121,53 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void chatMessage(ClientChatReceivedEvent e) {
-        if(e.isCanceled() || e.getType() != ChatType.SYSTEM) {
+        if (e.isCanceled() || e.getType() != ChatType.SYSTEM) {
             return;
         }
-        if(e.getMessage().getUnformattedText().startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
-            String[] splited = e.getMessage().getUnformattedText().split(":");
+        PartyManager.handleMessages(e.getMessage());  // party messages here
+
+        String messageText = e.getMessage().getUnformattedText();
+        if (messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
+            String[] splited = messageText.split(":");
 
             String[] friends;
-            if(splited[1].contains(",")) {
+            if (splited[1].contains(",")) {
                 friends = splited[1].substring(1).split(", ");
-            }else{ friends = new String[] {splited[1].substring(1)}; }
+            } else { friends = new String[] {splited[1].substring(1)}; }
 
-            PlayerInfo.getPlayerInfo().setFriendList(new HashSet<>(Arrays.asList(friends)));
+            HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
+            HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
+            PlayerInfo.getPlayerInfo().setFriendList(newFriendsList);
 
-            if(waitingForFriendList) e.setCanceled(true);
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.intersection(friendsList, newFriendsList), false));
+
+            if (waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
             return;
         }
-        if(e.getMessage().getUnformattedText().startsWith("#") && e.getMessage().getUnformattedText().contains(" XP -")) {
-            if(waitingForGuildList) e.setCanceled(true);
+        if (messageText.startsWith("#") && messageText.contains(" XP -")) {
+            if (waitingForGuildList) e.setCanceled(true);
 
-            String[] messageSplitted = e.getMessage().getUnformattedText().split(" ");
-            PlayerInfo.getPlayerInfo().getGuildList().add(messageSplitted[1]);
+            String[] splitMessage = messageText.split(" ");
+            if (PlayerInfo.getPlayerInfo().getGuildList().add(splitMessage[1])) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splitMessage[1]));
+            }
             return;
         }
-        if(!e.getMessage().getUnformattedText().startsWith("[") && e.getMessage().getUnformattedText().contains("guild") && e.getMessage().getUnformattedText().contains(" ")) {
-            String[] splittedText = e.getMessage().getUnformattedText().split(" ");
-            if(!splittedText[1].equalsIgnoreCase("has")) return;
+        if (!messageText.startsWith("[") && messageText.contains("guild") && messageText.contains(" ")) {
+            String[] splittedText = messageText.split(" ");
+            if (!splittedText[1].equalsIgnoreCase("has")) return;
 
-            if(splittedText[2].equalsIgnoreCase("joined")) PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0]);
-            else if(splittedText[2].equalsIgnoreCase("kicked")) PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3]);
+            if (splittedText[2].equalsIgnoreCase("joined")) {
+                if (PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0])) {
+                    FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
+                }
+            } else if (splittedText[2].equalsIgnoreCase("kicked")) {
+                if (PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3])) {
+                    FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
+                }
+            }
         }
     }
 
@@ -134,39 +181,73 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
-        if(e.getMessage().startsWith("/friend add ")) {
-            PlayerInfo.getPlayerInfo().getFriendList().add(e.getMessage().replace("/friend add ", ""));
-        }else if(e.getMessage().startsWith("/friend remove ")) {
-            PlayerInfo.getPlayerInfo().getFriendList().remove(e.getMessage().replace("/friend remove ", ""));
-        }else if(e.getMessage().startsWith("/guild list")) {
+        if (e.getMessage().startsWith("/friend add ")) {
+            String addedFriend = e.getMessage().replace("/friend add ", "");
+            if (PlayerInfo.getPlayerInfo().getFriendList().add(addedFriend)) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
+            }
+        } else if (e.getMessage().startsWith("/friend remove ")) {
+            String removedFriend = e.getMessage().replace("/friend remove ", "");
+            if (PlayerInfo.getPlayerInfo().getFriendList().remove(removedFriend)) {
+                FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
+            }
+        } else if (e.getMessage().startsWith("/guild list")) {
             waitingForGuildList = false;
         }
     }
 
     /**
+     * Verifies the response from packet queue
+     */
+    @SubscribeEvent
+    public void onReceivePacket(PacketEvent e) {
+        PacketQueue.checkResponse(e.getPacket());
+    }
+
+    private static boolean triedToShowChangelog = false;
+
+    /**
      * Detects when the user enters the Wynncraft Server
      * Used for displaying the Changelog UI
-     *
-     * @param e
      */
     @SubscribeEvent
     public void onJoinLobby(RenderPlayerEvent.Post e) {
-        if(CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
-            if(UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+        if (Reference.onServer && CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
+            if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
 
-            CoreDBConfig.INSTANCE.showChangelogs = false;
-            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            synchronized (this) {
+                if (triedToShowChangelog) return;
+                triedToShowChangelog = true;
+            }
 
             boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(WebManager.getChangelog(major), major));
+            new Thread(() -> {
+                List<String> changelog = WebManager.getChangelog(major, false);
+                if (changelog != null) {
+                    Minecraft.getMinecraft().addScheduledTask(() -> {
+                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(changelog, major));
+                        // Showed changelog; Don't show next time.
+                        CoreDBConfig.INSTANCE.showChangelogs = false;
+                        CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+                    });
+                }
+            }, "wynntils-changelog-downloader").start();
         }
     }
 
     static BlockPos currentSpawn = null;
 
+    /**
+     *  Block compass changing locations if a forced location is set
+     */
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
+        if (Minecraft.getMinecraft().player == null) {
+            CompassManager.reset();
+            return;
+        }
+
         if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }

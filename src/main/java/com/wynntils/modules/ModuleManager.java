@@ -1,14 +1,14 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules;
 
 
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.modules.cosmetics.CosmeticsModule;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.core.CoreModule;
+import com.wynntils.modules.cosmetics.CosmeticsModule;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.music.MusicModule;
 import com.wynntils.modules.questbook.QuestBookModule;

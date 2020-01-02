@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.richpresence.events;
@@ -16,12 +16,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class ClientEvents implements Listener {
 
     @SubscribeEvent
-    public void onJoinParty(WynnSocialEvent.PartyJoin e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Integer.valueOf(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
+    public void onJoinParty(WynnSocialEvent.Party.Join e) {
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", ""))));
     }
 
     @SubscribeEvent
-    public void onLeaveParty(WynnSocialEvent.PartyLeave e) {
+    public void onLeaveParty(WynnSocialEvent.Party.Join e) {
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
     }
 
@@ -32,7 +32,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent e) {
-        if(e.phase != TickEvent.Phase.START) return;
+        if (e.phase != TickEvent.Phase.START) return;
 
         RichPresenceModule.getModule().getRichPresence().runCallbacks();
     }

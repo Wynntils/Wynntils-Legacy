@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.webapi.profiles.player;
 
 import com.google.common.reflect.TypeToken;
@@ -9,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class PlayerStatsProfile {
 
@@ -388,7 +393,7 @@ public class PlayerStatsProfile {
             if (!playerGuild.get("name").isJsonNull()) {
                 guildName = playerGuild.get("name").getAsString();
                 if (playerGuild.get("rank").getAsString().isEmpty()) guildRank = GuildRank.NONE;
-                else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase());
+                else guildRank = GuildRank.valueOf(playerGuild.get("rank").getAsString().toUpperCase(Locale.ROOT));
             }
 
             JsonObject globalStats = playerProfile.get("global").getAsJsonObject();

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.settings.annotations;
@@ -52,6 +52,12 @@ public @interface Setting {
         @Target(ElementType.FIELD)
         public @interface StringParameters {
             String[] parameters();
+        }
+
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
+        public @interface CustomColorFeatures {
+            boolean allowAlpha() default false;
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.cosmetics.events;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ServerEvents implements Listener {
 
     @SubscribeEvent
-    public void joinServer(WynncraftServerEvent.Leave e){
+    public void joinServer(WynncraftServerEvent.Leave e) {
         CapeManager.downloaded.clear();
     }
 

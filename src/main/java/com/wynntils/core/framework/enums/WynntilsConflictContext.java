@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.framework.enums;
 
 import com.wynntils.core.framework.instances.GuiMovementScreen;
@@ -18,6 +22,5 @@ public enum WynntilsConflictContext implements IKeyConflictContext {
             return this == other || other == KeyConflictContext.IN_GAME;
         }
     }
-
 
 }

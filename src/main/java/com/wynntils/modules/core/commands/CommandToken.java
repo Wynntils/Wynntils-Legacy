@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.commands;
@@ -40,19 +40,24 @@ public class CommandToken extends CommandBase implements IClientCommand {
             text.getStyle().setColor(TextFormatting.AQUA);
 
             TextComponentString token = new TextComponentString(WebManager.getAccount().getToken());
-            token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://account.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
-            token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click me to register an account.")));
+
+            token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                    "https://account.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
+            token.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new TextComponentString("Click me to register an account.")));
+
             token.getStyle().setColor(TextFormatting.DARK_AQUA);
             token.getStyle().setUnderlined(true);
             text.appendSibling(token);
 
             sender.sendMessage(text);
-        } else {
-            TextComponentString text = new TextComponentString("Error when getting token, try restarting your client");
-            text.getStyle().setColor(TextFormatting.RED);
-
-            sender.sendMessage(text);
+            return;
         }
+
+        TextComponentString text = new TextComponentString("Error when getting token, try restarting your client");
+        text.getStyle().setColor(TextFormatting.RED);
+
+        sender.sendMessage(text);
     }
 
     @Override

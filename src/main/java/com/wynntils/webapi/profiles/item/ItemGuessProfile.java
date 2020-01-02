@@ -1,16 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles.item;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -36,7 +31,7 @@ public class ItemGuessProfile {
     public void addItems(String part, HashMap<String, String> rarity) {
         items.put(part, rarity);
     }
-    
+
     public static class ItemGuessDeserializer implements JsonDeserializer<HashMap<?, ?>> {
 
         @Override
@@ -53,7 +48,7 @@ public class ItemGuessProfile {
             }
             return hashMap;
         }
-        
+
     }
 
 }

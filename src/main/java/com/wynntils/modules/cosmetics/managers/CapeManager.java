@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.cosmetics.managers;
@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -28,8 +28,8 @@ public class CapeManager {
         url = WebManager.getApiUrls().get("Capes") + "/user/" + uuid.toString().replace("-", "");
         rl = new ResourceLocation("wynntils:capes/" + uuid.toString().replace("-", ""));
 
-        //avoid extra downloading
-        if(downloaded.contains(rl.getPath())) { return; }
+        // avoid extra downloading
+        if (downloaded.contains(rl.getPath())) { return; }
         downloaded.add(rl.getPath());
 
         IImageBuffer ibuffer = new IImageBuffer() {

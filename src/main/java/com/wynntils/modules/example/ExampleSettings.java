@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.example;
@@ -9,7 +9,6 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 
 /**
- * @JsonIgnoreProperties is needed 100% needed, you always will need to put it
  * @SettingsInfo is just the name of the config, can more things be added later
  */
 @SettingsInfo(name = "example_settings", displayPath = "Example Settings")
@@ -33,12 +32,12 @@ public class ExampleSettings extends SettingsClass {
      */
     @Override
     public void onSettingChanged(String name) {
-        if(name.equals("myField")) {
-            //do something
+        if (name.equals("myField")) {
+            // do something
         }
     }
 
-    /**
+    /*
      * If you want to set a config option hardcoded like
      * myField = true;
      * don't forget to call after saveSettings(Module M)
