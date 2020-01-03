@@ -27,7 +27,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.Desktop;
 import java.io.IOException;

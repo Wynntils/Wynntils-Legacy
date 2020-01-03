@@ -87,6 +87,12 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\nThis does not work on macOS systems")
     public boolean changeWindowIcon = true;
 
+    @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top by default?")
+    public boolean renderTooltipsFromTop = true;
+
+    @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?")
+    public boolean renderTooltipsScaled = false;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

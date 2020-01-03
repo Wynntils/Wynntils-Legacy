@@ -446,4 +446,34 @@ public class ClientEvents implements Listener {
         ConsumableTimerOverlay.clearConsumables(); // clear consumable list
     }
 
+    @SubscribeEvent
+    public void onGuiMouseInput(GuiScreenEvent.MouseInputEvent.Pre e) {
+        TooltipScrollManager.onGuiMouseInput(e.getGui());
+    }
+
+    @SubscribeEvent
+    public void onBeforeDrawScreen(GuiScreenEvent.DrawScreenEvent.Pre e) {
+        TooltipScrollManager.onBeforeDrawScreen(e.getGui());
+    }
+
+    @SubscribeEvent
+    public void onAfterDrawScreen(GuiScreenEvent.DrawScreenEvent.Post e) {
+        TooltipScrollManager.onAfterDrawScreen(e.getGui());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onBeforeTooltip(RenderTooltipEvent.Pre e) {
+        TooltipScrollManager.onBeforeTooltipWrap(e);
+    }
+
+    @SubscribeEvent
+    public void onBeforeTooltipRender(RenderTooltipEvent.Color e) {
+        TooltipScrollManager.onBeforeTooltipRender(e);
+    }
+
+    @SubscribeEvent
+    public void onAfterTooltipRender(RenderTooltipEvent.PostText e) {
+        TooltipScrollManager.onAfterTooltipRender(e);
+    }
+
 }
