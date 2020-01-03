@@ -463,17 +463,25 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onBeforeTooltip(RenderTooltipEvent.Pre e) {
-        TooltipScrollManager.onBeforeTooltipWrap(e);
-    }
-
-    @SubscribeEvent
-    public void onBeforeTooltipRender(RenderTooltipEvent.Color e) {
-        TooltipScrollManager.onBeforeTooltipRender(e);
+        TooltipScrollManager.dispatchTooltipEvent(e);
     }
 
     @SubscribeEvent
     public void onAfterTooltipRender(RenderTooltipEvent.PostText e) {
-        TooltipScrollManager.onAfterTooltipRender(e);
+        TooltipScrollManager.dispatchTooltipEvent(e);
+    }
+
+    private static class FailsToLoadIfNoColorEvent implements Listener {
+        @SubscribeEvent
+        public void onBeforeTooltipRender(RenderTooltipEvent.Color e) {
+            TooltipScrollManager.dispatchTooltipEvent(e);
+        }
+    }
+
+    {
+        try {
+            UtilitiesModule.getModule().registerEvents(new FailsToLoadIfNoColorEvent());
+        } catch (NoClassDefFoundError e) { /* ignore */ }
     }
 
 }

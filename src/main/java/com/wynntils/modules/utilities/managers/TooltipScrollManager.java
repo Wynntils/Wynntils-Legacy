@@ -11,6 +11,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import org.lwjgl.input.Mouse;
 
+import java.util.List;
+
 public class TooltipScrollManager {
     private static GuiScreen lastGuiScreen = null;
     private static boolean isGuiContainer = false;
@@ -43,6 +45,11 @@ public class TooltipScrollManager {
         }
     }
 
+    private static void calculateMaxScroll(List<String> lines) {
+        maxScroll = Math.max(0, (lines.size() * 10 + (hasText ? 2 : 0) + 6) - lastGuiScreen.height);
+        scrollAmount = Math.min(scrollAmount, maxScroll);
+    }
+
     public static void onGuiMouseInput(GuiScreen on) {
         if (on != lastGuiScreen) return;
 
@@ -66,7 +73,7 @@ public class TooltipScrollManager {
         updateHoveredItemStack();
     }
 
-    public static void onBeforeTooltipWrap(RenderTooltipEvent e) {
+    private static void onBeforeTooltipWrap(RenderTooltipEvent e) {
         updateHoveredItemStack();
 
         if (lastItemStack == null || e.getStack() != lastItemStack) return;
@@ -74,11 +81,12 @@ public class TooltipScrollManager {
         hasText = e.getLines().size() > 1;
     }
 
-    public static void onBeforeTooltipRender(RenderTooltipEvent e) {
+    private static void onBeforeTooltipRender(RenderTooltipEvent e, boolean updateMaxScroll) {
         if (lastItemStack == null || e.getStack() != lastItemStack) return;
 
-        maxScroll = Math.max(0, (e.getLines().size() * 10 + (hasText ? 2 : 0) + 6) - lastGuiScreen.height);
-        scrollAmount = Math.min(scrollAmount, maxScroll);
+        if (updateMaxScroll) {
+            calculateMaxScroll(e.getLines());
+        }
 
         if (UtilitiesConfig.INSTANCE.renderTooltipsScaled) {
             if (maxScroll == 0 || (scrollAmount == maxScroll && !UtilitiesConfig.INSTANCE.renderTooltipsFromTop)) return;
@@ -106,8 +114,12 @@ public class TooltipScrollManager {
         GlStateManager.translate(0, toScroll, 0);
     }
 
-    public static void onAfterTooltipRender(RenderTooltipEvent e) {
+    private static void onAfterTooltipRender(RenderTooltipEvent e, boolean updateMaxScroll) {
         if (lastItemStack == null || e.getStack() != lastItemStack) return;
+
+        if (updateMaxScroll) {
+            calculateMaxScroll(e.getLines());
+        }
 
         if (UtilitiesConfig.INSTANCE.renderTooltipsScaled) {
             if (maxScroll == 0 || (scrollAmount == maxScroll && !UtilitiesConfig.INSTANCE.renderTooltipsFromTop)) return;
@@ -119,6 +131,42 @@ public class TooltipScrollManager {
         if (toScroll == 0) return;
 
         GlStateManager.translate(0, -toScroll, 0);
+    }
+
+
+    private static final Class<?> RenderTooltipEvent$Color;
+
+    static {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName("net.minecraftforge.client.event.RenderTooltipEvent$Color", true, TooltipScrollManager.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            clazz = null;
+        }
+        RenderTooltipEvent$Color = clazz;
+    }
+
+    public static void dispatchTooltipEvent(RenderTooltipEvent e) {
+        if (RenderTooltipEvent$Color == null) {
+            // Old version of Forge (<= 14.23.1.2594) don't have this event
+            // On this version, tooltips will look wrong for 1 frame
+            if (e instanceof RenderTooltipEvent.Pre) {
+                onBeforeTooltipWrap(e);
+                onBeforeTooltipRender(e, false);
+            } else if (e instanceof RenderTooltipEvent.PostText) {
+                onAfterTooltipRender(e, true);
+            }
+            return;
+        }
+
+        if (e instanceof RenderTooltipEvent.Pre) {
+            onBeforeTooltipWrap(e);
+        } else if (e instanceof RenderTooltipEvent.PostText) {
+            onAfterTooltipRender(e, false);
+        } else if (e.getClass() == RenderTooltipEvent$Color) {
+            onBeforeTooltipRender(e, true);
+        }
+
     }
 
 }
