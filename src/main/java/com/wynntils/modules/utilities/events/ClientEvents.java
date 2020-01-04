@@ -30,6 +30,7 @@ import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -336,12 +337,39 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private boolean lastWasDrop = false;
+
     @SubscribeEvent
     public void keyPress(PacketEvent<CPacketPlayerDigging> e) {
         if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS) || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
+        lastWasDrop = true;
         if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
             e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onConsumable(PacketEvent<SPacketSetSlot> e) {
+        if (!Reference.onWorld || e.getPacket().getWindowId() != 0) return;
+
+        // the reason of the +36, is because in the client the hotbar is handled between 0-8
+        // the hotbar in the packet starts in 36, counting from up to down
+        if (e.getPacket().getSlot() != Minecraft.getMinecraft().player.inventory.currentItem + 36) return;
+
+        InventoryPlayer inventory = Minecraft.getMinecraft().player.inventory;
+        ItemStack oldStack = inventory.getStackInSlot(e.getPacket().getSlot() - 36);
+        ItemStack newStack = e.getPacket().getStack();
+
+        if(lastWasDrop) {
+            lastWasDrop = false;
+            return;
+        }
+
+        if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
+        if (!oldStack.hasDisplayName()) return; // old item is not a valid item
+        if (!newStack.isEmpty() && oldStack.getDisplayName().equalsIgnoreCase(newStack.getDisplayName())) return; // not consumed
+
+        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(oldStack));
     }
 
     @SubscribeEvent
@@ -383,9 +411,6 @@ public class ClientEvents implements Listener {
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        // consumable timer
-        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
-
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -401,9 +426,6 @@ public class ClientEvents implements Listener {
     public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        // consumable timer
-        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
-
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -418,9 +440,6 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
-
-        // consumable timer
-        Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(item));
 
         if (!item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
@@ -446,6 +465,7 @@ public class ClientEvents implements Listener {
         ConsumableTimerOverlay.clearConsumables(); // clear consumable list
     }
 
+    // tooltip scroller
     @SubscribeEvent
     public void onGuiMouseInput(GuiScreenEvent.MouseInputEvent.Pre e) {
         TooltipScrollManager.onGuiMouseInput(e.getGui());

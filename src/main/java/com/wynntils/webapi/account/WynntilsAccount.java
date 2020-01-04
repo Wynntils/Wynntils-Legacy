@@ -81,7 +81,13 @@ public class WynntilsAccount {
                     IOUtils.closeQuietly(outputStream);
                 }
 
-                Reference.LOGGER.info("Updating user Discord ID");
+                String result = IOUtils.toString(st.getInputStream());
+                if(!result.contains("Success!")) {
+                    Reference.LOGGER.warn("Failed to update user Discord ID");
+                    return;
+                }
+
+                Reference.LOGGER.info("Updated user Discord ID");
             } catch (Exception ex) { ex.printStackTrace(); }
         });
     }

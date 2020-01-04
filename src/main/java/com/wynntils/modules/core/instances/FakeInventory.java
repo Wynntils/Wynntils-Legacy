@@ -16,6 +16,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.SPacketConfirmTransaction;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.util.EnumFacing;
@@ -329,6 +330,14 @@ public class FakeInventory {
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Your action was canceled because Wynntils is processing a background inventory."));
 
         e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void confirmAllTransactions(PacketEvent<SPacketConfirmTransaction> e) {
+        if(!shouldCancel(e)) return;
+        e.setCanceled(true);
+
+        ModCore.mc().getConnection().sendPacket(new CPacketConfirmTransaction(e.getPacket().getWindowId(), e.getPacket().getActionNumber(), true));
     }
 
     // avoid teleportation while reading the questbook

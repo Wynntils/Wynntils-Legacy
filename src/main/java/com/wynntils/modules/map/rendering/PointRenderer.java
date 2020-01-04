@@ -47,9 +47,11 @@ public class PointRenderer {
             Vector3d direction = new Vector3d(directions.get(i));
             Point3d end = new Point3d(points.get(i));
             start.y -= .24;
+
             direction.normalize();
             end.add(direction);
             end.y -= .24;
+
             drawTexturedLine(start, end, width);
         }
 

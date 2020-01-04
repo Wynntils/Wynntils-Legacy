@@ -190,7 +190,7 @@ public class QuestManager {
                 });
                 // pagination
                 if (next != null && (fullSearch || (isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0)) {
-                    i.clickItem(next.a, 1, ClickType.PICKUP);
+                    i.clickItem(next.a, 0, ClickType.PICKUP);
                 } else {
                     if (isMiniquests) {
                         incompleteMiniQuests = seenIncompleteMiniQuests;
@@ -198,9 +198,9 @@ public class QuestManager {
                         incompleteQuests = seenIncompleteQuests;
                     }
                     if (isForcingMiniquests && !isMiniquests && miniquests != null) {
-                        i.clickItem(miniquests.a, 1, ClickType.PICKUP);
+                        i.clickItem(miniquests.a, 0, ClickType.PICKUP);
                     } else if ((QuestBookConfig.INSTANCE.scanDiscoveries || forceDiscoveries || fullSearch) && discoveries != null) {
-                        i.clickItem(discoveries.a, 1, ClickType.PICKUP);
+                        i.clickItem(discoveries.a, 0, ClickType.PICKUP);
                     } else {
                         i.close();
                     }
@@ -245,10 +245,10 @@ public class QuestManager {
                     QuestBookPages.DISCOVERIES.getPage().updateSearch();
                 });
                 // pagination
-                if (next != null) i.clickItem(next.a, 1, ClickType.PICKUP);
+                if (next != null) i.clickItem(next.a, 0, ClickType.PICKUP);
                 else if (!secretDiscoveries && sDiscoveries != null) {
                     secretDiscoveries = true;
-                    i.clickItem(sDiscoveries.a, 1, ClickType.PICKUP);
+                    i.clickItem(sDiscoveries.a, 0, ClickType.PICKUP);
                 }
                 else i.close();
             } else i.close();
