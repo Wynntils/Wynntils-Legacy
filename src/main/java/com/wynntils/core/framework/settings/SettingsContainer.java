@@ -113,6 +113,7 @@ public class SettingsContainer {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
         holder.onSettingChanged(f.getName());
     }
 

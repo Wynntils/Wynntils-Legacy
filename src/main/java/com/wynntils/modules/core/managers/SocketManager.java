@@ -32,6 +32,8 @@ public class SocketManager {
     private static final boolean local = false;
 
     public static void registerSocket() {
+        if(Reference.onServer) return;
+
         if (WebManager.getApiUrls().get("EnableSocket").equalsIgnoreCase("false")
         && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) return;
 

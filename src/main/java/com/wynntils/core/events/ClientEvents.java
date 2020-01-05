@@ -45,9 +45,7 @@ public class ClientEvents {
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         Reference.setUserWorld(null);
 
-        if (Reference.onServer) {
-            MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
-        }
+        if (Reference.onServer) MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
