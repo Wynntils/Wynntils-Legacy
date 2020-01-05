@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 
 public class IdentificationOrderer {
 
-    public static IdentificationOrderer INSTANCE = new IdentificationOrderer(null, null);
+    public static IdentificationOrderer INSTANCE = new IdentificationOrderer(null, null, null);
 
     HashMap<String, Integer> order = new HashMap<>();
     ArrayList<String> groups = new ArrayList<>();
+    ArrayList<String> inverted = new ArrayList<>();
 
     transient HashMap<Integer, Integer> organizedGroups = null;
 
-    public IdentificationOrderer(HashMap<String, Integer> idOrders, ArrayList<String> groupRanges) {}
+    public IdentificationOrderer(HashMap<String, Integer> idOrders, ArrayList<String> groupRanges, ArrayList<String> inveverted) {}
 
     /**
      * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
@@ -34,6 +35,14 @@ public class IdentificationOrderer {
         if (organizedGroups == null) organizeGroups();
 
         return organizedGroups.getOrDefault(getOrder(id), -1);
+    }
+
+    /**
+     * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
+     * @return if the provided identification status is inverted (negative values are positive)
+     */
+    public boolean isInverted(String id) {
+        return inverted.contains(id);
     }
 
     /**

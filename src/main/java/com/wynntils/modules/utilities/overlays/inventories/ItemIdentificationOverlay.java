@@ -127,8 +127,15 @@ public class ItemIdentificationOverlay implements Listener {
                 IdentificationContainer id = item.getStatuses().get(idName);
                 int currentValue = ids.getInteger(idName);
 
-                String lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
-                        + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+                //id color
+                String lore;
+                if (IdentificationOrderer.INSTANCE.isInverted(idName))
+                    lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
+                            + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+                else
+                    lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
+                            + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+
 
                 if (id.hasConstantValue()) {
                     idLore.put(idName, lore);

@@ -245,12 +245,21 @@ public class ItemProfile {
 
     private static String getIDLore(IdentificationContainer id, String idName) {
         int baseValue = id.getBaseValue();
+
         String lore;
+
         if (id.hasConstantValue())
-            lore = (baseValue < 0 ? RED.toString() : baseValue > 0 ? GREEN + "+" : GRAY.toString()) + baseValue;
+            if (IdentificationOrderer.INSTANCE.isInverted(idName))
+                lore = (baseValue < 0 ? GREEN.toString() : baseValue > 0 ? RED + "+" : GRAY.toString()) + baseValue;
+            else
+                lore = (baseValue < 0 ? RED.toString() : baseValue > 0 ? GREEN + "+" : GRAY.toString()) + baseValue;
         else
-            lore = ((id.getMin() < 0 ? RED.toString() : GREEN + "+") + id.getMin()) +
-                ((id.getMax() < 0 ? DARK_RED + " to " + RED : DARK_GREEN + " to " + GREEN + "+") + id.getMax());
+            if (IdentificationOrderer.INSTANCE.isInverted(idName))
+                lore = ((id.getMin() < 0 ? GREEN.toString() : RED + "+") + id.getMin()) +
+                        ((id.getMax() < 0 ? DARK_GREEN + " to " + GREEN : DARK_RED + " to " + RED + "+") + id.getMax());
+            else
+                lore = ((id.getMin() < 0 ? RED.toString() : GREEN + "+") + id.getMin()) +
+                        ((id.getMax() < 0 ? DARK_RED + " to " + RED : DARK_GREEN + " to " + GREEN + "+") + id.getMax());
 
         return lore + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
     }
