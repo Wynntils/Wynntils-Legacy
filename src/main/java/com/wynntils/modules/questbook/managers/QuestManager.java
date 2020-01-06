@@ -33,7 +33,7 @@ public class QuestManager {
 
     /** Minimum number of ms between successive analyzes (To prevent analyze spam) */
     private static final int ANALYZE_MIN_TIMEOUT = 5 * 1000;
-    /** Time to reanalyze after interrupted */
+    /** Initial time to reanalyze after interrupted (`INTERRUPT_TIMEOUT * 2 ** (n - 1)`s for n interrupts) */
     private static final int INTERRUPT_TIMEOUT = 30 * 1000;
 
     private static final int MESSAGE_ID = 423375494;  // QuestManager.class.getName().hashCode()
@@ -57,7 +57,7 @@ public class QuestManager {
 
     private static boolean analyseRequested = false;
     private static boolean bookOpened = false;
-    private static boolean interrupted = false;
+    private static int interrupted = 0;
     private static boolean isForcingDiscoveries = false;
     private static boolean isForcingMiniquests = false;
     private static List<Runnable> onFinished = new ArrayList<>();
@@ -72,16 +72,15 @@ public class QuestManager {
         }
 
         analyseRequested = true;
-        interrupted = false;
+        interrupted = 0;
     }
 
     public static void executeQueue() {
         if (!analyseRequested || (Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
         long currentTime = System.currentTimeMillis();
-        if (currentTime > readRequestTime + (interrupted ? INTERRUPT_TIMEOUT : ANALYZE_MIN_TIMEOUT)) {
+        if (currentTime > readRequestTime + (interrupted != 0 ? INTERRUPT_TIMEOUT * (1 << (interrupted - 1)) : ANALYZE_MIN_TIMEOUT)) {
             readRequestTime = currentTime;
             analyseRequested = false;
-            interrupted = false;
             sendMessage(TextFormatting.GRAY + "[Analysing quest book...]");
             readQuestBook(!bookOpened, isForcingDiscoveries, isForcingMiniquests);
         }
@@ -264,6 +263,7 @@ public class QuestManager {
         });
         fakeInventory.onClose(c -> {
             currentInventory = null;
+            interrupted = 0;
             if (fullSearch) {
                 bookOpened = true;
             }
@@ -292,6 +292,8 @@ public class QuestManager {
 
             readRequestTime = System.currentTimeMillis();
 
+            int oldInterrupted = interrupted;
+
             if (forceDiscoveries) {
                 forceDiscoveries();
             }
@@ -304,11 +306,15 @@ public class QuestManager {
                 requestAnalyse();
             }
 
-            interrupted = true;
+            interrupted = oldInterrupted + 1;
+
+            int interruptTime = (INTERRUPT_TIMEOUT / 1000) * (1 << (interrupted - 1));
+            String timeString = interruptTime % 60 == 0 ? String.format("%d minutes", interruptTime / 60) : String.format("%d seconds", interruptTime);
+
             if (Reference.developmentEnvironment) {
-                sendMessage(TextFormatting.GRAY + "[Quest book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms]");
+                sendMessage(TextFormatting.GRAY + "[Quest book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms. Retrying in " + timeString + "]");
             } else {
-                sendMessage(TextFormatting.RED + String.format("Quest book analysis has been interrupted by your actions. Retrying in %d seconds", INTERRUPT_TIMEOUT / 1000));
+                sendMessage(TextFormatting.RED + String.format("Quest book analysis has been interrupted by your actions. Retrying in %s", timeString));
             }
         });
         currentInventory = fakeInventory;
@@ -359,7 +365,7 @@ public class QuestManager {
      * Check if the book was already opened before, if false it will request a read
      */
     public static void wasBookOpened() {
-        interrupted = false;
+        interrupted = 0;
 
         if (bookOpened) return;
 
@@ -374,7 +380,7 @@ public class QuestManager {
         forceDiscoveries();
         scanMiniquests();
         analyseRequested = true;
-        interrupted = false;
+        interrupted = 0;
     }
 
     /**
@@ -421,7 +427,7 @@ public class QuestManager {
 
         analyseRequested = false;
         bookOpened = false;
-        interrupted = false;
+        interrupted = 0;
         isForcingDiscoveries = false;
         isForcingMiniquests = false;
         onFinished.clear();

@@ -55,11 +55,8 @@ public class PacketEvent<T extends Packet<?>> extends GenericEvent<T> {
      */
     public static class Outgoing<T extends Packet<?>> extends PacketEvent<T> {
 
-        private ChannelPromise promise;
-
-        public Outgoing(T packet, NetHandlerPlayClient playClient, ChannelOutboundHandler handler, ChannelHandlerContext ctx, ChannelPromise promise) {
+        public Outgoing(T packet, NetHandlerPlayClient playClient, ChannelOutboundHandler handler, ChannelHandlerContext ctx) {
             super(packet, playClient, handler, ctx);
-            this.promise = promise;
         }
 
         /**
@@ -70,7 +67,7 @@ public class PacketEvent<T extends Packet<?>> extends GenericEvent<T> {
          */
         public void sendImmediately(Packet<?> packet) {
             try {
-                ((ChannelOutboundHandler) handler).write(ctx, packet, promise);
+                ((ChannelOutboundHandler) handler).write(ctx, packet, ctx.newPromise());
             } catch (Exception e) {
                 // Shouldn't actually throw
             }

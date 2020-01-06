@@ -35,7 +35,7 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
         }
 
         PacketEvent.Outgoing<? extends Packet<?>> event = noEvent ? null :
-            new PacketEvent.Outgoing<>(packet, ModCore.mc().getConnection(), this, ctx, promise);
+            new PacketEvent.Outgoing<>(packet, ModCore.mc().getConnection(), this, ctx);
         if (!noEvent && FrameworkManager.getEventBus().post(event)) return;
 
         super.write(ctx, msg, promise);
