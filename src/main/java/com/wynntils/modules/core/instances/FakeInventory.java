@@ -139,6 +139,7 @@ public class FakeInventory {
         open = false;
 
         if (windowId != -1) Minecraft.getMinecraft().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        windowId = -1;
         if (callOnClose && onClose != null) onClose.accept(this);
     }
 
@@ -298,12 +299,13 @@ public class FakeInventory {
 
     // cancel all other interactions to avoid GUI openings while this one is already opened
 
-    private boolean shouldCancel(Event e) {
+    private boolean shouldCancel(PacketEvent.Outgoing<?> e) {
         if (interrupted || isCrashed()) return false;
 
         if (!e.isCanceled() && onInterrupt != null) {
             interrupted = true;
-            ModCore.mc().getConnection().sendPacket(new CPacketCloseWindow(1));
+            e.sendImmediately(new CPacketCloseWindow(windowId));
+            windowId = -1;
             onInterrupt.accept(this);
             return false;
         }
@@ -312,7 +314,7 @@ public class FakeInventory {
     }
 
     @SubscribeEvent
-    public void cancelInteractItem(PacketEvent<CPacketPlayerTryUseItem> e) {
+    public void cancelInteractItem(PacketEvent.Outgoing<CPacketPlayerTryUseItem> e) {
         if (!shouldCancel(e)) return;
 
         if (!e.isCanceled())
@@ -323,7 +325,7 @@ public class FakeInventory {
 
     // cancel all other interactions to avoid GUI openings while this one is already opened
     @SubscribeEvent
-    public void cancelInteractItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
+    public void cancelInteractItemOnBlock(PacketEvent.Outgoing<CPacketPlayerTryUseItemOnBlock> e) {
         if (!shouldCancel(e)) return;
 
         if (!e.isCanceled())
@@ -333,11 +335,12 @@ public class FakeInventory {
     }
 
     @SubscribeEvent
-    public void confirmAllTransactions(PacketEvent<SPacketConfirmTransaction> e) {
-        if(!shouldCancel(e)) return;
-        e.setCanceled(true);
+    public void confirmAllTransactions(PacketEvent.Incoming<SPacketConfirmTransaction> e) {
+        if (e.getPacket().getWindowId() == windowId) {
+            e.setCanceled(true);
 
-        ModCore.mc().getConnection().sendPacket(new CPacketConfirmTransaction(e.getPacket().getWindowId(), e.getPacket().getActionNumber(), true));
+            ModCore.mc().getConnection().sendPacket(new CPacketConfirmTransaction(windowId, e.getPacket().getActionNumber(), true));
+        }
     }
 
     // avoid teleportation while reading the questbook
