@@ -37,7 +37,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "lootrun <load/save/hide/record/stop/list/clear/help>";
+        return "lootrun <load/save/delete/rename/hide/record/stop/list/clear/help>";
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            throw new WrongUsageException("/lootrun <load/save/delete/record/list/clear/help>");
+            throw new WrongUsageException("/" + getUsage(sender));
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
@@ -111,6 +111,25 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
+            case "rename": {
+                if (args.length < 3) {
+                    throw new WrongUsageException("/lootrun rename [oldname] [newname]");
+                }
+                String oldName = args[1];
+                String newName = args[2];
+
+                String message;
+                if (LootRunManager.rename(oldName, newName)) {
+                    message = GREEN + "Successfully renamed " + oldName + " to " + newName + "!";
+                } else if (LootRunManager.hasLootrun(oldName)) {
+                    message = RED + "An error occurred whilst renaming!";
+                } else {
+                    message = RED + "Could not rename " + oldName + " as it doesn't exist!";
+                }
+
+                sender.sendMessage(new TextComponentString(message));
+                return;
+            }
             case "record": {
                 String message;
                 if (LootRunManager.isRecording()) {
@@ -161,6 +180,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "load <name> " + GRAY + "Loads a saved loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "save <name> " + GRAY + "Save the currently recording loot run as the given name\n" +
                     DARK_GRAY + "/lootrun " + RED + "delete <name> " + GRAY + "Delete a previously saved lootrun\n" +
+                    DARK_GRAY + "/lootrun " + RED + "rename <oldname> <newname> " + GRAY + "Rename a lootrun (Will overwrite any lootrun called <newname>)\n" +
                     DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +
@@ -169,7 +189,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 return;
             }
             default:
-                throw new WrongUsageException("/lootrun <load/save/delete/record/list/help/clear>");
+                throw new WrongUsageException("/" + getUsage(sender));
         }
     }
 
@@ -179,6 +199,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "load":
             case "save":
             case "delete":
+            case "rename":
                 if (args.length > 2) return Collections.emptyList();
                 return getListOfStringsMatchingLastWord(args, LootRunManager.getStoredLootruns());
             case "list":
@@ -186,7 +207,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "record":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "record", "list", "clear", "help");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "clear", "help");
         }
     }
 
