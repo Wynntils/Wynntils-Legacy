@@ -360,7 +360,7 @@ public class ClientEvents implements Listener {
         ItemStack oldStack = inventory.getStackInSlot(e.getPacket().getSlot() - 36);
         ItemStack newStack = e.getPacket().getStack();
 
-        if(lastWasDrop) {
+        if (lastWasDrop) {
             lastWasDrop = false;
             return;
         }

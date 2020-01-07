@@ -33,7 +33,7 @@ public class SocketManager {
     public static void registerSocket() {
         if (!Reference.onServer) return;
 
-        if (WebManager.getApiUrls().get("EnableSocket").equalsIgnoreCase("false")
+        if (WebManager.getApiUrls() == null || "false".equalsIgnoreCase(WebManager.getApiUrls().get("EnableSocket"))
         && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) return;
 
         Reference.LOGGER.info("Connecting to the Socket Server...");

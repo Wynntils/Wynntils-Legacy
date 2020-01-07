@@ -128,7 +128,7 @@ public class ItemIdentificationOverlay implements Listener {
                 int currentValue = ids.getInteger(idName);
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(idName);
 
-                //id color
+                // id color
                 String longName = IdentificationContainer.getAsLongName(idName);
                 SpellType spell = SpellType.getSpell(longName);
                 if (spell != null) {
@@ -234,9 +234,9 @@ public class ItemIdentificationOverlay implements Listener {
         // Powder lore
         if (wynntils.hasKey("powderSlots")) newLore.add(wynntils.getString("powderSlots"));
 
-        //Set Bonus
+        // Set Bonus
         if (wynntils.hasKey("setBonus")) {
-            if(wynntils.hasKey("powderSlots")) newLore.add(" ");
+            if (wynntils.hasKey("powderSlots")) newLore.add(" ");
 
             newLore.add(GREEN + "Set Bonus:");
             NBTTagCompound ids = wynntils.getCompoundTag("setBonus");
@@ -395,8 +395,8 @@ public class ItemIdentificationOverlay implements Listener {
             for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
 
-                //set bonus detection
-                if(lColor.contains("Set Bonus:")) {
+                // set bonus detection
+                if (lColor.contains("Set Bonus:")) {
                     isBonus = true;
                     continue;
                 }
@@ -415,7 +415,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                         String shortIdName = toShortIdName(idName, isRaw);
 
-                        if(isBonus) {
+                        if (isBonus) {
                             setBonus.setString(shortIdName, loreLine);
                             continue;
                         }

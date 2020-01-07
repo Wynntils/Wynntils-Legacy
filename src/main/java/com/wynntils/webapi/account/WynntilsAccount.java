@@ -82,7 +82,7 @@ public class WynntilsAccount {
                 }
 
                 String result = IOUtils.toString(st.getInputStream());
-                if(!result.contains("Success!")) {
+                if (!result.contains("Success!")) {
                     Reference.LOGGER.warn("Failed to update user Discord ID");
                     return;
                 }
