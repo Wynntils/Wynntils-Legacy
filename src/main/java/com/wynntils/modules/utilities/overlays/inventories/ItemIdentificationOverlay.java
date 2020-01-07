@@ -132,7 +132,7 @@ public class ItemIdentificationOverlay implements Listener {
                 String longName = IdentificationContainer.getAsLongName(idName);
                 SpellType spell = SpellType.getSpell(longName);
                 if (spell != null) {
-                    longName = spell.getRegex().matcher(longName).replaceFirst(spell.getCurrentName());
+                    longName = spell.getRegex().matcher(longName).replaceFirst(spell.getShortName() + " (" + spell.getCurrentName() + ")");
                 }
 
                 String lore;
