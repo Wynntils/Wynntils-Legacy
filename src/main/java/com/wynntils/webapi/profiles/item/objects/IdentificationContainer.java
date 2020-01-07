@@ -5,7 +5,6 @@
 package com.wynntils.webapi.profiles.item.objects;
 
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import org.apache.commons.lang3.math.Fraction;
 

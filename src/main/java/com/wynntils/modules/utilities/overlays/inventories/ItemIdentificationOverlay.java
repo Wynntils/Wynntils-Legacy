@@ -42,7 +42,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
-    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9\b]+))");
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
     private final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
@@ -129,13 +129,20 @@ public class ItemIdentificationOverlay implements Listener {
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(idName);
 
                 //id color
+                String longName = IdentificationContainer.getAsLongName(idName);
+                SpellType spell = SpellType.getSpell(longName);
+                if (spell != null) {
+                    longName = spell.getRegex().matcher(longName).replaceFirst(spell.getCurrentName());
+                }
+
                 String lore;
                 if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+                            + currentValue + id.getType().getInGame() + " " + GRAY + longName;
                 else
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+                            + currentValue + id.getType().getInGame() + " " + GRAY + longName;
+
 
 
                 if (id.hasConstantValue()) {
@@ -401,7 +408,10 @@ public class ItemIdentificationOverlay implements Listener {
                         boolean isRaw = idMatcher.group("Suffix") == null;
 
                         SpellType spell = SpellType.getSpell(idName);
-                        if (spell != null) idName = spell.replaceWithShortName(idName);
+                        if (spell != null) {
+                            spell.updateCurrentName(idName);
+                            idName = spell.replaceWithShortName(idName);
+                        }
 
                         String shortIdName = toShortIdName(idName, isRaw);
 
