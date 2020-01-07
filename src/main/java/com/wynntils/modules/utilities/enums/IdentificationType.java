@@ -31,8 +31,8 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         public double getRelativeValue(IdentificationContainer container, int current, boolean isInverted) {
             if (container.isFixed() || container.getBaseValue() == 0) return current == container.getBaseValue() ? 1 : 0;
-            if (current == container.getMax()) return isInverted ? 1 : 0;
-            if (container.getMax() == container.getMin()) return isInverted ? 0 : 1;
+            if (current == container.getMax()) return isInverted ? 0 : 1;
+            if (container.getMax() == container.getMin()) return isInverted ? 1 : 0 ;
 
             int min = container.getMin();
             int max = container.getMax();
