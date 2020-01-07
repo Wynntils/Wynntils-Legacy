@@ -20,7 +20,6 @@ import io.socket.client.Socket;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +31,7 @@ public class SocketManager {
     private static final boolean local = false;
 
     public static void registerSocket() {
-        if(Reference.onServer) return;
+        if (!Reference.onServer) return;
 
         if (WebManager.getApiUrls().get("EnableSocket").equalsIgnoreCase("false")
         && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) return;
