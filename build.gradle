@@ -82,10 +82,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
 }
 
-sourceSets {
-    main { output.resourcesDir = output.classesDir }
-}
-
 class Version {
     int major, minor, revision
 
