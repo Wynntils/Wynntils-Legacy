@@ -34,7 +34,10 @@ public enum IdentificationType implements IIdentificationAnalyser {
             if (current == container.getMax()) return 1;
             if (container.getMax() == container.getMin()) return 0;
 
-            return (current - container.getMin()) / (double) (container.getMax() - container.getMin());
+            int min = container.getBaseValue() < 0 ? container.getMax() : container.getMin();
+            int max = container.getBaseValue() < 0 ? container.getMin() : container.getMax();
+
+            return (current - min) / (double) (max - min);
         }
 
         String getColor(double amount) {
