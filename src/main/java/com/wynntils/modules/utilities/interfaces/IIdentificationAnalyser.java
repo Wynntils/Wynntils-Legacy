@@ -10,6 +10,6 @@ import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 public interface IIdentificationAnalyser {
 
     String getTitle(double specialAmount);
-    IdentificationResult identify(IdentificationContainer container, int currentValue);
+    IdentificationResult identify(IdentificationContainer container, int currentValue, boolean isInverted);
 
 }

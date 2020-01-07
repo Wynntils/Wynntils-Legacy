@@ -8,10 +8,10 @@ import java.util.regex.Pattern;
 
 public enum SpellType {
 
-    FIRST_SPELL  ("1st Spell", "(Arrow Storm|Bolt Blizzard|Bash|Holy Blast|Heal|Remedy|Spin Attack|Whirlwind|Totem|Sky Emblem|1st Spell)\b"),
-    SECOND_SPELL ("2nd Spell", "(Escape|Spider Jump|Charge|Leap|Teleport|Blink|Vanish|Shadow Clone|Haul|Soar|2nd Spell)\b"),
-    THIRD_SPELL  ("3rd Spell", "(Bomb(?: Arrow)?|Creeper Dart|Uppercut|Heaven Jolt|Meteor|Dead Star|Multi Hit|Leopard Punches|Aura|Wind Surge|3rd Spell)\b"),
-    FOURTH_SPELL ("4th Spell", "(Arrow Shield|Dagger Aura|War Scream|Cry of the Gods|Ice Snake|Crystal Reptile|Smoke Bomb|Blinding Cloud|Uproot|Gale Funnel|4th Spell)\b");
+    FIRST_SPELL  ("1st Spell", "(Arrow Storm|Bolt Blizzard|Bash|Holy Blast|Heal|Remedy|Spin Attack|Whirlwind|Totem|Sky Emblem|1st Spell)\b?"),
+    SECOND_SPELL ("2nd Spell", "(Escape|Spider Jump|Charge|Leap|Teleport|Blink|Vanish|Shadow Clone|Haul|Soar|2nd Spell)\b?"),
+    THIRD_SPELL  ("3rd Spell", "(Bomb(?: Arrow)?|Creeper Dart|Uppercut|Heaven Jolt|Meteor|Dead Star|Multi Hit|Leopard Punches|Aura|Wind Surge|3rd Spell)\b?"),
+    FOURTH_SPELL ("4th Spell", "(Arrow Shield|Dagger Aura|War Scream|Cry of the Gods|Ice Snake|Crystal Reptile|Smoke Bomb|Blinding Cloud|Uproot|Gale Funnel|4th Spell)\b?");
 
     String shortName; Pattern regex;
 

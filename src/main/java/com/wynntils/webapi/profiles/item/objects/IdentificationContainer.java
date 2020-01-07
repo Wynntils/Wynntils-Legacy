@@ -5,6 +5,7 @@
 package com.wynntils.webapi.profiles.item.objects;
 
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import org.apache.commons.lang3.math.Fraction;
 
@@ -15,7 +16,8 @@ public class IdentificationContainer {
     private boolean isFixed;
 
     private transient int min, max;
-    private transient Fraction perfectChance;
+    private transient Fraction minChance;
+    private transient Fraction maxChance;
 
     public IdentificationContainer(IdentificationModifier type, int baseValue, boolean isFixed) {
         this.type = type; this.baseValue = baseValue; this.isFixed = isFixed;
@@ -80,15 +82,24 @@ public class IdentificationContainer {
         public ReidentificationChances(Fraction decrease, Fraction remain, Fraction increase) {
             this.decrease = decrease; this.remain = remain; this.increase = increase;
         }
+
+        private ReidentificationChances flip() {
+            return new ReidentificationChances(increase, remain, decrease);
+        }
     }
 
     /**
      * Return the chances for this identification to decrease/remain the same/increase after reidentification
      *
      * @param currentValue The current value of this identification
+     * @param isInverted If true, `decrease` will be the chance to go up (become better) and vice versa with `increase`.
      * @return A {@link ReidentificationChances} of the result (All from 0 to 1)
      */
-    public strictfp ReidentificationChances getChances(int currentValue) {
+    public strictfp ReidentificationChances getChances(int currentValue, boolean isInverted) {
+        if (isInverted) {
+            return getChances(currentValue, false).flip();
+        }
+
         if (hasConstantValue()) {
             return new ReidentificationChances(
                 currentValue > baseValue ? Fraction.ONE : Fraction.ZERO,
@@ -147,11 +158,11 @@ public class IdentificationContainer {
 
         if (baseValue > 0) {
             // chance to be (<= lowerRawRoll) and (>= higherRawRoll)
-            decrease = Fraction.getFraction(lowerRawRoll - 29, 101);
-            increase = Fraction.getFraction(131 - higherRawRoll, 101);
+            decrease = getFraction(lowerRawRoll - 29, 101);
+            increase = getFraction(131 - higherRawRoll, 101);
         } else {
-            decrease = Fraction.getFraction(131 - lowerRawRoll, 61);
-            increase = Fraction.getFraction(higherRawRoll - 69, 61);
+            decrease = getFraction(131 - lowerRawRoll, 61);
+            increase = getFraction(higherRawRoll - 69, 61);
         }
 
         int remainNumerator = Math.abs(higherRawRoll - lowerRawRoll) - 1;
@@ -159,16 +170,20 @@ public class IdentificationContainer {
 
         return new ReidentificationChances(
             decrease,
-            Fraction.getFraction(remainNumerator, baseValue > 0 ? 101 : 61),
+            getFraction(remainNumerator, baseValue > 0 ? 101 : 61),
             increase
         );
     }
 
     /**
+     * @param isInverted If true, return the chance to become the minimum value instead of the maximum value
      * @return The chance for this identification to become perfect (From 0 to 1)
      */
-    public Fraction getPerfectChance() {
-        return perfectChance == null ? (perfectChance = getChances(max).remain) : perfectChance;
+    public Fraction getPerfectChance(boolean isInverted) {
+        if (isInverted) {
+            return minChance == null ? (minChance = getChances(min, false).remain) : minChance;
+        }
+        return maxChance == null ? (minChance = getChances(max, false).remain) : minChance;
     }
 
     /**
@@ -176,7 +191,27 @@ public class IdentificationContainer {
      * @return true if this is a valid value (If false, the API is probably wrong)
      */
     public boolean isValidValue(int currentValue) {
-        return getChances(currentValue).remain.getNumerator() != 0;  // Not a 0% chance to remain as this value after reid
+        return getChances(currentValue, false).remain.getNumerator() != 0;  // Not a 0% chance to remain as this value after reid
+    }
+
+    private static Fraction[] fraction61Cache = new Fraction[62];
+    private static Fraction[] fraction101Cache = new Fraction[102];
+
+    static {
+        for (int i = 0; i < 62; ++i) {
+            fraction61Cache[i] = Fraction.getFraction(i, 61);
+        }
+        for (int i = 0; i < 102; ++i) {
+            fraction101Cache[i] = Fraction.getFraction(i, 101);
+        }
+    }
+
+    private static Fraction getFraction(int num, int denom) {
+        if (0 <= num && num <= denom) {
+            if (denom == 61) return fraction61Cache[num];
+            if (denom == 101) return fraction101Cache[num];
+        }
+        return Fraction.getFraction(num, denom);
     }
 
 }

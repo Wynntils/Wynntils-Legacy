@@ -23,21 +23,22 @@ public enum IdentificationType implements IIdentificationAnalyser {
         }
 
         @Override
-        public IdentificationResult identify(IdentificationContainer container, int current) {
-            double relative = getRelativeValue(container, current);
+        public IdentificationResult identify(IdentificationContainer container, int current, boolean isInverted) {
+            double relative = getRelativeValue(container, current, isInverted);
 
             return new IdentificationResult(getTitle(relative), relative);
         }
 
-        public double getRelativeValue(IdentificationContainer container, int current) {
+        public double getRelativeValue(IdentificationContainer container, int current, boolean isInverted) {
             if (container.isFixed() || container.getBaseValue() == 0) return current == container.getBaseValue() ? 1 : 0;
-            if (current == container.getMax()) return 1;
-            if (container.getMax() == container.getMin()) return 0;
+            if (current == container.getMax()) return isInverted ? 1 : 0;
+            if (container.getMax() == container.getMin()) return isInverted ? 0 : 1;
 
-            int min = container.getBaseValue() < 0 ? container.getMax() : container.getMin();
-            int max = container.getBaseValue() < 0 ? container.getMin() : container.getMax();
+            int min = container.getMin();
+            int max = container.getMax();
 
-            return (current - min) / (double) (max - min);
+            double value = (current - min) / (double) (max - min);
+            return isInverted ? 1 - value : value;
         }
 
         String getColor(double amount) {
@@ -64,8 +65,8 @@ public enum IdentificationType implements IIdentificationAnalyser {
         }
 
         @Override
-        public IdentificationResult identify(IdentificationContainer container, int currentValue) {
-            String suffix = container.getBaseValue() < 0 ?
+        public IdentificationResult identify(IdentificationContainer container, int currentValue, boolean isInverted) {
+            String suffix = (container.getBaseValue() > 0 == isInverted) ?
                     DARK_RED + "[" + RED + container.getMin() + ", " + container.getMax() + DARK_RED + "]" :
                     DARK_GREEN + "[" + GREEN + container.getMin() + ", " + container.getMax() + DARK_GREEN + "]";
 
@@ -82,11 +83,11 @@ public enum IdentificationType implements IIdentificationAnalyser {
         }
 
         @Override
-        public IdentificationResult identify(IdentificationContainer container, int currentValue) {
-            IdentificationContainer.ReidentificationChances chances = container.getChances(currentValue);
+        public IdentificationResult identify(IdentificationContainer container, int currentValue, boolean isInverted) {
+            IdentificationContainer.ReidentificationChances chances = container.getChances(currentValue, isInverted);
             double increasePct = chances.increase.getNumerator() * 100D / chances.increase.getDenominator();
             double decreasePct = chances.decrease.getNumerator() * 100D / chances.decrease.getDenominator();
-            double perfectPct = container.getPerfectChance().multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
+            double perfectPct = container.getPerfectChance(isInverted).multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
 
             String suffix = String.format(
                     AQUA + "\u21E7%.0f%% " + RED + "\u21E9%.0f%% " + GOLD + "\u2605%.1f%%",

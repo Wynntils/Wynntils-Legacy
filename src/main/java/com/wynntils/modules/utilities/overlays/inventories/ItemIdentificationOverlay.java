@@ -126,10 +126,11 @@ public class ItemIdentificationOverlay implements Listener {
 
                 IdentificationContainer id = item.getStatuses().get(idName);
                 int currentValue = ids.getInteger(idName);
+                boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(idName);
 
                 //id color
                 String lore;
-                if (IdentificationOrderer.INSTANCE.isInverted(idName))
+                if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
                             + currentValue + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
                 else
@@ -142,7 +143,7 @@ public class ItemIdentificationOverlay implements Listener {
                     continue;
                 }
 
-                IdentificationResult result = idType.identify(id, currentValue);
+                IdentificationResult result = idType.identify(id, currentValue, isInverted);
                 idLore.put(idName, lore + " " + result.getLore());
 
                 cumRelative += result.getAmount();
