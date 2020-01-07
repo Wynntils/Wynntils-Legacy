@@ -138,7 +138,7 @@ public class ConsumableTimerOverlay extends Overlay {
         boolean isRaw = suffix == null;
 
         SpellType spell = SpellType.getSpell(idName);
-        if (spell != null) idName = idName.replaceAll(spell.getRegex().pattern(), spell.getShortName());
+        if (spell != null) idName = spell.replaceWithShortName(idName);
 
         String shortIdName = ItemIdentificationOverlay.toShortIdName(idName, isRaw);
 

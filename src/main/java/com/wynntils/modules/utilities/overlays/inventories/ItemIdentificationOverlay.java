@@ -42,7 +42,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
-    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9\b]+))");
     private final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
@@ -400,7 +400,7 @@ public class ItemIdentificationOverlay implements Listener {
                         boolean isRaw = idMatcher.group("Suffix") == null;
 
                         SpellType spell = SpellType.getSpell(idName);
-                        if (spell != null) idName = idName.replaceAll(spell.getRegex().pattern(), spell.getShortName());
+                        if (spell != null) idName = spell.replaceWithShortName(idName);
 
                         String shortIdName = toShortIdName(idName, isRaw);
 

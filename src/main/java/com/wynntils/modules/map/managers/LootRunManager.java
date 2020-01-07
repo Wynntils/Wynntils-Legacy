@@ -44,6 +44,19 @@ public class LootRunManager {
         return result;
     }
 
+    /**
+     * Returns whether a lootrun can be loaded (Respects case-insensitive file systems)
+     */
+    public static boolean hasLootrun(String name) {
+        String[] files = STORAGE_FOLDER.list();
+        if (files == null) return false;
+        File expectedFile = new File(STORAGE_FOLDER, name + ".json");
+        for (String file : files) {
+            if (new File(STORAGE_FOLDER, file).equals(expectedFile)) return true;
+        }
+        return false;
+    }
+
     public static void hide() {
         activePath = null;
     }
@@ -141,13 +154,26 @@ public class LootRunManager {
             File f = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!f.exists()) return false;
 
-            f.delete();
+            return f.delete();
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
 
-        return true;
+    }
+
+    public static boolean rename(String oldName, String newName) {
+        if (!STORAGE_FOLDER.exists()) return false;
+
+        try {
+            File f = new File(STORAGE_FOLDER, oldName + ".json");
+            if (!f.exists()) return false;
+
+            return f.renameTo(new File(STORAGE_FOLDER, newName + ".json"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     public static void clear() {
