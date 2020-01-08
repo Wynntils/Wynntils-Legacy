@@ -17,6 +17,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -157,11 +158,15 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (!LootRunManager.STORAGE_FOLDER.exists()) {
                     LootRunManager.STORAGE_FOLDER.mkdirs();
                 }
-                messageText.getStyle()
-                    .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
-                        "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getAbsolutePath() + "\nClick here to open!"
-                    )))
-                    .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getAbsolutePath()));
+                try {
+                    messageText.getStyle()
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
+                            "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getCanonicalPath() + "\nClick here to open!"
+                        )))
+                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getCanonicalPath()));
+                } catch (IOException e) {
+                    // Shouldn't throw
+                }
                 sender.sendMessage(messageText);
                 return;
             }

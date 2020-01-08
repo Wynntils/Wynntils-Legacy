@@ -97,7 +97,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
                 }
                 ITextComponent text = new TextComponentString("Exported discoveries to ");
                 ITextComponent fileText = new TextComponentString(exportFile.getName());
-                fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getAbsolutePath()));
+                fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
                 fileText.getStyle().setUnderlined(true);
                 text.appendSibling(fileText);
                 ModCore.mc().addScheduledTask(() -> {
