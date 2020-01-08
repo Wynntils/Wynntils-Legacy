@@ -14,7 +14,9 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.MathHelper;
@@ -316,7 +318,7 @@ public class PlayerInfo {
     public int getSoulPoints() {
         if (currentClass == ClassType.NONE || mc.player == null) return -1;
         ItemStack soulPoints = mc.player.inventory.mainInventory.get(8);
-        if (soulPoints.getItem() != Items.NETHER_STAR) {
+        if (soulPoints.getItem() != Items.NETHER_STAR && soulPoints.getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER)) {
             return -1;
         }
         return soulPoints.getCount();
