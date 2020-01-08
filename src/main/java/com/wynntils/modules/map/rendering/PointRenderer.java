@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
@@ -154,6 +155,11 @@ public class PointRenderer {
     }
 
     public static void drawCube(BlockPos point, CustomColor color) {
+        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
+
+        Entity player = Minecraft.getMinecraft().player;
+        if (point.distanceSq(player.posX, player.posY, player.posZ) > maxDistance * maxDistance) return;
+
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
         Location c = new Location(
@@ -170,7 +176,7 @@ public class PointRenderer {
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-        RenderGlobal.drawBoundingBox(c.getX(), c.getY(), c.getZ(), c.getX()+1, c.getY()+1, c.getZ()+1, color.r, color.g, color.b, color.a);
+        RenderGlobal.drawBoundingBox(c.x, c.y, c.z, c.x + 1, c.y + 1, c.z + 1, color.r, color.g, color.b, color.a);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
