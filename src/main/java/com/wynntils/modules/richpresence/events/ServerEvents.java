@@ -124,7 +124,8 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
         if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft") && RichPresenceConfig.INSTANCE.enableRichPresence) {
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
+            String state = Reference.onEuServer ? "In :flag_eu: Lobby" : "In Lobby";
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
         }
     }
 
@@ -142,7 +143,8 @@ public class ServerEvents implements Listener {
             updateTimer.cancel(true);
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = 0;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("In Lobby", null, null, OffsetDateTime.now());
+            String state = Reference.onEuServer ? "In :flag_eu: Lobby" : "In Lobby";
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
         }
     }
 
