@@ -14,7 +14,6 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.ResourcePackRepository;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -95,7 +94,7 @@ public class ServerUtils {
 
     private static class FakeResourcePackRepositoryHolder {
         // Will only be created by classloader when used
-        static final ResourcePackRepository instance = new ResourcePackRepository(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks(), null, null, null, new GameSettings()) {
+        static final ResourcePackRepository instance = new ResourcePackRepository(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks(), null, null, null, Minecraft.getMinecraft().gameSettings) {
             @Override
             public void clearResourcePack() {
                 // Don't
