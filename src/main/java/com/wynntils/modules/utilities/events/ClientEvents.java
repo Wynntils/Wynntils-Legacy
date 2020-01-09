@@ -411,7 +411,7 @@ public class ClientEvents implements Listener {
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        if (item.isEmpty() && !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player.getHealth() != player.getMaxHealth()) return;
