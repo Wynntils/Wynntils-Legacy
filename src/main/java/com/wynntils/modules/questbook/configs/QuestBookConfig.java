@@ -25,7 +25,4 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
-    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analysed every time by the quest book?\n\n§8Enabling this will cause analysis to be slower but the discoveries page will always be up to date.")
-    public boolean scanDiscoveries = false;
-
 }

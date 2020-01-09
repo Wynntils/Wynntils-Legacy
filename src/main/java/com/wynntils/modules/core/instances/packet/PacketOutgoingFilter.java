@@ -2,11 +2,12 @@
  *  * Copyright © Wynntils - 2018 - 2020.
  */
 
-package com.wynntils.modules.core.instances;
+package com.wynntils.modules.core.instances.packet;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -30,7 +31,7 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
         boolean noEvent = false;
 
         Packet<?> packet = (Packet<?>) msg;
-        if (packet == FakeInventory.ignoredPacket) {
+        if (packet == InventoryOpenByItem.ignoredPacket) {
             noEvent = true;
         }
 

@@ -157,7 +157,7 @@ public class MapApiIcon extends MapTextureIcon {
 
     @Override public boolean isEnabled(boolean forMinimap) {
         if (MapConfig.INSTANCE.hideCompletedQuests && (mmp.getIcon().equals("Content_Quest") || mmp.getIcon().equals("Content_Miniquest"))) {
-            QuestInfo questData = QuestManager.getCurrentQuestsData().get(mmp.getName());
+            QuestInfo questData = QuestManager.getQuest(mmp.getName());
             if (questData != null && questData.getStatus() == QuestStatus.COMPLETED) {
                 return false;
             }

@@ -4,439 +4,340 @@
 
 package com.wynntils.modules.questbook.managers;
 
-import com.wynntils.ModCore;
-import com.wynntils.Reference;
+
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
-import com.wynntils.modules.core.instances.FakeInventory;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.enums.*;
+import com.wynntils.modules.core.enums.InventoryResult;
+import com.wynntils.modules.core.instances.inventory.FakeInventory;
+import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
+import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
-import com.wynntils.modules.questbook.instances.MiniQuestInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static net.minecraft.util.text.TextFormatting.*;
+
 public class QuestManager {
 
-    /** Minimum number of ms between successive analyzes (To prevent analyze spam) */
-    private static final int ANALYZE_MIN_TIMEOUT = 5 * 1000;
-    /** Initial time to reanalyze after interrupted (`INTERRUPT_TIMEOUT * 2 ** (n - 1)`s for n interrupts) */
-    private static final int INTERRUPT_TIMEOUT = 30 * 1000;
-
-    private static final int MESSAGE_ID = 423375494;  // QuestManager.class.getName().hashCode()
-
     private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_]{3,16}'s? (?:Discoveries|(?:Mini-)?Quests)");
+    private static final int MESSAGE_ID = 423375494;
 
-    private static long readRequestTime = Long.MIN_VALUE;
+    private static FakeInventory lastInventory = null;
+    private static LinkedHashMap<String, QuestInfo> currentQuests = new LinkedHashMap<>();
+    private static LinkedHashMap<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
+    private static LinkedHashMap<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
+    private static String trackedQuest = null;
 
-    private static LinkedHashMap<String, QuestInfo> currentQuestsData = new LinkedHashMap<>();
-    private static HashSet<String> incompleteQuests = new HashSet<>();
-    private static HashSet<String> incompleteMiniQuests = new HashSet<>();
-    private static final LinkedHashMap<String, DiscoveryInfo> currentDiscoveryData = new LinkedHashMap<>();
-    private static QuestInfo trackedQuest = null;
+    private static List<String> questsLore = new ArrayList<>();
+    private static List<String> miniQuestsLore = new ArrayList<>();
+    private static List<String> discoveriesLore = new ArrayList<>();
+    private static List<String> secretDiscoveriesLore = new ArrayList<>();
 
-    public static List<String> discoveryLore = new ArrayList<>();
-    public static List<String> secretdiscoveryLore = new ArrayList<>();
-    public static List<String> questsLore = new ArrayList<>();
-    public static List<String> miniquestsLore = new ArrayList<>();
+    private static boolean hasInterrupted = false;
+    private static AnalysePosition currentPosition = AnalysePosition.QUESTS;
 
-    private static FakeInventory currentInventory = null;
-
-    private static boolean analyseRequested = false;
-    private static boolean bookOpened = false;
-    private static int interrupted = 0;
-    private static boolean isForcingDiscoveries = false;
-    private static boolean isForcingMiniquests = false;
-    private static List<Runnable> onFinished = new ArrayList<>();
-
-    /**
-     * Queue a QuestBook analyse
-     */
-    public static void requestAnalyse() {
-        if (!bookOpened) {
-            requestFullSearch();
-            return;
-        }
-
-        analyseRequested = true;
-        interrupted = 0;
+    public static boolean shouldRead() {
+        return currentQuests.isEmpty() || hasInterrupted;
     }
 
-    public static void executeQueue() {
-        if (!analyseRequested || (Minecraft.getMinecraft().currentScreen instanceof GuiContainer)) return;
-        long currentTime = System.currentTimeMillis();
-        if (currentTime > readRequestTime + (interrupted != 0 ? INTERRUPT_TIMEOUT * (1 << (interrupted - 1)) : ANALYZE_MIN_TIMEOUT)) {
-            readRequestTime = currentTime;
-            analyseRequested = false;
-            sendMessage(TextFormatting.GRAY + "[Analysing quest book...]");
-            readQuestBook(!bookOpened, isForcingDiscoveries, isForcingMiniquests);
-        }
+    public static void readQuestBook(AnalysePosition nextPosition) {
+        readQuestBook(nextPosition, currentQuests.isEmpty());
     }
 
-    private static void readQuestBook(boolean fullSearch, boolean forceDiscoveries, boolean forceMiniquests) {
-        if (currentInventory != null && currentInventory.isOpen()) {
-            currentInventory.close();
-        }
+    public static void readLastPage() {
+        readQuestBook(currentPosition, false);
+    }
 
-        long ms = System.currentTimeMillis();
+    public static void readQuestBook(AnalysePosition nextPosition, boolean fullRead) {
+        if (lastInventory != null && lastInventory.isOpen()) return;
+        currentPosition = nextPosition;
 
-        FakeInventory fakeInventory = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, 7);
-        // Ensure that all previously incomplete quests have been seen, and when
-        // not doing a fullSearch, don't double check completed quest pages after
-        // all previously incomplete quests have been seen
-        HashSet<String> seenIncompleteQuests = new HashSet<>(incompleteQuests.size());
-        HashSet<String> previouslyIncompleteQuests = new HashSet<>(incompleteQuests);
-        HashSet<String> seenIncompleteMiniQuests = new HashSet<>(incompleteMiniQuests.size());
-        HashSet<String> previouslyIncompleteMiniQuests = new HashSet<>(incompleteMiniQuests);
+        sendMessage(GRAY + "[Analysing quest book...]");
+        hasInterrupted = false;
 
-        fakeInventory.onReceiveItems(i -> {
-            if (i.getWindowTitle().contains("Quests")) {  // Quests
-                boolean isMiniquests = i.getWindowTitle().contains("Mini-Quests");
-                Pair<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
-                Pair<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.EQUALS);
+        ArrayList<ItemStack> gatheredQuests = new ArrayList<>();
+        ArrayList<ItemStack> gatheredMiniQuests = new ArrayList<>();
+        ArrayList<ItemStack> gatheredDiscoveries = new ArrayList<>();
+
+        FakeInventory inv = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(7));
+        inv.setLimitTime(15000); // 15 seconds
+
+        inv.onReceiveItems((i) -> {
+            Pair<Integer, ItemStack> nextClick = null;
+
+            // lores
+            if (questsLore.isEmpty()) {
                 Pair<Integer, ItemStack> quests = i.findItem("Quests", FilterType.CONTAINS);
-                Pair<Integer, ItemStack> miniquests = i.findItem("Mini-Quests", FilterType.CONTAINS);
-                Pair<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
+                if (quests != null) questsLore = ItemUtils.getLore(quests.b);
+            }
+            if (miniQuestsLore.isEmpty()) {
+                Pair<Integer, ItemStack> miniQuests = i.findItem("Mini-Quests", FilterType.CONTAINS);
+                if (miniQuests != null) miniQuestsLore = ItemUtils.getLore(miniQuests.b);
+            }
+            if (discoveriesLore.isEmpty()) {
+                Pair<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.CONTAINS);
+                if (discoveries != null) discoveriesLore = ItemUtils.getLore(discoveries.b);
+            }
+            if (secretDiscoveriesLore.isEmpty()) {
+                Pair<Integer, ItemStack> secretDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
+                if (secretDiscoveries != null) secretDiscoveriesLore = ItemUtils.getLore(secretDiscoveries.b);
+            }
 
-                // lore
-                if (discoveries != null) {
-                    discoveryLore = ItemUtils.getLore(discoveries.b);
-                    discoveryLore.removeAll(Arrays.asList("", null));
-                }
-                if (sDiscoveries != null) {
-                    secretdiscoveryLore = ItemUtils.getLore(sDiscoveries.b);
-                    secretdiscoveryLore.removeAll(Arrays.asList("", null));
-                }
-                if (quests != null) {
-                    questsLore = ItemUtils.getLore(quests.b);
-                    questsLore.removeAll(Arrays.asList("", null));
-                }
-                if (miniquests != null) {
-                    miniquestsLore = ItemUtils.getLore(miniquests.b);
-                    miniquestsLore.removeAll(Arrays.asList("", null));
-                }
+            // go to the right page
+            if(!i.getWindowTitle().contains(currentPosition.getWindowName())) {
+                nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
 
-                NonNullList<ItemStack> items = NonNullList.create();
-                items.addAll(i.getItems());
-                ModCore.mc().addScheduledTask(() -> {
-                    // parsing
-                    for (ItemStack item : items) {
-                        if (!item.hasDisplayName()) continue;  // not a valid quest
+                i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
+                return;
+            }
 
-                        List<String> lore = ItemUtils.getLore(item);
-                        if (lore.isEmpty()) continue;  // not a valid quest
+            // page scanning
+            if (currentPosition == AnalysePosition.QUESTS) {
+                nextClick = i.findItem(">", FilterType.CONTAINS); // next page item
 
-                        List<String> realLore = lore.stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
-                        if (!realLore.contains("Right click to track")) continue;  // not a valid quest
+                for (ItemStack stack : i.getInventory()) {
+                    if (!stack.hasDisplayName()) continue; // also checks for nbt
 
-                        String displayName = StringUtils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
+                    List<String> lore = ItemUtils.getLore(stack).stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
+                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid quest
 
-                        QuestStatus status = null;
-                        if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
-                        else if (lore.get(0).contains("Started")) status = QuestStatus.STARTED;
-                        else if (lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
-                        else if (lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
-                        if (status == null) continue;
-
-                        if (!(isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).remove(displayName) && !fullSearch && status == QuestStatus.COMPLETED) {
-                            continue;
-                        }
-
-                        if (status != QuestStatus.COMPLETED) {
-                            (isMiniquests ? seenIncompleteMiniQuests : seenIncompleteQuests).add(displayName);
-                        }
-
-                        String[] parts = TextFormatting.getTextWithoutFormattingCodes(lore.get(2)).split("\\s+");
-                        boolean hasLevel = !parts[0].equals("✖");
-                        QuestLevelType levelType = QuestLevelType.valueOf(parts[1].toUpperCase(Locale.ROOT));
-                        int minLevel = Integer.parseInt(parts[parts.length - 1]);
-                        QuestSize size = QuestSize.valueOf(TextFormatting.getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase(Locale.ROOT));
-
-                        StringBuilder description = new StringBuilder();
-                        for (int x = 5; x < lore.size(); x++) {
-                            if (lore.get(x).equalsIgnoreCase(TextFormatting.GRAY + "Right click to track")) {
-                                break;
-                            }
-                            description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
-                        }
-
-                        QuestInfo quest;
-                        if (isMiniquests) {
-                            quest = new MiniQuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
-                        } else {
-                            quest = new QuestInfo(displayName, status, minLevel, levelType, hasLevel, size, description.toString(), lore);
-                        }
-                        currentQuestsData.put(displayName, quest);
-
-                        if (trackedQuest != null && trackedQuest.getName().equals(displayName)) {
-                            if (quest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
-                            else
-                                trackedQuest = quest;
-                        }
+                    if (fullRead) {
+                        gatheredQuests.add(stack);
+                        continue;
                     }
 
-                    QuestBookPages.QUESTS.getPage().updateSearch();
-                });
-                // pagination
-                if (next != null && (fullSearch || (isMiniquests ? previouslyIncompleteMiniQuests : previouslyIncompleteQuests).size() != 0)) {
-                    i.clickItem(next.a, 0, ClickType.PICKUP);
-                } else {
-                    if (isMiniquests) {
-                        incompleteMiniQuests = seenIncompleteMiniQuests;
-                    } else {
-                        incompleteQuests = seenIncompleteQuests;
-                    }
-                    if (isForcingMiniquests && !isMiniquests && miniquests != null) {
-                        i.clickItem(miniquests.a, 0, ClickType.PICKUP);
-                    } else if ((QuestBookConfig.INSTANCE.scanDiscoveries || forceDiscoveries || fullSearch) && discoveries != null) {
-                        i.clickItem(discoveries.a, 0, ClickType.PICKUP);
-                    } else {
-                        i.close();
-                    }
-                }
-            } else if (i.getWindowTitle().contains("Discoveries")) {  // Discoveries
-                Pair<Integer, ItemStack> next = i.findItem(">>>>>", FilterType.CONTAINS);
-                Pair<Integer, ItemStack> sDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
-
-                boolean hasSecretDiscoveries = false;
-                // Edge case where a player has no secret discoveries, so hasSecretDiscoveries would be
-                // false even on the secret discoveries page
-                boolean hasAnyDiscovery = false;
-                NonNullList<ItemStack> items = NonNullList.create();
-                items.addAll(i.getItems());
-                LinkedHashMap<String, DiscoveryInfo> newDiscoveryData = new LinkedHashMap<>();
-
-                for (ItemStack item : items) {  // parsing discoveries
-                    if (!item.hasDisplayName()) continue;  // not a valid discovery
-
-                    List<String> lore = ItemUtils.getLore(item);
-                    if (lore.isEmpty() || !TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue;  // not a valid discovery
-
-                    hasAnyDiscovery = true;
-                    String displayName = item.getDisplayName();
-                    displayName = StringUtils.normalizeBadString(displayName.substring(0, displayName.length() - 1));
-
-                    DiscoveryType discoveryType = null;
-                    if (displayName.charAt(1) == 'e') discoveryType = DiscoveryType.WORLD;
-                    else if (displayName.charAt(1) == 'f') discoveryType = DiscoveryType.TERRITORY;
-                    else if (displayName.charAt(1) == 'b') {
-                        hasSecretDiscoveries = true;
-                        discoveryType = DiscoveryType.SECRET;
+                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
+                    if (currentQuests.containsValue(displayName) && currentQuests.get(displayName).equals(stack)) {
+                        continue;
                     }
 
-                    int minLevel = Integer.parseInt(TextFormatting.getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+                    gatheredQuests.add(stack);
+                    nextClick = null;
+                    break;
+                }
+            }
 
-                    StringBuilder description = new StringBuilder();
-                    for (int x = 2; x < lore.size(); x++) {
-                        description.append(TextFormatting.getTextWithoutFormattingCodes(lore.get(x)));
+            if (currentPosition == AnalysePosition.MINIQUESTS) {
+                nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
+
+                for (ItemStack stack : i.getInventory()) {
+                    if (!stack.hasDisplayName()) continue; // also checks for nbt
+
+                    List<String> lore = ItemUtils.getLore(stack).stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
+                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid mini-quest
+
+                    if (fullRead) {
+                        gatheredMiniQuests.add(stack);
+                        continue;
                     }
 
-                    newDiscoveryData.put(displayName, new DiscoveryInfo(displayName, minLevel, description.toString(), lore, discoveryType));
+                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
+                    if (currentMiniQuests.containsValue(displayName) && currentMiniQuests.get(displayName).equals(stack)) {
+                        continue;
+                    }
+
+                    gatheredMiniQuests.add(stack);
+                    nextClick = null;
+                    break;
+                }
+            }
+
+            if (currentPosition == AnalysePosition.DISCOVERIES) {
+                nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
+
+                for (ItemStack stack : i.getInventory()) {
+                    if (!stack.hasDisplayName()) continue; // also checks for nbt
+
+                    List<String> lore = ItemUtils.getLore(stack);
+                    if (lore.isEmpty() || !getTextWithoutFormattingCodes(lore.get(0)).contains("✔ Combat Lv")) continue;
+
+                    if (fullRead) {
+                        gatheredDiscoveries.add(stack);
+                        continue;
+                    }
+
+                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
+                    if (currentDiscoveries.containsValue(displayName)) {
+                        continue;
+                    }
+
+                    gatheredDiscoveries.add(stack);
+                    nextClick = null;
+                    break;
+                }
+            }
+
+            // effective pagination
+            if (nextClick == null) {
+                if (!fullRead || currentPosition == AnalysePosition.MINIQUESTS || currentPosition == AnalysePosition.DISCOVERIES) {
+                    i.close();
+                    return;
                 }
 
-                synchronized (currentDiscoveryData) {
-                    currentDiscoveryData.putAll(newDiscoveryData);
+                //go to next page
+                if (currentPosition == AnalysePosition.QUESTS) {
+                    currentPosition = AnalysePosition.MINIQUESTS;
+                    nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
                 }
+            }
 
-                ModCore.mc().addScheduledTask(QuestBookPages.DISCOVERIES.getPage()::updateSearch);
-
-                // pagination
-                if (next != null) i.clickItem(next.a, 0, ClickType.PICKUP);
-                else if (hasAnyDiscovery && !hasSecretDiscoveries && sDiscoveries != null) {
-                    i.clickItem(sDiscoveries.a, 0, ClickType.PICKUP);
-                }
-                else i.close();
-            } else i.close();
+            i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
         });
-        fakeInventory.onClose(c -> {
-            currentInventory = null;
-            interrupted = 0;
-            if (fullSearch) {
-                bookOpened = true;
-            }
-            if (forceDiscoveries) {
-                isForcingDiscoveries = false;
-            }
-            if (forceMiniquests) {
-                isForcingMiniquests = false;
-            }
-            Iterator<Runnable> runnables = onFinished.iterator();
-            while (runnables.hasNext()) {
-                runnables.next().run();
-                runnables.remove();
+
+        inv.onClose((i, result) -> {
+            if (result == InventoryResult.CLOSED_SUCCESSFULLY) {
+                if (!gatheredQuests.isEmpty()) parseQuests(gatheredQuests);
+                if (!gatheredMiniQuests.isEmpty()) parseMiniQuests(gatheredMiniQuests);
+                if (!gatheredDiscoveries.isEmpty()) parseDiscoveries(gatheredDiscoveries);
+
+                sendMessage(GRAY + "[Quest book analyzed]");
+                return;
             }
 
-            readRequestTime = System.currentTimeMillis();
-
-            if (Reference.developmentEnvironment) {
-                sendMessage(TextFormatting.GRAY + "[Quest book analyzed in " + (System.currentTimeMillis() - ms) + "ms]");
-            } else {
-                sendMessage(TextFormatting.GRAY + "[Quest book analyzed]");
-            }
+            hasInterrupted = true;
+            sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
         });
-        fakeInventory.onInterrupt(c -> {
-            currentInventory = null;
 
-            readRequestTime = System.currentTimeMillis();
-
-            int oldInterrupted = interrupted;
-
-            if (forceDiscoveries) {
-                forceDiscoveries();
-            }
-            if (forceMiniquests) {
-                scanMiniquests();
-            }
-            if (fullSearch) {
-                requestFullSearch();
-            } else {
-                requestAnalyse();
-            }
-
-            interrupted = oldInterrupted + 1;
-
-            int interruptTime = (INTERRUPT_TIMEOUT / 1000) * (1 << (interrupted - 1));
-            String timeString = interruptTime % 60 == 0 ? String.format("%d minutes", interruptTime / 60) : String.format("%d seconds", interruptTime);
-
-            if (Reference.developmentEnvironment) {
-                sendMessage(TextFormatting.GRAY + "[Quest book analysis interrupted after " + (System.currentTimeMillis() - ms) + "ms. Retrying in " + timeString + "]");
-            } else {
-                sendMessage(TextFormatting.RED + String.format("Quest book analysis has been interrupted by your actions. Retrying in %s", timeString));
-            }
-        });
-        currentInventory = fakeInventory;
-
-        fakeInventory.open();
+        inv.open();
+        lastInventory = inv;
     }
 
-    /**
-     * Returns the current quests data
-     *
-     * @return the current quest data in a {@link HashMap}
-     */
-    public static HashMap<String, QuestInfo> getCurrentQuestsData() {
-        return currentQuestsData;
-    }
+    private static void parseQuests(ArrayList<ItemStack> quests) {
+        for (ItemStack stack : quests) {
+            try {
+                QuestInfo quest = new QuestInfo(stack, false);
+                if (!quest.isValid()) continue;
 
-    /**
-     * Returns the current tracked quest
-     * if null, no quest is being tracked
-     *
-     * @return the current tracked quest
-     */
-    public static QuestInfo getTrackedQuest() {
-        return trackedQuest;
-    }
+                //update tracked quest
+                if (trackedQuest != null && quest.getStatus() == QuestStatus.COMPLETED && trackedQuest.equalsIgnoreCase(quest.getName()))
+                    trackedQuest = null;
 
-    /**
-     * Returns the current discoveries data
-     *
-     * @return the current discovery data in a {@link HashMap}
-     */
-    public static LinkedHashMap<String, DiscoveryInfo> getCurrentDiscoveriesData() {
-        synchronized (currentDiscoveryData) {
-            return new LinkedHashMap<>(currentDiscoveryData);
+                currentQuests.put(quest.getName(), quest);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
-    /**
-     * Defines the current tracked quest
-     *
-     * @param selected the quest that you want to track
-     */
-    public static void setTrackedQuest(QuestInfo selected) {
-        trackedQuest = selected;
+    private static void parseMiniQuests(ArrayList<ItemStack> miniQuests) {
+        for (ItemStack stack : miniQuests) {
+            try {
+                QuestInfo miniQuest = new QuestInfo(stack, true);
+                if (!miniQuest.isValid()) continue;
+
+                currentMiniQuests.put(miniQuest.getName(), miniQuest);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
-    /**
-     * Check if the book was already opened before, if false it will request a read
-     */
-    public static void wasBookOpened() {
-        interrupted = 0;
+    private static void parseDiscoveries(ArrayList<ItemStack> discoveries) {
+        for (ItemStack stack : discoveries) {
+            try {
+                DiscoveryInfo discovery = new DiscoveryInfo(stack);
+                if (!discovery.isValid()) continue;
 
-        if (bookOpened) return;
-
-        requestFullSearch();
+                currentDiscoveries.put(discovery.getName(), discovery);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
-    /**
-     * Request a full search, including already completed quests and discoveries
-     */
-    public static void requestFullSearch() {
-        bookOpened = false;
-        forceDiscoveries();
-        scanMiniquests();
-        analyseRequested = true;
-        interrupted = 0;
+    public static Collection<QuestInfo> getCurrentQuests() {
+        return currentQuests.values();
     }
 
-    /**
-     * The next analyze request will scan discoveries too, regardless of if {@link QuestBookConfig#scanDiscoveries} is false
-     */
-    public static void forceDiscoveries() {
-        isForcingDiscoveries = true;
+    public static QuestInfo getQuest(String name) {
+        return currentQuests.getOrDefault(name, null);
     }
 
-    /**
-     * The next scan will also scan mini-quests
-     */
-    public static void scanMiniquests() {
-        isForcingMiniquests = true;
+    public static Collection<QuestInfo> getCurrentMiniQuests() {
+        return currentMiniQuests.values();
     }
 
-    /**
-     * After the next analysis is finish the runnable will be executed
-     *
-     * @param runnable the runnable to run
-     */
-    public static void onFinished(Runnable runnable) {
-        onFinished.add(runnable);
+    public static QuestInfo getMiniQuest(String name) {
+        return currentMiniQuests.getOrDefault(name, null);
     }
 
-    /**
-     * Clears the entire collected book data
-     */
+    public static Collection<DiscoveryInfo> getCurrentDiscoveries() {
+        return currentDiscoveries.values();
+    }
+
+    public static DiscoveryInfo getDiscovery(String name) {
+        return currentDiscoveries.getOrDefault(name, null);
+    }
+
+    public static List<String> getQuestsLore() {
+        return questsLore;
+    }
+
+    public static List<String> getMiniQuestsLore() {
+        return miniQuestsLore;
+    }
+
+    public static List<String> getDiscoveriesLore() {
+        return discoveriesLore;
+    }
+
+    public static List<String> getSecretDiscoveriesLore() {
+        return secretDiscoveriesLore;
+    }
+
+    public static QuestInfo getTrackedQuest() {
+        return currentQuests.get(trackedQuest);
+    }
+
+    public static void setTrackedQuest(QuestInfo quest) {
+        trackedQuest = quest != null ? quest.getName() : null;
+    }
+
+    public static boolean hasTrackedQuest() {
+        return trackedQuest != null;
+    }
+
+    public static boolean hasInterrupted() {
+        return hasInterrupted;
+    }
+
+    public static boolean isAnalysing() {
+        return lastInventory != null && lastInventory.isOpen();
+    }
+
     public static void clearData() {
-        readRequestTime = Long.MIN_VALUE;
+        currentQuests.clear();
+        currentMiniQuests.clear();
+        currentDiscoveries.clear();
 
-        currentQuestsData.clear();
-        incompleteQuests.clear();
-        currentDiscoveryData.clear();
-        trackedQuest = null;
-
-        discoveryLore.clear();
-        secretdiscoveryLore.clear();
         questsLore.clear();
-        miniquestsLore.clear();
+        miniQuestsLore.clear();
+        discoveriesLore.clear();
+        secretDiscoveriesLore.clear();
 
-        if (currentInventory != null && currentInventory.isOpen()) currentInventory.close();
-        currentInventory = null;
-
-        analyseRequested = false;
-        bookOpened = false;
-        interrupted = 0;
-        isForcingDiscoveries = false;
-        isForcingMiniquests = false;
-        onFinished.clear();
+        hasInterrupted = false;
+        lastInventory = null;
+        trackedQuest = null;
     }
 
     private static void sendMessage(String msg) {
         // Can be called from nio thread by FakeInventory
         Minecraft.getMinecraft().addScheduledTask(() ->
-            ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
+                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
         );
     }
 

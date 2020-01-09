@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.managers;
 
-import com.wynntils.modules.core.instances.PacketResponse;
+import com.wynntils.modules.core.instances.packet.PacketResponse;
 import net.minecraft.network.Packet;
 
 import java.util.ArrayList;

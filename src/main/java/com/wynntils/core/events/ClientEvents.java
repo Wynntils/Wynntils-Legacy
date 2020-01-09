@@ -23,6 +23,7 @@ import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -70,10 +71,14 @@ public class ClientEvents {
 
         GameEvent toDispatch = null;
         if (message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
+        else if (message.startsWith("[Mini-Quest Started:")) toDispatch = new GameEvent.QuestStarted.MiniQuest(message.replace("[Mini-Quest Started: ", "").replace("]", ""));
         else if (message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
         else if (message.contains("[Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
-        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted.MiniQuestCompleted();
+        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted.MiniQuest();
         else if (message.contains("You are now combat level") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
+        else if (message.contains("[Area Discovered]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound();
+        else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound.Secrect();
+        else if (message.contains(TextFormatting.GOLD.toString()) && message.contains("[Area Discovered]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound.World();
 
         if (toDispatch == null) return;
         FrameworkManager.getEventBus().post(toDispatch);

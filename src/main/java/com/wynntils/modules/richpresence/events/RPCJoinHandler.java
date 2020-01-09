@@ -12,7 +12,9 @@ import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.core.utils.objects.Pair;
-import com.wynntils.modules.core.instances.FakeInventory;
+import com.wynntils.modules.core.enums.InventoryResult;
+import com.wynntils.modules.core.instances.inventory.FakeInventory;
+import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityEvents;
 import com.wynntils.modules.richpresence.profiles.SecretContainer;
@@ -154,8 +156,8 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
     private static void joinWorld(String worldType, int worldNumber) {
         if (!Reference.onServer || Reference.onWorld) return;
 
-        FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, 0);
-        serverSelector.onReceiveItems(c -> {
+        FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(0));
+        serverSelector.onReceiveItems(inventory -> {
             String prefix = "";
             if (worldType.equals("")) {
                 // US Servers
@@ -166,7 +168,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                 prefix = "Beta ";
             }
 
-            boolean onCorrectCategory = c.findItem(prefix + "World ", FilterType.STARTS_WITH) != null;
+            boolean onCorrectCategory = inventory.findItem(prefix + "World ", FilterType.STARTS_WITH) != null;
             if (!onCorrectCategory) {
                 String worldCategory = "";
                 if (worldType.equals("")) {
@@ -177,26 +179,29 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                     worldCategory = "Hero Beta";
                 }
 
-                Pair<Integer, ItemStack> categoryItem = c.findItem(worldCategory, FilterType.EQUALS_IGNORE_CASE);
+                Pair<Integer, ItemStack> categoryItem = inventory.findItem(worldCategory, FilterType.EQUALS_IGNORE_CASE);
                 if (categoryItem != null) {
-                    c.clickItem(categoryItem.a, 1, ClickType.PICKUP);
-                } else {
-                    c.close();
+                    inventory.clickItem(categoryItem.a, 1, ClickType.PICKUP);
+                    return;
                 }
+
+                inventory.close();
                 return;
             }
 
-            Pair<Integer, ItemStack> world = c.findItem(prefix + "World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
+            Pair<Integer, ItemStack> world = inventory.findItem(prefix + "World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
             if (world != null) {
-                c.clickItem(world.a, 1, ClickType.PICKUP);
-                c.close();
+                inventory.clickItem(world.a, 1, ClickType.PICKUP);
+                inventory.close();
                 return;
             }
 
-            Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
+            Pair<Integer, ItemStack> nextPage = inventory.findItem("Next Page", FilterType.CONTAINS);
             if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
-            else c.close();
-        }).onInterrupt((c) -> {
+
+            inventory.close();
+        }).onClose((inv, result) -> {
+            if (result != InventoryResult.CLOSED_SUCCESSFULLY) return;
             joinWorld(worldType, worldNumber);
         });
 

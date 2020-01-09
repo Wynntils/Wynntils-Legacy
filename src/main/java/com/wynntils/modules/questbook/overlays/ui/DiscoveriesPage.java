@@ -8,7 +8,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
@@ -23,12 +23,14 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
-    private DiscoveryInfo overDiscovery;
     private boolean territory = true;
     private boolean world = true;
     private boolean secret = true;
@@ -180,10 +182,14 @@ public class DiscoveriesPage extends QuestBookPage {
                         render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 255, 235, 8, 7);
                     }
 
-                    render.drawString(selected.getQuestbookFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawString(selected.getFriendlyName(), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                     currentY += 13;
                 }
+            }
+            else {
+                render.drawString("Loading...", x + 80, y - 86 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                updateSearch();
             }
         }
         ScreenRenderer.endGL();
@@ -228,9 +234,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
     @Override
     protected void searchUpdate(String currentText) {
-        HashMap<String, DiscoveryInfo> discoveries = QuestManager.getCurrentDiscoveriesData();
-
-        discoverySearch = new ArrayList<>(discoveries.values());
+        discoverySearch = new ArrayList<>(QuestManager.getCurrentDiscoveries());
 
         discoverySearch.removeIf(c -> {
             if (c.getType() == null) return true;
@@ -251,18 +255,16 @@ public class DiscoveriesPage extends QuestBookPage {
     }
 
     @Override
+    public void open(boolean requestOpening) {
+        super.open(requestOpening);
+
+        if (!QuestManager.getCurrentDiscoveries().isEmpty()) return;
+        QuestManager.readQuestBook(AnalysePosition.DISCOVERIES, true);
+    }
+
+    @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "View all your found", TextFormatting.GRAY + "discoveries.", "", TextFormatting.GREEN + "Left click to select");
     }
 
-    @Override
-    public void open(boolean requestOpening) {
-        super.open(requestOpening);
-        if (!QuestBookConfig.INSTANCE.scanDiscoveries) {
-            QuestManager.forceDiscoveries();
-            QuestManager.requestAnalyse();
-        } else {
-            QuestManager.wasBookOpened();
-        }
-    }
 }

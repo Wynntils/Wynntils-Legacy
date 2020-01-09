@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2018 - 2020.
  */
 
-package com.wynntils.modules.core.instances;
+package com.wynntils.modules.core.instances.packet;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.PacketEvent;

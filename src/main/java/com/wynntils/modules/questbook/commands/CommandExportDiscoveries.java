@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class CommandExportDiscoveries extends CommandBase implements IClientCommand {
 
@@ -68,56 +71,50 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             throw new CommandException("Error creating export file");
         }
 
-        QuestManager.onFinished(() -> {
-            HashMap<String, DiscoveryInfo> discoveriesMap = QuestManager.getCurrentDiscoveriesData();
-            Collection<DiscoveryInfo> discoveriesCollection = discoveriesMap.values();
-            List<DiscoveryInfo> discoveries = new ArrayList<>(discoveriesCollection);
-            discoveries.sort((d1, d2) -> {
-                if (d1.getMinLevel() != d2.getMinLevel()) {
-                    return d1.getMinLevel() - d2.getMinLevel();
-                } else if (d1.getType() != d2.getType()) {
-                    return d1.getType().getOrder() - d2.getType().getOrder();
-                } else {
-                    return d1.getName().compareTo(d2.getName());
-                }
-            });
-            OutputStreamWriter output = null;
-            try {
-                output = new OutputStreamWriter(new FileOutputStream(exportFile));
-                output.write("level,type,name\n");
-                Iterator<DiscoveryInfo> discoveriesIterator = discoveries.iterator();
-                while (discoveriesIterator.hasNext()) {
-                    DiscoveryInfo discovery = discoveriesIterator.next();
-                    output.write(discovery.getMinLevel() + ",");
-                    output.write(StringUtils.firstCharToUpper(new String[] { discovery.getType().toString().toLowerCase() }) + ",");
-                    output.write(TextFormatting.getTextWithoutFormattingCodes(discovery.getName()));
-                    if (discoveriesIterator.hasNext()) {
-                        output.write("\n");
-                    }
-                }
-                ITextComponent text = new TextComponentString("Exported discoveries to ");
-                ITextComponent fileText = new TextComponentString(exportFile.getName());
-                fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
-                fileText.getStyle().setUnderlined(true);
-                text.appendSibling(fileText);
-                ModCore.mc().addScheduledTask(() -> {
-                    sender.sendMessage(text);
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (output != null) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        //TODO re add the reading proccess, disabled currently
+        List<DiscoveryInfo> discoveries = new ArrayList<>(QuestManager.getCurrentDiscoveries());
+        discoveries.sort((d1, d2) -> {
+            if (d1.getMinLevel() != d2.getMinLevel()) {
+                return d1.getMinLevel() - d2.getMinLevel();
+            } else if (d1.getType() != d2.getType()) {
+                return d1.getType().getOrder() - d2.getType().getOrder();
+            } else {
+                return d1.getName().compareTo(d2.getName());
+            }
+        });
+        OutputStreamWriter output = null;
+        try {
+            output = new OutputStreamWriter(new FileOutputStream(exportFile));
+            output.write("level,type,name\n");
+            Iterator<DiscoveryInfo> discoveriesIterator = discoveries.iterator();
+            while (discoveriesIterator.hasNext()) {
+                DiscoveryInfo discovery = discoveriesIterator.next();
+                output.write(discovery.getMinLevel() + ",");
+                output.write(StringUtils.firstCharToUpper(new String[] { discovery.getType().toString().toLowerCase() }) + ",");
+                output.write(TextFormatting.getTextWithoutFormattingCodes(discovery.getName()));
+                if (discoveriesIterator.hasNext()) {
+                    output.write("\n");
                 }
             }
-
-        });
-        QuestManager.forceDiscoveries();
-        QuestManager.requestAnalyse();
+            ITextComponent text = new TextComponentString("Exported discoveries to ");
+            ITextComponent fileText = new TextComponentString(exportFile.getName());
+            fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
+            fileText.getStyle().setUnderlined(true);
+            text.appendSibling(fileText);
+            ModCore.mc().addScheduledTask(() -> {
+                sender.sendMessage(text);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

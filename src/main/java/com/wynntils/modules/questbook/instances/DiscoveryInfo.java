@@ -4,80 +4,93 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
+import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
+
 public class DiscoveryInfo {
+
+    private ItemStack originalStack;
+
     private String name;
-    private String questbookFriendlyName;
-    private final int minLevel;
-    private final List<String> lore;
-    private final ArrayList<String> splittedDescription;
-    private final String description;
-    private final DiscoveryType type;
+    private DiscoveryType type;
+    private List<String> lore;
+    private String description;
+    private int minLevel;
 
-    public DiscoveryInfo(String name, int minLevel, String description, List<String> lore, DiscoveryType type) {
-        this.name = name; this.minLevel = minLevel; this.description = description; this.lore = lore; this.type = type;
+    private String friendlyName;
 
-        ArrayList<String> splittedDescription = new ArrayList<>();
-        StringBuilder currentMessage = new StringBuilder();
-        int chars = 0;
-        for (String x : description.split(" ")) {
-            if (chars + x.length() > 37) {
-                splittedDescription.add(currentMessage.toString());
-                currentMessage = new StringBuilder(x);
-                currentMessage.append(' ');
-                chars = x.length();
-                continue;
-            }
-            chars+= x.length() ;
-            currentMessage.append(x).append(' ');
+    boolean valid = false;
+
+    public DiscoveryInfo(ItemStack originalStack) {
+        this.originalStack = originalStack;
+
+        lore = ItemUtils.getLore(originalStack);
+
+        // simple parameters
+        name = originalStack.getDisplayName();
+        name = StringUtils.normalizeBadString(name.substring(0, name.length() - 1));
+        minLevel = Integer.parseInt(getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+
+        // type
+        type = null;
+        if (name.charAt(1) == 'e') type = DiscoveryType.WORLD;
+        else if (name.charAt(1) == 'f') type = DiscoveryType.TERRITORY;
+        else if (name.charAt(1) == 'b') type = DiscoveryType.SECRET;
+        else return;
+
+        // flat description
+        StringBuilder descriptionBuilder = new StringBuilder();
+        for (int x = 2; x < lore.size(); x++) {
+            descriptionBuilder.append(getTextWithoutFormattingCodes(lore.get(x)));
         }
-        splittedDescription.add(currentMessage.toString());
+        description = descriptionBuilder.toString();
 
-        String questbookFriendlyName = this.name.substring(4);
-        if (questbookFriendlyName.length() > 22) {
-            questbookFriendlyName = questbookFriendlyName.substring(0, 19);
-            questbookFriendlyName += "...";
+        friendlyName = name.substring(4);
+        if (friendlyName.length() > 22) {
+            friendlyName = friendlyName.substring(0, 19);
+            friendlyName += "...";
         }
+
         lore.add(0, this.name);
-
-        this.splittedDescription = splittedDescription;
-        this.questbookFriendlyName = questbookFriendlyName;
-    }
-
-    public List<String> getLore() {
-        return lore;
-    }
-
-    public int getMinLevel() {
-        return minLevel;
-    }
-
-    public String description() {
-        return description;
+        valid = true;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getQuestbookFriendlyName() {
-        return questbookFriendlyName;
-    }
-
-    public ArrayList<String> getSplittedDescription() {
-        return splittedDescription;
-    }
-
     public DiscoveryType getType() {
         return type;
     }
 
-    public String toString() {
-        return name + ":" + minLevel + ":" + description;
+    public List<String> getLore() {
+        return lore;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    public ItemStack getOriginalStack() {
+        return originalStack;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
 }

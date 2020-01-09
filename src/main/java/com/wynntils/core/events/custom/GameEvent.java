@@ -49,6 +49,14 @@ public class GameEvent extends Event {
             return quest;
         }
 
+        public static class MiniQuest extends QuestStarted {
+
+            public MiniQuest(String quest) {
+                super(quest);
+            }
+
+        }
+
     }
 
     /**
@@ -62,7 +70,15 @@ public class GameEvent extends Event {
      * Called when a quest is completed
      */
     public static class QuestCompleted extends GameEvent {
-        public static class MiniQuestCompleted extends QuestCompleted { }
+        public static class MiniQuest extends QuestCompleted { }
+    }
+
+    /**
+     * Called when a discovery is found
+     */
+    public static class DiscoveryFound extends GameEvent {
+        public static class Secrect extends DiscoveryFound { }
+        public static class World extends DiscoveryFound { }
     }
 
 }

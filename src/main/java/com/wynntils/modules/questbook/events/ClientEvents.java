@@ -12,6 +12,7 @@ import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
@@ -27,10 +28,20 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(GameEvent e)  {
-        if (e instanceof GameEvent.QuestCompleted.MiniQuestCompleted) {
-            QuestManager.scanMiniquests();
-        }
-        QuestManager.requestAnalyse();
+        AnalysePosition position = AnalysePosition.QUESTS;
+        boolean fullRead = false;
+
+        if (e instanceof GameEvent.LevelUp)
+            fullRead = true;
+        else if (e instanceof GameEvent.QuestCompleted.MiniQuest)
+            position = AnalysePosition.MINIQUESTS;
+        else if (e instanceof GameEvent.QuestStarted.MiniQuest)
+            position = AnalysePosition.MINIQUESTS;
+        else if (e instanceof GameEvent.DiscoveryFound)
+            position = AnalysePosition.DISCOVERIES;
+
+        //TODO add a bit of delay when QuestCompleted, cuz somehow wynncraft takes some time to update the book
+        QuestManager.readQuestBook(position, fullRead);
     }
 
 
@@ -83,13 +94,18 @@ public class ClientEvents implements Listener {
         if (e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || Minecraft.getMinecraft().player.inventory == null) return;
         if (Minecraft.getMinecraft().player.inventory.getStackInSlot(7).isEmpty() || Minecraft.getMinecraft().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
-        QuestManager.executeQueue();
-        if (openQuestBook) {
-            openQuestBook = false;
+        if (!openQuestBook) return;
+        openQuestBook = false;
 
-            QuestBookPages.MAIN.getPage().open(true);
-            QuestManager.wasBookOpened();  // Request the first reading if possible
+        QuestBookPages.MAIN.getPage().open(true);
+
+        if (!QuestManager.shouldRead()) return;
+        if (QuestManager.hasInterrupted()) {
+            QuestManager.readLastPage();
+            return;
         }
+
+        QuestManager.readQuestBook(AnalysePosition.QUESTS);
     }
 
 }
