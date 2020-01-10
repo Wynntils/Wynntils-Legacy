@@ -26,7 +26,6 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-    private KeyHolder waypointKey;
     private KeyHolder mapKey;
     private MapProfile mainMap;
 
@@ -50,7 +49,7 @@ public class MapModule extends Module {
 
         registerCommand(new CommandLootRun());
 
-        waypointKey = registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
+        registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
             if (Reference.onWorld)
                 Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
         });
