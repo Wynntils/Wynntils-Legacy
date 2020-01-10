@@ -30,7 +30,8 @@ public class TrackedQuestOverlay extends Overlay {
         if (trackedQuest == null || trackedQuest.getSplittedDescription() == null || trackedQuest.getSplittedDescription().size() == 0)
             return;
 
-        drawString("Tracked Quest Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+        String name = trackedQuest.isMiniQuest() ? "Mini-Quest" : "Quest";
+        drawString("Tracked " + name + " Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
 
         int currentY = 0;
         for (String message : trackedQuest.getSplittedDescription()) {

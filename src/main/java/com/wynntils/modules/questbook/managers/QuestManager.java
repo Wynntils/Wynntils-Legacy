@@ -300,7 +300,7 @@ public class QuestManager {
     }
 
     public static QuestInfo getTrackedQuest() {
-        return currentQuests.get(trackedQuest);
+        return currentQuests.containsKey(trackedQuest) ? currentQuests.get(trackedQuest) : currentMiniQuests.get(trackedQuest);
     }
 
     public static void setTrackedQuest(QuestInfo quest) {
