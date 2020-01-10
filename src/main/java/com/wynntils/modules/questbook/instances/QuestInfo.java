@@ -13,6 +13,7 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -48,7 +49,7 @@ public class QuestInfo {
         this.isMiniQuest = isMiniQuest;
 
         lore = ItemUtils.getLore(originalStack);
-        name = getTextWithoutFormattingCodes(originalStack.getDisplayName());
+        name = getTextWithoutFormattingCodes(originalStack.getDisplayName()).trim().replace("À", "");
 
         //quest status
         if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
@@ -149,7 +150,21 @@ public class QuestInfo {
     }
 
     public boolean equals(ItemStack stack) {
-        return ItemStack.areItemStackTagsEqual(originalStack, stack);
+        ArrayList<String> loreClone = new ArrayList<>(lore);
+        loreClone.remove(0);
+
+        return loreClone.equals(ItemUtils.getLore(stack));
+    }
+
+    public void setAsCompleted() {
+        status = QuestStatus.COMPLETED;
+
+        lore.clear();
+        lore.add(WHITE.toString() + BOLD + name);
+        lore.add(GREEN + "Completed!");
+        lore.add(" ");
+        lore.add(GREEN + "✔ " + GRAY + "Combat Lv. Min: " + WHITE + minLevel);
+        lore.add(GREEN + "- " + GRAY + "Length: " + WHITE + StringUtils.capitalizeFirst(size.name().toLowerCase()));
     }
 
     @Override

@@ -70,7 +70,24 @@ public class GameEvent extends Event {
      * Called when a quest is completed
      */
     public static class QuestCompleted extends GameEvent {
-        public static class MiniQuest extends QuestCompleted { }
+
+        String questName;
+
+        public QuestCompleted(String questName) {
+            this.questName = questName;
+        }
+
+        public String getQuestName() {
+            return questName;
+        }
+
+        public static class MiniQuest extends QuestCompleted {
+
+            public MiniQuest(String questName) {
+                super(questName);
+            }
+
+        }
     }
 
     /**

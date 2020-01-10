@@ -121,6 +121,7 @@ public class QuestManager {
                     }
 
                     String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
+                    displayName = displayName.trim().replace("À", "");
                     if (currentQuests.containsValue(displayName) && currentQuests.get(displayName).equals(stack)) {
                         continue;
                     }
@@ -332,6 +333,19 @@ public class QuestManager {
         hasInterrupted = false;
         lastInventory = null;
         trackedQuest = null;
+    }
+
+    public static void completeQuest(String name, boolean isMini) {
+        if (trackedQuest != null && trackedQuest.equalsIgnoreCase(name))
+            trackedQuest = null;
+
+        QuestInfo info = isMini ? getMiniQuest(name) : getQuest(name);
+        if (info == null) {
+            readQuestBook(AnalysePosition.QUESTS, true);
+            return;
+        }
+
+        info.setAsCompleted();
     }
 
     private static void sendMessage(String msg) {

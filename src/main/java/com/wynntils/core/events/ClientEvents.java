@@ -61,6 +61,8 @@ public class ClientEvents {
         }
     }
 
+    boolean isNextQuestCompleted = false;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void triggerGameEvents(ClientChatReceivedEvent e) {
         if (e.getType() == ChatType.GAME_INFO) return;
@@ -69,12 +71,22 @@ public class ClientEvents {
 
         if (message.contains("\u27a4")) return;  // Whisper from a player
 
+
         GameEvent toDispatch = null;
-        if (message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
+        if (isNextQuestCompleted) {
+            isNextQuestCompleted = false;
+
+            String questName = message.trim().replace("À", "");
+            if (e.getMessage().getFormattedText().contains(TextFormatting.GREEN.toString()))
+                toDispatch = new GameEvent.QuestCompleted.MiniQuest(questName);
+            else
+                toDispatch = new GameEvent.QuestCompleted(questName);
+        }
+        else if (message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
         else if (message.startsWith("[Mini-Quest Started:")) toDispatch = new GameEvent.QuestStarted.MiniQuest(message.replace("[Mini-Quest Started: ", "").replace("]", ""));
         else if (message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
-        else if (message.contains("[Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted();
-        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":")) toDispatch = new GameEvent.QuestCompleted.MiniQuest();
+        else if (message.contains("[Quest Completed]") && !message.contains(":")) isNextQuestCompleted = true;
+        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":")) isNextQuestCompleted = true;
         else if (message.contains("You are now combat level") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
         else if (message.contains("[Area Discovered]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound();
         else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound.Secrect();

@@ -33,14 +33,19 @@ public class ClientEvents implements Listener {
 
         if (e instanceof GameEvent.LevelUp)
             fullRead = true;
-        else if (e instanceof GameEvent.QuestCompleted.MiniQuest)
-            position = AnalysePosition.MINIQUESTS;
+        else if (e instanceof GameEvent.QuestCompleted.MiniQuest) {
+            QuestManager.completeQuest(((GameEvent.QuestCompleted.MiniQuest) e).getQuestName(), true);
+            return;
+        }
+        else if (e instanceof GameEvent.QuestCompleted) {
+            QuestManager.completeQuest(((GameEvent.QuestCompleted) e).getQuestName(), false);
+            return;
+        }
         else if (e instanceof GameEvent.QuestStarted.MiniQuest)
             position = AnalysePosition.MINIQUESTS;
         else if (e instanceof GameEvent.DiscoveryFound)
             position = AnalysePosition.DISCOVERIES;
 
-        //TODO add a bit of delay when QuestCompleted, cuz somehow wynncraft takes some time to update the book
         QuestManager.readQuestBook(position, fullRead);
     }
 
