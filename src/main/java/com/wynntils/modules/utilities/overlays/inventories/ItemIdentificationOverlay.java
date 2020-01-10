@@ -68,7 +68,7 @@ public class ItemIdentificationOverlay implements Listener {
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
-    private static void replaceLore(ItemStack stack) {
+    private static void replaceLore(ItemStack stack)  {
         if (!stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;
@@ -93,8 +93,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         // Block if the item is not the real item
-        ItemStack comparation = item.getGuideStack();
-        if (!comparation.isItemEqual(stack)) {
+        if (!stack.getDisplayName().startsWith(item.getTier().getColor())) {
             nbt.setBoolean("wynntilsIgnore", true);
             nbt.removeTag("wynntils");
             return;
