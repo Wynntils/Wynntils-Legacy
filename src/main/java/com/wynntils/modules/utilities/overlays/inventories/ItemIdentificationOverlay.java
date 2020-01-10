@@ -186,7 +186,7 @@ public class ItemIdentificationOverlay implements Listener {
                 if (money[1] != 0) price += money[1] + EmeraldSymbols.BLOCKS + " ";
                 if (money[0] != 0) price += money[0] + EmeraldSymbols.EMERALDS + " ";
 
-                if (price.endsWith(" ")) price = price.substring(0, price.length() - 1);
+                price = price.trim();
 
                 mLore += "" + WHITE + decimalFormat.format(market.getInteger("price")) + EmeraldSymbols.EMERALDS;
                 mLore += DARK_GRAY + " (" + price + ")";
