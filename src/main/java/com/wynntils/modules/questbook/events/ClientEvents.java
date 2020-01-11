@@ -14,6 +14,8 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
+import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
+import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
@@ -23,6 +25,8 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.Arrays;
 
 public class ClientEvents implements Listener {
 
@@ -49,6 +53,10 @@ public class ClientEvents implements Listener {
         QuestManager.readQuestBook(position, fullRead);
     }
 
+    @SubscribeEvent
+    public void onUpdate(QuestBookUpdateEvent e) {
+        Arrays.stream(QuestBookPages.values()).map(QuestBookPages::getPage).forEach(QuestBookPage::updateSearch);
+    }
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {

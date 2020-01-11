@@ -162,7 +162,7 @@ public class QuestInfo {
         lore.clear();
         lore.add(WHITE.toString() + BOLD + name);
         lore.add(GREEN + "Completed!");
-        lore.add(" ");
+        lore.add(WHITE + " ");
         lore.add(GREEN + "✔ " + GRAY + "Combat Lv. Min: " + WHITE + minLevel);
         lore.add(GREEN + "- " + GRAY + "Length: " + WHITE + StringUtils.capitalizeFirst(size.name().toLowerCase()));
     }

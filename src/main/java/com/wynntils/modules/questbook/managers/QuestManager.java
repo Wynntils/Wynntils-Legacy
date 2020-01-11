@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.managers;
 
 
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Pair;
@@ -14,6 +15,7 @@ import com.wynntils.modules.core.instances.inventory.FakeInventory;
 import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestStatus;
+import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
@@ -107,7 +109,7 @@ public class QuestManager {
 
             // page scanning
             if (currentPosition == AnalysePosition.QUESTS) {
-                nextClick = i.findItem(">", FilterType.CONTAINS); // next page item
+                nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
 
                 for (ItemStack stack : i.getInventory()) {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
@@ -205,6 +207,7 @@ public class QuestManager {
                 if (!gatheredMiniQuests.isEmpty()) parseMiniQuests(gatheredMiniQuests);
                 if (!gatheredDiscoveries.isEmpty()) parseDiscoveries(gatheredDiscoveries);
 
+                FrameworkManager.getEventBus().post(new QuestBookUpdateEvent());
                 sendMessage(GRAY + "[Quest book analyzed]");
                 return;
             }

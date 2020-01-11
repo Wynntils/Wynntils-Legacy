@@ -6,9 +6,12 @@ package com.wynntils.modules.questbook.commands;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
+import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraft.command.CommandBase;
@@ -20,6 +23,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.IClientCommand;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,18 +64,30 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
         if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE)
             throw new CommandException("You need to select a class to run %s", command);
 
+        FrameworkManager.getEventBus().register(this);
+        QuestManager.readQuestBook(AnalysePosition.DISCOVERIES, true);
+    }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
+
+    @SubscribeEvent
+    public void onQuestBookUpdate(QuestBookUpdateEvent e) {
+        FrameworkManager.getEventBus().unregister(this);
+
         File exportFolder = new File(Reference.MOD_STORAGE_ROOT, "export");
         exportFolder.mkdirs();
         String date = dateFormat.format(new Date());
         File exportFile = new File(exportFolder, date + "-discoveries.csv");
         try {
             exportFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CommandException("Error creating export file");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
         }
 
-        //TODO re add the reading proccess, disabled currently
         List<DiscoveryInfo> discoveries = new ArrayList<>(QuestManager.getCurrentDiscoveries());
         discoveries.sort((d1, d2) -> {
             if (d1.getMinLevel() != d2.getMinLevel()) {
@@ -101,25 +117,18 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
             fileText.getStyle().setUnderlined(true);
             text.appendSibling(fileText);
-            ModCore.mc().addScheduledTask(() -> {
-                sender.sendMessage(text);
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+            ModCore.mc().addScheduledTask(() -> { ModCore.mc().player.sendMessage(text); });
+        } catch (IOException ex) {
+            ex.printStackTrace();
         } finally {
             if (output != null) {
                 try {
                     output.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         }
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
     }
 
 }
