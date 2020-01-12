@@ -1,7 +1,6 @@
 package com.wynntils.core.framework.enums;
 
 import com.wynntils.core.utils.StringUtils;
-import net.minecraft.util.text.TextFormatting;
 
 public enum ProfessionType {
 
@@ -36,9 +35,8 @@ public enum ProfessionType {
     }
 
     public static ProfessionType fromMessage(String input) {
-        input = TextFormatting.getTextWithoutFormattingCodes(input);
         for(ProfessionType type : values()) {
-            if (!input.toLowerCase().contains(type.getIcon() + " " + type.getName())) continue;
+            if (!input.toLowerCase().contains(type.getIcon().toLowerCase() + " " + type.getName().toLowerCase())) continue;
 
             return type;
         }
