@@ -59,7 +59,6 @@ public class WebManager {
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
-    private static ArrayList<MapMarkerProfile> refineryMapMarkers = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
@@ -90,7 +89,6 @@ public class WebManager {
         updateProfile = null;
         items = new HashMap<>();
         mapMarkers = new ArrayList<>();
-        refineryMapMarkers = new ArrayList<>();
         itemGuesses = new HashMap<>();
         playerProfile = null;
         guilds = new HashMap<>();
@@ -122,7 +120,6 @@ public class WebManager {
         updateItemList(handler);
         updateIdentificationOrderer(handler);
         updateMapMarkers(handler);
-        updateMapRefineries(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
         updateCurrentSplash();
@@ -182,12 +179,8 @@ public class WebManager {
         return mapMarkers;
     }
 
-    public static ArrayList<MapMarkerProfile> getRefineryMapMarkers() {
-        return refineryMapMarkers;
-    }
-
     public static Iterable<MapMarkerProfile> getApiMarkers() {
-        return Iterables.concat(mapMarkers, refineryMapMarkers);
+        return Iterables.concat(mapMarkers);
     }
 
     public static UpdateProfile getUpdate() {
@@ -421,27 +414,6 @@ public class WebManager {
                 mapMarkers = gson.fromJson(jsonArray, type);
                 mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
                 mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
-                MapApiIcon.resetApiMarkers();
-                return true;
-            })
-        );
-    }
-
-    /**
-     * Update all Refineries MapMarkers on the {@link HashMap} mapMarkers
-     */
-    public static void updateMapRefineries(WebRequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("RefineryLocations");
-        handler.addRequest(new WebRequestHandler.Request(url, "map_markers.refineries")
-            .cacheTo(new File(API_CACHE_ROOT, "map_refineries.json"))
-            .handleJson(j -> {
-                if (!j.isJsonArray()) return false;
-                JsonArray jsonArray = j.getAsJsonArray();
-
-                Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
-
-                refineryMapMarkers = gson.fromJson(jsonArray, type);
-                refineryMapMarkers.forEach(MapMarkerProfile::ensureNormalized);
                 MapApiIcon.resetApiMarkers();
                 return true;
             })
