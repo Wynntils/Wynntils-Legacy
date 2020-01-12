@@ -4,6 +4,7 @@
 
 package com.wynntils.core.events.custom;
 
+import com.wynntils.core.framework.enums.ProfessionType;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
@@ -30,6 +31,22 @@ public class GameEvent extends Event {
 
         public int getOldLevel() {
             return oldLevel;
+        }
+
+        public static class Profession extends LevelUp {
+
+            ProfessionType profession;
+
+            public Profession(ProfessionType profession, int oldLevel, int currentLevel) {
+                super(oldLevel, currentLevel);
+
+                this.profession = profession;
+            }
+
+            public ProfessionType getProfession() {
+                return profession;
+            }
+
         }
 
     }

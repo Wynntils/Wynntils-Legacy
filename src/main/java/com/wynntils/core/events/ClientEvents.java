@@ -12,6 +12,7 @@ import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
@@ -34,10 +35,14 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents {
 
-    private static final UUID worldUUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
+    private static final UUID WORLD_UUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
+    private static final Pattern PROF_LEVEL_UP = Pattern.compile("You are now level ([0-9]*) in (.*)");
+
     private boolean inClassSelection = false;
     private String lastWorld = "";
     private boolean acceptLeft = false;
@@ -82,15 +87,33 @@ public class ClientEvents {
             else
                 toDispatch = new GameEvent.QuestCompleted(questName);
         }
-        else if (message.startsWith("[New Quest Started:")) toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
-        else if (message.startsWith("[Mini-Quest Started:")) toDispatch = new GameEvent.QuestStarted.MiniQuest(message.replace("[Mini-Quest Started: ", "").replace("]", ""));
-        else if (message.startsWith("[Quest Book Updated]")) toDispatch = new GameEvent.QuestUpdated();
-        else if (message.contains("[Quest Completed]") && !message.contains(":")) isNextQuestCompleted = true;
-        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":")) isNextQuestCompleted = true;
-        else if (message.contains("You are now combat level") && !message.contains(":")) toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
-        else if (message.contains("[Area Discovered]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound();
-        else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound.Secrect();
-        else if (message.contains(TextFormatting.GOLD.toString()) && message.contains("[Area Discovered]") && !message.contains(":")) toDispatch = new GameEvent.DiscoveryFound.World();
+
+        // by message
+        else if (message.startsWith("[New Quest Started:"))
+            toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
+        else if (message.startsWith("[Mini-Quest Started:"))
+            toDispatch = new GameEvent.QuestStarted.MiniQuest(message.replace("[Mini-Quest Started: ", "").replace("]", ""));
+        else if (message.startsWith("[Quest Book Updated]"))
+            toDispatch = new GameEvent.QuestUpdated();
+        else if (message.contains("[Quest Completed]") && !message.contains(":"))
+            isNextQuestCompleted = true;
+        else if (message.contains("[Mini-Quest Completed]") && !message.contains(":"))
+            isNextQuestCompleted = true;
+        else if (message.contains("You are now combat level") && !message.contains(":"))
+            toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
+        else if (message.contains("[Area Discovered]") && !message.contains(":"))
+            toDispatch = new GameEvent.DiscoveryFound();
+        else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":"))
+            toDispatch = new GameEvent.DiscoveryFound.Secrect();
+        else if (message.contains(TextFormatting.GOLD.toString()) && message.contains("[Area Discovered]") && !message.contains(":"))
+            toDispatch = new GameEvent.DiscoveryFound.World();
+
+        //using regex
+        Matcher m = PROF_LEVEL_UP.matcher(message);
+        if (m.find()) {
+            int currentLevel = Integer.parseInt(m.group(1));
+            toDispatch = new GameEvent.LevelUp.Profession(ProfessionType.fromMessage(m.group(2)), currentLevel-1, currentLevel);
+        }
 
         if (toDispatch == null) return;
         FrameworkManager.getEventBus().post(toDispatch);
@@ -128,7 +151,7 @@ public class ClientEvents {
         for (Object player : (List<?>) e.getPacket().getEntries()) {
             // world handling below
             GameProfile profile = (GameProfile) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getProfile.invoke(player);
-            if (profile.getId().equals(worldUUID)) {
+            if (profile.getId().equals(WORLD_UUID)) {
                 if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
                     ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
                     if (nameComponent == null) continue;

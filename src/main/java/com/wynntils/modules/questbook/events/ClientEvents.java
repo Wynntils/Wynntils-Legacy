@@ -35,9 +35,11 @@ public class ClientEvents implements Listener {
         AnalysePosition position = AnalysePosition.QUESTS;
         boolean fullRead = false;
 
-        if (e instanceof GameEvent.LevelUp)
+        if (e instanceof GameEvent.LevelUp) {
+            if (e instanceof GameEvent.LevelUp.Profession) position = AnalysePosition.MINIQUESTS;
+
             fullRead = true;
-        else if (e instanceof GameEvent.QuestCompleted.MiniQuest) {
+        } else if (e instanceof GameEvent.QuestCompleted.MiniQuest) {
             QuestManager.completeQuest(((GameEvent.QuestCompleted.MiniQuest) e).getQuestName(), true);
             return;
         }
