@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
@@ -24,15 +23,13 @@ import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
+
 import java.util.List;
 
 public class PointRenderer {
 
     public static void drawTexturedLines(Texture texture, List<Location> points, List<Vector3d> directions, CustomColor color, float width) {
         if (points.size() <= 1) return;
-
-        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
-        Point3d player = new Point3d(Minecraft.getMinecraft().player.posX, Minecraft.getMinecraft().player.posY, Minecraft.getMinecraft().player.posZ);
 
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
@@ -43,7 +40,8 @@ public class PointRenderer {
 
         for (int i = 0; i < points.size(); ++i) {
             Point3d start = new Point3d(points.get(i));
-            if (start.distance(player) > maxDistance) continue;
+            BlockPos blockPos = points.get(i).toBlockPos();
+            if (!Minecraft.getMinecraft().world.isBlockLoaded(blockPos, false)) continue;
 
             Vector3d direction = new Vector3d(directions.get(i));
             Point3d end = new Point3d(points.get(i));
@@ -155,10 +153,7 @@ public class PointRenderer {
     }
 
     public static void drawCube(BlockPos point, CustomColor color) {
-        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
-
-        Entity player = Minecraft.getMinecraft().player;
-        if (point.distanceSq(player.posX, player.posY, player.posZ) > maxDistance * maxDistance) return;
+        if (!Minecraft.getMinecraft().world.isBlockLoaded(point, false)) return;
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
