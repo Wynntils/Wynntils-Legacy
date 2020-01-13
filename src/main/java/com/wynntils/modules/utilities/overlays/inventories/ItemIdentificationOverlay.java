@@ -93,7 +93,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         // Block if the item is not the real item
-        if (!stack.getDisplayName().startsWith(item.getTier().getColor())) {
+        if (!wynntils.hasKey("isPerfect") && !stack.getDisplayName().startsWith(item.getTier().getColor())) {
             nbt.setBoolean("wynntilsIgnore", true);
             nbt.removeTag("wynntils");
             return;
