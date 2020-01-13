@@ -7,6 +7,8 @@ package com.wynntils.modules.questbook.instances;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
@@ -165,6 +167,12 @@ public class QuestInfo {
         lore.add(WHITE + " ");
         lore.add(GREEN + "✔ " + GRAY + "Combat Lv. Min: " + WHITE + minLevel);
         lore.add(GREEN + "- " + GRAY + "Length: " + WHITE + StringUtils.capitalizeFirst(size.name().toLowerCase()));
+    }
+
+    public void updateAsTracked() {
+        if (!hasTargetLocation() || !QuestBookConfig.INSTANCE.compassFollowQuests) return;
+
+        CompassManager.setCompassLocation(getTargetLocation());
     }
 
     @Override

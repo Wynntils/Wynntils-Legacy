@@ -227,8 +227,10 @@ public class QuestManager {
                 if (!quest.isValid()) continue;
 
                 //update tracked quest
-                if (trackedQuest != null && quest.getStatus() == QuestStatus.COMPLETED && trackedQuest.equalsIgnoreCase(quest.getName()))
-                    trackedQuest = null;
+                if (trackedQuest != null && trackedQuest.equalsIgnoreCase(quest.getName())) {
+                    if (quest.getStatus() == QuestStatus.COMPLETED) trackedQuest = null;
+                    else quest.updateAsTracked();
+                }
 
                 currentQuests.put(quest.getName(), quest);
             } catch (Exception ex) {
@@ -309,6 +311,7 @@ public class QuestManager {
 
     public static void setTrackedQuest(QuestInfo quest) {
         trackedQuest = quest != null ? quest.getName() : null;
+        if (trackedQuest != null) quest.updateAsTracked();
     }
 
     public static boolean hasTrackedQuest() {
@@ -339,8 +342,7 @@ public class QuestManager {
     }
 
     public static void completeQuest(String name, boolean isMini) {
-        if (trackedQuest != null && trackedQuest.equalsIgnoreCase(name))
-            trackedQuest = null;
+        if (trackedQuest != null && trackedQuest.equalsIgnoreCase(name)) trackedQuest = null;
 
         QuestInfo info = isMini ? getMiniQuest(name) : getQuest(name);
         if (info == null) {

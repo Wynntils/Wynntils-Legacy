@@ -84,10 +84,14 @@ public class QuickCastManager {
         if (!Reference.onWorld || PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE) {
             return false;
         }
+
         if (PlayerInfo.getPlayerInfo().getLevel() < spellUnlock[spell - 1]) {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]));
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(
+                    TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
+            ));
             return false;
         }
+
         return true;
     }
 
