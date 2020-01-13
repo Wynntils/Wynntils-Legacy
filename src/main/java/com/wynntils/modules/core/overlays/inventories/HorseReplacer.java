@@ -62,6 +62,14 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
     }
 
     @Override
+    public void renderHoveredToolTip(int x, int y) {
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre(this, x, y))) return;
+
+        super.renderHoveredToolTip(x, y);
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.HoveredToolTip.Post(this, x, y));
+    }
+
+    @Override
     public void renderToolTip(ItemStack stack, int x, int y) {
         super.renderToolTip(stack, x, y);
     }

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ItemLockOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
+    public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
@@ -28,13 +28,10 @@ public class ItemLockOverlay implements Listener {
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
-
-        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
-            e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onChestGui(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
@@ -42,23 +39,17 @@ public class ItemLockOverlay implements Listener {
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
-
-        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
-            e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onHorseGui(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
+    public void onHorseGui(GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            if (s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;
+            if (s.slotNumber < e.getGui().getUpperInv().getSizeInventory()) continue; // it's upper in horse!
 
             renderItemLock(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
-
-        if (e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack())
-            e.getGui().renderToolTip(e.getGui().getSlotUnderMouse().getStack(), e.getMouseX(), e.getMouseY());
     }
 
     private static void renderItemLock(Slot s, int guiLeft, int guiTop) {

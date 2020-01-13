@@ -153,6 +153,40 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
         }
 
+        public static class HoveredToolTip extends InventoryOverlap {
+
+            int x, y;
+
+            public HoveredToolTip(InventoryReplacer guiInventory, int x, int y) {
+                super(guiInventory);
+
+                this.x = x;
+                this.y = y;
+            }
+
+            public int getX() {
+                return x;
+            }
+
+            public int getY() {
+                return y;
+            }
+
+            public static class Pre extends HoveredToolTip {
+
+                public Pre(InventoryReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+            }
+
+            public static class Post extends HoveredToolTip {
+
+                public Post(InventoryReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+            }
+
+        }
     }
 
     public static class ChestOverlap extends GuiScreenOverlapEvent<ChestReplacer> {
@@ -305,6 +339,41 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
         }
 
+        public static class HoveredToolTip extends ChestOverlap {
+
+            int x, y;
+
+            public HoveredToolTip(ChestReplacer guiInventory, int x, int y) {
+                super(guiInventory);
+
+                this.x = x;
+                this.y = y;
+            }
+
+            public int getX() {
+                return x;
+            }
+
+            public int getY() {
+                return y;
+            }
+
+            public static class Pre extends HoveredToolTip {
+
+                public Pre(ChestReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+            }
+
+            public static class Post extends HoveredToolTip {
+
+                public Post(ChestReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+            }
+
+        }
+
     }
 
     public static class HorseOverlap extends GuiScreenOverlapEvent<HorseReplacer> {
@@ -414,6 +483,47 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             public boolean isCancelable() {
                 return true;
             }
+        }
+
+        public static class HoveredToolTip extends HorseOverlap {
+
+            int x, y;
+
+            public HoveredToolTip(HorseReplacer guiInventory, int x, int y) {
+                super(guiInventory);
+
+                this.x = x;
+                this.y = y;
+            }
+
+            public int getX() {
+                return x;
+            }
+
+            public int getY() {
+                return y;
+            }
+
+            public static class Pre extends HoveredToolTip {
+
+                public Pre(HorseReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+
+                @Override
+                public boolean isCancelable() {
+                    return true;
+                }
+
+            }
+
+            public static class Post extends HoveredToolTip {
+
+                public Post(HorseReplacer guiInventory, int x, int y) {
+                    super(guiInventory, x, y);
+                }
+            }
+
         }
 
     }
