@@ -159,7 +159,7 @@ public class QuestManager {
                 }
             }
 
-            if (currentPosition == AnalysePosition.DISCOVERIES) {
+            if (currentPosition == AnalysePosition.DISCOVERIES || currentPosition == AnalysePosition.SECRET_DISCOVERIES) {
                 nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
 
                 for (ItemStack stack : i.getInventory()) {
@@ -186,7 +186,7 @@ public class QuestManager {
 
             // effective pagination
             if (nextClick == null) {
-                if (!fullRead || currentPosition == AnalysePosition.MINIQUESTS || currentPosition == AnalysePosition.DISCOVERIES) {
+                if (!fullRead || currentPosition == AnalysePosition.MINIQUESTS || currentPosition == AnalysePosition.SECRET_DISCOVERIES) {
                     i.close();
                     return;
                 }
@@ -194,6 +194,11 @@ public class QuestManager {
                 //go to next page
                 if (currentPosition == AnalysePosition.QUESTS) {
                     currentPosition = AnalysePosition.MINIQUESTS;
+                    nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
+                }
+
+                if (currentPosition == AnalysePosition.DISCOVERIES) {
+                    currentPosition = AnalysePosition.SECRET_DISCOVERIES;
                     nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
                 }
             }

@@ -4,7 +4,8 @@ public enum AnalysePosition {
 
     QUESTS(" Quests", "Quests"), // User's Quests
     MINIQUESTS("Mini-Quests", "Mini-Quests"), // User's Mini-Quests
-    DISCOVERIES("Discoveries", "Discoveries"); // User's Discoveries
+    DISCOVERIES("Discoveries", "Discoveries"), // User's Discoveries
+    SECRET_DISCOVERIES("Discoveries", "Secret Discoveries"); // User's Secret Discoveries
 
     String windowName;
     String itemName;
