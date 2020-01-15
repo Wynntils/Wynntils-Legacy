@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.managers;
 
 
+import com.wynntils.ModCore;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.ItemUtils;
@@ -20,6 +21,7 @@ import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -50,6 +52,7 @@ public class QuestManager {
     private static List<String> secretDiscoveriesLore = new ArrayList<>();
 
     private static boolean hasInterrupted = false;
+    private static boolean fullRead = false;
     private static AnalysePosition currentPosition = AnalysePosition.QUESTS;
 
     public static boolean shouldRead() {
@@ -61,12 +64,19 @@ public class QuestManager {
     }
 
     public static void readLastPage() {
-        readQuestBook(currentPosition, false);
+        readQuestBook(currentPosition, fullRead);
     }
 
-    public static void readQuestBook(AnalysePosition nextPosition, boolean fullRead) {
+    public static void readQuestBook(AnalysePosition nextPosition, boolean isFullRead) {
         if (lastInventory != null && lastInventory.isOpen()) return;
+
+        if (ModCore.mc().player.openContainer != null && !(ModCore.mc().player.openContainer instanceof ContainerPlayer)) {
+            hasInterrupted = true;
+            sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
+            return;
+        }
         currentPosition = nextPosition;
+        fullRead = isFullRead;
 
         sendMessage(GRAY + "[Analysing quest book...]");
         hasInterrupted = false;
