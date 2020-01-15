@@ -97,7 +97,7 @@ public class ClientEvents implements Listener {
 
     long lastPosRequest;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
