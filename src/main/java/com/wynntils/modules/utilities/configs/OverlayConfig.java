@@ -496,4 +496,5 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
         public boolean showEffects = true;
     }
+
 }

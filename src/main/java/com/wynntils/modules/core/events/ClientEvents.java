@@ -7,11 +7,9 @@ package com.wynntils.modules.core.events;
 import com.google.gson.Gson;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.events.custom.WynnClassChangeEvent;
-import com.wynntils.core.events.custom.WynnSocialEvent;
-import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
@@ -33,6 +31,9 @@ import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.play.client.CPacketClientSettings;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -96,20 +97,20 @@ public class ClientEvents implements Listener {
 
     long lastPosRequest;
 
-//    /**
-//     * Prevents player entities from rendering if they're supposed to be invisible (as in a Spectator or have Invisibility)
-//     */
-//    @SubscribeEvent
-//    public void removeInvisiblePlayers(RenderPlayerEvent.Pre e) {
-//        if (!Reference.onWorld || e.getEntityPlayer() == null) return;
-//
-//        // HeyZeer0: this verifies based if there's a barrier block below the player, it will also helps
-//        // if the player is inside a dungeon | Main Use = cutscene
-//        EntityPlayer player = e.getEntityPlayer();
-//        if (!(player.world.getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock() instanceof BlockBarrier)) return;
-//
-//        e.setCanceled(true);
-//    }
+    @SubscribeEvent
+    public void updateActionBar(PacketEvent<SPacketChat> e) {
+        if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
+
+        PlayerInfo.getPlayerInfo().updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void updateChatVisibility(PacketEvent<CPacketClientSettings> e) {
+        if(e.getPacket().getChatVisibility() != EntityPlayer.EnumChatVisibility.HIDDEN) return;
+
+        ReflectionFields.CPacketClientSettings_chatVisibility.setValue(e.getPacket(), EntityPlayer.EnumChatVisibility.FULL);
+    }
 
     /**
      * Process the packet queue if the queue is not empty

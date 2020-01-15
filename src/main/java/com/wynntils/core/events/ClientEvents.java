@@ -23,7 +23,6 @@ import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
@@ -100,7 +99,7 @@ public class ClientEvents {
         else if (message.contains("[Mini-Quest Completed]") && !message.contains(":"))
             isNextQuestCompleted = true;
         else if (message.contains("You are now combat level") && !message.contains(":"))
-            toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel-1, Minecraft.getMinecraft().player.experienceLevel);
+            toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel - 1, Minecraft.getMinecraft().player.experienceLevel);
         else if (message.contains("[Area Discovered]") && !message.contains(":"))
             toDispatch = new GameEvent.DiscoveryFound();
         else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":"))
@@ -112,20 +111,11 @@ public class ClientEvents {
         Matcher m = PROF_LEVEL_UP.matcher(message);
         if (m.find()) {
             int currentLevel = Integer.parseInt(m.group(1));
-            toDispatch = new GameEvent.LevelUp.Profession(ProfessionType.fromMessage(m.group(2)), currentLevel-1, currentLevel);
+            toDispatch = new GameEvent.LevelUp.Profession(ProfessionType.fromMessage(m.group(2)), currentLevel - 1, currentLevel);
         }
 
         if (toDispatch == null) return;
         FrameworkManager.getEventBus().post(toDispatch);
-    }
-
-    @SubscribeEvent
-    public void updateActionBar(ClientChatReceivedEvent event) {
-        if (Reference.onServer && event.getType() == ChatType.GAME_INFO) {
-            String text = event.getMessage().getUnformattedText();
-            PlayerInfo.getPlayerInfo().updateActionBar(text);
-            event.setMessage(new TextComponentString(""));
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

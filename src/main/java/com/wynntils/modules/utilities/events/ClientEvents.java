@@ -215,6 +215,7 @@ public class ClientEvents implements Listener {
                         if (inv.getStackInSlot(i).hasDisplayName() && inv.getStackInSlot(i).getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString())) {
                             TextComponentString text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                             text.getStyle().setColor(TextFormatting.RED);
+
                             Minecraft.getMinecraft().player.sendMessage(text);
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                             e.setCanceled(true);
