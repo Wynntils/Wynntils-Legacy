@@ -52,11 +52,11 @@ public class ClientEvents implements Listener {
         else if (e instanceof GameEvent.DiscoveryFound)
             position = AnalysePosition.DISCOVERIES;
 
-        if(QuestBookConfig.INSTANCE.updateWhenOpen) {
+        if (QuestBookConfig.INSTANCE.updateWhenOpen) {
             QuestManager.queueOnOpen(position, fullRead);
             return;
         }
-        
+
         QuestManager.readQuestBook(position, fullRead);
     }
 

@@ -77,13 +77,14 @@ public class QuestManager {
     public static void readQuestBook(AnalysePosition nextPosition, boolean isFullRead) {
         if (lastInventory != null && lastInventory.isOpen()) return;
 
+        currentPosition = nextPosition;
+        fullRead = isFullRead;
+
         if (ModCore.mc().player.openContainer != null && !(ModCore.mc().player.openContainer instanceof ContainerPlayer)) {
             hasInterrupted = true;
             sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
             return;
         }
-        currentPosition = nextPosition;
-        fullRead = isFullRead;
 
         sendMessage(GRAY + "[Analysing quest book...]");
         hasInterrupted = false;
