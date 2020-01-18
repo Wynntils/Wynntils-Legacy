@@ -67,6 +67,13 @@ public class QuestManager {
         readQuestBook(currentPosition, fullRead);
     }
 
+    public static void queueOnOpen(AnalysePosition position, boolean full) {
+        currentPosition = position;
+        fullRead = full;
+
+        hasInterrupted = true;
+    }
+
     public static void readQuestBook(AnalysePosition nextPosition, boolean isFullRead) {
         if (lastInventory != null && lastInventory.isOpen()) return;
 

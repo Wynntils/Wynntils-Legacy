@@ -25,4 +25,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
+    @Setting(displayName = "Update When Opening the QuestBook", description = "Should the QuestBook only update itself when you open it?")
+    public boolean updateWhenOpen = false;
+
 }
