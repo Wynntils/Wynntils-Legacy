@@ -61,57 +61,12 @@ public class LootRunManager {
         activePath = null;
     }
 
-    // Fix srg name in lootrun paths. Can still be read without
-    // but makes the file more readable
-    // TODO: remove before stable.
-    private static boolean fixed = false;
-    private static void fixBlockPos() {
-        if (fixed) return;
-        String srg_x = "field_177962_a";
-        String srg_y = "field_177960_b";
-        String srg_z = "field_177961_c";
-        for (String fileName : getStoredLootruns()) {
-            File f = new File(STORAGE_FOLDER, fileName + ".json");
-            JsonParser parser = new JsonParser();
-            JsonObject replacingWith = null;
-            try (InputStreamReader reader = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8)) {
-                JsonObject obj = parser.parse(reader).getAsJsonObject();
-                JsonArray chests = obj.getAsJsonArray("chests");
-                if (chests.size() > 0 && chests.get(0).getAsJsonObject().has(srg_x)) {
-                    for (JsonElement j : chests) {
-                        JsonObject o = j.getAsJsonObject();
-                        o.addProperty("x", o.get(srg_x).getAsInt());
-                        o.addProperty("y", o.get(srg_y).getAsInt());
-                        o.addProperty("z", o.get(srg_z).getAsInt());
-                        o.remove(srg_x);
-                        o.remove(srg_y);
-                        o.remove(srg_z);
-                    }
-                    replacingWith = obj;
-                }
-            } catch (Exception ex) { ex.printStackTrace(); }
-
-            if (replacingWith == null) continue;
-
-            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8)) {
-                GSON.toJson(replacingWith, writer);
-            } catch (Exception ex) { ex.printStackTrace(); }
-        }
-        fixed = true;
-    }
-
-    static {
-        // TODO: remove soon so this isn't called every load
-        fixBlockPos();
-    }
-
     public static boolean loadFromFile(String lootRunName) {
         if (!STORAGE_FOLDER.exists()) return false;
 
         File file = new File(STORAGE_FOLDER, lootRunName + ".json");
         if (!file.exists()) return false;
 
-        fixBlockPos();
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
