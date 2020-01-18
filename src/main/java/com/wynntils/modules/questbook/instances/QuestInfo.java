@@ -15,7 +15,6 @@ import com.wynntils.modules.questbook.enums.QuestStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -152,10 +151,7 @@ public class QuestInfo {
     }
 
     public boolean equals(ItemStack stack) {
-        ArrayList<String> loreClone = new ArrayList<>(lore);
-        loreClone.remove(0);
-
-        return loreClone.equals(ItemUtils.getLore(stack));
+        return ItemUtils.getStringLore(originalStack).equals(ItemUtils.getStringLore(stack));
     }
 
     public void setAsCompleted() {

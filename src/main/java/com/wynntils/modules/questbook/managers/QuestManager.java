@@ -140,9 +140,8 @@ public class QuestManager {
                         continue;
                     }
 
-                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
-                    displayName = displayName.trim().replace("À", "");
-                    if (currentQuests.containsValue(displayName) && currentQuests.get(displayName).equals(stack)) {
+                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName()).trim().replace("À", "");
+                    if (currentQuests.containsKey(displayName) && currentQuests.get(displayName).equals(stack)) {
                         continue;
                     }
 
@@ -167,7 +166,7 @@ public class QuestManager {
                     }
 
                     String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
-                    if (currentMiniQuests.containsValue(displayName) && currentMiniQuests.get(displayName).equals(stack)) {
+                    if (currentMiniQuests.containsKey(displayName) && currentMiniQuests.get(displayName).equals(stack)) {
                         continue;
                     }
 
@@ -192,7 +191,7 @@ public class QuestManager {
                     }
 
                     String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
-                    if (currentDiscoveries.containsValue(displayName)) {
+                    if (currentDiscoveries.containsKey(displayName)) {
                         continue;
                     }
 
