@@ -19,7 +19,6 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
-import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -65,10 +64,10 @@ public class WorldMapUI extends GuiMovementScreen {
         // Also creates icons
         updateCenterPosition(startX, startZ);
 
-        if (MapConfig.INSTANCE.hideCompletedQuests && QuestManager.shouldRead()) {
+        if (MapConfig.INSTANCE.hideCompletedQuests) {
             // Request analyse if not already done to
             // hide completed quests
-            QuestManager.readQuestBook(AnalysePosition.QUESTS);
+            QuestManager.readQuestBook();
         }
     }
 

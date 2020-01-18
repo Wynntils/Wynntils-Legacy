@@ -8,7 +8,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
@@ -258,8 +257,7 @@ public class DiscoveriesPage extends QuestBookPage {
     public void open(boolean requestOpening) {
         super.open(requestOpening);
 
-        if (!QuestManager.getCurrentDiscoveries().isEmpty()) return;
-        QuestManager.readQuestBook(AnalysePosition.DISCOVERIES, true);
+        QuestManager.readQuestBook();
     }
 
     @Override

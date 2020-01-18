@@ -32,11 +32,13 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(GameEvent e)  {
-        AnalysePosition position = AnalysePosition.QUESTS;
+        AnalysePosition position = null;
         boolean fullRead = false;
+        boolean readImmediately = false;
 
         if (e instanceof GameEvent.LevelUp) {
             if (e instanceof GameEvent.LevelUp.Profession) position = AnalysePosition.MINIQUESTS;
+            else position = AnalysePosition.QUESTS;
 
             fullRead = true;
         } else if (e instanceof GameEvent.QuestCompleted.MiniQuest) {
@@ -47,21 +49,36 @@ public class ClientEvents implements Listener {
             QuestManager.completeQuest(((GameEvent.QuestCompleted) e).getQuestName(), false);
             return;
         }
-        else if (e instanceof GameEvent.QuestStarted.MiniQuest)
+        else if (e instanceof GameEvent.QuestStarted.MiniQuest) {
             position = AnalysePosition.MINIQUESTS;
+            readImmediately = ((GameEvent.QuestStarted.MiniQuest) e).getQuest().equalsIgnoreCase(QuestManager.getTrackedQuestName());
+        } else if (e instanceof GameEvent.QuestStarted) {
+            position = AnalysePosition.QUESTS;
+            // Update immediately if started the tracked quest
+            readImmediately = ((GameEvent.QuestStarted) e).getQuest().equalsIgnoreCase(QuestManager.getTrackedQuestName());
+        } else if (e instanceof GameEvent.QuestUpdated) {
+            position = AnalysePosition.QUESTS;
+            // Update immediately because the tracked quest may have updated
+            readImmediately = QuestManager.hasTrackedQuest();
+        } else if (e instanceof GameEvent.DiscoveryFound.Secret)
+            position = AnalysePosition.SECRET_DISCOVERIES;
         else if (e instanceof GameEvent.DiscoveryFound)
             position = AnalysePosition.DISCOVERIES;
 
-        if (QuestBookConfig.INSTANCE.updateWhenOpen) {
-            QuestManager.queueOnOpen(position, fullRead);
-            return;
-        }
-
-        QuestManager.readQuestBook(position, fullRead);
+        QuestManager.updateAnalysis(position, fullRead, readImmediately && !QuestBookConfig.INSTANCE.updateWhenOpen);
     }
 
     @SubscribeEvent
-    public void onUpdate(QuestBookUpdateEvent e) {
+    public void onUpdate(QuestBookUpdateEvent.Partial e) {
+        onUpdate();
+    }
+
+    @SubscribeEvent
+    public void onUpdate(QuestBookUpdateEvent.Full e) {
+        onUpdate();
+    }
+
+    private static void onUpdate() {
         Arrays.stream(QuestBookPages.values()).map(QuestBookPages::getPage).forEach(QuestBookPage::updateSearch);
     }
 
@@ -119,14 +136,7 @@ public class ClientEvents implements Listener {
 
         QuestBookPages.MAIN.getPage().open(true);
 
-        if (!QuestManager.shouldRead()) return;
-
-        if (QuestManager.hasInterrupted()) {
-            QuestManager.readLastPage();
-            return;
-        }
-
-        QuestManager.readQuestBook(AnalysePosition.QUESTS);
+        QuestManager.readQuestBook();
     }
 
 }

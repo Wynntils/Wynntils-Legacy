@@ -65,7 +65,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             throw new CommandException("You need to select a class to run %s", command);
 
         FrameworkManager.getEventBus().register(this);
-        QuestManager.readQuestBook(AnalysePosition.DISCOVERIES, true);
+        QuestManager.readQuestBook();
     }
 
     @Override
@@ -74,7 +74,16 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
     }
 
     @SubscribeEvent
-    public void onQuestBookUpdate(QuestBookUpdateEvent e) {
+    public void onQuestBookUpdate(QuestBookUpdateEvent.Partial e) {
+        if (e.getAnalysed() == AnalysePosition.SECRET_DISCOVERIES) onQuestBookUpdate();
+    }
+
+    @SubscribeEvent
+    public void onQuestBookUpdate(QuestBookUpdateEvent.Full e) {
+        onQuestBookUpdate();
+    }
+
+    private void onQuestBookUpdate() {
         FrameworkManager.getEventBus().unregister(this);
 
         File exportFolder = new File(Reference.MOD_STORAGE_ROOT, "export");

@@ -6,7 +6,6 @@ package com.wynntils.modules.core.instances.inventory;
 
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.InventoryResult;
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;
@@ -26,8 +25,11 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -97,6 +99,10 @@ public class FakeInventory {
         close(InventoryResult.CLOSED_SUCCESSFULLY);
     }
 
+    public void closeUnsuccessfully() {
+        close(InventoryResult.CLOSED_UNSUCCESSFULLY);
+    }
+
     private void close(InventoryResult result) {
         if (!isOpen) return;
 
@@ -119,7 +125,7 @@ public class FakeInventory {
         mc.getConnection().sendPacket(new CPacketClickWindow(windowId, slot, mouseButton, type, inventory.get(slot), transaction));
     }
 
-    public Pair<Integer, ItemStack> findItem(String name, FilterType filterType) {
+    public Pair<Integer, ItemStack> findItem(String name, BiPredicate<String, String> filterType) {
         if (!isOpen) return null;
 
         for(int slot = 0; slot < inventory.size(); slot++) {
@@ -127,15 +133,39 @@ public class FakeInventory {
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
 
             String displayName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
-            if (filterType == FilterType.CONTAINS && !displayName.contains(name)) continue;
-            else if (filterType == FilterType.EQUALS && !displayName.equals(name)) continue;
-            else if (filterType == FilterType.EQUALS_IGNORE_CASE && !displayName.equalsIgnoreCase(name)) continue;
-            else if (filterType == FilterType.STARTS_WITH && !displayName.startsWith(name)) continue;
-
-            return new Pair<>(slot, stack);
+            if (filterType.test(displayName, name)) {
+                return new Pair<>(slot, stack);
+            }
         }
 
         return null;
+    }
+
+    public List<Pair<Integer, ItemStack>> findItems(List<String> names, BiPredicate<String, String> filterType) {
+        return findItems(names, Collections.nCopies(names.size(), filterType));
+    }
+
+    public List<Pair<Integer, ItemStack>> findItems(List<String> names, List<? extends BiPredicate<String, String>> filterTypes) {
+        if (!isOpen) return null;
+
+        int found = 0;
+        List<Pair<Integer, ItemStack>> result = new ArrayList<>(Collections.nCopies(names.size(), null));
+
+        for (int slot = 0, len = inventory.size(); slot < len && found != names.size(); ++slot) {
+            ItemStack stack = inventory.get(slot);
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+
+            String displayName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
+            for (int i = 0; i < names.size(); ++i) {
+                if (result.get(i) != null) continue;
+
+                if (filterTypes.get(i).test(displayName, names.get(i))) {
+                    result.set(i, new Pair<>(slot, stack));
+                }
+            }
+        }
+
+        return result;
     }
 
     public List<ItemStack> getInventory() {

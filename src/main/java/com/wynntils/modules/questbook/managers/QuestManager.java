@@ -6,9 +6,11 @@ package com.wynntils.modules.questbook.managers;
 
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.enums.InventoryResult;
@@ -24,14 +26,9 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -52,37 +49,51 @@ public class QuestManager {
     private static List<String> secretDiscoveriesLore = new ArrayList<>();
 
     private static boolean hasInterrupted = false;
-    private static boolean fullRead = false;
-    private static AnalysePosition currentPosition = AnalysePosition.QUESTS;
+    private static boolean fullRead = true;
+    private static EnumSet<AnalysePosition> queuedPositions = EnumSet.allOf(AnalysePosition.class);
+    private static AnalysePosition currentPosition = null;
 
-    public static boolean shouldRead() {
-        return currentQuests.isEmpty() || hasInterrupted;
+    public static synchronized boolean shouldRead() {
+        return !queuedPositions.isEmpty();
     }
 
-    public static void readQuestBook(AnalysePosition nextPosition) {
-        readQuestBook(nextPosition, currentQuests.isEmpty());
+    public static void updateAnalysis(Collection<AnalysePosition> position, boolean full, boolean immediate) {
+        synchronized (QuestManager.class) {
+            queuedPositions.addAll(position);
+            fullRead = fullRead || full;
+        }
+
+        if (immediate) {
+            readQuestBook();
+        }
     }
 
-    public static void readLastPage() {
-        readQuestBook(currentPosition, fullRead);
+    public static void updateAnalysis(AnalysePosition position, boolean full, boolean immediate) {
+        updateAnalysis(EnumSet.of(position), full, immediate);
     }
 
-    public static void queueOnOpen(AnalysePosition position, boolean full) {
-        currentPosition = position;
-        fullRead = full;
-
-        hasInterrupted = true;
+    public static void updateAllAnalyses(boolean immediate) {
+        updateAnalysis(EnumSet.allOf(AnalysePosition.class), true, immediate);
     }
 
-    public static void readQuestBook(AnalysePosition nextPosition, boolean isFullRead) {
-        if (lastInventory != null && lastInventory.isOpen()) return;
-
-        currentPosition = nextPosition;
-        fullRead = isFullRead;
+    public static void readQuestBook() {
+        if (!Reference.onWorld) return;
 
         if (ModCore.mc().player.openContainer != null && !(ModCore.mc().player.openContainer instanceof ContainerPlayer)) {
-            hasInterrupted = true;
-            sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
+            interrupt();
+            return;
+        }
+
+        boolean empty;
+
+        synchronized (QuestManager.class) {
+            if (lastInventory != null && lastInventory.isOpen()) return;
+            empty = queuedPositions.isEmpty();
+        }
+
+        if (empty) {
+            // Did a "full update" (All positions were up to date, so don't open fake inventory)
+            FrameworkManager.getEventBus().post(new QuestBookUpdateEvent.Full());
             return;
         }
 
@@ -100,30 +111,25 @@ public class QuestManager {
             Pair<Integer, ItemStack> nextClick = null;
 
             // lores
-            if (questsLore.isEmpty()) {
-                Pair<Integer, ItemStack> quests = i.findItem("Quests", FilterType.CONTAINS);
-                if (quests != null) questsLore = ItemUtils.getLore(quests.b);
-            }
-            if (miniQuestsLore.isEmpty()) {
-                Pair<Integer, ItemStack> miniQuests = i.findItem("Mini-Quests", FilterType.CONTAINS);
-                if (miniQuests != null) miniQuestsLore = ItemUtils.getLore(miniQuests.b);
-            }
-            if (discoveriesLore.isEmpty()) {
-                Pair<Integer, ItemStack> discoveries = i.findItem("Discoveries", FilterType.CONTAINS);
-                if (discoveries != null) discoveriesLore = ItemUtils.getLore(discoveries.b);
-            }
-            if (secretDiscoveriesLore.isEmpty()) {
-                Pair<Integer, ItemStack> secretDiscoveries = i.findItem("Secret Discoveries", FilterType.EQUALS);
-                if (secretDiscoveries != null) secretDiscoveriesLore = ItemUtils.getLore(secretDiscoveries.b);
+            updateLores(i);
+
+            boolean fullRead;
+            synchronized (QuestManager.class) {
+                fullRead = QuestManager.fullRead;  // get synchronised copy
+
+                // Get next queued position if not currently on a position
+                if (currentPosition == null) {
+                    if (QuestManager.queuedPositions.isEmpty()) {
+                        i.close();
+                        return;
+                    }
+
+                    currentPosition = queuedPositions.iterator().next();
+                }
             }
 
             // go to the right page
-            if(!i.getWindowTitle().contains(currentPosition.getWindowName())) {
-                nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
-
-                i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
-                return;
-            }
+            if (switchToCorrectPage(i, currentPosition)) return;
 
             // page scanning
             if (currentPosition == AnalysePosition.QUESTS) {
@@ -132,7 +138,7 @@ public class QuestManager {
                 for (ItemStack stack : i.getInventory()) {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
-                    List<String> lore = ItemUtils.getLore(stack).stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
+                    List<String> lore = ItemUtils.getUnformattedLore(stack);
                     if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid quest
 
                     if (fullRead) {
@@ -140,7 +146,7 @@ public class QuestManager {
                         continue;
                     }
 
-                    String displayName = getTextWithoutFormattingCodes(stack.getDisplayName()).trim().replace("À", "");
+                    String displayName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
                     if (currentQuests.containsKey(displayName) && currentQuests.get(displayName).equals(stack)) {
                         continue;
                     }
@@ -157,7 +163,7 @@ public class QuestManager {
                 for (ItemStack stack : i.getInventory()) {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
-                    List<String> lore = ItemUtils.getLore(stack).stream().map(TextFormatting::getTextWithoutFormattingCodes).collect(Collectors.toList());
+                    List<String> lore = ItemUtils.getUnformattedLore(stack);
                     if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid mini-quest
 
                     if (fullRead) {
@@ -203,43 +209,92 @@ public class QuestManager {
 
             // effective pagination
             if (nextClick == null) {
-                if (!fullRead || currentPosition == AnalysePosition.MINIQUESTS || currentPosition == AnalysePosition.SECRET_DISCOVERIES) {
+                if (!gatheredQuests.isEmpty()) {
+                    parseQuests(gatheredQuests);
+                    gatheredQuests.clear();
+                }
+                if (!gatheredMiniQuests.isEmpty()) {
+                    parseMiniQuests(gatheredMiniQuests);
+                    gatheredMiniQuests.clear();
+                }
+                if (!gatheredDiscoveries.isEmpty()) {
+                    parseDiscoveries(gatheredDiscoveries);
+                    gatheredDiscoveries.clear();
+                }
+
+                AnalysePosition previousPosition = currentPosition;
+
+                // Remove from queue now that it has been analysed, and get the next position
+                synchronized (QuestManager.class) {
+                    queuedPositions.remove(currentPosition);
+                    currentPosition = queuedPositions.isEmpty() ? null : queuedPositions.iterator().next();
+                }
+
+                FrameworkManager.getEventBus().post(new QuestBookUpdateEvent.Partial(previousPosition));
+
+                if (currentPosition == null) {
                     i.close();
                     return;
                 }
 
-                //go to next page
-                if (currentPosition == AnalysePosition.QUESTS) {
-                    currentPosition = AnalysePosition.MINIQUESTS;
-                    nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
+                // Go to next page
+                nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
+
+                if (nextClick == null) {
+                    Reference.LOGGER.error("[QuestManager] Failed to switch to next position (" + previousPosition + " to " + currentPosition + ")");
+                    i.closeUnsuccessfully();
+                    interrupt();
+                    return;
                 }
 
-                if (currentPosition == AnalysePosition.DISCOVERIES) {
-                    currentPosition = AnalysePosition.SECRET_DISCOVERIES;
-                    nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
-                }
+                i.clickItem(nextClick.a, 1, ClickType.PICKUP);
+                return;
             }
 
             i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
         });
 
         inv.onClose((i, result) -> {
-            if (result == InventoryResult.CLOSED_SUCCESSFULLY) {
-                if (!gatheredQuests.isEmpty()) parseQuests(gatheredQuests);
-                if (!gatheredMiniQuests.isEmpty()) parseMiniQuests(gatheredMiniQuests);
-                if (!gatheredDiscoveries.isEmpty()) parseDiscoveries(gatheredDiscoveries);
+            lastInventory = null;
 
-                FrameworkManager.getEventBus().post(new QuestBookUpdateEvent());
-                sendMessage(GRAY + "[Quest book analyzed]");
+            if (result != InventoryResult.CLOSED_SUCCESSFULLY) {
+                interrupt();
                 return;
             }
 
-            hasInterrupted = true;
-            sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
+            if (!gatheredQuests.isEmpty()) parseQuests(gatheredQuests);
+            if (!gatheredMiniQuests.isEmpty()) parseMiniQuests(gatheredMiniQuests);
+            if (!gatheredDiscoveries.isEmpty()) parseDiscoveries(gatheredDiscoveries);
+
+            FrameworkManager.getEventBus().post(new QuestBookUpdateEvent.Full());
+            sendMessage(GRAY + "[Quest book analyzed]");
         });
 
-        inv.open();
-        lastInventory = inv;
+        synchronized (QuestManager.class) {
+            if (lastInventory == null || !lastInventory.isOpen()) {
+                lastInventory = inv;
+                lastInventory.open();
+            }
+        }
+    }
+
+    private static void updateLores(FakeInventory i) {
+        List<Pair<Integer, ItemStack>> loreStacks = i.findItems(
+            Arrays.asList("Quests", "Mini-Quests", "Discoveries", "Secret Discoveries"),
+            Arrays.asList(FilterType.CONTAINS, FilterType.CONTAINS, FilterType.CONTAINS, FilterType.EQUALS)
+        );
+
+        Pair<Integer, ItemStack> quests = loreStacks.get(0);
+        if (quests != null) questsLore = ItemUtils.getLore(quests.b);
+
+        Pair<Integer, ItemStack> miniQuests = loreStacks.get(1);
+        if (miniQuests != null) miniQuestsLore = ItemUtils.getLore(miniQuests.b);
+
+        Pair<Integer, ItemStack> discoveries = loreStacks.get(2);
+        if (discoveries != null) discoveriesLore = ItemUtils.getLore(discoveries.b);
+
+        Pair<Integer, ItemStack> secretDiscoveries = loreStacks.get(3);
+        if (secretDiscoveries != null) secretDiscoveriesLore = ItemUtils.getLore(secretDiscoveries.b);
     }
 
     private static void parseQuests(ArrayList<ItemStack> quests) {
@@ -327,6 +382,10 @@ public class QuestManager {
         return secretDiscoveriesLore;
     }
 
+    public static String getTrackedQuestName() {
+        return trackedQuest;
+    }
+
     public static QuestInfo getTrackedQuest() {
         return currentQuests.containsKey(trackedQuest) ? currentQuests.get(trackedQuest) : currentMiniQuests.get(trackedQuest);
     }
@@ -348,7 +407,7 @@ public class QuestManager {
         return lastInventory != null && lastInventory.isOpen();
     }
 
-    public static void clearData() {
+    public static synchronized void clearData() {
         currentQuests.clear();
         currentMiniQuests.clear();
         currentDiscoveries.clear();
@@ -359,20 +418,46 @@ public class QuestManager {
         secretDiscoveriesLore.clear();
 
         hasInterrupted = false;
+        if (lastInventory != null) lastInventory.closeUnsuccessfully();
         lastInventory = null;
         trackedQuest = null;
+
+        fullRead = true;
+        queuedPositions = EnumSet.allOf(AnalysePosition.class);
+        currentPosition = null;
     }
 
     public static void completeQuest(String name, boolean isMini) {
+        name = StringUtils.normalizeBadString(name);
         if (trackedQuest != null && trackedQuest.equalsIgnoreCase(name)) trackedQuest = null;
 
         QuestInfo info = isMini ? getMiniQuest(name) : getQuest(name);
         if (info == null) {
-            readQuestBook(AnalysePosition.QUESTS, true);
+            updateAnalysis(isMini ? AnalysePosition.MINIQUESTS : AnalysePosition.QUESTS, true, false);
             return;
         }
 
         info.setAsCompleted();
+    }
+
+    private static boolean switchToCorrectPage(FakeInventory i, AnalysePosition currentPosition) {
+        if (i.getWindowTitle().contains(currentPosition.getWindowName())) return false;
+
+        Pair<Integer, ItemStack> nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
+
+        if (nextClick == null) {
+            interrupt();
+            i.closeUnsuccessfully();
+        } else {
+            i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
+        }
+
+        return true;
+    }
+
+    private static void interrupt() {
+        hasInterrupted = true;
+        sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
     }
 
     private static void sendMessage(String msg) {

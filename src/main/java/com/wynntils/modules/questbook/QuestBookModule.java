@@ -9,7 +9,6 @@ import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.questbook.commands.CommandExportDiscoveries;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.ClientEvents;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -32,7 +31,7 @@ public class QuestBookModule extends Module {
         });
         registerKeyBinding("Open Menu", Keyboard.KEY_I, "Wynntils", true, () -> {
             QuestBookPages.MAIN.getPage().open(true);
-            if (QuestManager.shouldRead()) QuestManager.readQuestBook(AnalysePosition.QUESTS);
+            QuestManager.readQuestBook();
         });
     }
 

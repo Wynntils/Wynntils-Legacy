@@ -103,7 +103,7 @@ public class ClientEvents {
         else if (message.contains("[Area Discovered]") && !message.contains(":"))
             toDispatch = new GameEvent.DiscoveryFound();
         else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":"))
-            toDispatch = new GameEvent.DiscoveryFound.Secrect();
+            toDispatch = new GameEvent.DiscoveryFound.Secret();
         else if (message.contains(TextFormatting.GOLD.toString()) && message.contains("[Area Discovered]") && !message.contains(":"))
             toDispatch = new GameEvent.DiscoveryFound.World();
 

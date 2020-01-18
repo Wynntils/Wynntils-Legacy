@@ -111,7 +111,7 @@ public class GameEvent extends Event {
      * Called when a discovery is found
      */
     public static class DiscoveryFound extends GameEvent {
-        public static class Secrect extends DiscoveryFound { }
+        public static class Secret extends DiscoveryFound { }
         public static class World extends DiscoveryFound { }
     }
 

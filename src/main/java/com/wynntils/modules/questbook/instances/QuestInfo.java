@@ -50,7 +50,7 @@ public class QuestInfo {
         this.isMiniQuest = isMiniQuest;
 
         lore = ItemUtils.getLore(originalStack);
-        name = getTextWithoutFormattingCodes(originalStack.getDisplayName()).trim().replace("À", "");
+        name = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(originalStack.getDisplayName()));
 
         //quest status
         if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;

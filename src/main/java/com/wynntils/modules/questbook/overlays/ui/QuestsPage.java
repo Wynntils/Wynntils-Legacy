@@ -11,7 +11,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestStatus;
@@ -380,7 +379,7 @@ public class QuestsPage extends QuestBookPage {
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestManager.readQuestBook(AnalysePosition.QUESTS, true);
+            QuestManager.updateAllAnalyses(true);
             return;
         } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
@@ -413,6 +412,13 @@ public class QuestsPage extends QuestBookPage {
     @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.", "", TextFormatting.GREEN + "Left click to select");
+    }
+
+    @Override
+    public void open(boolean requestOpening) {
+        super.open(requestOpening);
+
+        QuestManager.readQuestBook();
     }
 
     private enum SortMethod {

@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,25 @@ public class ItemUtils {
 
         for (int i = 0; i < loreTag.tagCount(); ++i) {
             lore.add(loreTag.getStringTagAt(i));
+        }
+
+        return lore;
+    }
+
+    /**
+     * Same as {@link #getLore(ItemStack)}, but after calling
+     * {@link TextFormatting#getTextWithoutFormattingCodes(String) getTextWithoutFormattingCodes} on each lore line
+     *
+     * @return A List containing all item lore without formatting codes
+     */
+    public static List<String> getUnformattedLore(ItemStack item) {
+        NBTTagList loreTag = getLoreTag(item);
+
+        List<String> lore = new ArrayList<>();
+        if (loreTag == null) return lore;
+
+        for (int i = 0; i < loreTag.tagCount(); ++i) {
+            lore.add(TextFormatting.getTextWithoutFormattingCodes(loreTag.getStringTagAt(i)));
         }
 
         return lore;
