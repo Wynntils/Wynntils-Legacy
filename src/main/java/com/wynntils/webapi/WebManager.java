@@ -17,10 +17,7 @@ import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
-import com.wynntils.webapi.profiles.MapMarkerProfile;
-import com.wynntils.webapi.profiles.MusicProfile;
-import com.wynntils.webapi.profiles.TerritoryProfile;
-import com.wynntils.webapi.profiles.UpdateProfile;
+import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -33,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -72,6 +70,8 @@ public class WebManager {
     private static ArrayList<UUID> ears = new ArrayList<>();
     private static ArrayList<UUID> elytras = new ArrayList<>();
     private static ArrayList<UUID> capes = new ArrayList<>();
+
+    private static ArrayList<DiscoveryProfile> discoveries = new ArrayList<>();
 
     private static WynntilsAccount account = null;
 
@@ -122,6 +122,7 @@ public class WebManager {
         updateMapMarkers(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
+        updateDiscoveries(handler);
         updateCurrentSplash();
 
         handler.dispatchAsync();
@@ -191,6 +192,10 @@ public class WebManager {
 
     public static Collection<ItemProfile> getDirectItems() {
         return directItems;
+    }
+
+    public static ArrayList<DiscoveryProfile> getDiscoveries() {
+        return discoveries;
     }
 
     public static boolean isHelper(UUID uuid) {
@@ -510,6 +515,18 @@ public class WebManager {
                 return true;
             })
         );
+    }
+
+    public static void updateDiscoveries(WebRequestHandler handler) {
+        String url = apiUrls == null ? null : apiUrls.get("Discoveries");
+        handler.addRequest(new WebRequestHandler.Request(url, "discoveries")
+            .cacheTo(new File(API_CACHE_ROOT, "discoveries.json"))
+            .handleJsonArray(discoveriesJson -> {
+                Type type = new TypeToken<ArrayList<DiscoveryProfile>>() {}.getType();
+
+                discoveries = gson.fromJson(discoveriesJson, type);
+                return true;
+            }));
     }
 
     public static String getStableJarFileUrl() throws IOException {

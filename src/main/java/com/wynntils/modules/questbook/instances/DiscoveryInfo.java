@@ -4,11 +4,14 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
@@ -26,8 +29,9 @@ public class DiscoveryInfo {
     private String friendlyName;
 
     boolean valid = false;
+    boolean discovered = false;
 
-    public DiscoveryInfo(ItemStack originalStack) {
+    public DiscoveryInfo(ItemStack originalStack, boolean discovered) {
         this.originalStack = originalStack;
 
         lore = ItemUtils.getLore(originalStack);
@@ -58,7 +62,28 @@ public class DiscoveryInfo {
         }
 
         lore.add(0, this.name);
+        this.discovered = discovered;
         valid = true;
+    }
+
+    public DiscoveryInfo(String name, DiscoveryType type, int minLevel, boolean discovered) {
+        this.name = name;
+        this.friendlyName = name;
+        if (friendlyName.length() > 22) {
+            friendlyName = friendlyName.substring(0, 19);
+            friendlyName += "...";
+        }
+
+        this.lore = new ArrayList<>();
+        lore.add(type.getColour() + "" + TextFormatting.BOLD + this.name);
+        lore.add((minLevel <= PlayerInfo.getPlayerInfo().getLevel() ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "✖") + TextFormatting.GRAY + " Combat Lv. Min: " + minLevel);
+        lore.add("");
+
+        this.minLevel = minLevel;
+        this.type = type;
+
+        this.originalStack = ItemStack.EMPTY;
+        this.discovered = discovered;
     }
 
     public String getName() {
@@ -91,6 +116,10 @@ public class DiscoveryInfo {
 
     public boolean isValid() {
         return valid;
+    }
+
+    public boolean wasDiscovered() {
+        return discovered;
     }
 
 }

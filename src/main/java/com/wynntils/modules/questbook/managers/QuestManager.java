@@ -332,7 +332,7 @@ public class QuestManager {
     private static void parseDiscoveries(ArrayList<ItemStack> discoveries) {
         for (ItemStack stack : discoveries) {
             try {
-                DiscoveryInfo discovery = new DiscoveryInfo(stack);
+                DiscoveryInfo discovery = new DiscoveryInfo(stack, true);
                 if (!discovery.isValid()) continue;
 
                 currentDiscoveries.put(discovery.getName(), discovery);

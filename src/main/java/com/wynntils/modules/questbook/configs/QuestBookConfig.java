@@ -28,4 +28,7 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Update When Opening the QuestBook", description = "Should the QuestBook only update itself when you open it?")
     public boolean updateWhenOpen = false;
 
+    @Setting(displayName = "Show Discoveries That Are Unavailable", description = "When viewing undiscovered discoveries should discoveries that cannot be discovered currently be displayed?")
+    public boolean showAllDiscoveries = false;
+
 }
