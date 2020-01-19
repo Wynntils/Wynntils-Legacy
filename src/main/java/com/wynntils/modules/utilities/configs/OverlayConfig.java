@@ -382,7 +382,7 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Territory Messages Mode", description = "What messages should be displayed in the territory feed?\n\n" +
                 "Normal: Display all territory messages.\n\n" +
-                "Distinguish Own Guild: Display all territory messages, but messages relating to your guild will be displayed in different colors. (§2Gained territory §r& §4lost territory§r)\n\n" +
+                "Distinguish Own Guild: Display all territory messages, but messages relating to your guild will be displayed in different colours. (§2Gained territory §r& §4lost territory§r)\n\n" +
                 "Only Own Guild: Display only territory messages that relate to your guild.")
         public TerritoryFeedDisplayMode displayMode = TerritoryFeedDisplayMode.DISTINGUISH_OWN_GUILD;
 
