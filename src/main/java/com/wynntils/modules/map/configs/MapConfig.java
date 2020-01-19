@@ -58,7 +58,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 9)
     public boolean hideCompletedQuests = true;
 
-    @Setting(displayName = "Compass Beacon Color", description = "What color should the compass beacon be?", order = 10)
+    @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 10)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
