@@ -12,7 +12,7 @@ public enum MajorIdentification {
     HAWKEYE("Hawkeye", "Arrow storm fires 5 powerful arrows"),
     GREED("Greed", "Picking up emeralds heals you and nearby players for 20% max health"),
     CAVALRYMAN("Cavalryman", "Can attack mobs while riding a horse"),
-    GUARDIAN("Guardian", "50% of the damage taken by players nearby are redirected to you"),
+    GUARDIAN("Guardian", "50% of the damage taken by players nearby is redirected to you"),
     ALTRUISM("Heart of the Pack", "Nearby players gain 30% of the health you naturally regenerate"),
     HERO("Saviour's Sacrifice", "While under 25% maximum health, nearby allies gain 30% bonus damage and defense"),
     ARCANES("Transcendence", "50% chance for spells to cost no mana when casted"),
