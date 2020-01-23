@@ -8,21 +8,21 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum MajorIdentification {
 
-    PLAGUE("Plague", "Poisoned mobs spread 70% of their poison to nearby mobs"),
-    HAWKEYE("Hawkeye", "Arrow storm fires 5 arrows dealing 120% damage"),
-    GREED("Greed", "Picking up emeralds heals you and nearby players for 15% max health"),
-    CAVALRYMAN("Cavalryman", "You may cast and attack mobs whith a 70% damage penalty while on a horse"),
+    PLAGUE("Plague", "Poisoned mobs also poison nearby mobs"),
+    HAWKEYE("Hawkeye", "Arrow storm fires 5 powerful arrows"),
+    GREED("Greed", "Picking up emeralds heals you and nearby players for 20% max health"),
+    CAVALRYMAN("Cavalryman", "Can attack mobs while riding a horse"),
     GUARDIAN("Guardian", "50% of the damage taken by players nearby are redirected to you"),
-    ALTRUISM("Heart of the Pack", "Nearby players gain 35% of the health you naturally regenerate"),
-    HERO("Saviour's Sacrifice", "While under 30% maximum health, nearby allies gain 50% bonus damage and defense"),
+    ALTRUISM("Heart of the Pack", "Nearby players gain 30% of the health you naturally regenerate"),
+    HERO("Saviour's Sacrifice", "While under 25% maximum health, nearby allies gain 30% bonus damage and defense"),
     ARCANES("Transcendence", "50% chance for spells to cost no mana when casted"),
-    ENTROPY("Entropy", "Meteor falls three times faster"),
+    ENTROPY("Entropy", "Meteor falls significantly faster"),
     ROVINGASSASSIN("Roving Assassin", "Vanish no longer drains mana while invisible"),
     MAGNET("Magnet", "Pull every items on the ground nearby"),
-    MADNESS("Madness", "Casts a random ability every 3 seconds"),
-    LIGHTWEIGHT("Lightweight", "You no longer take fall damage"),
-    SORCERY("Sorcery", "30% chance for spells and attacks to cast a second time at no additional cost"),
-    TAUNT("Taunt", "Mobs within 12 blocks target you upon casting War Scream");
+    MADNESS("Madness", "Cast a random ability every 10s"),
+    LIGHTWEIGHT("Lightweight", "Removes fall damage"),
+    SORCERY("Sorcery", "Spells may cast a second time at no additional cost"),
+    TAUNT("Taunt", "War Scream makes nearby mobs target you");
 
     String name, description;
 
