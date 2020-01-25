@@ -4,6 +4,8 @@
 
 package com.wynntils.core.utils;
 
+import com.google.common.collect.Iterators;
+import com.google.common.collect.PeekingIterator;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -219,7 +221,7 @@ public class StringUtils {
     public static boolean isWynnic(int c) {
         return (
             (0x249C <= c && c <= 0x24B5) ||
-            (0x2474 <= c && c <= 0x2476) ||
+            (0x2474 <= c && c <= 0x247C) ||
             (0x247D <= c && c <= 0x247F) ||
             (0xFF10 <= c && c <= 0xFF12)
         );
@@ -236,7 +238,7 @@ public class StringUtils {
     public static String translateCharacterFromWynnic(int wynnic) {
         if (0x249C <= wynnic && wynnic <= 0x24B5) {
             return Character.toString((char) ((wynnic) - 9275));
-        } else if (0x2474 <= wynnic && wynnic <= 0x2476) {
+        } else if (0x2474 <= wynnic && wynnic <= 0x247C) {
             return Character.toString((char) ((wynnic) - 9283));
         }
 
@@ -249,6 +251,79 @@ public class StringUtils {
             case 0xFF12: return "?";
             default: return "";
         }
+    }
+
+    public static int translateNumberFromWynnic(String wynnic) {
+        int result = 0;
+        int maxNumber = 3;
+        int numbersRemaining = 3;
+        PeekingIterator<Integer> characters = Iterators.peekingIterator(wynnic.chars().iterator());
+        while (characters.hasNext()) {
+            int character = characters.next();
+            switch (character) {
+                case 0x247F:
+                    if (maxNumber < 3 || numbersRemaining == 0) {
+                        return 0;
+                    }
+
+                    result += 100;
+                    numbersRemaining--;
+                    break;
+                case 0x247E:
+                    if (maxNumber < 3) {
+                        return 0;
+                    }
+
+                    result += 50;
+
+                    numbersRemaining = 3;
+                    maxNumber = 2;
+                    break;
+                case 0x247D:
+                    if (maxNumber < 2 || (maxNumber == 2 && numbersRemaining == 0)) {
+                        return 0;
+                    }
+
+                    if (maxNumber > 2) {
+                        numbersRemaining = 3;
+                    }
+
+                    switch (characters.peek()) {
+                        case 0x247F:
+                            result += 90;
+                            characters.next();
+                            maxNumber = 1;
+                            numbersRemaining = 1;
+                            break;
+                        case 0x247E:
+                            result += 40;
+                            characters.next();
+                            maxNumber = 1;
+                            numbersRemaining = 1;
+                            break;
+                        default:
+                            result += 10;
+                            numbersRemaining--;
+                    }
+                    break;
+                default:
+                    if (0x2474 <= character && character <= 0x247C) {
+                        if (maxNumber == 1 && numbersRemaining == 0) {
+                            return 0;
+                        }
+
+                        result += character - 0x2473;
+                        maxNumber = 1;
+                        numbersRemaining--;
+                    }
+            }
+        }
+        return result;
+    }
+
+    public static boolean isWynnicNumber(char character) {
+        return (0x2474 <= character && character <= 0x247C)
+            || (0x247D <= character && character <= 0x247F);
     }
 
 }

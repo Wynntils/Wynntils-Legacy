@@ -34,7 +34,7 @@ public class ChatManager {
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
-    private static final String nonTranslatable = "[^a-zA-Z1-9.!?]";
+    private static final String nonTranslatable = "[^a-zA-Z.!?]";
     private static final String optionalTranslatable = "[.!?]";
 
     private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
@@ -106,12 +106,12 @@ public class ChatManager {
                 String toAdd = "";
                 String currentNonTranslated = "";
                 StringBuilder oldText = new StringBuilder();
+                StringBuilder number = new StringBuilder();
                 for (char character : component.getUnformattedText().toCharArray()) {
-                    if (StringUtils.isWynnic(character)) {
+                    if (StringUtils.isWynnicNumber(character)) {
                         if (previousWynnic) {
                             toAdd += currentNonTranslated;
                             oldText.append(currentNonTranslated);
-                            currentNonTranslated = "";
                         } else {
                             ITextComponent newComponent = new TextComponentString(oldText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
@@ -120,57 +120,83 @@ public class ChatManager {
                             toAdd = "";
                             previousWynnic = true;
                         }
-                        String englishVersion = StringUtils.translateCharacterFromWynnic(character);
-                        if (capital && englishVersion.matches("[a-z]")) {
-                            englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
-                        }
-
-                        if (".?!".contains(englishVersion)) {
-                            capital = true;
-                        } else {
-                            capital = false;
-                        }
-                        toAdd += englishVersion;
+                        currentNonTranslated = "";
+                        number.append(character);
                         oldText.append(character);
-                    } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
-                        if (previousWynnic) {
-                            currentNonTranslated += character;
-                        } else {
-                            oldText.append(character);
-                        }
-
-                        if (".?!".contains(Character.toString(character))) {
-                            capital = true;
-                        } else if (character != ' ') {
-                            capital = false;
-                        }
                     } else {
-                        if (previousWynnic) {
-                            previousWynnic = false;
-                            ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                            oldComponent.setStyle(component.getStyle().createDeepCopy());
-                            ITextComponent newComponent = new TextComponentString(toAdd);
-                            newComponent.setStyle(component.getStyle().createDeepCopy());
+                        if (!number.toString().isEmpty()) {
+                            toAdd += StringUtils.translateNumberFromWynnic(number.toString());
+                            number = new StringBuilder();
+                        }
 
-                            newTextComponents.add(oldComponent);
-                            for (ITextComponent currentOldComponent : currentOldComponents) {
-                                currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+                        if (StringUtils.isWynnic(character)) {
+                            if (previousWynnic) {
+                                toAdd += currentNonTranslated;
+                                oldText.append(currentNonTranslated);
+                                currentNonTranslated = "";
+                            } else {
+                                ITextComponent newComponent = new TextComponentString(oldText.toString());
+                                newComponent.setStyle(component.getStyle().createDeepCopy());
+                                newTextComponents.add(newComponent);
+                                oldText = new StringBuilder();
+                                toAdd = "";
+                                previousWynnic = true;
+                            }
+                            String englishVersion = StringUtils.translateCharacterFromWynnic(character);
+                            if (capital && englishVersion.matches("[a-z]")) {
+                                englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
                             }
 
-                            currentOldComponents.clear();
-                            currentTranslatedComponents = new TextComponentString("");
-
-                            oldText = new StringBuilder(currentNonTranslated);
-                            currentNonTranslated = "";
+                            if (".?!".contains(englishVersion)) {
+                                capital = true;
+                            } else {
+                                capital = false;
+                            }
+                            toAdd += englishVersion;
                             oldText.append(character);
+                        } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
+                            if (previousWynnic) {
+                                currentNonTranslated += character;
+                            } else {
+                                oldText.append(character);
+                            }
+
+                            if (".?!".contains(Character.toString(character))) {
+                                capital = true;
+                            } else if (character != ' ') {
+                                capital = false;
+                            }
                         } else {
-                            oldText.append(character);
-                        }
+                            if (previousWynnic) {
+                                previousWynnic = false;
+                                ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                                oldComponent.setStyle(component.getStyle().createDeepCopy());
+                                ITextComponent newComponent = new TextComponentString(toAdd);
+                                newComponent.setStyle(component.getStyle().createDeepCopy());
 
-                        if (character != ' ') {
-                            capital = false;
+                                newTextComponents.add(oldComponent);
+                                for (ITextComponent currentOldComponent : currentOldComponents) {
+                                    currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+                                }
+
+                                currentOldComponents.clear();
+                                currentTranslatedComponents = new TextComponentString("");
+
+                                oldText = new StringBuilder(currentNonTranslated);
+                                currentNonTranslated = "";
+                                oldText.append(character);
+                            } else {
+                                oldText.append(character);
+                            }
+
+                            if (character != ' ') {
+                                capital = false;
+                            }
                         }
                     }
+                }
+                if (!number.toString().isEmpty() && previousWynnic) {
+                    toAdd += StringUtils.translateNumberFromWynnic(number.toString());
                 }
                 if (!currentNonTranslated.isEmpty()) {
                     oldText.append(currentNonTranslated);
@@ -376,33 +402,179 @@ public class ChatManager {
         if (message.contains("{")) {
             StringBuilder newString = new StringBuilder();
             boolean isWynnic = false;
+            boolean isNumber = false;
+            boolean invalidNumber = false;
+            int number = 0;
+            StringBuilder oldNumber = new StringBuilder();
             for (char character : message.toCharArray()) {
                 if (character == '{') {
                     isWynnic = true;
+                    isNumber = false;
+                    number = 0;
+                    oldNumber = new StringBuilder();
                 } else if (isWynnic && character == '}') {
                     isWynnic = false;
                 } else if (isWynnic) {
-                    if (!Character.toString(character).matches(nonTranslatable)) {
-                        if (Character.toString(character).matches("[a-z]")) {
-                            newString.append((char) ((character) + 9275));
-                        } else if (Character.toString(character).matches("[A-Z]")) {
-                            newString.append((char) ((character) + 9307));
-                        } else if (Character.toString(character).matches("[1-9]")) {
-                            newString.append((char) ((character) + 9283));
-                        } else if (character == '.') {
-                            newString.append("\uFF10");
-                        } else if (character == '!') {
-                            newString.append("\uFF11");
-                        } else if (character == '?') {
-                            newString.append("\uFF12");
+                    if (Character.isDigit(character) && !invalidNumber) {
+                        if (oldNumber.toString().endsWith(".")) {
+                            invalidNumber = true;
+                            isNumber = false;
+                            newString.append(oldNumber);
+                            newString.append(character);
+                            oldNumber = new StringBuilder();
+                            number = 0;
+                            continue;
                         }
+                        number = number * 10 + Integer.valueOf(Character.toString(character));
+                        oldNumber.append(character);
+                        if (number >= 400) {
+                            invalidNumber = true;
+                            isNumber = false;
+                            newString.append(oldNumber);
+                            oldNumber = new StringBuilder();
+                            number = 0;
+                            continue;
+                        } else {
+                            isNumber = true;
+                        }
+                    } else if (character == ',' && isNumber) {
+                        oldNumber.append(character);
+                    } else if (character == '.' && isNumber) {
+                        oldNumber.append('.');
                     } else {
-                        newString.append(character);
+                        if (isNumber) {
+                            if (1 <= number && number <= 9) {
+                                newString.append((char) (number + 0x2473));
+                            } else if (number == 10 || number == 50 || number == 100) {
+                                switch (number) {
+                                    case 10:
+                                        newString.append('⑽');
+                                        break;
+                                    case 50:
+                                        newString.append('⑾');
+                                        break;
+                                    case 100:
+                                        newString.append('⑿');
+                                        break;
+                                }
+                            } else if (1 <= number && number <= 399) {
+                                int hundreds = number / 100;
+                                for (int hundred = 1; hundred <= hundreds; hundred++) {
+                                    newString.append('⑿');
+                                }
+
+                                int tens = (number % 100) / 10;
+                                if (1 <= tens && tens <= 3) {
+                                    for (int ten = 1; ten <= tens; ten++) {
+                                        newString.append('⑽');
+                                    }
+                                } else if (4 == tens) {
+                                    newString.append("⑽⑾");
+                                } else if (5 <= tens && tens <= 8) {
+                                    newString.append('⑾');
+                                    for (int ten = 1; ten <= tens - 5; ten++) {
+                                        newString.append('⑽');
+                                    }
+                                } else if (9 == tens) {
+                                    newString.append("⑽⑿");
+                                }
+
+                                int ones = number % 10;
+                                if (1 <= ones) {
+                                    newString.append((char) (ones + 0x2473));
+                                }
+                            } else {
+                                newString.append(number);
+                            }
+                            number = 0;
+                            isNumber = false;
+                            if (oldNumber.toString().endsWith(",")) {
+                                newString.append(',');
+                            }
+                            if (oldNumber.toString().endsWith(".")) {
+                                newString.append('０');
+                            }
+                            oldNumber = new StringBuilder();
+                        }
+
+                        if (invalidNumber && !Character.isDigit(character)) {
+                            invalidNumber = false;
+                        }
+
+                        if (!Character.toString(character).matches(nonTranslatable)) {
+                            if (Character.toString(character).matches("[a-z]")) {
+                                newString.append((char) ((character) + 0x243B));
+                            } else if (Character.toString(character).matches("[A-Z]")) {
+                                newString.append((char) ((character) + 0x245B));
+                            } else if (character == '.') {
+                                newString.append('０');
+                            } else if (character == '!') {
+                                newString.append('１');
+                            } else if (character == '?') {
+                                newString.append('２');
+                            }
+                        } else {
+                            newString.append(character);
+                        }
                     }
                 } else {
                     newString.append(character);
                 }
             }
+
+            if (isNumber) {
+                if (1 <= number && number <= 9) {
+                    newString.append((char) (number + 0x2473));
+                } else if (number == 10 || number == 50 || number == 100) {
+                    switch (number) {
+                        case 10:
+                            newString.append('⑽');
+                            break;
+                        case 50:
+                            newString.append('⑾');
+                            break;
+                        case 100:
+                            newString.append('⑿');
+                            break;
+                    }
+                } else if (1 <= number && number <= 399) {
+                    int hundreds = number / 100;
+                    for (int hundred = 1; hundred <= hundreds; hundred++) {
+                        newString.append('⑿');
+                    }
+
+                    int tens = (number % 100) / 10;
+                    if (1 <= tens && tens <= 3) {
+                        for (int ten = 1; ten <= tens; ten++) {
+                            newString.append('⑽');
+                        }
+                    } else if (4 == tens) {
+                        newString.append("⑽⑾");
+                    } else if (5 <= tens && tens <= 8) {
+                        newString.append('⑾');
+                        for (int ten = 1; ten <= tens - 5; ten++) {
+                            newString.append('⑽');
+                        }
+                    } else if (9 == tens) {
+                        newString.append("⑽⑿");
+                    }
+
+                    int ones = number % 10;
+                    if (1 <= ones) {
+                        newString.append((char) (ones + 0x2473));
+                    }
+                } else {
+                    newString.append(number);
+                }
+
+                if (oldNumber.toString().endsWith(",")) {
+                    newString.append(',');
+                }
+                if (oldNumber.toString().endsWith(".")) {
+                    newString.append('０');
+                }
+            }
+
             after = newString.toString();
 
         }
