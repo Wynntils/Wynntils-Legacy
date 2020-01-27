@@ -288,22 +288,27 @@ public class StringUtils {
                         numbersRemaining = 3;
                     }
 
-                    switch (characters.peek()) {
-                        case 0x247F:
-                            result += 90;
-                            characters.next();
-                            maxNumber = 1;
-                            numbersRemaining = 1;
-                            break;
-                        case 0x247E:
-                            result += 40;
-                            characters.next();
-                            maxNumber = 1;
-                            numbersRemaining = 1;
-                            break;
-                        default:
-                            result += 10;
-                            numbersRemaining--;
+                    if (characters.hasNext()) {
+                        switch (characters.peek()) {
+                            case 0x247F:
+                                result += 90;
+                                characters.next();
+                                maxNumber = 1;
+                                numbersRemaining = 1;
+                                break;
+                            case 0x247E:
+                                result += 40;
+                                characters.next();
+                                maxNumber = 1;
+                                numbersRemaining = 1;
+                                break;
+                            default:
+                                result += 10;
+                                numbersRemaining--;
+                        }
+                    } else {
+                        result += 10;
+                        numbersRemaining--;
                     }
                     break;
                 default:
