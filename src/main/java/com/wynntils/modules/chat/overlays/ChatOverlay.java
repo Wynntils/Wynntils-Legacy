@@ -320,9 +320,8 @@ public class ChatOverlay extends GuiNewChat {
         getCurrentTab().addSentMessage(message);
     }
 
-    public void switchTabs() {
-        if (currentTab+1 >= TabManager.getAvailableTabs().size()) currentTab = 0;
-        else currentTab+=1;
+    public void switchTabs(int amount) {
+        currentTab = Math.floorMod(currentTab + amount, TabManager.getAvailableTabs().size());
 
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
     }

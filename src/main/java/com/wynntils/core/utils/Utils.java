@@ -240,15 +240,16 @@ public class Utils {
         }
     }
 
-    public static void tab(GuiTextField... tabList) {
-        tab(Arrays.asList(tabList));
+    public static void tab(int amount, GuiTextField... tabList) {
+        tab(amount, Arrays.asList(tabList));
     }
 
     /**
      * Given a list of text fields, blur the currently focused field and focus the
-     * next one. Focuses the first one if there is no focused field or the last field is focused.
+     * next one (or previous one if amount is -1), wrapping around.
+     * Focuses the first one if there is no focused field.
      */
-    public static void tab(List<GuiTextField> tabList) {
+    public static void tab(int amount, List<GuiTextField> tabList) {
         int focusIndex = -1;
         for (int i = 0; i < tabList.size(); ++i) {
             GuiTextField field = tabList.get(i);
@@ -260,7 +261,7 @@ public class Utils {
                 break;
             }
         }
-        focusIndex = (focusIndex + 1) % tabList.size();
+        focusIndex = focusIndex == -1 ? 0 : Math.floorMod(focusIndex + amount, tabList.size());
         GuiTextField selected = tabList.get(focusIndex);
         selected.setFocused(true);
         selected.setCursorPosition(0);
