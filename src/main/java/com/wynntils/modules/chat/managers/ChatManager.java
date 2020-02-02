@@ -43,6 +43,7 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static ITextComponent processRealMessage(ITextComponent in) {
+        if (in == null) return in;
         ITextComponent original = in.createCopy();
 
         // Reorginizing
@@ -342,7 +343,7 @@ public class ChatManager {
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         boolean hasMention = false;
         if (ChatConfig.INSTANCE.allowChatMentions) {
-            if (in.getFormattedText().contains(ModCore.mc().player.getName())) {
+            if (in != null && in.getFormattedText().contains(ModCore.mc().player.getName())) {
                 // Patterns used to detect guild/party chat
                 boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
                 boolean foundStart = false;
