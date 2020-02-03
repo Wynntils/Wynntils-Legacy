@@ -9,7 +9,6 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.cosmetics.CosmeticsModule;
-import com.wynntils.modules.damagelog.DamageLogModule;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.music.MusicModule;
 import com.wynntils.modules.questbook.QuestBookModule;
@@ -30,7 +29,6 @@ public class ModuleManager {
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());
         FrameworkManager.registerModule(new MapModule());
-        FrameworkManager.registerModule(new DamageLogModule());
     }
 
 }

@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -28,6 +29,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -43,10 +45,14 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,14 +61,53 @@ import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.WeakHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
+    /**
+     * Regular expression for a mob name.
+     */
+    private static final Pattern MOB_NAME_PATTERN = Pattern.compile(".+\\[Lv. \\d+\\]");
+
+    /**
+     * The approximate distance from a damage indicator to search for
+     * the entity that was damaged, given as a vector. Used to construct
+     * an AABB for entity searching.
+     */
+    private static final Vec3d DAMAGE_TARGET_SEARCH_DELTA = new Vec3d(1.5f, 1.5f, 1.5f);
+
+    private static String damageTypesString() {
+        String s = "";
+        for (DamageType v : DamageType.values()) {
+            s = s+v.symbol;
+        }
+        return s;
+    }
+
+    /**
+     * Regular expression for a piece of an element of a damage indicator, e.g. "-324 ✤".
+     */
+    private static final Pattern DAMAGE_PATTERN = Pattern.compile("-(\\d+) ([" + damageTypesString() + "])");
+
     boolean isAfk = false;
     int lastPosition = 0;
     long lastMovement = 0;
+
+    /**
+     * Weak references to armor stands that might be used by the server to present
+     * damage values to clients. Weak references allow the entities to be garbage
+     * collected when no longer in use, so that we don't need additional code to
+     * avoid a memory leak.
+     *
+     * Each armor stand maps to the best-guess name of the entity it was spawned to
+     * provide information about.
+     */
+    private final WeakHashMap<EntityArmorStand, String> armorStands = new WeakHashMap<>();
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
@@ -505,4 +550,96 @@ public class ClientEvents implements Listener {
         } catch (NoClassDefFoundError e) { /* ignore */ }
     }
 
+    /**
+     * Keep track of armor stands as they're added to the world,
+     * since they might be used by the server to convey information in
+     * the custom name tag. Note that this tag isn't set initially,
+     * so we need to wait for a later entity update to see what it will be.
+     * 
+     * @param event
+     */
+    @SubscribeEvent
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (!UtilitiesConfig.INSTANCE.logDamageToGameUpdateOverlay)
+            return;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if (player == null || !(event.getEntity() instanceof EntityArmorStand))
+            return;
+
+        EntityArmorStand armorStand = (EntityArmorStand)event.getEntity();
+        Vec3d armorStandPos = armorStand.getPositionVector();
+        AxisAlignedBB nearbyAABB = new AxisAlignedBB(
+                armorStandPos.subtract(DAMAGE_TARGET_SEARCH_DELTA),
+                armorStandPos.add(DAMAGE_TARGET_SEARCH_DELTA));
+
+        List<Entity> nearbyEntities = Minecraft.getMinecraft().world.getEntitiesWithinAABBExcludingEntity(armorStand, nearbyAABB);
+
+        // Don't bother remembering the armor stand if no other
+        // entities are nearby
+        if (nearbyEntities.isEmpty())
+            return;
+
+        // Find the nearest entity whose custom tag name matches
+        // the mob name pattern.
+        double nearestDist = Double.MAX_VALUE;
+        String entityName = null;
+        for (Entity e : nearbyEntities) {
+            Matcher m = MOB_NAME_PATTERN.matcher(e.getCustomNameTag());
+            if (!m.matches()) {
+                continue;
+            }
+            double dist = e.getPositionVector().squareDistanceTo(armorStand.getPositionVector());
+            if (dist < nearestDist) {
+                entityName = e.getCustomNameTag();
+                nearestDist = dist;
+            }
+        }
+        // Don't bother remembering the armor stand if no
+        // entity with a mob name is nearby.
+        if (entityName != null) {
+            armorStands.put(armorStand, entityName);
+        }
+    }
+
+    /**
+     * Look for updated armor stands, to see if they've got names now.
+     * 
+     * @param event
+     */
+    @SubscribeEvent
+    public void onEntityEvent(EntityEvent event) {
+        if (!UtilitiesConfig.INSTANCE.logDamageToGameUpdateOverlay)
+            return;
+
+        if (!(event.getEntity() instanceof EntityArmorStand))
+            return;
+
+        EntityArmorStand armorStand = (EntityArmorStand)event.getEntity();
+
+        if (!armorStands.containsKey(armorStand) ||
+                armorStand.getCustomNameTag().equals(""))
+            return;
+
+        // Once an armor stand has a name, there's no need to track it.
+        String targetName = armorStands.remove(armorStand);
+
+        // If this armor stand is a damage indicator, parse out the damage
+        // and log it to the Game Update Overlay.
+        Matcher m = DAMAGE_PATTERN.matcher(armorStand.getCustomNameTag());
+        StringBuilder sb = new StringBuilder();
+        float total = 0;
+        while (m.find()) {
+            float amount = Float.parseFloat(m.group(1));
+            total += amount;
+            DamageType type = DamageType.fromSymbol(m.group(2));
+            sb.append(type.textFormat.toString())
+            .append(" ").append(type.symbol).append("=").append(amount);
+        }
+        if (total > 0) {
+            String msg = targetName+TextFormatting.WHITE+" HIT FOR "+total
+                    +" ("+sb.toString()+TextFormatting.WHITE+")";
+            GameUpdateOverlay.queueMessage(msg);
+        }
+    }
 }
