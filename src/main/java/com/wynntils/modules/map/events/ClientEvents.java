@@ -68,21 +68,24 @@ public class ClientEvents implements Listener {
         switch (tier) {
             case "IV":
                 wp = new WaypointProfile("Loot Chest T4", lastLocation.getX(), lastLocation.getY(), lastLocation.getZ(), CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T4, -1000);
+                wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T4);
                 break;
             case "III":
                 wp = new WaypointProfile("Loot Chest T3", lastLocation.getX(), lastLocation.getY(), lastLocation.getZ(), CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T3, -1000);
+                wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T3);
                 break;
             case "II":
                 wp = new WaypointProfile("Loot Chest T2", lastLocation.getX(), lastLocation.getY(), lastLocation.getZ(), CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T2, -1000);
+                wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T2);
                 break;
             case "I":
                 wp = new WaypointProfile("Loot Chest T1", lastLocation.getX(), lastLocation.getY(), lastLocation.getZ(), CommonColors.WHITE, WaypointProfile.WaypointType.LOOTCHEST_T1, -1000);
+                wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T1);
                 break;
         }
         if (wp != null) {
             if (MapConfig.Waypoints.INSTANCE.waypoints.stream().anyMatch(c -> c.getX() == lastLocation.getX() && c.getY() == lastLocation.getY() && c.getZ() == lastLocation.getZ())) return;
 
-            wp.setGroup(WaypointProfile.WaypointType.LOOTCHEST_T4);
             MapConfig.Waypoints.INSTANCE.waypoints.add(wp);
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
 
