@@ -86,6 +86,7 @@ public class ClientEvents implements Listener {
         for (DamageType v : DamageType.values()) {
             s = s+v.symbol;
         }
+        
         return s;
     }
 
@@ -586,20 +587,20 @@ public class ClientEvents implements Listener {
         String entityName = null;
         for (Entity e : nearbyEntities) {
             Matcher m = MOB_NAME_PATTERN.matcher(e.getCustomNameTag());
-            if (!m.matches()) {
-                continue;
-            }
+            if (!m.matches()) continue;
+            
             double dist = e.getPositionVector().squareDistanceTo(armorStand.getPositionVector());
-            if (dist < nearestDist) {
-                entityName = e.getCustomNameTag();
-                nearestDist = dist;
-            }
+            if (dist >= nearestDist) continue;
+            
+            entityName = e.getCustomNameTag();
+            nearestDist = dist;
         }
+        
         // Don't bother remembering the armor stand if no
         // entity with a mob name is nearby.
-        if (entityName != null) {
-            armorStands.put(armorStand, entityName);
-        }
+        if (entityName == null) return;
+        
+        armorStands.put(armorStand, entityName);
     }
 
     /**
@@ -632,14 +633,16 @@ public class ClientEvents implements Listener {
         while (m.find()) {
             float amount = Float.parseFloat(m.group(1));
             total += amount;
+            
             DamageType type = DamageType.fromSymbol(m.group(2));
             sb.append(type.textFormat.toString())
             .append(" ").append(type.symbol).append("=").append(amount);
         }
-        if (total > 0) {
-            String msg = targetName+TextFormatting.WHITE+" HIT FOR "+total
-                    +" ("+sb.toString()+TextFormatting.WHITE+")";
-            GameUpdateOverlay.queueMessage(msg);
-        }
+        
+        if (total <= 0) return;
+
+        String msg = targetName+TextFormatting.WHITE+" HIT FOR "+total
+                +" ("+sb.toString()+TextFormatting.WHITE+")";
+        GameUpdateOverlay.queueMessage(msg);
     }
 }
