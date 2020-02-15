@@ -19,6 +19,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
@@ -561,7 +562,7 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-        if (!UtilitiesConfig.INSTANCE.logDamageToGameUpdateOverlay)
+        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay)
             return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -610,7 +611,7 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void onEntityEvent(EntityEvent event) {
-        if (!UtilitiesConfig.INSTANCE.logDamageToGameUpdateOverlay)
+        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay)
             return;
 
         if (!(event.getEntity() instanceof EntityArmorStand))

@@ -99,9 +99,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(upload = false)
     public String lastServerResourcePackHash = "";
 
-    @Setting(displayName="Log Damage to Game Update Overlay", description="Should damage be logged to the Game Update Overlay?")
-    public boolean logDamageToGameUpdateOverlay = false;
-
     @Setting
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 

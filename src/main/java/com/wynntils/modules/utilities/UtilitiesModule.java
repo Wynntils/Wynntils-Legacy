@@ -90,6 +90,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
         registerSettings(OverlayConfig.GameUpdate.TerritoryChangeMessages.class);
+        registerSettings(OverlayConfig.GameUpdate.DamageMessages.class);
     }
 
     public static UtilitiesModule getModule() {

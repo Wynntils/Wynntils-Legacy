@@ -359,6 +359,14 @@ public class OverlayConfig extends SettingsClass {
             @Setting.Limitations.StringLimit(maxLength = 100)
             public String musicChangeFormat = TextFormatting.GRAY + "♫ %np%";
         }
+
+        @SettingsInfo(name = "game_update_damage_settings", displayPath = "Overlays/Update Ticker/Damage")
+        public static class DamageMessages extends SettingsClass {
+            public static DamageMessages INSTANCE;
+
+            @Setting(displayName="Enable Damage Messages", description="Should all damage be displayed in the game-update-ticker?")
+            public boolean logDamageToGameUpdateOverlay = false;
+        }
     }
 
     @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
