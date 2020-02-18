@@ -11,6 +11,8 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestStatus;
@@ -228,6 +230,10 @@ public class QuestsPage extends QuestBookPage {
                             lore.set(lore.size() - 1, TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                         }
                     }
+
+                    if (selected.hasTargetLocation()) {
+                        lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
+                    }
                     lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
 
                     String name = selected.getFriendlyName();
@@ -299,7 +305,7 @@ public class QuestsPage extends QuestBookPage {
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
         if (overQuest != null) {
-            if (mouseButton != 1) {
+            if (mouseButton == 0) {  // left click
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
@@ -309,7 +315,8 @@ public class QuestsPage extends QuestBookPage {
                 }
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(overQuest);
-            } else {
+                return;
+            } else if (mouseButton == 1) {  // right click
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 String url = "https://wynncraft.gamepedia.com/";
@@ -352,6 +359,13 @@ public class QuestsPage extends QuestBookPage {
                     text.getStyle().setColor(TextFormatting.DARK_RED);
                     ModCore.mc().player.sendMessage(text);
                 }
+                return;
+            } else if (mouseButton == 2) {  // middle click
+                if (!overQuest.hasTargetLocation()) return;
+
+                Location l = overQuest.getTargetLocation();
+                Utils.displayGuiScreen(new MainWorldMapUI((float) l.x, (float) l.z));
+                return;
             }
         }
 
