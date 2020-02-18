@@ -96,6 +96,12 @@ public class WorldMapUI extends GuiMovementScreen {
         }
     }
 
+    public void resetAllIcons() {
+        MapProfile map = MapModule.getModule().getMainMap();
+        createIcons();
+        forEachIcon(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
+    }
+
     protected void resetIcon(WorldMapIcon icon) {
         icon.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ, zoom);
     }
@@ -246,11 +252,18 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         // draw map icons
+        boolean[] needToReset = { false };
         GlStateManager.enableBlend();
         forEachIcon(i -> {
             if (i.getInfo().hasDynamicLocation()) resetIcon(i);
+            if (!i.getInfo().isEnabled(false)) {
+                needToReset[0] = true;
+                return;
+            }
             i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
         });
+
+        if (needToReset[0]) resetAllIcons();
 
         float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
         float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
