@@ -8,7 +8,6 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
-import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -43,9 +42,7 @@ public class KeyManager {
         checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", true, () -> {
-            SettingsUI ui = new SettingsUI(ModCore.mc().currentScreen);
-            UI.setupUI(ui);
-            ModCore.mc().displayGuiScreen(ui);
+            ModCore.mc().displayGuiScreen(SettingsUI.getInstance(ModCore.mc().currentScreen));
         });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});

@@ -34,6 +34,11 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public class SettingsUI extends UI {
+    private static final SettingsUI INSTANCE = new SettingsUI();
+    static {
+        UI.setupUI(INSTANCE);
+    }
+
     private GuiScreen parentScreen;
 
     private String currentSettingsPath = "";
@@ -60,8 +65,11 @@ public class SettingsUI extends UI {
         updateSearchText();
     });
 
-    public SettingsUI(GuiScreen parentScreen) {
-        this.parentScreen = parentScreen;
+    private SettingsUI() { }
+
+    public static SettingsUI getInstance(GuiScreen parentScreen) {
+        INSTANCE.parentScreen = parentScreen;
+        return INSTANCE;
     }
 
     @Override

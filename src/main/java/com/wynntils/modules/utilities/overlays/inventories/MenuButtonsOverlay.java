@@ -108,7 +108,7 @@ public class MenuButtonsOverlay implements Listener {
                 Minecraft.getMinecraft().player.sendChatMessage("/hub");
                 break;
             case 755:
-                new SettingsUI(Minecraft.getMinecraft().currentScreen).show();
+                Minecraft.getMinecraft().displayGuiScreen(SettingsUI.getInstance(Minecraft.getMinecraft().currentScreen));
                 break;
             default:
                 return;
