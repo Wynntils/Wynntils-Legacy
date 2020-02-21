@@ -505,4 +505,15 @@ public class OverlayConfig extends SettingsClass {
         public boolean showEffects = true;
     }
 
+    @SettingsInfo(name = "stats_settings", displayPath = "Overlays/Statistics")
+    public static class Stats extends SettingsClass {
+        public static Stats INSTANCE;
+
+        @Setting(displayName = "Show DPS", description = "Should total DPS be displayed in the overlay?")
+        public boolean showDPS = false;
+
+        @Setting(displayName = "DPS Interval", description = "Compute DPS using this many past seconds of damage messages.")
+        @Setting.Limitations.IntLimit(min = 1, max = 60, precision = 1)
+        public int dpsInterval = 10;
+    }
 }

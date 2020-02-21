@@ -24,6 +24,8 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.hud.StatsOverlay;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -562,7 +564,8 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay)
+        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay &&
+            !OverlayConfig.Stats.INSTANCE.showDPS)
             return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
@@ -611,7 +614,8 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void onEntityEvent(EntityEvent event) {
-        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay)
+        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay &&
+            !OverlayConfig.Stats.INSTANCE.showDPS)
             return;
 
         if (!(event.getEntity() instanceof EntityArmorStand))
@@ -636,11 +640,15 @@ public class ClientEvents implements Listener {
             total += amount;
             
             DamageType type = DamageType.fromSymbol(m.group(2));
+            StatsOverlay.recordDamage(type, (int)amount);
             sb.append(type.textFormat.toString())
             .append(" ").append(type.symbol).append("=").append(amount);
         }
         
         if (total <= 0) return;
+
+        if (!OverlayConfig.GameUpdate.DamageMessages.INSTANCE.logDamageToGameUpdateOverlay)
+            return;
 
         String msg = targetName+TextFormatting.WHITE+" HIT FOR "+total
                 +" ("+sb.toString()+TextFormatting.WHITE+")";
