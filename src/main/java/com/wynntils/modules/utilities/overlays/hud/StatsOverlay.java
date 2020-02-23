@@ -47,8 +47,7 @@ public class StatsOverlay extends Overlay {
         if (OverlayConfig.Stats.INSTANCE.showDPS) numShownStats += damageTotals.length+1;
         staticSize.y = LINE_HEIGHT * numShownStats;
 
-        int lineNum = 1;
-        drawString("Stats:", -110, 0, TEXT_COLOR);
+        int lineNum = 0;
         if (OverlayConfig.Stats.INSTANCE.showDPS)
             lineNum += renderDPS(lineNum);
     }
@@ -68,15 +67,15 @@ public class StatsOverlay extends Overlay {
             summedTotals += damageTotals[i];
             DamageType type = DamageType.values()[i];
             drawString(
-                    type.textFormat+type.symbol+" DPS: "+(damageTotals[i] / dpsInterval),
-                    -100,
-                    LINE_HEIGHT*(startLine+i),
+                    type.textFormat+type.symbol+" "+(damageTotals[i] / dpsInterval),
+                    -90+(50*(i%2)),
+                    LINE_HEIGHT*(1+startLine+(i/2)),
                     TEXT_COLOR);
         }
         drawString(
-                "Total DPS: "+(summedTotals / dpsInterval),
+                "DPS: "+(summedTotals / dpsInterval),
                 -100,
-                LINE_HEIGHT*(startLine+i),
+                LINE_HEIGHT*startLine,
                 TEXT_COLOR);
         return i;
     }
