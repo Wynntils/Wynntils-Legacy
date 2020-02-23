@@ -66,17 +66,21 @@ public class StatsOverlay extends Overlay {
         for (i = 0; i < damageTotals.length; ++i) {
             summedTotals += damageTotals[i];
             DamageType type = DamageType.values()[i];
+            if (damageTotals[i] > 0) {
+                drawString(
+                        type.textFormat+type.symbol+" "+(damageTotals[i] / dpsInterval),
+                        -90+(50*(i%2)),
+                        LINE_HEIGHT*(1+startLine+(i/2)),
+                        TEXT_COLOR);
+            }
+        }
+        if (summedTotals > 0) {
             drawString(
-                    type.textFormat+type.symbol+" "+(damageTotals[i] / dpsInterval),
-                    -90+(50*(i%2)),
-                    LINE_HEIGHT*(1+startLine+(i/2)),
+                    "DPS: "+(summedTotals / dpsInterval),
+                    -100,
+                    LINE_HEIGHT*startLine,
                     TEXT_COLOR);
         }
-        drawString(
-                "DPS: "+(summedTotals / dpsInterval),
-                -100,
-                LINE_HEIGHT*startLine,
-                TEXT_COLOR);
         return i;
     }
 
