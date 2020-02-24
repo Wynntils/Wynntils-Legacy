@@ -8,6 +8,9 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.Pair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,8 +18,11 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.AxisAngle4d;
@@ -24,12 +30,23 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PointRenderer {
 
-    public static void drawTexturedLines(Texture texture, List<Location> points, List<Vector3d> directions, CustomColor color, float width) {
-        if (points.size() <= 1) return;
+    public static void drawTexturedLines(Texture texture, Long2ObjectMap<List<List<Location>>> points, Long2ObjectMap<List<List<Vector3d>>> directions, CustomColor color, float width) {
+        List<ChunkPos> chunks = new ArrayList<>();
+        int renderDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+        for (int x = -renderDistance; x <= renderDistance; x++) {
+            for (int z = -renderDistance; z <= renderDistance; z++) {
+                int playerChunkX = Minecraft.getMinecraft().player.chunkCoordX;
+                int playerChunkZ = Minecraft.getMinecraft().player.chunkCoordZ;
+                ChunkPos chunk = new ChunkPos(x + playerChunkX, z + playerChunkZ);
+                chunks.add(chunk);
+            }
+        }
 
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
@@ -38,20 +55,88 @@ public class PointRenderer {
 
         texture.bind();
 
-        for (int i = 0; i < points.size(); ++i) {
-            Point3d start = new Point3d(points.get(i));
-            BlockPos blockPos = points.get(i).toBlockPos();
-            if (!Minecraft.getMinecraft().world.isBlockLoaded(blockPos, false)) continue;
+        for (ChunkPos chunk : chunks) {
+            if (!Minecraft.getMinecraft().world.isChunkGeneratedAt(chunk.x, chunk.z)) {
+                continue;
+            }
+            List<List<Location>> pointsInChunk = points.get(ChunkPos.asLong(chunk.x, chunk.z));
+            List<List<Vector3d>> directionsInChunk = directions.get(ChunkPos.asLong(chunk.x, chunk.z));
+            if (pointsInChunk != null) {
+                for (int i = 0; i < pointsInChunk.size(); ++i) {
+                    List<Location> pointsInRoute = pointsInChunk.get(i);
+                    List<Vector3d> directionsInRoute = directionsInChunk.get(i);
+                    boolean disable = false;
+                    List<Pair<Location, Vector3d>> toRender = new ArrayList<>();
+                    for (int k = 0; k < pointsInRoute.size(); ++k) {
+                        Point3d start = new Point3d(pointsInRoute.get(k));
+                        World world = Minecraft.getMinecraft().world;
+                        BlockPos minPos = new BlockPos(start.x - 0.3D, start.y - 1D, start.z - 0.3D);
+                        BlockPos maxPos = new BlockPos(start.x + 0.3D, start.y - 1D, start.z + 0.3D);
+                        Iterable<BlockPos> blocks = BlockPos.getAllInBox(minPos, maxPos);
+                        boolean barrier = false;
+                        boolean validBlock = false;
+                        for (Iterator<BlockPos> iterator = blocks.iterator(); iterator.hasNext();) {
+                            BlockPos blockInArea = iterator.next();
+                            IBlockState blockStateInArea = world.getBlockState(blockInArea);
+                            if (blockStateInArea.getBlock() == Blocks.BARRIER) {
+                                barrier = true;
+                            } else if (blockStateInArea.getCollisionBoundingBox(world, blockInArea) != null) {
+                                validBlock = true;
+                            }
 
-            Vector3d direction = new Vector3d(directions.get(i));
-            Point3d end = new Point3d(points.get(i));
-            start.y -= .24;
+                        }
 
-            direction.normalize();
-            end.add(direction);
-            end.y -= .24;
+                        if (validBlock) {
+                            disable = false;
+                            for (Pair<Location, Vector3d> render : toRender) {
+                                Point3d startRender = new Point3d(render.a);
+                                Vector3d direction = new Vector3d(render.b);
+                                Point3d end = new Point3d(render.a);
+                                startRender.y -= .24;
 
-            drawTexturedLine(start, end, width);
+                                direction.normalize();
+                                end.add(direction);
+                                end.y -= .24;
+
+                                drawTexturedLine(startRender, end, width);
+                            }
+                            toRender.clear();
+                        } else if (barrier) {
+                            disable = true;
+                            toRender.clear();
+                            continue;
+                        } else if (disable) {
+                            continue;
+                        } else {
+                            toRender.add(new Pair<>(pointsInRoute.get(k), directionsInRoute.get(k)));
+                            continue;
+                        }
+
+                        Vector3d direction = new Vector3d(directionsInRoute.get(k));
+                        Point3d end = new Point3d(pointsInRoute.get(k));
+                        start.y -= .24;
+
+                        direction.normalize();
+                        end.add(direction);
+                        end.y -= .24;
+
+                        drawTexturedLine(start, end, width);
+                    }
+
+                    for (Pair<Location, Vector3d> render : toRender) {
+                        Point3d start = new Point3d(render.a);
+                        Vector3d direction = new Vector3d(render.b);
+                        Point3d end = new Point3d(render.a);
+                        start.y -= .24;
+
+                        direction.normalize();
+                        end.add(direction);
+                        end.y -= .24;
+
+                        drawTexturedLine(start, end, width);
+                    }
+                }
+            }
         }
 
         GlStateManager.enableCull();
@@ -119,8 +204,19 @@ public class PointRenderer {
         } tess.draw();
     }
 
-    public static void drawLines(List<Location> locations, CustomColor color) {
+    public static void drawLines(Long2ObjectMap<List<List<Location>>> locations, CustomColor color) {
         if (locations.isEmpty()) return;
+
+        List<ChunkPos> chunks = new ArrayList<>();
+        int renderDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
+        for (int x = -renderDistance; x <= renderDistance; x++) {
+            for (int z = -renderDistance; z <= renderDistance; z++) {
+                int playerChunkX = Minecraft.getMinecraft().player.chunkCoordX;
+                int playerChunkZ = Minecraft.getMinecraft().player.chunkCoordZ;
+                ChunkPos chunk = new ChunkPos(x + playerChunkX, z + playerChunkZ);
+                chunks.add(chunk);
+            }
+        }
 
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
@@ -137,12 +233,91 @@ public class PointRenderer {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-renderManager.viewerPosX, -renderManager.viewerPosY, -renderManager.viewerPosZ);
 
-        { buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+        {
+            for (ChunkPos chunkPos : chunks) {
+                if (!Minecraft.getMinecraft().world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
+                    continue;
+                }
+                List<List<Location>> locationsInChunk = locations.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
+                if (locationsInChunk != null) {
+                    for (List<Location> locationsInRoute : locationsInChunk) {
+                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                        boolean disabled = false;
+                        List<Location> toRender = new ArrayList<>();
+                        boolean disable = false;
+                        BlockPos lastBlockPos = null;
+                        for (Location loc : locationsInRoute) {
+                            boolean pauseDraw = false;
+                            BlockPos blockPos = loc.toBlockPos();
 
-            for (Location loc : locations) {
-                buffer.pos(loc.x, loc.y, loc.z).endVertex();
+                            World world = Minecraft.getMinecraft().world;
+
+                            if (!blockPos.equals(lastBlockPos)) {
+                                BlockPos minPos = new BlockPos(loc.x - 0.3D, loc.y - 1D, loc.z - 0.3D);
+                                BlockPos maxPos = new BlockPos(loc.x + 0.3D, loc.y - 1D, loc.z + 0.3D);
+                                Iterable<BlockPos> blocks = BlockPos.getAllInBox(minPos, maxPos);
+                                boolean barrier = false;
+                                boolean validBlock = false;
+                                for (Iterator<BlockPos> iterator = blocks.iterator(); iterator.hasNext();) {
+                                    BlockPos blockInArea = iterator.next();
+                                    IBlockState blockStateInArea = world.getBlockState(blockInArea);
+                                    if (blockStateInArea.getBlock() == Blocks.BARRIER) {
+                                        barrier = true;
+                                    } else if (blockStateInArea.getCollisionBoundingBox(world, blockInArea) != null) {
+                                        validBlock = true;
+                                    }
+
+                                }
+
+                                if (validBlock) {
+                                    disable = false;
+                                    if (disabled) {
+                                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                                        disabled = false;
+                                    }
+                                    for (Location location : toRender) {
+                                        buffer.pos(location.x, location.y, location.z).endVertex();
+                                    }
+                                    toRender.clear();
+                                } else if (barrier) {
+                                    disable = true;
+                                    pauseDraw = true;
+                                    toRender.clear();
+                                } else if (disable) {
+                                    pauseDraw = true;
+                                } else {
+                                    toRender.add(loc);
+                                    continue;
+                                }
+                            } else if (disable) {
+                                pauseDraw = true;
+                            } else if (!toRender.isEmpty()) {
+                                toRender.add(loc);
+                            }
+
+                            lastBlockPos = blockPos;
+
+                            if (!pauseDraw) {
+                                if (disabled) {
+                                    buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                                    disabled = false;
+                                }
+                                buffer.pos(loc.x, loc.y, loc.z).endVertex();
+                            } else if (!disabled) {
+                                tess.draw();
+                                disabled = true;
+                            }
+                        }
+                        if (!disabled) {
+                            for (Location location : toRender) {
+                                buffer.pos(location.x, location.y, location.z).endVertex();
+                            }
+                            tess.draw();
+                        }
+                    }
+                }
             }
-        } tess.draw();
+        }
 
         GlStateManager.popMatrix();
 
