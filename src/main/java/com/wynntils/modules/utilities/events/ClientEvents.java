@@ -172,8 +172,7 @@ public class ClientEvents implements Listener {
 
             lastHorseId = thisId;
 
-            if (SoundsConfig.INSTANCE.horseWhistle)
-                WynntilsSound.playSound(WynntilsSound.HORSE_WHISTLE, 1f, 1f); // sound sfx
+            if (SoundsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
 
             if(!UtilitiesConfig.INSTANCE.autoMount) return;
             MountHorseManager.mountHorseAndLogMessage();

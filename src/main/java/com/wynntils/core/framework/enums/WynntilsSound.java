@@ -12,7 +12,8 @@ import net.minecraft.util.SoundEvent;
 public enum WynntilsSound {
 
     HORSE_WHISTLE,
-    WAR_HORN;
+    WAR_HORN,
+    QUESTBOOK_UPDATE;
 
     SoundEvent event;
 
@@ -24,12 +25,12 @@ public enum WynntilsSound {
         return event;
     }
 
-    public static void playSound(WynntilsSound sound, float volume, float pitch) {
-        Minecraft.getMinecraft().player.playSound(sound.getEvent(), volume, pitch);
+    public void play(float volume, float pitch) {
+        Minecraft.getMinecraft().player.playSound(getEvent(), volume, pitch);
     }
 
-    public static void playSound(WynntilsSound sound) {
-        playSound(sound, 1f, 1f);
+    public void play() {
+        play(1f, 1f);
     }
 
 }

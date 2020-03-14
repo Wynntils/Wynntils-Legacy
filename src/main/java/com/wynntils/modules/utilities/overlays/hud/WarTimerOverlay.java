@@ -109,8 +109,8 @@ public class WarTimerOverlay extends Overlay {
                 afterWar = true;
             }
 
-            if (SoundsConfig.INSTANCE.warHorn)
-                WynntilsSound.playSound(WynntilsSound.WAR_HORN, 1f, 1f);
+            // sfx
+            if (SoundsConfig.INSTANCE.warHorn) WynntilsSound.WAR_HORN.play();
 
             territory = message.substring(12, message.indexOf(" will start soon!"));
             changeWarStage(WarStage.WAITING_FOR_TIMER);

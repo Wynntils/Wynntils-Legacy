@@ -9,6 +9,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
@@ -50,7 +51,7 @@ public class QuestManager {
 
     private static boolean hasInterrupted = false;
     private static boolean fullRead = true;
-    private static EnumSet<AnalysePosition> queuedPositions = EnumSet.allOf(AnalysePosition.class);
+    private static EnumSet<AnalysePosition> queuedPositions = EnumSet.range(AnalysePosition.QUESTS, AnalysePosition.MINIQUESTS);
     private static AnalysePosition currentPosition = null;
 
     public static synchronized boolean shouldRead() {
@@ -268,6 +269,7 @@ public class QuestManager {
 
             FrameworkManager.getEventBus().post(new QuestBookUpdateEvent.Full());
             sendMessage(GRAY + "[Quest book analyzed]");
+            WynntilsSound.QUESTBOOK_UPDATE.play(0.5f, 1f);
         });
 
         synchronized (QuestManager.class) {
@@ -423,7 +425,7 @@ public class QuestManager {
         trackedQuest = null;
 
         fullRead = true;
-        queuedPositions = EnumSet.allOf(AnalysePosition.class);
+        queuedPositions = EnumSet.range(AnalysePosition.QUESTS, AnalysePosition.MINIQUESTS);
         currentPosition = null;
     }
 

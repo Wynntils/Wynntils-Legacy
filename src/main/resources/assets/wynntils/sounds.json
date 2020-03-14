@@ -7,9 +7,15 @@
       ]
   },
   "war_horn": {
-      "category": "ambience",
+      "category": "ambient",
       "sounds": [
           "wynntils:war_horn"
+      ]
+  },
+  "questbook_update": {
+      "category": "ambient",
+      "sounds": [
+          "wynntils:questbook_update"
       ]
   }
 }
