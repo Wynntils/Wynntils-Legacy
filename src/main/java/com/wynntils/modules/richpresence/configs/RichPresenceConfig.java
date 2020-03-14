@@ -9,7 +9,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.richpresence.events.ServerEvents;
 
-@SettingsInfo(name = "main", displayPath = "Main")
+@SettingsInfo(name = "main", displayPath = "Discord")
 public class RichPresenceConfig extends SettingsClass {
     public static RichPresenceConfig INSTANCE;
 

@@ -182,12 +182,12 @@ public class SettingsUI extends UI {
                     settingElement.render(mouseX, mouseY);
                 });
                 if (setting != settings.elements.get(0))
-                    render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 1, setting.position.getDrawingX() + 175, setting.position.getDrawingY());
+                    render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 4, setting.position.getDrawingX() + 175, setting.position.getDrawingY() -3);
                 ScreenRenderer.scale(0.8f);
                 String name = setting.field.info.displayName();
                 render.drawString(
                     name,
-                    (setting.position.getDrawingX() + 34f) / 0.8f, (setting.position.getDrawingY() + 4.5f) / 0.8f,
+                    (setting.position.getDrawingX() + 43f) / 0.8f, (setting.position.getDrawingY() + 4.5f) / 0.8f,
                     !searchText.isEmpty() && !setting.isSearched ? CommonColors.GRAY : CommonColors.BLACK,
                     SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE
                 );
@@ -207,14 +207,14 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
         ScreenRenderer.scale(0.7f);
-        String path = this.currentSettingsPath.replace('/', '>');
-        render.drawString(path, (screenWidth/2f+10)/0.7f, (screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        String path = this.currentSettingsPath.replace("/", " > ");
+        render.drawString(path, (screenWidth/2f+10)/0.7f, (screenHeight/2f-103)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         if (Reference.developmentEnvironment) {
             SettingsContainer scn = registeredSettings.get(currentSettingsPath);
             if (scn != null) {
                 String saveFile = scn.getSaveFile();
                 if (saveFile != null) {
-                    render.drawString(saveFile, (screenWidth/2f-10)/0.7f, (screenHeight/2f-106)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
+                    render.drawString(saveFile, (screenWidth/2f-10)/0.7f, (screenHeight/2f-103)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
                 }
             }
         }
@@ -378,7 +378,7 @@ public class SettingsUI extends UI {
 
             this.position.offsetY = settingHeight * settings.elements.size();
 
-            add(new UIEButton("reset", Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
+            add(new UIEButton(" reset ", Textures.UIs.button_a, 0f, 0f, 0, 0, -5, true, (ui, mouseButton) -> {
                 try {
                     registeredSettings.get(currentSettingsPath).resetValue(field);
                     changedSettings.add(currentSettingsPath);

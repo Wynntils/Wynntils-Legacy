@@ -8,6 +8,7 @@ import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.SoundsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
@@ -71,6 +72,8 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
+
+        registerSettings(SoundsConfig.class);
 
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);

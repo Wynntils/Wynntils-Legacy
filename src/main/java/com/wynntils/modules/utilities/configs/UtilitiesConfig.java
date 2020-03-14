@@ -16,7 +16,7 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import java.util.HashMap;
 import java.util.HashSet;
 
-@SettingsInfo(name = "main", displayPath = "Main")
+@SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
@@ -102,7 +102,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
 
-    @SettingsInfo(name = "wars", displayPath = "Wars")
+    @SettingsInfo(name = "wars", displayPath = "Utilities/Wars")
     public static class Wars extends SettingsClass {
         public static Wars INSTANCE;
 
@@ -130,7 +130,7 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "item_highlights", displayPath = "Main/Item Highlights")
+    @SettingsInfo(name = "item_highlights", displayPath = "Utilities/Item Highlights")
     public static class Items extends SettingsClass {
         public static Items INSTANCE;
 
@@ -256,7 +256,7 @@ public class UtilitiesConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "market", displayPath = "Main/Market")
+    @SettingsInfo(name = "market", displayPath = "Utilities/Market")
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
 

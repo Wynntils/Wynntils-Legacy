@@ -1,18 +1,15 @@
 {
-  "horn": {
-    "sounds": [
-      {
-        "name": "wynntils:horn",
-        "stream": false
-      }
-    ]
+  "horse_whistle": {
+      "category": "entity",
+      "sounds": [
+          "wynntils:horse_whistle_1",
+          "wynntils:horse_whistle_2"
+      ]
   },
-  "drum": {
-    "sounds": [
-      {
-        "name": "wynntils:drum",
-        "stream": false
-      }
-    ]
+  "war_horn": {
+      "category": "ambience",
+      "sounds": [
+          "wynntils:war_horn"
+      ]
   }
 }

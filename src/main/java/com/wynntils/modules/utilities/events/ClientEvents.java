@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -18,6 +19,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.SoundsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
@@ -146,30 +148,36 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
-        if (!UtilitiesConfig.INSTANCE.autoMount || !Reference.onServer || !Reference.onWorld) return;
+        if (!Reference.onServer || !Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
         if (thisId == lastHorseId || ModCore.mc().world == null) return;
         Entity entity = ModCore.mc().world.getEntityByID(thisId);
+
         if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
             return;
         }
+
         if (entity == ModCore.mc().player.getRidingEntity()) {
             lastHorseId = thisId;
             return;
         }
-        String playerName = ModCore.mc().player.getName();
 
+        EntityPlayerSP player = ModCore.mc().player;
         assert nameKey != null;
         for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if (nameKey.equals(entry.getKey())) {
-                Object value = entry.getValue();
-                if (value instanceof String && MountHorseManager.isPlayersHorse((String) value, playerName)) {
-                    lastHorseId = thisId;
-                    MountHorseManager.mountHorseAndLogMessage();
-                }
-                return;
-            }
+            if (!nameKey.equals(entry.getKey())) continue;
+            Object value = entry.getValue();
+            if (value == null || !MountHorseManager.isPlayersHorse((String)value, player.getName())) continue;
+
+            lastHorseId = thisId;
+
+            if (SoundsConfig.INSTANCE.horseWhistle)
+                WynntilsSound.playSound(WynntilsSound.HORSE_WHISTLE, 1f, 1f); // sound sfx
+
+            if(!UtilitiesConfig.INSTANCE.autoMount) return;
+            MountHorseManager.mountHorseAndLogMessage();
+            return;
         }
     }
 

@@ -10,10 +10,12 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WarStageEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.SoundsConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -106,6 +108,10 @@ public class WarTimerOverlay extends Overlay {
             if (Reference.onWars) {
                 afterWar = true;
             }
+
+            if (SoundsConfig.INSTANCE.warHorn)
+                WynntilsSound.playSound(WynntilsSound.WAR_HORN, 1f, 1f);
+
             territory = message.substring(12, message.indexOf(" will start soon!"));
             changeWarStage(WarStage.WAITING_FOR_TIMER);
         } else if (message.equals("You were not in the territory.") && stage == WarStage.WAR_STARTING) {

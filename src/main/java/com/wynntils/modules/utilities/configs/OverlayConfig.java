@@ -16,7 +16,7 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
-@SettingsInfo(name = "overlays", displayPath = "Overlays")
+@SettingsInfo(name = "overlays", displayPath = "Utilities/Overlays")
 public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
@@ -30,7 +30,7 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
 
-    @SettingsInfo(name = "health_settings", displayPath = "Overlays/Health")
+    @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
 
@@ -82,7 +82,7 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "mana_settings", displayPath = "Overlays/Mana")
+    @SettingsInfo(name = "mana_settings", displayPath = "Utilities/Overlays/Mana")
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
 
@@ -120,7 +120,7 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "hotbar_settings", displayPath = "Overlays/Hotbar")
+    @SettingsInfo(name = "hotbar_settings", displayPath = "Utilities/Overlays/Hotbar")
     public static class Hotbar extends SettingsClass {
         public static Hotbar INSTANCE;
 
@@ -133,7 +133,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "toast_settings", displayPath = "Overlays/Toasts")
+    @SettingsInfo(name = "toast_settings", displayPath = "Utilities/Overlays/Toasts")
     public static class ToastsSettings extends SettingsClass {
         public static ToastsSettings INSTANCE;
 
@@ -156,7 +156,7 @@ public class OverlayConfig extends SettingsClass {
         public boolean flipToast = false;
     }
 
-    @SettingsInfo(name = "exp_settings", displayPath = "Overlays/Experience")
+    @SettingsInfo(name = "exp_settings", displayPath = "Utilities/Overlays/Experience")
     public static class Exp extends SettingsClass {
         public static Exp INSTANCE;
 
@@ -183,7 +183,7 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "bubbles_settings", displayPath = "Overlays/Bubbles")
+    @SettingsInfo(name = "bubbles_settings", displayPath = "Utilities/Overlays/Bubbles")
     public static class Bubbles extends SettingsClass {
         public static Bubbles INSTANCE;
 
@@ -210,7 +210,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "leveling_settings", displayPath = "Overlays/Leveling")
+    @SettingsInfo(name = "leveling_settings", displayPath = "Utilities/Overlays/Leveling")
     public static class Leveling extends SettingsClass {
         public static Leveling INSTANCE;
 
@@ -225,7 +225,7 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "game_update_settings", displayPath = "Overlays/Update Ticker")
+    @SettingsInfo(name = "game_update_settings", displayPath = "Utilities/Overlays/Update Ticker")
     public static class GameUpdate extends SettingsClass {
         public static GameUpdate INSTANCE;
 
@@ -260,7 +260,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "New Message Override", description = "Should new messages force out the oldest previous messages?\n\n§8If disabled, ticker messages will be queued and appear when a previous message disappears.")
         public boolean overrideNewMessages = true;
 
-        @SettingsInfo(name = "game_update_exp_settings", displayPath = "Overlays/Update Ticker/Experience")
+        @SettingsInfo(name = "game_update_exp_settings", displayPath = "Utilities/Overlays/Update Ticker/Experience")
         public static class GameUpdateEXPMessages extends SettingsClass {
             public static GameUpdateEXPMessages INSTANCE;
 
@@ -277,7 +277,7 @@ public class OverlayConfig extends SettingsClass {
             public String expMessageFormat = TextFormatting.DARK_GREEN + "+%xc%XP (" + TextFormatting.GOLD + "+%pc%%" + TextFormatting.DARK_GREEN + ")";
         }
 
-        @SettingsInfo(name = "game_update_inventory_settings", displayPath = "Overlays/Update Ticker/Inventory")
+        @SettingsInfo(name = "game_update_inventory_settings", displayPath = "Utilities/Overlays/Update Ticker/Inventory")
         public static class GameUpdateInventoryMessages extends SettingsClass {
             public static GameUpdateInventoryMessages INSTANCE;
 
@@ -293,7 +293,7 @@ public class OverlayConfig extends SettingsClass {
             public String inventoryMessageFormat = TextFormatting.DARK_RED + "Your inventory is full";
         }
 
-        @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Overlays/Update Ticker/Redirect Messages")
+        @SettingsInfo(name = "game_update_redirect_settings", displayPath = "Utilities/Overlays/Update Ticker/Redirect Messages")
         public static class RedirectSystemMessages extends SettingsClass {
             public static RedirectSystemMessages INSTANCE;
 
@@ -328,7 +328,7 @@ public class OverlayConfig extends SettingsClass {
             public boolean redirectSoulPoint = true;
         }
 
-        @SettingsInfo(name = "game_update_territory_settings", displayPath = "Overlays/Update Ticker/Territory Change")
+        @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
         public static class TerritoryChangeMessages extends SettingsClass {
             public static TerritoryChangeMessages INSTANCE;
 
@@ -361,7 +361,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "war_timer_settings", displayPath = "Overlays/War Timer")
+    @SettingsInfo(name = "war_timer_settings", displayPath = "Utilities/Overlays/War Timer")
     public static class WarTimer extends SettingsClass {
         public static WarTimer INSTANCE;
 
@@ -369,7 +369,7 @@ public class OverlayConfig extends SettingsClass {
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
-    @SettingsInfo(name = "territory_feed_settings", displayPath = "Overlays/Territory Feed")
+    @SettingsInfo(name = "territory_feed_settings", displayPath = "Utilities/Overlays/Territory Feed")
     public static class TerritoryFeed extends SettingsClass {
         public static TerritoryFeed INSTANCE;
 
@@ -407,7 +407,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "info_overlays_settings", displayPath = "Overlays/Info")
+    @SettingsInfo(name = "info_overlays_settings", displayPath = "Utilities/Overlays/Info")
     public static class InfoOverlays extends SettingsClass {
         public static InfoOverlays INSTANCE;
 
@@ -476,7 +476,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "player_info_settings", displayPath = "Overlays/Player Info")
+    @SettingsInfo(name = "player_info_settings", displayPath = "Utilities/Overlays/Player Info")
     public static class PlayerInfo extends SettingsClass {
         public static PlayerInfo INSTANCE;
 
@@ -489,7 +489,7 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "consumable_timer_settings", displayPath = "Overlays/Consumable Timer")
+    @SettingsInfo(name = "consumable_timer_settings", displayPath = "Utilities/Overlays/Consumable Timer")
     public static class ConsumableTimer extends SettingsClass {
         public static ConsumableTimer INSTANCE;
 
