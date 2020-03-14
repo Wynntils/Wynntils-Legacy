@@ -15,7 +15,16 @@
   "questbook_update": {
       "category": "ambient",
       "sounds": [
-          "wynntils:questbook_update"
+          "wynntils:questbook_update_1",
+          "wynntils:questbook_update_2"
+      ]
+  },
+  "questbook_page": {
+      "category": "gui",
+      "sounds": [
+          "wynntils:questbook_page_1",
+          "wynntils:questbook_page_2",
+          "wynntils:questbook_page_3"
       ]
   }
 }

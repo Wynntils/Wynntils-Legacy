@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -197,13 +198,13 @@ public class QuestBookPage extends GuiScreen {
         if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptNext) {
                 delay = Minecraft.getSystemTime();
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                WynntilsSound.QUESTBOOK_PAGE.play();
                 currentPage++;
             }
         } else if (mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
                 delay = Minecraft.getSystemTime();
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                WynntilsSound.QUESTBOOK_PAGE.play();
                 currentPage--;
             }
         }

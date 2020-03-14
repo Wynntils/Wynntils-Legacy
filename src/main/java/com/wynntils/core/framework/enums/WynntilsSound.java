@@ -13,7 +13,8 @@ public enum WynntilsSound {
 
     HORSE_WHISTLE,
     WAR_HORN,
-    QUESTBOOK_UPDATE;
+    QUESTBOOK_UPDATE,
+    QUESTBOOK_PAGE;
 
     SoundEvent event;
 
@@ -26,7 +27,7 @@ public enum WynntilsSound {
     }
 
     public void play(float volume, float pitch) {
-        Minecraft.getMinecraft().player.playSound(getEvent(), volume, pitch);
+        Minecraft.getMinecraft().player.playSound(event, volume, pitch);
     }
 
     public void play() {

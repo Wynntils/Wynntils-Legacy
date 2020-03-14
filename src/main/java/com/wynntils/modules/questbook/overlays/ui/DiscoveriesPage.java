@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -268,15 +269,15 @@ public class DiscoveriesPage extends QuestBookPage {
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
         if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.QUESTS.getPage().open(false);
             return;
         } else if (posX >= 100 && posX <= 130 && posY >= -45 && posY <= -15) {

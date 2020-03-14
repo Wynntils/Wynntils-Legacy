@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.ModCore;
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -369,19 +370,19 @@ public class QuestsPage extends QuestBookPage {
         }
 
         if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.MAIN.getPage().open(false);
             return;
         } else if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.DISCOVERIES.getPage().open(false);
             return;
         } else if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {

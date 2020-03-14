@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -13,9 +14,7 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -139,13 +138,13 @@ public class MainPage extends QuestBookPage {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (selected > 0) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.getPageBySlot(selected).open(false);
         } else if (selected == -1) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
         } else if (selected == -2) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
         }
     }
