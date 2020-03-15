@@ -26,5 +26,11 @@
           "wynntils:questbook_page_2",
           "wynntils:questbook_page_3"
       ]
+  },
+  "questbook_opening": {
+      "category": "gui",
+      "sounds": [
+          "wynntils:questbook_opening"
+      ]
   }
 }

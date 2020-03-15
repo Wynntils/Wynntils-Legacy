@@ -36,7 +36,7 @@ public class QuestBookPage extends GuiScreen {
     // Page specific information
     private String title = "";
     private IconContainer icon;
-    protected boolean requestOpening;
+    protected boolean showAnimation;
 
     private boolean showSearchBar;
     protected String searchBarText;
@@ -105,7 +105,7 @@ public class QuestBookPage extends GuiScreen {
 
         ScreenRenderer.beginGL(0, 0);
         {
-            if (requestOpening) {
+            if (showAnimation) {
                 float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
                 animationTick /= 10f;
 
@@ -116,7 +116,7 @@ public class QuestBookPage extends GuiScreen {
                     y = (int) (y / animationTick);
                 } else {
                     ScreenRenderer.resetScale();
-                    requestOpening = false;
+                    showAnimation = false;
                 }
 
             } else {
@@ -270,8 +270,10 @@ public class QuestBookPage extends GuiScreen {
         }
     }
 
-    public void open(boolean requestOpening) {
-        this.requestOpening = requestOpening;
+    public void open(boolean showAnimation) {
+        this.showAnimation = showAnimation;
+
+        if (showAnimation) WynntilsSound.QUESTBOOK_OPENING.play(); // sfx
         Minecraft.getMinecraft().displayGuiScreen(this);
     }
 

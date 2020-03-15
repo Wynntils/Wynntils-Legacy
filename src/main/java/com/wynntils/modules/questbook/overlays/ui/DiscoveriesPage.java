@@ -192,7 +192,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
                     List<String> lore = new ArrayList<>(selected.getLore());
 
-                    if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
+                    if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
                             lastTick = Minecraft.getSystemTime();
                         }
@@ -219,7 +219,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         if (this.selected == i) {
                             animationCompleted = false;
 
-                            if (!requestOpening) lastTick = 0;
+                            if (!showAnimation) lastTick = 0;
                         }
 
                         render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
@@ -376,8 +376,8 @@ public class DiscoveriesPage extends QuestBookPage {
     }
 
     @Override
-    public void open(boolean requestOpening) {
-        super.open(requestOpening);
+    public void open(boolean showAnimation) {
+        super.open(showAnimation);
 
         if (QuestManager.getCurrentDiscoveries().isEmpty())
             QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);

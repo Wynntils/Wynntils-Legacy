@@ -152,7 +152,7 @@ public class QuestsPage extends QuestBookPage {
                     List<String> lore = new ArrayList<>(selected.getLore());
 
                     int animationTick = -1;
-                    if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !requestOpening) {
+                    if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
                             lastTick = Minecraft.getSystemTime();
                         }
@@ -190,7 +190,7 @@ public class QuestsPage extends QuestBookPage {
                         if (this.selected == i) {
                             animationCompleted = false;
 
-                            if (!requestOpening) lastTick = 0;
+                            if (!showAnimation) lastTick = 0;
                             overQuest = null;
                         }
 
@@ -429,8 +429,8 @@ public class QuestsPage extends QuestBookPage {
     }
 
     @Override
-    public void open(boolean requestOpening) {
-        super.open(requestOpening);
+    public void open(boolean showAnimation) {
+        super.open(showAnimation);
 
         QuestManager.readQuestBook();
     }

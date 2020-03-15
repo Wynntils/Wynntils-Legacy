@@ -121,6 +121,7 @@ public class OverlayPositionsUI extends UI {
     @Override
     public void onRenderPreUIE(ScreenRenderer render) {
         drawDefaultBackground();
+
         for (UIEClickZone zone : registeredOverlaySettings) {
             zone.render(mouseX, mouseY);
         }

@@ -11,10 +11,16 @@ import net.minecraft.util.SoundEvent;
 
 public enum WynntilsSound {
 
+    // general
     HORSE_WHISTLE,
+
+    // wars
     WAR_HORN,
+
+    // questbook
     QUESTBOOK_UPDATE,
-    QUESTBOOK_PAGE;
+    QUESTBOOK_PAGE,
+    QUESTBOOK_OPENING;
 
     SoundEvent event;
 
