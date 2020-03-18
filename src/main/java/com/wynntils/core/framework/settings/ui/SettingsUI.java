@@ -194,7 +194,7 @@ public class SettingsUI extends UI {
                 ScreenRenderer.resetScale();
                 if (setting.isSearched) {
                     int y = (int) (setting.position.getDrawingY() + 4.5f + fontRenderer.FONT_HEIGHT * 0.8f);
-                    int x = setting.position.getDrawingX() + 34;
+                    int x = setting.position.getDrawingX() + 43;
                     render.drawRect(CommonColors.BLACK, x, y, x + (int) (fontRenderer.getStringWidth(name) * 0.8f) + 1, y + 1);
                 }
             }
