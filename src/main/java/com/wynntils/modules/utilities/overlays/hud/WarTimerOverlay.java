@@ -15,7 +15,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import com.wynntils.modules.utilities.configs.SoundsConfig;
+import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -110,7 +110,7 @@ public class WarTimerOverlay extends Overlay {
             }
 
             // sfx
-            if (SoundsConfig.INSTANCE.warHorn) WynntilsSound.WAR_HORN.play();
+            if (SoundEffectsConfig.INSTANCE.warHorn) WynntilsSound.WAR_HORN.play();
 
             territory = message.substring(12, message.indexOf(" will start soon!"));
             changeWarStage(WarStage.WAITING_FOR_TIMER);

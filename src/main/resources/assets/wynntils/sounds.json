@@ -15,8 +15,7 @@
   "questbook_update": {
       "category": "ambient",
       "sounds": [
-          "wynntils:questbook_update_1",
-          "wynntils:questbook_update_2"
+          "wynntils:questbook_update_1"
       ]
   },
   "questbook_page": {
@@ -31,6 +30,12 @@
       "category": "gui",
       "sounds": [
           "wynntils:questbook_opening"
+      ]
+  },
+  "mythic_found": {
+      "category": "gui",
+      "sounds": [
+          "wynntils:mythic_found"
       ]
   }
 }

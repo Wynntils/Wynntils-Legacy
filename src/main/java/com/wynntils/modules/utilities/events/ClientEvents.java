@@ -19,7 +19,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
-import com.wynntils.modules.utilities.configs.SoundsConfig;
+import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
@@ -43,6 +43,7 @@ import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -132,6 +133,24 @@ public class ClientEvents implements Listener {
         }
     }
 
+    @SubscribeEvent
+    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (Minecraft.getMinecraft().currentScreen == null) return;
+        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
+
+        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
+        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
+
+        for (ItemStack stack : e.getPacket().getItemStacks()) {
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+            if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            Minecraft.getMinecraft().addScheduledTask(() -> WynntilsSound.MYTHIC_FOUND.play(1f, 1f));
+            return;
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
@@ -172,7 +191,7 @@ public class ClientEvents implements Listener {
 
             lastHorseId = thisId;
 
-            if (SoundsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
+            if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
 
             if(!UtilitiesConfig.INSTANCE.autoMount) return;
             MountHorseManager.mountHorseAndLogMessage();

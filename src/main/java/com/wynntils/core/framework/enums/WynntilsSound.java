@@ -13,6 +13,7 @@ public enum WynntilsSound {
 
     // general
     HORSE_WHISTLE,
+    MYTHIC_FOUND,
 
     // wars
     WAR_HORN,
