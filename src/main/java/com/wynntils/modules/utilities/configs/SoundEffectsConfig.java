@@ -18,4 +18,7 @@ public class SoundEffectsConfig extends SettingsClass {
     @Setting(displayName = "War Horn", description = "Should the warn horn be played?")
     public boolean warHorn = true;
 
+    @Setting(displayName = "Mythic Found", description = "Should the mythic found sound be played?")
+    public boolean mythicFound = true;
+
 }

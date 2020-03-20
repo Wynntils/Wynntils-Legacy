@@ -135,19 +135,20 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (!SoundEffectsConfig.INSTANCE.mythicFound) return;
         if (Minecraft.getMinecraft().currentScreen == null) return;
         if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
 
         ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
         if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
 
-        for (ItemStack stack : e.getPacket().getItemStacks()) {
+        for (int i = 0; i < 27; i++) {
+            ItemStack stack = e.getPacket().getItemStacks().get(i);
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
             if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
             if (!stack.getDisplayName().contains("Unidentified")) continue;
 
             Minecraft.getMinecraft().addScheduledTask(() -> WynntilsSound.MYTHIC_FOUND.play(1f, 1f));
-            return;
         }
     }
 
