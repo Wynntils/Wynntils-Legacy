@@ -70,7 +70,6 @@ public class LootRunManager {
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
-            if (path.getChests().size() == 0) return false;
 
             activePath = path;
 
@@ -180,17 +179,17 @@ public class LootRunManager {
     public static void renderActivePaths() {
         if (activePath != null) {
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
-                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPoints(),
-                        activePath.getRoughDirections(), MapConfig.LootRun.INSTANCE.activePathColour, .5f);
+                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPointsByChunk(),
+                        activePath.getRoughDirectionsByChunk(), MapConfig.LootRun.INSTANCE.activePathColour, .5f);
             } else {
-                PointRenderer.drawLines(activePath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.activePathColour);
+                PointRenderer.drawLines(activePath.getSmoothPointsByChunk(), MapConfig.LootRun.INSTANCE.activePathColour);
             }
 
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
         }
 
         if (recordingPath != null) {
-            PointRenderer.drawLines(recordingPath.getSmoothPoints(), MapConfig.LootRun.INSTANCE.recordingPathColour);
+            PointRenderer.drawLines(recordingPath.getSmoothPointsByChunk(), MapConfig.LootRun.INSTANCE.recordingPathColour);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
         }
     }

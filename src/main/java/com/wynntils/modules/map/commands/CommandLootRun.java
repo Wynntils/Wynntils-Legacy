@@ -77,10 +77,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     sender.sendMessage(new TextComponentString(RED + "You're currently recording a lootrun, to save it first stop recording with /lootrun record!"));
                     return;
                 }
-                if (LootRunManager.getActivePath().getChests().isEmpty()) {
-                    sender.sendMessage(new TextComponentString(RED + "You have to open at least one chest to save a loot run path!"));
-                    return;
-                }
 
                 boolean result = LootRunManager.saveToFile(name);
 

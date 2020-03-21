@@ -177,9 +177,52 @@ public final class CubicSplines {
         }
 
         private void recalculateAllCubics() {
-            xCubics = calculate1DSpline(points, Tuple3d::getX);
-            yCubics = calculate1DSpline(points, Tuple3d::getY);
-            zCubics = calculate1DSpline(points, Tuple3d::getZ);
+            if (points.size() > 0) {
+                List<List<Location>> splitPoints = new ArrayList<>();
+                List<Location> currentPoints = new ArrayList<>();
+                splitPoints.add(currentPoints);
+                currentPoints.add(points.get(0));
+                for (int i = 0; i < points.size() - 1; i++) {
+                    Location location = points.get(i);
+                    Location nextLocation = points.get(i + 1);
+                    if (location.distance(nextLocation) > 32D) {
+                        currentPoints = new ArrayList<>();
+                        splitPoints.add(currentPoints);
+                    }
+                    currentPoints.add(nextLocation);
+                }
+
+                List<Cubic> xCubicsList = new ArrayList<>();
+                List<Cubic> yCubicsList = new ArrayList<>();
+                List<Cubic> zCubicsList = new ArrayList<>();
+                for (List<Location> points : splitPoints) {
+                    Cubic[] xCubics = calculate1DSpline(points, Tuple3d::getX);
+                    Collections.addAll(xCubicsList, xCubics);
+                    if (points.size() > 1) {
+                        xCubicsList.add(new Cubic(points.get(points.size() - 1).getX(), 0, 0, 0));
+                    }
+
+                    Cubic[] yCubics = calculate1DSpline(points, Tuple3d::getY);
+                    Collections.addAll(yCubicsList, yCubics);
+                    if (points.size() > 1) {
+                        yCubicsList.add(new Cubic(points.get(points.size() - 1).getY(), 0, 0, 0));
+                    }
+
+                    Cubic[] zCubics = calculate1DSpline(points, Tuple3d::getZ);
+                    Collections.addAll(zCubicsList, zCubics);
+                    if (points.size() > 1) {
+                        zCubicsList.add(new Cubic(points.get(points.size() - 1).getZ(), 0, 0, 0));
+                    }
+                }
+
+                xCubics = xCubicsList.toArray(new Cubic[xCubicsList.size()]);
+                yCubics = yCubicsList.toArray(new Cubic[yCubicsList.size()]);
+                zCubics = zCubicsList.toArray(new Cubic[zCubicsList.size()]);
+            } else {
+                xCubics = new Cubic[0];
+                yCubics = new Cubic[0];
+                zCubics = new Cubic[0];
+            }
 
             tangents = new TangentModulusFunction[xCubics.length];
             for (int i = 0; i < tangents.length; ++i) {
@@ -267,6 +310,12 @@ public final class CubicSplines {
             ArrayList<Vector3d> derivatives = new ArrayList<>();
             double integral = 0;
             for (int i = 0; i < points.size() - 1; ++i) {
+                if (distanceAt(i) > 32D) {
+                    values.add(new Location(points.get(i)));
+                    derivatives.add(derivativeUnchecked(i, 1));
+                    integral = 0;
+                    continue;
+                }
                 double chordLength = distanceAt(i);
                 double oneBlock = 1 / chordLength;
                 double testPeriod = oneBlock / (sampleRate * 10);
