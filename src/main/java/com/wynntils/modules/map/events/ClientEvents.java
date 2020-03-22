@@ -21,6 +21,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -100,7 +101,9 @@ public class ClientEvents implements Listener {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player == null) return;
 
-        LootRunManager.recordMovement(player.posX, player.posY, player.posZ);
+        Entity lowestEntity = player.getLowestRidingEntity();
+
+        LootRunManager.recordMovement(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
     }
 
 }
