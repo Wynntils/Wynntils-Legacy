@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
@@ -119,6 +121,40 @@ public class PointRenderer {
                         direction.normalize();
                         end.add(direction);
                         end.y -= .24;
+
+                        BlockPos startBlockPos = new BlockPos(start.x, start.y, start.z);
+                        Vec3d startVec = new Vec3d(start.x, start.y, start.z);
+
+                        BlockPos endBlockPos = new BlockPos(end.x, end.y, end.z);
+                        Vec3d endVec = new Vec3d(end.x, end.y, end.z);
+
+                        AxisAlignedBB startCollisionBox = world.getBlockState(startBlockPos).getCollisionBoundingBox(world, startBlockPos);
+                        if (startCollisionBox != Block.NULL_AABB) {
+                            AxisAlignedBB offsetStartCollisionBox = startCollisionBox.offset(startBlockPos);
+                            if (offsetStartCollisionBox.contains(startVec)) {
+                                if (startCollisionBox.maxY >= 1) {
+                                    if (world.getBlockState(startBlockPos.up()).getCollisionBoundingBox(world, startBlockPos) == Block.NULL_AABB) {
+                                        start.y = Math.ceil(start.y) + 0.01;
+                                    }
+                                } else {
+                                    start.y = offsetStartCollisionBox.maxY + 0.01;
+                                }
+                            }
+                        }
+
+                        AxisAlignedBB endCollisionBox = world.getBlockState(endBlockPos).getCollisionBoundingBox(world, endBlockPos);
+                        if (endCollisionBox != Block.NULL_AABB) {
+                            AxisAlignedBB offsetEndCollisionBox = endCollisionBox.offset(endBlockPos);
+                            if (offsetEndCollisionBox.contains(endVec)) {
+                                if (endCollisionBox.maxY >= 1) {
+                                    if (world.getBlockState(endBlockPos.up()).getCollisionBoundingBox(world, endBlockPos) == Block.NULL_AABB) {
+                                        end.y = Math.ceil(end.y) + 0.01;
+                                    }
+                                } else {
+                                    end.y = offsetEndCollisionBox.maxY + 0.01;
+                                }
+                            }
+                        }
 
                         drawTexturedLine(start, end, width);
                     }
