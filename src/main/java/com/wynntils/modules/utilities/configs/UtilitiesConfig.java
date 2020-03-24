@@ -63,10 +63,10 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Apply Wynncraft Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
     public boolean autoResource = true;
 
-    @Setting(displayName = "Apply Wynncraft Resource Pack During Minecraft Load", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
+    @Setting(displayName = "Apply Wynncraft Resource Pack During Startup", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
     public boolean autoResourceOnLoad = false;
 
-    @Setting(displayName = "Display GUI Confirmation for Purchasing Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
+    @Setting(displayName = "Display Confirmation for Buying Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
     @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
@@ -75,16 +75,16 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
     public boolean addItemIdentificationSpacing = true;
 
-    @Setting(displayName = "Categorize Set bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
+    @Setting(displayName = "Categorize Set Bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
     public boolean addSetBonusSpacing = true;
 
     @Setting(displayName = "Indicate Newly Added Items", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
     public boolean showNewItems = false;
 
-    @Setting(displayName = "Change Window Title When on Wynncraft", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
+    @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
     public boolean changeWindowTitle = true;
 
-    @Setting(displayName = "Change Window Icon When on Wynncraft", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\nThis does not work on macOS systems")
+    @Setting(displayName = "Change Window Icon", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\nThis does not work on macOS systems")
     public boolean changeWindowIcon = true;
 
     @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top by default?")
