@@ -176,6 +176,8 @@ public class ChatManager {
                                 newComponent.setStyle(component.getStyle().createDeepCopy());
 
                                 newTextComponents.add(oldComponent);
+                                currentTranslatedComponents.appendSibling(newComponent);
+                                currentOldComponents.add(oldComponent);
                                 for (ITextComponent currentOldComponent : currentOldComponents) {
                                     currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
                                 }
