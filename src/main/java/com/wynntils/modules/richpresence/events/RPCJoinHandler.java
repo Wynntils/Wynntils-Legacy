@@ -38,6 +38,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
     boolean waitingLobby = false;
     boolean waitingInvite = false;
+    boolean waitingServer = false;
 
     boolean sentInvite = false;
 
@@ -60,7 +61,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         if (!Reference.onServer) {
             ServerUtils.connect(ServerUtils.getWynncraftServerData(true));
-            waitingLobby = true;
+            waitingServer = true;
             return;
         }
         if (Reference.onWorld) {
@@ -90,11 +91,20 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        if (!waitingInvite) return;
-
-        sentInvite = true;
-        waitingInvite = false;
-        Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+        if (!waitingInvite && !waitingServer) return;
+        if (waitingServer) {
+            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
+                sentInvite = true;
+                Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+            } else {
+                Minecraft.getMinecraft().player.sendChatMessage("/hub");
+                waitingLobby = true;
+            }
+        } else {
+            sentInvite = true;
+            waitingInvite = false;
+            Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+        }
     }
 
     @SubscribeEvent
@@ -159,7 +169,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(0));
         serverSelector.onReceiveItems(inventory -> {
             String prefix = "";
-            if (worldType.equals("")) {
+            if (worldType.equals("WC")) {
                 // US Servers
                 prefix = "";
             } else if (worldType.equals("EU")) {
@@ -171,7 +181,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
             boolean onCorrectCategory = inventory.findItem(prefix + "World ", FilterType.STARTS_WITH) != null;
             if (!onCorrectCategory) {
                 String worldCategory = "";
-                if (worldType.equals("")) {
+                if (worldType.equals("WC")) {
                     worldCategory = "US Servers";
                 } else if (worldType.equals("EU")) {
                     worldCategory = "EU Servers";
@@ -197,7 +207,10 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
             }
 
             Pair<Integer, ItemStack> nextPage = inventory.findItem("Next Page", FilterType.CONTAINS);
-            if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
+            if (nextPage != null) {
+                serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
+                return;
+            }
 
             inventory.close();
         }).onClose((inv, result) -> {
