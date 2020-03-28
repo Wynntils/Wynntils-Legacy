@@ -16,9 +16,10 @@ import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.modules.richpresence.discordgamesdk.*;
 import com.wynntils.modules.richpresence.events.RPCJoinHandler;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.WebRequestHandler;
+import com.wynntils.webapi.request.RequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+import com.wynntils.webapi.request.Request;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.io.File;
@@ -50,10 +51,10 @@ public class RichProfile {
     private long applicationID = 0;
 
     public RichProfile(long id) {
-        WebRequestHandler handler = new WebRequestHandler();
+        RequestHandler handler = new RequestHandler();
         String apiRoot = WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("RichPresence");
         String url = apiRoot == null ? null : apiRoot + "versioning.php";
-        handler.addRequest(new WebRequestHandler.Request(url, "richpresence_versioning")
+        handler.addRequest(new Request(url, "richpresence_versioning")
             .cacheTo(new File(Reference.NATIVES_ROOT, "richpresence_versioning.txt"))
             .handleWebReader(reader -> {
                 String md5 = reader.get(Platform.RESOURCE_PREFIX);

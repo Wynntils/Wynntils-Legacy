@@ -24,6 +24,8 @@ import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
+import com.wynntils.webapi.request.Request;
+import com.wynntils.webapi.request.RequestHandler;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -78,7 +80,7 @@ public class WebManager {
     private static Gson gson = new Gson();
 
     private static Thread territoryUpdateThread;
-    private static WebRequestHandler handler = new WebRequestHandler();
+    private static RequestHandler handler = new RequestHandler();
 
     private static final int REQUEST_TIMEOUT_MILLIS = 16000;
 
@@ -259,9 +261,9 @@ public class WebManager {
     /**
      * Request a update to territories {@link ArrayList}
      */
-    public static void updateTerritories(WebRequestHandler handler) {
+    public static void updateTerritories(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("Territory");
-        handler.addRequest(new WebRequestHandler.Request(url, "territory")
+        handler.addRequest(new Request(url, "territory")
             .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
             .handleJsonObject(json -> {
                 if (!json.has("territories")) return false;
@@ -298,7 +300,7 @@ public class WebManager {
         ResultHolder resultHolder = new ResultHolder();
 
         String url = apiUrls == null ? null : apiUrls.get("GuildList");
-        handler.addRequest(new WebRequestHandler.Request(url, "guild_list")
+        handler.addRequest(new Request(url, "guild_list")
             .cacheTo(new File(API_CACHE_ROOT, "guilds.json"))
             .handleJsonObject(json -> {
                 if (!json.has("guilds")) return false;
@@ -367,9 +369,9 @@ public class WebManager {
     /**
      * Update all Wynn items on the {@link HashMap} items
      */
-    public static void updateItemList(WebRequestHandler handler) {
+    public static void updateItemList(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("NewItemList");
-        handler.addRequest(new WebRequestHandler.Request(url, "new_item_list")
+        handler.addRequest(new Request(url, "new_item_list")
             .cacheTo(new File(API_CACHE_ROOT, "new_items.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("newItemList"))
             .handleJsonArray(j -> {
@@ -392,9 +394,9 @@ public class WebManager {
     /**
      * Update all Wynn items on the {@link HashMap} items
      */
-    public static void updateIdentificationOrderer(WebRequestHandler handler) {
+    public static void updateIdentificationOrderer(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("IdentificationOrder");
-        handler.addRequest(new WebRequestHandler.Request(url, "identification_order")
+        handler.addRequest(new Request(url, "identification_order")
                 .cacheTo(new File(API_CACHE_ROOT, "identification_order.json"))
                 .handleJsonObject(j -> {
                     IdentificationOrderer.INSTANCE = gson.fromJson(j, IdentificationOrderer.class);
@@ -406,9 +408,9 @@ public class WebManager {
     /**
      * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
      */
-    public static void updateMapMarkers(WebRequestHandler handler) {
+    public static void updateMapMarkers(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
-        handler.addRequest(new WebRequestHandler.Request(url, "map_markers")
+        handler.addRequest(new Request(url, "map_markers")
             .cacheTo(new File(API_CACHE_ROOT, "map_markers.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
             .handleJsonObject(main -> {
@@ -428,9 +430,9 @@ public class WebManager {
     /**
      * Update all Wynn ItemGuesses on the {@link HashMap} itemGuesses
      */
-    public static void updateItemGuesses(WebRequestHandler handler) {
+    public static void updateItemGuesses(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("ItemGuesses");
-        handler.addRequest(new WebRequestHandler.Request(url, "item_guesses")
+        handler.addRequest(new Request(url, "item_guesses")
             .cacheTo(new File(API_CACHE_ROOT, "item_guesses.json"))
             .handleJsonObject(json -> {
                 Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
@@ -446,9 +448,9 @@ public class WebManager {
         );
     }
 
-    public static void updatePlayerProfile(WebRequestHandler handler) {
+    public static void updatePlayerProfile(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
-        handler.addRequest(new WebRequestHandler.Request(url, "player_profile")
+        handler.addRequest(new Request(url, "player_profile")
             .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
             .handleJsonObject(json -> {
                 Type type = new TypeToken<PlayerStatsProfile>() {
@@ -464,9 +466,9 @@ public class WebManager {
         );
     }
 
-    public static void updateUsersRoles(WebRequestHandler handler) {
+    public static void updateUsersRoles(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUsersRoles";
-        handler.addRequest(new WebRequestHandler.Request(url, "user_account.roles")
+        handler.addRequest(new Request(url, "user_account.roles")
             .cacheTo(new File(API_CACHE_ROOT, "user_roles.json"))
             .handleJsonObject(main -> {
                 GsonBuilder builder = new GsonBuilder();
@@ -492,9 +494,9 @@ public class WebManager {
         );
     }
 
-    public static void updateUsersModels(WebRequestHandler handler) {
+    public static void updateUsersModels(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUserModels";
-        handler.addRequest(new WebRequestHandler.Request(url, "user_account.models")
+        handler.addRequest(new Request(url, "user_account.models")
             .cacheTo(new File(API_CACHE_ROOT, "user_models.json"))
             .handleJsonObject(main -> {
                 GsonBuilder builder = new GsonBuilder();
@@ -517,9 +519,9 @@ public class WebManager {
         );
     }
 
-    public static void updateDiscoveries(WebRequestHandler handler) {
+    public static void updateDiscoveries(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("Discoveries");
-        handler.addRequest(new WebRequestHandler.Request(url, "discoveries")
+        handler.addRequest(new Request(url, "discoveries")
             .cacheTo(new File(API_CACHE_ROOT, "discoveries.json"))
             .handleJsonArray(discoveriesJson -> {
                 Type type = new TypeToken<ArrayList<DiscoveryProfile>>() {}.getType();
@@ -654,7 +656,7 @@ public class WebManager {
 
         @Override
         public void run() {
-            WebRequestHandler handler = new WebRequestHandler();
+            RequestHandler handler = new RequestHandler();
 
             try {
                 Thread.sleep(30000);
@@ -792,7 +794,7 @@ public class WebManager {
 
     private static void tryReloadApiUrls(boolean async, boolean inSetup) {
         if (apiUrls == null) {
-            handler.addRequest(new WebRequestHandler.Request("https://api.wynntils.com/webapi", "webapi")
+            handler.addRequest(new Request("https://api.wynntils.com/webapi", "webapi")
                 .cacheTo(new File(API_CACHE_ROOT, "webapi.txt"))
                 .handleWebReader(reader -> {
                     apiUrls = reader;

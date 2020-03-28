@@ -8,9 +8,10 @@ import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
-import com.wynntils.webapi.WebRequestHandler;
+import com.wynntils.webapi.request.RequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+import com.wynntils.webapi.request.Request;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 
@@ -47,8 +48,8 @@ public class MapProfile {
             }
         }
 
-        WebRequestHandler handler = new WebRequestHandler();
-        handler.addRequest(new WebRequestHandler.Request(url, "main_map.info")
+        RequestHandler handler = new RequestHandler();
+        handler.addRequest(new Request(url, "main_map.info")
             .cacheTo(new File(mapLocation, "main-map.txt"))
             .handleWebReader(reader -> {
                 centerX = Double.parseDouble(reader.get("CenterX"));
