@@ -12,6 +12,7 @@ import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemInfoContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -46,6 +47,7 @@ public class ItemProfile {
     String lore;
 
     transient ItemStack guideStack = null;
+    transient boolean replacedLore = false;
 
     public ItemProfile(String displayName,
                        ItemTier tier, boolean identified, ItemAttackSpeed attackSpeed, ItemInfoContainer itemInfo,
@@ -102,6 +104,10 @@ public class ItemProfile {
     }
 
     public String getLore() {
+        if (!replacedLore) {
+            lore = lore.replace("\\[", "[").replace("\\]", "]").replace("[Community Event Winner] ", "[Community Event Winner]\n");
+            replacedLore = true;
+        }
         return lore;
     }
 
@@ -210,7 +216,7 @@ public class ItemProfile {
 
             // item lore
             if (!lore.isEmpty()) {
-                Stream.of(StringUtils.wrapTextBySize(lore, 150)).forEach(c -> itemLore.add(DARK_GRAY + c));
+                itemLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + this.getLore(), 150));
             }
         }
 

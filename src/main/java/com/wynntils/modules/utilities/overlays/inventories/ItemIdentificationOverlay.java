@@ -20,6 +20,7 @@ import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -283,7 +284,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (!item.getLore().isEmpty()) {
             if (wynntils.hasKey("purchaseInfo")) newLore.add(" ");
 
-            Stream.of(StringUtils.wrapTextBySize(item.getLore(), 150)).forEach(c -> newLore.add(DARK_GRAY + c));
+            newLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
         }
 
         // Special displayname
