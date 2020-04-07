@@ -42,7 +42,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ItemIdentificationOverlay implements Listener {
 
     private final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
-    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?\\*{0,3} (?<ID>[a-zA-Z 0-9]+))");
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?(?<Stars>\\*{0,3}) (?<ID>[a-zA-Z 0-9]+))");
     private final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
@@ -137,12 +137,15 @@ public class ItemIdentificationOverlay implements Listener {
                 String lore;
                 if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame() + " " + GRAY + longName;
+                            + currentValue + id.getType().getInGame();
                 else
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame() + " " + GRAY + longName;
+                            + currentValue + id.getType().getInGame();
 
-
+                if (UtilitiesConfig.INSTANCE.addItemIdentificationStars && ids.hasKey(idName + "*")) {
+                    lore += DARK_GREEN + "***".substring(0, ids.getInteger(idName + "*"));
+                }
+                lore += " " + GRAY + longName;
 
                 if (id.hasConstantValue()) {
                     idLore.put(idName, lore);
@@ -405,6 +408,7 @@ public class ItemIdentificationOverlay implements Listener {
                     if (idMatcher.find()) {
                         String idName = idMatcher.group("ID");
                         boolean isRaw = idMatcher.group("Suffix") == null;
+                        int stars = idMatcher.group("Stars").length();
 
                         SpellType spell = SpellType.getSpell(idName);
                         if (spell != null) {
@@ -413,6 +417,9 @@ public class ItemIdentificationOverlay implements Listener {
                         }
 
                         String shortIdName = toShortIdName(idName, isRaw);
+                        if (stars != 0) {
+                            idTag.setInteger(shortIdName + "*", stars);
+                        }
 
                         if (isBonus) {
                             setBonus.setString(shortIdName, loreLine);
