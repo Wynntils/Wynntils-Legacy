@@ -63,6 +63,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Clickable Duel Message", description = "Should the duel message become clickable?")
     public boolean clickableDuelMessage = true;
 
+    @Setting(displayName = "Translate Into Chat", description = "Should the wynnic translator replace the wynnic instead of translating it into a hover?")
+    public boolean translateIntoChat = false;
+
     public enum Presets {
         a,
         b,

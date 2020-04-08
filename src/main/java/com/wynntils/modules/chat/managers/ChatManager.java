@@ -98,6 +98,7 @@ public class ChatManager {
             boolean foundStart = false;
             boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
             boolean previousWynnic = false;
+            boolean translateIntoHover = !ChatConfig.INSTANCE.translateIntoChat;
             ITextComponent currentTranslatedComponents = new TextComponentString("");
             List<ITextComponent> currentOldComponents = new ArrayList<>();
             if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
@@ -114,19 +115,26 @@ public class ChatManager {
                             toAdd += currentNonTranslated;
                             oldText.append(currentNonTranslated);
                         } else {
-                            ITextComponent newComponent = new TextComponentString(oldText.toString());
-                            newComponent.setStyle(component.getStyle().createDeepCopy());
-                            newTextComponents.add(newComponent);
-                            oldText = new StringBuilder();
-                            toAdd = "";
+                            if (translateIntoHover) {
+                                ITextComponent newComponent = new TextComponentString(oldText.toString());
+                                newComponent.setStyle(component.getStyle().createDeepCopy());
+                                newTextComponents.add(newComponent);
+                                oldText = new StringBuilder();
+                                toAdd = "";
+                            }
                             previousWynnic = true;
                         }
                         currentNonTranslated = "";
                         number.append(character);
-                        oldText.append(character);
+                        if (translateIntoHover) {
+                            oldText.append(character);
+                        }
                     } else {
                         if (!number.toString().isEmpty()) {
                             toAdd += StringUtils.translateNumberFromWynnic(number.toString());
+                            if (!translateIntoHover) {
+                                oldText.append(StringUtils.translateNumberFromWynnic(number.toString()));
+                            }
                             number = new StringBuilder();
                         }
 
@@ -136,11 +144,13 @@ public class ChatManager {
                                 oldText.append(currentNonTranslated);
                                 currentNonTranslated = "";
                             } else {
-                                ITextComponent newComponent = new TextComponentString(oldText.toString());
-                                newComponent.setStyle(component.getStyle().createDeepCopy());
-                                newTextComponents.add(newComponent);
-                                oldText = new StringBuilder();
-                                toAdd = "";
+                                if (translateIntoHover) {
+                                    ITextComponent newComponent = new TextComponentString(oldText.toString());
+                                    newComponent.setStyle(component.getStyle().createDeepCopy());
+                                    newTextComponents.add(newComponent);
+                                    oldText = new StringBuilder();
+                                    toAdd = "";
+                                }
                                 previousWynnic = true;
                             }
                             String englishVersion = StringUtils.translateCharacterFromWynnic(character);
@@ -154,7 +164,11 @@ public class ChatManager {
                                 capital = false;
                             }
                             toAdd += englishVersion;
-                            oldText.append(character);
+                            if (translateIntoHover) {
+                                oldText.append(character);
+                            } else {
+                                oldText.append(englishVersion);
+                            }
                         } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
                             if (previousWynnic) {
                                 currentNonTranslated += character;
@@ -170,27 +184,29 @@ public class ChatManager {
                         } else {
                             if (previousWynnic) {
                                 previousWynnic = false;
-                                ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                                oldComponent.setStyle(component.getStyle().createDeepCopy());
-                                ITextComponent newComponent = new TextComponentString(toAdd);
-                                newComponent.setStyle(component.getStyle().createDeepCopy());
+                                if (translateIntoHover) {
+                                    ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                                    oldComponent.setStyle(component.getStyle().createDeepCopy());
+                                    ITextComponent newComponent = new TextComponentString(toAdd);
+                                    newComponent.setStyle(component.getStyle().createDeepCopy());
 
-                                newTextComponents.add(oldComponent);
-                                currentTranslatedComponents.appendSibling(newComponent);
-                                currentOldComponents.add(oldComponent);
-                                for (ITextComponent currentOldComponent : currentOldComponents) {
-                                    currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+                                    newTextComponents.add(oldComponent);
+                                    currentTranslatedComponents.appendSibling(newComponent);
+                                    currentOldComponents.add(oldComponent);
+                                    for (ITextComponent currentOldComponent : currentOldComponents) {
+                                        currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+                                    }
+
+                                    currentOldComponents.clear();
+                                    currentTranslatedComponents = new TextComponentString("");
+
+                                    oldText = new StringBuilder(currentNonTranslated);
+                                } else {
+                                    oldText.append(currentNonTranslated);
                                 }
-
-                                currentOldComponents.clear();
-                                currentTranslatedComponents = new TextComponentString("");
-
-                                oldText = new StringBuilder(currentNonTranslated);
                                 currentNonTranslated = "";
-                                oldText.append(character);
-                            } else {
-                                oldText.append(character);
                             }
+                            oldText.append(character);
 
                             if (character != ' ') {
                                 capital = false;
@@ -207,19 +223,16 @@ public class ChatManager {
                         toAdd += currentNonTranslated;
                     }
                 }
-                if (previousWynnic) {
-                    ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                    oldComponent.setStyle(component.getStyle().createDeepCopy());
+
+                ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                oldComponent.setStyle(component.getStyle().createDeepCopy());
+                newTextComponents.add(oldComponent);
+                if (previousWynnic && translateIntoHover) {
                     ITextComponent newComponent = new TextComponentString(toAdd);
                     newComponent.setStyle(component.getStyle().createDeepCopy());
 
-                    newTextComponents.add(oldComponent);
                     currentTranslatedComponents.appendSibling(newComponent);
                     currentOldComponents.add(oldComponent);
-                } else {
-                    ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                    oldComponent.setStyle(component.getStyle().createDeepCopy());
-                    newTextComponents.add(oldComponent);
                 }
                 if (!foundStart) {
                     if (foundEndTimestamp) {
@@ -241,8 +254,10 @@ public class ChatManager {
                 }
             }
 
-            for (ITextComponent component : currentOldComponents) {
-                component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+            if (translateIntoHover) {
+                for (ITextComponent component : currentOldComponents) {
+                    component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
+                }
             }
 
             in.getSiblings().clear();
