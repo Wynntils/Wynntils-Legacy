@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.rendering.colors;
 
 import javax.annotation.Nullable;
+
 import java.util.*;
 
 /**
@@ -166,6 +167,17 @@ public class ColorSet<T extends CustomColor> {
         CustomColor[] colors = new CustomColor[this.colors.length];
         for (int i = 0; i < colors.length; ++i) {
             colors[i] = new CustomColor(this.colors[i]);
+        }
+        return colors;
+    }
+
+    /**
+     * @return the colours as integers
+     */
+    public int[] asInts() {
+        int[] colors = new int[this.colors.length];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = this.colors[i].toInt();
         }
         return colors;
     }

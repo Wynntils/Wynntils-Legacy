@@ -7,6 +7,7 @@ package com.wynntils.core.framework.rendering;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -25,7 +26,7 @@ public class SmartFontRenderer extends FontRenderer {
     public static final int CHAR_HEIGHT = 9;
 
     // Array of 16 CustomColors where minecraftColors[0xX] is the colour for §X
-    private static final CustomColor[] minecraftColors = MinecraftChatColors.set.copySet();
+    private static final int[] minecraftColors = MinecraftChatColors.set.asInts();
     private static HashMap<Integer, CustomColor> colors = new HashMap<>();
 
     // TODO document
@@ -44,51 +45,17 @@ public class SmartFontRenderer extends FontRenderer {
         String drawnText = text.replaceAll("§\\[\\d+\\.?\\d*,\\d+\\.?\\d*,\\d+\\.?\\d*\\]", "");
         switch (alignment) {
             case MIDDLE:
-                return drawString(text, x - getStringWidth(drawnText)/2, y, customColor, TextAlignment.LEFT_RIGHT, shadow);
+                return drawString(text, x - getStringWidth(drawnText) / 2, y, customColor, TextAlignment.LEFT_RIGHT, shadow);
             case RIGHT_LEFT:
                 return drawString(text, x - getStringWidth(drawnText), y, customColor, TextAlignment.LEFT_RIGHT, shadow);
             default:
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableAlpha();
                 GlStateManager.enableBlend();
-                switch (shadow) {
-                    case OUTLINE:
-                        CustomColor shadowColor = new CustomColor(0, 0, 0, customColor.a);
-                        posX = x-1;
-                        posY = y;
-                        drawChars(text, shadowColor, true);
-                        posX = x+1;
-                        posY = y;
-                        drawChars(text, shadowColor, true);
-                        posX = x;
-                        posY = y-1;
-                        drawChars(text, shadowColor, true);
-                        posX = x;
-                        posY = y+1;
-                        drawChars(text, shadowColor, true);
-
-                        posX = x;
-                        posY = y;
-
-                        return drawChars(text, customColor, false);
-
-                    case NORMAL:
-                        posX = x+1;
-                        posY = y+1;
-
-                        drawChars(text, new CustomColor(0, 0, 0, customColor.a), true);
-
-                        posX = x;
-                        posY = y;
-
-                        return drawChars(text, customColor, false);
-
-                    case NONE: default:
-                        posX = x;
-                        posY = y;
-
-                        return drawChars(text, customColor, false);
-                }
+                int colour = customColor.toInt();
+                posX = x;
+                posY = y;
+                return drawChars(text, colour, false, false, shadow);
         }
 
     }
@@ -152,52 +119,117 @@ public class SmartFontRenderer extends FontRenderer {
         return posX;
     }
 
-    private float drawChars(String text, CustomColor color, boolean forceColor) {
+    private float drawChars(String text, int color, boolean forceColor, boolean obfuscated, TextShadow shadow) {
         if (text.isEmpty()) return -CHAR_SPACING;
         if (text.startsWith("§") && text.length() > 1) {
             String withoutSelector = text.substring(1);
             String textToRender;
-            CustomColor colorToRender;
+            int colorToRender = color;
             if (withoutSelector.startsWith("[")) {
                 String[] colorSplit = withoutSelector.substring(1).split("]");
                 if (colorSplit.length == 1) {
                     textToRender = withoutSelector;
-                    colorToRender = minecraftColors[0xF];
+                    colorToRender = 0xFFFFFF;
                 } else {
                     textToRender = colorSplit[1];
                     colorToRender = decodeCustomColor(colorSplit[0]);
                 }
             } else {
                 colorToRender = decodeCommonColor(withoutSelector);
-                if (colorToRender == null) {
-                    colorToRender = minecraftColors[0xF];
-                    textToRender = withoutSelector;
+                if (colorToRender == -1) {
+                    boolean keepText = false;
+                    switch (withoutSelector.charAt(0)) {
+                        case 'k':
+                            obfuscated = true;
+                            break;
+                        case 'r':
+                            obfuscated = false;
+                            colorToRender = 0xFFFFFF;
+                            break;
+                        default:
+                            keepText = true;
+                    }
+
+                    if (keepText) {
+                        textToRender = withoutSelector;
+                    } else {
+                        textToRender = withoutSelector.substring(1);
+                    }
                 } else {
+                    obfuscated = false;
                     textToRender = withoutSelector.substring(1);
                 }
             }
 
-            colorToRender.setA(color.a);
-            return drawChars(textToRender, forceColor ? color : colorToRender, forceColor);
+            colorToRender |= color & 0xFF000000;
+            return drawChars(textToRender, forceColor ? color : colorToRender, forceColor, obfuscated, shadow);
         }
-        color.applyColor();
-        float charLength = renderChar(text.charAt(0));
+        char character = text.charAt(0);
+        if (obfuscated) {
+            String characters = "\u0020\u0021\"\u0023\u0024\u0025\u0026\u0027\u0028\u0029\u002a\u002b\u002c\u002d\u002e\u002f\u0030\u0031\u0032\u0033\u0034\u0035\u0036\u0037\u0038\u0039\u003a\u003b\u003c\u003d\u003e\u003f\u0040\u0041\u0042\u0043\u0044\u0045\u0046\u0047\u0048\u0049\u004a\u004b\u004c\u004d\u004e\u004f\u0050\u0051\u0052\u0053\u0054\u0055\u0056\u0057\u0058\u0059\u005a\u005b\\\u005d\u005e\u005f\u0060\u0061\u0062\u0063\u0064\u0065\u0066\u0067\u0068\u0069\u006a\u006b\u006c\u006d\u006e\u006f\u0070\u0071\u0072\u0073\u0074\u0075\u0076\u0077\u0078\u0079\u007a\u007b\u007c\u007d\u007e\u00a1\u00a3\u00aa\u00ab\u00ac\u00ae\u00b0\u00b1\u00b2\u00b7\u00ba\u00bb\u00bc\u00bd\u00bf\u00c0\u00c1\u00c2\u00c4\u00c5\u00c6\u00c7\u00c8\u00c9\u00ca\u00cb\u00cd\u00d1\u00d3\u00d4\u00d5\u00d6\u00d7\u00d8\u00da\u00dc\u00df\u00e0\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7\u00e8\u00e9\u00ea\u00eb\u00ec\u00ed\u00ee\u00ef\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6\u00f7\u00f8\u00f9\u00fa\u00fb\u00fc\u00ff\u011f\u0130\u0131\u0152\u0153\u015e\u015f\u0174\u0175\u017e\u0192\u0207\u0393\u0398\u03a3\u03a6\u03a9\u03b1\u03b2\u03b4\u03bc\u03c0\u03c3\u03c4\u207f\u2205\u2208\u2219\u221a\u221e\u2229\u2248\u2261\u2264\u2265\u2320\u2321\u2500\u2502\u250c\u2510\u2514\u2518\u251c\u2524\u252c\u2534\u253c\u2550\u2551\u2552\u2553\u2554\u2555\u2556\u2557\u2558\u2559\u255a\u255b\u255c\u255d\u255e\u255f\u2560\u2561\u2562\u2563\u2564\u2565\u2566\u2567\u2568\u2569\u256a\u256b\u256c\u2580\u2584\u2588\u258c\u2590\u2591\u2592\u2593\u25a0";
+            if (characters.contains(String.valueOf(character))) {
+                int width = this.getCharWidth(character);
+                char newCharacter;
+                do {
+                    newCharacter = characters.charAt(Utils.getRandom().nextInt(characters.length()));
+                } while (width != this.getCharWidth(newCharacter));
+                character = newCharacter;
+            }
+        }
+
+        float x = posX;
+        float y = posY;
+        float alpha = ((color >> 24) & 0xFF) / 255F;
+        this.setColor(0F, 0F, 0F, alpha);
+        switch (shadow) {
+            case OUTLINE:
+                posX = x - 1;
+                posY = y;
+                renderChar(character);
+                posX = x + 1;
+                posY = y;
+                renderChar(character);
+                posX = x;
+                posY = y - 1;
+                renderChar(character);
+                posX = x;
+                posY = y + 1;
+                renderChar(character);
+                break;
+            case NORMAL:
+                posX = x + 1;
+                posY = y + 1;
+                renderChar(character);
+                break;
+            default:
+        }
+
+        posX = x;
+        posY = y;
+
+        float red = ((color >> 16) & 0xFF) / 255F;
+        float green = ((color >> 8) & 0xFF) / 255F;
+        float blue = (color & 0xFF) / 255F;
+        // Alpha calculated for shadow
+
+        this.setColor(red, green, blue, alpha);
+        float charLength = renderChar(character);
         posX += charLength + CHAR_SPACING;
 
-        return charLength + CHAR_SPACING + drawChars(text.substring(1), color, forceColor);
+        return charLength + CHAR_SPACING + drawChars(text.substring(1), color, forceColor, obfuscated, shadow);
     }
 
-    private static CustomColor decodeCommonColor(String text) {
+    private static int decodeCommonColor(String text) {
         char hexChar = text.length() > 0 ? text.charAt(0) : '\0';
 
         if ('0' <= hexChar && hexChar <= '9') return minecraftColors[hexChar - '0'];
         if ('a' <= hexChar && hexChar <= 'f') return minecraftColors[hexChar + (10 - 'a')];
         if ('A' <= hexChar && hexChar <= 'F') return minecraftColors[hexChar + (10 - 'A')];
 
-        return null;
+        return -1;
     }
 
-    private static CustomColor decodeCustomColor(String text) {
+    private static int decodeCustomColor(String text) {
         String[] s2 = text.split(",");
         try {
             float r = Float.parseFloat(s2[0]);
@@ -211,10 +243,10 @@ public class SmartFontRenderer extends FontRenderer {
                 CustomColor color = new CustomColor(r, g, b, a);
                 colors.put(arrayHashCode, color);
             } else {
-                return currentColor;
+                return currentColor.toInt();
             }
         } catch (NumberFormatException | IndexOutOfBoundsException ex) {/* Not valid custom colour formatting, return default white*/}
-        return minecraftColors[0xF];
+        return 0xFFFFFF;
     }
 
     private float renderChar(char ch) {
