@@ -137,10 +137,10 @@ public class CustomColor {
      * @return 0xAARRGGBB
      */
     public int toInt() {
-        int r = (int) (this.r * 255);
-        int g = (int) (this.g * 255);
-        int b = (int) (this.b * 255);
-        int a = (int) (this.a * 255);
+        int r = (int) (Math.min(this.r, 1f) * 255);
+        int g = (int) (Math.min(this.g, 1f) * 255);
+        int b = (int) (Math.min(this.b, 1f) * 255);
+        int a = (int) (Math.min(this.a, 1f) * 255);
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 

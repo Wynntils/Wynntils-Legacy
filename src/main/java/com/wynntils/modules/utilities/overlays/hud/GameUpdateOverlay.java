@@ -50,21 +50,24 @@ public class GameUpdateOverlay extends Overlay {
         while (messages.hasNext()) {
             MessageContainer message = messages.next();
 
-            if (message.getRemainingTime() <= 0.0f) messages.remove();  // remove the message if the time has come
+            if (message.getRemainingTime() <= 0.0f) {
+                messages.remove();  // remove the message if the time has come
+                continue;
+            }
             if (lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break;  // breaks the loop if the limit was reached
 
             if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
                         (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
-                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
             else
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
                         0 - (LINE_HEIGHT * lines),
-                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
 

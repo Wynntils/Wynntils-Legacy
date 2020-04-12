@@ -160,7 +160,7 @@ public class SmartFontRenderer extends FontRenderer {
                     textToRender = withoutSelector.substring(1);
                 }
             }
-
+            colorToRender &= 0xFFFFFF;
             colorToRender |= color & 0xFF000000;
             return drawChars(textToRender, forceColor ? color : colorToRender, forceColor, obfuscated, shadow);
         }
