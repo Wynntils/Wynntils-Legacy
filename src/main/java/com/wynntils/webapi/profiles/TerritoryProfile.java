@@ -154,7 +154,7 @@ public class TerritoryProfile {
             int level = territory.get("level").getAsInt();
 
             String guildColor;
-            if (territory.get("guildColor").isJsonNull()) guildColor = null;
+            if (territory.get("guildColor").getAsString().isEmpty()) guildColor = null;
             else guildColor = territory.get("guildColor").getAsString();
 
             return new TerritoryProfile(territoryName, friendlyName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
