@@ -15,7 +15,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
-import com.wynntils.core.utils.EncodingUtils;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -23,11 +22,8 @@ import net.minecraft.client.Minecraft;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Locale;
-import java.util.zip.DataFormatException;
 
 public class SettingsManager {
 
@@ -62,9 +58,7 @@ public class SettingsManager {
         fileWriter.close();
 
         // HeyZeer0: Uploading file
-        if (!localOnly && WebManager.getAccount() != null) {
-            WebManager.getAccount().uploadConfig(f.getName(), new String(Base64.getEncoder().encode(EncodingUtils.deflate(Files.readAllBytes(f.toPath()))), StandardCharsets.UTF_8));
-        }
+        if (!localOnly && WebManager.getAccount() != null) WebManager.getAccount().uploadConfig(f);
     }
 
     public static SettingsHolder getSettings(ModuleContainer m, SettingsHolder obj, SettingsContainer container) throws IOException {
@@ -104,18 +98,7 @@ public class SettingsManager {
         if (WebManager.getAccount() == null) return null;
         if (!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
 
-        byte[] encodedFormat = Base64.getDecoder().decode(WebManager.getAccount().getEncondedConfigs().get(name));
-        if (encodedFormat[0] == (byte) 0x78) {
-            // ZLIB magic word
-            try {
-                encodedFormat = EncodingUtils.inflate(encodedFormat);
-            } catch (DataFormatException e) {
-                e.printStackTrace();
-                // Try as json anyways
-            }
-        }
-
-        String jsonDecoded = new String(encodedFormat, StandardCharsets.UTF_8);
+        String jsonDecoded = WebManager.getAccount().getEncondedConfigs().get(name);
         return gson.fromJson(jsonDecoded, obj.getClass());
     }
 

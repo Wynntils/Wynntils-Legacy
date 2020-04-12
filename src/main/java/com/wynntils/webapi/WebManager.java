@@ -32,7 +32,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -120,7 +119,6 @@ public class WebManager {
         updateUsersRoles(handler);
         updateUsersModels(handler);
         updateItemList(handler);
-        updateIdentificationOrderer(handler);
         updateMapMarkers(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
@@ -164,6 +162,10 @@ public class WebManager {
 
     public static WynntilsAccount getAccount() {
         return account;
+    }
+
+    public static RequestHandler getHandler() {
+        return handler;
     }
 
     public static String getCurrentSplash() {
@@ -262,7 +264,7 @@ public class WebManager {
      * Request a update to territories {@link ArrayList}
      */
     public static void updateTerritories(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("Territory");
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/territoryList";
         handler.addRequest(new Request(url, "territory")
             .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
             .handleJsonObject(json -> {
@@ -370,12 +372,12 @@ public class WebManager {
      * Update all Wynn items on the {@link HashMap} items
      */
     public static void updateItemList(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("NewItemList");
-        handler.addRequest(new Request(url, "new_item_list")
-            .cacheTo(new File(API_CACHE_ROOT, "new_items.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("newItemList"))
-            .handleJsonArray(j -> {
-                ItemProfile[] gItems = gson.fromJson(j, ItemProfile[].class);
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/itemList";
+        handler.addRequest(new Request(url, "itemList")
+            .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
+            .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
+            .handleJsonObject(j -> {
+                ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
 
                 HashMap<String, ItemProfile> citems = new HashMap<>();
                 for (ItemProfile prof : gItems) {
@@ -384,24 +386,11 @@ public class WebManager {
                 }
 
                 directItems = citems.values();
-
                 items = citems;
+
+                IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
                 return true;
             })
-        );
-    }
-
-    /**
-     * Update all Wynn items on the {@link HashMap} items
-     */
-    public static void updateIdentificationOrderer(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("IdentificationOrder");
-        handler.addRequest(new Request(url, "identification_order")
-                .cacheTo(new File(API_CACHE_ROOT, "identification_order.json"))
-                .handleJsonObject(j -> {
-                    IdentificationOrderer.INSTANCE = gson.fromJson(j, IdentificationOrderer.class);
-                    return true;
-                })
         );
     }
 
@@ -409,7 +398,7 @@ public class WebManager {
      * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
      */
     public static void updateMapMarkers(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("MapMarkers");
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLocations";
         handler.addRequest(new Request(url, "map_markers")
             .cacheTo(new File(API_CACHE_ROOT, "map_markers.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))

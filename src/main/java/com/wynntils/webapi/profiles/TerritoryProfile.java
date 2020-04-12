@@ -125,9 +125,9 @@ public class TerritoryProfile {
             if (territory.has("location")) {
                 JsonObject location = territory.getAsJsonObject("location");
                 startX = location.get("startX").getAsInt();
-                startZ = location.get("startY").getAsInt();
+                startZ = location.get("startZ").getAsInt();
                 endX = location.get("endX").getAsInt();
-                endZ = location.get("endY").getAsInt();
+                endZ = location.get("endZ").getAsInt();
             }
             String territoryName = territory.get("territory").getAsString();
             String friendlyName = territoryName.replace('’', '\'');

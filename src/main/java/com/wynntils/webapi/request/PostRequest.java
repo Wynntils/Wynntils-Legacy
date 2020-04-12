@@ -1,14 +1,12 @@
 package com.wynntils.webapi.request;
 
-import com.wynntils.core.utils.objects.ThrowingBiPredicate;
+import com.google.gson.JsonElement;
 import com.wynntils.core.utils.objects.ThrowingConsumer;
 import com.wynntils.webapi.request.multipart.IMultipartFormPart;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -31,14 +29,21 @@ public class PostRequest extends Request {
     /**
      * Sets the writer to one that just writes the given bytes
      */
-    public PostRequest postBytes(byte[] data) {
+    public PostRequest postBytes(byte[] data, String contentType) {
         return setWriter(conn -> {
-            conn.addRequestProperty("Content-Type", "application/octet-stream");
+            conn.addRequestProperty("Content-Type", contentType);
             conn.addRequestProperty("Content-Length", Integer.toString(data.length));
             OutputStream o = conn.getOutputStream();
             o.write(data);
             o.flush();
         });
+    }
+
+    /**
+     * Sets the write to a json string from a json element
+     */
+    public PostRequest postJsonElement(JsonElement element) {
+        return postBytes(element.toString().getBytes(), "application/json");
     }
 
     private static final byte[] newline = "\r\n".getBytes(StandardCharsets.US_ASCII);
@@ -47,7 +52,7 @@ public class PostRequest extends Request {
     /**
      * Sets the writer to one that writes multipart/form-data.
      */
-    public PostRequest postMultipart(Iterable<? extends IMultipartFormPart> files) {
+    public PostRequest postMultipart(Iterable<? extends IMultipartFormPart> parts) {
         return setWriter(conn -> {
             String boundary = "----" + UUID.randomUUID().toString();
             conn.addRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -55,7 +60,7 @@ public class PostRequest extends Request {
             byte[] boundaryBytes = ("\r\n" + boundary).getBytes(StandardCharsets.US_ASCII);
             int length = 0;
             int count = 0;
-            for (IMultipartFormPart f : files) {
+            for (IMultipartFormPart f : parts) {
                 length += f.getLength();
                 ++count;
             }
@@ -69,7 +74,7 @@ public class PostRequest extends Request {
 
             OutputStream o = conn.getOutputStream();
             o.write(boundary.getBytes(StandardCharsets.US_ASCII));
-            for (IMultipartFormPart f : files) {
+            for (IMultipartFormPart f : parts) {
                 o.write(newline);
                 f.write(o);
                 o.write(boundaryBytes);

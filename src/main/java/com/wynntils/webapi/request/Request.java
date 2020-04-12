@@ -11,6 +11,7 @@ import com.wynntils.webapi.WebReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -24,6 +25,7 @@ public class Request {
     String id;
     int parallelGroup = 0;
     ThrowingBiPredicate<URLConnection, byte[], IOException> handler;
+    Predicate<Integer> onError;
     File cacheFile;
     Predicate<byte[]> cacheValidator = null;
     int currentlyHandling = 0;
@@ -194,6 +196,16 @@ public class Request {
         });
     }
 
+
+    /**
+     * Called whenever the response code is different from 200 OK
+     * set to true if the request should go on
+     */
+    public Request onError(Predicate<Integer> onError) {
+        this.onError = onError;
+        return this;
+    }
+
     /**
      * Timeout length for requests
      */
@@ -202,8 +214,8 @@ public class Request {
         return this;
     }
 
-    public URLConnection establishConnection() throws IOException {
-        URLConnection st = new URL(url).openConnection();
+    public HttpURLConnection establishConnection() throws IOException {
+        HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
         st.setRequestProperty("User-Agent", "WynntilsClient v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
         st.setConnectTimeout(timeout);
         st.setReadTimeout(timeout);

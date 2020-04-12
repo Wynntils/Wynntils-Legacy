@@ -9,8 +9,11 @@ import com.wynntils.Reference;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
@@ -53,6 +56,22 @@ public class RequestHandler {
      * Send all enqueued requests and wait until complete
      */
     public void dispatch() {
+        dispatch(false);
+    }
+
+    /**
+     * Enqueue a new {@link Request} and dispatches it
+     */
+    public void addAndDispatch(Request req, boolean async) {
+        addRequest(req);
+        dispatch(async);
+    }
+
+    /**
+     * Enqueue a new {@link Request} and dispatches it
+     */
+    public void addAndDispatch(Request req) {
+        addRequest(req);
         dispatch(false);
     }
 
@@ -138,7 +157,11 @@ public class RequestHandler {
                 if (req.url != null && !cacheOnly) {
                     Throwable readException = null;
                     try {
-                        URLConnection st = req.establishConnection();
+                        HttpURLConnection st = req.establishConnection();
+                        if (req.onError != null && st.getResponseCode() != 200) {
+                            if (!req.onError.test(st.getResponseCode())) return null;
+                        }
+
                         byte[] data;
                         try {
                             data = IOUtils.toByteArray(st.getInputStream());
@@ -146,10 +169,12 @@ public class RequestHandler {
                             readException = e;
                             throw e;
                         }
-                        if (req.handler.test(st, data)) {
-                            toCache = data;
-                        } else {
-                            Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + ": Invalid data received" + (req.cacheFile == null ? "" : "; Attempting to use cache"));
+                        if (req.handler != null) {
+                            if (req.handler.test(st, data)) {
+                                toCache = data;
+                            } else {
+                                Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + ": Invalid data received" + (req.cacheFile == null ? "" : "; Attempting to use cache"));
+                            }
                         }
                     } catch (Exception e) {
                         if (readException != null) {
