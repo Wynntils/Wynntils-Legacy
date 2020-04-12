@@ -227,7 +227,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // Major ids
-        if (item.getMajorIds().size() > 0) {
+        if (item.getMajorIds() != null && item.getMajorIds().size() > 0) {
             for (MajorIdentification majorId : item.getMajorIds()) {
                 Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
             }

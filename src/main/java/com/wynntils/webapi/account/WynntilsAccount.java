@@ -74,7 +74,7 @@ public class WynntilsAccount {
         JsonObject authParams = new JsonObject();
         authParams.addProperty("username", ModCore.mc().getSession().getUsername());
         authParams.addProperty("key", secretKey[0]);
-        authParams.addProperty("version", Reference.VERSION);
+        authParams.addProperty("version", Reference.VERSION + "_" + Reference.BUILD_NUMBER);
 
         Request responseEncryption = new PostRequest(baseUrl + "/auth/responseEncryption", "responseEncryption")
                 .postJsonElement(authParams)
