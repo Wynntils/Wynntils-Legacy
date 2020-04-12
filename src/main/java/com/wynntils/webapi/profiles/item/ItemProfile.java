@@ -198,7 +198,7 @@ public class ItemProfile {
             }
 
             // major ids
-            if (majorIds.size() > 0) {
+            if (majorIds != null && majorIds.size() > 0) {
                 for (MajorIdentification majorId : majorIds) {
                     Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> itemLore.add(DARK_AQUA + c));
                 }
