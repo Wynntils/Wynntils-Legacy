@@ -104,7 +104,7 @@ public class ItemProfile {
     }
 
     public String getLore() {
-        if (!replacedLore) {
+        if (lore != null && !replacedLore) {
             lore = lore.replace("\\[", "[").replace("\\]", "]").replace("[Community Event Winner] ", "[Community Event Winner]\n");
             replacedLore = true;
         }
@@ -215,7 +215,7 @@ public class ItemProfile {
             if (restriction != null) itemLore.add(RED + StringUtils.capitalizeFirst(restriction) + " Item");
 
             // item lore
-            if (!lore.isEmpty()) {
+            if (lore != null && !lore.isEmpty()) {
                 itemLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + this.getLore(), 150));
             }
         }
