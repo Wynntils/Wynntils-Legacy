@@ -37,6 +37,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -308,6 +309,19 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
         SocketManager.emitEvent("changeClass", e.getCurrentClass());
+    }
+
+
+    @SubscribeEvent
+    public void entityJoin(EntityJoinWorldEvent e) {
+        if (!(e.getEntity() instanceof EntityPlayer)) return;
+        EntityPlayer player = (EntityPlayer) e.getEntity();
+        if (player.getGameProfile() == null) return;
+
+        String name = player.getGameProfile().getName();
+        if (name.contains("\u0001") || name.contains("§")) return;
+
+        UserManager.loadUser(e.getEntity().getUniqueID());
     }
 
 }

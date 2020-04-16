@@ -5,8 +5,9 @@
 package com.wynntils.modules.cosmetics.layers;
 
 import com.wynntils.ModCore;
+import com.wynntils.modules.core.instances.account.WynntilsUser;
+import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
-import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
@@ -43,14 +44,18 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
 
-        if (!WebManager.hasElytra(player.getUniqueID())) return;
+        WynntilsUser info = UserManager.getUser(player.getUniqueID());
+        if (info == null || !info.getCosmetics().hasElytra()) return;
+
+        // loading cape
+        ResourceLocation rl = info.getCosmetics().getLocation();
 
         // texture
         ResourceLocation elytra;
         if (player.isPlayerInfoSet() && player.getLocationElytra() != null) {
             elytra = player.getLocationElytra();
-        } else if (player.hasPlayerInfo() && WebManager.hasElytra(player.getUniqueID())) {
-            elytra = new ResourceLocation("wynntils:capes/" + player.getUniqueID().toString().replace("-", ""));
+        } else if (player.hasPlayerInfo()) {
+            elytra = rl;
         } else {
             elytra = TEXTURE_ELYTRA;
         }

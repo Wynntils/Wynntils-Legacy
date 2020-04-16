@@ -7,7 +7,6 @@ package com.wynntils.webapi;
 import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import com.mojang.util.UUIDTypeAdapter;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
@@ -63,15 +62,6 @@ public class WebManager {
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
     private static String currentSplash = "";
 
-    private static ArrayList<UUID> helpers = new ArrayList<>();
-    private static ArrayList<UUID> moderators = new ArrayList<>();
-    private static ArrayList<UUID> content_team = new ArrayList<>();
-    private static ArrayList<UUID> donators = new ArrayList<>();
-
-    private static ArrayList<UUID> ears = new ArrayList<>();
-    private static ArrayList<UUID> elytras = new ArrayList<>();
-    private static ArrayList<UUID> capes = new ArrayList<>();
-
     private static ArrayList<DiscoveryProfile> discoveries = new ArrayList<>();
 
     private static WynntilsAccount account = null;
@@ -94,14 +84,6 @@ public class WebManager {
         playerProfile = null;
         guilds = new HashMap<>();
 
-        helpers = new ArrayList<>();
-        moderators = new ArrayList<>();
-        content_team = new ArrayList<>();
-
-        ears = new ArrayList<>();
-        elytras = new ArrayList<>();
-        capes = new ArrayList<>();
-
         account = null;
 
         updateTerritoryThreadStatus(false);
@@ -112,12 +94,9 @@ public class WebManager {
             tryReloadApiUrls(false, true);
         }
 
-
         ProgressManager.ProgressBar progressBar = withProgress ? ProgressManager.push(apiUrls != null ? "Loading data from APIs" : "Loading data from cache", 0) : null;
 
         updateTerritories(handler);
-        updateUsersRoles(handler);
-        updateUsersModels(handler);
         updateItemList(handler);
         updateMapMarkers(handler);
         updateItemGuesses(handler);
@@ -200,32 +179,6 @@ public class WebManager {
 
     public static ArrayList<DiscoveryProfile> getDiscoveries() {
         return discoveries;
-    }
-
-    public static boolean isHelper(UUID uuid) {
-        return helpers.contains(uuid);
-    }
-
-    public static boolean isModerator(UUID uuid) {
-        return moderators.contains(uuid);
-    }
-
-    public static boolean isContentTeam(UUID uuid) { return content_team.contains(uuid); }
-
-    public static boolean isDonator(UUID uuid) {
-        return donators.contains(uuid);
-    }
-
-    public static boolean hasElytra(UUID uuid) {
-        return elytras.contains(uuid);
-    }
-
-    public static boolean hasEars(UUID uuid) {
-        return ears.contains(uuid);
-    }
-
-    public static boolean hasCape(UUID uuid) {
-        return capes.contains(uuid);
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
@@ -450,59 +403,6 @@ public class WebManager {
                 Gson gson = gsonBuilder.create();
 
                 playerProfile = gson.fromJson(json, type);
-                return true;
-            })
-        );
-    }
-
-    public static void updateUsersRoles(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUsersRoles";
-        handler.addRequest(new Request(url, "user_account.roles")
-            .cacheTo(new File(API_CACHE_ROOT, "user_roles.json"))
-            .handleJsonObject(main -> {
-                GsonBuilder builder = new GsonBuilder();
-                builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
-                Gson gson = builder.create();
-
-                Type type = new TypeToken<ArrayList<UUID>>() {
-                }.getType();
-
-                JsonArray helper = main.getAsJsonArray("helperUsers");
-                helpers = gson.fromJson(helper, type);
-
-                JsonArray moderator = main.getAsJsonArray("moderatorUsers");
-                moderators = gson.fromJson(moderator, type);
-
-                JsonArray contentTeam = main.getAsJsonArray("contentTeamUsers");
-                content_team = gson.fromJson(contentTeam, type);
-
-                JsonArray donator = main.getAsJsonArray("donatorUsers");
-                donators = gson.fromJson(donator, type);
-                return true;
-            })
-        );
-    }
-
-    public static void updateUsersModels(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("UserAccount") + "getUserModels";
-        handler.addRequest(new Request(url, "user_account.models")
-            .cacheTo(new File(API_CACHE_ROOT, "user_models.json"))
-            .handleJsonObject(main -> {
-                GsonBuilder builder = new GsonBuilder();
-                builder.registerTypeHierarchyAdapter(UUID.class, new UUIDTypeAdapter());
-                Gson gson = builder.create();
-
-                Type type = new TypeToken<ArrayList<UUID>>() {
-                }.getType();
-
-                JsonArray ear = main.getAsJsonArray("earsActive");
-                ears = gson.fromJson(ear, type);
-
-                JsonArray elytra = main.getAsJsonArray("elytraActive");
-                elytras = gson.fromJson(elytra, type);
-
-                JsonArray cape = main.getAsJsonArray("capeActive");
-                capes = gson.fromJson(cape, type);
                 return true;
             })
         );

@@ -159,7 +159,10 @@ public class RequestHandler {
                     try {
                         HttpURLConnection st = req.establishConnection();
                         if (req.onError != null && st.getResponseCode() != 200) {
-                            if (!req.onError.test(st.getResponseCode())) return null;
+                            if (!req.onError.test(st.getResponseCode())) {
+                                st.disconnect();
+                                return null;
+                            }
                         }
 
                         byte[] data;

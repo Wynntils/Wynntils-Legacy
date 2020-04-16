@@ -12,6 +12,8 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.enums.AccountType;
+import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.NametagLabel;
 import com.wynntils.webapi.WebManager;
@@ -78,10 +80,10 @@ public class NametagManager {
                 if (entity.getTeam().getName().matches("pvp_.*")) customLabels.add(huntedLabel);  // hunted mode
             }
 
-            if (WebManager.isModerator(entity.getUniqueID())) customLabels.add(developerLabel);  // developer
-            if (WebManager.isHelper(entity.getUniqueID())) customLabels.add(helperLabel);  // helper
-            if (WebManager.isContentTeam(entity.getUniqueID())) customLabels.add(contentTeamLabel);  // contentTeam
-            if (WebManager.isDonator(entity.getUniqueID())) customLabels.add(donatorLabel);  // donator
+            if (UserManager.isAccountType(entity.getUniqueID(), AccountType.MODERATOR)) customLabels.add(developerLabel);  // developer
+            if (UserManager.isAccountType(entity.getUniqueID(), AccountType.HELPER)) customLabels.add(helperLabel);  // helper
+            if (UserManager.isAccountType(entity.getUniqueID(), AccountType.CONTENT_TEAM)) customLabels.add(contentTeamLabel);  // contentTeam
+            if (UserManager.isAccountType(entity.getUniqueID(), AccountType.DONATOR)) customLabels.add(donatorLabel);  // donator
             if (Reference.onWars && UtilitiesConfig.Wars.INSTANCE.warrerHealthBar) customLabels.add(new NametagLabel(null, Utils.getPlayerHPBar((EntityPlayer)entity), 0.7f));  // war health
             if (UtilitiesConfig.INSTANCE.showArmors) customLabels.addAll(getUserArmorLabels((EntityPlayer)entity));  // armors
         } else if (!UtilitiesConfig.INSTANCE.hideNametags && !UtilitiesConfig.INSTANCE.hideNametagBox) return false;

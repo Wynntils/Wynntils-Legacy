@@ -5,7 +5,8 @@
 package com.wynntils.modules.cosmetics.layers;
 
 import com.wynntils.ModCore;
-import com.wynntils.webapi.WebManager;
+import com.wynntils.modules.core.instances.account.WynntilsUser;
+import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
@@ -32,10 +33,11 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
             return;
 
-        if (!WebManager.hasCape(player.getUniqueID())) return;
+        WynntilsUser info = UserManager.getUser(player.getUniqueID());
+        if (info == null || !info.getCosmetics().hasCape()) return;
 
         // loading cape
-        ResourceLocation rl = new ResourceLocation("wynntils:capes/" + player.getUniqueID().toString().replace("-", ""));
+        ResourceLocation rl = info.getCosmetics().getLocation();
 
         // rendering verifications
         if (rl == null || !player.hasPlayerInfo() || player.isInvisible()) return;

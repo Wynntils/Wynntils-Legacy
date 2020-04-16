@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -19,10 +20,7 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.packet.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.packet.PacketOutgoingFilter;
-import com.wynntils.modules.core.managers.CompassManager;
-import com.wynntils.modules.core.managers.PacketQueue;
-import com.wynntils.modules.core.managers.PartyManager;
-import com.wynntils.modules.core.managers.SocketManager;
+import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
@@ -251,6 +249,11 @@ public class ServerEvents implements Listener {
         if (CompassManager.getCompassLocation() != null) {
             e.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public void joinServer(WynncraftServerEvent.Leave e) {
+        UserManager.clearRegistry();
     }
 
     public static BlockPos getCurrentSpawnPosition() {

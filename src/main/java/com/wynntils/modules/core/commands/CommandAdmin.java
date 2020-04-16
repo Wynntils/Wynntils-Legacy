@@ -4,8 +4,9 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.SocketManager;
-import com.wynntils.webapi.WebManager;
+import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -36,7 +37,7 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (!WebManager.isModerator(Minecraft.getMinecraft().player.getUniqueID())) return;
+        if (!UserManager.isAccountType(Minecraft.getMinecraft().player.getUniqueID(), AccountType.MODERATOR)) return;
 
         TextComponentString output;
 
