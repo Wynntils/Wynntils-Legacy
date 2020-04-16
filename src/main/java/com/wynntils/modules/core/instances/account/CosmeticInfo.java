@@ -26,8 +26,8 @@ public class CosmeticInfo extends SimpleTexture {
     public CosmeticInfo(boolean ears, boolean cape, boolean elytra, String texture, ResourceLocation location) {
         super(null);
 
-        this.ears = true;
-        this.cape = true;
+        this.ears = ears;
+        this.cape = cape;
         this.elytra = elytra;
         this.location = location;
         this.texture = texture;
