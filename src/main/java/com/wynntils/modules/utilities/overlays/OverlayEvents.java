@@ -133,7 +133,7 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        if (!Reference.onWorld) return;
+        if (!Reference.onWorld || e.getMessage().getUnformattedText().equals(" ")) return;
         String messageText = e.getMessage().getUnformattedText();
         String formattedText = e.getMessage().getFormattedText();
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
