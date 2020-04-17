@@ -38,7 +38,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "lootrun <load/save/delete/rename/hide/record/stop/list/clear/help>";
+        return "lootrun <load/save/delete/rename/hide/record/list/clear/help>";
     }
 
     @Override
