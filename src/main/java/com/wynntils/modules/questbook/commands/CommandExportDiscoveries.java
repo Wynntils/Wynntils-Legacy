@@ -42,7 +42,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
 
     @Override
     public String getName() {
-        return "exportDiscoveries";
+        return "exportdiscoveries";
     }
 
     @Override
@@ -52,13 +52,13 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "exportDiscoveries";
+        return "exportdiscoveries";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        ITextComponent command = new TextComponentString("/exportDiscoveries");
-        command.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exportDiscoveries"));
+        ITextComponent command = new TextComponentString("/exportdiscoveries");
+        command.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exportdiscoveries"));
         if (!Reference.onWorld)
             throw new CommandException("You need to be in a Wynncraft world to run %s", command);
         if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE)

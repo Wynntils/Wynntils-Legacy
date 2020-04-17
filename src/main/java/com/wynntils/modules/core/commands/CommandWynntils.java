@@ -21,6 +21,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -92,14 +93,36 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 text.appendText("\n");
                 addCommandDescription(text, "-", "token", "This provides a clickable token for you to create a Wynntils account to manage your cosmetics.");
                 text.appendText("\n");
-                addCommandDescription(text, "-", "forceupdate", "This downloads and installs the latest successful build.");
-                text.appendText("\n");
                 addCommandDescription(text, "-", "compass", "This makes your compass point towards an x and z or a direction (e.g. north, SE).");
                 text.appendText("\n");
                 addCommandDescription(text, "-", "territory", "This makes your compass point towards a specified territory.");
+                text.appendText("\n")
+                        .appendSibling(new TextComponentString("Page 1 (out of 2) "))
+                        .appendSibling(new TextComponentString(">>>").setStyle(new Style()
+                                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils help 2"))
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Go to the next page")))));
                 sender.sendMessage(text);
                 break;
                 /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
+            case "help2":
+                TextComponentString text1 = new TextComponentString("");
+                text1.getStyle().setColor(TextFormatting.GOLD);
+                text1.appendText("Wynntils' command list: ");
+                text1.appendText("\n");
+                addCommandDescription(text1, "-", "lootrun", "This allows you to record and display lootrun paths.");
+                text1.appendText("\n");
+                addCommandDescription(text1, "-", "s", "This lists all online worlds in Wynncraft and the details of each world.");
+                text1.appendText("\n");
+                addCommandDescription(text1, "-", "exportdiscoveries", "this exports all discovered discoveries as a .csv file");
+                text1.appendText("\n");
+                addCommandDescription(text1, "-", "forceupdate", "This downloads and installs the latest successful build.");
+                text1.appendText("\n")
+                        .appendSibling(new TextComponentString("<<<").setStyle(new Style()
+                                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils help 1"))
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Go to the next page")))))
+                        .appendSibling(new TextComponentString(" Page 2 (out of 2)"));
+                sender.sendMessage(text1);
+                break;
             case "discord":
                 TextComponentString msg = new TextComponentString("You're welcome to join our Discord server at:\n");
                 msg.getStyle().setColor(TextFormatting.GOLD);
@@ -218,8 +241,11 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(args, "help", "discord", "version", "changelog", "reloadapi", "donate");
         } else if (args.length == 2) {
-            if (args[0].equals("changelog")) {
-                return getListOfStringsMatchingLastWord(args, "major");
+            switch (args[0]) {
+                case "changelog":
+                    return getListOfStringsMatchingLastWord(args, "major", "latest");
+                case "help":
+                    return getListOfStringsMatchingLastWord(args, "1", "2");
             }
         }
         return Collections.emptyList();
