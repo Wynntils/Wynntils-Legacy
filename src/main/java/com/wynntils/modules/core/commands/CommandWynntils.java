@@ -113,7 +113,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 text1.appendText("\n");
                 addCommandDescription(text1, "-", "s", "This lists all online worlds in Wynncraft and the details of each world.");
                 text1.appendText("\n");
-                addCommandDescription(text1, "-", "exportdiscoveries", "this exports all discovered discoveries as a .csv file");
+                addCommandDescription(text1, "-", "exportdiscoveries", "This exports all discovered discoveries as a .csv file.");
                 text1.appendText("\n");
                 addCommandDescription(text1, "-", "forceupdate", "This downloads and installs the latest successful build.");
                 text1.appendText("\n")
