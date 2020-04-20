@@ -30,6 +30,12 @@ public class CustomColor {
         this.a = a;
     }
 
+    public CustomColor(int r, int g, int b) {
+        this.r = r / 255f;
+        this.g = g / 255f;
+        this.b = b / 255f;
+    }
+
     public CustomColor() {}
 
     public CustomColor(CustomColor c) { this(c.r, c.g, c.b, c.a); }

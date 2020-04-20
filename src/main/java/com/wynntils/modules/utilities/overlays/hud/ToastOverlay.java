@@ -54,7 +54,7 @@ public class ToastOverlay extends Overlay {
                         iconX = 176; iconY = 16;
                         break;
                     default:
-                        c = new CustomColor(1, 1, 1);
+                        c = new CustomColor(1f, 1f, 1f);
                         iconX = 178; iconY = 0;
                         break;
                 }

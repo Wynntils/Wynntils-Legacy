@@ -34,7 +34,7 @@ public class UIEColorWheel extends UIEClickZone {
     private static final Pattern hexChecker = Pattern.compile("#(?:[0-9A-Fa-f]{3}){1,2}");
     private static final Pattern hexAndAlphaChecker = Pattern.compile("^#((?:[0-9A-Fa-f]{3}){1,2}),\\s+(\\d*(?:\\.\\d*)?)%$");
 
-    CustomColor color = new CustomColor(1, 1, 1);
+    CustomColor color = new CustomColor(1f, 1f, 1f);
     GuiScreen backGui;
     Consumer<CustomColor> onAccept;
     boolean allowAlpha;

@@ -212,7 +212,7 @@ public class UtilitiesConfig extends SettingsClass {
         public int minPowderTier = 4;
 
         @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
-        public CustomColor lengendaryHighlightColor = new CustomColor(0, 1, 1);
+        public CustomColor lengendaryHighlightColor = new CustomColor(0f, 1f, 1f);
 
         @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
         public CustomColor mythicHighlightColor = new CustomColor(0.3f, 0, 0.3f);
@@ -221,16 +221,16 @@ public class UtilitiesConfig extends SettingsClass {
         public CustomColor fabledHighlightColor = new CustomColor(1, 1/3f, 1/3f);
 
         @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
-        public CustomColor rareHighlightColor = new CustomColor(1, 0, 1);
+        public CustomColor rareHighlightColor = new CustomColor(1f, 0f, 1f);
 
         @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
-        public CustomColor uniqueHighlightColor = new CustomColor(1, 1, 0);
+        public CustomColor uniqueHighlightColor = new CustomColor(1f, 1f, 0f);
 
         @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
-        public CustomColor setHighlightColor = new CustomColor(0, 1, 0);
+        public CustomColor setHighlightColor = new CustomColor(0f, 1f, 0f);
 
         @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
-        public CustomColor normalHighlightColor = new CustomColor(1, 1, 1);
+        public CustomColor normalHighlightColor = new CustomColor(1f, 1f, 1f);
 
         @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
         public CustomColor craftedHighlightColor = new CustomColor(0, .545f, .545f);
@@ -239,7 +239,7 @@ public class UtilitiesConfig extends SettingsClass {
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
         @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
-        public CustomColor ingredientTwoHighlightColor = new CustomColor(1, 1, 0);
+        public CustomColor ingredientTwoHighlightColor = new CustomColor(1f, 1f, 0f);
 
         @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
