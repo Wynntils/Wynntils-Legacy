@@ -5,6 +5,8 @@
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.helpers.CommandResponse;
 
 import java.util.regex.Pattern;
@@ -17,7 +19,9 @@ public class PingManager {
     private static long lastCall = 0;
 
     public static void calculatePing() {
-        if (!Reference.onWorld || System.currentTimeMillis() - lastCall < 15000) return;
+        if (!Reference.onWorld
+            || PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE
+            || System.currentTimeMillis() - lastCall < 15000) return;
 
         CommandResponse response = new CommandResponse("/toggle", (m, t) -> {
             lastPing = System.currentTimeMillis() - lastCall;
