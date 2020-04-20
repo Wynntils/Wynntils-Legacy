@@ -183,40 +183,45 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (e.getGui().getLowerInv().getName().contains("Select a Class")) {
-            if (e.getMouseButton() == 0 && e.getSlotIn() != null && e.getSlotIn().getHasStack() && e.getSlotIn().getStack().hasDisplayName() && e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) {
-                getPlayerInfo().setClassId(e.getSlotId());
+        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
-                String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
-                String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
+        if (e.getMouseButton() != 0
+            || e.getSlotIn() == null
+            || !e.getSlotIn().getHasStack()
+            || !e.getSlotIn().getStack().hasDisplayName()
+            || !e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) return;
 
-                ClassType selectedClass = ClassType.NONE;
 
-                try {
-                    selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
-                } catch (Exception ex) {
-                    switch (classS) {
-                        case "Hunter":
-                            selectedClass = ClassType.ARCHER;
-                            break;
-                        case "Knight":
-                            selectedClass = ClassType.WARRIOR;
-                            break;
-                        case "Dark Wizard":
-                            selectedClass = ClassType.MAGE;
-                            break;
-                        case "Ninja":
-                            selectedClass = ClassType.ASSASSIN;
-                            break;
-                        case "Skyseer":
-                            selectedClass = ClassType.SHAMAN;
-                            break;
-                    }
-                }
+        getPlayerInfo().setClassId(e.getSlotId());
 
-                getPlayerInfo().updatePlayerClass(selectedClass);
+        String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
+        String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
+
+        ClassType selectedClass = ClassType.NONE;
+
+        try {
+            selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
+        } catch (Exception ex) {
+            switch (classS) {
+                case "Hunter":
+                    selectedClass = ClassType.ARCHER;
+                    break;
+                case "Knight":
+                    selectedClass = ClassType.WARRIOR;
+                    break;
+                case "Dark Wizard":
+                    selectedClass = ClassType.MAGE;
+                    break;
+                case "Ninja":
+                    selectedClass = ClassType.ASSASSIN;
+                    break;
+                case "Skyseer":
+                    selectedClass = ClassType.SHAMAN;
+                    break;
             }
         }
+
+        getPlayerInfo().updatePlayerClass(selectedClass);
     }
 
     @SubscribeEvent
@@ -228,17 +233,18 @@ public class ClientEvents implements Listener {
                 SocketManager.emitEvent("add friend", name);
                 GuildAndFriendManager.changePlayer(name, true, As.FRIEND, true);
             }
-        } else {
-            // Friends list updated
-            String json = new Gson().toJson(getPlayerInfo().getFriendList());
-            SocketManager.emitEvent("update friends", json);
-
-            for (String name : newFriends) {
-                GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
-            }
-
-            GuildAndFriendManager.tryResolveNames();
+            return;
         }
+
+        // Friends list updated
+        String json = new Gson().toJson(getPlayerInfo().getFriendList());
+        SocketManager.emitEvent("update friends", json);
+
+        for (String name : newFriends) {
+            GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
+        }
+
+        GuildAndFriendManager.tryResolveNames();
     }
 
     @SubscribeEvent
@@ -250,14 +256,15 @@ public class ClientEvents implements Listener {
                 SocketManager.emitEvent("remove friend", name);
                 GuildAndFriendManager.changePlayer(name, false, As.FRIEND, true);
             }
-        } else {
-            // Friends list updated; Socket managed in addFriend
-            for (String name : removedFriends) {
-                GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
-            }
-
-            GuildAndFriendManager.tryResolveNames();
+            return;
         }
+
+        // Friends list updated; Socket managed in addFriend
+        for (String name : removedFriends) {
+            GuildAndFriendManager.changePlayer(name, false, As.FRIEND, false);
+        }
+
+        GuildAndFriendManager.tryResolveNames();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

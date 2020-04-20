@@ -6,10 +6,7 @@ package com.wynntils.modules.core.events;
 
 import com.google.common.collect.Sets;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.events.custom.WynnSocialEvent;
-import com.wynntils.core.events.custom.WynnWorldEvent;
-import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -33,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -209,9 +205,11 @@ public class ServerEvents implements Listener {
      * Used for displaying the Changelog UI
      */
     @SubscribeEvent
-    public void onJoinLobby(RenderPlayerEvent.Post e) {
+    public void onJoinLobby(WynnClassChangeEvent e) {
         if (Reference.onServer && CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
             if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+
+            if (e.getCurrentClass() == ClassType.NONE) return;
 
             synchronized (this) {
                 if (triedToShowChangelog) return;
