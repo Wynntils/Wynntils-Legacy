@@ -48,7 +48,6 @@ public class ServerEvents implements Listener {
      *  - Register the pipline that intercepts OUTGOING Packets
      *  @see PacketOutgoingFilter
      *  - Check if the mod has an update available
-     *  - Check if there is anything on the download queue
      *  - Updates the overlayPlayerList to the Wynntils Version
      *
      * @param e Represents the event
@@ -63,7 +62,6 @@ public class ServerEvents implements Listener {
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();
-        DownloaderManager.startDownloading();
     }
 
     boolean waitingForFriendList = false;
@@ -74,13 +72,19 @@ public class ServerEvents implements Listener {
      *  - Make the player use the command /friend list in order to gatter the user friend list
      *  - Check if the last user class was registered if not, make the player execute /class to register it
      *  - Updates the last class
+     *  - Updates and check the Download Queue
      *
      * @param e Represents the event
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE) Minecraft.getMinecraft().player.sendChatMessage("/class");
-        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
+            Minecraft.getMinecraft().player.sendChatMessage("/class");
+
+        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE)
+            PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+
+        DownloaderManager.startDownloading();
         SocketManager.emitEvent("join world", e.getWorld()); // update socket world
 
         if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
@@ -103,7 +107,6 @@ public class ServerEvents implements Listener {
     public void leaveWorldEvent(WynnWorldEvent.Leave e) {
         SocketManager.emitEvent("leave world");
     }
-
 
     /**
      * Detects and register the current friend list of the user
