@@ -55,7 +55,7 @@ public class HotbarOverlay extends Overlay {
             int x = -88 + (i*20);
 
             String description = ItemUtils.getStringLore(stack);
-            if (UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
+            if (UtilitiesConfig.Items.INSTANCE.hotbarHighlight && UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
                 if (description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
