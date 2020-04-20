@@ -43,7 +43,6 @@ public class TerritoryProfile {
 
         this.acquired = acquired;
 
-
         if (endX < startX) {
             this.startX = endX;
             this.endX = startX;
