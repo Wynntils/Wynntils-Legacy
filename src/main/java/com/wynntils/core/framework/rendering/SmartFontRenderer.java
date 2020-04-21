@@ -139,7 +139,7 @@ public class SmartFontRenderer extends FontRenderer {
                             obfuscated = true;
                             index++; // skips the the next char
                             break;
-                        case 'l':
+                        case 'o':
                             italic = true;
                             index++; // skips the the next char
                             break;
