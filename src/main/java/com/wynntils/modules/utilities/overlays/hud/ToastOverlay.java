@@ -31,7 +31,6 @@ public class ToastOverlay extends Overlay {
     private static final CustomColor areaDiscoveredColor = new CustomColor(184, 89, 181);
     private static final CustomColor defaultColor = new CustomColor(0, 0, 0);
 
-
     public ToastOverlay() {
         super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
     }

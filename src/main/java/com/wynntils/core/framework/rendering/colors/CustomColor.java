@@ -34,6 +34,7 @@ public class CustomColor {
         this.r = r / 255f;
         this.g = g / 255f;
         this.b = b / 255f;
+        this.a = 1.0f;
     }
 
     public CustomColor() {}

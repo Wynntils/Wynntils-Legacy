@@ -247,7 +247,6 @@ public class ItemPage extends QuestBookPage {
                 int minX = x + 38 + (placedCubes * 20);
                 int minY = y - 50 + (currentY * 20);
 
-
                 ItemProfile pf = itemSearch.get(i);
 
                 float r, g, b;
