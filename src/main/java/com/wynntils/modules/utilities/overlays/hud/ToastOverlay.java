@@ -25,6 +25,13 @@ public class ToastOverlay extends Overlay {
     private static Toast[] displayedToast = new Toast[DISPLAY_AMNT];
     public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
+    private static final CustomColor questCompletedColor = new CustomColor(89, 149, 55);
+    private static final CustomColor discoveryColor = new CustomColor(140, 79, 193);
+    private static final CustomColor territoryColor = new CustomColor(112, 112, 239);
+    private static final CustomColor areaDiscoveredColor = new CustomColor(184, 89, 181);
+    private static final CustomColor defaultColor = new CustomColor(0, 0, 0);
+
+
     public ToastOverlay() {
         super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
     }
@@ -38,23 +45,23 @@ public class ToastOverlay extends Overlay {
                 int iconX, iconY;
                 switch (displayedToast[j].getToastType()) {
                     case QUEST_COMPLETED:
-                        c = new CustomColor(.514f, .96f, .259f);
+                        c = questCompletedColor;
                         iconX = 178; iconY = 0;
                         break;
                     case DISCOVERY:
-                        c = new CustomColor(.718f, .384f, 1);
+                        c = discoveryColor;
                         iconX = 161; iconY = 0;
                         break;
                     case TERRITORY:
-                        c = new CustomColor(.392f, .392f, 1);
+                        c = territoryColor;
                         iconX = 160; iconY = 16;
                         break;
                     case AREA_DISCOVERED:
-                        c = new CustomColor(.949f, .588f, .937f);
+                        c = areaDiscoveredColor;
                         iconX = 176; iconY = 16;
                         break;
                     default:
-                        c = new CustomColor(1f, 1f, 1f);
+                        c = defaultColor;
                         iconX = 178; iconY = 0;
                         break;
                 }
