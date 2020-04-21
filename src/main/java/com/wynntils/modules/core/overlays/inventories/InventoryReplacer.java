@@ -53,6 +53,12 @@ public class InventoryReplacer extends GuiInventory {
     }
 
     @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.DrawGuiContainerBackgroundLayer(this, mouseX, mouseY));
+    }
+
+    @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         if (!FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.KeyTyped(this, typedChar, keyCode)))
             super.keyTyped(typedChar, keyCode);

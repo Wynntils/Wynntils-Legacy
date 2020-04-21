@@ -128,6 +128,25 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             }
         }
 
+        public static class DrawGuiContainerBackgroundLayer extends InventoryOverlap {
+
+            int mouseX, mouseY;
+
+            public DrawGuiContainerBackgroundLayer(InventoryReplacer guiInventory, int mouseX, int mouseY) {
+                super(guiInventory);
+
+                this.mouseX = mouseX; this.mouseY = mouseY;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+        }
+
         public static class KeyTyped extends InventoryOverlap {
 
             char typedChar; int keyCode;
@@ -260,6 +279,25 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             int mouseX, mouseY;
 
             public DrawGuiContainerForegroundLayer(ChestReplacer guiChest, int mouseX, int mouseY) {
+                super(guiChest);
+
+                this.mouseX = mouseX; this.mouseY = mouseY;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+        }
+
+        public static class DrawGuiContainerBackgroundLayer extends ChestOverlap {
+
+            int mouseX, mouseY;
+
+            public DrawGuiContainerBackgroundLayer(ChestReplacer guiChest, int mouseX, int mouseY) {
                 super(guiChest);
 
                 this.mouseX = mouseX; this.mouseY = mouseY;
@@ -447,6 +485,25 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             int mouseX, mouseY;
 
             public DrawGuiContainerForegroundLayer(HorseReplacer guiHorse, int mouseX, int mouseY) {
+                super(guiHorse);
+
+                this.mouseX = mouseX; this.mouseY = mouseY;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+        }
+
+        public static class DrawGuiContainerBackgroundLayer extends HorseOverlap {
+
+            int mouseX, mouseY;
+
+            public DrawGuiContainerBackgroundLayer(HorseReplacer guiHorse, int mouseX, int mouseY) {
                 super(guiHorse);
 
                 this.mouseX = mouseX; this.mouseY = mouseY;

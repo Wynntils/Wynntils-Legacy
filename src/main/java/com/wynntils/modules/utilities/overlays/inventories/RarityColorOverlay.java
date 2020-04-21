@@ -33,17 +33,17 @@ public class RarityColorOverlay implements Listener {
     private static String professionFilter = "-";
 
     @SubscribeEvent
-    public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
+    public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         drawChest(e.getGui(), e.getGui().getLowerInv(), e.getGui().getUpperInv(), true, true);
     }
 
     @SubscribeEvent
-    public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
+    public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerBackgroundLayer e) {
         drawChest(e.getGui(), e.getGui().getUpperInv(), e.getGui().getLowerInv(), true, false);
     }
 
     @SubscribeEvent
-    public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
+    public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerBackgroundLayer e) {
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
                 continue;
@@ -97,12 +97,12 @@ public class RarityColorOverlay implements Listener {
 
             // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
-            ScreenRenderer.beginGL(0, 0); {
+            ScreenRenderer.beginGL(e.getGui().getGuiLeft() + s.xPos, e.getGui().getGuiTop() + s.yPos); {
                 color(colour.r, colour.g, colour.b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
                 glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                 RenderHelper.disableStandardItemLighting();
 
-                renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
+                renderer.drawRect(Textures.UIs.rarity, -1, -1, 0, 0, 18, 18);
 
                 glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                 color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -184,12 +184,12 @@ public class RarityColorOverlay implements Listener {
 
             // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
-            ScreenRenderer.beginGL(0, 0); {
+            ScreenRenderer.beginGL(guiContainer.getGuiLeft() + s.xPos, guiContainer.getGuiTop() + s.yPos); {
                 color(r, g, b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
                 glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                 RenderHelper.disableStandardItemLighting();
 
-                renderer.drawRect(Textures.UIs.rarity, s.xPos - 1, s.yPos - 1, 0, 0, 18, 18);
+                renderer.drawRect(Textures.UIs.rarity, -1, -1, 0, 0, 18, 18);
 
                 glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
                 color(1F, 1F, 1F, 1F);
