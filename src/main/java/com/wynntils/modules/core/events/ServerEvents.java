@@ -188,7 +188,7 @@ public class ServerEvents implements Listener {
             if (PlayerInfo.getPlayerInfo().getFriendList().remove(removedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
             }
-        } else if (e.getMessage().startsWith("/guild list")) {
+        } else if (e.getMessage().startsWith("/guild list") || e.getMessage().startsWith("/gu list")) {
             waitingForGuildList = false;
         }
     }
