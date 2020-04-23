@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -360,7 +361,7 @@ public class ChatManager {
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         boolean hasMention = false;
         if (ChatConfig.INSTANCE.allowChatMentions) {
-            if (in != null && in.getFormattedText().contains(ModCore.mc().player.getName())) {
+            if (in != null && Minecraft.getMinecraft().player != null && in.getFormattedText().contains(ModCore.mc().player.getName())) {
                 // Patterns used to detect guild/party chat
                 boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
                 boolean foundStart = false;
