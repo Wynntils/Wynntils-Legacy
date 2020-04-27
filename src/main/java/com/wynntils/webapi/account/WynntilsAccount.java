@@ -119,7 +119,12 @@ public class WynntilsAccount {
     }
 
     public void uploadConfig(File f) {
-        if (!ready || configurationUploader == null) return;
+        if (!ready || configurationUploader == null)  {
+            login();
+
+            uploadConfig(f); // try again
+            return;
+        }
 
         configurationUploader.queueConfig(f);
     }
