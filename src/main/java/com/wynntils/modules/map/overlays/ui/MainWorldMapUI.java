@@ -19,6 +19,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -79,9 +80,7 @@ public class MainWorldMapUI extends WorldMapUI {
             return;
         }
 
-        if (Mouse.isButtonDown(1)) {
-            updateCenterPositionWithPlayerPosition();
-        } else {
+        if (!Mouse.isButtonDown(1)) {
             updatePosition(mouseX, mouseY);
         }
 
@@ -104,12 +103,13 @@ public class MainWorldMapUI extends WorldMapUI {
 
         if (helpBtn.isMouseOver()) {
             drawHoveringText(Arrays.asList(
-                "Help",
-                "CTRL to show territories",
-                "Left click on waypoint to place compass beacon there",
-                "Middle click to place compass beacon",
-                "Double click on compass beacon to create waypoint there",
-                "Right click to centre on player"
+                    TextFormatting.UNDERLINE + "Help",
+                    TextFormatting.GRAY + "CTRL to show territories",
+                    TextFormatting.GRAY + "Left click on waypoint to place compass beacon there",
+                    TextFormatting.GRAY + "Middle click to place compass beacon",
+                    TextFormatting.GRAY + "Double click on compass beacon to create waypoint there",
+                    TextFormatting.GRAY + "Right click on compass beacon to remove it",
+                    TextFormatting.GRAY + "Right click to centre on player"
             ), mouseX, mouseY, fontRenderer);
         }
     }
@@ -120,6 +120,11 @@ public class MainWorldMapUI extends WorldMapUI {
             super.mouseClicked(mouseX, mouseY, mouseButton);
             return;
         } else if (mouseButton == 1) {
+            if (compassIcon.mouseOver(mouseX, mouseY)) {
+                CompassManager.reset();
+                resetCompassMapIcon();
+                return;
+            }
             updateCenterPositionWithPlayerPosition();
             return;
         } else if (mouseButton == 2) {
@@ -134,18 +139,19 @@ public class MainWorldMapUI extends WorldMapUI {
         }
 
         if (mouseButton == 0) {
+            if (compassIcon.mouseOver(mouseX, mouseY)) {
+                long currentTime = Minecraft.getSystemTime();
+                if (currentTime - lastClickTime < doubleClickTime) {
+                    Location location = CompassManager.getCompassLocation();
+                    Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));
+                } else {
+                    lastClickTime = currentTime;
+                }
+                return;
+            }
+
             forEachIcon(c -> {
-                if (c == compassIcon) {
-                    if (c.mouseOver(mouseX, mouseY)) {
-                        long currentTime = System.currentTimeMillis();
-                        if (currentTime - lastClickTime < doubleClickTime) {
-                            Location location = CompassManager.getCompassLocation();
-                            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));
-                        } else {
-                            lastClickTime = currentTime;
-                        }
-                    }
-                } else if (c.mouseOver(mouseX, mouseY)) {
+                if (c.mouseOver(mouseX, mouseY)) {
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
 
                     CompassManager.setCompassLocation(new Location(c.getInfo().getPosX(), 0, c.getInfo().getPosZ()));
