@@ -293,7 +293,7 @@ public class WaypointProfile {
             case 0: size = buf.getInt(); break;
             case 1: size = decodeInt(buf); break;
         }
-        if (size < 0 || size > 1024) {
+        if (size < 0 || size > 8192) {
             throw new IllegalArgumentException("Invalid waypoint list size");
         }
         ArrayList<WaypointProfile> result = new ArrayList<>(size);
