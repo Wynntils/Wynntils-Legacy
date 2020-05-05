@@ -129,7 +129,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
         if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft") && RichPresenceConfig.INSTANCE.enableRichPresence) {
-            String state = Reference.onEuServer ? "In EU Lobby" : "In Lobby";
+            String state = "In Lobby";
             RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
         }
     }
@@ -148,7 +148,7 @@ public class ServerEvents implements Listener {
             updateTimer.cancel(true);
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             currentLevel = 0;
-            String state = Reference.onEuServer ? "In EU Lobby" : "In Lobby";
+            String state = "In Lobby";
             RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
         }
     }
@@ -190,7 +190,7 @@ public class ServerEvents implements Listener {
     public static void onEnableSettingChange() {
         if (RichPresenceConfig.INSTANCE.enableRichPresence) {
             if (Reference.onLobby) {
-                String state = Reference.onEuServer ? "In EU Lobby" : "In Lobby";
+                String state = "In Lobby";
                 RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
             } else if (Reference.onWars) {
                 if (PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {

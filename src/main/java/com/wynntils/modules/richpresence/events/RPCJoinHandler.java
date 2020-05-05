@@ -21,6 +21,7 @@ import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ChatType;
@@ -60,12 +61,17 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         Minecraft mc = Minecraft.getMinecraft();
 
         if (!Reference.onServer) {
-            ServerUtils.connect(ServerUtils.getWynncraftServerData(true));
-            waitingServer = true;
+            ServerData serverData = ServerUtils.getWynncraftServerData(true);
+            ServerUtils.connect(serverData);
+            if (serverData.serverIP.startsWith("lobby")) {
+                waitingLobby = true;
+            } else {
+                waitingServer = true;
+            }
             return;
         }
         if (Reference.onWorld) {
-            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
+            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
                 sentInvite = true;
                 mc.player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
                 return;
@@ -93,7 +99,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
     public void onWorldJoin(WynnWorldEvent.Join e) {
         if (!waitingInvite && !waitingServer) return;
         if (waitingServer) {
-            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
+            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
                 sentInvite = true;
                 Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
             } else {
@@ -172,8 +178,6 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
             if (worldType.equals("WC")) {
                 // US Servers
                 prefix = "";
-            } else if (worldType.equals("EU")) {
-                prefix = "EU ";
             } else if (worldType.equals("HB")) {
                 prefix = "Beta ";
             }
@@ -183,8 +187,6 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                 String worldCategory = "";
                 if (worldType.equals("WC")) {
                     worldCategory = "US Servers";
-                } else if (worldType.equals("EU")) {
-                    worldCategory = "EU Servers";
                 } else if (worldType.equals("HB")) {
                     worldCategory = "Hero Beta";
                 }

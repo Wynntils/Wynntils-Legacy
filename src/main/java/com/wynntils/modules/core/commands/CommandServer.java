@@ -24,7 +24,7 @@ import java.util.*;
 
 
 public class CommandServer extends CommandBase implements IClientCommand {
-    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "DEV", "WAR", "HB", "EU");
+    private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "DEV", "WAR", "HB");
 
     @Override
     public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) {
