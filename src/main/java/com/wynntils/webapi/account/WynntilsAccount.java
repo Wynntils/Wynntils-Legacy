@@ -48,8 +48,8 @@ public class WynntilsAccount {
 
     int connectionAttempts = 0;
 
-    public void login() {
-        if (WebManager.getApiUrls() == null || connectionAttempts >= 4) return;
+    public boolean login() {
+        if (WebManager.getApiUrls() == null || connectionAttempts >= 4) return false;
         connectionAttempts++;
 
         RequestHandler handler = WebManager.getHandler();
@@ -100,6 +100,8 @@ public class WynntilsAccount {
                 }).onError(t -> { login(); return true; });
 
         handler.addAndDispatch(responseEncryption);
+        
+        return true;
     }
 
     public void updateDiscord(String id, String username) {
@@ -120,7 +122,7 @@ public class WynntilsAccount {
 
     public void uploadConfig(File f) {
         if (!ready || configurationUploader == null)  {
-            login();
+            if(!login()) return;
 
             uploadConfig(f); // try again
             return;
