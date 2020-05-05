@@ -101,7 +101,9 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void addMessage(ChatLine msg) {
-        hasNewMessages = true;
+        if (msg.getChatLineID() == 0) {
+            hasNewMessages = true;
+        }
         currentMessages.add(0, msg);
     }
 

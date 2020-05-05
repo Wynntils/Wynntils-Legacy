@@ -211,19 +211,23 @@ public class ChatOverlay extends GuiNewChat {
             deleteChatLine(chatLineId);
         }
 
-        boolean found = false;
-        for (ChatTab tab : TabManager.getAvailableTabs()) {
-            if (tab.isLowPriority() || !tab.regexMatches(chatComponent)) continue;
-
-            updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
-            found = true;
-        }
-
-        if (!found) {
+        if (chatLineId != 0) {
+            this.updateLine(this.getCurrentTab(), chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+        } else {
+            boolean found = false;
             for (ChatTab tab : TabManager.getAvailableTabs()) {
-                if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
-                    continue;
+                if (tab.isLowPriority() || !tab.regexMatches(chatComponent)) continue;
+
                 updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                found = true;
+            }
+
+            if (!found && chatLineId == 0) {
+                for (ChatTab tab : TabManager.getAvailableTabs()) {
+                    if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
+                        continue;
+                    updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                }
             }
         }
 
