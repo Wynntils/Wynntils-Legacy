@@ -4,9 +4,12 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.CubicSplines;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
+import com.wynntils.modules.map.configs.MapConfig;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.util.math.BlockPos;
@@ -20,17 +23,19 @@ import java.util.*;
 
 public class LootRunPath {
 
+    private static List<CustomColor> COLORS = Arrays.asList(CommonColors.RED, CommonColors.ORANGE, CommonColors.YELLOW, CommonColors.GREEN, CommonColors.BLUE, new CustomColor(63, 0, 255), CommonColors.PURPLE);
+
     private CubicSplines.Spline3D spline;
     private LinkedHashSet<BlockPos> chests;
 
-    private transient List<Location> lastSmoothSample;
+    private transient List<LootRunPath.LootRunPathLocation> lastSmoothSample;
     private transient List<Vector3d> lastSmoothDerivative;
-    private transient List<Location> lastRoughSample;
+    private transient List<LootRunPath.LootRunPathLocation> lastRoughSample;
     private transient List<Vector3d> lastRoughDerivative;
 
-    private transient Long2ObjectMap<List<List<Location>>> lastSmoothSampleByChunk;
+    private transient Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> lastSmoothSampleByChunk;
     private transient Long2ObjectMap<List<List<Vector3d>>> lastSmoothDerivativeByChunk;
-    private transient Long2ObjectMap<List<List<Location>>> lastRoughSampleByChunk;
+    private transient Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> lastRoughSampleByChunk;
     private transient Long2ObjectMap<List<List<Vector3d>>> lastRoughDerivativeByChunk;
 
     public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests) {
@@ -83,7 +88,7 @@ public class LootRunPath {
         return points.isEmpty() ? null : points.get(points.size() - 1);
     }
 
-    private void changed() {
+    public void changed() {
         lastSmoothSample = null;
         lastSmoothDerivative = null;
         lastSmoothSampleByChunk = null;
@@ -94,272 +99,167 @@ public class LootRunPath {
         lastRoughDerivativeByChunk = null;
     }
 
-    public List<Location> getSmoothPoints() {
-        if (lastSmoothSample == null) {
-            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
-            lastSmoothSample = smooth.a;
-            lastSmoothDerivative = smooth.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastSmoothSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastSmoothDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastSmoothSample.size(); i++) {
-                Location location = lastSmoothSample.get(i);
-                Vector3d direction = lastSmoothDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastSmoothSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastSmoothSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastSmoothDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastSmoothSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastSmoothDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
+    private Pair<List<LootRunPath.LootRunPathLocation>, List<Vector3d>> generatePoints(int sampleRate) {
+        Pair<List<Location>, List<Vector3d>> sample = spline.sample(sampleRate);
+        List<Location> rawLocations = sample.a;
+        List<LootRunPath.LootRunPathLocation> locations = new ArrayList<>();
+        Iterator<CustomColor> colorIterator = COLORS.iterator();
+        CustomColor currentColor = null;
+        CustomColor nextColor = colorIterator.next();
+        float changeRed = 0;
+        float changeGreen = 0;
+        float changeBlue = 0;
+        for (int i = 0; i < rawLocations.size(); i++) {
+            if (i % (sampleRate * MapConfig.LootRun.INSTANCE.cycleDistance) == 0) {
+                currentColor = new CustomColor(nextColor);
+                if (!colorIterator.hasNext()) {
+                    colorIterator = COLORS.iterator();
                 }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastSmoothDerivative.get(i));
+                nextColor = colorIterator.next();
+                changeRed = (nextColor.r - currentColor.r) / (sampleRate * MapConfig.LootRun.INSTANCE.cycleDistance);
+                changeGreen = (nextColor.g - currentColor.g) / (sampleRate * MapConfig.LootRun.INSTANCE.cycleDistance);
+                changeBlue = (nextColor.b - currentColor.b) / (sampleRate * MapConfig.LootRun.INSTANCE.cycleDistance);
+            } else {
+                currentColor = new CustomColor(currentColor);
+                currentColor.r += changeRed;
+                currentColor.g += changeGreen;
+                currentColor.b += changeBlue;
             }
+            LootRunPathLocation location = new LootRunPathLocation(rawLocations.get(i), currentColor);
+            locations.add(location);
+        }
+        List<LootRunPath.LootRunPathLocation> locationsSample = locations;
+        List<Vector3d> derivative = sample.b;
+
+        return new Pair<>(locationsSample, derivative);
+    }
+
+    private Pair<Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>>, Long2ObjectMap<List<List<Vector3d>>>> generatePointsByChunk(List<LootRunPathLocation> locationsList, List<Vector3d> derivativesList) {
+        ChunkPos lastChunkPos = null;
+        List<LootRunPath.LootRunPathLocation> lastLocationList = null;
+        List<Vector3d> lastDirectionList = null;
+        Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> sampleByChunk = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<List<List<Vector3d>>> derivativeByChunk = new Long2ObjectOpenHashMap<>();
+        for (int i = 0; i < locationsList.size(); i++) {
+            LootRunPathLocation location = locationsList.get(i);
+            Vector3d direction = derivativesList.get(i);
+            ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.getLocation().x) >> 4, MathHelper.fastFloor(location.getLocation().z) >> 4);
+            if (!currentChunkPos.equals(lastChunkPos)) {
+                if (lastChunkPos != null && location.getLocation().distance(locationsList.get(i - 1).getLocation()) < 32) {
+                    lastLocationList.add(location);
+                    lastDirectionList.add(direction);
+                }
+
+                lastChunkPos = currentChunkPos;
+                sampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
+                derivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
+                lastLocationList = new ArrayList<>();
+                lastDirectionList = new ArrayList<>();
+                sampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
+                derivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
+            }
+            lastLocationList.add(location);
+            lastDirectionList.add(derivativesList.get(i));
+        }
+        return new Pair<>(sampleByChunk, derivativeByChunk);
+    }
+
+    private void generateSmoothPoints() {
+        Pair<List<LootRunPath.LootRunPathLocation>, List<Vector3d>> points = generatePoints(10);
+        this.lastSmoothSample = points.a;
+        this.lastSmoothDerivative = points.b;
+
+        Pair<Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>>, Long2ObjectMap<List<List<Vector3d>>>> pointsByChunk = generatePointsByChunk(lastSmoothSample, lastSmoothDerivative);
+        this.lastSmoothSampleByChunk = pointsByChunk.a;
+        this.lastSmoothDerivativeByChunk = pointsByChunk.b;
+    }
+
+    private void generateRoughPoints() {
+        Pair<List<LootRunPath.LootRunPathLocation>, List<Vector3d>> points = generatePoints(1);
+        this.lastRoughSample = points.a;
+        this.lastRoughDerivative = points.b;
+
+        Pair<Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>>, Long2ObjectMap<List<List<Vector3d>>>> pointsByChunk = generatePointsByChunk(lastRoughSample, lastRoughDerivative);
+        this.lastRoughSampleByChunk = pointsByChunk.a;
+        this.lastRoughDerivativeByChunk = pointsByChunk.b;
+    }
+
+    public List<LootRunPath.LootRunPathLocation> getSmoothPoints() {
+        if (lastSmoothSample == null) {
+            this.generateSmoothPoints();
         }
         return lastSmoothSample;
     }
 
     public List<Vector3d> getSmoothDirections() {
         if (lastSmoothDerivative == null) {
-            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
-            lastSmoothSample = smooth.a;
-            lastSmoothDerivative = smooth.b;
+            this.generateSmoothPoints();
         }
         return lastSmoothDerivative;
     }
 
-    public Long2ObjectMap<List<List<Location>>> getSmoothPointsByChunk() {
+    public Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> getSmoothPointsByChunk() {
         if (lastSmoothSampleByChunk == null) {
-            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
-            lastSmoothSample = smooth.a;
-            lastSmoothDerivative = smooth.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastSmoothSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastSmoothDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastSmoothSample.size(); i++) {
-                Location location = lastSmoothSample.get(i);
-                Vector3d direction = lastSmoothDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastSmoothSample.get(i - 1)) < 32D) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastSmoothSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastSmoothDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastSmoothSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastSmoothDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastSmoothDerivative.get(i));
-            }
+            this.generateSmoothPoints();
         }
         return lastSmoothSampleByChunk;
     }
 
     public Long2ObjectMap<List<List<Vector3d>>> getSmoothDirectionsByChunk() {
         if (lastSmoothDerivativeByChunk == null) {
-            Pair<List<Location>, List<Vector3d>> smooth = spline.sample();
-            lastSmoothSample = smooth.a;
-            lastSmoothDerivative = smooth.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastSmoothSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastSmoothDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastSmoothSample.size(); i++) {
-                Location location = lastSmoothSample.get(i);
-                Vector3d direction = lastSmoothDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastSmoothSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastSmoothSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastSmoothDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastSmoothSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastSmoothDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastSmoothDerivative.get(i));
-            }
+            this.generateSmoothPoints();
         }
         return lastSmoothDerivativeByChunk;
     }
 
-    public List<Location> getRoughPoints() {
+    public List<LootRunPath.LootRunPathLocation> getRoughPoints() {
         if (lastRoughSample == null) {
-            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
-            lastRoughSample = rough.a;
-            lastRoughDerivative = rough.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastRoughSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastRoughDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastRoughSample.size(); i++) {
-                Location location = lastRoughSample.get(i);
-                Vector3d direction = lastRoughDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastRoughSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastRoughSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastRoughDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastRoughSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastRoughDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastRoughDerivative.get(i));
-            }
+            this.generateRoughPoints();
         }
         return lastRoughSample;
     }
 
     public List<Vector3d> getRoughDirections() {
         if (lastRoughDerivative == null) {
-            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
-            lastRoughSample = rough.a;
-            lastRoughDerivative = rough.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastRoughSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastRoughDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastRoughSample.size(); i++) {
-                Location location = lastRoughSample.get(i);
-                Vector3d direction = lastRoughDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastRoughSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastRoughSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastRoughDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastRoughSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastRoughDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastRoughDerivative.get(i));
-            }
+            this.generateRoughPoints();
         }
         return lastRoughDerivative;
     }
 
-    public Long2ObjectMap<List<List<Location>>> getRoughPointsByChunk() {
+    public Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> getRoughPointsByChunk() {
         if (lastRoughSampleByChunk == null) {
-            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
-            lastRoughSample = rough.a;
-            lastRoughDerivative = rough.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastRoughSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastRoughDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastRoughSample.size(); i++) {
-                Location location = lastRoughSample.get(i);
-                Vector3d direction = lastRoughDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastRoughSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastRoughSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastRoughDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastRoughSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastRoughDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastRoughDerivative.get(i));
-            }
+            this.generateRoughPoints();
         }
         return lastRoughSampleByChunk;
     }
 
     public Long2ObjectMap<List<List<Vector3d>>> getRoughDirectionsByChunk() {
         if (lastRoughDerivativeByChunk == null) {
-            Pair<List<Location>, List<Vector3d>> rough = spline.sample(1);
-            lastRoughSample = rough.a;
-            lastRoughDerivative = rough.b;
-
-            ChunkPos lastChunkPos = null;
-            List<Location> lastLocationList = null;
-            List<Vector3d> lastDirectionList = null;
-            lastRoughSampleByChunk = new Long2ObjectOpenHashMap<>();
-            lastRoughDerivativeByChunk = new Long2ObjectOpenHashMap<>();
-            for (int i = 0; i < lastRoughSample.size(); i++) {
-                Location location = lastRoughSample.get(i);
-                Vector3d direction = lastRoughDerivative.get(i);
-                ChunkPos currentChunkPos = new ChunkPos(MathHelper.fastFloor(location.x) >> 4, MathHelper.fastFloor(location.z) >> 4);
-                if (!currentChunkPos.equals(lastChunkPos)) {
-                    if (lastChunkPos != null && location.distance(lastRoughSample.get(i - 1)) < 32) {
-                        lastLocationList.add(location);
-                        lastDirectionList.add(direction);
-                    } else {
-                        lastLocationList.add(null);
-                        lastDirectionList.add(null);
-                    }
-
-                    lastChunkPos = currentChunkPos;
-                    lastRoughSampleByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastRoughDerivativeByChunk.putIfAbsent(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z), new ArrayList<>());
-                    lastLocationList = new ArrayList<>();
-                    lastDirectionList = new ArrayList<>();
-                    lastRoughSampleByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastLocationList);
-                    lastRoughDerivativeByChunk.get(ChunkPos.asLong(currentChunkPos.x, currentChunkPos.z)).add(lastDirectionList);
-                }
-                lastLocationList.add(location);
-                lastDirectionList.add(lastRoughDerivative.get(i));
-            }
+            this.generateRoughPoints();
         }
         return lastRoughDerivativeByChunk;
     }
 
     public boolean isEmpty() {
         return getPoints().isEmpty();
+    }
+
+    public class LootRunPathLocation {
+        private Location location;
+        private CustomColor color;
+
+        public LootRunPathLocation(Location location, CustomColor color) {
+            this.location = location;
+            this.color = color;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
+        public CustomColor getColor() {
+            return color;
+        }
     }
 
 }

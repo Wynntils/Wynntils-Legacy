@@ -9,6 +9,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
+import com.wynntils.modules.map.instances.LootRunPath;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -38,7 +39,7 @@ import java.util.List;
 
 public class PointRenderer {
 
-    public static void drawTexturedLines(Texture texture, Long2ObjectMap<List<List<Location>>> points, Long2ObjectMap<List<List<Vector3d>>> directions, CustomColor color, float width) {
+    public static void drawTexturedLines(Texture texture, Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> points, Long2ObjectMap<List<List<Vector3d>>> directions, CustomColor color, float width) {
         List<ChunkPos> chunks = new ArrayList<>();
         int renderDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks;
         for (int x = -renderDistance; x <= renderDistance; x++) {
@@ -53,7 +54,6 @@ public class PointRenderer {
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        color.applyColor();
 
         texture.bind();
 
@@ -61,16 +61,16 @@ public class PointRenderer {
             if (!Minecraft.getMinecraft().world.isChunkGeneratedAt(chunk.x, chunk.z)) {
                 continue;
             }
-            List<List<Location>> pointsInChunk = points.get(ChunkPos.asLong(chunk.x, chunk.z));
+            List<List<LootRunPath.LootRunPathLocation>> pointsInChunk = points.get(ChunkPos.asLong(chunk.x, chunk.z));
             List<List<Vector3d>> directionsInChunk = directions.get(ChunkPos.asLong(chunk.x, chunk.z));
             if (pointsInChunk != null) {
                 for (int i = 0; i < pointsInChunk.size(); ++i) {
-                    List<Location> pointsInRoute = pointsInChunk.get(i);
+                    List<LootRunPath.LootRunPathLocation> pointsInRoute = pointsInChunk.get(i);
                     List<Vector3d> directionsInRoute = directionsInChunk.get(i);
                     boolean disable = false;
-                    List<Pair<Location, Vector3d>> toRender = new ArrayList<>();
+                    List<Pair<LootRunPath.LootRunPathLocation, Vector3d>> toRender = new ArrayList<>();
                     for (int k = 0; k < pointsInRoute.size(); ++k) {
-                        Point3d start = new Point3d(pointsInRoute.get(k));
+                        Point3d start = new Point3d(pointsInRoute.get(k).getLocation());
                         World world = Minecraft.getMinecraft().world;
                         BlockPos minPos = new BlockPos(start.x - 0.3D, start.y - 1D, start.z - 0.3D);
                         BlockPos maxPos = new BlockPos(start.x + 0.3D, start.y - 1D, start.z + 0.3D);
@@ -90,10 +90,13 @@ public class PointRenderer {
 
                         if (validBlock) {
                             disable = false;
-                            for (Pair<Location, Vector3d> render : toRender) {
-                                Point3d startRender = new Point3d(render.a);
+                            for (Pair<LootRunPath.LootRunPathLocation, Vector3d> render : toRender) {
+                                Point3d startRender = new Point3d(render.a.getLocation());
                                 Vector3d direction = new Vector3d(render.b);
-                                Point3d end = new Point3d(render.a);
+                                Point3d end = new Point3d(render.a.getLocation());
+                                CustomColor locationColor = color == CommonColors.RAINBOW ? render.a.getColor() : color;
+                                locationColor.applyColor();
+
                                 startRender.y -= .24;
 
                                 direction.normalize();
@@ -115,7 +118,10 @@ public class PointRenderer {
                         }
 
                         Vector3d direction = new Vector3d(directionsInRoute.get(k));
-                        Point3d end = new Point3d(pointsInRoute.get(k));
+                        Point3d end = new Point3d(pointsInRoute.get(k).getLocation());
+                        CustomColor locationColor = color == CommonColors.RAINBOW ? pointsInRoute.get(k).getColor() : color;
+                        locationColor.applyColor();
+
                         start.y -= .24;
 
                         direction.normalize();
@@ -159,10 +165,14 @@ public class PointRenderer {
                         drawTexturedLine(start, end, width);
                     }
 
-                    for (Pair<Location, Vector3d> render : toRender) {
-                        Point3d start = new Point3d(render.a);
+                    for (Pair<LootRunPath.LootRunPathLocation, Vector3d> render : toRender) {
+                        Point3d start = new Point3d(render.a.getLocation());
                         Vector3d direction = new Vector3d(render.b);
-                        Point3d end = new Point3d(render.a);
+                        Point3d end = new Point3d(render.a.getLocation());
+
+                        CustomColor locationColor = color == CommonColors.RAINBOW ? render.a.getColor() : color;
+                        locationColor.applyColor();
+
                         start.y -= .24;
 
                         direction.normalize();
@@ -240,7 +250,7 @@ public class PointRenderer {
         } tess.draw();
     }
 
-    public static void drawLines(Long2ObjectMap<List<List<Location>>> locations, CustomColor color) {
+    public static void drawLines(Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> locations, CustomColor color) {
         if (locations.isEmpty()) return;
 
         List<ChunkPos> chunks = new ArrayList<>();
@@ -261,7 +271,6 @@ public class PointRenderer {
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        color.applyColor();
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buffer = tess.getBuffer();
@@ -274,28 +283,27 @@ public class PointRenderer {
                 if (!Minecraft.getMinecraft().world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
                     continue;
                 }
-                List<List<Location>> locationsInChunk = locations.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
+                List<List<LootRunPath.LootRunPathLocation>> locationsInChunk = locations.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
                 if (locationsInChunk != null) {
-                    for (List<Location> locationsInRoute : locationsInChunk) {
-                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                    for (List<LootRunPath.LootRunPathLocation> locationsInRoute : locationsInChunk) {
+                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
                         boolean disabled = false;
-                        List<Location> toRender = new ArrayList<>();
+                        List<LootRunPath.LootRunPathLocation> toRender = new ArrayList<>();
                         boolean disable = false;
                         BlockPos lastBlockPos = null;
-                        for (Location loc : locationsInRoute) {
+                        for (LootRunPath.LootRunPathLocation loc : locationsInRoute) {
                             boolean pauseDraw = false;
-                            BlockPos blockPos = loc.toBlockPos();
+                            BlockPos blockPos = loc.getLocation().toBlockPos();
 
                             World world = Minecraft.getMinecraft().world;
 
                             if (!blockPos.equals(lastBlockPos)) {
-                                BlockPos minPos = new BlockPos(loc.x - 0.3D, loc.y - 1D, loc.z - 0.3D);
-                                BlockPos maxPos = new BlockPos(loc.x + 0.3D, loc.y - 1D, loc.z + 0.3D);
+                                BlockPos minPos = new BlockPos(loc.getLocation().x - 0.3D, loc.getLocation().y - 1D, loc.getLocation().z - 0.3D);
+                                BlockPos maxPos = new BlockPos(loc.getLocation().x + 0.3D, loc.getLocation().y - 1D, loc.getLocation().z + 0.3D);
                                 Iterable<BlockPos> blocks = BlockPos.getAllInBox(minPos, maxPos);
                                 boolean barrier = false;
                                 boolean validBlock = false;
-                                for (Iterator<BlockPos> iterator = blocks.iterator(); iterator.hasNext();) {
-                                    BlockPos blockInArea = iterator.next();
+                                for (BlockPos blockInArea : blocks) {
                                     IBlockState blockStateInArea = world.getBlockState(blockInArea);
                                     if (blockStateInArea.getBlock() == Blocks.BARRIER) {
                                         barrier = true;
@@ -308,11 +316,13 @@ public class PointRenderer {
                                 if (validBlock) {
                                     disable = false;
                                     if (disabled) {
-                                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                                        buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
                                         disabled = false;
                                     }
-                                    for (Location location : toRender) {
-                                        buffer.pos(location.x, location.y, location.z).endVertex();
+                                    for (LootRunPath.LootRunPathLocation location : toRender) {
+                                        Location rawLocation = location.getLocation();
+                                        CustomColor locationColor = color == CommonColors.RAINBOW ? location.getColor() : color;
+                                        buffer.pos(rawLocation.x, rawLocation.y, rawLocation.z).color(locationColor.r, locationColor.g, locationColor.b, 1f).endVertex();
                                     }
                                     toRender.clear();
                                 } else if (barrier) {
@@ -335,18 +345,22 @@ public class PointRenderer {
 
                             if (!pauseDraw) {
                                 if (disabled) {
-                                    buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+                                    buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
                                     disabled = false;
                                 }
-                                buffer.pos(loc.x, loc.y, loc.z).endVertex();
+                                Location rawLocation = loc.getLocation();
+                                CustomColor locationColor = color == CommonColors.RAINBOW ? loc.getColor() : color;
+                                buffer.pos(rawLocation.x, rawLocation.y, rawLocation.z).color(locationColor.r, locationColor.g, locationColor.b, 1f).endVertex();
                             } else if (!disabled) {
                                 tess.draw();
                                 disabled = true;
                             }
                         }
                         if (!disabled) {
-                            for (Location location : toRender) {
-                                buffer.pos(location.x, location.y, location.z).endVertex();
+                            for (LootRunPath.LootRunPathLocation location : toRender) {
+                                Location rawLocation = location.getLocation();
+                                CustomColor locationColor = color == CommonColors.RAINBOW ? location.getColor() : color;
+                                buffer.pos(rawLocation.x, rawLocation.y, rawLocation.z).color(locationColor.r, locationColor.g, locationColor.b, 1f).endVertex();
                             }
                             tess.draw();
                         }

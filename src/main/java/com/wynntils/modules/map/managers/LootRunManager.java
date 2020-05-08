@@ -6,6 +6,8 @@ package com.wynntils.modules.map.managers;
 
 import com.google.gson.*;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -178,11 +180,12 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (activePath != null) {
+            CustomColor color = MapConfig.LootRun.INSTANCE.rainbowLootRun ? CommonColors.RAINBOW : MapConfig.LootRun.INSTANCE.activePathColour;
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
                 PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPointsByChunk(),
-                        activePath.getRoughDirectionsByChunk(), MapConfig.LootRun.INSTANCE.activePathColour, .5f);
+                        activePath.getRoughDirectionsByChunk(), color, .5f);
             } else {
-                PointRenderer.drawLines(activePath.getSmoothPointsByChunk(), MapConfig.LootRun.INSTANCE.activePathColour);
+                PointRenderer.drawLines(activePath.getSmoothPointsByChunk(), color);
             }
 
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));

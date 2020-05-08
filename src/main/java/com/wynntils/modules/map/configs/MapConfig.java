@@ -14,6 +14,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
@@ -186,6 +187,20 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?", order = 3)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor recordingPathColour = CommonColors.RED;
+
+        @Setting(displayName = "Show Loot Run Paths as Rainbow", description = "Should loot run paths be shown in colours of the rainbow?", order = 4)
+        public boolean rainbowLootRun = false;
+
+        @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
+        @Setting.Limitations.IntLimit(min = 1, max = 500)
+        public int cycleDistance = 20;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.equals("cycleDistance") && LootRunManager.getActivePath() != null) {
+                LootRunManager.getActivePath().changed();
+            }
+        }
 
         public enum PathType {
 
