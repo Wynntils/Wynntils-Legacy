@@ -313,12 +313,15 @@ public class WebManager {
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
-        main.remove("request");
-
-        Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
-        }.getType();
-
-        return gson.fromJson(main, type);
+        if (!main.has("message")) {
+            main.remove("request");
+    
+            Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {}.getType();
+    
+            return gson.fromJson(main, type);
+        } else {
+            return new HashMap<>();
+        }
     }
 
     /**
