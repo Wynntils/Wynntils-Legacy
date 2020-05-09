@@ -10,6 +10,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
+import com.wynntils.modules.core.config.CoreDBConfig;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -62,7 +63,9 @@ public class SettingsContainer {
         }
 
         try {
-            fromCloud = SettingsManager.getCloudSettings(m, holder);
+            if (CoreDBConfig.INSTANCE.enableCloudSync) {
+                fromCloud = SettingsManager.getCloudSettings(m, holder);
+            }
         } catch (Exception ex) { ex.printStackTrace(); }
 
         try {
