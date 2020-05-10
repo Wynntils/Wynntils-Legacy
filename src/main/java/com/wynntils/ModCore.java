@@ -14,6 +14,7 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -74,13 +75,13 @@ public class ModCore {
         if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
 
         FrameworkManager.postEnableModules();
-        Textures.loadTextures();
-        Mappings.loadMappings();
 
         // HeyZeer0: This will reload our cache if a texture or similar is applied
+        // This also immediately loads it
         ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
             Textures.loadTextures();
             Mappings.loadMappings();
+            MapApiIcon.resetApiMarkers();
         });
 
         if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {

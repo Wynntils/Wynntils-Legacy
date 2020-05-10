@@ -29,7 +29,7 @@ public class Mappings {
 
             for (Field f : clazz.getDeclaredFields()) {
                 try {
-                    if (f.get(null) != null || !f.getType().isAssignableFrom(JsonObject.class)) continue;
+                    if (!f.getType().isAssignableFrom(JsonObject.class)) continue;
 
                     ResourceLocation rc = new ResourceLocation(mainPath + f.getName() + ".json");
                     f.set(null, new JsonParser().parse(IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8)));

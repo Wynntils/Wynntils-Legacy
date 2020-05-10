@@ -28,7 +28,7 @@ public class Textures {
             String path = Reference.MOD_ID + ":textures/" + clazz.getName().split("\\$")[1].toLowerCase(Locale.ROOT) + "/";
             for (Field f : clazz.getDeclaredFields()) {
                 try {
-                    if (f.get(null) == null && f.getType().isAssignableFrom(AssetsTexture.class)) {
+                    if (f.getType().isAssignableFrom(AssetsTexture.class)) {
                         String file = path + f.getName() + ".png";
                         f.set(null, new AssetsTexture(new ResourceLocation(file)));
                     }
