@@ -17,19 +17,14 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.client.resource.IResourceType;
-import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.function.Predicate;
 
 @Mod(
         name = Reference.NAME,
@@ -83,16 +78,10 @@ public class ModCore {
 
         // HeyZeer0: This will reload our cache if a texture or similar is applied
         // This also immediately loads it
-        ((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new ISelectiveResourceReloadListener() {
-
-            @Override
-            public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-                if (resourcePredicate.test(VanillaResourceType.TEXTURES)) {
-                    Textures.loadTextures();
-                    Mappings.loadMappings();
-                    MapApiIcon.resetApiMarkers();
-                }
-            }
+        ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
+            Textures.loadTextures();
+            Mappings.loadMappings();
+            MapApiIcon.resetApiMarkers();
         });
 
         if (MapConfig.INSTANCE.enabledMapIcons.containsKey("tnt")) {
