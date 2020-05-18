@@ -3,7 +3,6 @@
  */
 package com.wynntils.modules.core.commands;
 
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;
@@ -21,8 +20,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
+
+    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear]";
 
     private String[] directions = {
         "north",
@@ -55,12 +58,28 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "compass [<x> <z> | <direction> | clear]";
+        return USAGE;
+    }
+
+    /**
+     * Parse a single minecraft coordinate number. A ~ prefix means a relative position
+     * @throws NumberFormatException
+     */
+    private int getSingleCoordinate(String str, int relativePosition) throws NumberFormatException {
+        if (str.startsWith("~")) {
+            str = str.substring(1);
+            if (str.isEmpty()) {
+                return relativePosition;
+            }
+        } else {
+            relativePosition = 0;
+        }
+        return relativePosition + Integer.parseInt(str);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
-        if (args.length == 0) throw new WrongUsageException("/compass [<x> <z> | <direction> | clear]");
+        if (args.length == 0) throw new WrongUsageException("/" + USAGE);
 
         if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
             if (CompassManager.getCompassLocation() != null) {
@@ -175,71 +194,60 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             return;
         }
 
-        if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
-            int x = 0; int z = 0;
+        if (args.length >= 2) {
+            String argument = String.join(" ", args);
 
-            boolean invalid = false;
-            if (args[0].charAt(0) == '~') {
-                x = (int) Minecraft.getMinecraft().player.posX;
+            // Accept fuzzy coordinates like "[x] [<punctuation>] <coord> [<punctuation>] [z] <coord>"
+            // where <punctuation> is any of ":.,", <coord> is ~, ~<int> or <int> and whitespace is liberally accepted
+            Pattern patternXY = Pattern.compile("^[:., ]*[xX]?[:., ]*(~|~?-?[0-9]+)[:., ]+[zZ]?[:., ]*(~|~?-?[0-9]+)[:., ]*$");
+            Matcher matcherXY = patternXY.matcher(argument);
+            // And an alternative with a [y] <y> in between x and z, which is ignored but allowed
+            Pattern patternXYZ = Pattern.compile("^[:., ]*[xX]?[:., ]*(~|~?-?[0-9]+)[:., ]+[yY]?[:., ]*(?:~|~?-?[0-9]+)[:., ]+[zZ]?[:., ]*(~|~?-?[0-9]+)[:., ]*$");
+            Matcher matcherXYZ = patternXYZ.matcher(argument);
 
-                if (args[0].length() != 1) {
-                    String offset = args[0].substring(1);
-                    if (!StringUtils.isValidInteger(offset)) {
-                        invalid = true;
-                    } else {
-                        x += Integer.parseInt(offset);
-                    }
-                }
-            } else if (!StringUtils.isValidInteger(args[0])) {
-                invalid = true;
-            } else {
-                x = Integer.parseInt(args[0]);
+            String xStr;
+            String zStr;
+
+            if (matcherXY.find()) {
+                xStr = matcherXY.group(1);
+                zStr = matcherXY.group(2);
+            }  else if (matcherXYZ.find()) {
+                xStr = matcherXYZ.group(1);
+                zStr = matcherXYZ.group(2);
+            }  else {
+                throw new CommandException("Invalid arguments: /" + USAGE);
             }
 
-            if (!invalid) {
-                if (args[1].charAt(0) == '~') {
-                    z = ((int) Minecraft.getMinecraft().player.posZ);
-                    if (args[1].length() != 1) {
-                        String offset = args[1].substring(1);
+            try {
+                int x = getSingleCoordinate(xStr, (int) Minecraft.getMinecraft().player.posX);
+                int z = getSingleCoordinate(zStr, (int) Minecraft.getMinecraft().player.posZ);
 
-                        if (!StringUtils.isValidInteger(offset)) {
-                            invalid = true;
-                        } else {
-                            z += Integer.parseInt(offset);
-                        }
-                    }
-                } else if (!StringUtils.isValidInteger(args[1])) {
-                    invalid = true;
-                } else {
-                    z = Integer.parseInt(args[1]);
-                }
+                CompassManager.setCompassLocation(new Location(x, 0, z));
+
+                TextComponentString text = new TextComponentString("");
+                text.getStyle().setColor(TextFormatting.GREEN);
+                text.appendText("Compass is now pointing towards (");
+
+                TextComponentString xCoordinateText = new TextComponentString(Integer.toString(x));
+                xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+                text.appendSibling(xCoordinateText);
+
+                text.appendText(", ");
+
+                TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
+                zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+                text.appendSibling(zCoordinateText);
+
+                text.appendText(").");
+                sender.sendMessage(text);
+
+                return;
+            } catch (NumberFormatException e) {
+                throw new CommandException("Invalid coordinates passed to /compass");
             }
-
-            if (invalid) throw new CommandException("The coordinate passed was too big");
-
-            CompassManager.setCompassLocation(new Location(x, 0, z));
-
-            TextComponentString text = new TextComponentString("");
-            text.getStyle().setColor(TextFormatting.GREEN);
-            text.appendText("Compass is now pointing towards (");
-
-            TextComponentString xCoordinateText = new TextComponentString(Integer.toString(x));
-            xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
-            text.appendSibling(xCoordinateText);
-
-            text.appendText(", ");
-
-            TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
-            zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
-            text.appendSibling(zCoordinateText);
-
-            text.appendText(").");
-            sender.sendMessage(text);
-
-            return;
         }
 
-        throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
+        throw new CommandException("Invalid arguments: /" + USAGE);
     }
 
     @Override
