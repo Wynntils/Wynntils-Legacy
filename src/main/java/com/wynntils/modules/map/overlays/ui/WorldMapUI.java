@@ -74,6 +74,8 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
         List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
+        // Handles map labels from map.wynncraft.com
+        List<MapIcon> mapLabels = MapIcon.getLabels();
         // HeyZeer0: Handles all waypoints
         List<MapIcon> wpMapIcons = MapIcon.getWaypoints();
         List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
@@ -86,6 +88,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         for (MapIcon i : Iterables.concat(
             apiMapIcons,
+            mapLabels,
             wpMapIcons,
             pathWpMapIcons,
             friendsIcons

@@ -57,6 +57,7 @@ public class WebManager {
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
+    private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
@@ -99,6 +100,7 @@ public class WebManager {
         updateTerritories(handler);
         updateItemList(handler);
         updateMapMarkers(handler);
+        updateMapLabels(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
         updateDiscoveries(handler);
@@ -161,6 +163,10 @@ public class WebManager {
 
     public static ArrayList<MapMarkerProfile> getMapMarkers() {
         return mapMarkers;
+    }
+
+    public static ArrayList<MapLabelProfile> getMapLabels() {
+        return mapLabels;
     }
 
     public static Iterable<MapMarkerProfile> getApiMarkers() {
@@ -370,6 +376,42 @@ public class WebManager {
                 return true;
             })
         );
+    }
+
+    /**
+     * Update all Wynn MapLabels on the {@link HashMap} mapLabels
+     */
+    public static void updateMapLabels(RequestHandler handler) {
+        /*
+        // Use this when/if the map_labels.json file is added to Athena.
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLabels";
+        handler.addRequest(new Request(url, "map_labels")
+                .cacheTo(new File(API_CACHE_ROOT, "map_labels.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLabels"))
+                .handleJsonObject(main -> {
+                    JsonArray jsonArray = main.getAsJsonArray("labels");
+                    Type type = new TypeToken<ArrayList<MapLabelProfile>>() {
+                    }.getType();
+
+                    mapLabels = gson.fromJson(jsonArray, type);
+                    return true;
+                })
+        );
+         */
+        try {
+            FileInputStream jsonFile = new FileInputStream("/Users/ihse/hacking/Wynntils/src/main/resources/assets/wynntils/labels.json");
+            String content = IOUtils.toString(jsonFile, StandardCharsets.UTF_8);
+            JsonObject main = new JsonParser().parse(content).getAsJsonObject();
+            JsonArray jsonArray = main.getAsJsonArray("labels");
+            Type type = new TypeToken<ArrayList<MapLabelProfile>>() {
+            }.getType();
+
+            mapLabels = gson.fromJson(jsonArray, type);
+        } catch (java.io.FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
