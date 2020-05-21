@@ -37,7 +37,7 @@ public class WorldMapLabel extends WorldMapIcon {
     private CustomColor getColorFromLayer() {
         CustomColor color;
         if (label.getLayer() == 1) {
-            color = new CustomColor(1.0f, 0, 0);
+            color = new CustomColor(1.0f, 0.2f, 0.2f);
         } else if (label.getLayer() == 2) {
             color = new CustomColor(1.0f, 1.0f, 0);
         } else {
