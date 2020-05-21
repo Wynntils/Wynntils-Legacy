@@ -63,8 +63,10 @@ public class SettingsContainer {
         }
 
         try {
-            if (CoreDBConfig.INSTANCE.enableCloudSync) {
-                fromCloud = SettingsManager.getCloudSettings(m, holder);
+            if (CoreDBConfig.INSTANCE != null) {
+                if (CoreDBConfig.INSTANCE.enableCloudSync) {
+                    fromCloud = SettingsManager.getCloudSettings(m, holder);
+                }
             }
         } catch (Exception ex) { ex.printStackTrace(); }
 
