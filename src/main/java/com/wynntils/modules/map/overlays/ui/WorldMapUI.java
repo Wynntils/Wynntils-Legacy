@@ -17,8 +17,10 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapLabel;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.map.overlays.objects.WorldMapLabel;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -95,7 +97,13 @@ public class WorldMapUI extends GuiMovementScreen {
             friendsIcons
         )) {
             if (i.isEnabled(false)) {
-                icons.add(new WorldMapIcon(i));
+                WorldMapIcon icon;
+                if (i instanceof MapLabel) {
+                    icon = new WorldMapLabel((MapLabel) i);
+                } else {
+                    icon = new WorldMapIcon(i);
+                }
+                icons.add(icon);
             }
         }
     }
