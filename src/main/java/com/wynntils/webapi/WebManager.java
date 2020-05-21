@@ -25,6 +25,8 @@ import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -399,8 +401,9 @@ public class WebManager {
         );
          */
         try {
-            FileInputStream jsonFile = new FileInputStream("/Users/ihse/hacking/Wynntils/src/main/resources/assets/wynntils/labels.json");
-            String content = IOUtils.toString(jsonFile, StandardCharsets.UTF_8);
+            ResourceLocation rl = new ResourceLocation(Reference.MOD_ID + ":labels.json");
+            InputStream stream = Minecraft.getMinecraft().getResourceManager().getResource(rl).getInputStream();
+            String content = IOUtils.toString(stream, StandardCharsets.UTF_8);
             JsonObject main = new JsonParser().parse(content).getAsJsonObject();
             JsonArray jsonArray = main.getAsJsonArray("labels");
             Type type = new TypeToken<ArrayList<MapLabelProfile>>() {
