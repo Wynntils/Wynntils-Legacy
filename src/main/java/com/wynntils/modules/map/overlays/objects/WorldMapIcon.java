@@ -34,6 +34,16 @@ public class WorldMapIcon {
         }
         if (info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
             alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
+            if (alpha > 1.0) alpha = 1.0f;
+
+            if (info instanceof MapLabel) {
+                MapLabel label = (MapLabel) info;
+
+                if (label.getLayer() == 1) {
+                    alpha = ((zoom - 80) / 60.0f);
+                    if (alpha > 1.0) alpha = 1.0f;
+                }
+            }
 
             if (alpha <= 0) {
                 shouldRender = false;
@@ -73,8 +83,12 @@ public class WorldMapIcon {
 
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
-
-        info.renderAt(renderer, axisX, axisZ, multi, blockScale);
+        if (info instanceof MapLabel) {
+            MapLabel label = (MapLabel) info;
+            label.renderAt(renderer, axisX, axisZ, multi, blockScale, alpha);
+        } else {
+            info.renderAt(renderer, axisX, axisZ, multi, blockScale);
+        }
 
         GlStateManager.color(1, 1, 1, 1);
     }
@@ -83,9 +97,21 @@ public class WorldMapIcon {
         if (!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
-        String name = info.getName();
-        if (name != null) {
-            renderer.drawString(name, (int) (axisX), (int) (axisZ) - 20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        if (info instanceof MapLabel) {
+            MapLabel label = (MapLabel) info;
+            String level = label.getLevel();
+            if (level != null) {
+                String lvStr = "[Lv. " + level + "]";
+                renderer.drawString(lvStr,  (int) (axisX), (int) (axisZ) + 8, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            }
+            // Force opaque rendering by artificially high alpha
+            renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), label.getColorFromLayer(100f));
+
+        } else {
+            String name = info.getName();
+            if (name != null) {
+                renderer.drawString(name, (int) (axisX), (int) (axisZ) - 20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            }
         }
     }
 }

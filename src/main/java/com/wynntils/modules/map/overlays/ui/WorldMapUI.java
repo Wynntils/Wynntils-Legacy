@@ -45,6 +45,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected float centerPositionX = Float.NaN;
     protected float centerPositionZ = Float.NaN;
+    // Zoom goes from 300 (whole world) to -10 (max details)
     protected int zoom = 0;
 
     protected List<WorldMapIcon> icons = new ArrayList<>();
@@ -88,9 +89,9 @@ public class WorldMapUI extends GuiMovementScreen {
 
         for (MapIcon i : Iterables.concat(
             apiMapIcons,
-            mapLabels,
             wpMapIcons,
             pathWpMapIcons,
+            mapLabels,
             friendsIcons
         )) {
             if (i.isEnabled(false)) {

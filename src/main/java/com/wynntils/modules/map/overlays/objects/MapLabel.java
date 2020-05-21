@@ -5,7 +5,8 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapLabelProfile;
 
@@ -31,20 +32,34 @@ public class MapLabel extends MapIcon {
         return mlp.getName();
     }
 
+    public String getLevel() {
+        return mlp.getLevel();
+    }
+
+    public int getLayer() {
+        return mlp.getLayer();
+    }
+
     @Override public float getSizeX() {
-        return 8;
+        return ScreenRenderer.fontRenderer.getStringWidth(getName()) / 2;
     }
 
     @Override public float getSizeZ() {
-        return 8;
+        return 4;
     }
 
     @Override public int getZoomNeeded() {
-        return -1000;
+        if (mlp.getLayer() == 3) {
+            return 110;
+        } else if (mlp.getLayer() == 2) {
+            return 270;
+        } else {
+            return 400;
+        }
     }
 
     @Override public boolean isEnabled(boolean forMinimap) {
-        return !forMinimap;
+        return !forMinimap && MapConfig.WorldMap.INSTANCE.showLabels;
     }
 
     @Override
@@ -57,11 +72,25 @@ public class MapLabel extends MapIcon {
         return false;
     }
 
+    public CustomColor getColorFromLayer(float alpha) {
+        CustomColor color;
+        if (getLayer() == 1) {
+            color = new CustomColor(1.0f, 0, 0, 0.7f * alpha);
+        } else if (getLayer() == 2) {
+            color = new CustomColor(1.0f, 1.0f, 0, 0.85f * alpha);
+        } else {
+            color = new CustomColor(1.0f, 1.0f, 1.0f, 0.7f * alpha);
+        }
+        return color;
+    }
+
+    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale, float alpha) {
+        renderer.drawString(getName(), centreX - getSizeX(), centreZ - getSizeZ(), getColorFromLayer(alpha));
+    }
+
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
-        float sizeX = getSizeX() * sizeMultiplier;
-        float sizeZ = getSizeZ() * sizeMultiplier;
-        renderer.drawCenteredString(mlp.getName(), centreX - sizeX, centreZ - sizeZ, CommonColors.YELLOW);
+        renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale, 1.0f);
     }
 
     private static List<MapIcon> labels = null;

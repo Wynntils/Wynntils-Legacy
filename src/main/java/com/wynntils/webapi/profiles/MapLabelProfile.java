@@ -14,7 +14,11 @@ public class MapLabelProfile {
     int layer;
 
     public MapLabelProfile(String name, int x, int y, int z, int layer, String level) {
-        this.name = name;
+        if (layer == 1) {
+            this.name = name.toUpperCase();
+        } else {
+            this.name = name;
+        }
         this.x = x;
         this.y = y;
         this.z = z;
