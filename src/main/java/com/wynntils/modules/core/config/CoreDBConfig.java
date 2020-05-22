@@ -12,7 +12,6 @@ import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.account.CloudConfigurations;
 
 @SettingsInfo(name = "main", displayPath = "Core")
 public class CoreDBConfig extends SettingsClass {
@@ -49,9 +48,6 @@ public class CoreDBConfig extends SettingsClass {
 
     @Setting(displayName = "Main Menu Wynncraft Button", description = "Should a button be added to the main menu that allows you to connect to Wynncraft directly?")
     public boolean addMainMenuButton = true;
-
-    @Setting(displayName = "Enable Cloud Sync", description = "Enables the uploading and downloading of settings.\nUseful when:\n§8- §7Switching PCs frequently\n\n§cNote: Enable Cloud Back-ups has overlapping effects")
-    public boolean enableCloudSync = true;
 
     @Setting(displayName = "Enable Cloud Back-ups", description = "Enables the uploading of settings.\nUseful when:\n§8- §7Switching to a new PC\n§8- §7Asking Wynntils for help\n\n§cNote: Enable Cloud Sync has overlapping effects")
     public boolean enableCloudBackup = true;
