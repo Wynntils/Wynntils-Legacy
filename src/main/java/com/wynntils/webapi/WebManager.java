@@ -25,8 +25,6 @@ import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -101,8 +99,7 @@ public class WebManager {
 
         updateTerritories(handler);
         updateItemList(handler);
-        updateMapMarkers(handler);
-        updateMapLabels(handler);
+        updateMapLocations(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
         updateDiscoveries(handler);
@@ -359,62 +356,32 @@ public class WebManager {
     }
 
     /**
-     * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
+     * Update all Wynn MapLocation on the {@link HashMap} mapMarkers and {@link HashMap} mapLabels
      */
-    public static void updateMapMarkers(RequestHandler handler) {
+    public static void updateMapLocations(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLocations";
-        handler.addRequest(new Request(url, "map_markers")
-            .cacheTo(new File(API_CACHE_ROOT, "map_markers.json"))
+        handler.addRequest(new Request(url, "map_locations")
+            .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
             .handleJsonObject(main -> {
-                JsonArray jsonArray = main.getAsJsonArray("locations");
-                Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                JsonArray locationArray = main.getAsJsonArray("locations");
+                Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {
                 }.getType();
 
-                mapMarkers = gson.fromJson(jsonArray, type);
+                mapMarkers = gson.fromJson(locationArray, locationType);
                 mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
                 mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
+
+                JsonArray labelArray = main.getAsJsonArray("labels");
+                Type labelType = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                }.getType();
+
+                mapLabels = gson.fromJson(labelArray, labelType);
+
                 MapApiIcon.resetApiMarkers();
                 return true;
             })
         );
-    }
-
-    /**
-     * Update all Wynn MapLabels on the {@link HashMap} mapLabels
-     */
-    public static void updateMapLabels(RequestHandler handler) {
-        /*
-        // Use this when/if the map_labels.json file is added to Athena.
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLabels";
-        handler.addRequest(new Request(url, "map_labels")
-                .cacheTo(new File(API_CACHE_ROOT, "map_labels.json"))
-                .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLabels"))
-                .handleJsonObject(main -> {
-                    JsonArray jsonArray = main.getAsJsonArray("labels");
-                    Type type = new TypeToken<ArrayList<MapLabelProfile>>() {
-                    }.getType();
-
-                    mapLabels = gson.fromJson(jsonArray, type);
-                    return true;
-                })
-        );
-         */
-        try {
-            ResourceLocation rl = new ResourceLocation(Reference.MOD_ID + ":labels.json");
-            InputStream stream = Minecraft.getMinecraft().getResourceManager().getResource(rl).getInputStream();
-            String content = IOUtils.toString(stream, StandardCharsets.UTF_8);
-            JsonObject main = new JsonParser().parse(content).getAsJsonObject();
-            JsonArray jsonArray = main.getAsJsonArray("labels");
-            Type type = new TypeToken<ArrayList<MapLabelProfile>>() {
-            }.getType();
-
-            mapLabels = gson.fromJson(jsonArray, type);
-        } catch (java.io.FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
