@@ -49,9 +49,6 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(displayName = "Main Menu Wynncraft Button", description = "Should a button be added to the main menu that allows you to connect to Wynncraft directly?")
     public boolean addMainMenuButton = true;
 
-    @Setting(displayName = "Enable Cloud Back-ups", description = "Enables the uploading of settings.\nUseful when:\n§8- §7Switching to a new PC\n§8- §7Asking Wynntils for help\n\n§cNote: Enable Cloud Sync has overlapping effects")
-    public boolean enableCloudBackup = true;
-
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("updateStream")) {

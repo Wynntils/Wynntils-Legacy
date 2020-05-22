@@ -6,7 +6,6 @@ package com.wynntils.webapi.account;
 
 import com.google.gson.Gson;
 import com.wynntils.Reference;
-import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.multipart.IMultipartFormPart;
@@ -37,7 +36,6 @@ public class CloudConfigurations {
     private final ConcurrentHashMap<String, File> toUpload = new ConcurrentHashMap<>();
 
     public void queueConfig(File f) {
-        if (!CoreDBConfig.INSTANCE.enableCloudBackup && !CoreDBConfig.INSTANCE.enableCloudSync) return;
         synchronized (toUpload) {
             toUpload.put(f.getName(), f);
 
