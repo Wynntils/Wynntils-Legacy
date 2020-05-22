@@ -373,7 +373,7 @@ public class WebManager {
                 mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
 
                 JsonArray labelArray = main.getAsJsonArray("labels");
-                Type labelType = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {
                 }.getType();
 
                 mapLabels = gson.fromJson(labelArray, labelType);
