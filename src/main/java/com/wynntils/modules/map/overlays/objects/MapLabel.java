@@ -5,7 +5,6 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapLabelProfile;
@@ -86,8 +85,10 @@ public class MapLabel extends MapIcon {
         } else {
             labels.clear();
         }
+
         for (MapLabelProfile mmp : WebManager.getMapLabels()) {
             labels.add(new MapLabel(mmp));
         }
     }
+
 }

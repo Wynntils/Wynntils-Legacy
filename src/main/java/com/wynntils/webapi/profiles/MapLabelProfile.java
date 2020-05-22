@@ -7,10 +7,12 @@ package com.wynntils.webapi.profiles;
 public class MapLabelProfile {
 
     String name;
+    String level;
+
     int x;
     int y;
     int z;
-    String level;
+
     int layer;
 
     public MapLabelProfile(String name, int x, int y, int z, int layer, String level) {
@@ -49,4 +51,5 @@ public class MapLabelProfile {
     public String getLevel() {
         return level;
     }
+
 }

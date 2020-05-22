@@ -8,8 +8,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.modules.map.instances.MapProfile;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class WorldMapLabel extends WorldMapIcon {
 
@@ -34,28 +32,40 @@ public class WorldMapLabel extends WorldMapIcon {
         }
     }
 
+    private final CustomColor GOLD = new CustomColor(1f, 0.6f, 0f);
+    private final CustomColor YELLOW = new CustomColor(1f, 1f, 0.3f);
+    private final CustomColor WHITE = new CustomColor(1f, 1f, 1f);
+
     private CustomColor getColorFromLayer() {
-        CustomColor color;
         if (label.getLayer() == 1) {
-            color = new CustomColor(1.0f, 0.2f, 0.2f);
+            return GOLD;
         } else if (label.getLayer() == 2) {
-            color = new CustomColor(1.0f, 1.0f, 0);
-        } else {
-            color = new CustomColor(1.0f, 1.0f, 1.0f);
+           return YELLOW;
         }
-        return color;
+
+        return WHITE;
+    }
+
+    private SmartFontRenderer.TextShadow getTextShadowFromLayer() {
+        if (label.getLayer() == 1) {
+            return SmartFontRenderer.TextShadow.OUTLINE;
+        }
+
+        return SmartFontRenderer.TextShadow.NORMAL;
     }
 
     private CustomColor getDimmedColorFromLayer(float alpha) {
         CustomColor color = getColorFromLayer();
         color.setA(0.75f * alpha);
+
         return color;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
         if (!shouldRender || renderer == null) return;
 
-        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), getDimmedColorFromLayer(alpha));
+        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(),
+                getDimmedColorFromLayer(alpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT, getTextShadowFromLayer());
     }
 
     public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
@@ -64,7 +74,10 @@ public class WorldMapLabel extends WorldMapIcon {
         String level = label.getLevel();
         if (level != null) {
             String lvStr = "[Lv. " + level + "]";
-            renderer.drawString(lvStr,  (int) (axisX), (int) (axisZ) + 8, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            renderer.drawString(lvStr,  (int) (axisX), (int) (axisZ) + 8, CommonColors.GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
-        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), getColorFromLayer()); }
+
+        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), getColorFromLayer());
+    }
+
 }
