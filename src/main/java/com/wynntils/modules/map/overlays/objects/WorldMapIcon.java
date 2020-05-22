@@ -27,18 +27,25 @@ public class WorldMapIcon {
         return info;
     }
 
+    protected void updateAlphaForZoom(int zoom) {
+        if (info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
+            alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
+            if (alpha > 1.0) {
+                alpha = 1.0f;
+            }
+        }
+    }
+
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
         if (!info.isEnabled(false)) {
             shouldRender = false;
             return;
         }
-        if (info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
-            alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
 
-            if (alpha <= 0) {
-                shouldRender = false;
-                return;
-            }
+        updateAlphaForZoom(zoom);
+        if (alpha <= 0) {
+            shouldRender = false;
+            return;
         }
 
         float axisX = ((mp.getTextureXPosition(info.getPosX()) - minX) / (maxX - minX));

@@ -57,6 +57,7 @@ public class WebManager {
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
+    private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
@@ -98,7 +99,7 @@ public class WebManager {
 
         updateTerritories(handler);
         updateItemList(handler);
-        updateMapMarkers(handler);
+        updateMapLocations(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
         updateDiscoveries(handler);
@@ -161,6 +162,10 @@ public class WebManager {
 
     public static ArrayList<MapMarkerProfile> getMapMarkers() {
         return mapMarkers;
+    }
+
+    public static ArrayList<MapLabelProfile> getMapLabels() {
+        return mapLabels;
     }
 
     public static Iterable<MapMarkerProfile> getApiMarkers() {
@@ -351,21 +356,28 @@ public class WebManager {
     }
 
     /**
-     * Update all Wynn MapMarkers on the {@link HashMap} mapMarkers
+     * Update all Wynn MapLocation on the {@link HashMap} mapMarkers and {@link HashMap} mapLabels
      */
-    public static void updateMapMarkers(RequestHandler handler) {
+    public static void updateMapLocations(RequestHandler handler) {
         String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLocations";
-        handler.addRequest(new Request(url, "map_markers")
-            .cacheTo(new File(API_CACHE_ROOT, "map_markers.json"))
+        handler.addRequest(new Request(url, "map_locations")
+            .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
             .handleJsonObject(main -> {
-                JsonArray jsonArray = main.getAsJsonArray("locations");
-                Type type = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                JsonArray locationArray = main.getAsJsonArray("locations");
+                Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {
                 }.getType();
 
-                mapMarkers = gson.fromJson(jsonArray, type);
+                mapMarkers = gson.fromJson(locationArray, locationType);
                 mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
                 mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
+
+                JsonArray labelArray = main.getAsJsonArray("labels");
+                Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {
+                }.getType();
+
+                mapLabels = gson.fromJson(labelArray, labelType);
+
                 MapApiIcon.resetApiMarkers();
                 return true;
             })

@@ -78,6 +78,10 @@ public abstract class MapIcon {
         return MapApiIcon.getApiMarkers(iconTexture);
     }
 
+    public static List<MapIcon> getLabels() {
+        return MapLabel.getLabels();
+    }
+
     public static List<MapIcon> getWaypoints() {
         return MapWaypointIcon.getWaypoints();
     }

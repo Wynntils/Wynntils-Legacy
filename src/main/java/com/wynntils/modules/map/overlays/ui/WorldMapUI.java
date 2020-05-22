@@ -17,8 +17,10 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapLabel;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.map.overlays.objects.WorldMapLabel;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -45,6 +47,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected float centerPositionX = Float.NaN;
     protected float centerPositionZ = Float.NaN;
+    // Zoom goes from 300 (whole world) to -10 (max details)
     protected int zoom = 0;
 
     protected List<WorldMapIcon> icons = new ArrayList<>();
@@ -74,6 +77,8 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
         List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
+        // Handles map labels from map.wynncraft.com
+        List<MapIcon> mapLabels = MapIcon.getLabels();
         // HeyZeer0: Handles all waypoints
         List<MapIcon> wpMapIcons = MapIcon.getWaypoints();
         List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
@@ -88,10 +93,17 @@ public class WorldMapUI extends GuiMovementScreen {
             apiMapIcons,
             wpMapIcons,
             pathWpMapIcons,
+            mapLabels,
             friendsIcons
         )) {
             if (i.isEnabled(false)) {
-                icons.add(new WorldMapIcon(i));
+                WorldMapIcon icon;
+                if (i instanceof MapLabel) {
+                    icon = new WorldMapLabel((MapLabel) i);
+                } else {
+                    icon = new WorldMapIcon(i);
+                }
+                icons.add(icon);
             }
         }
     }
