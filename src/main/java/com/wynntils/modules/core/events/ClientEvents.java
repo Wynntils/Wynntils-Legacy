@@ -4,16 +4,16 @@
 
 package com.wynntils.modules.core.events;
 
-import com.google.gson.Gson;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
-import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
@@ -21,7 +21,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -165,16 +164,6 @@ public class ClientEvents implements Listener {
         GuildAndFriendManager.changePlayer(e.getMember(), false, As.GUILD, true);
     }
 
-    @SubscribeEvent
-    public void leaveParty(WynnSocialEvent.Party.Leave e) {
-        SocketManager.emitEvent("remove party member", e.getMember());
-    }
-
-    @SubscribeEvent
-    public void joinParty(WynnSocialEvent.Party.Join e) {
-        SocketManager.emitEvent("add party member", e.getMember());
-    }
-
     /**
      * Detects the user class based on the class selection GUI
      * This detection happens when the user click on an item that contains the class name pattern, inside the class selection GUI
@@ -230,16 +219,12 @@ public class ClientEvents implements Listener {
         if (e.isSingular) {
             // Single friend added
             for (String name : newFriends) {
-                SocketManager.emitEvent("add friend", name);
                 GuildAndFriendManager.changePlayer(name, true, As.FRIEND, true);
             }
             return;
         }
 
         // Friends list updated
-        String json = new Gson().toJson(getPlayerInfo().getFriendList());
-        SocketManager.emitEvent("update friends", json);
-
         for (String name : newFriends) {
             GuildAndFriendManager.changePlayer(name, true, As.FRIEND, false);
         }
@@ -253,7 +238,6 @@ public class ClientEvents implements Listener {
         if (e.isSingular) {
             // Single friend removed
             for (String name : removedFriends) {
-                SocketManager.emitEvent("remove friend", name);
                 GuildAndFriendManager.changePlayer(name, false, As.FRIEND, true);
             }
             return;
@@ -267,32 +251,6 @@ public class ClientEvents implements Listener {
         GuildAndFriendManager.tryResolveNames();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void tickHandler(TickEvent.ClientTickEvent e) {
-        if (e.phase != TickEvent.Phase.END || !Reference.onWorld) {
-            return;
-        }
-
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
-
-        if (System.currentTimeMillis() - lastPosRequest >= 2000)
-            if (lastPosition != currentPosition) {
-                lastPosition = currentPosition;
-                SocketManager.emitEvent("update position", player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ());
-                lastPosRequest = System.currentTimeMillis();
-            }
-
-        if (System.currentTimeMillis() - lastHealthRequest >= 2000)
-            if ((getPlayerInfo().getCurrentHealth() != lastHealth || getPlayerInfo().getMaxHealth() != lastMaxHealth)) {
-                lastHealth = getPlayerInfo().getCurrentHealth();
-                lastMaxHealth = getPlayerInfo().getMaxHealth();
-                SocketManager.emitEvent("healthUpdate", lastHealth, lastMaxHealth);
-                lastHealthRequest = System.currentTimeMillis();
-            }
-
-    }
-
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load e) {
         PlayerEntityManager.onWorldLoad(e.getWorld());
@@ -304,29 +262,13 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void joinWynncraft(WynncraftServerEvent.Login e) {
-        if (CoreDBConfig.INSTANCE.enableSockets) SocketManager.registerSocket();
-    }
-
-    @SubscribeEvent
-    public void leaveWynncraft(WynncraftServerEvent.Leave e) {
-        SocketManager.disconnectSocket();
-    }
-
-    @SubscribeEvent
-    public void classChange(WynnClassChangeEvent e) {
-        SocketManager.emitEvent("changeClass", e.getCurrentClass());
-    }
-
-
-    @SubscribeEvent
     public void entityJoin(EntityJoinWorldEvent e) {
         if (!(e.getEntity() instanceof EntityPlayer)) return;
         EntityPlayer player = (EntityPlayer) e.getEntity();
         if (player.getGameProfile() == null) return;
 
         String name = player.getGameProfile().getName();
-        if (name.contains("\u0001") || name.contains("§")) return;
+        if (name.contains("\u0001") || name.contains("§")) return; // avoid player npcs
 
         UserManager.loadUser(e.getEntity().getUniqueID());
     }
