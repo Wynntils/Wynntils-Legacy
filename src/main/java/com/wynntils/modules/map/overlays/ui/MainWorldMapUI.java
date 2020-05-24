@@ -31,6 +31,7 @@ public class MainWorldMapUI extends WorldMapUI {
     private GuiButton waypointMenuBtn;
     private GuiButton pathWaypointMenuBtn;
     private GuiButtonImage addWaypointBtn;
+    private GuiButtonImage shareBtn;
     private GuiButtonImage helpBtn;
 
     private boolean holdingMapKey = false;
@@ -54,6 +55,7 @@ public class MainWorldMapUI extends WorldMapUI {
         this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
         this.buttonList.add(pathWaypointMenuBtn = new GuiButton(3, 22, 69, 60, 18, "Paths"));
         this.buttonList.add(addWaypointBtn = new GuiButtonImageBetter(2, 24, 92, 14, 14, 0, 0, Textures.Map.map_options.resourceLocation));
+        this.buttonList.add(shareBtn = new GuiButtonImageBetter(4, 23, 110, 16, 14, 0, 58, Textures.Map.map_options.resourceLocation));
         this.buttonList.add(helpBtn = new GuiButtonImageBetter(3, 24, height - 34, 11, 16, 0, 72, Textures.Map.map_options.resourceLocation));
     }
 
@@ -101,6 +103,12 @@ public class MainWorldMapUI extends WorldMapUI {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
+        if (addWaypointBtn.isMouseOver()) {
+            drawHoveringText(TextFormatting.GRAY + "Add waypoint", mouseX, mouseY);
+        }
+        if (shareBtn.isMouseOver()) {
+            drawHoveringText(TextFormatting.GRAY + "Share position", mouseX, mouseY);
+        }
         if (helpBtn.isMouseOver()) {
             drawHoveringText(Arrays.asList(
                     TextFormatting.UNDERLINE + "Help",
@@ -116,7 +124,7 @@ public class MainWorldMapUI extends WorldMapUI {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if ((settingsBtn.isMouseOver() || addWaypointBtn.isMouseOver() || waypointMenuBtn.isMouseOver() || pathWaypointMenuBtn.isMouseOver())) {
+        if ((settingsBtn.isMouseOver() || addWaypointBtn.isMouseOver() || waypointMenuBtn.isMouseOver() || pathWaypointMenuBtn.isMouseOver() || shareBtn.isMouseOver())) {
             super.mouseClicked(mouseX, mouseY, mouseButton);
             return;
         } else if (mouseButton == 1) {
@@ -181,6 +189,8 @@ public class MainWorldMapUI extends WorldMapUI {
             Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI());
         } else if (btn == pathWaypointMenuBtn) {
             Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI());
+        } else if (btn == shareBtn) {
+            Minecraft.getMinecraft().displayGuiScreen(new ShareMenu());
         }
     }
 }
