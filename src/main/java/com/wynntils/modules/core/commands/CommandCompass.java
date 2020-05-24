@@ -3,6 +3,7 @@
  */
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraftforge.client.IClientCommand;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -25,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
-    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear]";
+    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [party|user]";
 
     private String[] directions = {
         "north",
@@ -194,6 +196,42 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             return;
         }
 
+        if (args.length >= 1 && args[0].equalsIgnoreCase("share")) {
+            String recipientUser = null;
+            String type;
+            int recipientIndex = 1;
+            double x;
+            double z;
+
+            if (args.length >= 2 && args[1].equalsIgnoreCase("location")) {
+                // Use current location instead of compass
+                x = Minecraft.getMinecraft().player.posX;
+                z = Minecraft.getMinecraft().player.posZ;
+                type = "location";
+                recipientIndex = 2;
+            } else {
+                Location location = CompassManager.getCompassLocation();
+                if (location == null) {
+                    throw new CommandException("No compass location set (did you mean /compass share location?)");
+                }
+                x = location.getX();
+                z = location.getZ();
+                type = "compass";
+            }
+            if (args.length >= recipientIndex+1 && !args[recipientIndex].equalsIgnoreCase("party")) {
+                recipientUser = args[recipientIndex];
+            }
+
+            String location = "[" + (int) x + ", " + (int) z + "]";
+            if (recipientUser == null) {
+                Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+            } else {
+                Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+            }
+
+            return;
+        }
+
         if (args.length >= 2) {
             String argument = String.join(" ", args);
 
@@ -262,8 +300,23 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     "southwest",
                     "east",
                     "west",
-                    "clear");
+                    "clear",
+                    "share");
         }
+
+        if (args.length >= 2 && args[0].equalsIgnoreCase("share")) {
+            // Allow easy completion of friends' names
+            HashSet<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
+            completions.add("party");
+            if (args.length == 3 && args[1].equalsIgnoreCase("location")) {
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+            completions.add("location");
+            if (args.length == 2) {
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+        }
+
         return Collections.emptyList();
     }
 

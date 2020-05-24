@@ -100,9 +100,6 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
-        @Setting(displayName = "Show Friends on Map", description = "Should online friends in your world be displayed on your map?")
-        public boolean showFriends = true;
-
         @Setting(displayName = "Show Labels", description = "Should place labels be displayed on your map?")
         public boolean showLabels = true;
     }

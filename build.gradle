@@ -44,9 +44,6 @@ configurations {
 
 dependencies {
     embed "javazoom:jlayer:1.0.1"
-    compile ('io.socket:socket.io-client:0.8.3') {
-//        exclude group: 'org.json', module: 'json'
-    }
 }
 
 processResources {

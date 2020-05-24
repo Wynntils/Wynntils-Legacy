@@ -5,7 +5,6 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.modules.core.enums.AccountType;
-import com.wynntils.modules.core.managers.SocketManager;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -57,7 +56,7 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
                 message.add(args[i]);
             }
 
-            SocketManager.emitEvent("sendBroadcast", type, message);
+            //SocketManager.emitEvent("sendBroadcast", type, message);
             return;
         }
 
