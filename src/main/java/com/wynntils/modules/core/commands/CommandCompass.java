@@ -227,6 +227,42 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             return;
         }
 
+        if (args.length >= 1 && args[0].equalsIgnoreCase("share")) {
+            String recipientUser = null;
+            String type;
+            int recipientIndex = 1;
+            double x;
+            double z;
+
+            if (args.length >= 2 && args[1].equalsIgnoreCase("location")) {
+                // Use current location instead of compass
+                x = Minecraft.getMinecraft().player.posX;
+                z = Minecraft.getMinecraft().player.posZ;
+                type = "location";
+                recipientIndex = 2;
+            } else {
+                Location location = CompassManager.getCompassLocation();
+                if (location == null) {
+                    throw new CommandException("No compass location set (did you mean /compass share location?)");
+                }
+                x = location.getX();
+                z = location.getZ();
+                type = "compass";
+            }
+            if (args.length >= recipientIndex+1 && !args[recipientIndex].equalsIgnoreCase("party")) {
+                recipientUser = args[recipientIndex];
+            }
+
+            String location = "[" + (int) x + ", " + (int) z + "]";
+            if (recipientUser == null) {
+                Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+            } else {
+                Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+            }
+
+            return;
+        }
+
         if (args.length >= 2) {
             String argument = String.join(" ", args);
 

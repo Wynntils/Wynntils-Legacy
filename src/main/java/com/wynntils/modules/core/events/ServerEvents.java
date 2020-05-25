@@ -17,7 +17,10 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.packet.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.packet.PacketOutgoingFilter;
-import com.wynntils.modules.core.managers.*;
+import com.wynntils.modules.core.managers.CompassManager;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
@@ -85,7 +88,6 @@ public class ServerEvents implements Listener {
             PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
 
         DownloaderManager.startDownloading();
-        SocketManager.emitEvent("join world", e.getWorld()); // update socket world
 
         if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
 
@@ -101,11 +103,6 @@ public class ServerEvents implements Listener {
 
         // party members
         PartyManager.handlePartyList();  // party list here
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void leaveWorldEvent(WynnWorldEvent.Leave e) {
-        SocketManager.emitEvent("leave world");
     }
 
     /**
@@ -209,29 +206,28 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void onJoinLobby(WynnClassChangeEvent e) {
-        if (Reference.onServer && CoreDBConfig.INSTANCE.enableChangelogOnUpdate && CoreDBConfig.INSTANCE.showChangelogs) {
-            if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+        if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
+        if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+        if (e.getCurrentClass() == ClassType.NONE) return;
 
-            if (e.getCurrentClass() == ClassType.NONE) return;
-
-            synchronized (this) {
-                if (triedToShowChangelog) return;
-                triedToShowChangelog = true;
-            }
-
-            boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            new Thread(() -> {
-                List<String> changelog = WebManager.getChangelog(major, false);
-                if (changelog != null) {
-                    Minecraft.getMinecraft().addScheduledTask(() -> {
-                        Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(changelog, major));
-                        // Showed changelog; Don't show next time.
-                        CoreDBConfig.INSTANCE.showChangelogs = false;
-                        CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-                    });
-                }
-            }, "wynntils-changelog-downloader").start();
+        synchronized (this) {
+            if (triedToShowChangelog) return;
+            triedToShowChangelog = true;
         }
+
+        boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+        new Thread(() -> {
+            List<String> changelog = WebManager.getChangelog(major, false);
+            if (changelog == null) return;
+
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(changelog, major));
+
+                // Showed changelog; Don't show next time.
+                CoreDBConfig.INSTANCE.showChangelogs = false;
+                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            });
+        }, "wynntils-changelog-downloader").start();
     }
 
     static BlockPos currentSpawn = null;
