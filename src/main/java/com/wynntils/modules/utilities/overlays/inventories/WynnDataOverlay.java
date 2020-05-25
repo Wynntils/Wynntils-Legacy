@@ -16,7 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class WynndataOverlay implements Listener {
+public class WynnDataOverlay implements Listener {
+    
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!Reference.onWorld) return;
