@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -27,13 +26,10 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -345,20 +341,7 @@ public class QuestsPage extends QuestBookPage {
                     url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
                 }
 
-                boolean opened = false;
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    try {
-                        Desktop.getDesktop().browse(new URI(url));
-                        opened = true;
-                    } catch (Exception ignored) { }
-                }
-
-                if (!opened) {
-                    Utils.copyToClipboard(url);
-                    TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard");
-                    text.getStyle().setColor(TextFormatting.DARK_RED);
-                    ModCore.mc().player.sendMessage(text);
-                }
+                Utils.openUrl(url);
                 return;
             } else if (mouseButton == 2) {  // middle click
                 if (!overQuest.hasTargetLocation()) return;
