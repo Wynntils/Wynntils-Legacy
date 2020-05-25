@@ -47,7 +47,8 @@ public class ModCore {
 
         jarFile = e.getSourceFile();
 
-        Reference.developmentEnvironment = ((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) || System.getProperty("wynntils.development").equals("true");
+        Reference.developmentEnvironment = ((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
+                || (System.getProperty("wynntils.development") != null && System.getProperty("wynntils.development").equals("true"));
         // Reference.developmentEnvironment = false;  // Uncomment to test updater
 
         if (Reference.developmentEnvironment)
