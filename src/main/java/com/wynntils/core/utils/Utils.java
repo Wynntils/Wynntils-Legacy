@@ -254,28 +254,26 @@ public class Utils {
      * @param url The url to open
      */
     public static void openUrl(String url) {
-        boolean opened = false;
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
                 Desktop.getDesktop().browse(new URI(url));
-                opened = true;
+                return;
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
         }
-        if (!opened) {
-            Utils.copyToClipboard(url);
-            TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard\n");
-            text.getStyle().setColor(TextFormatting.DARK_RED);
+        
+        Utils.copyToClipboard(url);
+        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard\n");
+        text.getStyle().setColor(TextFormatting.DARK_RED);
 
-            TextComponentString urlComponent = new TextComponentString(url);
-            urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-            urlComponent.getStyle().setColor(TextFormatting.DARK_AQUA);
-            urlComponent.getStyle().setUnderlined(true);
-            text.appendSibling(urlComponent);
+        TextComponentString urlComponent = new TextComponentString(url);
+        urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        urlComponent.getStyle().setColor(TextFormatting.DARK_AQUA);
+        urlComponent.getStyle().setUnderlined(true);
+        text.appendSibling(urlComponent);
 
-            ModCore.mc().player.sendMessage(text);
-        }
+        ModCore.mc().player.sendMessage(text);
     }
 
     public static void clearClipboard() {
