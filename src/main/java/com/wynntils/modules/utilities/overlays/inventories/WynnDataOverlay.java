@@ -11,10 +11,15 @@ import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WynnDataOverlay implements Listener {
     
@@ -41,9 +46,11 @@ public class WynnDataOverlay implements Listener {
         });
     }
 
-    private String getItemNameFromInventory(NonNullList<ItemStack> inventory, int slot) {
+    private void getItemNameFromInventory(Map<String, String> itemNames, String typeName, NonNullList<ItemStack> inventory, int slot) {
         ItemStack stack = inventory.get(slot);
-        return Utils.encodeItemNameForUrl(stack);
+        if (!stack.isEmpty() && stack.getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER)) {
+            itemNames.put(typeName, Utils.encodeItemNameForUrl(stack));
+        }
     }
 
     @SubscribeEvent
@@ -53,22 +60,32 @@ public class WynnDataOverlay implements Listener {
 
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
+            Map<String, String> itemNames = new HashMap<>();
+            
             NonNullList<ItemStack> armorInventory = Minecraft.getMinecraft().player.inventory.armorInventory;
-            String helmet = getItemNameFromInventory(armorInventory, 3);
-            String chestplate = getItemNameFromInventory(armorInventory, 2);
-            String leggings = getItemNameFromInventory(armorInventory, 1);
-            String boots = getItemNameFromInventory(armorInventory, 0);
+            getItemNameFromInventory(itemNames, "helmet", armorInventory, 3);
+            getItemNameFromInventory(itemNames, "chestplate", armorInventory, 2);
+            getItemNameFromInventory(itemNames, "leggings", armorInventory, 1);
+            getItemNameFromInventory(itemNames, "boots", armorInventory, 0);
 
             NonNullList<ItemStack> mainInventory = Minecraft.getMinecraft().player.inventory.mainInventory;
-            String ring1 = getItemNameFromInventory(mainInventory, 9);
-            String ring2 = getItemNameFromInventory(mainInventory, 10);
-            String bracelet = getItemNameFromInventory(mainInventory, 11);
-            String amulet = getItemNameFromInventory(mainInventory, 12);
-            String weapon = getItemNameFromInventory(mainInventory, 0);
+            getItemNameFromInventory(itemNames, "ring1", mainInventory, 9);
+            getItemNameFromInventory(itemNames, "ring2", mainInventory, 10);
+            getItemNameFromInventory(itemNames, "bracelet", mainInventory, 11);
+            getItemNameFromInventory(itemNames, "necklace", mainInventory, 12);
+            getItemNameFromInventory(itemNames, "weapon", mainInventory, 0);
+            
+            StringBuilder urlBuilder = new StringBuilder("https://www.wynndata.tk/builder?");
+            for (Map.Entry<String, String> itemName : itemNames.entrySet()) {
+                urlBuilder
+                        .append(itemName.getKey())
+                        .append('=')
+                        .append(itemName.getValue())
+                        .append('&');
+            }
+            urlBuilder.replace(urlBuilder.length() - 1, urlBuilder.length(), "");
 
-            String url = String.format("https://www.wynndata.tk/builder?helmet=%s&chestplate=%s&leggings=%s&boots=%s&ring1=%s&ring2=%s&bracelet=%s&necklace=%s&weapon=%s&action=builder&weapon_powders=&helmet_powders=&chestplate_powders=&leggings_powders=&boots_powders=",
-                    helmet, chestplate, leggings, boots, ring1, ring2, bracelet, amulet, weapon);
-            Utils.openUrl(url);
+            Utils.openUrl(urlBuilder.toString());
         });
     }
     
