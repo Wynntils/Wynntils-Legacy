@@ -162,12 +162,6 @@ public class ShareMenu extends UI {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button == shareButton) {
-            System.out.println("SHARING: " + x + ", " + z);
-            if (recipient != null) {
-                System.out.println("sharing to recp" + recipient + " " + type);
-            } else {
-                System.out.println("sharing to party"+ " " + type);
-            }
             CommandCompass.shareCoordinates(recipient, type, x, z);
             Utils.displayGuiScreen(new MainWorldMapUI());
         } else if (button == cancelButton) {
