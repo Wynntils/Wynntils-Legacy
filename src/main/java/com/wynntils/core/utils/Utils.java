@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -126,6 +127,13 @@ public class Utils {
         healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + TextFormatting.DARK_GRAY + healthBar.substring(5 + Math.min(health, 15));
         if (health < 8) { healthBar = healthBar.replace(TextFormatting.RED.toString(), TextFormatting.GOLD.toString()); }
         return healthBar;
+    }
+
+    /**
+     * Return true if the GuiScreen is the character information page (selected from the compass)
+     */
+    public static boolean isCharacterInfoPage(GuiScreen gui) {
+        return (gui instanceof GuiContainer && ((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining"));
     }
 
     /**
