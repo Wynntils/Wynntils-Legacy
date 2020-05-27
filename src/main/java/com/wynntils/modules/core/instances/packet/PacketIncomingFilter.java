@@ -6,13 +6,16 @@ package com.wynntils.modules.core.instances.packet;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketMoveVehicle;
+import net.minecraft.network.play.server.SPacketUpdateScore;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
@@ -52,6 +55,12 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
             if ((vehicle == mc.player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
                 cancel = true;
             }
+        } else if (msg instanceof SPacketDisplayObjective) {
+            SPacketDisplayObjective displayObjective = (SPacketDisplayObjective) msg;
+            cancel = ObjectivesOverlay.handleDisplayObjective(displayObjective);
+        } else if (msg instanceof SPacketUpdateScore) {
+            SPacketUpdateScore updateScore = (SPacketUpdateScore) msg;
+            cancel = ObjectivesOverlay.handleUpdateScore(updateScore);
         }
 
         if (cancel) return;

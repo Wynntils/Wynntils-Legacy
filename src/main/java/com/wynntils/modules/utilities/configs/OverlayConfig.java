@@ -5,6 +5,8 @@
 package com.wynntils.modules.utilities.configs;
 
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -497,4 +499,34 @@ public class OverlayConfig extends SettingsClass {
         public boolean showEffects = true;
     }
 
+    @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
+    public static class Objectives extends SettingsClass {
+        public static Objectives INSTANCE;
+
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?")
+        public boolean enableObjectives = true;
+
+        @Setting(displayName = "Enable Objectives Bar", description = "Should the objectives progress be shown as a bar?")
+        public boolean enableProgressBar = true;
+
+        @Setting(displayName = "Objectives Bar Texture", description = "What texture should be used for the objectives bar?")
+        public objectivesTextures objectivesTexture = objectivesTextures.a;
+
+        @Setting(displayName = "Text Colour", description = "What colour should the objective text be?")
+        @Setting.Features.CustomColorFeatures(allowAlpha = true)
+        public CustomColor textColour = CommonColors.GREEN;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        // We're reusing the exp textures
+        public enum objectivesTextures {
+            Wynn,
+            Liquid,
+            Emerald,
+            a,
+            b,
+            c
+        }
+    }
 }
