@@ -14,6 +14,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -65,10 +66,12 @@ public class WynnDataOverlay implements Listener {
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (!Utils.isCharacterInfoPage(e.getGui()) || !WynnDataOverlay.itemLookupMode ||
-                e.getMouseButton() != 1 || e.getGui().getSlotUnderMouse() == null ||
-                e.getGui().getSlotUnderMouse().inventory == null) return;
+                e.getMouseButton() != 1) return;
 
-        ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
+        Slot slot = e.getGui().getSlotUnderMouse();
+        if (slot == null || slot.inventory == null || !slot.getHasStack()) return;
+
+        ItemStack stack = slot.getStack();
         Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeItemNameForUrl(stack));
         e.setCanceled(true);
     }
@@ -97,7 +100,7 @@ public class WynnDataOverlay implements Listener {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
             Map<String, String> itemNames = new HashMap<>();
-            
+
             NonNullList<ItemStack> armorInventory = Minecraft.getMinecraft().player.inventory.armorInventory;
             getItemNameFromInventory(itemNames, "helmet", armorInventory, 3);
             getItemNameFromInventory(itemNames, "chestplate", armorInventory, 2);
@@ -124,5 +127,5 @@ public class WynnDataOverlay implements Listener {
             Utils.openUrl(urlBuilder.toString());
         });
     }
-    
+
 }
