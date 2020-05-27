@@ -243,10 +243,15 @@ public class Utils {
      */
     public static String encodeItemNameForUrl(ItemStack stack) {
         final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[[0-9]+%\\]");
+        final Pattern INGREDIENT_PATTERN = Pattern.compile(" +\\[✫+\\]");
 
         String name = stack.getDisplayName();
         name = TextFormatting.getTextWithoutFormattingCodes(name);
         name = PERCENTAGE_PATTERN.matcher(name).replaceAll("");
+        name = INGREDIENT_PATTERN.matcher(name).replaceAll("");
+        if (name.startsWith("Perfect ")) {
+            name = name.substring(8);
+        }
         name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
         try {
             name = URLEncoder.encode(name, "UTF-8");
@@ -270,7 +275,7 @@ public class Utils {
                 ignored.printStackTrace();
             }
         }
-        
+
         Utils.copyToClipboard(url);
         TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard\n");
         text.getStyle().setColor(TextFormatting.DARK_RED);
