@@ -91,6 +91,9 @@ public class MainWorldMapUI extends WorldMapUI {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
+        if (addWaypointBtn.isMouseOver()) {
+            drawHoveringText(TextFormatting.GRAY + "Add waypoint", mouseX, mouseY);
+        }
         if (helpBtn.isMouseOver()) {
             drawHoveringText(Arrays.asList(
                     TextFormatting.UNDERLINE + "Help",
