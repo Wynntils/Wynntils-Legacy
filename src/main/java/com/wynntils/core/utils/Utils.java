@@ -6,6 +6,7 @@ package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionMethods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -22,6 +23,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.opengl.Display;
 
 import java.awt.Desktop;
 import java.awt.Toolkit;
@@ -270,6 +272,11 @@ public class Utils {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
                 Desktop.getDesktop().browse(new URI(url));
+                // If we switch windows so Minecraft loses focus, make sure we forget
+                // about any pressed keys.
+                if (!Display.isActive()) {
+                    ReflectionMethods.Keyboard_reset.invoke(null);
+                }
                 return;
             } catch (Exception ignored) {
                 ignored.printStackTrace();

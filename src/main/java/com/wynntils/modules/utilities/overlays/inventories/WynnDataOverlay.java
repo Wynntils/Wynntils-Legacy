@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -18,55 +17,43 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class WynnDataOverlay implements Listener {
-    GuiButton button;
-    public static boolean itemLookupMode = false;
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
-        button = new GuiButton(12,
+        e.getButtonList().add(
+                new GuiButton(12,
                         (e.getGui().width - e.getGui().getXSize()) / 2 - 20,
                         (e.getGui().height - e.getGui().getYSize()) / 2 + 40,
                         18, 18,
                         "➦"
-                );
-        e.getButtonList().add(button);
+                )
+        );
     }
 
     @SubscribeEvent
     public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
         e.getButtonList().forEach(gb -> {
             if (gb.id == 12 && gb.isMouseOver()) {
-                if (itemLookupMode) {
-                    e.getGui().drawHoveringText( Arrays.asList("Right click on item", "to open on WynnData"),  e.getMouseX(), e.getMouseY());
-                } else {
-                    e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnData", "Right click: Toggle item lookup mode"), e.getMouseX(), e.getMouseY());
-                }
+                e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnData", "Shift + Right click on item: Open Item on WynnData"), e.getMouseX(), e.getMouseY());
             }
         });
     }
 
     @SubscribeEvent
-    public void characterInfoPageOpened(GuiScreenEvent.InitGuiEvent.Post e) {
-        if (Utils.isCharacterInfoPage(e.getGui())) {
-            // Reset lookup mode when re-opening character info page
-            itemLookupMode = false;
-        }
-    }
-
-    @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (!Utils.isCharacterInfoPage(e.getGui()) || !WynnDataOverlay.itemLookupMode ||
-                e.getMouseButton() != 1) return;
+        if (!Utils.isCharacterInfoPage(e.getGui()) || e.getMouseButton() != 1) return;
+
+        if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
 
         Slot slot = e.getGui().getSlotUnderMouse();
         if (slot == null || slot.inventory == null || !slot.getHasStack()) return;
@@ -86,16 +73,7 @@ public class WynnDataOverlay implements Listener {
     @SubscribeEvent
     public void mouseClicked(GuiOverlapEvent.ChestOverlap.MouseClicked e) {
         e.getButtonList().forEach(gb -> {
-            if (gb.id != 12 || !gb.isMouseOver()) return;
-
-            if (e.getMouseButton() == 1) {
-                // Toggle item lookup mode with right click
-                itemLookupMode = !itemLookupMode;
-                button.packedFGColour = itemLookupMode ? CommonColors.ORANGE.toInt() : 0;
-                return;
-            }
-
-            if (e.getMouseButton() != 0) return;
+            if (gb.id != 12 || !gb.isMouseOver() || e.getMouseButton() != 0) return;
 
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
