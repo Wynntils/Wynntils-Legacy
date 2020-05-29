@@ -337,6 +337,7 @@ public class ChatManager {
                 clickableText.setStyle(style.createShallowCopy());
                 clickableText.getStyle()
                         .setColor(TextFormatting.DARK_AQUA)
+                        .setUnderlined(true)
                         .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(command)));
                 crdMsg.add(clickableText);

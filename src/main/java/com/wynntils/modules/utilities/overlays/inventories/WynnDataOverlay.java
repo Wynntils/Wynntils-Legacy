@@ -6,12 +6,14 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -65,9 +67,20 @@ public class WynnDataOverlay implements Listener {
 
     private void getItemNameFromInventory(Map<String, String> itemNames, String typeName, NonNullList<ItemStack> inventory, int slot) {
         ItemStack stack = inventory.get(slot);
-        if (!stack.isEmpty() && stack.getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER)) {
+        if (!stack.isEmpty() && WebManager.getItems().containsKey(Utils.getRawItemName(stack))) {
             itemNames.put(typeName, Utils.encodeItemNameForUrl(stack));
         }
+    }
+
+    private int locateWeaponSlot() {
+        for (int i = 0; i < 9; i++) {
+            String lore = ItemUtils.getStringLore(Minecraft.getMinecraft().player.inventory.mainInventory.get(i));
+            // Assume that only weapons have class requirements
+            if (lore.contains("Class Req: " + PlayerInfo.getPlayerInfo().getCurrentClass().getDisplayName())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @SubscribeEvent
@@ -90,7 +103,11 @@ public class WynnDataOverlay implements Listener {
             getItemNameFromInventory(itemNames, "ring2", mainInventory, 10);
             getItemNameFromInventory(itemNames, "bracelet", mainInventory, 11);
             getItemNameFromInventory(itemNames, "necklace", mainInventory, 12);
-            getItemNameFromInventory(itemNames, "weapon", mainInventory, 0);
+
+            int weaponSlot = locateWeaponSlot();
+            if (weaponSlot != -1) {
+                getItemNameFromInventory(itemNames, "weapon", mainInventory, weaponSlot);
+            }
 
             StringBuilder urlBuilder = new StringBuilder("https://www.wynndata.tk/builder?");
             for (Map.Entry<String, String> itemName : itemNames.entrySet()) {
