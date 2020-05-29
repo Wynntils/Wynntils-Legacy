@@ -272,11 +272,12 @@ public class Utils {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
                 Desktop.getDesktop().browse(new URI(url));
+                
                 // If we switch windows so Minecraft loses focus, make sure we forget
                 // about any pressed keys.
-                if (!Display.isActive()) {
+                if (!Display.isActive())
                     ReflectionMethods.Keyboard_reset.invoke(null);
-                }
+                
                 return;
             } catch (Exception ignored) {
                 ignored.printStackTrace();
