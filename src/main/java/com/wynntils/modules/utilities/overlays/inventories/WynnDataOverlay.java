@@ -10,12 +10,11 @@ import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -51,7 +50,7 @@ public class WynnDataOverlay implements Listener {
 
     private void getItemNameFromInventory(Map<String, String> urlData, String typeName, NonNullList<ItemStack> inventory, int slot) {
         ItemStack stack = inventory.get(slot);
-        if (!stack.isEmpty() && stack.getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER)) {
+        if (!stack.isEmpty() && WebManager.getItems().containsKey(Utils.getRawItemName(stack))) {
             urlData.put(typeName, Utils.encodeItemNameForUrl(stack));
         }
         ItemUtils.getLore(stack).forEach(line -> {
