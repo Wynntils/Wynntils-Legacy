@@ -6,7 +6,9 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -21,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WynnDataOverlay implements Listener {
-    
+
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!Reference.onWorld) return;
@@ -52,6 +54,17 @@ public class WynnDataOverlay implements Listener {
         }
     }
 
+    private int locateWeaponSlot() {
+        for (int i = 0; i < 9; i++) {
+            String lore = ItemUtils.getStringLore(Minecraft.getMinecraft().player.inventory.mainInventory.get(i));
+            // Assume that only weapons have class requirements
+            if (lore.contains("Class Req: " + PlayerInfo.getPlayerInfo().getCurrentClass().getDisplayName())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @SubscribeEvent
     public void mouseClicked(GuiOverlapEvent.ChestOverlap.MouseClicked e) {
         e.getButtonList().forEach(gb -> {
@@ -60,7 +73,7 @@ public class WynnDataOverlay implements Listener {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
             Map<String, String> itemNames = new HashMap<>();
-            
+
             NonNullList<ItemStack> armorInventory = Minecraft.getMinecraft().player.inventory.armorInventory;
             getItemNameFromInventory(itemNames, "helmet", armorInventory, 3);
             getItemNameFromInventory(itemNames, "chestplate", armorInventory, 2);
@@ -72,8 +85,11 @@ public class WynnDataOverlay implements Listener {
             getItemNameFromInventory(itemNames, "ring2", mainInventory, 10);
             getItemNameFromInventory(itemNames, "bracelet", mainInventory, 11);
             getItemNameFromInventory(itemNames, "necklace", mainInventory, 12);
-            getItemNameFromInventory(itemNames, "weapon", mainInventory, 0);
-            
+            int weaponSlot = locateWeaponSlot();
+            if (weaponSlot != -1) {
+                getItemNameFromInventory(itemNames, "weapon", mainInventory, weaponSlot);
+            }
+
             StringBuilder urlBuilder = new StringBuilder("https://www.wynndata.tk/builder?");
             for (Map.Entry<String, String> itemName : itemNames.entrySet()) {
                 urlBuilder
@@ -87,5 +103,5 @@ public class WynnDataOverlay implements Listener {
             Utils.openUrl(urlBuilder.toString());
         });
     }
-    
+
 }
