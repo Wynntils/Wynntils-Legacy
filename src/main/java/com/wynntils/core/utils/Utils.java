@@ -6,7 +6,6 @@ package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
-import com.wynntils.core.utils.reflections.ReflectionMethods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -17,15 +16,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.lwjgl.opengl.Display;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 
-import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -36,7 +36,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
@@ -269,19 +268,21 @@ public class Utils {
      * @param url The url to open
      */
     public static void openUrl(String url) {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-                
-                // If we switch windows so Minecraft loses focus, make sure we forget
-                // about any pressed keys.
-                if (!Display.isActive())
-                    ReflectionMethods.Keyboard_reset.invoke(null);
-                
-                return;
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
+        try {
+            if (Util.getOSType() == Util.EnumOS.WINDOWS) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (Util.getOSType() == Util.EnumOS.OSX) {
+                Runtime.getRuntime().exec("open " + url);
+                // Keys can get "stuck" in LWJGL on macOS when the Minecraft window loses focus.
+                // Reset keyboard to solve this.
+                Keyboard.destroy();
+                Keyboard.create();
+            } else {
+                Runtime.getRuntime().exec("xgd-open " + url);
             }
+            return;
+        } catch (IOException | LWJGLException e) {
+            e.printStackTrace();
         }
 
         Utils.copyToClipboard(url);
