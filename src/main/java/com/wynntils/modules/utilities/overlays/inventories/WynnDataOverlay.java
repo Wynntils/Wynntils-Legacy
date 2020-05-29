@@ -6,7 +6,9 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -19,10 +21,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WynnDataOverlay implements Listener {
-    
+
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!Reference.onWorld) return;
@@ -46,11 +49,24 @@ public class WynnDataOverlay implements Listener {
         });
     }
 
-    private void getItemNameFromInventory(Map<String, String> itemNames, String typeName, NonNullList<ItemStack> inventory, int slot) {
+    private void getItemNameFromInventory(Map<String, String> urlData, String typeName, NonNullList<ItemStack> inventory, int slot) {
         ItemStack stack = inventory.get(slot);
         if (!stack.isEmpty() && stack.getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER)) {
-            itemNames.put(typeName, Utils.encodeItemNameForUrl(stack));
+            urlData.put(typeName, Utils.encodeItemNameForUrl(stack));
         }
+        ItemUtils.getLore(stack).forEach(line -> {
+            if (line.contains("Powder Slots [")) {
+                List<Powder> powders = Powder.findPowders(line);
+                StringBuilder sb = new StringBuilder();
+                powders.forEach(powder -> {
+                    sb.append(powder.getLetterRepresentation());
+                    sb.append("1");
+                });
+                urlData.put(typeName + "_powders", sb.toString());
+                // Make sure user starts at the update powders screen
+                urlData.put("action", "powders");
+            }
+        });
     }
 
     @SubscribeEvent
@@ -60,23 +76,23 @@ public class WynnDataOverlay implements Listener {
 
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-            Map<String, String> itemNames = new HashMap<>();
-            
+            Map<String, String> urlData = new HashMap<>();
+
             NonNullList<ItemStack> armorInventory = Minecraft.getMinecraft().player.inventory.armorInventory;
-            getItemNameFromInventory(itemNames, "helmet", armorInventory, 3);
-            getItemNameFromInventory(itemNames, "chestplate", armorInventory, 2);
-            getItemNameFromInventory(itemNames, "leggings", armorInventory, 1);
-            getItemNameFromInventory(itemNames, "boots", armorInventory, 0);
+            getItemNameFromInventory(urlData, "helmet", armorInventory, 3);
+            getItemNameFromInventory(urlData, "chestplate", armorInventory, 2);
+            getItemNameFromInventory(urlData, "leggings", armorInventory, 1);
+            getItemNameFromInventory(urlData, "boots", armorInventory, 0);
 
             NonNullList<ItemStack> mainInventory = Minecraft.getMinecraft().player.inventory.mainInventory;
-            getItemNameFromInventory(itemNames, "ring1", mainInventory, 9);
-            getItemNameFromInventory(itemNames, "ring2", mainInventory, 10);
-            getItemNameFromInventory(itemNames, "bracelet", mainInventory, 11);
-            getItemNameFromInventory(itemNames, "necklace", mainInventory, 12);
-            getItemNameFromInventory(itemNames, "weapon", mainInventory, 0);
-            
+            getItemNameFromInventory(urlData, "ring1", mainInventory, 9);
+            getItemNameFromInventory(urlData, "ring2", mainInventory, 10);
+            getItemNameFromInventory(urlData, "bracelet", mainInventory, 11);
+            getItemNameFromInventory(urlData, "necklace", mainInventory, 12);
+            getItemNameFromInventory(urlData, "weapon", mainInventory, 0);
+
             StringBuilder urlBuilder = new StringBuilder("https://www.wynndata.tk/builder?");
-            for (Map.Entry<String, String> itemName : itemNames.entrySet()) {
+            for (Map.Entry<String, String> itemName : urlData.entrySet()) {
                 urlBuilder
                         .append(itemName.getKey())
                         .append('=')
@@ -88,5 +104,5 @@ public class WynnDataOverlay implements Listener {
             Utils.openUrl(urlBuilder.toString());
         });
     }
-    
+
 }
