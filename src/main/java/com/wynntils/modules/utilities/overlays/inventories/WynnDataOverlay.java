@@ -15,10 +15,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +30,7 @@ public class WynnDataOverlay implements Listener {
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!Reference.onWorld) return;
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         e.getButtonList().add(
                 new GuiButton(12,
@@ -42,9 +46,23 @@ public class WynnDataOverlay implements Listener {
     public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
         e.getButtonList().forEach(gb -> {
             if (gb.id == 12 && gb.isMouseOver()) {
-                e.getGui().drawHoveringText("Open Build on WynnData", e.getMouseX(), e.getMouseY());
+                e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnData", "Shift + Right click on item: Open Item on WynnData"), e.getMouseX(), e.getMouseY());
             }
         });
+    }
+
+    @SubscribeEvent
+    public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (!Utils.isCharacterInfoPage(e.getGui()) || e.getMouseButton() != 1) return;
+
+        if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
+
+        Slot slot = e.getGui().getSlotUnderMouse();
+        if (slot == null || slot.inventory == null || !slot.getHasStack()) return;
+
+        ItemStack stack = slot.getStack();
+        Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeItemNameForUrl(stack));
+        e.setCanceled(true);
     }
 
     private void getItemNameFromInventory(Map<String, String> itemNames, String typeName, NonNullList<ItemStack> inventory, int slot) {
@@ -85,6 +103,7 @@ public class WynnDataOverlay implements Listener {
             getItemNameFromInventory(itemNames, "ring2", mainInventory, 10);
             getItemNameFromInventory(itemNames, "bracelet", mainInventory, 11);
             getItemNameFromInventory(itemNames, "necklace", mainInventory, 12);
+
             int weaponSlot = locateWeaponSlot();
             if (weaponSlot != -1) {
                 getItemNameFromInventory(itemNames, "weapon", mainInventory, weaponSlot);
