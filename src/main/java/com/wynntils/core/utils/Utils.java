@@ -28,11 +28,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
@@ -230,16 +226,21 @@ public class Utils {
         }
     }
 
-    /**
-     * Transform an item name and encode it so it can be used in an URL.
-     */
-    public static String encodeItemNameForUrl(ItemStack stack) {
+    public static String getRawItemName(ItemStack stack) {
         final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[[0-9]+%\\]");
 
         String name = stack.getDisplayName();
         name = TextFormatting.getTextWithoutFormattingCodes(name);
         name = PERCENTAGE_PATTERN.matcher(name).replaceAll("");
         name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
+        return name;
+    }
+
+    /**
+     * Transform an item name and encode it so it can be used in an URL.
+     */
+    public static String encodeItemNameForUrl(ItemStack stack) {
+        String name = getRawItemName(stack);
         try {
             name = URLEncoder.encode(name, "UTF-8");
         } catch (UnsupportedEncodingException e) {
