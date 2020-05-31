@@ -82,8 +82,8 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         if (objectiveGoal[pos] == null) {
             if (objectiveLine.equals("- All done")) {
                 objectiveGoal[pos] = "All done";
-                objectiveScore[pos] = 1;
-                objectiveMax[pos] = 1;
+                objectiveScore[pos] = 0;
+                objectiveMax[pos] = 0;
             } else {
                 if (objectiveLine.startsWith("- ")) {
                     objectiveGoal[pos] = objectiveLine.substring(2);
@@ -170,7 +170,7 @@ public class ObjectivesOverlay extends Overlay implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void guiOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
+    public void onChestOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (e.getGui().getLowerInv().getName().equals("Objective Rewards")) {
             // When opening reward, remove reminder
             objectiveGoal[0] = null;
@@ -210,10 +210,17 @@ public class ObjectivesOverlay extends Overlay implements Listener {
 
         if (OverlayConfig.Objectives.INSTANCE.hideOnInactivity) {
             long currentTime = System.currentTimeMillis();
-            if (currentTime > objectiveUpdatedAt[pos] + 8000 && currentTime > keepVisibleTimestamp + 7000) return;
-            fadeAlpha = Math.min(Math.max(objectiveUpdatedAt[pos] + 8000, keepVisibleTimestamp + 7000) - currentTime, 1000) / 1000f;
+            fadeAlpha = Math.min(Math.max(objectiveUpdatedAt[pos] + 8000, keepVisibleTimestamp + 7000) - currentTime, 2000) / 2000f;
+            if (fadeAlpha <= 0.0f) {
+                return;
+            }
         }
-
+        String objectiveString;
+        if (objectiveMax[pos] > 0) {
+            objectiveString = objectiveGoal[pos] + " [" + objectiveScore[pos] + "/" + objectiveMax[pos] + "]";
+        } else {
+            objectiveString = objectiveGoal[pos];
+        }
         drawString(objectiveGoal[pos] + " [" + objectiveScore[pos] + "/" + objectiveMax[pos] + "]",
                 -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT,
                 OverlayConfig.Objectives.INSTANCE.textShadow);
