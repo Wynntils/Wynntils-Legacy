@@ -13,6 +13,7 @@ import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.OverlayRotation;
+import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -506,6 +507,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?")
         public boolean enableObjectives = true;
 
+        @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?")
+        public boolean hideOnInactivity = false;
+
         @Setting(displayName = "Enable Objectives Bar", description = "Should the objectives progress be shown as a bar?")
         public boolean enableProgressBar = true;
 
@@ -513,11 +517,25 @@ public class OverlayConfig extends SettingsClass {
         public objectivesTextures objectivesTexture = objectivesTextures.a;
 
         @Setting(displayName = "Text Colour", description = "What colour should the objective text be?")
-        @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor textColour = CommonColors.GREEN;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Setting(displayName = "Objectives Transparency", description = "How transparent should the text and progress bar be?", order = 2)
+        @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
+        public float objectivesAlpha = 0.8f;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.equals("enableObjectives")) {
+                ObjectivesOverlay.updateOverlayActivation();
+            }
+
+            if (name.equals("hideOnInactivity")) {
+                ObjectivesOverlay.updateAllTimestamps();
+            }
+        }
 
         // We're reusing the exp textures
         public enum objectivesTextures {

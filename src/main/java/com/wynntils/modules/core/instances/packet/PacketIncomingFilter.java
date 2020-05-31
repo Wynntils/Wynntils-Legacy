@@ -15,6 +15,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketMoveVehicle;
+import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketUpdateScore;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -57,10 +58,13 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
             }
         } else if (msg instanceof SPacketDisplayObjective) {
             SPacketDisplayObjective displayObjective = (SPacketDisplayObjective) msg;
-            cancel = ObjectivesOverlay.handleDisplayObjective(displayObjective);
+            ObjectivesOverlay.snoopDisplayObjective(displayObjective);
         } else if (msg instanceof SPacketUpdateScore) {
             SPacketUpdateScore updateScore = (SPacketUpdateScore) msg;
-            cancel = ObjectivesOverlay.handleUpdateScore(updateScore);
+            ObjectivesOverlay.snoopUpdateScore(updateScore);
+        } else if (msg instanceof SPacketScoreboardObjective) {
+            SPacketScoreboardObjective scoreboardObjective = (SPacketScoreboardObjective) msg;
+            ObjectivesOverlay.snoopScoreboardObjective(scoreboardObjective);
         }
 
         if (cancel) return;
