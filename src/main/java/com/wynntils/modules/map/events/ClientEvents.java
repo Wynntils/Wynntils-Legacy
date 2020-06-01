@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.events;
 
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -104,6 +105,11 @@ public class ClientEvents implements Listener {
         Entity lowestEntity = player.getLowestRidingEntity();
 
         LootRunManager.recordMovement(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+    }
+
+    @SubscribeEvent
+    public void sendGathering(GameEvent.ResourceGather e) {
+        System.out.println(e.getType().toString() + " " + e.getMaterial().toString());
     }
 
 }
