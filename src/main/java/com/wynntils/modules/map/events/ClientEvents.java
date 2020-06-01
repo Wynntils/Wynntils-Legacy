@@ -18,6 +18,7 @@ import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -109,7 +110,9 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void sendGathering(GameEvent.ResourceGather e) {
-        System.out.println(e.getType().toString() + " " + e.getMaterial().toString());
+        if (!MapConfig.Telemetry.INSTANCE.allowGatheringSpot) return;
+
+        WebManager.getAccount().sendGatheringSpot(e.getType(), e.getMaterial(), e.getLocation());
     }
 
 }
