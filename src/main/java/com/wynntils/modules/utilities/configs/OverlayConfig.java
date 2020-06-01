@@ -495,6 +495,9 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
         public boolean showEffects = true;
+
+        @Setting(displayName = "Capture Chat Events", description = "Should events from the chat, such as loot chest cooldown, be displayed?")
+        public boolean captureChat = true;
     }
 
 }

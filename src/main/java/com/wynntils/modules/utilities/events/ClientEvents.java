@@ -19,6 +19,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
@@ -58,10 +59,13 @@ import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
+    private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
 
     boolean isAfk = false;
     int lastPosition = 0;
@@ -157,8 +161,20 @@ public class ClientEvents implements Listener {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
             return;
         }
-        if (e.getMessage().getUnformattedText().startsWith("[Daily Rewards:")) {
+        String msg = e.getMessage().getUnformattedText();
+        if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
+        }
+
+        if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+            if (msg.equals("+3 minutes speed boost.")) {
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", 3*60);
+            }
+            Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(msg);
+            if (matcher.find()) {
+                int minutes = Integer.parseInt(matcher.group(1));
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60);
+            }
         }
     }
 

@@ -189,6 +189,15 @@ public class ConsumableTimerOverlay extends Overlay {
         }
     }
 
+    public static void addBasicTimer(String name, int timeInSeconds) {
+        String formattedName = GRAY + name;
+        ConsumableContainer consumable = new ConsumableContainer(formattedName);
+        consumable.setExpirationTime(System.currentTimeMillis() + timeInSeconds*1000);
+        // Clear old consumable with the same name
+        activeConsumables.removeIf(c -> c.getName().equals(formattedName));
+        activeConsumables.add(consumable);
+    }
+
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         event.setCanceled(false);
