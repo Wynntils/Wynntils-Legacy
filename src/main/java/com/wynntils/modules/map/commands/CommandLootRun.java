@@ -69,8 +69,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 if (!LootRunManager.getActivePath().getPoints().isEmpty()) {
                     Location start = LootRunManager.getActivePath().getPoints().get(0);
-                    sender.sendMessage(new TextComponentString("Loot run starts at [" +
-                            (int) start.getX() + ", " + (int) start.getZ() + "]"));
+                    ITextComponent startingPointMsg = new TextComponentString("Loot run starts at [" +
+                            (int) start.getX() + ", " + (int) start.getZ() + "]");
+                    startingPointMsg.getStyle().setColor(GRAY);
+                    sender.sendMessage(startingPointMsg);
                 }
 
                 return;
