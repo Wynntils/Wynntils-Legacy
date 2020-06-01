@@ -211,11 +211,11 @@ public class MapConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "telemetry", displayPath = "Map/Telemtry")
+    @SettingsInfo(name = "telemetry", displayPath = "Map/Telemetry")
     public static class Telemetry extends SettingsClass {
         public static Telemetry INSTANCE;
 
-        @Setting(displayName = "Gathering Spot Contributions", description = "Should you send contributions over your collected gathering spots?\n\n§8Wynntils uses that in order to create the gathering spots map.\nYour contributions is always welcome.\nDisabling this will still allow you to see the spots.", order = 1)
+        @Setting(displayName = "Contribute Gathering Spots", description = "Should the mod send data over your collected gathering spots?\n\n§8Wynntils uses this data in order to place gathering spots on the map. All data sent is completely anonymous, and your contributions are always appreciated. Disabling this will still allow you to see gathering spots.", order = 1)
         public boolean allowGatheringSpot = true;
 
     }
