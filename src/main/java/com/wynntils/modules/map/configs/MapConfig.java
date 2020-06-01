@@ -211,6 +211,15 @@ public class MapConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "telemetry", displayPath = "Map/Telemtry")
+    public static class Telemetry extends SettingsClass {
+        public static Telemetry INSTANCE;
+
+        @Setting(displayName = "Gathering Spot Contributions", description = "Should you send contributions over your collected gathering spots?\n\n§8Wynntils uses that in order to create the gathering spots map.\nYour contributions is always welcome.\nDisabling this will still allow you to see the spots.", order = 1)
+        public boolean allowGatheringSpot = true;
+
+    }
+
     public enum MapFormat {
         SQUARE, CIRCLE
     }

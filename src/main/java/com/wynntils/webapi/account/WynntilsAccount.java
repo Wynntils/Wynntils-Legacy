@@ -8,7 +8,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.professions.GatheringMaterial;
+import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.utils.helpers.MD5Verification;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.Request;
@@ -118,6 +121,28 @@ public class WynntilsAccount {
 
         RequestHandler handler = WebManager.getHandler();
         handler.addAndDispatch(request, true);
+    }
+
+    public void sendGatheringSpot(ProfessionType type, GatheringMaterial material, Location loc) {
+        if (!ready || WebManager.getApiUrls() == null) return;
+
+        JsonObject postData = new JsonObject();
+        postData.addProperty("authToken", token);
+
+        JsonObject spot = new JsonObject();
+        spot.addProperty("type", type.toString());
+        spot.addProperty("material", material.toString());
+        spot.addProperty("x", (int)loc.getX());
+        spot.addProperty("y", (int)loc.getY());
+        spot.addProperty("z", (int)loc.getZ());
+
+        postData.add("spot", spot);
+
+        Request request = new PostRequest(WebManager.getApiUrls().get("Athena") + "/telemetry/sendGatheringSpot", "gatheringSpot" + loc.toString())
+                .postJsonElement(postData)
+                .handleJsonObject(json -> true);
+
+        WebManager.getHandler().addAndDispatch(request, true);
     }
 
     public void uploadConfig(File f) {

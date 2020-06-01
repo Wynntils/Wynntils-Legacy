@@ -9,7 +9,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.framework.enums.WynntilsSound;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;

@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2020.
  */
 
-package com.wynntils.core.framework.enums;
+package com.wynntils.core.framework.enums.wynntils;
 
 import com.wynntils.Reference;
 import net.minecraft.client.Minecraft;

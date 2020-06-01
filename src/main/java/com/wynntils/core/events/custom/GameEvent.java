@@ -4,12 +4,14 @@
 
 package com.wynntils.core.events.custom;
 
-import com.wynntils.core.framework.enums.ProfessionType;
+import com.wynntils.core.framework.enums.professions.GatheringMaterial;
+import com.wynntils.core.framework.enums.professions.ProfessionType;
+import com.wynntils.core.utils.objects.Location;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Called when something related to the game happens
- * The actions are = Level Up, Quest Started, Quest Updated and Quest Complete
+ * The actions are = Level Up, Resource Gather, Quest Started, Quest Updated and Quest Complete
  */
 public class GameEvent extends Event {
 
@@ -105,6 +107,55 @@ public class GameEvent extends Event {
             }
 
         }
+    }
+
+    /**
+     * Called whenever a resource is gathered by the player
+     */
+    public static class ResourceGather extends GameEvent {
+
+        ProfessionType type;
+        GatheringMaterial material;
+
+        int materialAmount;
+        double xpAmount;
+        double xpPercentage;
+
+        Location location;
+
+        public ResourceGather(ProfessionType type, GatheringMaterial material, int materialAmount, double xpAmount, double xpPercentage, Location location) {
+            this.type = type;
+            this.material = material;
+            this.materialAmount = materialAmount;
+            this.xpAmount = xpAmount;
+            this.xpPercentage = xpPercentage;
+            this.location = location;
+        }
+
+        public ProfessionType getType() {
+            return type;
+        }
+
+        public int getMaterialAmount() {
+            return materialAmount;
+        }
+
+        public GatheringMaterial getMaterial() {
+            return material;
+        }
+
+        public double getXpPercentage() {
+            return xpPercentage;
+        }
+
+        public double getXpAmount() {
+            return xpAmount;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
     }
 
     /**

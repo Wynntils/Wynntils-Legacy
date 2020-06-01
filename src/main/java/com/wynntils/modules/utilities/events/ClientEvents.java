@@ -10,7 +10,7 @@ import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
-import com.wynntils.core.framework.enums.WynntilsSound;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;

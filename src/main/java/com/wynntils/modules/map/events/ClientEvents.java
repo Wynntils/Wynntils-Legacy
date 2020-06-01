@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.events;
 
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -17,6 +18,7 @@ import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -104,6 +106,13 @@ public class ClientEvents implements Listener {
         Entity lowestEntity = player.getLowestRidingEntity();
 
         LootRunManager.recordMovement(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+    }
+
+    @SubscribeEvent
+    public void sendGathering(GameEvent.ResourceGather e) {
+        if (!MapConfig.Telemetry.INSTANCE.allowGatheringSpot) return;
+
+        WebManager.getAccount().sendGatheringSpot(e.getType(), e.getMaterial(), e.getLocation());
     }
 
 }
