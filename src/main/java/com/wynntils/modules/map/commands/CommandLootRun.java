@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.managers.LootRunManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -65,6 +66,15 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 else message = RED + "The specified loot run doesn't exist!";
 
                 sender.sendMessage(new TextComponentString(message));
+
+                if (!LootRunManager.getActivePath().getPoints().isEmpty()) {
+                    Location start = LootRunManager.getActivePath().getPoints().get(0);
+                    ITextComponent startingPointMsg = new TextComponentString("Loot run starts at [" +
+                            (int) start.getX() + ", " + (int) start.getZ() + "]");
+                    startingPointMsg.getStyle().setColor(GRAY);
+                    sender.sendMessage(startingPointMsg);
+                }
+
                 return;
             }
             case "save": {
