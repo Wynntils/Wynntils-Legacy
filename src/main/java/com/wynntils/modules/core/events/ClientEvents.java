@@ -134,7 +134,7 @@ public class ClientEvents implements Listener {
             if (!(next.getValue() instanceof String)) continue;
 
             String value = (String) next.getValue();
-            if (value.isEmpty() || value.contains("Combat")) continue;
+            if (value.isEmpty() || value.contains("Combat") || value.contains("Guild")) continue;
             value = TextFormatting.getTextWithoutFormattingCodes(value);
 
             Matcher m = GATHERING_STATUS.matcher(value);

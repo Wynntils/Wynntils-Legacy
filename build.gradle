@@ -75,6 +75,7 @@ shadowJar {
     configurations = [project.configurations.compile]
 }
 
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
 }
