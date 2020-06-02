@@ -167,13 +167,13 @@ public class ClientEvents implements Listener {
         }
 
         if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
-            if (msg.equals("+3 minutes speed boost.")) {
-                ConsumableTimerOverlay.addBasicTimer("Speed boost", 3*60);
+            if (msg.endsWith("+3 minutes speed boost.")) {
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", 3*60 - 1);
             }
             Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(msg);
             if (matcher.find()) {
                 int minutes = Integer.parseInt(matcher.group(1));
-                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60);
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60 - 1);
             }
         }
     }
