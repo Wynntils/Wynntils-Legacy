@@ -167,7 +167,7 @@ public class ClientEvents implements Listener {
         }
 
         if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
-            if (msg.equals("+3 minutes speed boost.")) {
+            if (msg.endsWith("+3 minutes speed boost.")) {
                 ConsumableTimerOverlay.addBasicTimer("Speed boost", 3*60 - 1);
             }
             Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(msg);
