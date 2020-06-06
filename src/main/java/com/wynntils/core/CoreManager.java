@@ -5,7 +5,7 @@
 package com.wynntils.core;
 
 import com.wynntils.core.events.ClientEvents;
-import com.wynntils.core.framework.enums.WynntilsConflictContext;
+import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 

@@ -10,7 +10,7 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WarStageEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.core.framework.enums.WynntilsSound;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;

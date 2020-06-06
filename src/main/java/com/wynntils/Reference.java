@@ -30,7 +30,6 @@ public class Reference {
         ServerData currentServer = ModCore.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
         onServer = !ModCore.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
-        onLobbyServer = onServer && lowerIP.startsWith("lobby");
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
@@ -45,7 +44,6 @@ public class Reference {
     }
 
     public static boolean onServer = false;
-    public static boolean onLobbyServer = false;
 
     public static boolean onWorld = false;
     public static boolean onNether = false;

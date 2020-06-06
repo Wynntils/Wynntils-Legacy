@@ -1,8 +1,8 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
-package com.wynntils.core.framework.enums;
+package com.wynntils.core.framework.enums.wynntils;
 
 import com.wynntils.core.framework.instances.GuiMovementScreen;
 import net.minecraft.client.Minecraft;
