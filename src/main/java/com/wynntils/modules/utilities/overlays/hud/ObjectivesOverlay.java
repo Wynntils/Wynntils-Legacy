@@ -203,9 +203,25 @@ public class ObjectivesOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.Objectives.INSTANCE.enableObjectives ||
                 event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        if (objectives[0] != null) renderObjective(objectives[0], 0);
-        if (objectives[1] != null) renderObjective(objectives[1], 18);
-        if (objectives[2] != null) renderObjective(objectives[2], 36);
+        int height = 36;
+
+        if (objectives[2] != null) {
+            renderObjective(objectives[2], height);
+            height -= 18;
+        } else if (!OverlayConfig.Objectives.INSTANCE.growFromBottom) {
+            height -= 18;
+        }
+
+        if (objectives[1] != null) {
+            renderObjective(objectives[1], height);
+            height -= 18;
+        } else if (!OverlayConfig.Objectives.INSTANCE.growFromBottom) {
+            height -= 18;
+        }
+
+        if (objectives[0] != null) {
+            renderObjective(objectives[0], height);
+        }
     }
 
     public static class Objective {
