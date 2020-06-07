@@ -16,6 +16,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class GameEvent extends Event {
 
     /**
+     * Called when the user dies
+     */
+    public static class PlayerDeath extends GameEvent {
+    }
+
+    /**
      * Called when the user Level Up
      */
     public static class LevelUp extends GameEvent {

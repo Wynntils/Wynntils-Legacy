@@ -14,9 +14,11 @@ If you find any bug or have crashed because of the mod, please report it at our 
 Setup the Workspace
 ========
 To set up the workspace, you'll need to run the Forge ``setupDecompWorkspace`` gradle command, with that all the Forge source will be generated. It's that easy!
-<br> Building the mod is even simpler. Just call the ``buildDependents`` and the artifact should be generated.
+<br> Building the mod is even simpler. Just call the ``buildDependents`` and the artifact should be generated in `build/libs`.
 
 You can also setup a test environment. Using IntelliJ, execute the ``genIntellijRuns`` task, which will generate a run environment for you.
+Then go to `Preferences` > `Build, Execution, Deployment` > `Gradle`, select `Wynntils` in the list of Gradle projects, and make sure `Build and run using` is set to `IntelliJ IDEA`.
+Go to `Edit Configurations`, select `Minecraft Client`, and in `Program Arguments` add `--username <username> --password <password>` with your Minecraft username and password.
  
 Pull Request
 ========

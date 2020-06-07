@@ -88,6 +88,8 @@ public class ClientEvents {
         }
 
         // by message
+        else if (message.equals("You have died...") && e.getType()==ChatType.SYSTEM)
+            toDispatch = new GameEvent.PlayerDeath();
         else if (message.startsWith("[New Quest Started:"))
             toDispatch = new GameEvent.QuestStarted(message.replace("[New Quest Started: ", "").replace("]", ""));
         else if (message.startsWith("[Mini-Quest Started:"))
