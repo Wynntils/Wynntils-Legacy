@@ -44,6 +44,7 @@ public class MapModule extends Module {
         registerSettings(MapConfig.Waypoints.class);
         registerSettings(MapConfig.WorldMap.class);
         registerSettings(MapConfig.LootRun.class);
+        registerSettings(MapConfig.Telemetry.class);
 
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 

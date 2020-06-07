@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -59,7 +60,7 @@ public class DailyReminderManager {
     public static void openedDailyInventory(GuiScreenEvent.InitGuiEvent.Post e) {
         if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        if (e.getGui() instanceof GuiContainer && ((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
+        if (Utils.isCharacterInfoPage(e.getGui())) {
             if (!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
                 UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
                 UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());

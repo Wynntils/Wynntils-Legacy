@@ -5,33 +5,41 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.ModCore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -117,6 +125,13 @@ public class Utils {
         healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + TextFormatting.DARK_GRAY + healthBar.substring(5 + Math.min(health, 15));
         if (health < 8) { healthBar = healthBar.replace(TextFormatting.RED.toString(), TextFormatting.GOLD.toString()); }
         return healthBar;
+    }
+
+    /**
+     * Return true if the GuiScreen is the character information page (selected from the compass)
+     */
+    public static boolean isCharacterInfoPage(GuiScreen gui) {
+        return (gui instanceof GuiContainer && ((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining"));
     }
 
     /**
@@ -219,6 +234,70 @@ public class Utils {
         } else {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
         }
+    }
+
+    public static String getRawItemName(ItemStack stack) {
+        final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[[0-9]+%\\]");
+        final Pattern INGREDIENT_PATTERN = Pattern.compile(" +\\[✫+\\]");
+
+        String name = stack.getDisplayName();
+        name = TextFormatting.getTextWithoutFormattingCodes(name);
+        name = PERCENTAGE_PATTERN.matcher(name).replaceAll("");
+        name = INGREDIENT_PATTERN.matcher(name).replaceAll("");
+        if (name.startsWith("Perfect ")) {
+            name = name.substring(8);
+        }
+        name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
+        return name;
+    }
+
+    /**
+     * Transform an item name and encode it so it can be used in an URL.
+     */
+    public static String encodeItemNameForUrl(ItemStack stack) {
+        String name = getRawItemName(stack);
+        try {
+            name = URLEncoder.encode(name, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
+
+    /**
+     * Open the specified URL in the user's browser if possible, otherwise copy it to the clipboard
+     * and send it to chat.
+     * @param url The url to open
+     */
+    public static void openUrl(String url) {
+        try {
+            if (Util.getOSType() == Util.EnumOS.WINDOWS) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (Util.getOSType() == Util.EnumOS.OSX) {
+                Runtime.getRuntime().exec("open " + url);
+                // Keys can get "stuck" in LWJGL on macOS when the Minecraft window loses focus.
+                // Reset keyboard to solve this.
+                Keyboard.destroy();
+                Keyboard.create();
+            } else {
+                Runtime.getRuntime().exec("xgd-open " + url);
+            }
+            return;
+        } catch (IOException | LWJGLException e) {
+            e.printStackTrace();
+        }
+
+        Utils.copyToClipboard(url);
+        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard\n");
+        text.getStyle().setColor(TextFormatting.DARK_RED);
+
+        TextComponentString urlComponent = new TextComponentString(url);
+        urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        urlComponent.getStyle().setColor(TextFormatting.DARK_AQUA);
+        urlComponent.getStyle().setUnderlined(true);
+        text.appendSibling(urlComponent);
+
+        ModCore.mc().player.sendMessage(text);
     }
 
     public static void clearClipboard() {

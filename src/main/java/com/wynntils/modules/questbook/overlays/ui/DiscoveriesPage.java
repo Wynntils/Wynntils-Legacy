@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.wynntils.core.framework.enums.WynntilsSound;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;

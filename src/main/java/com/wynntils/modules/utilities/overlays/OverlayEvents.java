@@ -12,6 +12,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
+import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
@@ -19,7 +20,9 @@ import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -255,10 +258,16 @@ public class OverlayEvents implements Listener {
             // ARCHER
             } else if (messageText.equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost");
+                if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
+                }
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_]{1,16} gave you \\+3 minutes speed boost\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost (" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
+                }
                 e.setCanceled(true);
                 return;
             }
@@ -569,5 +578,22 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(GameEvent.PlayerDeath e) {
+        ConsumableTimerOverlay.clearConsumables();
+    }
+
+    @SubscribeEvent
+    public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
+        if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+            SPacketEntityEffect effect = e.getPacket();
+            Potion potion = Potion.getPotionById(effect.getEffectId());
+            if (potion.getName().equals("effect.moveSpeed")) {
+                int newTime = effect.getDuration() / 20;
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", newTime-1);
+            }
+        }
     }
 }

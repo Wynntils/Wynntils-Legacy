@@ -4,7 +4,7 @@
 
 package com.wynntils.core.framework.instances;
 
-import com.wynntils.core.framework.enums.WynntilsConflictContext;
+import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;

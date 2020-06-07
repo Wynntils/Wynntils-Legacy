@@ -39,7 +39,6 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
     boolean waitingLobby = false;
     boolean waitingInvite = false;
-    boolean waitingServer = false;
 
     boolean sentInvite = false;
 
@@ -63,11 +62,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (!Reference.onServer) {
             ServerData serverData = ServerUtils.getWynncraftServerData(true);
             ServerUtils.connect(serverData);
-            if (serverData.serverIP.startsWith("lobby")) {
-                waitingLobby = true;
-            } else {
-                waitingServer = true;
-            }
+            waitingLobby = true;
             return;
         }
         if (Reference.onWorld) {
@@ -97,20 +92,10 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        if (!waitingInvite && !waitingServer) return;
-        if (waitingServer) {
-            if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
-                sentInvite = true;
-                Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
-            } else {
-                Minecraft.getMinecraft().player.sendChatMessage("/hub");
-                waitingLobby = true;
-            }
-        } else {
-            sentInvite = true;
-            waitingInvite = false;
-            Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
-        }
+        if (!waitingInvite) return;
+        sentInvite = true;
+        waitingInvite = false;
+        Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
     }
 
     @SubscribeEvent

@@ -64,6 +64,7 @@ public class ClientEvents implements Listener {
             position = AnalysePosition.SECRET_DISCOVERIES;
         else if (e instanceof GameEvent.DiscoveryFound)
             position = AnalysePosition.DISCOVERIES;
+        else return;
 
         QuestManager.updateAnalysis(position, fullRead, readImmediately && !QuestBookConfig.INSTANCE.updateWhenOpen);
     }

@@ -1,4 +1,8 @@
-package com.wynntils.core.framework.enums;
+/*
+ *  * Copyright © Wynntils - 2020.
+ */
+
+package com.wynntils.core.framework.enums.professions;
 
 import com.wynntils.core.utils.StringUtils;
 
