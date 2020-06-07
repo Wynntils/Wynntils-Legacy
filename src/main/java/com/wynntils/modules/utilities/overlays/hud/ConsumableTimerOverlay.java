@@ -40,9 +40,15 @@ public class ConsumableTimerOverlay extends Overlay {
         super("Consumable Timer", 100, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
     }
 
-    public static void clearConsumables() {
-        // assigns a new object to avoid CME
-        activeConsumables = new ArrayList<>();
+    public static void clearConsumables(boolean clearPersistant) {
+        if (clearPersistant) {
+            // assigns a new object to avoid CME
+            activeConsumables = new ArrayList<>();
+        } else {
+            ArrayList<ConsumableContainer> persistant = new ArrayList<>(activeConsumables);
+            persistant.removeIf(c -> !c.isPersistent());
+            activeConsumables = persistant;
+        }
         activeEffects = new HashMap<>();
     }
 
@@ -189,13 +195,21 @@ public class ConsumableTimerOverlay extends Overlay {
         }
     }
 
-    public static void addBasicTimer(String name, int timeInSeconds) {
+    /**
+     * Create a new generic timer.
+     * @param persistent If this timer should persist over class change or player death
+     */
+    public static void addBasicTimer(String name, int timeInSeconds, boolean persistent) {
         String formattedName = GRAY + name;
-        ConsumableContainer consumable = new ConsumableContainer(formattedName);
+        ConsumableContainer consumable = new ConsumableContainer(formattedName, persistent);
         consumable.setExpirationTime(Minecraft.getSystemTime() + timeInSeconds*1000);
         // Clear old consumable with the same name
         activeConsumables.removeIf(c -> c.getName().equals(formattedName));
         activeConsumables.add(consumable);
+    }
+
+    public static void addBasicTimer(String name, int timeInSeconds) {
+        addBasicTimer(name, timeInSeconds, false);
     }
 
     @Override

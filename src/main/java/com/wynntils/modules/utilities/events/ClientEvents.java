@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -166,11 +167,11 @@ public class ClientEvents implements Listener {
             DailyReminderManager.openedDaily();
         }
 
-        if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+        if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
             Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(msg);
             if (matcher.find()) {
                 int minutes = Integer.parseInt(matcher.group(1));
-                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60 - 1);
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60 - 1, true);
             }
         }
     }
@@ -506,7 +507,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ConsumableTimerOverlay.clearConsumables(); // clear consumable list
+        ConsumableTimerOverlay.clearConsumables(false); // clear consumable list
+    }
+
+    @SubscribeEvent
+    public void onWorldLeave(WynnWorldEvent.Leave e) {
+        ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
     }
 
     // tooltip scroller

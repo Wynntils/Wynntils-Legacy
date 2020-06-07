@@ -258,14 +258,14 @@ public class OverlayEvents implements Listener {
             // ARCHER
             } else if (messageText.equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
                 }
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_]{1,16} gave you \\+3 minutes speed boost\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost (" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
                 }
                 e.setCanceled(true);
@@ -274,16 +274,25 @@ public class OverlayEvents implements Listener {
             // WARRIOR
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 10% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+10% resistance " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
+                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60 - 1);
+                }
                 e.setCanceled(true);
                 return;
             }
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 15% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+15% resistance " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
+                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60 - 1);
+                }
                 e.setCanceled(true);
                 return;
             }
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 20% resistance and 10% strength\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+20% resistance " + TextFormatting.GRAY + "& " + TextFormatting.AQUA + "+10% strength " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
+                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60 - 1);
+                }
                 e.setCanceled(true);
                 return;
             }
@@ -350,6 +359,19 @@ public class OverlayEvents implements Listener {
                 String[] res = messageText.split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[5] + " " + res[6].replace(".", "") + " until server restart");
                 e.setCanceled(true);
+
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) {
+                    try {
+                        int seconds = Integer.parseInt(res[5]);
+                        if (res[6].startsWith("minute")) {
+                            seconds = seconds * 60;
+                        }
+                        ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
+                    } catch (NumberFormatException ignored) {
+                        // ignore
+                    }
+                }
+
                 return;
             }
         }
@@ -582,12 +604,12 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
-        ConsumableTimerOverlay.clearConsumables();
+        ConsumableTimerOverlay.clearConsumables(false);
     }
 
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
-        if (OverlayConfig.ConsumableTimer.INSTANCE.captureChat) {
+        if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
             SPacketEntityEffect effect = e.getPacket();
             Potion potion = Potion.getPotionById(effect.getEffectId());
             if (potion.getName().equals("effect.moveSpeed")) {
