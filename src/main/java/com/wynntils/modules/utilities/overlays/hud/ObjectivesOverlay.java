@@ -199,7 +199,7 @@ public class ObjectivesOverlay extends Overlay {
         } else {
             objectiveString = objectiveGoal[pos];
         }
-        drawString(objectiveGoal[pos] + " [" + objectiveScore[pos] + "/" + objectiveMax[pos] + "]",
+        drawString(objectiveString,
                 -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT,
                 OverlayConfig.Objectives.INSTANCE.textShadow);
         if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objectiveMax[pos] > 0) {
