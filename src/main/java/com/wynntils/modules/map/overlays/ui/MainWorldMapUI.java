@@ -118,6 +118,7 @@ public class MainWorldMapUI extends WorldMapUI {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (shareBtn.isMouseOver() && mouseButton == 1) {
+            shareBtn.playPressSound(this.mc.getSoundHandler());
             handleShareButton(false);
             return;
         }
