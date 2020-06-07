@@ -507,14 +507,18 @@ public class OverlayConfig extends SettingsClass {
     public static class Objectives extends SettingsClass {
         public static Objectives INSTANCE;
 
-        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?")
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?", order = 0)
         public boolean enableObjectives = true;
 
-        @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?")
+        @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?", order = 1)
         public boolean hideOnInactivity = false;
 
-        @Setting(displayName = "Enable Objectives Bar", description = "Should the objectives progress be shown as a bar?")
+        @Setting(displayName = "Enable Objectives Bar", description = "Should the objectives progress be shown as a bar?", order = 2)
         public boolean enableProgressBar = true;
+
+        @Setting(displayName = "Objectives Transparency", description = "How transparent should the text and progress bar be?", order = 3)
+        @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
+        public float objectivesAlpha = 0.8f;
 
         @Setting(displayName = "Objectives Bar Texture", description = "What texture should be used for the objectives bar?")
         public objectivesTextures objectivesTexture = objectivesTextures.a;
@@ -525,10 +529,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        @Setting(displayName = "Objectives Transparency", description = "How transparent should the text and progress bar be?", order = 2)
-        @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
-        public float objectivesAlpha = 0.8f;
-
         @Override
         public void onSettingChanged(String name) {
             if (name.equals("enableObjectives")) {
@@ -536,7 +536,7 @@ public class OverlayConfig extends SettingsClass {
             }
 
             if (name.equals("hideOnInactivity")) {
-                ObjectivesOverlay.updateAllTimestamps();
+                ObjectivesOverlay.refreshAllTimestamps();
             }
         }
 

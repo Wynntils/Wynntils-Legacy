@@ -25,7 +25,6 @@ public class UtilitiesModule extends Module {
 
     public void onEnable() {
         module = this;
-        ObjectivesOverlay objectivesOverlay;
 
         KeyManager.registerKeys();
 
@@ -64,8 +63,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
         registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
         registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
-        registerOverlay(objectivesOverlay = new ObjectivesOverlay(), Priority.NORMAL);
-        registerEvents(objectivesOverlay);
+        registerOverlay(new ObjectivesOverlay(), Priority.NORMAL);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);

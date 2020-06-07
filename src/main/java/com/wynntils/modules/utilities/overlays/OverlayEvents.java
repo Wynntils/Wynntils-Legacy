@@ -13,13 +13,17 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.network.play.server.SPacketDisplayObjective;
+import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketUpdateScore;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -37,6 +41,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
+        ObjectivesOverlay.checkObjectiveReached(e);
     }
 
     @SubscribeEvent
@@ -541,6 +546,44 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         ModCore.mc().gameSettings.heldItemTooltips = true;
+        ObjectivesOverlay.restoreVanillaScoreboard();
+    }
+
+    @SubscribeEvent
+    public void onServerJoin(WynncraftServerEvent.Login e) {
+        ObjectivesOverlay.updateOverlayActivation();
+    }
+
+    @SubscribeEvent
+    public void onInventoryDraw(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
+        // Refresh overlay if hidden and inventory is open
+        ObjectivesOverlay.refreshVisibility();
+    }
+
+    @SubscribeEvent
+    public void onChestDraw(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+        // Refresh overlay if hidden and chest is open
+        ObjectivesOverlay.refreshVisibility();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onChestOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
+        ObjectivesOverlay.checkRewardsClaimed(e);
+    }
+
+    @SubscribeEvent
+    public void onDisplayObjective(PacketEvent<SPacketDisplayObjective> e) {
+        ObjectivesOverlay.checkForSidebar(e.getPacket());
+    }
+
+    @SubscribeEvent
+    public void onScoreboardObjective(PacketEvent<SPacketScoreboardObjective> e) {
+        ObjectivesOverlay.checkObjectiveRemoved(e.getPacket());
+    }
+
+    @SubscribeEvent
+    public void onUpdateScore(PacketEvent<SPacketUpdateScore> e) {
+        ObjectivesOverlay.checkObjectiveUpdate(e.getPacket());
     }
 
     @SubscribeEvent

@@ -6,8 +6,6 @@ package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.events.custom.WynncraftServerEvent;
-import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -21,13 +19,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ObjectivesOverlay extends Overlay implements Listener {
+public class ObjectivesOverlay extends Overlay {
     private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^- (.*): *([0-9]+)/([0-9]+)$");
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
@@ -38,13 +34,13 @@ public class ObjectivesOverlay extends Overlay implements Listener {
     private static int[] objectiveScore = new int[MAX_OBJECTIVES];
     private static int[] objectiveMax = new int[MAX_OBJECTIVES];
     private static long[] objectiveUpdatedAt = new long[MAX_OBJECTIVES];
-    private long keepVisibleTimestamp;
+    private static long keepVisibleTimestamp;
 
     public ObjectivesOverlay() {
         super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
-    public static void snoopDisplayObjective(SPacketDisplayObjective displayObjective) {
+    public static void checkForSidebar(SPacketDisplayObjective displayObjective) {
         // Find the objective that is displayed in the sidebar (slot 1)
         if (displayObjective.getPosition() == 1) {
             // We're basically looking for "sb" + username. Ignore the "fb" + username scoreboard.
@@ -54,7 +50,7 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         }
     }
 
-    public static void snoopScoreboardObjective(SPacketScoreboardObjective scoreboardObjective) {
+    public static void checkObjectiveRemoved(SPacketScoreboardObjective scoreboardObjective) {
         if (scoreboardObjective.getAction() == 1 && scoreboardObjective.getObjectiveName().equals(sidebarObjectiveName)) {
             // Sidebar scoreboard is removed
             for (int i = 0; i < MAX_OBJECTIVES; i++) {
@@ -96,7 +92,7 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         }
     }
 
-    public static void snoopUpdateScore(SPacketUpdateScore updateScore) {
+    public static void checkObjectiveUpdate(SPacketUpdateScore updateScore) {
         if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
             // We don't care about removals since they always gets replaced at the same score
             if (updateScore.getScoreAction() != SPacketUpdateScore.Action.CHANGE) return;
@@ -121,7 +117,18 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
     }
 
-    public static void updateAllTimestamps() {
+    public static void restoreVanillaScoreboard() {
+        GuiIngameForge.renderObjective = true;
+    }
+
+    public static void refreshVisibility() {
+        // Keep updating timestamps as long as chest/inventory is open
+        if (OverlayConfig.Objectives.INSTANCE.hideOnInactivity) {
+            keepVisibleTimestamp = System.currentTimeMillis();
+        }
+    }
+
+    public static void refreshAllTimestamps() {
         long currentTime = System.currentTimeMillis();
 
         for (int i = 0; i < objectiveUpdatedAt.length; i++) {
@@ -129,18 +136,7 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         }
     }
 
-    @SubscribeEvent
-    public void onServerJoin(WynncraftServerEvent.Login e) {
-        updateOverlayActivation();
-    }
-
-    @SubscribeEvent
-    public void onServerLeave(WynncraftServerEvent.Leave e) {
-        GuiIngameForge.renderObjective = true;
-    }
-
-    @SubscribeEvent
-    public void onChatMessage(ClientChatReceivedEvent e) {
+    public static void checkObjectiveReached(ClientChatReceivedEvent e) {
         if (e.getType() != ChatType.CHAT) return;
 
         String msg = e.getMessage().getUnformattedText();
@@ -152,25 +148,7 @@ public class ObjectivesOverlay extends Overlay implements Listener {
         }
     }
 
-    private void updateVisibility() {
-        // Keep updating timestamps as long as chest/inventory is open
-        if (OverlayConfig.Objectives.INSTANCE.hideOnInactivity) {
-            keepVisibleTimestamp = System.currentTimeMillis();
-        }
-    }
-
-    @SubscribeEvent
-    public void onInventoryDraw(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        updateVisibility();
-    }
-
-    @SubscribeEvent
-    public void onChestDraw(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        updateVisibility();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onChestOpen(GuiOverlapEvent.ChestOverlap.InitGui e) {
+    public static void checkRewardsClaimed(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (e.getGui().getLowerInv().getName().equals("Objective Rewards")) {
             // When opening reward, remove reminder
             objectiveGoal[0] = null;
