@@ -32,8 +32,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OverlayEvents implements Listener {
+    private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
 
     private static boolean wynnExpTimestampNotified = false;
 
@@ -259,14 +262,14 @@ public class OverlayEvents implements Listener {
             } else if (messageText.equals("+3 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
                 }
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_]{1,16} gave you \\+3 minutes speed boost\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+3 minutes " + TextFormatting.GRAY + "speed boost (" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60 - 1);
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
                 }
                 e.setCanceled(true);
                 return;
@@ -275,7 +278,7 @@ public class OverlayEvents implements Listener {
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 10% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+10% resistance " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60 - 1);
+                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60);
                 }
                 e.setCanceled(true);
                 return;
@@ -283,7 +286,7 @@ public class OverlayEvents implements Listener {
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 15% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+15% resistance " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60 - 1);
+                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60);
                 }
                 e.setCanceled(true);
                 return;
@@ -291,7 +294,7 @@ public class OverlayEvents implements Listener {
             else if (messageText.matches("[a-zA-Z0-9_]{1,16} has given you 20% resistance and 10% strength\\.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.AQUA + "+20% resistance " + TextFormatting.GRAY + "& " + TextFormatting.AQUA + "+10% strength " + TextFormatting.GRAY + "(" + formattedText.split(" ")[0].replace(TextFormatting.RESET.toString(), "") + TextFormatting.GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60 - 1);
+                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60);
                 }
                 e.setCanceled(true);
                 return;
@@ -508,6 +511,30 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
+            if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+                GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
+                e.setCanceled(true);
+
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", 60, true);
+                }
+                return;
+            }
+
+            Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+            if (matcher.find()) {
+                int minutes = Integer.parseInt(matcher.group(1));
+                GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
+                e.setCanceled(true);
+
+                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                    ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
+                }
+                return;
+            }
+        }
     }
 
     @SubscribeEvent
@@ -612,9 +639,9 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
             SPacketEntityEffect effect = e.getPacket();
             Potion potion = Potion.getPotionById(effect.getEffectId());
-            if (potion.getName().equals("effect.moveSpeed")) {
-                int newTime = effect.getDuration() / 20;
-                ConsumableTimerOverlay.addBasicTimer("Speed boost", newTime-1);
+            // Only catch the 3 minutes speed boost
+            if (potion.getName().equals("effect.moveSpeed") && effect.getDuration() == 3600) {
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
             }
         }
     }

@@ -37,7 +37,7 @@ public class ConsumableTimerOverlay extends Overlay {
     transient private static HashMap<String, IdentificationHolder> activeEffects = new HashMap<>();
 
     public ConsumableTimerOverlay() {
-        super("Consumable Timer", 100, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
+        super("Consumable Timer", 125, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
     }
 
     public static void clearConsumables(boolean clearPersistant) {
@@ -201,10 +201,18 @@ public class ConsumableTimerOverlay extends Overlay {
      */
     public static void addBasicTimer(String name, int timeInSeconds, boolean persistent) {
         String formattedName = GRAY + name;
+        // setExpirationTime adds an extra 1000 so compensate for that here
+        long expirationTime = Minecraft.getSystemTime() + timeInSeconds*1000 - 1000;
+
+        for (ConsumableContainer c : activeConsumables) {
+            if (c.getName().equals(formattedName)) {
+                c.setExpirationTime(expirationTime);
+                return;
+            }
+        }
+
         ConsumableContainer consumable = new ConsumableContainer(formattedName, persistent);
-        consumable.setExpirationTime(Minecraft.getSystemTime() + timeInSeconds*1000);
-        // Clear old consumable with the same name
-        activeConsumables.removeIf(c -> c.getName().equals(formattedName));
+        consumable.setExpirationTime(expirationTime);
         activeConsumables.add(consumable);
     }
 

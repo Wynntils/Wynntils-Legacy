@@ -326,6 +326,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game-update-ticker?")
             public boolean redirectSoulPoint = true;
+
+            @Setting(displayName = "Redirect Cooldown", description = "Should messages about needing to wait be redirected to the game-update-ticker?")
+            public boolean redirectCooldown = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
