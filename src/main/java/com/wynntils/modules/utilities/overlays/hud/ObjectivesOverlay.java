@@ -29,11 +29,8 @@ public class ObjectivesOverlay extends Overlay {
     private static final int HEIGHT = 52;
     private static final int MAX_OBJECTIVES = 3;
 
+    private static Objective[] objectives = new Objective[MAX_OBJECTIVES];
     private static String sidebarObjectiveName;
-    private static String[] objectiveGoal = new String[MAX_OBJECTIVES];
-    private static int[] objectiveScore = new int[MAX_OBJECTIVES];
-    private static int[] objectiveMax = new int[MAX_OBJECTIVES];
-    private static long[] objectiveUpdatedAt = new long[MAX_OBJECTIVES];
     private static long keepVisibleTimestamp;
 
     public ObjectivesOverlay() {
@@ -50,52 +47,61 @@ public class ObjectivesOverlay extends Overlay {
         }
     }
 
-    public static void checkObjectiveRemoved(SPacketScoreboardObjective scoreboardObjective) {
+    public static void checkSidebarRemoved(SPacketScoreboardObjective scoreboardObjective) {
         if (scoreboardObjective.getAction() == 1 && scoreboardObjective.getObjectiveName().equals(sidebarObjectiveName)) {
             // Sidebar scoreboard is removed
             for (int i = 0; i < MAX_OBJECTIVES; i++) {
-                objectiveGoal[i] = null;
-                objectiveScore[i] = 0;
-                objectiveMax[i] = 0;
+                objectives[i] = null;
             }
         }
     }
 
-    private static void parseObjectiveLine(String objectiveLine, int pos) {
+    private static Objective parseObjectiveLine(String objectiveLine) {
         Matcher matcher = OBJECTIVE_PATTERN.matcher(objectiveLine);
+        String goal = null;
+        int score = 0;
+        int maxScore = 0;
 
-        objectiveGoal[pos] = null;
+        // Match objective strings like "- Slay Lv. 20+ Mobs: 8/140" or "- Craft Items: 0/6"
         if (matcher.find()) {
-            objectiveGoal[pos] = matcher.group(1);
+            goal = matcher.group(1);
             try {
-                objectiveScore[pos] = Integer.parseInt(matcher.group(2));
-                objectiveMax[pos] = Integer.parseInt(matcher.group(3));
+                score = Integer.parseInt(matcher.group(2));
+                maxScore = Integer.parseInt(matcher.group(3));
             } catch (NumberFormatException e) {
-                objectiveGoal[pos] = null;
+                // Ignored, goal is already null
             }
         }
 
-        if (objectiveGoal[pos] == null) {
-            if (objectiveLine.equals("- All done")) {
-                objectiveGoal[pos] = "All done";
-                objectiveScore[pos] = 0;
-                objectiveMax[pos] = 0;
+        if (goal == null) {
+            if (objectiveLine.startsWith("- ")) {
+                goal = objectiveLine.substring(2);
             } else {
-                if (objectiveLine.startsWith("- ")) {
-                    objectiveGoal[pos] = objectiveLine.substring(2);
-                } else {
-                    objectiveGoal[pos] = objectiveLine;
-                }
-                objectiveScore[pos] = 0;
-                objectiveMax[pos] = 0;
+                goal = objectiveLine;
+            }
+        }
+
+        return new Objective(goal, score, maxScore);
+    }
+
+    private static void removeObjective(Objective objective) {
+        String goalToRemove = objective.getGoal();
+
+        for (int i = 0; i < objectives.length; i++) {
+            if (objectives[i] != null && objectives[i].getGoal().equals(goalToRemove)) {
+                objectives[i] = null;
             }
         }
     }
 
     public static void checkObjectiveUpdate(SPacketUpdateScore updateScore) {
         if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
-            // We don't care about removals since they always gets replaced at the same score
-            if (updateScore.getScoreAction() != SPacketUpdateScore.Action.CHANGE) return;
+            if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
+                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+                Objective objective = parseObjectiveLine(objectiveLine);
+                removeObjective(objective);
+                return;
+            }
 
             if (updateScore.getScoreValue() <= 7) {
                 int pos = 7 - updateScore.getScoreValue();
@@ -105,10 +111,7 @@ public class ObjectivesOverlay extends Overlay {
                 }
 
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                // Match objectives like "- Slay Lv. 20+ Mobs: 8/140" or "- Craft Items: 0/6"
-                parseObjectiveLine(objectiveLine, pos);
-
-                objectiveUpdatedAt[pos] = System.currentTimeMillis();
+                objectives[pos] = parseObjectiveLine(objectiveLine);
             }
         }
     }
@@ -129,10 +132,8 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void refreshAllTimestamps() {
-        long currentTime = System.currentTimeMillis();
-
-        for (int i = 0; i < objectiveUpdatedAt.length; i++) {
-            objectiveUpdatedAt[i] = currentTime;
+        for (int i = 0; i < objectives.length; i++) {
+            if (objectives[i] != null) objectives[i].refreshTimestamp();
         }
     }
 
@@ -141,20 +142,14 @@ public class ObjectivesOverlay extends Overlay {
 
         String msg = e.getMessage().getUnformattedText();
         if (msg.contains("Click here to claim your rewards")) {
-            objectiveGoal[0] = "Claim your reward";
-            objectiveScore[0] = 0;
-            objectiveMax[0] = 0;
-            objectiveUpdatedAt[0] = 253370761200L; // Expire in the year 9999...
+            objectives[0] = new Objective("Claim your reward");
         }
     }
 
     public static void checkRewardsClaimed(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (e.getGui().getLowerInv().getName().equals("Objective Rewards")) {
             // When opening reward, remove reminder
-            objectiveGoal[0] = null;
-            objectiveScore[0] = 0;
-            objectiveMax[0] = 0;
-            objectiveUpdatedAt[0] = System.currentTimeMillis();
+            objectives[0] = null;
         }
     }
 
@@ -178,45 +173,85 @@ public class ObjectivesOverlay extends Overlay {
 
     private CustomColor getAlphaAdjustedColor(float fadeAlpha) {
         CustomColor color = new CustomColor(OverlayConfig.Objectives.INSTANCE.textColour);
-        color.setA(OverlayConfig.Objectives.INSTANCE.objectivesAlpha*fadeAlpha);
+        color.setA(OverlayConfig.Objectives.INSTANCE.objectivesAlpha * fadeAlpha);
         return color;
     }
 
-    private void renderObjective(int pos, int height) {
-        if (objectiveGoal[pos] == null) return;
+    private void renderObjective(Objective objective, int height) {
         float fadeAlpha = 1.0f;
 
         if (OverlayConfig.Objectives.INSTANCE.hideOnInactivity) {
             long currentTime = System.currentTimeMillis();
-            fadeAlpha = Math.min(Math.max(objectiveUpdatedAt[pos] + 8000, keepVisibleTimestamp + 7000) - currentTime, 2000) / 2000f;
+            fadeAlpha = Math.min(Math.max(objective.getUpdatedAt() + 8000, keepVisibleTimestamp + 7000) - currentTime, 2000) / 2000f;
             if (fadeAlpha <= 0.0f) {
                 return;
             }
         }
-        String objectiveString;
-        if (objectiveMax[pos] > 0) {
-            objectiveString = objectiveGoal[pos] + " [" + objectiveScore[pos] + "/" + objectiveMax[pos] + "]";
-        } else {
-            objectiveString = objectiveGoal[pos];
-        }
-        drawString(objectiveString,
-                -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT,
-                OverlayConfig.Objectives.INSTANCE.textShadow);
-        if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objectiveMax[pos] > 0) {
-            drawProgressBar(Textures.Overlays.bars_exp, -WIDTH , -HEIGHT + height + 11,
-                     -WIDTH/3, -HEIGHT + height + 11 + 5, getTextureOffset(), getTextureOffset() + 9,
-                    (float) objectiveScore[pos] / (float) objectiveMax[pos],
-                    OverlayConfig.Objectives.INSTANCE.objectivesAlpha*fadeAlpha);
+
+        drawString(objective.toString(), -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha),
+                SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.Objectives.INSTANCE.textShadow);
+
+        if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objective.hasProgress()) {
+            drawProgressBar(Textures.Overlays.bars_exp, -WIDTH, -HEIGHT + height + 11,
+                    -WIDTH / 3, -HEIGHT + height + 11 + 5, getTextureOffset(), getTextureOffset() + 9,
+                    objective.getProgress(),OverlayConfig.Objectives.INSTANCE.objectivesAlpha * fadeAlpha);
         }
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!Reference.onWorld || !OverlayConfig.Objectives.INSTANCE.enableObjectives ||
-                event.getType() != RenderGameOverlayEvent.ElementType.ALL || objectiveGoal[0] == null) return;
+                event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        renderObjective(0, 0);
-        renderObjective(1, 18);
-        renderObjective(2, 36);
+        if (objectives[0] != null) renderObjective(objectives[0], 0);
+        if (objectives[1] != null) renderObjective(objectives[1], 18);
+        if (objectives[2] != null) renderObjective(objectives[2], 36);
+    }
+
+    public static class Objective {
+        private String goal;
+        private int score;
+        private int maxScore;
+        private long updatedAt;
+
+        public Objective(String goal) {
+            this(goal, 0, 0);
+        }
+
+        public Objective(String goal, int score, int maxScore) {
+            this.goal = goal;
+            this.score = score;
+            this.maxScore = maxScore;
+            this.updatedAt = System.currentTimeMillis();
+        }
+
+        @Override
+        public String toString() {
+            if (hasProgress()) {
+                return goal + " [" + score + "/" + maxScore + "]";
+            } else {
+                return goal;
+            }
+        }
+
+        public boolean hasProgress() {
+            return this.maxScore > 0;
+        }
+
+        public float getProgress() {
+            return (float) this.score / (float) this.maxScore;
+        }
+
+        public long getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public void refreshTimestamp() {
+            this.updatedAt = System.currentTimeMillis();
+        }
+
+        public String getGoal() {
+            return this.goal;
+        }
     }
 }

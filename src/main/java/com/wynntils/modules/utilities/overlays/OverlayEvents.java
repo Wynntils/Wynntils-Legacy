@@ -578,7 +578,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onScoreboardObjective(PacketEvent<SPacketScoreboardObjective> e) {
-        ObjectivesOverlay.checkObjectiveRemoved(e.getPacket());
+        ObjectivesOverlay.checkSidebarRemoved(e.getPacket());
     }
 
     @SubscribeEvent
