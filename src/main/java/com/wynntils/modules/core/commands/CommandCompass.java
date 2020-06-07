@@ -222,12 +222,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                 recipientUser = args[recipientIndex];
             }
 
-            String location = "[" + (int) x + ", " + (int) z + "]";
-            if (recipientUser == null) {
-                Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
-            } else {
-                Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
-            }
+            shareCoordinates(recipientUser, type, (int) x, (int) z);
 
             return;
         }
@@ -286,6 +281,15 @@ public class CommandCompass extends CommandBase implements IClientCommand {
         }
 
         throw new CommandException("Invalid arguments: /" + USAGE);
+    }
+
+    public static void shareCoordinates(String recipientUser, String type, int x, int z) {
+        String location = "[" + x + ", " + z + "]";
+        if (recipientUser == null) {
+            Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+        } else {
+            Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+        }
     }
 
     @Override
