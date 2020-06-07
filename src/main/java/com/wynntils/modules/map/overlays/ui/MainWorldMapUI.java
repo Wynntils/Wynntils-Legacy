@@ -9,6 +9,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.core.commands.CommandCompass;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -97,7 +98,9 @@ public class MainWorldMapUI extends WorldMapUI {
             drawHoveringText(TextFormatting.GRAY + "Add waypoint", mouseX, mouseY);
         }
         if (shareBtn.isMouseOver()) {
-            drawHoveringText(TextFormatting.GRAY + "Share position", mouseX, mouseY);
+            drawHoveringText(Arrays.asList(
+                    TextFormatting.GRAY + "Left click to share compass beacon with party",
+                    TextFormatting.GRAY + "Right click to share your location with party"), mouseX, mouseY);
         }
         if (helpBtn.isMouseOver()) {
             drawHoveringText(Arrays.asList(
@@ -114,6 +117,11 @@ public class MainWorldMapUI extends WorldMapUI {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (shareBtn.isMouseOver() && mouseButton == 1) {
+            handleShareButton(false);
+            return;
+        }
+
         if ((settingsBtn.isMouseOver() || addWaypointBtn.isMouseOver() || waypointMenuBtn.isMouseOver() || pathWaypointMenuBtn.isMouseOver() || shareBtn.isMouseOver())) {
             super.mouseClicked(mouseX, mouseY, mouseButton);
             return;
@@ -169,6 +177,21 @@ public class MainWorldMapUI extends WorldMapUI {
     }
 
 
+    private void handleShareButton(boolean leftClick) {
+        if (leftClick) {
+            Location location = CompassManager.getCompassLocation();
+            if (location != null) {
+                int x = (int) location.getX();
+                int z = (int) location.getZ();
+                CommandCompass.shareCoordinates(null, "compass", x, z);
+            }
+        } else {
+            int x = (int) Minecraft.getMinecraft().player.posX;
+            int z = (int) Minecraft.getMinecraft().player.posZ;
+            CommandCompass.shareCoordinates(null, "location", x, z);
+        }
+    }
+
     @Override
     public void actionPerformed(GuiButton btn) {
         if (btn == settingsBtn) {
@@ -180,7 +203,7 @@ public class MainWorldMapUI extends WorldMapUI {
         } else if (btn == pathWaypointMenuBtn) {
             Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI());
         } else if (btn == shareBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new ShareMenu());
+            handleShareButton(true);
         }
     }
 }
