@@ -326,6 +326,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game-update-ticker?")
             public boolean redirectSoulPoint = true;
+
+            @Setting(displayName = "Redirect Cooldown", description = "Should messages about needing to wait be redirected to the game-update-ticker?")
+            public boolean redirectCooldown = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
@@ -496,8 +499,14 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
         public boolean showEffects = true;
 
-        @Setting(displayName = "Capture Chat Events", description = "Should events from the chat, such as loot chest cooldown, be displayed?")
-        public boolean captureChat = true;
+        @Setting(displayName = "Show Cool Down", description = "Should loot chest cool down be displayed as a timer?")
+        public boolean showCooldown = true;
+
+        @Setting(displayName = "Show Spell Effects", description = "Should spell effects such as speed boost be displayed?")
+        public boolean showSpellEffects = true;
+
+        @Setting(displayName = "Show Server Restart", description = "Should server restart countdown be displayed?")
+        public boolean showServerRestart = false;
     }
 
 }

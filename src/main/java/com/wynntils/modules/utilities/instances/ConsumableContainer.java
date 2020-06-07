@@ -11,13 +11,19 @@ import java.util.HashMap;
 
 public class ConsumableContainer {
 
-    String name;
-    long expirationTime = 0;
+    private String name;
+    private long expirationTime = 0;
+    private boolean persistent = false;
 
     HashMap<String, IdentificationHolder> effects = new HashMap<>();
 
     public ConsumableContainer(String name) {
         this.name = name;
+    }
+
+    public ConsumableContainer(String name, boolean persistent) {
+        this.name = name;
+        this.persistent = persistent;
     }
 
     /**
@@ -91,4 +97,7 @@ public class ConsumableContainer {
         return Minecraft.getSystemTime() >= expirationTime;
     }
 
+    public boolean isPersistent() {
+        return persistent;
+    }
 }
