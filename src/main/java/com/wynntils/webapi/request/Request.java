@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -26,6 +27,7 @@ public class Request {
     int parallelGroup = 0;
     ThrowingBiPredicate<URLConnection, byte[], IOException> handler;
     Predicate<Integer> onError;
+    HashMap<String, String> headers = new HashMap<>();
     File cacheFile;
     Predicate<byte[]> cacheValidator = null;
     int currentlyHandling = 0;
@@ -214,9 +216,22 @@ public class Request {
         return this;
     }
 
+    /**
+     * Adds a header to the request
+     *
+     * @param key the header key
+     * @param value the header value
+     */
+    public Request addHeader(String key, String value) {
+        headers.put(key, value);
+        return this;
+    }
+
     public HttpURLConnection establishConnection() throws IOException {
         HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
         st.setRequestProperty("User-Agent", "WynntilsClient v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
+        if (!headers.isEmpty()) headers.forEach(st::addRequestProperty);
+
         st.setConnectTimeout(timeout);
         st.setReadTimeout(timeout);
         return st;
