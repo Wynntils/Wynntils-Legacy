@@ -291,6 +291,7 @@ public class WebManager {
 
         URLConnection st = new URL(apiUrls.get("GuildInfo") + URLEncoder.encode(guild, "UTF-8")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("apikey", apiUrls.get("WynnApiKey"));
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -314,6 +315,7 @@ public class WebManager {
 
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("apikey", apiUrls.get("WynnApiKey"));
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -409,6 +411,7 @@ public class WebManager {
         String url = apiUrls == null ? null : apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
         handler.addRequest(new Request(url, "player_profile")
             .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
+            .addHeader("apikey", apiUrls.get("WynnApiKey"))
             .handleJsonObject(json -> {
                 Type type = new TypeToken<PlayerStatsProfile>() {
                 }.getType();
