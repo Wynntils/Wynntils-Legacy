@@ -640,8 +640,9 @@ public class OverlayEvents implements Listener {
             SPacketEntityEffect effect = e.getPacket();
             Potion potion = Potion.getPotionById(effect.getEffectId());
             // Only catch the 3 minutes speed boost
-            if (potion.getName().equals("effect.moveSpeed") && effect.getDuration() == 3600) {
-                ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
+            if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId() &&
+                    potion.getName().equals("effect.moveSpeed")) {
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", effect.getDuration() / 20);
             }
         }
     }
