@@ -20,6 +20,11 @@ import java.util.HashSet;
 public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
+    @Setting(displayName = "Add Class & Hub Buttons to Menu", description = "Should 'Class selection' and 'Back to Hub' buttons be displayed on the in-game menu?", order = 1)
+    public boolean addClassHubButtons = true;
+
+    @Setting(displayName = "Add Options & Profile Buttons to Menu", description = "Should 'Wynntils Option' and 'User Profile'  buttons be displayed on the in-game menu?", order = 2)
+    public boolean addOptionsProfileButtons = true;
 
     @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
@@ -29,12 +34,6 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
     public boolean hidePotionGui = true;
-
-    @Setting(displayName = "Add Class & Server Button to Menu", description = "Should a class and server button be displayed on the in-game menu?")
-    public boolean addClassServer = true;
-
-    @Setting(displayName = "Add Change Options Button to Menu", description = "Should a button to show the Wynntils Option menu be displayed on the in-game menu when in the hub?")
-    public boolean addChangeOptions = true;
 
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
     public boolean hideNametags = true;
