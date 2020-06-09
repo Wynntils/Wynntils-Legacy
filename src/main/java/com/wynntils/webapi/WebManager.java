@@ -169,8 +169,8 @@ public class WebManager {
         return mapLabels;
     }
 
-    public static Iterable<MapMarkerProfile> getApiMarkers() {
-        return Iterables.concat(mapMarkers);
+    public static Iterable<MapMarkerProfile> getNonIgnoredApiMarkers() {
+        return Iterables.filter(mapMarkers, o -> !o.isIgnored());
     }
 
     public static UpdateProfile getUpdate() {
@@ -352,9 +352,9 @@ public class WebManager {
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         if (!main.has("message")) {
             main.remove("request");
-    
+
             Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {}.getType();
-    
+
             return gson.fromJson(main, type);
         } else {
             return new HashMap<>();

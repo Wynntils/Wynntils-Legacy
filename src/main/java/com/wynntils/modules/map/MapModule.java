@@ -10,6 +10,7 @@ import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.map.commands.CommandLocate;
 import com.wynntils.modules.map.commands.CommandLootRun;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
@@ -49,6 +50,7 @@ public class MapModule extends Module {
         registerOverlay(new MiniMapOverlay(), Priority.LOWEST);
 
         registerCommand(new CommandLootRun());
+        registerCommand(new CommandLocate());
 
         registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
             if (Reference.onWorld)
