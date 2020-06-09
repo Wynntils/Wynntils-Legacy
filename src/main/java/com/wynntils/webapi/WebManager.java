@@ -41,6 +41,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class WebManager {
 
@@ -302,6 +303,35 @@ public class WebManager {
         }
 
         return gson.fromJson(obj, GuildProfile.class);
+    }
+
+    /**
+     * Request the server list to Athena
+     *
+     * @param onReceive Consumes a hashmap containing as key the server name and as value the ServerProfile
+     * @see ServerProfile
+     */
+    public static void getServerList(Consumer<HashMap<String, ServerProfile>> onReceive) {
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/serverList";
+
+        handler.addAndDispatch(
+                new Request(url, "serverList")
+                .handleJsonObject((con, json) -> {
+                    JsonObject servers = json.getAsJsonObject("servers");
+                    HashMap<String, ServerProfile> result = new HashMap<>();
+
+                    long serverTime = Long.valueOf(con.getHeaderField("timestamp"));
+                    for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
+                        ServerProfile profile = gson.fromJson(entry.getValue(), ServerProfile.class);
+                        profile.matchTime(serverTime);
+
+                        result.put(entry.getKey(), profile);
+                    }
+
+                    onReceive.accept(result);
+                    return true;
+                })
+        , true);
     }
 
     /**
