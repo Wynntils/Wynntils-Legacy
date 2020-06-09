@@ -59,7 +59,7 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void joinServer(WynnWorldEvent.Leave ev) {
+    public void worldLeave(WynnWorldEvent.Leave ev) {
         ServerListManager.updateServers();
     }
 
