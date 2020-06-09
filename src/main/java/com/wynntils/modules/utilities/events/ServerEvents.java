@@ -7,9 +7,11 @@ package com.wynntils.modules.utilities.events;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.ServerResourcePackManager;
 import com.wynntils.modules.utilities.managers.WarManager;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -41,6 +43,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinServer(WynncraftServerEvent.Login ev) {
         WindowIconManager.update();
+        ServerListManager.updateServers();
 
         String title = Display.getTitle();
         if (!title.equals("Wynncraft")) {
@@ -53,6 +56,11 @@ public class ServerEvents implements Listener {
         }
 
         ServerResourcePackManager.applyOnServerJoin();
+    }
+
+    @SubscribeEvent
+    public void worldLeave(WynnWorldEvent.Leave ev) {
+        ServerListManager.updateServers();
     }
 
     public static void onWindowTitleSettingChanged() {

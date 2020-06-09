@@ -41,6 +41,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class WebManager {
 
@@ -168,8 +169,8 @@ public class WebManager {
         return mapLabels;
     }
 
-    public static Iterable<MapMarkerProfile> getApiMarkers() {
-        return Iterables.concat(mapMarkers);
+    public static Iterable<MapMarkerProfile> getNonIgnoredApiMarkers() {
+        return Iterables.filter(mapMarkers, o -> !o.isIgnored());
     }
 
     public static UpdateProfile getUpdate() {
@@ -305,6 +306,35 @@ public class WebManager {
     }
 
     /**
+     * Request the server list to Athena
+     *
+     * @param onReceive Consumes a hashmap containing as key the server name and as value the ServerProfile
+     * @see ServerProfile
+     */
+    public static void getServerList(Consumer<HashMap<String, ServerProfile>> onReceive) {
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/serverList";
+
+        handler.addAndDispatch(
+                new Request(url, "serverList")
+                .handleJsonObject((con, json) -> {
+                    JsonObject servers = json.getAsJsonObject("servers");
+                    HashMap<String, ServerProfile> result = new HashMap<>();
+
+                    long serverTime = Long.valueOf(con.getHeaderField("timestamp"));
+                    for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
+                        ServerProfile profile = gson.fromJson(entry.getValue(), ServerProfile.class);
+                        profile.matchTime(serverTime);
+
+                        result.put(entry.getKey(), profile);
+                    }
+
+                    onReceive.accept(result);
+                    return true;
+                })
+        , true);
+    }
+
+    /**
      * Request all online players to WynnAPI
      *
      * @return a {@link HashMap} who the key is the server and the value is an array containing all players on it
@@ -322,9 +352,9 @@ public class WebManager {
         JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
         if (!main.has("message")) {
             main.remove("request");
-    
+
             Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {}.getType();
-    
+
             return gson.fromJson(main, type);
         } else {
             return new HashMap<>();

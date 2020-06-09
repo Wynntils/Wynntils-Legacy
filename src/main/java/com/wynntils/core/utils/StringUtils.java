@@ -157,6 +157,17 @@ public class StringUtils {
         return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
+    public static String millistToLongString(long duration) {
+        long minute = (duration / (1000 * 60)) % 60,
+             hour = (duration / (1000 * 60 * 60));
+
+        if (minute == 0 && hour == 0) return "Seconds Ago";
+
+        return (hour != 0 ? hour + (hour != 1 ? " hours" : " hour") : "")
+                + (minute != 0 && hour != 0 ? " and " : "")
+                + (minute != 0 ? minute + (minute != 1 ? " minutes" : " minute") : "");
+    }
+
     public static String timeLeft(long duration) {
         long minute = (duration / (1000 * 60)) % 60,
              second = (duration / 1000) % 60;

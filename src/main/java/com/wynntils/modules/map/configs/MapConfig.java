@@ -16,9 +16,9 @@ import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
-import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
+import com.wynntils.webapi.profiles.MapMarkerProfile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -268,17 +268,10 @@ public class MapConfig extends SettingsClass {
             enabledIcons.put(icon, false);
         }
 
-        // Warn if we are either missing some icons in the options
-        // or have options that do not have an icon
         if (Reference.developmentEnvironment) {
-            for (String icon : MapApiIcon.MAPMARKERNAME_TRANSLATION.values()) {
-                if (MapApiIcon.IGNORED_MARKERS.contains(icon)) continue;
-                if (!enabledIcons.containsKey(icon)) Reference.LOGGER.warn("Missing option for icon \"" + icon + "\"");
-            }
-            for (String icon : enabledIcons.keySet()) {
-                if (MapApiIcon.IGNORED_MARKERS.contains(icon)) continue;
-                if (!MapApiIcon.MAPMARKERNAME_REVERSE_TRANSLATION.containsKey(icon)) Reference.LOGGER.warn("Missing translation for \"" + icon + "\"");
-            }
+            // Warn if we are either missing some icons in the options
+            // or have options that do not have an icon
+            MapMarkerProfile.validateIcons(enabledIcons);
         }
 
         return enabledIcons;
