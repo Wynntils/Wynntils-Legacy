@@ -529,7 +529,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
         public float objectivesAlpha = 0.8f;
 
-        @Setting(displayName = "Grow from Bottom", description = "Should the list of objectives from from the bottom?")
+        @Setting(displayName = "Grow from Bottom", description = "Should the list of objectives grow from the bottom?")
         public boolean growFromBottom = true;
 
         @Setting(displayName = "Objectives Bar Texture", description = "What texture should be used for the objectives bar?")
