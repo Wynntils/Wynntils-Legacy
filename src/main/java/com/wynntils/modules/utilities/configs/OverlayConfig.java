@@ -5,12 +5,15 @@
 package com.wynntils.modules.utilities.configs;
 
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.OverlayRotation;
+import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -509,4 +512,54 @@ public class OverlayConfig extends SettingsClass {
         public boolean showServerRestart = false;
     }
 
+    @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
+    public static class Objectives extends SettingsClass {
+        public static Objectives INSTANCE;
+
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?", order = 0)
+        public boolean enableObjectives = true;
+
+        @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?", order = 1)
+        public boolean hideOnInactivity = false;
+
+        @Setting(displayName = "Enable Objectives Bar", description = "Should the objectives progress be shown as a bar?", order = 2)
+        public boolean enableProgressBar = true;
+
+        @Setting(displayName = "Objectives Transparency", description = "How transparent should the text and progress bar be?", order = 3)
+        @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
+        public float objectivesAlpha = 0.8f;
+
+        @Setting(displayName = "Grow from Bottom", description = "Should the list of objectives grow from the bottom?")
+        public boolean growFromBottom = true;
+
+        @Setting(displayName = "Objectives Bar Texture", description = "What texture should be used for the objectives bar?")
+        public objectivesTextures objectivesTexture = objectivesTextures.a;
+
+        @Setting(displayName = "Text Colour", description = "What colour should the objective text be?")
+        public CustomColor textColour = CommonColors.GREEN;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.equals("enableObjectives")) {
+                ObjectivesOverlay.updateOverlayActivation();
+            }
+
+            if (name.equals("hideOnInactivity")) {
+                ObjectivesOverlay.refreshAllTimestamps();
+            }
+        }
+
+        // We're reusing the exp textures
+        public enum objectivesTextures {
+            Wynn,
+            Liquid,
+            Emerald,
+            a,
+            b,
+            c
+        }
+    }
 }

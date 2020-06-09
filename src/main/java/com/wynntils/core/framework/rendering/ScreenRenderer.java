@@ -739,6 +739,29 @@ public class ScreenRenderer {
     }
 
     /** drawProgressBar
+     * Draws a progress bar(ty1 and ty2 now specify both textures with background being on top of the bar)
+     * with adjusted opacity.
+     *
+     * @param texture the texture to use
+     * @param x1 left x on screen
+     * @param y1 top y on screen
+     * @param x2 right x on screen
+     * @param y2 bottom right on screen
+     * @param ty1 texture top y for the part(top of background)
+     * @param ty2 texture bottom y for the part(bottom of bar)
+     * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
+     * @param alpha the alpha value of the progress bar
+     */
+    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, float alpha) {
+        int half = (ty1 + ty2) / 2;
+        GlStateManager.enableBlend();
+        GlStateManager.color(1, 1, 1, alpha);
+        drawProgressBar(texture, x1, y1, x2, y2, ty1, half + 1, progress, true);
+        drawProgressBar(texture, x1, y1, x2, y2, half + 1, ty2, progress, false);
+        GlStateManager.disableBlend();
+    }
+
+    /** drawProgressBar
      * Draws a non textured progress bar
      *
      * @param backColor color for the background
