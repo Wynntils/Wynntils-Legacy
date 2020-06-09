@@ -163,9 +163,9 @@ public class StringUtils {
 
         if (minute == 0 && hour == 0) return "Seconds Ago";
 
-        return (hour != 0 ? hour + (hour != 1 ? " hours " : " hour") : "")
+        return (hour != 0 ? hour + (hour != 1 ? " hours" : " hour") : "")
                 + (minute != 0 && hour != 0 ? " and " : "")
-                + (minute != 0 ? minute + (minute != 1 ? " minutes " : " minute") : "");
+                + (minute != 0 ? minute + (minute != 1 ? " minutes" : " minute") : "");
     }
 
     public static String timeLeft(long duration) {
