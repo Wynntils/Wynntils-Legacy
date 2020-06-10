@@ -220,6 +220,18 @@ public class ConsumableTimerOverlay extends Overlay {
         addBasicTimer(name, timeInSeconds, false);
     }
 
+    public static void removeBasicTimer(String name) {
+        String formattedName = GRAY + name;
+
+        for (Iterator<ConsumableContainer> iterator = activeConsumables.iterator(); iterator.hasNext();) {
+            ConsumableContainer consumableContainer = iterator.next();
+            if (consumableContainer.getName().equals(formattedName)) {
+                iterator.remove();
+                return;
+            }
+        }
+    }
+
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         event.setCanceled(false);

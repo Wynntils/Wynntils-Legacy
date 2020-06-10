@@ -15,12 +15,9 @@ import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.network.play.server.SPacketDisplayObjective;
-import net.minecraft.network.play.server.SPacketEntityEffect;
-import net.minecraft.network.play.server.SPacketScoreboardObjective;
-import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.network.play.server.SPacketUpdateScore;
+import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -679,10 +676,22 @@ public class OverlayEvents implements Listener {
         SPacketEntityEffect effect = e.getPacket();
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
-        // Only catch the 3 minutes speed boost
         if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId() &&
-                potion.getName().equals("effect.moveSpeed")) {
+                potion == MobEffects.SPEED) {
             ConsumableTimerOverlay.addBasicTimer("Speed boost", effect.getDuration() / 20);
+        }
+    }
+
+    @SubscribeEvent
+    public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
+        if (Reference.onWorld && OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
+            SPacketRemoveEntityEffect effect = e.getPacket();
+            Potion potion = effect.getPotion();
+
+            if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
+                    potion == MobEffects.SPEED) {
+                ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+            }
         }
     }
 }
