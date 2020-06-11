@@ -673,25 +673,29 @@ public class OverlayEvents implements Listener {
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
-        SPacketEntityEffect effect = e.getPacket();
-        Potion potion = Potion.getPotionById(effect.getEffectId());
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            SPacketEntityEffect effect = e.getPacket();
+            Potion potion = Potion.getPotionById(effect.getEffectId());
 
-        if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId() &&
-                potion == MobEffects.SPEED) {
-            ConsumableTimerOverlay.addBasicTimer("Speed boost", effect.getDuration() / 20);
-        }
+            if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId() &&
+                    potion == MobEffects.SPEED) {
+                ConsumableTimerOverlay.addBasicTimer("Speed boost", effect.getDuration() / 20);
+            }
+        });
     }
 
     @SubscribeEvent
     public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
         if (Reference.onWorld && OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-            SPacketRemoveEntityEffect effect = e.getPacket();
-            Potion potion = effect.getPotion();
-
-            if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                    potion == MobEffects.SPEED) {
-                ConsumableTimerOverlay.removeBasicTimer("Speed boost");
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                SPacketRemoveEntityEffect effect = e.getPacket();
+                Potion potion = effect.getPotion();
+    
+                if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
+                        potion == MobEffects.SPEED) {
+                    ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+                }
+            });
         }
     }
 }
