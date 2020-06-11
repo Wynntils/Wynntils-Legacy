@@ -35,6 +35,7 @@ public class OverlayEvents implements Listener {
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
 
     private static boolean wynnExpTimestampNotified = false;
+    private long loginTime;
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -45,6 +46,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
+        loginTime = Minecraft.getSystemTime();
     }
 
     @SubscribeEvent
@@ -515,7 +517,11 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
 
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", 60, true);
+                    long timeNow = Minecraft.getSystemTime();
+                    int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
+                    if (timeLeft > 0) {
+                        ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, true);
+                    }
                 }
                 return;
             }
@@ -690,7 +696,7 @@ public class OverlayEvents implements Listener {
             Minecraft.getMinecraft().addScheduledTask(() -> {
                 SPacketRemoveEntityEffect effect = e.getPacket();
                 Potion potion = effect.getPotion();
-    
+
                 if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
                         potion == MobEffects.SPEED) {
                     ConsumableTimerOverlay.removeBasicTimer("Speed boost");
