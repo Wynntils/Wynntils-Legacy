@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.List;
@@ -396,6 +397,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return y;
             }
 
+            @Cancelable
             public static class Pre extends HoveredToolTip {
 
                 public Pre(ChestReplacer guiInventory, int x, int y) {
