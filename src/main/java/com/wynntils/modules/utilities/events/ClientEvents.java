@@ -542,4 +542,14 @@ public class ClientEvents implements Listener {
         } catch (NoClassDefFoundError e) { /* ignore */ }
     }
 
+    @SubscribeEvent
+    public void clearEmptyTooltip(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
+        if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
+
+        ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
+        if (stack.getDisplayName().equals(" ")) {
+            e.setCanceled(true);
+        }
+    }
+
 }
