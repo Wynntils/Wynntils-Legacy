@@ -70,6 +70,9 @@ public class QuestInfo {
             if (lore.get(x).equalsIgnoreCase(GRAY + "Right click to track")) {
                 break;
             }
+            if (descriptionBuilder.length() > 0 && !descriptionBuilder.substring(descriptionBuilder.length() - 1).equals(" ")) {
+                descriptionBuilder.append(" ");
+            }
             descriptionBuilder.append(getTextWithoutFormattingCodes(lore.get(x)));
         }
         description = descriptionBuilder.toString();
