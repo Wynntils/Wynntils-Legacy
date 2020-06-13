@@ -16,7 +16,7 @@ import com.wynntils.core.utils.objects.Position;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
+import java.awt.Point;
 
 import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.*;
 
