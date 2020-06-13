@@ -116,6 +116,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 addCommandDescription(text1, "-", "exportdiscoveries", "This exports all discovered discoveries as a .csv file.");
                 text1.appendText("\n");
                 addCommandDescription(text1, "-", "forceupdate", "This downloads and installs the latest successful build.");
+                text1.appendText("\n");
+                addCommandDescription(text1, "-", "changelog", "This will show you the changelog of the latest update. Args: <major/latest>");
                 text1.appendText("\n")
                         .appendSibling(new TextComponentString("<<<").setStyle(new Style()
                                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils help 1"))
