@@ -416,7 +416,7 @@ public class SettingsUI extends UI {
                     // Set text again in case it was over default max length of 32
                     ((UIETextBox) valueElement).setText(text);
                 } else if (type.isAssignableFrom(boolean.class)) {
-                    valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Toggle("§aEnabled", Textures.UIs.button_b, "§cDisabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIEButton.Toggle) valueElement).value);
                             changedSettings.add(currentSettingsPath);
