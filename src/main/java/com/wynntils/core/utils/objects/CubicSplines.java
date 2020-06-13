@@ -9,7 +9,6 @@ import com.wynntils.core.utils.objects.Functions.Cubic;
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

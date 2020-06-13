@@ -6,7 +6,6 @@ package com.wynntils.core.utils.reflections;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

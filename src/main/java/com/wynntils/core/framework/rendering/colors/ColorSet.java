@@ -5,7 +5,6 @@
 package com.wynntils.core.framework.rendering.colors;
 
 import javax.annotation.Nullable;
-
 import java.util.*;
 
 /**

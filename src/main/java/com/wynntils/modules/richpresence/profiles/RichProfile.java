@@ -16,10 +16,10 @@ import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.modules.richpresence.discordgamesdk.*;
 import com.wynntils.modules.richpresence.events.RPCJoinHandler;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.request.RequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.request.Request;
+import com.wynntils.webapi.request.RequestHandler;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.io.File;

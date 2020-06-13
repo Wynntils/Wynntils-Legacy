@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;

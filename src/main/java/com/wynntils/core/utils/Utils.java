@@ -32,7 +32,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.*;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
