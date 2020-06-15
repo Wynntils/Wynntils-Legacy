@@ -55,6 +55,7 @@ public class SkillPointOverlay implements Listener {
                 int end = lore.indexOf(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER ? "[LRL]" : "[RLR]"); 
                 
                 String[] numbers = lore.substring(start, end).split("-");
+                if (numbers[0].isEmpty() || numbers[1].isEmpty()) continue;
                 
                 int min = Integer.parseInt(numbers[0]);
                 int max = Integer.parseInt(numbers[1]);
