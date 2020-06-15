@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
@@ -416,7 +417,7 @@ public class SettingsUI extends UI {
                     // Set text again in case it was over default max length of 32
                     ((UIETextBox) valueElement).setText(text);
                 } else if (type.isAssignableFrom(boolean.class)) {
-                    valueElement = new UIEButton.Toggle("Enabled", Textures.UIs.button_b, "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
+                    valueElement = new UIEButton.Toggle(TextFormatting.GREEN + "Enabled", Textures.UIs.button_b, TextFormatting.RED + "Disabled", Textures.UIs.button_b, (boolean) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
                             registeredSettings.get(currentSettingsPath).setValueWithoutSaving(field.field, ((UIEButton.Toggle) valueElement).value);
                             changedSettings.add(currentSettingsPath);
