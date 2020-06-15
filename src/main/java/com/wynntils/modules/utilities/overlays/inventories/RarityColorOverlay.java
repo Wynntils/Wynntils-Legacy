@@ -13,20 +13,32 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static java.lang.Math.PI;
 import static net.minecraft.client.renderer.GlStateManager.color;
 import static net.minecraft.client.renderer.GlStateManager.glTexEnvi;
+import static net.minecraft.util.math.MathHelper.cos;
+import static net.minecraft.util.math.MathHelper.sin;
+import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
 
 public class RarityColorOverlay implements Listener {
 
@@ -108,6 +120,134 @@ public class RarityColorOverlay implements Listener {
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             } ScreenRenderer.endGL();
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void drawLevel(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            drawSlotLevel(s);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void drawLevel(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            drawSlotLevel(s);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void drawLevel(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            drawSlotLevel(s);
+        }
+    }
+
+    private void drawSlotLevel(Slot s) {
+        if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
+            return;
+        if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
+            return;
+        if (!UtilitiesConfig.Items.INSTANCE.armorHighlight && s.slotNumber >= 5 && s.slotNumber <= 8)
+            return;
+        if (!UtilitiesConfig.Items.INSTANCE.mainHighlightInventory && s.slotNumber >= 13 && s.slotNumber <= 35)
+            return;
+
+        ItemStack is = s.getStack();
+        String lore = ItemUtils.getStringLore(is);
+        int level = 0;
+
+        if (is.isEmpty()) {
+            return;
+        } else {
+            Pattern p = Pattern.compile("Combat Lv. Min: ([0-9]+)");
+            Matcher m = p.matcher(lore);
+            if (m.find()) {
+                level = Integer.parseInt(m.group(1));
+            }
+        }
+
+        if (level == 0) return;
+
+        int i = s.xPos;
+        int j = s.yPos;
+        mcDamageBar(level, i, j);
+        drawTheArc(0, 0);
+    }
+
+    private  void drawArc(int x, int y) {
+        int circle_points = 105;
+        float arcLength = 0.5f * (float)PI;
+        // Calculate angle increment from point to point, and its cos/sin.
+        float angInc = arcLength / (circle_points - 1.0f);
+        float cosInc = cos(angInc);
+        float sinInc = sin(angInc);
+
+// Start with vector (1.0f, 0.0f), ...
+        float xc = 1.0f;
+        float yc = 0.0f;
+
+// ... and then rotate it by angInc for each point.
+        GlStateManager.glBegin(GL_LINE_LOOP);
+        for (int i = 0; i < circle_points; i++) {
+            GlStateManager.glVertex3f(0.5f + xc, 0.5f + yc, 0.0f);
+            float xcNew = cosInc * xc - sinInc * yc;
+            yc = sinInc * xc + cosInc * yc;
+            xc = xcNew;
+        }
+        GlStateManager.glEnd();
+    }
+
+    private void drawTheArc(int x, int y) {
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableBlend();
+
+        GlStateManager.color(0.5f, 0.5f, 0.5f);
+
+        drawArc(x, y);
+
+        GlStateManager.enableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
+
+
+    }
+    private void drawBox(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha)
+    {
+        renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        renderer.pos(x + 0, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + 0, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
+        Tessellator.getInstance().draw();
+    }
+
+    private void mcDamageBar(int level, int xPosition, int yPosition) {
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        float hue = ((float)(level/105.0F)/2.0F) + 0.3F;
+        int rgbfordisplay = MathHelper.hsvToRGB(hue, 1.0F, 1.0F);;
+        int i = Math.round( 13.0F * level/105.0F);
+        int j = rgbfordisplay;
+        drawBox(bufferbuilder, xPosition +1, yPosition + 15, 15, 3, 0, 0, 0, 160);
+        drawBox(bufferbuilder, xPosition + 2, yPosition + 16, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 160);
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
     }
 
     public static void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
