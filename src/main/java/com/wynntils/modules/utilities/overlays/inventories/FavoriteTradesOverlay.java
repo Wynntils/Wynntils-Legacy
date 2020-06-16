@@ -11,17 +11,14 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +27,6 @@ import java.util.List;
 public class FavoriteTradesOverlay implements Listener {
 
     private final ArrayList<String> favorites_trade_items_lore = new ArrayList<>();
-    private boolean opened_market;
 
     @SubscribeEvent
     public void keyPressOnTrade(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
@@ -45,29 +41,15 @@ public class FavoriteTradesOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
+        if (!e.getGui().getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) {
+            if (!favorites_trade_items_lore.isEmpty())
+                favorites_trade_items_lore.clear();
+            return;
+        }
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.slotNumber >= e.getGui().getLowerInv().getSizeInventory()) continue;
             if (isNotMarketItem(s.getStack())) continue;
             renderFavoriteItem(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void onInventory(TickEvent.RenderTickEvent e) {
-        if (e.phase != TickEvent.Phase.START) return;
-        if (!Reference.onWorld) return;
-        GuiScreen current = Minecraft.getMinecraft().currentScreen;
-        if (current instanceof ChestReplacer) {
-            ChestReplacer gc = (ChestReplacer) current;
-            if (gc.getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) {
-                if (!opened_market) {
-                    opened_market = true;
-                }
-            }
-        } else if (opened_market) {
-            opened_market = false;
-            if (!favorites_trade_items_lore.isEmpty())
-                favorites_trade_items_lore.clear();
         }
     }
 
