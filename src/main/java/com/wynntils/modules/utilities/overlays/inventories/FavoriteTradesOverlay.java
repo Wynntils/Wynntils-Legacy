@@ -29,12 +29,12 @@ public class FavoriteTradesOverlay implements Listener {
     private final ArrayList<String> favorites_trade_items_lore = new ArrayList<>();
 
     @SubscribeEvent
-    public void keyPressOnTrade(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
-        if (!Reference.onWorld) return;
-        if (e.getKeyCode() == KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) {
-            if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
-                toggleLockState(e.getGui().getSlotUnderMouse().getStack());
-            }
+    public void onKeyPress(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
+        if (!Reference.onWorld || !e.getGui().getLowerInv().getDisplayName().getFormmatedText().contains("Marketplace")) return;
+        if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
+        
+        if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
+            toggleLockState(e.getGui().getSlotUnderMouse().getStack());
         }
     }
 
@@ -46,6 +46,7 @@ public class FavoriteTradesOverlay implements Listener {
                 favorites_trade_items_lore.clear();
             return;
         }
+        
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.slotNumber >= e.getGui().getLowerInv().getSizeInventory()) continue;
             if (isNotMarketItem(s.getStack())) continue;
@@ -82,10 +83,11 @@ public class FavoriteTradesOverlay implements Listener {
     }
 
     private void toggleLockState(ItemStack it) {
-        if (!Reference.onWorld) return;
-        if (isNotMarketItem(it)) return;
+        if (!Reference.onWorld || isNotMarkedItem(it)) return;
+        
         ItemIdentificationOverlay.replaceLore(it);
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
+        
         if (!favorites_trade_items_lore.remove(lore)) {
             favorites_trade_items_lore.add(lore);
         }
