@@ -37,7 +37,7 @@ public class FavoriteTradesOverlay implements Listener {
         if (!Reference.onWorld) return;
         if (e.getKeyCode() == KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) {
             if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
-                checkLockState(e.getGui().getSlotUnderMouse().getStack());
+                toggleLockState(e.getGui().getSlotUnderMouse().getStack());
             }
         }
     }
@@ -99,7 +99,7 @@ public class FavoriteTradesOverlay implements Listener {
         ScreenRenderer.endGL();
     }
 
-    private void checkLockState(ItemStack it) {
+    private void toggleLockState(ItemStack it) {
         if (!Reference.onWorld) return;
         if (isNotMarketItem(it)) return;
         ItemIdentificationOverlay.replaceLore(it);
