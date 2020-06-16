@@ -230,16 +230,6 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void keyPressOnTrade(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
-        if (!Reference.onWorld) return;
-        if (e.getKeyCode() == KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) {
-            if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
-                FavoriteTradesOverlay.checkLockState(e.getGui().getSlotUnderMouse().getStack());
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!Reference.onWorld) return;
 

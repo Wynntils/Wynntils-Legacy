@@ -12,13 +12,13 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
+import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -29,8 +29,18 @@ import java.util.List;
 
 public class FavoriteTradesOverlay implements Listener {
 
-    private static final ArrayList<String> favorites_trade_items_lore = new ArrayList<>();
+    private final ArrayList<String> favorites_trade_items_lore = new ArrayList<>();
     private boolean opened_market;
+
+    @SubscribeEvent
+    public void keyPressOnTrade(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
+        if (!Reference.onWorld) return;
+        if (e.getKeyCode() == KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) {
+            if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
+                checkLockState(e.getGui().getSlotUnderMouse().getStack());
+            }
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
@@ -61,7 +71,7 @@ public class FavoriteTradesOverlay implements Listener {
         }
     }
 
-    private static boolean isNotMarketItem(ItemStack it) {
+    private boolean isNotMarketItem(ItemStack it) {
         List<String> lore = ItemUtils.getLore(it);
         if (lore.size() < 3) return true;
         char[] c = lore.get(2).toCharArray();
@@ -71,7 +81,7 @@ public class FavoriteTradesOverlay implements Listener {
         return true;
     }
 
-    private static void renderFavoriteItem(Slot s, int guiLeft, int guiTop) {
+    private void renderFavoriteItem(Slot s, int guiLeft, int guiTop) {
         ItemStack it = s.getStack();
         ItemIdentificationOverlay.replaceLore(it);
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
@@ -89,7 +99,7 @@ public class FavoriteTradesOverlay implements Listener {
         ScreenRenderer.endGL();
     }
 
-    public static void checkLockState(ItemStack it) {
+    private void checkLockState(ItemStack it) {
         if (!Reference.onWorld) return;
         if (isNotMarketItem(it)) return;
         ItemIdentificationOverlay.replaceLore(it);
