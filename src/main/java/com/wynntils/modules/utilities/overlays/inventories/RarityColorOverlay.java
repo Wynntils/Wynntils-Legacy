@@ -22,7 +22,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,10 +37,11 @@ import static net.minecraft.client.renderer.GlStateManager.color;
 import static net.minecraft.client.renderer.GlStateManager.glTexEnvi;
 import static net.minecraft.util.math.MathHelper.cos;
 import static net.minecraft.util.math.MathHelper.sin;
-import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
 
 public class RarityColorOverlay implements Listener {
 
+    public static final float MAX_LEVEL = 105.0f;
+    public static final float MAX_CIRCLE_STEPS = 16.0f;
     private static String professionFilter = "-";
 
     @SubscribeEvent
@@ -143,7 +143,7 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    private void drawSlotLevel(Slot s) {
+    private static void drawSlotLevel(Slot s) {
         if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
             return;
         if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
@@ -171,83 +171,37 @@ public class RarityColorOverlay implements Listener {
 
         int i = s.xPos;
         int j = s.yPos;
-        mcDamageBar(level, i, j);
-        drawTheArc(0, 0);
+        drawLevelArc(level, i, j);
     }
 
-    private  void drawArc(int x, int y) {
-        int circle_points = 105;
-        float arcLength = 0.5f * (float)PI;
-        // Calculate angle increment from point to point, and its cos/sin.
-        float angInc = arcLength / (circle_points - 1.0f);
-        float cosInc = cos(angInc);
-        float sinInc = sin(angInc);
-
-// Start with vector (1.0f, 0.0f), ...
-        float xc = 1.0f;
-        float yc = 0.0f;
-
-// ... and then rotate it by angInc for each point.
-        GlStateManager.glBegin(GL_LINE_LOOP);
-        for (int i = 0; i < circle_points; i++) {
-            GlStateManager.glVertex3f(0.5f + xc, 0.5f + yc, 0.0f);
-            float xcNew = cosInc * xc - sinInc * yc;
-            yc = sinInc * xc + cosInc * yc;
-            xc = xcNew;
-        }
-        GlStateManager.glEnd();
-    }
-
-    private void drawTheArc(int x, int y) {
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableBlend();
-
-        GlStateManager.color(0.5f, 0.5f, 0.5f);
-
-        drawArc(x, y);
-
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableDepth();
-        GlStateManager.enableLighting();
-
-
-    }
-    private void drawBox(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha)
-    {
-        renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        renderer.pos(x + 0, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x + 0, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x + width, y + 0, 0.0D).color(red, green, blue, alpha).endVertex();
-        Tessellator.getInstance().draw();
-    }
-
-    private void mcDamageBar(int level, int xPosition, int yPosition) {
+    private static void drawLevelArc(int level, int xPosition, int yPosition) {
         GlStateManager.disableLighting();
         GlStateManager.disableDepth();
         GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
+        GlStateManager.glLineWidth(4.0f);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        float hue = ((float)(level/105.0F)/2.0F) + 0.3F;
-        int rgbfordisplay = MathHelper.hsvToRGB(hue, 1.0F, 1.0F);;
-        int i = Math.round( 13.0F * level/105.0F);
-        int j = rgbfordisplay;
-        drawBox(bufferbuilder, xPosition +1, yPosition + 15, 15, 3, 0, 0, 0, 160);
-        drawBox(bufferbuilder, xPosition + 2, yPosition + 16, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 160);
+        drawArc(bufferbuilder, xPosition, yPosition, level, 0, 0, 0, 120);
 
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
         GlStateManager.enableLighting();
+    }
+
+    private static void drawArc(BufferBuilder renderer, int x, int y, int level, int red, int green, int blue, int alpha)
+    {
+        renderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+        int numSteps = (int)((level / MAX_LEVEL) * MAX_CIRCLE_STEPS);
+        for (int i = 0; i <= numSteps; i++) {
+            float angle = 2 * (float) PI * i / (MAX_CIRCLE_STEPS - 1.0f);
+            renderer.pos(x + sin(angle) * 8.0F + 8, y - cos(angle) * 8.0F + 8, 0.0D).color(red, green, blue, alpha).endVertex();
+        }
+        Tessellator.getInstance().draw();
     }
 
     public static void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
