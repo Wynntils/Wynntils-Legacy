@@ -75,14 +75,8 @@ public class FavoriteTradesOverlay implements Listener {
         ItemStack it = s.getStack();
         ItemIdentificationOverlay.replaceLore(it);
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
-        boolean found = false;
-        for (String lore_fav : favorites_trade_items_lore) {
-            if (lore_fav.equals(lore)) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) return;
+        if (!favorites_trade_items_lore.contains(lore)) return;
+
         ScreenRenderer.beginGL(0, 0);
 
         // HeyZeer0: this will make the lock appear over the item
