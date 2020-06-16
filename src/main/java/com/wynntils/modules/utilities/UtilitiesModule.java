@@ -37,6 +37,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new RarityColorOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
+        registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());
         registerEvents(new IngredientFilterOverlay());
         registerEvents(new EmeraldCountOverlay());

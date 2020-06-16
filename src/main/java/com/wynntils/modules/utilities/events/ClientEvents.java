@@ -21,6 +21,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.FavoriteTradesOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -225,6 +226,16 @@ public class ClientEvents implements Listener {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+        }
+    }
+
+    @SubscribeEvent
+    public void keyPressOnTrade(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
+        if (!Reference.onWorld) return;
+        if (e.getKeyCode() == KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) {
+            if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
+                FavoriteTradesOverlay.checkLockState(e.getGui().getSlotUnderMouse().getStack());
+            }
         }
     }
 
