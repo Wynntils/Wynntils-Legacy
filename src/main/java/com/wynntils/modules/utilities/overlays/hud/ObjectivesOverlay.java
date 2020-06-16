@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ObjectivesOverlay extends Overlay {
-    private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^- (.*): *([0-9]+)/([0-9]+)$");
+    private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
     private static final int MAX_OBJECTIVES = 3;
@@ -63,6 +63,9 @@ public class ObjectivesOverlay extends Overlay {
         int maxScore = 0;
 
         // Match objective strings like "- Slay Lv. 20+ Mobs: 8/140" or "- Craft Items: 0/6"
+        // Could also be multi line like:
+        // "- Trade 24E with"
+        // "  lvl 10 players: 0/24"
         if (matcher.find()) {
             goal = matcher.group(1);
             try {
