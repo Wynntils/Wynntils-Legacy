@@ -164,6 +164,14 @@ public class RarityColorOverlay implements Listener {
             Matcher m = p.matcher(lore);
             if (m.find()) {
                 level = Integer.parseInt(m.group(1));
+            } else {
+                Pattern p2 = Pattern.compile("Lv. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
+                Matcher m2 = p2.matcher(lore);
+                if (m2.find()) {
+                    int lowLevel =  Integer.parseInt(m2.group(1));
+                    int highLevel =  Integer.parseInt(m2.group(2));
+                    level = (lowLevel + highLevel) / 2;
+                }
             }
         }
 
