@@ -30,7 +30,7 @@ public class FavoriteTradesOverlay implements Listener {
 
     @SubscribeEvent
     public void onKeyPress(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
-        if (!Reference.onWorld || !e.getGui().getLowerInv().getDisplayName().getFormmatedText().contains("Marketplace")) return;
+        if (!Reference.onWorld || !e.getGui().getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) return;
         if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
         
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
@@ -83,7 +83,7 @@ public class FavoriteTradesOverlay implements Listener {
     }
 
     private void toggleLockState(ItemStack it) {
-        if (!Reference.onWorld || isNotMarkedItem(it)) return;
+        if (!Reference.onWorld || isNotMarketItem(it)) return;
         
         ItemIdentificationOverlay.replaceLore(it);
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
