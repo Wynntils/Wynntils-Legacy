@@ -69,7 +69,7 @@ public class ItemIdentificationOverlay implements Listener {
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
-    private static void replaceLore(ItemStack stack)  {
+    public static void replaceLore(ItemStack stack)  {
         if (!stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;

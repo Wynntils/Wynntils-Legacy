@@ -24,6 +24,7 @@ public class KeyManager {
     private static float lastGamma = 1f;
 
     private static KeyHolder lockInventoryKey;
+    private static KeyHolder favoriteTradeKey;
     private static KeyHolder checkForUpdatesKey;
     private static KeyHolder zoomInKey;
     private static KeyHolder zoomOutKey;
@@ -46,6 +47,7 @@ public class KeyManager {
         });
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
+        favoriteTradeKey = UtilitiesModule.getModule().registerKeyBinding("Favorite Trade", Keyboard.KEY_F, "Wynntils", true, () -> {});
 
         zoomInKey = CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", false, () -> {
             MiniMapOverlay.zoomBy(+1);
@@ -74,6 +76,10 @@ public class KeyManager {
         });
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+    }
+
+    public static KeyHolder getFavoriteTradeKey() {
+        return favoriteTradeKey;
     }
 
     public static KeyHolder getLockInventoryKey() {
