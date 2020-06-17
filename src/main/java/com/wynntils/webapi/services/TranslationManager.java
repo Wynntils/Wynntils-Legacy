@@ -19,11 +19,10 @@ public class TranslationManager {
             e.printStackTrace();
         }
 
-        return new DummyTranslationService();
+        return null;
     }
 
     public enum TranslationServices {
-        DUMMY(DummyTranslationService.class),
         GOOGLEAPI(GoogleApiTranslationService.class),
         PIGLATIN(PigLatinTranslationService.class);
 
@@ -31,13 +30,6 @@ public class TranslationManager {
 
         TranslationServices(Class<? extends TranslationService> serviceClass) {
             this.serviceClass = serviceClass;
-        }
-    }
-
-    public static class DummyTranslationService implements TranslationService {
-        @Override
-        public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
-            handleTranslation.accept(message);
         }
     }
 

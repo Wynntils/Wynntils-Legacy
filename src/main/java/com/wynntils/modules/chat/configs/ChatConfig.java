@@ -91,19 +91,30 @@ public class ChatConfig extends SettingsClass {
     public static class ChatTranslation extends SettingsClass {
         public static ChatTranslation INSTANCE;
 
-        @Setting(displayName = "Enable Chat Translation", description = "Should chat messages by automatically translated to a foreign language?")
-        public boolean enableChatTranslation = true;
+        @Setting(displayName = "Enable Text Translation", description = "Should text messages be automatically translated to a foreign language?")
+        public boolean enableTextTranslation = true;
+
+        @Setting(displayName = "Translate Chat and Shout", description = "Should messages sent by other users be translated?")
+        public boolean translateChatShout = true;
+
+        @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
+        public boolean translateNpc = true;
+
+        @Setting(displayName = "Translate Other", description = "Should other messages, like system information, be translated?")
+        public boolean translateOther = true;
 
         @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?")
-        public String languageName = "sv";
+        public String languageName = "en";
 
         @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
-        public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.PIGLATIN;
+        public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
 
         @Override
         public void onSettingChanged(String name) {
             if (name.equals("translationService")) {
                 ChatManager.translator = null;
+            } else if (name.startsWith("translate")) {
+                ChatManager.translationPattern = null;
             }
         }
 

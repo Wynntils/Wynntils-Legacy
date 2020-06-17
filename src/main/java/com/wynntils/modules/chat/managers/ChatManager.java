@@ -10,7 +10,6 @@ import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.webapi.services.TranslationManager;
-import com.wynntils.webapi.services.TranslationManager.TranslationServices;
 import com.wynntils.webapi.services.TranslationService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -37,6 +36,7 @@ public class ChatManager {
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
     public static TranslationService translator = null;
+    public static Pattern translationPattern = null;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -97,10 +97,7 @@ public class ChatManager {
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
         // language translation
-        if (ChatConfig.ChatTranslation.INSTANCE.enableChatTranslation) {
-            if (translator == null) {
-                translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
-            }
+        if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
             translateMessage(in);
         }
 
@@ -369,30 +366,62 @@ public class ChatManager {
     }
 
     private static void translateMessage(ITextComponent in) {
+        if (translator == null) {
+            translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
+        }
+        if (translationPattern == null) {
+            translationPattern = createTranslationPattern();
+        }
         String translatedPrefix = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
         if (!in.getUnformattedText().startsWith(translatedPrefix)) {
             String formatted = in.getFormattedText();
-            String chatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
-            String shoutPrefix = "(?:§3.* \\[[^]]+\\] shouts: §r§b)";
-            String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
-            String interactPrefix = "(?:§5[^:]*: §r§d)";
-            String infoPrefix = "(?:§[0-9a-z])";
-            Pattern pattern = Pattern.compile("^(" + chatPrefix + "|" + shoutPrefix + "|" + npcPrefix +
-                    "|" + interactPrefix + "|" + infoPrefix + ")(.*)(§r)$");
-            Matcher m = pattern.matcher(formatted);
+            Matcher m = translationPattern.matcher(formatted);
             if (m.find()) {
                 String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
-                String prefix =  m.group(1);
+                String prefix = m.group(1);
                 String suffix = m.group(3);
-                System.out.println("MATCH:" + message + " pre " + prefix + "suf" + suffix);
                 translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
                     Minecraft.getMinecraft().addScheduledTask(() ->
                             ChatOverlay.getChat().printChatMessage(new TextComponentString(translatedPrefix + prefix + translatedMsg + suffix)));
                 });
-            } else {
-                System.out.println("FAIL:" + formatted);
             }
         }
+    }
+
+    private static Pattern createTranslationPattern() {
+        String chatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
+        String shoutPrefix = "(?:§3.* \\[[^]]+\\] shouts: §r§b)";
+        String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
+        String interactPrefix = "(?:§5[^:]*: §r§d)";
+        String infoPrefix = "(?:§[0-9a-z])";
+
+        int components = 0;
+        StringBuilder builder = new StringBuilder();
+        builder.append("^(");
+        if (ChatConfig.ChatTranslation.INSTANCE.translateChatShout) {
+            builder.append(chatPrefix + "|" + shoutPrefix);
+            components++;
+        }
+        if (ChatConfig.ChatTranslation.INSTANCE.translateNpc) {
+            if (components > 0) {
+                builder.append("|");
+            }
+            builder.append(npcPrefix);
+            components++;
+        }
+        if (ChatConfig.ChatTranslation.INSTANCE.translateOther) {
+            if (components > 0) {
+                builder.append("|");
+            }
+            builder.append(interactPrefix + "|" + infoPrefix);
+            components++;
+        }
+        builder.append(")(.*)(§r)$");
+
+        // This is the unmatchable regex
+        if (components == 0) return Pattern.compile("^\\b$");
+
+        return Pattern.compile(builder.toString());
     }
 
     public static ITextComponent renderMessage(ITextComponent in) {
