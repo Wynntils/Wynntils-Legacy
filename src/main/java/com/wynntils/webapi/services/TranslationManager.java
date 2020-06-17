@@ -52,7 +52,9 @@ public class TranslationManager {
                     latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
                 }
             }
-            handleTranslation.accept(latinString.toString());
+            Thread thread = new Thread(() ->
+                    handleTranslation.accept(latinString.toString()));
+            thread.start();
         }
     }
 }
