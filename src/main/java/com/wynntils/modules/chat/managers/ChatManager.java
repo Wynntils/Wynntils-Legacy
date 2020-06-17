@@ -8,6 +8,10 @@ import com.wynntils.ModCore;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.webapi.services.TranslationManager;
+import com.wynntils.webapi.services.TranslationManager.TranslationServices;
+import com.wynntils.webapi.services.TranslationService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -32,6 +36,8 @@ public class ChatManager {
 
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
+
+    private static TranslationService translator = TranslationManager.getService(TranslationServices.GOOGLEAPI);
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -90,6 +96,13 @@ public class ChatManager {
         // popup sound
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
+
+        if (!in.getUnformattedText().startsWith("[TR]")) {
+            translator.translate(in.getUnformattedText(), "sv", translatedMsg -> {
+                Minecraft.getMinecraft().addScheduledTask(() ->
+                        ChatOverlay.getChat().printChatMessage(new TextComponentString("[TR] [" + translatedMsg + "]")));
+            });
+        }
 
         // wynnic translator
         if (StringUtils.hasWynnic(in.getUnformattedText())) {
