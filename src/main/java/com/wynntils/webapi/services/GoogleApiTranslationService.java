@@ -10,6 +10,11 @@ import java.net.URLEncoder;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+/**
+ * A TranslationService that uses the free googleapi translation API. This service is free but is severly
+ * restricted. There is a rate limit of about 100 messages per hour and IP address. This is typically
+ * sufficient for NPCs translation, but not for general chat messages, at least not in chatty areas like Detlas.
+ */
 public class GoogleApiTranslationService implements TranslationService {
     private static AtomicInteger requestNumber = new AtomicInteger();
 
