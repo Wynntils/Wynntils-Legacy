@@ -92,16 +92,16 @@ public class ChatConfig extends SettingsClass {
         public static ChatTranslation INSTANCE;
 
         @Setting(displayName = "Enable Text Translation", description = "Should text messages be automatically translated to a foreign language?")
-        public boolean enableTextTranslation = true;
+        public boolean enableTextTranslation = false;
 
         @Setting(displayName = "Translate Chat and Shout", description = "Should messages sent by other users be translated?")
-        public boolean translateChatShout = true;
+        public boolean translateChatShout = false;
 
         @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
         public boolean translateNpc = true;
 
         @Setting(displayName = "Translate Other", description = "Should other messages, like system information, be translated?")
-        public boolean translateOther = true;
+        public boolean translateOther = false;
 
         @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?")
         public String languageName = "en";
