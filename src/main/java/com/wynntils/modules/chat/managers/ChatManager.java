@@ -33,6 +33,8 @@ import java.util.regex.Pattern;
 
 public class ChatManager {
 
+    private static final String TRANSLATED_PREFIX = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
+
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
     public static TranslationService translator = null;
@@ -366,14 +368,14 @@ public class ChatManager {
     }
 
     private static void translateMessage(ITextComponent in) {
+        // These might not have been created yet, or reset by ChatConfig changing
         if (translator == null) {
             translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
         }
         if (translationPattern == null) {
             translationPattern = createTranslationPattern();
         }
-        String translatedPrefix = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
-        if (!in.getUnformattedText().startsWith(translatedPrefix)) {
+        if (!in.getUnformattedText().startsWith(TRANSLATED_PREFIX)) {
             String formatted = in.getFormattedText();
             Matcher m = translationPattern.matcher(formatted);
             if (m.find()) {
@@ -382,7 +384,7 @@ public class ChatManager {
                 String suffix = m.group(3);
                 translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
                     Minecraft.getMinecraft().addScheduledTask(() ->
-                            ChatOverlay.getChat().printChatMessage(new TextComponentString(translatedPrefix + prefix + translatedMsg + suffix)));
+                            ChatOverlay.getChat().printChatMessage(new TextComponentString(TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
                 });
             }
         }

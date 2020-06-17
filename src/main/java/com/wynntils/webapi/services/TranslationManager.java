@@ -8,8 +8,7 @@ public class TranslationManager {
      * Get a TranslationService.
      *
      * @param service An enum describing which translation service is requested.
-     * @return An instance of the selected translation service, or the dummy (no-op) translation
-     * service if no matching service can be created.
+     * @return An instance of the selected translation service, or null on failure
      */
     public static TranslationService getService(TranslationServices service) {
         try {
@@ -33,6 +32,10 @@ public class TranslationManager {
         }
     }
 
+    /**
+     * A demo "translation" service that ignores the selected language, and always translates
+     * to "pig latin". Use for test purposes, or for hours of enjoyment for the simple-minded. ;-)
+     */
     public static class PigLatinTranslationService implements TranslationService {
         @Override
         public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
