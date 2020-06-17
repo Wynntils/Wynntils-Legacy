@@ -24,7 +24,8 @@ public class TranslationManager {
 
     public enum TranslationServices {
         DUMMY(DummyTranslationService.class),
-        GOOGLEAPI(GoogleApiTranslationService.class);
+        GOOGLEAPI(GoogleApiTranslationService.class),
+        PIGLATIN(PigLatinTranslationService.class);
 
         private Class<? extends TranslationService> serviceClass;
 
@@ -37,6 +38,21 @@ public class TranslationManager {
         @Override
         public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
             handleTranslation.accept(message);
+        }
+    }
+
+    public static class PigLatinTranslationService implements TranslationService {
+        @Override
+        public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
+            StringBuilder latinString = new StringBuilder();
+            for (String word : message.split("\\s")) {
+                if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {
+                    latinString.append(word).append("ay ");
+                } else {
+                    latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
+                }
+            }
+            handleTranslation.accept(latinString.toString());
         }
     }
 }

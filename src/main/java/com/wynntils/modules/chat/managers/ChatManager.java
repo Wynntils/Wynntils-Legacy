@@ -36,8 +36,7 @@ public class ChatManager {
 
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
-
-   private static TranslationService translator = null;
+    public static TranslationService translator = null;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 

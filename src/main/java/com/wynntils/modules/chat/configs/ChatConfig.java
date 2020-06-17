@@ -98,7 +98,15 @@ public class ChatConfig extends SettingsClass {
         public String languageName = "sv";
 
         @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
-        public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
+        public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.PIGLATIN;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.equals("translationService")) {
+                ChatManager.translator = null;
+            }
+        }
+
     }
 
 }
