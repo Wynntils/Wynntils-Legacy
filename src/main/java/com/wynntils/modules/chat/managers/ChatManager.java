@@ -101,12 +101,7 @@ public class ChatManager {
             if (translator == null) {
                 translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
             }
-            if (!in.getUnformattedText().startsWith("[TR]")) {
-                translator.translate(in.getUnformattedText(), ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
-                    Minecraft.getMinecraft().addScheduledTask(() ->
-                            ChatOverlay.getChat().printChatMessage(new TextComponentString("[TR] [" + translatedMsg + "]")));
-                });
-            }
+            translateMessage(in);
         }
 
         // wynnic translator
@@ -371,6 +366,33 @@ public class ChatManager {
         }
 
         return in;
+    }
+
+    private static void translateMessage(ITextComponent in) {
+        String translatedPrefix = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
+        if (!in.getUnformattedText().startsWith(translatedPrefix)) {
+            String formatted = in.getFormattedText();
+            String chatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
+            String shoutPrefix = "(?:§3.* \\[[^]]+\\] shouts: §r§b)";
+            String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
+            String interactPrefix = "(?:§5[^:]*: §r§d)";
+            String infoPrefix = "(?:§[0-9a-z])";
+            Pattern pattern = Pattern.compile("^(" + chatPrefix + "|" + shoutPrefix + "|" + npcPrefix +
+                    "|" + interactPrefix + "|" + infoPrefix + ")(.*)(§r)$");
+            Matcher m = pattern.matcher(formatted);
+            if (m.find()) {
+                String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
+                String prefix =  m.group(1);
+                String suffix = m.group(3);
+                System.out.println("MATCH:" + message + " pre " + prefix + "suf" + suffix);
+                translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
+                    Minecraft.getMinecraft().addScheduledTask(() ->
+                            ChatOverlay.getChat().printChatMessage(new TextComponentString(translatedPrefix + prefix + translatedMsg + suffix)));
+                });
+            } else {
+                System.out.println("FAIL:" + formatted);
+            }
+        }
     }
 
     public static ITextComponent renderMessage(ITextComponent in) {
