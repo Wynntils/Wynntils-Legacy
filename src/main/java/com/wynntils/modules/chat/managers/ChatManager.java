@@ -379,6 +379,7 @@ public class ChatManager {
             String formatted = in.getFormattedText();
             Matcher m = translationPattern.matcher(formatted);
             if (m.find()) {
+                // We only want to translate the actual message, not formatting, sender, etc.
                 String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
                 String prefix = m.group(1);
                 String suffix = m.group(3);
