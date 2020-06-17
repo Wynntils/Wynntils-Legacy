@@ -37,7 +37,7 @@ public class ChatManager {
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
 
-    private static TranslationService translator = TranslationManager.getService(TranslationServices.GOOGLEAPI);
+   private static TranslationService translator = null;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -97,11 +97,17 @@ public class ChatManager {
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
-        if (!in.getUnformattedText().startsWith("[TR]")) {
-            translator.translate(in.getUnformattedText(), "sv", translatedMsg -> {
-                Minecraft.getMinecraft().addScheduledTask(() ->
-                        ChatOverlay.getChat().printChatMessage(new TextComponentString("[TR] [" + translatedMsg + "]")));
-            });
+        // language translation
+        if (ChatConfig.ChatTranslation.INSTANCE.enableChatTranslation) {
+            if (translator == null) {
+                translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
+            }
+            if (!in.getUnformattedText().startsWith("[TR]")) {
+                translator.translate(in.getUnformattedText(), ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
+                    Minecraft.getMinecraft().addScheduledTask(() ->
+                            ChatOverlay.getChat().printChatMessage(new TextComponentString("[TR] [" + translatedMsg + "]")));
+                });
+            }
         }
 
         // wynnic translator
