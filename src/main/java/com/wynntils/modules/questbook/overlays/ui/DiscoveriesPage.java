@@ -259,13 +259,19 @@ public class DiscoveriesPage extends QuestBookPage {
 
                     render.color(1, 1, 1, 1);
                     
+                    // Guild territory lore actions
                     if (selected.getGuildTerritoryProfile() != null) {
-                        if (!selected.getLore().get(selected.getLore().size() - 1).contentEquals("")) 
+                        if (!lore.get(lore.size() - 1).contentEquals("")) 
                             lore.add("");
                         
                         lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
                         lore.add(TextFormatting.YELLOW + "Right click to view on the map!");
                     }
+                    
+                    // Removes blank space at the end of lores
+                    if (lore.get(lore.size() - 1).contentEquals("")) 
+                        lore.remove(selected.getLore().size() - 1);
+                
 
                     if (selected.wasDiscovered()) {
                         switch (selected.getType()) {

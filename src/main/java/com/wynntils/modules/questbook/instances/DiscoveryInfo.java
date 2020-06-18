@@ -10,7 +10,6 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
