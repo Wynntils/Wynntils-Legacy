@@ -17,14 +17,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CustomElytraModel extends ModelBase
 {
-    private final ModelRenderer rightWing;
-    private final ModelRenderer leftWing = new ModelRenderer(this, 22, 0);
+    private ModelRenderer rightWing;
+    private ModelRenderer leftWing;
 
     public CustomElytraModel() {
-        this.leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
-        this.rightWing = new ModelRenderer(this, 22, 0);
+
+    }
+
+    public void update(int maxFrames, int scale) {
+        double percentage = ((System.currentTimeMillis() % 1000) / 1000d);
+        int currentFrame = (int) (maxFrames * percentage) + 1;
+
+        this.leftWing = new ModelRenderer(this, 22 * scale, 32 * scale * currentFrame);
+        this.leftWing.setTextureSize(64 * scale, 32 * scale * maxFrames);
+
+        this.leftWing.addBox(0.0F, 0.0F, 0.0F, 10 * scale, 20 * scale, 2 * scale, 1.0F);
+        this.rightWing = new ModelRenderer(this, 22 * scale, 32 * scale * currentFrame);
+        this.rightWing.setTextureSize(64 * scale, 32 * scale * maxFrames);
         this.rightWing.mirror = true;
-        this.rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
+
+        this.rightWing.addBox(-10.0F * scale, 0.0F, 0.0F, 10 * scale, 20 * scale, 2 * scale, 1.0F);
     }
 
     /**
@@ -54,12 +66,13 @@ public class CustomElytraModel extends ModelBase
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
      * "far" arms and legs can swing at most.
      */
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn, int elytraScale) {
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         float f = 0.2617994F;
         float f1 = -0.2617994F;
         float f2 = 0.0F;
         float f3 = 0.0F;
+
 
         if (entityIn instanceof EntityLivingBase && ((EntityLivingBase)entityIn).isElytraFlying()) {
             float f4 = 1.0F;
@@ -74,18 +87,18 @@ public class CustomElytraModel extends ModelBase
         }
         else if (entityIn.isSneaking()) {
             f = ((float)Math.PI * 2F / 9F);
-            f1 = -((float)Math.PI / 4F);
-            f2 = 3F;
+//            f1 = -((float)Math.PI / 4F);
+//            f2 = 3F;
             f3 = 0.08726646F;
         } else if (entityIn.isSprinting()) {
-            f = ((float)Math.PI * 2F / 9F);
-            f1 = -((float)Math.PI / 4F);
-            f2 = 1F;
-            f3 = 0.08726646F;
+//            f = ((float)Math.PI * 2F / 9F);
+//            f1 = -((float)Math.PI / 4F);
+//            f2 = 1F;
+//            f3 = 0.08726646F;
         }
 
-        this.leftWing.rotationPointX = 5.0F;
         this.leftWing.rotationPointY = f2;
+        this.leftWing.rotationPointX = -5.0F * elytraScale;
 
         if (entityIn instanceof AbstractClientPlayer) {
             AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entityIn;

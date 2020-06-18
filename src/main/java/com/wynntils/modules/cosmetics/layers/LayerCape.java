@@ -28,9 +28,11 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
         this.playerRenderer = playerRendererIn;
     }
 
-    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale) {
-        ModelRenderer bipedCape = new ModelRenderer(model, 0, 0);
-        bipedCape.setTextureSize(64 * capeScale, 32 * capeScale);  // 128x64 Capes, double the default mc capes
+    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale, int maxFrames) {
+        double percentage = ((System.currentTimeMillis() % 1000) / 1000d);
+        int currentFrame = (int) (maxFrames * percentage) + 1;
+        ModelRenderer bipedCape = new ModelRenderer(model, 0, 32 * capeScale * currentFrame);
+        bipedCape.setTextureSize(64 * capeScale, 32 * capeScale * maxFrames);
         bipedCape.addBox(-5.0F * capeScale, 0.0F, -1.0F * capeScale, 10 * capeScale, 16 * capeScale, 1 * capeScale);
 
         if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;
@@ -84,7 +86,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
             float f4 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
             f1 = f1 + MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
 
-            if (player.isSneaking()) f1 += 17.0F;
+            if (player.isSneaking()) f1 += 19.0F;
 
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
@@ -94,8 +96,9 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
             enableBlend();
 
             // Find out size of cape
-            int capeScale = (info.getCosmetics().getImage().getWidth() + info.getCosmetics().getImage().getHeight()) / (64 + 32);
-            renderModel(player, playerRenderer.getMainModel(), 0.0625f, capeScale);
+            int capeScale = info.getCosmetics().getImage().getWidth() / 64;
+            int frameCount = info.getCosmetics().getImage().getHeight() / (info.getCosmetics().getImage().getWidth() / 2);
+            renderModel(player, playerRenderer.getMainModel(), 0.0625f, capeScale, frameCount);
 
             disableBlend();
             disableAlpha();
