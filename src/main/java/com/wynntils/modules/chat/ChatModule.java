@@ -19,6 +19,7 @@ public class ChatModule extends Module {
         module = this;
 
         registerSettings(ChatConfig.class);
+        registerSettings(ChatConfig.ChatTranslation.class);
         registerEvents(new ClientEvents());
 
         TabManager.startTabs();
