@@ -25,7 +25,7 @@ public class CustomElytraModel extends ModelBase
     }
 
     public void update(int maxFrames, int scale) {
-        double percentage = ((System.currentTimeMillis() % 1000) / 1000d);
+        double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage) + 1;
 
         this.leftWing = new ModelRenderer(this, 22 * scale, 32 * scale * currentFrame);

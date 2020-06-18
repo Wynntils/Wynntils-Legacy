@@ -29,7 +29,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
     }
 
     public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale, int maxFrames) {
-        double percentage = ((System.currentTimeMillis() % 1000) / 1000d);
+        double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage) + 1;
         ModelRenderer bipedCape = new ModelRenderer(model, 0, 32 * capeScale * currentFrame);
         bipedCape.setTextureSize(64 * capeScale, 32 * capeScale * maxFrames);
