@@ -39,6 +39,10 @@ public class Reference {
         onLobby = onServer && !onWorld;
     }
 
+    public static void setClassSelection(boolean inClassSelection) {
+        Reference.inClassSelection = inClassSelection;
+    }
+
     public static String getUserWorld() {
         return userWorld;
     }
@@ -50,6 +54,7 @@ public class Reference {
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
+    public static boolean inClassSelection = false;
 
     public static boolean developmentEnvironment = false;
 
