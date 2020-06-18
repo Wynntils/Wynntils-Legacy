@@ -127,7 +127,15 @@ public class MapApiIcon extends MapTextureIcon {
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
 
             enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(mmp.getTranslatedName());
-            if (enabled == null) enabled = Boolean.FALSE;
+
+            // In case the map icon is not present, set it to false and display a console warning!
+            if (enabled == null) {
+                MapConfig.INSTANCE.enabledMapIcons.put(mmp.getTranslatedName(), false);
+                MapConfig.INSTANCE.enabledMinimapIcons.put(mmp.getTranslatedName(), false);
+                enabled = false;
+
+                Reference.LOGGER.warn("Missing default map icon state (" + mmp.getTranslatedName() + ").");
+            }
         }
 
         return enabled;
