@@ -61,9 +61,10 @@ public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
-    boolean isAfk = false;
-    int lastPosition = 0;
-    long lastMovement = 0;
+    private boolean isAfk = false;
+    private boolean isLongAfk = false;
+    private int lastPosition = 0;
+    private long lastMovement = 0;
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
@@ -72,12 +73,19 @@ public class ClientEvents implements Listener {
 
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
 
-        if (!UtilitiesConfig.INSTANCE.blockAfkPushs) return;
+        if (!UtilitiesConfig.INSTANCE.blockAfkPushs && !UtilitiesConfig.INSTANCE.afkProtection) return;
 
-        if (isAfk) Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
+        if (UtilitiesConfig.INSTANCE.blockAfkPushs && isAfk) {
+            Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
+        }
+
+        if (UtilitiesConfig.INSTANCE.afkProtection && !Reference.inClassSelection && isLongAfk) {
+            isLongAfk = false;
+            Minecraft.getMinecraft().player.sendChatMessage("/class");
+        }
 
         // Afk detection
-        if (!Display.isActive()) {  // by focus
+        if (!Display.isActive()) {  // by focus; not for protection
             isAfk = true;
             return;
         }
@@ -89,9 +97,12 @@ public class ClientEvents implements Listener {
         int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
         if (lastPosition == currentPosition) {
             if (!isAfk && (System.currentTimeMillis() - lastMovement) >= 10000) isAfk = true;
+            long longAfkThresholdMillis = (long)(UtilitiesConfig.INSTANCE.afkProtectionThreshold * 60 * 1000);
+            if (!isLongAfk && (System.currentTimeMillis() - lastMovement) >= longAfkThresholdMillis) isLongAfk = true;
         } else {
             lastMovement = System.currentTimeMillis();
             isAfk = false;
+            isLongAfk = false;
             Utils.removeFakeScoreboard("Afk");
         }
 

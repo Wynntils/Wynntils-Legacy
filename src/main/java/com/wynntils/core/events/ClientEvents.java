@@ -42,7 +42,6 @@ public class ClientEvents {
     private static final UUID WORLD_UUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
     private static final Pattern PROF_LEVEL_UP = Pattern.compile("You are now level ([0-9]*) in (.*)");
 
-    private boolean inClassSelection = false;
     private String lastWorld = "";
     private boolean acceptLeft = false;
 
@@ -123,15 +122,15 @@ public class ClientEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(ClientChatEvent e) {
         if (Reference.onWorld && e.getMessage().startsWith("/class")) {
-            inClassSelection = true;
+            Reference.setClassSelection(true);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void receiveTp(GuiScreenEvent.DrawScreenEvent.Post e) {
-        if (inClassSelection) {
+        if (Reference.inClassSelection) {
             PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-            inClassSelection = false;
+            Reference.setClassSelection(false);
         }
     }
 
