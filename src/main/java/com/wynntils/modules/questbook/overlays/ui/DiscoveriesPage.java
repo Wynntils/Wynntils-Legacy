@@ -30,7 +30,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
@@ -327,7 +326,7 @@ public class DiscoveriesPage extends QuestBookPage {
         
             // Unable to locate territory from API
             if (territorySearch == null) {
-                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Could not locate the territory " + friendlyName + "!"));
+                sendChatMessage(TextFormatting.RED + "Could not locate the territory " + friendlyName + "!");
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 return;
             }
