@@ -66,8 +66,8 @@ public class DiscoveriesPage extends QuestBookPage {
         {
             // Explanatory Text
             render.drawString("Here you can see all", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("the discoveries", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("Use the filters below to refine the search.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("the discoveries.", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("You can use the filters below.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             // Back button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
@@ -214,7 +214,13 @@ public class DiscoveriesPage extends QuestBookPage {
                         break;
                     }
 
-                    DiscoveryInfo selected = discoverySearch.get(i);
+                    DiscoveryInfo selected;
+                    try {
+                        selected = discoverySearch.get(i);
+                    } catch (IndexOutOfBoundsException e) {
+                        break;
+                    }
+                    
                     List<String> lore = new ArrayList<String>(selected.getLore());
 
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
@@ -314,7 +320,7 @@ public class DiscoveriesPage extends QuestBookPage {
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
         
-        // Set Territory Waypoint
+        // Handle discovery click
         if (overDiscovery != null) {
             if (overDiscovery.getType() == DiscoveryType.TERRITORY) {
                 String friendlyName = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
