@@ -95,7 +95,6 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
             // Find out size of cape
             int capeScale = (info.getCosmetics().getImage().getWidth() + info.getCosmetics().getImage().getHeight()) / (64 + 32);
-            System.out.println(capeScale);
             renderModel(player, playerRenderer.getMainModel(), 0.0625f, capeScale);
 
             disableBlend();
