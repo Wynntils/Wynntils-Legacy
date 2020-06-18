@@ -61,6 +61,10 @@ public class CosmeticInfo extends SimpleTexture {
         return location;
     }
 
+    public BufferedImage getImage() {
+        return image;
+    }
+
     public boolean hasCape() {
         return cape;
     }

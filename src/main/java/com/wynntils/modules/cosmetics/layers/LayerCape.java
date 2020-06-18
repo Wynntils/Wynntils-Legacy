@@ -28,6 +28,17 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
         this.playerRenderer = playerRendererIn;
     }
 
+    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale) {
+        ModelRenderer bipedCape = new ModelRenderer(model, 0, 0);
+        bipedCape.setTextureSize(64 * capeScale, 32 * capeScale);  // 128x64 Capes, double the default mc capes
+        bipedCape.addBox(-5.0F * capeScale, 0.0F, -1.0F * capeScale, 10 * capeScale, 16 * capeScale, 1 * capeScale);
+
+        if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;
+        else bipedCape.rotationPointY = 0.0F;
+
+        bipedCape.render(scale / capeScale);
+    }
+
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!Minecraft.getMinecraft().gameSettings.getModelParts().toString().contains("CAPE")
                 && player.getUniqueID() == ModCore.mc().player.getUniqueID())
@@ -67,13 +78,13 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
             }
 
             // Clamping f2 and f3 ...
-            f2 = MathHelper.clamp(f2, 0.0F, 150.0F);
-            f3 = MathHelper.clamp(f3, 0.0F, 50.0F);
+            f2 = MathHelper.clamp(f2, 0.0F, 180.0F);
+            f3 = MathHelper.clamp(f3, -50.0F, 50.0F);
 
             float f4 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
             f1 = f1 + MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
 
-            if (player.isSneaking()) f1 += 15.0F;
+            if (player.isSneaking()) f1 += 17.0F;
 
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
@@ -82,22 +93,14 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
             enableAlpha();
             enableBlend();
 
-            renderModel(player, playerRenderer.getMainModel(), 0.0625f);
+            // Find out size of cape
+            int capeScale = (info.getCosmetics().getImage().getWidth() + info.getCosmetics().getImage().getHeight()) / (64 + 32);
+            System.out.println(capeScale);
+            renderModel(player, playerRenderer.getMainModel(), 0.0625f, capeScale);
 
             disableBlend();
             disableAlpha();
         } popMatrix();
-    }
-
-    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
-        ModelRenderer bipedCape = new ModelRenderer(model, 0, 0);
-        bipedCape.setTextureSize(128, 64);  // 128x64 Capes, double the default mc capes
-        bipedCape.addBox(-10.0F, 0.0F, -2.0F, 20, 32, 2);
-
-        if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;
-        else bipedCape.rotationPointY = 0.0F;
-
-        bipedCape.render(scale / 2);
     }
 
     public boolean shouldCombineTextures() {
