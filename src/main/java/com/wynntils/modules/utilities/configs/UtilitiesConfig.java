@@ -33,7 +33,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean blockAfkPushs = true;
 
     @Setting(displayName = "AFK Protection", description = "Should you enter class selection when you are AFK?")
-    public boolean afkProtection = true;
+    public boolean afkProtection = false;
 
     @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
     @Setting(displayName = "AFK Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
