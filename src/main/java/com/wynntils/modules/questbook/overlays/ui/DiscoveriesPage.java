@@ -221,7 +221,7 @@ public class DiscoveriesPage extends QuestBookPage {
                     }
                     
                     List<String> lore = new ArrayList<String>(selected.getLore());
-
+                    
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
                             lastTick = Minecraft.getSystemTime();
@@ -258,12 +258,18 @@ public class DiscoveriesPage extends QuestBookPage {
                     }
 
                     render.color(1, 1, 1, 1);
+                    
+                    if (selected.getGuildTerritoryProfile() != null) {
+                        if (!selected.getLore().get(selected.getLore().size() - 1).contentEquals("")) 
+                            lore.add("");
+                        
+                        lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
+                        lore.add(TextFormatting.YELLOW + "Right click to view on the map!");
+                    }
 
                     if (selected.wasDiscovered()) {
                         switch (selected.getType()) {
                             case TERRITORY:
-                                lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.YELLOW + "Right click to view on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 264, 235, 11, 7);
                             break;
                             case WORLD:
@@ -276,8 +282,6 @@ public class DiscoveriesPage extends QuestBookPage {
                     } else {
                         switch (selected.getType()) {
                             case TERRITORY:
-                                lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.YELLOW + "Right click to locate on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 241, 273, 8, 7);
                             break;
                             case WORLD:
@@ -320,19 +324,11 @@ public class DiscoveriesPage extends QuestBookPage {
         int posY = ((res.getScaledHeight() / 2) - mouseY);
         
         // Handle discovery click
-        if (overDiscovery != null && overDiscovery.getType() == DiscoveryType.TERRITORY) {
-            String friendlyName = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
-            TerritoryProfile territorySearch = WebManager.getTerritories().getOrDefault(friendlyName, null);
-        
-            // Unable to locate territory from API
-            if (territorySearch == null) {
-                sendChatMessage(TextFormatting.RED + "Could not locate the territory " + friendlyName + "!");
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
-                return;
-            }
+        if (overDiscovery != null && overDiscovery.getGuildTerritoryProfile() != null) {
+            TerritoryProfile guildTerritory = overDiscovery.getGuildTerritoryProfile();
             
-            int x = (territorySearch.getStartX() + territorySearch.getEndX()) / 2;
-            int z = (territorySearch.getStartZ() + territorySearch.getEndZ()) / 2;
+            int x = (guildTerritory.getStartX() + guildTerritory.getEndX()) / 2;
+            int z = (guildTerritory.getStartZ() + guildTerritory.getEndZ()) / 2;
             
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             

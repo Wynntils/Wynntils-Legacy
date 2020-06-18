@@ -8,6 +8,9 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
@@ -25,6 +28,7 @@ public class DiscoveryInfo {
     private List<String> lore;
     private String description;
     private int minLevel;
+    private TerritoryProfile guildTerritory = null;
 
     private String friendlyName;
 
@@ -61,6 +65,12 @@ public class DiscoveryInfo {
             friendlyName += "...";
         }
 
+        // Guild territory profile
+        if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
+            String apiName = TextFormatting.getTextWithoutFormattingCodes(name);
+            guildTerritory = WebManager.getTerritories().getOrDefault(apiName, null);
+        }
+        
         lore.add(0, this.name);
         this.discovered = discovered;
         valid = true;
@@ -81,6 +91,12 @@ public class DiscoveryInfo {
 
         this.minLevel = minLevel;
         this.type = type;
+        
+        // Guild territory profile
+        if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
+            String apiName = TextFormatting.getTextWithoutFormattingCodes(name);
+            guildTerritory = WebManager.getTerritories().getOrDefault(apiName, null);
+        }
 
         this.originalStack = ItemStack.EMPTY;
         this.discovered = discovered;
@@ -112,6 +128,10 @@ public class DiscoveryInfo {
 
     public ItemStack getOriginalStack() {
         return originalStack;
+    }
+    
+    public TerritoryProfile getGuildTerritoryProfile() {
+        return guildTerritory;
     }
 
     public boolean isValid() {
