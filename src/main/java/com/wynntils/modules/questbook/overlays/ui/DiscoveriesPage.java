@@ -263,8 +263,8 @@ public class DiscoveriesPage extends QuestBookPage {
                     if (selected.wasDiscovered()) {
                         switch (selected.getType()) {
                             case TERRITORY:
-                                lore.add(TextFormatting.BOLD + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.BOLD + "Right click to locate on the map!");
+                                lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
+                                lore.add(TextFormatting.YELLOW + "Middle click to view on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 264, 235, 11, 7);
                             break;
                             case WORLD:
@@ -277,8 +277,8 @@ public class DiscoveriesPage extends QuestBookPage {
                     } else {
                         switch (selected.getType()) {
                             case TERRITORY:
-                                lore.add(TextFormatting.BOLD + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.BOLD + "Right click to locate on the map!");
+                                lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
+                                lore.add(TextFormatting.YELLOW + "Middle click to locate on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 241, 273, 8, 7);
                             break;
                             case WORLD:
@@ -321,36 +321,34 @@ public class DiscoveriesPage extends QuestBookPage {
         int posY = ((res.getScaledHeight() / 2) - mouseY);
         
         // Handle discovery click
-        if (overDiscovery != null) {
-            if (overDiscovery.getType() == DiscoveryType.TERRITORY) {
-                String friendlyName = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
-                TerritoryProfile territorySearch = WebManager.getTerritories().getOrDefault(friendlyName, null);
+        if (overDiscovery != null && overDiscovery.getType() == DiscoveryType.TERRITORY) {
+            String friendlyName = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
+            TerritoryProfile territorySearch = WebManager.getTerritories().getOrDefault(friendlyName, null);
+        
+            // Unable to locate territory from API
+            if (territorySearch == null) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Could not locate the territory " + friendlyName + "!"));
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                return;
+            }
             
-                // Unable to locate territory from API
-                if (territorySearch == null) {
-                    Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Could not locate the territory " + friendlyName + "!"));
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
-                    return;
-                }
-                
-                int x = (territorySearch.getStartX() + territorySearch.getEndX()) / 2;
-                int z = (territorySearch.getStartZ() + territorySearch.getEndZ()) / 2;
-                
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                
-                switch(mouseButton) {
-                    case 0: // Left Click
-                        CompassManager.setCompassLocation(new Location(x, 50, z));
-                    break;
-                    case 1: // Right Click
-                        Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    break;
-                    case 2: //Middle Click
-                        Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                        CompassManager.setCompassLocation(new Location(x, 50, z));
-                    break;
-                }
-            } 
+            int x = (territorySearch.getStartX() + territorySearch.getEndX()) / 2;
+            int z = (territorySearch.getStartZ() + territorySearch.getEndZ()) / 2;
+            
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            
+            switch(mouseButton) {
+                case 0: // Left Click
+                    CompassManager.setCompassLocation(new Location(x, 50, z));
+                break;
+                case 1: // Right Click
+                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                    CompassManager.setCompassLocation(new Location(x, 50, z));
+                break;
+                case 2: //Middle Click
+                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                break;
+            }
         }
 
         if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button

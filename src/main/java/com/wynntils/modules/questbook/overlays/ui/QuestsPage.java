@@ -19,6 +19,9 @@ import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
+import com.wynntils.webapi.request.Request;
+import com.wynntils.webapi.request.RequestHandler;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -143,6 +146,7 @@ public class QuestsPage extends QuestBookPage {
                     }
 
                     List<String> lore = new ArrayList<>(selected.getLore());
+                    lore.add("");
 
                     int animationTick = -1;
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
@@ -211,23 +215,23 @@ public class QuestsPage extends QuestBookPage {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
                         }
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                            lore.set(lore.size() - 1, TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
+                            lore.add(TextFormatting.RED + "Left click to unpin it!");
                         } else {
-                            lore.set(lore.size() - 1, TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
+                            lore.add(TextFormatting.GREEN + "Left click to pin it!");
                         }
                     } else if (selected.getStatus() == QuestStatus.STARTED) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                            lore.set(lore.size() - 1, TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
+                            lore.add( TextFormatting.RED + "Left click to unpin it!");
                         } else {
-                            lore.set(lore.size() - 1, TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
+                            lore.add(TextFormatting.GREEN + "Left click to pin it!");
                         }
                     }
 
                     if (selected.hasTargetLocation()) {
-                        lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
+                        lore.add(TextFormatting.YELLOW + "Middle click to view on map!");
                     }
-                    lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
+                    lore.add(TextFormatting.GOLD + "Right click to open on the wiki!");
 
                     String name = selected.getFriendlyName();
                     if (this.selected == i && !name.equals(selected.getName()) && animationTick > 0) {
@@ -290,16 +294,20 @@ public class QuestsPage extends QuestBookPage {
         renderHoveredText(hoveredText, mouseX, mouseY);
     }
 
+    Boolean needsExtension = false;
+    
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(mc);
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
+        // Handle quest click
         if (overQuest != null) {
             if (mouseButton == 0) { // left click
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
+                
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
@@ -311,39 +319,38 @@ public class QuestsPage extends QuestBookPage {
             } else if (mouseButton == 1) { // right click
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-                String url = "https://wynncraft.gamepedia.com/";
-                String path = overQuest.getName();
-                // Link Overrides
-                switch (path) {
-                    case "The House of Twain":
-                    case "Tower of Ascension":
-                    case "The Qira Hive":
-                    case "The Realm of Light":
-                    case "Temple of the Legends":
-                    case "Taproot":
-                    case "The Passage":
-                    case "Zhight Island":
-                    case "The Tower of Amnesia":
-                    case "Pit of the Dead":
-                        path += " (Quest)";
-                        break;
-                    default:
-                        break;
-                }
-
+                String baseUrl = "https://wynncraft.gamepedia.com/";
+                
                 if (overQuest.isMiniQuest()) {
-                    url += "Quests#Miniquests"; // Don't encode #
+                    String type = overQuest.getFriendlyName().split(" ")[0];
+                    
+                    baseUrl += "Quests#" + type + "ing_posts"; // Don't encode #
                 } else {
-                    url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
+                    String name = overQuest.getName();
+                    
+                    String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + URLEncoder.encode(name + " (Quest)", "UTF-8");
+                    Request req = new Request(url, "WikiQuestQuery");
+                    
+                    needsExtension = false;
+                    
+                    RequestHandler handler = new RequestHandler();
+                    handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
+                        needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
+                        return true;
+                    }), false);
+                    
+                    if (needsExtension) name += " (Quest)";
+                    
+                    baseUrl += URLEncoder.encode(name.replace(' ', '_'), "UTF-8");  
                 }
-
-                Utils.openUrl(url);
+               
+                Utils.openUrl(baseUrl);
                 return;
             } else if (mouseButton == 2) { // middle click
                 if (!overQuest.hasTargetLocation()) return;
 
-                Location l = overQuest.getTargetLocation();
-                Utils.displayGuiScreen(new MainWorldMapUI((float) l.x, (float) l.z));
+                Location loc = overQuest.getTargetLocation();
+                Utils.displayGuiScreen(new MainWorldMapUI((float) loc.x, (float) loc.z));
                 return;
             }
         }
