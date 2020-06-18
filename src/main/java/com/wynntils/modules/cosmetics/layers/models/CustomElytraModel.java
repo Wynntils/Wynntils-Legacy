@@ -15,28 +15,25 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CustomElytraModel extends ModelBase
-{
+public class CustomElytraModel extends ModelBase {
+
     private ModelRenderer rightWing;
     private ModelRenderer leftWing;
 
-    public CustomElytraModel() {
-
-    }
+    public CustomElytraModel() { }
 
     public void update(int maxFrames, int scale) {
         double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
-        int currentFrame = (int) (maxFrames * percentage) + 1;
+        int currentFrame = (int) (maxFrames * percentage);
 
-        this.leftWing = new ModelRenderer(this, 22 * scale, 32 * scale * currentFrame);
-        this.leftWing.setTextureSize(64 * scale, 32 * scale * maxFrames);
+        leftWing = new ModelRenderer(this, 22, (32 * scale) * currentFrame);
+        leftWing.setTextureSize(64, 32 * maxFrames);
+        leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
 
-        this.leftWing.addBox(0.0F, 0.0F, 0.0F, 10 * scale, 20 * scale, 2 * scale, 1.0F);
-        this.rightWing = new ModelRenderer(this, 22 * scale, 32 * scale * currentFrame);
-        this.rightWing.setTextureSize(64 * scale, 32 * scale * maxFrames);
-        this.rightWing.mirror = true;
-
-        this.rightWing.addBox(-10.0F * scale, 0.0F, 0.0F, 10 * scale, 20 * scale, 2 * scale, 1.0F);
+        rightWing = new ModelRenderer(this, 22, (32 * scale) * currentFrame);
+        rightWing.setTextureSize(64, 32 * maxFrames);
+        rightWing.mirror = true;
+        rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
     }
 
     /**
@@ -54,8 +51,7 @@ public class CustomElytraModel extends ModelBase
             this.rightWing.render(scale);
             GlStateManager.popMatrix();
         }
-        else
-        {
+        else {
             this.leftWing.render(scale);
             this.rightWing.render(scale);
         }
@@ -67,12 +63,10 @@ public class CustomElytraModel extends ModelBase
      * "far" arms and legs can swing at most.
      */
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn, int elytraScale) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         float f = 0.2617994F;
         float f1 = -0.2617994F;
         float f2 = 0.0F;
         float f3 = 0.0F;
-
 
         if (entityIn instanceof EntityLivingBase && ((EntityLivingBase)entityIn).isElytraFlying()) {
             float f4 = 1.0F;
@@ -87,18 +81,18 @@ public class CustomElytraModel extends ModelBase
         }
         else if (entityIn.isSneaking()) {
             f = ((float)Math.PI * 2F / 9F);
-//            f1 = -((float)Math.PI / 4F);
-//            f2 = 3F;
+            f1 = -((float)Math.PI / 4F);
+            f2 = 3F;
             f3 = 0.08726646F;
         } else if (entityIn.isSprinting()) {
-//            f = ((float)Math.PI * 2F / 9F);
-//            f1 = -((float)Math.PI / 4F);
-//            f2 = 1F;
-//            f3 = 0.08726646F;
+            f = ((float)Math.PI * 2F / 9F);
+            f1 = -((float)Math.PI / 4F);
+            f2 = 1F;
+            f3 = 0.08726646F;
         }
 
+        this.leftWing.rotationPointX = 5.0F;
         this.leftWing.rotationPointY = f2;
-        this.leftWing.rotationPointX = -5.0F * elytraScale;
 
         if (entityIn instanceof AbstractClientPlayer) {
             AbstractClientPlayer abstractclientplayer = (AbstractClientPlayer)entityIn;

@@ -88,24 +88,24 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
 
             // Clamping f2 and f3 ...
             f2 = MathHelper.clamp(f2, 0.0F, 150.0F);
-            f3 = MathHelper.clamp(f3, -10.0F, 10.0F);
+            f3 = MathHelper.clamp(f3, 0.0F, 50.0F);
 
             float f4 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
             f1 = f1 + MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
 
             if (player.isSneaking()) {
-                f1 += 5.0F;
+                f1 += 15.0F;
             }
 
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
 
-
             int elytraScale = info.getCosmetics().getImage().getWidth() / 64;
             int frameCount = info.getCosmetics().getImage().getHeight() / (info.getCosmetics().getImage().getWidth() / 2);
+
             modelElytra.update(frameCount, elytraScale);
-            modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale / elytraScale, player, elytraScale);
-            modelElytra.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale / elytraScale);
+            modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, player, 0);
+            modelElytra.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
             disableBlend();
         } popMatrix();
