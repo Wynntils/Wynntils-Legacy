@@ -263,7 +263,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         switch (selected.getType()) {
                             case TERRITORY:
                                 lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.YELLOW + "Middle click to view on the map!");
+                                lore.add(TextFormatting.YELLOW + "Right click to view on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 264, 235, 11, 7);
                             break;
                             case WORLD:
@@ -277,7 +277,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         switch (selected.getType()) {
                             case TERRITORY:
                                 lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
-                                lore.add(TextFormatting.YELLOW + "Middle click to locate on the map!");
+                                lore.add(TextFormatting.YELLOW + "Right click to locate on the map!");
                                 render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 241, 273, 8, 7);
                             break;
                             case WORLD:
@@ -342,10 +342,10 @@ public class DiscoveriesPage extends QuestBookPage {
                 break;
                 case 1: // Right Click
                     Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    CompassManager.setCompassLocation(new Location(x, 50, z));
                 break;
                 case 2: //Middle Click
                     Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                    CompassManager.setCompassLocation(new Location(x, 50, z));
                 break;
             }
         }
