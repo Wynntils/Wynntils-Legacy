@@ -392,8 +392,10 @@ public class ChatManager {
     }
 
     private static Pattern createTranslationPattern() {
-        String chatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
+        String localChatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
         String shoutPrefix = "(?:§3.* \\[[^]]+\\] shouts: §r§b)";
+        String partyPrefix = "(?:§7\\[§r§e.*§r§7\\] §r§f)";
+        String privatePrefix = "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)";
         String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
         String interactPrefix = "(?:§5[^:]*: §r§d)";
         String infoPrefix = "(?:§[0-9a-z])";
@@ -401,8 +403,8 @@ public class ChatManager {
         int components = 0;
         StringBuilder builder = new StringBuilder();
         builder.append("^(");
-        if (ChatConfig.ChatTranslation.INSTANCE.translateChatShout) {
-            builder.append(chatPrefix + "|" + shoutPrefix);
+        if (ChatConfig.ChatTranslation.INSTANCE.translatePlayerChat) {
+            builder.append(localChatPrefix + "|" + shoutPrefix + "|" + partyPrefix + "|" + privatePrefix);
             components++;
         }
         if (ChatConfig.ChatTranslation.INSTANCE.translateNpc) {

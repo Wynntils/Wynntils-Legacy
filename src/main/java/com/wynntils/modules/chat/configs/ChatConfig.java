@@ -94,8 +94,8 @@ public class ChatConfig extends SettingsClass {
         @Setting(displayName = "Enable Text Translation", description = "Should text messages be automatically translated to a foreign language?")
         public boolean enableTextTranslation = false;
 
-        @Setting(displayName = "Translate Chat and Shout", description = "Should messages sent by other users be translated?")
-        public boolean translateChatShout = false;
+        @Setting(displayName = "Translate Player Chat", description = "Should messages sent by other users be translated?")
+        public boolean translatePlayerChat = false;
 
         @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
         public boolean translateNpc = true;
