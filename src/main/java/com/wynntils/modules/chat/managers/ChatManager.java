@@ -64,6 +64,11 @@ public class ChatManager {
             in = newMessage;
         }
 
+        // language translation
+        if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
+            translateMessage(in);
+        }
+
         // timestamps
         if (ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
@@ -97,11 +102,6 @@ public class ChatManager {
         // popup sound
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
-
-        // language translation
-        if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
-            translateMessage(in);
-        }
 
         // wynnic translator
         if (StringUtils.hasWynnic(in.getUnformattedText())) {
@@ -398,7 +398,7 @@ public class ChatManager {
         String privatePrefix = "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)";
         String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
         String interactPrefix = "(?:§5[^:]*: §r§d)";
-        String infoPrefix = "(?:§[0-9a-z])";
+        String infoPrefix = "(?:§[0-9a-z]\\[Info\\])";
 
         int components = 0;
         StringBuilder builder = new StringBuilder();
