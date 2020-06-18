@@ -21,7 +21,6 @@ import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
