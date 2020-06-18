@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -52,12 +51,15 @@ public class QuestsPage extends QuestBookPage {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        int x = width / 2; int y = height / 2;
-        int posX = (x - mouseX); int posY = (y - mouseY);
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
         List<String> hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
+            // Explanatory Text
             render.drawString("Here you can see all quests", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("available for you. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -68,6 +70,7 @@ public class QuestsPage extends QuestBookPage {
             render.drawString("You can pin/unpin a quest", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("by clicking on it.", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
+            // Back Button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
                 hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
@@ -75,34 +78,27 @@ public class QuestsPage extends QuestBookPage {
                 render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
             }
 
-            boolean hoveringOverDiscoveries = posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100;
-            render.drawRect(Textures.UIs.quest_book, x - 97, y - 100, 0, 255 + (hoveringOverDiscoveries ? 16 : 0), 16, 16);
-            if (hoveringOverDiscoveries) {
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-                    hoveredText = new ArrayList<>(QuestManager.getSecretDiscoveriesLore());
-                    hoveredText.add(0, "Secret Discoveries:");
-                } else {
-                    hoveredText = new ArrayList<>(QuestManager.getDiscoveriesLore());
+            // Progress Icon/Mini-Quest Switcher
+            render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
+            if ( posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) {
+                hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
+                
+                if (!hoveredText.isEmpty()) { 
+                    hoveredText.set(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
                     hoveredText.add(" ");
-                    hoveredText.add(TextFormatting.GREEN + "Hold shift to see Secret Discoveries!");
-                    hoveredText.add(TextFormatting.GREEN + "Click to see all of your Discoveries!");
+                    hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
                 }
             }
 
-            render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
-            if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
-                hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
-                hoveredText.add(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
-                hoveredText.add(" ");
-                hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
-            }
-
+            // Calculate Number of Pages
             int pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
+            
+            // Set to last page if out of bounds
             if (pages < currentPage) {
                 currentPage = pages;
             }
 
-            // but next and back button
+            // Next Page Button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 acceptNext = false;
@@ -115,6 +111,7 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
+            // Back Page Button
             if (currentPage == 1) {
                 acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
@@ -127,10 +124,10 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
-            // calculating pages
+            // Page Text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            // drawing all quests
+            // Draw all Quests
             int currentY = 12;
             if (questSearch.size() > 0) {
                 for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
@@ -259,10 +256,8 @@ public class QuestsPage extends QuestBookPage {
                 }
             } else {
                 String textToDisplay;
-                if (
-                    QuestManager.getCurrentQuests().size() == 0 || searchBarText.equals("") ||
-                    (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))
-                ) {
+                if (QuestManager.getCurrentQuests().size() == 0 || searchBarText.equals("") ||
+                    (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))) {
                     textToDisplay = String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "Mini-Quests" : "Quests");
                 } else {
                     textToDisplay = String.format("No %s found!\nTry searching for something else.", showingMiniQuests ? "mini-quests" : "quests");
@@ -275,7 +270,7 @@ public class QuestsPage extends QuestBookPage {
                 updateSearch();
             }
 
-            // Reload Quest Data button
+            // Reload Data button
             if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
                 hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
                 render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
@@ -298,10 +293,11 @@ public class QuestsPage extends QuestBookPage {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(mc);
-        int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
+        int posX = ((res.getScaledWidth() / 2) - mouseX);
+        int posY = ((res.getScaledHeight() / 2) - mouseY);
 
         if (overQuest != null) {
-            if (mouseButton == 0) {  // left click
+            if (mouseButton == 0) { // left click
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
@@ -312,7 +308,7 @@ public class QuestsPage extends QuestBookPage {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(overQuest);
                 return;
-            } else if (mouseButton == 1) {  // right click
+            } else if (mouseButton == 1) { // right click
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 String url = "https://wynncraft.gamepedia.com/";
@@ -336,14 +332,14 @@ public class QuestsPage extends QuestBookPage {
                 }
 
                 if (overQuest.isMiniQuest()) {
-                    url += "Quests#Miniquests";  // Don't encode #
+                    url += "Quests#Miniquests"; // Don't encode #
                 } else {
                     url += URLEncoder.encode(path.replace(' ', '_'), "UTF-8");
                 }
 
                 Utils.openUrl(url);
                 return;
-            } else if (mouseButton == 2) {  // middle click
+            } else if (mouseButton == 2) { // middle click
                 if (!overQuest.hasTargetLocation()) return;
 
                 Location l = overQuest.getTargetLocation();
@@ -352,33 +348,29 @@ public class QuestsPage extends QuestBookPage {
             }
         }
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
             return;
-        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
             return;
-        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.MAIN.getPage().open(false);
             return;
-        } else if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.DISCOVERIES.getPage().open(false);
-            return;
-        } else if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
+        } else if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
             searchBarText = "";
             updateSearch();
             return;
-        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestManager.updateAllAnalyses(true);
             return;
-        } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) {
+        } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) { // Change Sort Method
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
             updateSearch();
@@ -421,27 +413,28 @@ public class QuestsPage extends QuestBookPage {
     private enum SortMethod {
         LEVEL(
             Comparator.comparing(QuestInfo::getStatus)
-            .thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
+                .thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
             130, 281, 152, 303, Arrays.asList(
-            "Sort by Level",  // Replace with translation keys during l10n
-            "Lowest level quests first"
-        )),
+                "Sort by Level", // Replace with translation keys during l10n
+                "Lowest level quests first")),
         DISTANCE(Comparator.comparing(QuestInfo::getStatus).thenComparingLong(q -> {
             EntityPlayerSP player = Minecraft.getMinecraft().player;
             if (player == null || !q.hasTargetLocation()) {
                 return 0;
             }
 
-            return (long)new Location(player).distance(q.getTargetLocation());
+            return (long) new Location(player).distance(q.getTargetLocation());
         }).thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
             174, 281, 196, 303, Arrays.asList(
-            "Sort by Distance",
-            "Closest quests first"
-        ));
+                "Sort by Distance",
+                "Closest quests first"));
 
         SortMethod(Comparator<QuestInfo> comparator, int tx1, int ty1, int tx2, int ty2, List<String> hoverText) {
             this.comparator = comparator;
-            this.tx1 = tx1; this.ty1 = ty1; this.tx2 = tx2; this.ty2 = ty2;
+            this.tx1 = tx1;
+            this.ty1 = ty1;
+            this.tx2 = tx2;
+            this.ty2 = ty2;
             this.hoverText = hoverText;
         }
 
