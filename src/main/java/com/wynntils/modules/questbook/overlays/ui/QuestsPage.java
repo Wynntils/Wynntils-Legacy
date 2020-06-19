@@ -214,23 +214,23 @@ public class QuestsPage extends QuestBookPage {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
                         }
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                            lore.add(TextFormatting.RED + "Left click to unpin it!");
+                            lore.add(TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
                         } else {
-                            lore.add(TextFormatting.GREEN + "Left click to pin it!");
+                            lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                         }
                     } else if (selected.getStatus() == QuestStatus.STARTED) {
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
-                            lore.add( TextFormatting.RED + "Left click to unpin it!");
+                            lore.add(TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
                         } else {
-                            lore.add(TextFormatting.GREEN + "Left click to pin it!");
+                            lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                         }
                     }
 
                     if (selected.hasTargetLocation()) {
-                        lore.add(TextFormatting.YELLOW + "Middle click to view on map!");
+                        lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
                     }
-                    lore.add(TextFormatting.GOLD + "Right click to open on the wiki!");
+                    lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
 
                     String name = selected.getFriendlyName();
                     if (this.selected == i && !name.equals(selected.getName()) && animationTick > 0) {
@@ -292,8 +292,6 @@ public class QuestsPage extends QuestBookPage {
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
     }
-
-    Boolean needsExtension = false;
     
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
@@ -318,32 +316,34 @@ public class QuestsPage extends QuestBookPage {
             } else if (mouseButton == 1) { // right click
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-                String baseUrl = "https://wynncraft.gamepedia.com/";
+                final String baseUrl = "https://wynncraft.gamepedia.com/";
                 
                 if (overQuest.isMiniQuest()) {
                     String type = overQuest.getFriendlyName().split(" ")[0];
                     
-                    baseUrl += "Quests#" + type + "ing_posts"; // Don't encode #
+                    String wikiName = "Quests#" + type + "ing_posts"; // Don't encode #
+                    
+                    Utils.openUrl(baseUrl + wikiName);
                 } else {
                     String name = overQuest.getName();
                     
                     String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + URLEncoder.encode(name + " (Quest)", "UTF-8");
                     Request req = new Request(url, "WikiQuestQuery");
                     
-                    needsExtension = false;
-                    
                     RequestHandler handler = new RequestHandler();
+                    
                     handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
-                        needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
+                        boolean needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
+                        
+                        String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_');
+                        
+                        Utils.openUrl(baseUrl + wikiName);
                         return true;
-                    }), false);
-                    
-                    if (needsExtension) name += " (Quest)";
-                    
-                    baseUrl += URLEncoder.encode(name.replace(' ', '_'), "UTF-8");  
+                    }).onError(code -> {
+                        Utils.openUrl(baseUrl + name);
+                        return false;
+                    }), true);
                 }
-               
-                Utils.openUrl(baseUrl);
                 return;
             } else if (mouseButton == 2) { // middle click
                 if (!overQuest.hasTargetLocation()) return;

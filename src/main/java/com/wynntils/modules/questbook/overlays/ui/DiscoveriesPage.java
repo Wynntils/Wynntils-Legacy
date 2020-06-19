@@ -264,8 +264,8 @@ public class DiscoveriesPage extends QuestBookPage {
                         if (!lore.get(lore.size() - 1).contentEquals("")) 
                             lore.add("");
                         
-                        lore.add(TextFormatting.GREEN + "Left click to set compass beacon!");
-                        lore.add(TextFormatting.YELLOW + "Right click to view on the map!");
+                        lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
+                        lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on the map!"));
                     }
                     
                     // Removes blank space at the end of lores
