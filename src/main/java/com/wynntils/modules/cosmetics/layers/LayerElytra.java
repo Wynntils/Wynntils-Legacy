@@ -100,6 +100,10 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
 
+            int elytraScale = info.getCosmetics().getImage().getWidth() / 64;
+            int frameCount = info.getCosmetics().getImage().getHeight() / (info.getCosmetics().getImage().getWidth() / 2);
+
+            modelElytra.update(frameCount, elytraScale);
             modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, player);
             modelElytra.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 

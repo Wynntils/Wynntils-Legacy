@@ -10,6 +10,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 
@@ -39,7 +40,7 @@ public class WarManager {
         if (!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
 
         Entity in = e.getPacket().getEntityFromWorld(Minecraft.getMinecraft().world);
-        return in instanceof EntityArmorStand;
+        return in instanceof EntityArmorStand || in instanceof EntitySlime;
     }
 
 }
