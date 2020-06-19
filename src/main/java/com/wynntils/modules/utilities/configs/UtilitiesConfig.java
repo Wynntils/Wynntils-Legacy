@@ -37,7 +37,7 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
     @Setting(displayName = "AFK Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
-    public float afkProtectionThreshold = 5f;
+    public float afkProtectionThreshold = 10f;
 
     @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
     public boolean hidePotionGui = true;
