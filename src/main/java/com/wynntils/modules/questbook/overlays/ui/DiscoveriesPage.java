@@ -15,6 +15,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.configs.QuestBookConfig.SecretSpoilMode;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
@@ -25,14 +26,19 @@ import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.DiscoveryProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+import com.wynntils.webapi.request.Request;
+import com.wynntils.webapi.request.RequestHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -268,6 +274,19 @@ public class DiscoveriesPage extends QuestBookPage {
                         lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on the map!"));
                     }
                     
+                    // Secret Discovery Actions
+                    if (selected.getType() == DiscoveryType.SECRET) {
+                        if (!lore.get(lore.size() - 1).contentEquals("")) 
+                            lore.add("");
+                        
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && selected.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !selected.wasDiscovered())) {
+                            lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
+                            lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
+                        }
+                        
+                        lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Middle click to open on the wiki!"));
+                    }
+                    
                     // Removes blank space at the end of lores
                     if (lore.get(lore.size() - 1).contentEquals("")) 
                         lore.remove(selected.getLore().size() - 1);
@@ -330,25 +349,50 @@ public class DiscoveriesPage extends QuestBookPage {
         int posY = ((res.getScaledHeight() / 2) - mouseY);
         
         // Handle discovery click
-        if (overDiscovery != null && overDiscovery.getGuildTerritoryProfile() != null) {
-            TerritoryProfile guildTerritory = overDiscovery.getGuildTerritoryProfile();
-            
-            int x = (guildTerritory.getStartX() + guildTerritory.getEndX()) / 2;
-            int z = (guildTerritory.getStartZ() + guildTerritory.getEndZ()) / 2;
-            
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            
-            switch(mouseButton) {
-                case 0: // Left Click
-                    CompassManager.setCompassLocation(new Location(x, 50, z));
-                break;
-                case 1: // Right Click
-                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                break;
-                case 2: //Middle Click
-                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    CompassManager.setCompassLocation(new Location(x, 50, z));
-                break;
+        if (overDiscovery != null) {
+            if (overDiscovery.getType() == DiscoveryType.SECRET) { // Secret discovery actions
+                String name = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
+                
+                switch (mouseButton) {
+                    case 0: // Left Click
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && overDiscovery.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !overDiscovery.wasDiscovered())) {
+                            locateSecretDiscovery(name, "compass");
+                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                        }
+                    break;
+                    case 1: // Right Click
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && overDiscovery.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !overDiscovery.wasDiscovered())) {
+                            locateSecretDiscovery(name, "map");
+                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        }
+                    break;
+                    case 2: //Middle Click
+                        String wikiUrl = "https://wynncraft.gamepedia.com/" + URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
+                        Utils.openUrl(wikiUrl);
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    break;
+                }
+            } else if (overDiscovery.getGuildTerritoryProfile() != null) { // Guild territory actions
+                TerritoryProfile guildTerritory = overDiscovery.getGuildTerritoryProfile();
+                
+                int x = (guildTerritory.getStartX() + guildTerritory.getEndX()) / 2;
+                int z = (guildTerritory.getStartZ() + guildTerritory.getEndZ()) / 2;
+ 
+                switch(mouseButton) {
+                    case 0: // Left Click
+                        CompassManager.setCompassLocation(new Location(x, 50, z));
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                    break;
+                    case 1: // Right Click
+                        Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    break;
+                    case 2: //Middle Click
+                        Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                        CompassManager.setCompassLocation(new Location(x, 50, z));
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    break;
+                }
             }
         }
 
@@ -411,7 +455,7 @@ public class DiscoveriesPage extends QuestBookPage {
     @Override
     protected void searchUpdate(String currentText) {
         discoverySearch = new ArrayList<>(QuestManager.getCurrentDiscoveries());
-        Boolean isSearching = currentText != null && !currentText.isEmpty();
+        boolean isSearching = currentText != null && !currentText.isEmpty();
 
         // Apply Filters
         discoverySearch.removeIf(c -> {
@@ -461,7 +505,6 @@ public class DiscoveriesPage extends QuestBookPage {
                         }
                     }
                     
-                    
                     // Checks if already in list
                     if (QuestManager.getCurrentDiscoveries().stream().anyMatch(foundDiscovery -> {
                         boolean nameMatch = TextFormatting.getTextWithoutFormattingCodes(foundDiscovery.getName()).equals(c.getName());
@@ -506,6 +549,63 @@ public class DiscoveriesPage extends QuestBookPage {
     @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "See and sort all", TextFormatting.GRAY + "of the discoveries.", "", TextFormatting.GREEN + "Left click to select");
+    }
+    
+    /**
+     * Uses the Wynncraft Wiki API to get the coordinates of a secret discovery from the Template:Infobox/Town
+     */
+    private void locateSecretDiscovery(String name, String action) {
+        String queryUrl = "https://wynncraft.gamepedia.com/api.php?action=parse&format=json&prop=wikitext&section=0&redirects=true&page=";
+        
+        try {
+            queryUrl += URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {}
+        
+        Request query = new Request(queryUrl, "SecretWikiQuery");
+        RequestHandler handler = new RequestHandler();
+        
+        handler.addAndDispatch(query.handleJsonObject(jsonOutput -> {
+            if (jsonOutput.has("error")) { // Returns error if page does not exist
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki page not found)"));
+                return true;
+            }
+            
+            String wikitext = jsonOutput.get("parse").getAsJsonObject().get("wikitext").getAsJsonObject().get("*").getAsString().replace(" ", "").replace("\n", "");
+            
+            String xlocation = wikitext.substring(wikitext.indexOf("xcoordinate="));                           
+            String zlocation = wikitext.substring(wikitext.indexOf("zcoordinate="));        
+
+            int x = 0;
+            int z = 0;
+            
+            try {
+                x = Integer.valueOf(xlocation.substring(12, xlocation.indexOf("|")));
+                z = Integer.valueOf(zlocation.substring(12, zlocation.indexOf("|")));
+            } catch (NumberFormatException e) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki template not located)"));
+                return true;
+            }
+            
+            if (x == 0 && z == 0) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki coordinates not located)"));
+                return true;
+            }
+            
+            switch (action) {
+                case "compass":
+                    CompassManager.setCompassLocation(new Location(x, 50, z));
+                break;
+                case "map":
+                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                break;
+                case "both":
+                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
+                    CompassManager.setCompassLocation(new Location(x, 50, z));
+                break;
+            }
+            
+            return true;
+        }), true);
     }
 
 }
