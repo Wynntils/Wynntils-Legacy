@@ -15,7 +15,6 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.configs.QuestBookConfig.SecretSpoilMode;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
@@ -279,7 +278,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         if (!lore.get(lore.size() - 1).contentEquals("")) 
                             lore.add("");
                         
-                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && selected.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !selected.wasDiscovered())) {
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selected.wasDiscovered())) {
                             lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
                             lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
                         }
@@ -355,13 +354,13 @@ public class DiscoveriesPage extends QuestBookPage {
                 
                 switch (mouseButton) {
                     case 0: // Left Click
-                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && overDiscovery.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !overDiscovery.wasDiscovered())) {
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(overDiscovery.wasDiscovered())) {
                             locateSecretDiscovery(name, "compass");
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                         }
                     break;
                     case 1: // Right Click
-                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ALL || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_DISCOVERED && overDiscovery.wasDiscovered()) || (QuestBookConfig.INSTANCE.spoilSecretDiscoveries == SecretSpoilMode.ONLY_UNDISCOVERED && !overDiscovery.wasDiscovered())) {
+                        if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(overDiscovery.wasDiscovered())) {
                             locateSecretDiscovery(name, "map");
                             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         }
@@ -573,14 +572,17 @@ public class DiscoveriesPage extends QuestBookPage {
             String wikitext = jsonOutput.get("parse").getAsJsonObject().get("wikitext").getAsJsonObject().get("*").getAsString().replace(" ", "").replace("\n", "");
             
             String xlocation = wikitext.substring(wikitext.indexOf("xcoordinate="));                           
-            String zlocation = wikitext.substring(wikitext.indexOf("zcoordinate="));        
-
+            String zlocation = wikitext.substring(wikitext.indexOf("zcoordinate=")); 
+            
+            int xend = (xlocation.indexOf("|") < xlocation.indexOf("}}") ? xlocation.indexOf("|") : xlocation.indexOf("}}"));
+            int zend = (zlocation.indexOf("|") < zlocation.indexOf("}}") ? zlocation.indexOf("|") : zlocation.indexOf("}}"));
+            
             int x = 0;
             int z = 0;
             
             try {
-                x = Integer.valueOf(xlocation.substring(12, xlocation.indexOf("|")));
-                z = Integer.valueOf(zlocation.substring(12, zlocation.indexOf("|")));
+                x = Integer.valueOf(xlocation.substring(12, xend));
+                z = Integer.valueOf(zlocation.substring(12, zend));
             } catch (NumberFormatException e) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki template not located)"));
                 return true;
