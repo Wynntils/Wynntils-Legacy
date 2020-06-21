@@ -38,7 +38,23 @@ public class QuestBookConfig extends SettingsClass {
         ALL,
         ONLY_DISCOVERED,
         ONLY_UNDISCOVERED,
-        NONE
+        NONE;
+
+        // Returns true if the input follows the rule
+        public boolean followsRule(boolean discovered) {
+            switch (this) {
+                case ALL:
+                    return true;
+                case NONE:
+                    return false;
+                case ONLY_DISCOVERED:
+                    return discovered;
+                case ONLY_UNDISCOVERED:
+                    return !discovered;
+                default:
+                    return false;
+            }
+        }
     }
 
 }
