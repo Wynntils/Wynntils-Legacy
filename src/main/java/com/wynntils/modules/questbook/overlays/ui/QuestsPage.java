@@ -44,6 +44,7 @@ public class QuestsPage extends QuestBookPage {
     private QuestInfo overQuest;
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;
+    private int pages = 1;
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);
@@ -92,20 +93,10 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
-            // Calculate Number of Pages
-            int pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
-            
-            // Set to last page if out of bounds
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
-
             // Next Page Button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 } else {
@@ -115,10 +106,8 @@ public class QuestsPage extends QuestBookPage {
 
             // Back Page Button
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
             } else {
-                acceptBack = true;
                 if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
                 } else {
@@ -357,10 +346,14 @@ public class QuestsPage extends QuestBookPage {
         if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
+            acceptBack = true;
+            acceptNext = currentPage < pages;
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
+            acceptBack = currentPage > 1;
+            acceptNext = true;
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -402,6 +395,10 @@ public class QuestsPage extends QuestBookPage {
         }
 
         questSearch.sort(sort.comparator);
+
+        pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
+        currentPage = Math.min(currentPage, pages);
+        acceptNext = currentPage < pages;
     }
 
     @Override

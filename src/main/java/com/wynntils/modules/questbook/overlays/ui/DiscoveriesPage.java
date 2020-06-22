@@ -45,6 +45,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
     private DiscoveryInfo overDiscovery;
+    private int pages = 1;
     
     private boolean territory = true;
     private boolean world = true;
@@ -104,21 +105,11 @@ public class DiscoveriesPage extends QuestBookPage {
             } else {
                 render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 0, 287, 16, 16);  
             }
-            
-            // Calculate Number of Pages
-            int pages = discoverySearch.size() <= 13 ? 1 : (int) Math.ceil(discoverySearch.size() / 13d);
-           
-            // Set to last page if out of bounds
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
 
             // Next Page Button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 } else {
@@ -128,10 +119,8 @@ public class DiscoveriesPage extends QuestBookPage {
 
             // Back Page Button
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
             } else {
-                acceptBack = true;
                 if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
                 } else {
@@ -398,10 +387,14 @@ public class DiscoveriesPage extends QuestBookPage {
         if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
+            acceptBack = true;
+            acceptNext = currentPage < pages;
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
+            acceptBack = currentPage > 1;
+            acceptNext = true;
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -535,6 +528,10 @@ public class DiscoveriesPage extends QuestBookPage {
         }
 
         discoverySearch.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
+
+        pages = discoverySearch.size() <= 13 ? 1 : (int) Math.ceil(discoverySearch.size() / 13d);
+        currentPage = Math.min(currentPage, pages);
+        acceptNext = currentPage < pages;
     }
 
     @Override
