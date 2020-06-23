@@ -85,8 +85,7 @@ public class QuestBookPage extends GuiScreen {
         selected = 0;
         searchBarText = "";
         searchUpdate("");
-        acceptBack = false;
-        acceptNext = currentPage < pages;
+        refreshAccepts();
         time = Minecraft.getSystemTime();
         text_flicker = Minecraft.getSystemTime();
         lastTick = Minecraft.getSystemTime();
@@ -235,6 +234,7 @@ public class QuestBookPage extends GuiScreen {
                 keepForTime = true;
             }
             currentPage = 1;
+            refreshAccepts();
             updateSearch();
         }
         super.keyTyped(typedChar, keyCode);
@@ -275,8 +275,7 @@ public class QuestBookPage extends GuiScreen {
         if (acceptNext) {
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage++;
-            acceptBack = true;
-            acceptNext = currentPage < pages;
+            refreshAccepts();
         }
     }
 
@@ -284,9 +283,13 @@ public class QuestBookPage extends GuiScreen {
         if (acceptBack) {
             WynntilsSound.QUESTBOOK_PAGE.play();
             currentPage--;
-            acceptBack = currentPage > 1;
-            acceptNext = true;
+            refreshAccepts();
         }
+    }
+
+    protected void refreshAccepts() {
+        acceptBack = currentPage > 1;
+        acceptNext = currentPage < pages;
     }
 
     public void open(boolean showAnimation) {
