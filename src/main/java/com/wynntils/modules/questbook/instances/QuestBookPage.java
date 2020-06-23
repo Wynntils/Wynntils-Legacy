@@ -43,6 +43,7 @@ public class QuestBookPage extends GuiScreen {
     private boolean searchBarFocused;
     protected int currentPage;
     protected boolean acceptNext, acceptBack;
+    protected int pages = 1;
     protected int selected;
 
     // Animation
@@ -84,6 +85,8 @@ public class QuestBookPage extends GuiScreen {
         selected = 0;
         searchBarText = "";
         searchUpdate("");
+        acceptBack = false;
+        acceptNext = currentPage < pages;
         time = Minecraft.getSystemTime();
         text_flicker = Minecraft.getSystemTime();
         lastTick = Minecraft.getSystemTime();
@@ -198,14 +201,12 @@ public class QuestBookPage extends GuiScreen {
         if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptNext) {
                 delay = Minecraft.getSystemTime();
-                WynntilsSound.QUESTBOOK_PAGE.play();
-                currentPage++;
+                goForward();
             }
         } else if (mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
                 delay = Minecraft.getSystemTime();
-                WynntilsSound.QUESTBOOK_PAGE.play();
-                currentPage--;
+                goBack();
             }
         }
         super.handleMouseInput();
@@ -267,6 +268,24 @@ public class QuestBookPage extends GuiScreen {
             return j == searchText.length();
         } else {
             return toCheck.contains(searchText);
+        }
+    }
+
+    protected void goForward() {
+        if (acceptNext) {
+            WynntilsSound.QUESTBOOK_PAGE.play();
+            currentPage++;
+            acceptBack = true;
+            acceptNext = currentPage < pages;
+        }
+    }
+
+    protected void goBack() {
+        if (acceptBack) {
+            WynntilsSound.QUESTBOOK_PAGE.play();
+            currentPage--;
+            acceptBack = currentPage > 1;
+            acceptNext = true;
         }
     }
 

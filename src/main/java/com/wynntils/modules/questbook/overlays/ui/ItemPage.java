@@ -35,7 +35,6 @@ import java.util.List;
 public class ItemPage extends QuestBookPage {
 
     private ArrayList<ItemProfile> itemSearch;
-    private int pages = 1;
 
     private boolean byAlphabetical = true;
     private boolean byLevel = false;
@@ -327,17 +326,11 @@ public class ItemPage extends QuestBookPage {
         ScaledResolution res = new ScaledResolution(mc);
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
-            acceptBack = true;
-            acceptNext = currentPage < pages;
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+            goForward();
             return;
-        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
-            acceptBack = currentPage > 1;
-            acceptNext = true;
+        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+            goBack();
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -442,7 +435,7 @@ public class ItemPage extends QuestBookPage {
 
         pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
         currentPage = Math.min(currentPage, pages);
-        acceptNext = currentPage < pages;
+        refreshAccepts();
     }
 
     @Override

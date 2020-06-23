@@ -44,7 +44,6 @@ public class QuestsPage extends QuestBookPage {
     private QuestInfo overQuest;
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;
-    private int pages = 1;
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);
@@ -343,17 +342,11 @@ public class QuestsPage extends QuestBookPage {
             }
         }
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
-            acceptBack = true;
-            acceptNext = currentPage < pages;
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
+            goForward();
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
-            acceptBack = currentPage > 1;
-            acceptNext = true;
+            goBack();
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -398,7 +391,7 @@ public class QuestsPage extends QuestBookPage {
 
         pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
         currentPage = Math.min(currentPage, pages);
-        acceptNext = currentPage < pages;
+        refreshAccepts();
     }
 
     @Override
