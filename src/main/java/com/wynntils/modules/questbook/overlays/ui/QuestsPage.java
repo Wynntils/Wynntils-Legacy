@@ -247,7 +247,7 @@ public class QuestsPage extends QuestBookPage {
                 }
             } else {
                 String textToDisplay;
-                if (QuestManager.getCurrentQuests().size() == 0 || searchBarText.equals("") ||
+                if (QuestManager.getCurrentQuests().size() == 0 || textField.getText().equals("") ||
                     (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))) {
                     textToDisplay = String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "Mini-Quests" : "Quests");
                 } else {
@@ -355,7 +355,7 @@ public class QuestsPage extends QuestBookPage {
         } else if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
-            searchBarText = "";
+            textField.setText("");
             updateSearch();
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data

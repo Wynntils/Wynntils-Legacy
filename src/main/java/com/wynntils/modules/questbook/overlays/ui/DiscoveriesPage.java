@@ -313,7 +313,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 String textToDisplay;
                 if (!(territory || world || secret || undiscoveredTerritory || undiscoveredWorld || undiscoveredSecret)) {
                     textToDisplay = "No filters enabled!\nTry refining your search.";
-                } else if (QuestManager.getCurrentDiscoveries().size() == 0 || searchBarText.equals("")) {
+                } else if (QuestManager.getCurrentDiscoveries().size() == 0 || textField.getText().equals("")) {
                     textToDisplay = "Loading Discoveries...\nIf nothing appears soon, try pressing the reload button.";
                 } else {
                     textToDisplay = "No discoveries found!\nTry searching for something else.";
