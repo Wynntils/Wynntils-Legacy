@@ -45,7 +45,6 @@ public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
     private DiscoveryInfo overDiscovery;
-    private int pages = 1;
     
     private boolean territory = true;
     private boolean world = true;
@@ -314,7 +313,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 String textToDisplay;
                 if (!(territory || world || secret || undiscoveredTerritory || undiscoveredWorld || undiscoveredSecret)) {
                     textToDisplay = "No filters enabled!\nTry refining your search.";
-                } else if (QuestManager.getCurrentDiscoveries().size() == 0 || searchBarText.equals("")) {
+                } else if (QuestManager.getCurrentDiscoveries().size() == 0 || textField.getText().equals("")) {
                     textToDisplay = "Loading Discoveries...\nIf nothing appears soon, try pressing the reload button.";
                 } else {
                     textToDisplay = "No discoveries found!\nTry searching for something else.";
@@ -384,17 +383,11 @@ public class DiscoveriesPage extends QuestBookPage {
             }
         }
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
-            acceptBack = true;
-            acceptNext = currentPage < pages;
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
+            goForward();
             return;
-        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
-            acceptBack = currentPage > 1;
-            acceptNext = true;
+        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
+            goBack();
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -531,7 +524,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
         pages = discoverySearch.size() <= 13 ? 1 : (int) Math.ceil(discoverySearch.size() / 13d);
         currentPage = Math.min(currentPage, pages);
-        acceptNext = currentPage < pages;
+        refreshAccepts();
     }
 
     @Override
