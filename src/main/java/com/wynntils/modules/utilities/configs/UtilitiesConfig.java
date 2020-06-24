@@ -102,6 +102,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?")
     public boolean renderTooltipsScaled = false;
 
+    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard members have a badge over their heads?")
+    public boolean renderLeaderboardBadges = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

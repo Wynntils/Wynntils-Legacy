@@ -11,10 +11,7 @@ import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.modules.utilities.managers.ServerListManager;
-import com.wynntils.modules.utilities.managers.ServerResourcePackManager;
-import com.wynntils.modules.utilities.managers.WarManager;
-import com.wynntils.modules.utilities.managers.WindowIconManager;
+import com.wynntils.modules.utilities.managers.*;
 import net.minecraft.network.play.client.CPacketResourcePackStatus;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketResourcePackSend;
@@ -59,8 +56,13 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void worldLeave(WynnWorldEvent.Leave ev) {
+    public void worldLeave(WynnWorldEvent.Leave e) {
         ServerListManager.updateServers();
+    }
+
+    @SubscribeEvent
+    public void worldJoin(WynnWorldEvent.Join e) {
+        LeaderboardManager.updateLeaders();
     }
 
     public static void onWindowTitleSettingChanged() {

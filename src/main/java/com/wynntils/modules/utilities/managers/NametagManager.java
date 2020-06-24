@@ -5,18 +5,22 @@
 package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import com.wynntils.core.framework.rendering.textures.AssetsTexture;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.NametagLabel;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.LeaderboardProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -38,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -143,17 +148,78 @@ public class NametagManager {
         float position = entity.height + 0.5F - (isSneaking ? 0.25F : 0);
         int offsetY = +10;
 
+        // leader badges
+
+
         float lastScale = 0;
-        // player labels
-        if (!labels.isEmpty() && entity instanceof EntityPlayer) {
-            for (NametagLabel label : labels) {
-                offsetY-=10 * label.scale;
-                drawNametag(label.text, label.color, (float)x, (float) y + position, (float) z, offsetY, playerViewY, playerViewX, thirdPerson, isSneaking, label.scale);
+        // player labels & badges
+        if (entity instanceof EntityPlayer) {
+            if (!labels.isEmpty()) {
+                for (NametagLabel label : labels) {
+                    offsetY -= 10 * label.scale;
+                    drawNametag(label.text, label.color, (float) x, (float) y + position, (float) z, offsetY, playerViewY, playerViewX, thirdPerson, isSneaking, label.scale);
+                }
+            }
+
+            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
+                LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
+
+                double initialPosition = x - (((leader.rankSize() - 1) * 0.6) / 2);
+
+                // TODO make the rotation aligns in the center of all badges while using multiple
+                // TODO limit max badges to 3 and switch between them by time
+                for (Map.Entry<ProfessionType, Integer> badge : leader.getRanks()) {
+                    drawBadge(badge.getKey(), (int)Math.round(badge.getValue() / 2.0d) - 1,
+                            (float)initialPosition, (float)y + position, (float)z, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
+
+                    initialPosition += 0.6;
+                }
             }
         }
 
         // default label
-        drawNametag(entityName, null, (float) x, (float) y + position, (float) z, offsetY-10, playerViewY, playerViewX, thirdPerson, isSneaking, 1);
+        drawNametag(entityName, null, (float) x, (float) y + position, (float) z, offsetY - 10, playerViewY, playerViewX, thirdPerson, isSneaking, 1);
+    }
+
+    private static void drawBadge(ProfessionType profession, int tier, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking) {
+        pushMatrix();
+        {
+            ScreenRenderer.beginGL(0, 0);
+            {
+                translate(x, y, z);
+                glNormal3f(0f, 1f, 0f);
+                rotate(-viewerYaw, 0f, 1f, 0f);
+                rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+                scale(-0.025F, -0.025F, 0.025F);
+                disableLighting();
+                depthMask(true);
+                color(1.0f, 1.0f, 1.0f, 1.0f);
+
+                AssetsTexture texture = Textures.World.leaderboard_badges;
+                float texMinX = (profession.ordinal() * 19) / texture.width;
+                float texMinY = (tier * 17) / texture.height;
+                float texMaxX = ((profession.ordinal() + 1) * 19) / texture.width;
+                float texMaxY = ((tier + 1) * 17) / texture.height;
+
+                // draws the box
+                texture.bind();
+                Tessellator tesselator = Tessellator.getInstance();
+                BufferBuilder vertexBuffer = tesselator.getBuffer();
+                {
+                    vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+                    vertexBuffer.pos(-9.5, -8.5 + verticalShift, 0).tex(texMinX, texMinY).endVertex();
+                    vertexBuffer.pos(-9.5, +8.5 + verticalShift, 0).tex(texMinX, texMaxY).endVertex();
+                    vertexBuffer.pos(+9.5, +8.5 + verticalShift, 0).tex(texMaxX, texMaxY).endVertex();
+                    vertexBuffer.pos(+9.5, -8.5 + verticalShift, 0).tex(texMaxX, texMinY).endVertex();
+                }
+                tesselator.draw();
+
+                enableDepth();
+                enableLighting();
+                disableBlend();
+            }
+        }
+        popMatrix();
     }
 
     /**
@@ -277,6 +343,7 @@ public class NametagManager {
         if (!wynncraftTagLabels.containsKey(team.getName())) {
             wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix().replace("[PvP]", "") + "Wynncraft " + StringUtils.capitalize(team.getName().replaceAll("(tag|pvp)_", "")), 0.7f));
         }
+
         return wynncraftTagLabels.get(team.getName());
     }
 
