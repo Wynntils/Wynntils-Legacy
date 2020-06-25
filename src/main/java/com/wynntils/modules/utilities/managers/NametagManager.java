@@ -148,9 +148,6 @@ public class NametagManager {
         float position = entity.height + 0.5F - (isSneaking ? 0.25F : 0);
         int offsetY = +10;
 
-        // leader badges
-
-
         float lastScale = 0;
         // player labels & badges
         if (entity instanceof EntityPlayer) {
