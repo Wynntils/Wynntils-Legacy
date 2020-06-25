@@ -36,6 +36,8 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {
+        if (text == null) return 0f;
+
         if (customColor == CommonColors.RAINBOW) {
             return drawRainbowText(text, x, y, alignment, shadow);
         }
