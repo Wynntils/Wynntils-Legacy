@@ -45,9 +45,12 @@ public class ChatOverlay extends GuiNewChat {
     private int scrollPos;
     private boolean isScrolled;
 
-
     private int overTabId = -1;
     private int currentTab = 0;
+
+    // colors
+    private static final CustomColor selected = new CustomColor(0, 0, 0, 0.7f);
+    private static final CustomColor unselected = new CustomColor(0, 0, 0, 0.4f);
 
     public ChatOverlay() {
         super(Minecraft.getMinecraft());
@@ -122,9 +125,9 @@ public class ChatOverlay extends GuiNewChat {
                     int x1 = 16 + offsetX; int x2 = 49 + offsetX + 4;
 
                     if (overTabId == i)
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), x1, 3, x2, 16);
+                        renderer.drawRect(selected, x1, 3, x2, 16);
                     else
-                        renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), x1, 3, x2, 16);
+                        renderer.drawRect(unselected, x1, 3, x2, 16);
 
                     tab.setCurrentXAxis(x1, x2);
 
@@ -144,9 +147,9 @@ public class ChatOverlay extends GuiNewChat {
 
                 // draw the + button
                 if (overTabId == -2)
-                    renderer.drawRect(new CustomColor(0, 0, 0, 0.7f), -2, 3, 13, 16);
+                    renderer.drawRect(selected, -2, 3, 13, 16);
                 else
-                    renderer.drawRect(new CustomColor(0, 0, 0, 0.4f), -2, 3, 13, 16);
+                    renderer.drawRect(unselected, -2, 3, 13, 16);
 
                 renderer.drawString("+", 6, 6, MinecraftChatColors.GOLD, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
@@ -350,16 +353,14 @@ public class ChatOverlay extends GuiNewChat {
 
     @Nullable
     public ITextComponent getChatComponent(int mouseX, int mouseY) {
-        if (!getChatOpen()) {
-            return null;
-        } else {
+        if (getChatOpen()) {
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int i = scaledresolution.getScaleFactor();
             float f = getChatScale();
             int j = mouseX / i - 2;
             int k = mouseY / i - 48;
-            j = MathHelper.floor((float)j / f);
-            k = MathHelper.floor((float)k / f);
+            j = MathHelper.floor((float) j / f);
+            k = MathHelper.floor((float) k / f);
 
             if (j >= -2 && j <= 13 && k >= -18 && k <= -5) {
                 overTabId = -2;
@@ -376,11 +377,10 @@ public class ChatOverlay extends GuiNewChat {
             }
 
 
-
             if (j >= 0 && k >= 0) {
                 int l = Math.min(getLineCount(), getCurrentTab().getCurrentMessages().size());
 
-                if (j <= MathHelper.floor((float)getChatWidth() / getChatScale()) && k < mc.fontRenderer.FONT_HEIGHT * l + l) {
+                if (j <= MathHelper.floor((float) getChatWidth() / getChatScale()) && k < mc.fontRenderer.FONT_HEIGHT * l + l) {
                     int i1 = k / mc.fontRenderer.FONT_HEIGHT + scrollPos;
 
                     if (i1 >= 0 && i1 < getCurrentTab().getCurrentMessages().size()) {
@@ -389,7 +389,7 @@ public class ChatOverlay extends GuiNewChat {
 
                         for (ITextComponent itextcomponent : chatline.getChatComponent()) {
                             if (itextcomponent instanceof TextComponentString) {
-                                j1 += mc.fontRenderer.getStringWidth(GuiUtilRenderComponents.removeTextColorsIfConfigured(((TextComponentString)itextcomponent).getText(), false));
+                                j1 += mc.fontRenderer.getStringWidth(GuiUtilRenderComponents.removeTextColorsIfConfigured(((TextComponentString) itextcomponent).getText(), false));
 
                                 if (j1 > j) {
                                     return itextcomponent;
@@ -397,16 +397,10 @@ public class ChatOverlay extends GuiNewChat {
                             }
                         }
                     }
-                    return null;
                 }
-                else {
-                    return null;
-                }
-            }
-            else {
-                return null;
             }
         }
+        return null;
     }
 
     public boolean getChatOpen() {

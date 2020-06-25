@@ -17,7 +17,6 @@ public class Textures {
     public static void loadTextures() {
         List<Class<?>> textureClasses = new ArrayList<>();
 
-
         textureClasses.add(Masks.class);
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
