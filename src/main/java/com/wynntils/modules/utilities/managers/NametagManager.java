@@ -164,15 +164,14 @@ public class NametagManager {
             if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
                 LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
 
-                double initialPosition = x - (((leader.rankSize() - 1) * 0.6) / 2);
+                double horizontalShift = -(((leader.rankSize() - 1) * 21f) / 2);
 
-                // TODO make the rotation aligns in the center of all badges while using multiple
                 // TODO limit max badges to 3 and switch between them by time
                 for (Map.Entry<ProfessionType, Integer> badge : leader.getRanks()) {
-                    drawBadge(badge.getKey(), (int)Math.round(badge.getValue() / 2.0d) - 1,
-                            (float)initialPosition, (float)y + position, (float)z, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
+                    drawBadge(badge.getKey(), (int)Math.round(badge.getValue() / 3.0d) - 1,
+                            (float)x, (float)y + position, (float)z, horizontalShift, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
 
-                    initialPosition += 0.6;
+                    horizontalShift += 21f;
                 }
             }
         }
@@ -181,7 +180,7 @@ public class NametagManager {
         drawNametag(entityName, null, (float) x, (float) y + position, (float) z, offsetY - 10, playerViewY, playerViewX, thirdPerson, isSneaking, 1);
     }
 
-    private static void drawBadge(ProfessionType profession, int tier, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking) {
+    private static void drawBadge(ProfessionType profession, int tier, float x, float y, float z, double horizontalShift, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking) {
         pushMatrix();
         {
             ScreenRenderer.beginGL(0, 0);
@@ -207,10 +206,10 @@ public class NametagManager {
                 BufferBuilder vertexBuffer = tesselator.getBuffer();
                 {
                     vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                    vertexBuffer.pos(-9.5, -8.5 + verticalShift, 0).tex(texMinX, texMinY).endVertex();
-                    vertexBuffer.pos(-9.5, +8.5 + verticalShift, 0).tex(texMinX, texMaxY).endVertex();
-                    vertexBuffer.pos(+9.5, +8.5 + verticalShift, 0).tex(texMaxX, texMaxY).endVertex();
-                    vertexBuffer.pos(+9.5, -8.5 + verticalShift, 0).tex(texMaxX, texMinY).endVertex();
+                    vertexBuffer.pos(-9.5 - horizontalShift, -8.5 + verticalShift, 0).tex(texMinX, texMinY).endVertex();
+                    vertexBuffer.pos(-9.5 - horizontalShift, +8.5 + verticalShift, 0).tex(texMinX, texMaxY).endVertex();
+                    vertexBuffer.pos(+9.5 - horizontalShift, +8.5 + verticalShift, 0).tex(texMaxX, texMaxY).endVertex();
+                    vertexBuffer.pos(+9.5 - horizontalShift, -8.5 + verticalShift, 0).tex(texMaxX, texMinY).endVertex();
                 }
                 tesselator.draw();
 
