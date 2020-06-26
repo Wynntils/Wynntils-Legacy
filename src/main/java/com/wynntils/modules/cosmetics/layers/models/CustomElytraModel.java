@@ -8,6 +8,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.Vec3d;
@@ -20,20 +21,24 @@ public class CustomElytraModel extends ModelBase {
     private ModelRenderer rightWing;
     private ModelRenderer leftWing;
 
-    public CustomElytraModel() { }
+    public CustomElytraModel(RenderPlayer playerRenderer) {
+        leftWing = new ModelRenderer(playerRenderer.getMainModel());
+        leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
+
+        rightWing = new ModelRenderer(playerRenderer.getMainModel());
+        rightWing.mirror = true;
+        rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
+    }
 
     public void update(int maxFrames, int scale) {
         double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage);
 
-        leftWing = new ModelRenderer(this, 22, (32 * scale) * currentFrame);
+        leftWing.setTextureOffset(22, (32 * scale) * currentFrame);
         leftWing.setTextureSize(64, 32 * maxFrames);
-        leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
 
-        rightWing = new ModelRenderer(this, 22, (32 * scale) * currentFrame);
+        rightWing.setTextureOffset(22, (32 * scale) * currentFrame);
         rightWing.setTextureSize(64, 32 * maxFrames);
-        rightWing.mirror = true;
-        rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
     }
 
     /**
