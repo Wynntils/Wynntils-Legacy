@@ -252,7 +252,7 @@ public abstract class InfoOverlay extends Overlay {
 
         String doEscapeFormat(String escaped) {
             switch (escaped) {
-                case "\\": return "\\";
+                case "\\": return "\\\\";
                 case "n": return "\n";
                 case "%": return "%";
                 case "§": return "&";

@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -59,8 +59,9 @@ public class ScreenRenderer {
         if (fontRenderer == null)
             try {
                 fontRenderer = new SmartFontRenderer();
-            } catch (Exception e) {}
-            finally {
+            } catch (Exception ignored) {
+
+            } finally {
                 fontRenderer.onResourceManagerReload(mc.getResourceManager());
             }
         if (itemRenderer == null)

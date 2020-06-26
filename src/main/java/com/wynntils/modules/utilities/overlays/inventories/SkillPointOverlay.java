@@ -28,43 +28,43 @@ public class SkillPointOverlay implements Listener {
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
 
             int value = 0;
-            
+
             if (name.contains("Upgrade")) {// Skill Points
                 int start = lore.indexOf(" points ")-3;
-                
+
                 String number = lore.substring(start, start+3).trim();
-                
+
                 value = Integer.parseInt(number);
             } else if (name.contains("Profession")) { // Profession Icons
                 int start = lore.indexOf("Level: ")+7;
                 int end = lore.indexOf("XP: ");
-                
+
                 value = Integer.parseInt(lore.substring(start, end));
             } else if (name.contains("'s Info")) { // Combat level on Info
                 int start = lore.indexOf("Combat Lv: ")+11;
                 int end = lore.indexOf("Class: ");
-                
+
                 value = Integer.parseInt(lore.substring(start, end));
             } else if (name.contains("Damage Info")) { //Average Damage
             	//Ensure lore keys will exist
-            	if (lore.contains("[Put an allowed weapon in your hotbar]")) 
+            	if (lore.contains("[Put an allowed weapon in your hotbar]"))
             		continue;
-            	
+
                 int start = lore.indexOf("Total Damage (+Bonus): ")+23;
-                
-                int end = lore.indexOf(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER ? "[LRL]" : "[RLR]"); 
-                
+                int end = lore.indexOf(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER ? "[LRL]" : "[RLR]");
+
+                if (start < 0 || end > lore.length()) continue;
                 String[] numbers = lore.substring(start, end).split("-");
                 if (numbers[0].isEmpty() || numbers[1].isEmpty()) continue;
-                
+
                 int min = Integer.parseInt(numbers[0]);
                 int max = Integer.parseInt(numbers[1]);
-                
+
                 value = Math.round((max+min)/2);
             } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ")+19;
                 int end = lore.indexOf("Log in everyday to");
-                
+
                 value = Integer.parseInt(lore.substring(start, end));
             } else continue;
 

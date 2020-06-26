@@ -30,5 +30,31 @@ public class QuestBookConfig extends SettingsClass {
 
     @Setting(displayName = "Show Discoveries That Are Unavailable", description = "When viewing undiscovered discoveries should discoveries that cannot be discovered currently be displayed?")
     public boolean showAllDiscoveries = false;
+    
+    @Setting(displayName = "Secret Discovery Location Tracking", description = "When viewing secret discoveries, which should allow tracking? (Coordinates are obtained via the Wynncraft Wiki)")
+    public SecretSpoilMode spoilSecretDiscoveries = SecretSpoilMode.ONLY_DISCOVERED;
+    
+    public enum SecretSpoilMode {
+        ALL,
+        ONLY_DISCOVERED,
+        ONLY_UNDISCOVERED,
+        NONE;
+
+        // Returns true if the input follows the rule
+        public boolean followsRule(boolean discovered) {
+            switch (this) {
+                case ALL:
+                    return true;
+                case NONE:
+                    return false;
+                case ONLY_DISCOVERED:
+                    return discovered;
+                case ONLY_UNDISCOVERED:
+                    return !discovered;
+                default:
+                    return false;
+            }
+        }
+    }
 
 }

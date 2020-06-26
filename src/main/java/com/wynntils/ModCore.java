@@ -5,6 +5,7 @@
 package com.wynntils;
 
 import com.wynntils.core.CoreManager;
+import com.wynntils.core.events.custom.ClientEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -65,7 +66,6 @@ public class ModCore {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-
         HashMap<String, String> conflicts = new HashMap<>();
         for (ModContainer mod : Loader.instance().getActiveModList()) {
             if (!mod.getModId().equalsIgnoreCase("labymod")) continue;
@@ -103,6 +103,7 @@ public class ModCore {
             }
         });
 
+        FrameworkManager.getEventBus().post(new ClientEvent.Ready());
     }
 
     public static Minecraft mc() {

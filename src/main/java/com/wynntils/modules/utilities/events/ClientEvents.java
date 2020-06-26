@@ -80,6 +80,13 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onReady(ClientEvent.Ready e) {
+        if (!UtilitiesConfig.INSTANCE.autoResourceOnLoad) return;
+
+        ServerResourcePackManager.loadServerResourcePack();
+    }
+
+    @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
         pushBlockingEnabled = false;
         protectionEnabled = false;

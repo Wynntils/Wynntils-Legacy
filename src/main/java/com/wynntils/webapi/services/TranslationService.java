@@ -14,4 +14,5 @@ public interface TranslationService {
      * @param handleTranslation Handler for the translation. The argument is the translated string.
      */
     void translate(String message, String toLanguage, Consumer<String> handleTranslation);
+
 }
