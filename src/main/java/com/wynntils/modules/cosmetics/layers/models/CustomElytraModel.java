@@ -23,22 +23,24 @@ public class CustomElytraModel extends ModelBase {
 
     public CustomElytraModel(RenderPlayer playerRenderer) {
         leftWing = new ModelRenderer(playerRenderer.getMainModel());
-        leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
 
         rightWing = new ModelRenderer(playerRenderer.getMainModel());
         rightWing.mirror = true;
-        rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
     }
 
     public void update(int maxFrames, int scale) {
         double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage);
 
+        leftWing.cubeList.clear();
         leftWing.setTextureOffset(22, (32 * scale) * currentFrame);
         leftWing.setTextureSize(64, 32 * maxFrames);
+        leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
 
+        rightWing.cubeList.clear();
         rightWing.setTextureOffset(22, (32 * scale) * currentFrame);
         rightWing.setTextureSize(64, 32 * maxFrames);
+        rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
     }
 
     /**
