@@ -116,8 +116,6 @@ public class ChatConfig extends SettingsClass {
         public void onSettingChanged(String name) {
             if (name.equals("translationService")) {
                 ChatManager.translator = null;
-            } else if (name.startsWith("translate")) {
-                ChatManager.translationPattern = null;
             }
         }
 

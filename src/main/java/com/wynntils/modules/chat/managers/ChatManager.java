@@ -38,7 +38,19 @@ public class ChatManager {
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
     public static TranslationService translator = null;
-    public static Pattern translationPattern = null;
+    public static Pattern translationPatternChat = Pattern.compile("^(" +
+            "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)" + "|" +  // local chat
+            "(?:§3.* \\[[^]]+\\] shouts: §r§b)" + "|" + // shout
+            "(?:§7\\[§r§e.*§r§7\\] §r§f)" + "|" + // party chat
+            "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)" + // private msg
+            ")(.*)(§r)$");
+    public static Pattern translationPatternNpc = Pattern.compile("^(" +
+            "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)" + // npc talking
+            ")(.*)(§r)$");
+    public static Pattern translationPatternOther = Pattern.compile("^(" +
+            "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
+            "(?:§[0-9a-z])" + // generic system message
+            ")(.*)(§r)$");
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -102,11 +114,6 @@ public class ChatManager {
         // popup sound
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
-
-        // language translation
-        if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
-            translateMessage(in);
-        }
 
         // wynnic translator
         if (StringUtils.hasWynnic(in.getUnformattedText())) {
@@ -377,61 +384,39 @@ public class ChatManager {
         if (translator == null) {
             translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
         }
-        if (translationPattern == null) {
-            translationPattern = createTranslationPattern();
-        }
+
         if (!in.getUnformattedText().startsWith(TRANSLATED_PREFIX)) {
             String formatted = in.getFormattedText();
-            Matcher m = translationPattern.matcher(formatted);
-            if (m.find()) {
-                // We only want to translate the actual message, not formatting, sender, etc.
-                String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
-                String prefix = m.group(1);
-                String suffix = m.group(3);
-                translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
-                    Minecraft.getMinecraft().addScheduledTask(() ->
-                            ChatOverlay.getChat().printChatMessage(new TextComponentString(TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
-                });
+            Matcher chatMatcher = translationPatternChat.matcher(formatted);
+            if (chatMatcher.find()) {
+                if (!ChatConfig.ChatTranslation.INSTANCE.translatePlayerChat) return;
+                sendTranslation(chatMatcher);
+                return;
+            }
+            Matcher npcMatcher = translationPatternNpc.matcher(formatted);
+            if (npcMatcher.find()) {
+                if (!ChatConfig.ChatTranslation.INSTANCE.translateNpc) return;
+                sendTranslation(npcMatcher);
+                return;
+            }
+            Matcher otherMatcher = translationPatternOther.matcher(formatted);
+            if (otherMatcher.find()) {
+                if (!ChatConfig.ChatTranslation.INSTANCE.translateOther) return;
+                sendTranslation(otherMatcher);
+                return;
             }
         }
     }
 
-    private static Pattern createTranslationPattern() {
-        String localChatPrefix = "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)";
-        String shoutPrefix = "(?:§3.* \\[[^]]+\\] shouts: §r§b)";
-        String partyPrefix = "(?:§7\\[§r§e.*§r§7\\] §r§f)";
-        String privatePrefix = "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)";
-        String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
-        String interactPrefix = "(?:§5[^:]*: §r§d)";
-        String infoPrefix = "(?:§[0-9a-z]\\[Info\\])";
-
-        int components = 0;
-        StringBuilder builder = new StringBuilder();
-        builder.append("^(");
-        if (ChatConfig.ChatTranslation.INSTANCE.translatePlayerChat) {
-            builder.append(localChatPrefix + "|" + shoutPrefix + "|" + partyPrefix + "|" + privatePrefix);
-            components++;
-        }
-        if (ChatConfig.ChatTranslation.INSTANCE.translateNpc) {
-            if (components > 0) {
-                builder.append("|");
-            }
-            builder.append(npcPrefix);
-            components++;
-        }
-        if (ChatConfig.ChatTranslation.INSTANCE.translateOther) {
-            if (components > 0) {
-                builder.append("|");
-            }
-            builder.append(interactPrefix + "|" + infoPrefix);
-            components++;
-        }
-        builder.append(")(.*)(§r)$");
-
-        // This is the unmatchable regex
-        if (components == 0) return Pattern.compile("^\\b$");
-
-        return Pattern.compile(builder.toString());
+    private static void sendTranslation(Matcher m) {
+        // We only want to translate the actual message, not formatting, sender, etc.
+        String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
+        String prefix = m.group(1);
+        String suffix = m.group(3);
+        translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
+            Minecraft.getMinecraft().addScheduledTask(() ->
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
+        });
     }
 
     public static ITextComponent renderMessage(ITextComponent in) {
