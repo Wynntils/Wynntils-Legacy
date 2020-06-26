@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * sufficient for NPCs translation, but not for general chat messages, at least not in chatty areas like Detlas.
  */
 public class GoogleApiTranslationService implements TranslationService {
-    private static AtomicInteger requestNumber = new AtomicInteger();
+    private static final AtomicInteger requestNumber = new AtomicInteger();
 
     @Override
     public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
@@ -41,4 +41,5 @@ public class GoogleApiTranslationService implements TranslationService {
             // ignore; cannot happen
         }
     }
+
 }

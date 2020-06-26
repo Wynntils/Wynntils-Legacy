@@ -32,6 +32,13 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Block Player Collision When AFK", description = "Should player collision be blocked when you are AFK?")
     public boolean blockAfkPushs = true;
 
+    @Setting(displayName = "AFK Protection", description = "Should you enter class selection when you are AFK?")
+    public boolean afkProtection = false;
+
+    @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
+    @Setting(displayName = "AFK Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
+    public float afkProtectionThreshold = 10f;
+
     @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
     public boolean hidePotionGui = true;
 
@@ -94,6 +101,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?")
     public boolean renderTooltipsScaled = false;
+
+    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard members have a badge over their heads?")
+    public boolean renderLeaderboardBadges = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";

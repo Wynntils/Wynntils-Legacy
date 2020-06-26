@@ -8,21 +8,24 @@ import com.wynntils.core.utils.StringUtils;
 
 public enum ProfessionType {
 
-    //gathering
-    FISHING("Ⓚ"),
+    // gathering
     WOODCUTTING("Ⓒ"),
     MINING("Ⓑ"),
+    FISHING("Ⓚ"),
     FARMING("Ⓙ"),
 
-    //crafting
-    SCRIBING("Ⓔ"),
-    JEWELING("Ⓓ"),
+    // crafting
     ALCHEMISM("Ⓛ"),
+    ARMOURING("Ⓗ"),
     COOKING("Ⓐ"),
-    WEAPONSMITHING("Ⓖ"),
+    JEWELING("Ⓓ"),
+    SCRIBING("Ⓔ"),
     TAILORING("Ⓕ"),
+    WEAPONSMITHING("Ⓖ"),
     WOODWORKING("Ⓘ"),
-    ARMOURING("Ⓗ");
+
+    // handled by leaderboard
+    OVERALL("");
 
     String icon;
 

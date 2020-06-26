@@ -30,7 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class WynntilsAccount {
 
-    private static ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-accounts-%d").build());
+    private static final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-accounts-%d").build());
 
     String token;
     boolean ready = false;
@@ -47,6 +47,10 @@ public class WynntilsAccount {
 
     public HashMap<String, String> getEncondedConfigs() {
         return encondedConfigs;
+    }
+
+    public void dumpEncodedConfig(String name) {
+        encondedConfigs.remove(name);
     }
 
     int connectionAttempts = 0;
@@ -103,7 +107,7 @@ public class WynntilsAccount {
                 }).onError(t -> { login(); return true; });
 
         handler.addAndDispatch(responseEncryption);
-        
+
         return true;
     }
 

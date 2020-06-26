@@ -19,10 +19,7 @@ import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.reflections.ReflectionFields;
-import com.wynntils.modules.core.commands.*;
-import com.wynntils.modules.questbook.commands.CommandExportDiscoveries;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -117,17 +114,6 @@ public class FrameworkManager {
         availableModules.values().forEach(c -> c.getModule().postEnable());
     }
 
-    public static void registerCommands() {
-        ClientCommandHandler.instance.registerCommand(new CommandWynntils());
-        ClientCommandHandler.instance.registerCommand(new CommandToken());
-        ClientCommandHandler.instance.registerCommand(new CommandForceUpdate());
-        ClientCommandHandler.instance.registerCommand(new CommandCompass());
-        ClientCommandHandler.instance.registerCommand(new CommandTerritory());
-        ClientCommandHandler.instance.registerCommand(new CommandExportDiscoveries());
-        ClientCommandHandler.instance.registerCommand(new CommandServer());
-        ClientCommandHandler.instance.registerCommand(new CommandAdmin());
-    }
-
     public static void disableModules() {
         availableModules.values().forEach(c -> {
             c.getModule().onDisable(); c.unregisterAllEvents();
@@ -153,6 +139,7 @@ public class FrameworkManager {
                 e.setCanceled(true);
                 return;
             }
+
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
             for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
@@ -181,6 +168,7 @@ public class FrameworkManager {
                 }
             }
             Minecraft.getMinecraft().profiler.endSection();
+
             Minecraft.getMinecraft().getTextureManager().bindTexture(ICONS);
         }
     }

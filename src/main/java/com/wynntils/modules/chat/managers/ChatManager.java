@@ -64,6 +64,11 @@ public class ChatManager {
             in = newMessage;
         }
 
+        // language translation
+        if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
+            translateMessage(in);
+        }
+
         // timestamps
         if (ChatConfig.INSTANCE.addTimestampsToChat) {
             if (dateFormat == null || !validDateFormat) {
@@ -398,7 +403,7 @@ public class ChatManager {
         String privatePrefix = "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)";
         String npcPrefix = "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)";
         String interactPrefix = "(?:§5[^:]*: §r§d)";
-        String infoPrefix = "(?:§[0-9a-z])";
+        String infoPrefix = "(?:§[0-9a-z]\\[Info\\])";
 
         int components = 0;
         StringBuilder builder = new StringBuilder();
@@ -434,58 +439,74 @@ public class ChatManager {
     }
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
-        boolean hasMention = false;
-        if (ChatConfig.INSTANCE.allowChatMentions) {
-            if (in != null && Minecraft.getMinecraft().player != null && in.getFormattedText().contains(ModCore.mc().player.getName())) {
-                // Patterns used to detect guild/party chat
+        if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
+            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "");
+            Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
+
+            Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
+
+            if (looseMatcher.find()) {
+                boolean hasMention = false;
+
                 boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
+
                 ArrayList<ITextComponent> components = new ArrayList<>();
+
                 for (ITextComponent component : in.getSiblings()) {
-                    if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
-                        hasMention = true;
-                        String text = component.getUnformattedComponentText();
-                        String playerName = ModCore.mc().player.getName();
-                        while (text.contains(playerName)) {
-                            String section = text.substring(0, text.indexOf(playerName));
-                            ITextComponent sectionComponent = new TextComponentString(section);
-                            sectionComponent.setStyle(component.getStyle().createShallowCopy());
-                            components.add(sectionComponent);
+                    String text = component.getUnformattedText();
 
-                            ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                            playerComponent.setStyle(component.getStyle().createShallowCopy());
-                            playerComponent.getStyle().setColor(TextFormatting.YELLOW);
-                            components.add(playerComponent);
-
-                            text = text.replaceFirst(".*" + ModCore.mc().player.getName(), "");
-                        }
-                        ITextComponent sectionComponent = new TextComponentString(text);
-                        sectionComponent.setStyle(component.getStyle().createShallowCopy());
-                        components.add(sectionComponent);
-                    } else if (!foundStart) {
-                        if (foundEndTimestamp) {
-                            if (in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/")) {
-                                foundStart = component.getUnformattedText().contains(":");
-                            } else if (isGuildOrParty) {
-                                foundStart = component.getUnformattedText().contains("]");
-                            }
-                        } else if (component.getUnformattedComponentText().contains("] ")) {
-                            foundEndTimestamp = true;
-                        }
+                    if (!foundEndTimestamp) {
+                        foundEndTimestamp = text.contains("]");
                         components.add(component);
-                    } else {
-                        components.add(component);
+                        continue;
                     }
+
+                    if (!foundStart) {
+                        foundStart = text.contains((isGuildOrParty ? "]" : ":")); // Party and guild messages end in ']' while normal chat end in ':'
+                        components.add(component);
+                        continue;
+                    }
+
+                    Matcher matcher = pattern.matcher(text);
+
+                    int nextStart = 0;
+
+                    while (matcher.find()) {
+                        hasMention = true;
+
+                        String before = text.substring(nextStart, matcher.start());
+                        String name = text.substring(matcher.start(), matcher.end());
+
+                        nextStart = matcher.end();
+
+                        ITextComponent beforeComponent = new TextComponentString(before);
+                        beforeComponent.setStyle(component.getStyle().createShallowCopy());
+
+                        ITextComponent nameComponent = new TextComponentString(name);
+                        nameComponent.setStyle(component.getStyle().createShallowCopy());
+                        nameComponent.getStyle().setColor(TextFormatting.YELLOW);
+
+                        components.add(beforeComponent);
+                        components.add(nameComponent);
+                    }
+
+                    ITextComponent afterComponent = new TextComponentString(text.substring(nextStart, text.length()));
+                    afterComponent.setStyle(component.getStyle().createShallowCopy());
+
+                    components.add(afterComponent);
                 }
-                in.getSiblings().clear();
-                in.getSiblings().addAll(components);
                 if (hasMention) {
                     ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+                    in.getSiblings().clear();
+                    in.getSiblings().addAll(components);
+
+                    return true; // Marks the chat tab as containing a mention
                 }
             }
         }
-        return hasMention;
+        return false;
     }
 
     public static Pair<String, Boolean> applyUpdatesToServer(String message) {

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
 
 public class TranslationManager {
+
     /**
      * Get a TranslationService.
      *
@@ -25,7 +26,7 @@ public class TranslationManager {
         GOOGLEAPI(GoogleApiTranslationService.class),
         PIGLATIN(PigLatinTranslationService.class);
 
-        private Class<? extends TranslationService> serviceClass;
+        private final Class<? extends TranslationService> serviceClass;
 
         TranslationServices(Class<? extends TranslationService> serviceClass) {
             this.serviceClass = serviceClass;
@@ -52,4 +53,5 @@ public class TranslationManager {
             thread.start();
         }
     }
+
 }

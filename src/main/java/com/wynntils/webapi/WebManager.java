@@ -306,6 +306,30 @@ public class WebManager {
     }
 
     /**
+     * Request the current leaderboard to Athena
+     *
+     * @param onReceive Consumes a hashmap containing as key the profession type and as value the Leaderboard Data
+     * @see LeaderboardProfile
+     */
+    public static void getLeaderboard(Consumer<HashMap<UUID, LeaderboardProfile>> onReceive) {
+        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/leaderboard";
+
+        handler.addAndDispatch(
+                new Request(url, "leaderboard")
+                .handleJsonObject((json) -> {
+                    HashMap<UUID, LeaderboardProfile> result = new HashMap<>();
+
+                    for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                        result.put(UUID.fromString(entry.getKey()), gson.fromJson(entry.getValue(), LeaderboardProfile.class));
+                    }
+
+                    onReceive.accept(result);
+                    return true;
+                })
+        );
+    }
+
+    /**
      * Request the server list to Athena
      *
      * @param onReceive Consumes a hashmap containing as key the server name and as value the ServerProfile

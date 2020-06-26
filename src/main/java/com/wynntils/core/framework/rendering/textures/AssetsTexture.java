@@ -44,6 +44,7 @@ public class AssetsTexture extends Texture {
     @Override
     public ActionResult unload() {
         if (!loaded) return ActionResult.ISSUE;
+
         Minecraft.getMinecraft().getTextureManager().deleteTexture(resourceLocation);
         loaded = false;
         return ActionResult.SUCCESS;
@@ -56,4 +57,5 @@ public class AssetsTexture extends Texture {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
         return ActionResult.SUCCESS;
     }
+
 }
