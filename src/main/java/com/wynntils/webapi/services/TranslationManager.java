@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2020.
+ */
+
 package com.wynntils.webapi.services;
 
 import java.lang.reflect.Constructor;
@@ -20,6 +24,14 @@ public class TranslationManager {
         }
 
         return null;
+    }
+
+    public static void init() {
+        CachingTranslationService.loadTranslationCache();
+    }
+
+    public static void shutdown() {
+        CachingTranslationService.saveTranslationCache();
     }
 
     public enum TranslationServices {
