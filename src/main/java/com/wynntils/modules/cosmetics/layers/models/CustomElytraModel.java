@@ -8,7 +8,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.Vec3d;
@@ -18,13 +17,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CustomElytraModel extends ModelBase {
 
-    private ModelRenderer rightWing;
-    private ModelRenderer leftWing;
+    private ModelRenderer rightWing = new ModelRenderer(this);
+    private ModelRenderer leftWing = new ModelRenderer(this);
 
-    public CustomElytraModel(RenderPlayer playerRenderer) {
-        leftWing = new ModelRenderer(playerRenderer.getMainModel());
-
-        rightWing = new ModelRenderer(playerRenderer.getMainModel());
+    public CustomElytraModel() {
         rightWing.mirror = true;
     }
 
