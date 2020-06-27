@@ -22,6 +22,14 @@ public class TranslationManager {
         return null;
     }
 
+    public static void init() {
+        CachingTranslationService.loadTranslationCache();
+    }
+
+    public static void shutdown() {
+        CachingTranslationService.saveTranslationCache();
+    }
+
     public enum TranslationServices {
         GOOGLEAPI(GoogleApiTranslationService.class),
         PIGLATIN(PigLatinTranslationService.class);
