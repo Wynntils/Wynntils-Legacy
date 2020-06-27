@@ -11,6 +11,8 @@ import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -32,7 +34,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     /**
      * The model used by the Elytra.
      */
-    private final CustomElytraModel modelElytra = new CustomElytraModel();
+    private final CustomElytraModel modelElytra = new CustomElytraModel();;
 
     public LayerElytra(RenderPlayer playerRendererIn) {
         this.renderPlayer = playerRendererIn;

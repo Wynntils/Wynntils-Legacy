@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -17,9 +18,11 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
 
     private final RenderPlayer playerRenderer;
+    private final ModelRenderer bipedFoxEar;
 
     public LayerFoxEars(RenderPlayer playerRendererIn) {
         this.playerRenderer = playerRendererIn;
+        this.bipedFoxEar = new ModelRenderer(playerRendererIn.getMainModel(), 24, 0);
     }
 
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
@@ -47,8 +50,7 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
     }
 
     public void renderModel(AbstractClientPlayer player, ModelBase model, float scale) {
-        ModelRenderer bipedFoxEar = new ModelRenderer(model, 24, 0);
-
+        bipedFoxEar.cubeList.clear();
         if (player.isSneaking()) bipedFoxEar.addBox(0.0F + 4F, -5.0F + 5F / 2F, 1f, 6, 6, 1);
         else bipedFoxEar.addBox(0.0F, -5.0F, -1.0F, 6, 6, 1);
 
@@ -56,6 +58,8 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
         bipedFoxEar.rotateAngleX = playerRenderer.getMainModel().bipedHeadwear.rotateAngleX * (scale / 2);
         bipedFoxEar.rotateAngleY = playerRenderer.getMainModel().bipedHeadwear.rotateAngleY * (scale / 2);
         bipedFoxEar.rotateAngleZ = playerRenderer.getMainModel().bipedHeadwear.rotateAngleZ * (scale / 2);
+
+        ReflectionFields.ModelRenderer_compiled.setValue(bipedFoxEar, false);
         bipedFoxEar.render(scale / 2);
     }
 
