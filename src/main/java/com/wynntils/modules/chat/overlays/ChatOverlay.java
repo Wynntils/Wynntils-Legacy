@@ -241,6 +241,7 @@ public class ChatOverlay extends GuiNewChat {
 
         // message processor
         ITextComponent displayedMessage = noProcessing ? originalMessage : ChatManager.processRealMessage(originalMessage.createCopy());
+        if (displayedMessage == null) return;
 
         // spam filter
         if (!noProcessing && tab.getLastMessage() != null) {

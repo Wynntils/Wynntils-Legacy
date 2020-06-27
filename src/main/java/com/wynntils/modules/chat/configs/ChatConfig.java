@@ -109,6 +109,9 @@ public class ChatConfig extends SettingsClass {
         @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?")
         public String languageName = "en";
 
+        @Setting(displayName = "Keep Original", description = "Should the original message be displayed alongside the translation?")
+        public boolean keepOriginal = true;
+
         @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
         public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
 

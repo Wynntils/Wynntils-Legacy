@@ -39,7 +39,7 @@ public class ChatManager {
     public static boolean validDateFormat;
     public static TranslationService translator = null;
     public static Pattern translationPatternChat = Pattern.compile("^(" +
-            "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)" + "|" +  // local chat
+            "(?:§8\\[(?:Lv. )[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)" + "|" +  // local chat
             "(?:§3.* \\[[^]]+\\] shouts: §r§b)" + "|" + // shout
             "(?:§7\\[§r§e.*§r§7\\] §r§f)" + "|" + // party chat
             "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)" + // private msg
@@ -78,7 +78,8 @@ public class ChatManager {
 
         // language translation
         if (ChatConfig.ChatTranslation.INSTANCE.enableTextTranslation) {
-            translateMessage(in);
+            boolean wasTranslated = translateMessage(in);
+            if (wasTranslated && !ChatConfig.ChatTranslation.INSTANCE.keepOriginal) return null;
         }
 
         // timestamps
@@ -379,7 +380,7 @@ public class ChatManager {
         return in;
     }
 
-    private static void translateMessage(ITextComponent in) {
+    private static boolean translateMessage(ITextComponent in) {
         // These might not have been created yet, or reset by ChatConfig changing
         if (translator == null) {
             translator = TranslationManager.getService(ChatConfig.ChatTranslation.INSTANCE.translationService);
@@ -389,23 +390,25 @@ public class ChatManager {
             String formatted = in.getFormattedText();
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
-                if (!ChatConfig.ChatTranslation.INSTANCE.translatePlayerChat) return;
+                if (!ChatConfig.ChatTranslation.INSTANCE.translatePlayerChat) return false;
                 sendTranslation(chatMatcher);
-                return;
+                return true;
             }
             Matcher npcMatcher = translationPatternNpc.matcher(formatted);
             if (npcMatcher.find()) {
-                if (!ChatConfig.ChatTranslation.INSTANCE.translateNpc) return;
+                if (!ChatConfig.ChatTranslation.INSTANCE.translateNpc) return false;
                 sendTranslation(npcMatcher);
-                return;
+                return true;
             }
             Matcher otherMatcher = translationPatternOther.matcher(formatted);
             if (otherMatcher.find()) {
-                if (!ChatConfig.ChatTranslation.INSTANCE.translateOther) return;
+                if (!ChatConfig.ChatTranslation.INSTANCE.translateOther) return false;
                 sendTranslation(otherMatcher);
-                return;
+                return true;
             }
         }
+
+        return false;
     }
 
     private static void sendTranslation(Matcher m) {
