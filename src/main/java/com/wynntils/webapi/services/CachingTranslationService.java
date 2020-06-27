@@ -3,6 +3,7 @@ package com.wynntils.webapi.services;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -25,9 +26,9 @@ public abstract class CachingTranslationService implements TranslationService {
     protected void saveTranslation(String toLanguage, String message, String translatedMessage) {
         ConcurrentHashMap<String, String> translationCache = translationCaches.get(toLanguage);
         translationCache.put(message, translatedMessage);
-        if (++counter % 32 == 0) {
-            // Start background thread to persist translation cache
-            new Thread(() -> CachingTranslationService.saveTranslationCache()).start();
+        if (++counter % 16 == 0) {
+            // Persist translation cache in background
+            Utils.runAsync(() -> CachingTranslationService.saveTranslationCache());
         }
     }
 
