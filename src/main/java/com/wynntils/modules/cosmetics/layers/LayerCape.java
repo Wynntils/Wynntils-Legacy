@@ -5,6 +5,7 @@
 package com.wynntils.modules.cosmetics.layers;
 
 import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;
@@ -42,6 +43,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
         if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;
         else bipedCape.rotationPointY = 0.0F;
 
+        ReflectionFields.ModelRenderer_compiled.setValue(bipedCape, false);
         bipedCape.render(scale / capeScale);
     }
 

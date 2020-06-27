@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -57,6 +58,8 @@ public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
         bipedFoxEar.rotateAngleX = playerRenderer.getMainModel().bipedHeadwear.rotateAngleX * (scale / 2);
         bipedFoxEar.rotateAngleY = playerRenderer.getMainModel().bipedHeadwear.rotateAngleY * (scale / 2);
         bipedFoxEar.rotateAngleZ = playerRenderer.getMainModel().bipedHeadwear.rotateAngleZ * (scale / 2);
+
+        ReflectionFields.ModelRenderer_compiled.setValue(bipedFoxEar, false);
         bipedFoxEar.render(scale / 2);
     }
 
