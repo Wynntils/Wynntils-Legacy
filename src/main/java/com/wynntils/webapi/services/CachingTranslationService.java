@@ -41,7 +41,7 @@ public abstract class CachingTranslationService implements TranslationService {
         ConcurrentHashMap<String, String> translationCache = translationCaches.computeIfAbsent(toLanguage, k -> new ConcurrentHashMap<>());
         String cachedTranslation = translationCache.get(message);
         if (cachedTranslation != null) {
-            handleTranslation.accept(cachedTranslation);
+            Utils.runAsync(() -> handleTranslation.accept(cachedTranslation));
             return;
         }
 

@@ -414,6 +414,12 @@ public class ChatManager {
         String prefix = m.group(1);
         String suffix = m.group(3);
         translator.translate(message, ChatConfig.ChatTranslation.INSTANCE.languageName, translatedMsg -> {
+            try {
+                // Don't want translation to appear before original
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // ignore
+            }
             Minecraft.getMinecraft().addScheduledTask(() ->
                     ChatOverlay.getChat().printChatMessage(new TextComponentString(TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
         });

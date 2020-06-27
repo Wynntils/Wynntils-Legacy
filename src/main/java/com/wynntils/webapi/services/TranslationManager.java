@@ -4,6 +4,8 @@
 
 package com.wynntils.webapi.services;
 
+import com.wynntils.core.utils.Utils;
+
 import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
 
@@ -60,9 +62,7 @@ public class TranslationManager {
                     latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
                 }
             }
-            Thread thread = new Thread(() ->
-                    handleTranslation.accept(latinString.toString()));
-            thread.start();
+            Utils.runAsync(() -> handleTranslation.accept(latinString.toString()));
         }
     }
 
