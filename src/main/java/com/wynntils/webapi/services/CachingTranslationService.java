@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2020.
+ */
+
 package com.wynntils.webapi.services;
 
 import com.google.gson.Gson;
