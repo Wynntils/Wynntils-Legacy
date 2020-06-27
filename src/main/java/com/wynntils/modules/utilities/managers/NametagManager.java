@@ -165,7 +165,7 @@ public class NametagManager {
 
                 // TODO limit max badges to 3 and switch between them by time
                 for (Map.Entry<ProfessionType, Integer> badge : leader.getRanks()) {
-                    drawBadge(badge.getKey(), (int)Math.round(badge.getValue() / 3.0d) - 1,
+                    drawBadge(badge.getKey(), (int)(1 + (badge.getValue() / 3.0d)) - 1,
                             (float)x, (float)y + position, (float)z, horizontalShift, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
 
                     horizontalShift += 21f;
