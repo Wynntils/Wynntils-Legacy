@@ -5,11 +5,17 @@
 package com.wynntils.webapi.services;
 
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
+import net.minecraft.util.text.TextFormatting;
 
 import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
 
 public class TranslationManager {
+
+    public static final String TRANSLATED_PREFIX = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
+
+    private static TranslationService translator = null;
 
     /**
      * Get a TranslationService.
@@ -26,6 +32,26 @@ public class TranslationManager {
         }
 
         return null;
+    }
+
+    /**
+     * Get the default TranslationService for the language specified by the user in the settings.
+     *
+     * @return An instance of the selected translation service, or null on failure
+     */
+    public static TranslationService getTranslator() {
+        // These might not have been created yet, or reset by config changing
+        if (TranslationManager.translator == null) {
+            TranslationManager.translator = TranslationManager.getService(TranslationConfig.INSTANCE.translationService);
+        }
+        return translator;
+    }
+
+    /**
+     * Reset the default TranslatorService, e.g. due to config changes.
+     */
+    public static void resetTranslator() {
+        translator = null;
     }
 
     public static void init() {
@@ -55,11 +81,14 @@ public class TranslationManager {
         @Override
         public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
             StringBuilder latinString = new StringBuilder();
-            for (String word : message.split("\\s")) {
-                if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {
-                    latinString.append(word).append("ay ");
-                } else {
-                    latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
+            if (message != null || !message.isEmpty()) {
+                for (String word : message.split("\\s")) {
+                    if (word.isEmpty()) continue;
+                    if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {
+                        latinString.append(word).append("ay ");
+                    } else {
+                        latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
+                    }
                 }
             }
             Utils.runAsync(() -> handleTranslation.accept(latinString.toString()));
