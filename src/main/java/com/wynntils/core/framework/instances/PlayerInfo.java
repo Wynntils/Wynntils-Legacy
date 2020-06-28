@@ -24,6 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -336,6 +337,34 @@ public class PlayerInfo {
         if (currentClass == ClassType.NONE || mc.world == null) return -1;
         int ticks = ((int) (mc.world.getWorldTime() % 24000) + 24000) % 24000;
         return ((24000 - ticks) % 24000);
+    }
+    
+    /**
+     * @return The amount of items inside the players ingredeint pouch (parsed from the items lore)
+     *
+     * -1 if unable to determine
+     *
+     */
+    public int getIngredientPouchCount() {
+        if (currentClass == ClassType.NONE || mc.player == null) return -1;
+        ItemStack pouch = mc.player.inventory.mainInventory.get(13);
+        int count = 0;
+        
+        List<String> lore = ItemUtils.getLore(pouch);
+        
+        for (int i = 4; i < lore.size(); i++) {
+            String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
+            
+            int end = line.indexOf(" x ");
+            
+            if (end == -1) break;
+            
+            line = line.substring(0, end);
+            
+            count = count + Integer.valueOf(line);
+        }
+        
+        return count;
     }
 
 }

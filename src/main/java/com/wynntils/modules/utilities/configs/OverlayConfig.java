@@ -439,8 +439,11 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
         public Presets preset = Presets.CLICK_ME;
+        
+        @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 6)
+        public Variables variables = Variables.CLICK_ME;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 7)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
 
@@ -449,11 +452,17 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if ("preset".equals(name)) {
+            if (name.contentEquals("preset")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
                     preset = Presets.CLICK_ME;
                 } else if (preset.value != null) {
                     Utils.copyToClipboard(preset.value);
+                }
+            } else if (name.contentEquals("variables")) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    variables = Variables.CLICK_ME;
+                } else if (variables.value != null) {
+                    Utils.copyToClipboard(variables.value);
                 }
             }
         }
@@ -466,7 +475,9 @@ public class OverlayConfig extends SettingsClass {
             CLASS("Class", "%Class%\\nLevel %lvl%"),
             LOCATION("Location", "[%world%] %location%"),
             BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
-            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            SOULPOINTS("Soul points", "%sp%/%sp_max%SP (%sp_timer)"),
+            LEVEL("Level", "Lv. %level%  (%xp_pct%)"),
+            POUCH("Ingredient pouch", "%pouch%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
@@ -476,6 +487,55 @@ public class OverlayConfig extends SettingsClass {
             public final String value;
 
             Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
+        
+        public enum Variables {
+            CLICK_ME("Click me to copy to clipboard", null),
+            BPS("Blocks per second", "%bps%"),
+            BPM("Blocks per minute", "%bpm%"),
+            KMPH("Kilometers per hour", "%kmph%"),
+            X("X Coordinate", "%x%"),
+            Y("Y Coordinate", "%y%"),
+            Z("Z Coordinate", "%z%"),
+            DIR("The facing direction", "%dir%"),
+            FPS("Frames per second", "%fps%"),
+            WORLD("The current world/server", "%world%"),
+            PING("THe current ping", "%ping%"),
+            MANA("Current mana", "%mana%"),
+            MAX_MANA("Max mana", "%mana_max%"),
+            HEALTH("Current health", "%health%"),
+            MAX_HEALTH("Max health", "%health_max%"),
+            XP("Current XP (Formatted)", "%xp%"),
+            XP_RAW("Current XP (Raw)", "%xp_raw%"),
+            XP_REQ("Required XP to level up (Formatted)", "%xp_req%"),
+            XP_REQ_RAW("Required XP to level up (Raw)", "%xp_req_raw%"),
+            XP_PCT("Percentage of XP through the current level", "%xp_pct%"),
+            POUCH("Current number of items in ingredient pouch)", "%pouch%"),
+            LOCATION("Current location", "%location%"),
+            LEVEL("Current level", "%level%"),
+            SP_TIMER("Time until next soul point (Formatted)", "%sp_timer%"),
+            SP_TIMER_M("Time until next soul point (Minutes only)", "%sp_timer_m%"),
+            SP_TIMER_S("Time until next soul point (Seconds only)", "%sp_timer_s%"),
+            SP("Current soul points", "%sp%"),
+            SP_MAX("Max soul points", "%sp_max%"),
+            MONEY("Total amount of money in inventory (Raw emerald count)", "%money%"),
+            LE("Amount of full liquid emeralds in the inventory", "%le%"),
+            EB("Amount of full emerald blocks in the inventory (excluding LE count)", "%eb%"),
+            E("Amount of emeralds in the inventory (excluding LE and EB count)", "%e%"),
+            CLASS("Current class (Capitalisation dependant)", "%Class%"),
+            MEM_MAX("Total allocated memory", "%mem_max%"),
+            MEM_USED("Total used memory", "%mem_used%"),
+            MEM_PCT("Percentage of memory used", "%mem_pct%"),
+            UNPROCESSED("Current amount of unprocessed materials", "%unprocessed%"),
+            UNPROCESSED_MAX("Max amount of unprocessed materials", "%unprocessed_max%");
+            
+            public final String displayName;
+            public final String value;
+
+            Variables(String displayName, String value) {
                 this.displayName = displayName;
                 this.value = value;
             }
