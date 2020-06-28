@@ -147,6 +147,7 @@ public class SmartFontRenderer extends FontRenderer {
                             obfuscated = false;
                             italic = false;
                             detectedColor = 0xFFFFFF;
+                            index++; // skips the the next char
                             break;
                     }
                 } else { // if a valid color is found remove special effects

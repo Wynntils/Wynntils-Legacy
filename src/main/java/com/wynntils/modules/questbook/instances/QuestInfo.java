@@ -12,6 +12,8 @@ import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
+import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
@@ -99,6 +101,18 @@ public class QuestInfo {
 
         lore.add(0, BOLD + name);
         valid = true;
+
+        // translation (might replace splittedDescription)
+        if (TranslationConfig.INSTANCE.enableTextTranslation && TranslationConfig.INSTANCE.translateTrackedQuest) {
+            TranslationManager.getTranslator().translate(description, TranslationConfig.INSTANCE.languageName, translatedMsg -> {
+                List<String> translatedSplitted = Stream.of(StringUtils.wrapTextBySize(TranslationManager.TRANSLATED_PREFIX + translatedMsg, 200)).collect(Collectors.toList());
+                if (TranslationConfig.INSTANCE.keepOriginal) {
+                    splittedDescription.addAll(translatedSplitted);
+                } else {
+                    splittedDescription = translatedSplitted;
+                }
+            });
+        }
     }
 
     public String getName() {
