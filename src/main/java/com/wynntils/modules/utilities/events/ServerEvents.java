@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.events.ClientEvents;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -49,7 +50,7 @@ public class ServerEvents implements Listener {
                 Display.setTitle("Wynncraft");
             });
         }
-
+        ClientEvents.setLoadingStatusMsg("Loading resources...");
         ServerResourcePackManager.applyOnServerJoin();
     }
 
