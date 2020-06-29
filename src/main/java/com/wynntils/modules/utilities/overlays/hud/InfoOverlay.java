@@ -69,7 +69,7 @@ public abstract class InfoOverlay extends Overlay {
                 
                 // Draw Background
                 if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
-                    drawRect(OverlayConfig.InfoOverlays.INSTANCE.backgroundColor.setA(OverlayConfig.InfoOverlays.INSTANCE.opacity / 100f), backgroundLeft - 2, -2, backgroundRight + 2, 11 * lines.length - 2);
+                    drawRect(OverlayConfig.InfoOverlays.INSTANCE.backgroundColor, backgroundLeft - 2, -2, backgroundRight + 2, 11 * lines.length - 2);
                 }
 
                 // Draw Text

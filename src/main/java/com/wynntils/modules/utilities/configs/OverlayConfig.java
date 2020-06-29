@@ -13,6 +13,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
@@ -456,11 +457,14 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 10)
         public Variables variables = Variables.CLICK_ME;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 11)
+        @Setting(displayName = "Symbols/Escaped Characters ", description = "Copies the selected character to the clipboard (Paste to one of the fields above)", upload = false, order = 11)
+        public Escaped escapedChars = Escaped.CLICK_ME;
+      
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 12)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
         
-        @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 12)
+        @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
         public CustomColor backgroundColor = CommonColors.BLACK;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -469,6 +473,8 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
+            backgroundColor.setA(OverlayConfig.InfoOverlays.INSTANCE.opacity / 100f);
+            
             if (name.contentEquals("preset")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
                     preset = Presets.CLICK_ME;
@@ -480,6 +486,12 @@ public class OverlayConfig extends SettingsClass {
                     variables = Variables.CLICK_ME;
                 } else if (variables.value != null) {
                     Utils.copyToClipboard(variables.value);
+                }
+            } else if (name.contentEquals("escapedChars")) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    escapedChars = Escaped.CLICK_ME;
+                } else if (variables.value != null) {
+                    Utils.copyToClipboard(escapedChars.value);
                 }
             }
         }
@@ -507,6 +519,26 @@ public class OverlayConfig extends SettingsClass {
             public final String value;
 
             Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
+        
+        public enum Escaped {
+            CLICK_ME("Click me to copy to clipboard", null),
+            NEW_LINE("New line", "\\n"),
+            SLASH("Back Slash (\\)", "\\\\"),
+            PERCENT("Percent (%)", "\\%"),
+            E("Emerald (" + EmeraldSymbols.E_STRING + ")", "\\E"),
+            EB("EB (" + EmeraldSymbols.B_STRING + ")", "\\B"),
+            LE("LE (" + EmeraldSymbols.L_STRING + ")", "\\L"),
+            M("Mana (✺)", "\\M"),
+            H("Heart (❤)", "\\H");
+
+            public final String displayName;
+            public final String value;
+
+            Escaped(String displayName, String value) {
                 this.displayName = displayName;
                 this.value = value;
             }
