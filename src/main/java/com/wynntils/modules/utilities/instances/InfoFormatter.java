@@ -112,7 +112,7 @@ public class InfoFormatter {
         
         // Current XP (formatted)
         registerFormatter((input) -> {
-            return StringUtils.integerToShortSting(PlayerInfo.getPlayerInfo().getCurrentXP());
+            return StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getCurrentXP());
         }, "xp");
         
         // Current XP (raw)
@@ -122,7 +122,7 @@ public class InfoFormatter {
         
         // XP required to level up (formatted)
         registerFormatter((input) -> {
-            return StringUtils.integerToShortSting(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp());
+            return StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp());
         }, "xp_req");
         
         // XP required to level up (raw)
@@ -325,6 +325,21 @@ public class InfoFormatter {
             }
             return cache.get("unprocessedmax");
         }, "unprocessed_max");
+        
+        // Number of players in the party
+        registerFormatter((input) -> {
+            return Integer.toString(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size());
+        }, "party_count");
+        
+        // Owner of players party
+        registerFormatter((input) -> {
+            return PlayerInfo.getPlayerInfo().getPlayerParty().getOwner();
+        }, "party_owner");
+        
+        // Action bar
+        registerFormatter((input) -> {
+            return PlayerInfo.getPlayerInfo().getSpecialActionBar();
+        }, "special");
     }
     
     private void registerFormatter(InfoModule formatter, String... vars) {

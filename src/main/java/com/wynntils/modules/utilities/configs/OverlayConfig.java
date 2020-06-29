@@ -490,7 +490,7 @@ public class OverlayConfig extends SettingsClass {
             } else if (name.contentEquals("escapedChars")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
                     escapedChars = Escaped.CLICK_ME;
-                } else if (variables.value != null) {
+                } else if (escapedChars.value != null) {
                     Utils.copyToClipboard(escapedChars.value);
                 }
             }

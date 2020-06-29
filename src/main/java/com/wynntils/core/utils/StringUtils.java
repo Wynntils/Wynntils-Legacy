@@ -341,8 +341,11 @@ public class StringUtils {
         return (0x2474 <= character && character <= 0x247C)
             || (0x247D <= character && character <= 0x247F);
     }
-    
-    public static String integerToShortSting(int count) {
+    /**
+     * @param count the number
+     * @return The formatted shortened string
+     */
+    public static String integerToShortString(int count) {
         if (count < 1000) return "" + count;
         int exp = (int) (Math.log(count) / Math.log(1000));
         DecimalFormat format = new DecimalFormat("0.#");
