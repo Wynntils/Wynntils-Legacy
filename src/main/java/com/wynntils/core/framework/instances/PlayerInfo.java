@@ -19,6 +19,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
@@ -50,6 +51,7 @@ public class PlayerInfo {
     private boolean[] lastSpell = noSpell;
     private float experiencePercentage = -1;
     private int classId = CoreDBConfig.INSTANCE.lastSelectedClass;
+    private HorseData horseData = null;
 
     private String lastActionBar;
     private String specialActionBar = null;
@@ -340,10 +342,9 @@ public class PlayerInfo {
     }
     
     /**
-     * @return The amount of items inside the players ingredeint pouch (parsed from the items lore)
+     * @return The amount of items inside the players ingredient pouch (parsed from the items lore)
      *
      * -1 if unable to determine
-     *
      */
     public int getIngredientPouchCount() {
         if (currentClass == ClassType.NONE || mc.player == null) return -1;
@@ -366,5 +367,62 @@ public class PlayerInfo {
         
         return count;
     }
-
+    
+    public static class HorseData {
+        public int xp;
+        public int level; 
+        public int tier;
+        public int maxLevel;
+        public String armour;
+        public int inventorySlot;
+        public HorseData(int tier, int level, int xp, int maxLevel, String armour, int inventorySlot) {
+            this.xp = xp;
+            this.level = level;
+            this.tier = tier;
+            this.maxLevel = maxLevel;
+            this.armour = armour;
+            this.inventorySlot = inventorySlot;
+        }
+        public HorseData(ItemStack saddle, int inventorySlot) {
+            this.inventorySlot = inventorySlot;
+            
+            List<String> lore = ItemUtils.getLore(saddle);
+            
+            tier = Integer.valueOf(lore.get(0).substring(7));
+            level = Integer.valueOf(lore.get(1).substring(9, lore.get(1).indexOf("/")));
+            maxLevel = Integer.valueOf(lore.get(1).substring(lore.get(1).indexOf("/")+1));
+            armour = lore.get(3).substring(11);
+            xp = Integer.valueOf(lore.get(4).substring(6, lore.get(4).indexOf("/")));
+        }
+    }
+    
+    /**
+     * @return A HorseData object for the first horse found in the players inventory
+     *
+     */
+    public HorseData getHorseData() {
+        if (currentClass == ClassType.NONE || mc.player == null) return null;
+        
+        NonNullList<ItemStack> inventory = mc.player.inventory.mainInventory;
+        
+        if (horseData != null) {
+            ItemStack stack = inventory.get(horseData.inventorySlot);
+            
+            if (stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+                horseData = new HorseData(stack, horseData.inventorySlot);
+                return horseData;
+            }
+        }
+        
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack stack = inventory.get(i);
+            
+            if (stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+                horseData = new HorseData(stack, i);
+                return horseData;
+            }
+        }
+        
+        return null;
+    }    
 }

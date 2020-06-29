@@ -476,7 +476,8 @@ public class OverlayConfig extends SettingsClass {
             LOCATION("Location", "[%world%] %location%"),
             BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
             SOULPOINTS("Soul points", "%sp%/%sp_max%SP (%sp_timer)"),
-            LEVEL("Level", "Lv. %level%  (%xp_pct%)"),
+            LEVEL("Level", "Lv. %level%  (%xp_pct%\\%)"),
+            HORSE_INFO("Horse information", "%horse_level%/%horse_level_max% (%horse_xp%\\%)"),
             POUCH("Ingredient pouch", "%pouch%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
@@ -529,6 +530,10 @@ public class OverlayConfig extends SettingsClass {
             MEM_MAX("Total allocated memory", "%mem_max%"),
             MEM_USED("Total used memory", "%mem_used%"),
             MEM_PCT("Percentage of memory used", "%mem_pct%"),
+            HORSE_LEVEL("Current horse level", "%horse_level%"),
+            HORSE_LEVEL_MAX("Max horse level", "%horse_level_max%"),
+            HORSE_XP("Current horse xp", "%horse_xp%"),
+            HORSE_TIER("Current horse tier", "%horse_tier%"),
             UNPROCESSED("Current amount of unprocessed materials", "%unprocessed%"),
             UNPROCESSED_MAX("Max amount of unprocessed materials", "%unprocessed_max%");
             

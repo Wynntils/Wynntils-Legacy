@@ -3,6 +3,7 @@ package com.wynntils.modules.utilities.instances;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
 import com.wynntils.core.framework.instances.PlayerInfo.UnprocessedAmount;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
@@ -129,6 +130,42 @@ public class InfoFormatter {
         registerFormatter((input) -> {
             return PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage();
         }, "xp_pct");
+        
+        // Horse XP
+        registerFormatter((input) -> {
+            if (!cache.containsKey("horsexp")) {
+                cacheHorseData();
+            }
+            
+            return cache.get("horsexp");
+        }, "horse_xp");
+        
+        // Horse Level
+        registerFormatter((input) -> {
+            if (!cache.containsKey("horselevel")) {
+                cacheHorseData();
+            }
+            
+            return cache.get("horselevel");
+        }, "horse_level");
+        
+        // Max horse level
+        registerFormatter((input) -> {
+            if (!cache.containsKey("horselevelmax")) {
+                cacheHorseData();
+            }
+            
+            return cache.get("horselevelmax");
+        }, "horse_level_max");
+        
+        // Horse Tier
+        registerFormatter((input) -> {
+            if (!cache.containsKey("horsetier")) {
+                cacheHorseData();
+            }
+            
+            return cache.get("horsetier");
+        }, "horse_tier");
         
         // Number of items in ingredient pouch
         registerFormatter((input) -> {
@@ -370,6 +407,24 @@ public class InfoFormatter {
         cache.put("soulpointtimer", timer);
         cache.put("soulpointminutes", Integer.toString(minutes));
         cache.put("soulpointseconds", Integer.toString(seconds));
+    }
+    
+    private void cacheHorseData() {
+        HorseData horse = PlayerInfo.getPlayerInfo().getHorseData();
+        
+        if (horse == null) {
+            cache.put("horselevel", "??");
+            cache.put("horsexp", "??");
+            cache.put("horsetier", "?");
+            cache.put("horselevelmax", "??");
+            
+            return;
+        }
+        
+        cache.put("horselevel", Integer.toString(horse.level));
+        cache.put("horsexp", Integer.toString(horse.xp));
+        cache.put("horsetier", Integer.toString(horse.tier));
+        cache.put("horselevelmax", Integer.toString(horse.maxLevel));
     }
     
     private void cacheUnprocessed() {

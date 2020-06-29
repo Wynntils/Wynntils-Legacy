@@ -6,7 +6,11 @@ package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+
+import io.netty.util.concurrent.ScheduledFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -37,7 +41,7 @@ public class MountHorseManager {
         return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
 
-    public static MountHorseStatus mountHorse() {
+    public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
         if (player.isRiding()) {
@@ -60,7 +64,19 @@ public class MountHorseManager {
         }
 
         if (playersHorse == null) {
-            return MountHorseStatus.NO_HORSE;
+            HorseData horse = PlayerInfo.getPlayerInfo().getHorseData();
+            
+            if (horse == null || horse.inventorySlot > 8 || !allowRetry) {
+                return MountHorseStatus.NO_HORSE;
+            }
+            
+            int prev = mc.player.inventory.currentItem;
+            
+            mc.player.inventory.currentItem = horse.inventorySlot;
+            mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            mc.player.inventory.currentItem = prev;
+            
+            return mountHorse(false);
         }
 
         double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
@@ -104,7 +120,7 @@ public class MountHorseManager {
 
     // Called on key press
     public static void mountHorseAndShowMessage() {
-        String message = getMountHorseErrorMessage(mountHorse());
+        String message = getMountHorseErrorMessage(mountHorse(true));
         if (message == null) return;
 
         GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
@@ -112,7 +128,7 @@ public class MountHorseManager {
 
     // Called by event when a horse's metadata (name) is sent
     public static void mountHorseAndLogMessage() {
-        String message = MountHorseManager.getMountHorseErrorMessage(MountHorseManager.mountHorse());
+        String message = MountHorseManager.getMountHorseErrorMessage(MountHorseManager.mountHorse(true));
         if (message == null) return;
 
         Reference.LOGGER.warn("mountHorse failed onHorseSpawn. Reason: " + message);
