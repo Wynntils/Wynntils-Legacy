@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.configs;
 
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
@@ -421,34 +422,50 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info1Format = "";
+        
+        @Setting(displayName = "Info 1 alignment", description = "How should the text in the first box be aligned?", order = 2)
+        public TextAlignment info1Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 2)
+        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 3)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info2Format = "";
+        
+        @Setting(displayName = "Info 2 alignment", description = "How should the text in the second box be aligned?", order = 4)
+        public TextAlignment info2Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 3)
+        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 5)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info3Format = "";
+        
+        @Setting(displayName = "Info 3 alignment", description = "How should the text in the third box be aligned?", order = 6)
+        public TextAlignment info3Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 4)
+        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 7)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info4Format = "";
 
-        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
+        @Setting(displayName = "Info 4 alignment", description = "How should the text in the fourth box be aligned?", order = 8)
+        public TextAlignment info4Alignment = TextAlignment.MIDDLE;
+        
+        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 9)
         public Presets preset = Presets.CLICK_ME;
         
-        @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 6)
+        @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 10)
         public Variables variables = Variables.CLICK_ME;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 7)
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 11)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
+        
+        @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 12)
+        public CustomColor backgroundColor = CommonColors.BLACK;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+        
 
         @Override
         public void onSettingChanged(String name) {
