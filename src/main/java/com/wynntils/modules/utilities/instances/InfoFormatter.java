@@ -26,7 +26,7 @@ public class InfoFormatter {
     private int tick = 0;
     
     private static final Pattern formatRegex = Pattern.compile(
-        "%([a-zA-Z_]+|%)%|\\\\([\\\\n%§EBL]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})"
+        "%([a-zA-Z_]+|%)%|\\\\([\\\\n%§EBLMH]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})"
     );
 
     public InfoFormatter() {
@@ -328,6 +328,8 @@ public class InfoFormatter {
             case "E": return EmeraldSymbols.E_STRING;
             case "B": return EmeraldSymbols.B_STRING;
             case "L": return EmeraldSymbols.L_STRING;
+            case "M": return "✺";
+            case "H": return "❤";
             default:
                 // xXX, uXXXX, UXXXXXXXX
                 int codePoint = Integer.parseInt(escaped.substring(1), 16);

@@ -479,6 +479,8 @@ public class OverlayConfig extends SettingsClass {
             LEVEL("Level", "Lv. %level%  (%xp_pct%\\%)"),
             HORSE_INFO("Horse information", "%horse_level%/%horse_level_max% (%horse_xp%\\%)"),
             POUCH("Ingredient pouch", "%pouch%"),
+            HEALH("Health bar", "%health% \\H %health_max%"),
+            MANA("Mana bar", "%mana% \\M %mana_max%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
