@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OverlayEvents implements Listener {
+
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
 
     private static boolean wynnExpTimestampNotified = false;
@@ -704,4 +705,5 @@ public class OverlayEvents implements Listener {
             });
         }
     }
+
 }

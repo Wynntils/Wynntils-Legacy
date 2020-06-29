@@ -1,9 +1,22 @@
+/*
+ *  * Copyright © Wynntils - 2020.
+ */
+
 package com.wynntils.webapi.services;
+
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
+import net.minecraft.util.text.TextFormatting;
 
 import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
 
 public class TranslationManager {
+
+    public static final String TRANSLATED_PREFIX = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
+
+    private static TranslationService translator = null;
+
     /**
      * Get a TranslationService.
      *
@@ -21,11 +34,39 @@ public class TranslationManager {
         return null;
     }
 
+    /**
+     * Get the default TranslationService for the language specified by the user in the settings.
+     *
+     * @return An instance of the selected translation service, or null on failure
+     */
+    public static TranslationService getTranslator() {
+        // These might not have been created yet, or reset by config changing
+        if (TranslationManager.translator == null) {
+            TranslationManager.translator = TranslationManager.getService(TranslationConfig.INSTANCE.translationService);
+        }
+        return translator;
+    }
+
+    /**
+     * Reset the default TranslatorService, e.g. due to config changes.
+     */
+    public static void resetTranslator() {
+        translator = null;
+    }
+
+    public static void init() {
+        CachingTranslationService.loadTranslationCache();
+    }
+
+    public static void shutdown() {
+        CachingTranslationService.saveTranslationCache();
+    }
+
     public enum TranslationServices {
         GOOGLEAPI(GoogleApiTranslationService.class),
         PIGLATIN(PigLatinTranslationService.class);
 
-        private Class<? extends TranslationService> serviceClass;
+        private final Class<? extends TranslationService> serviceClass;
 
         TranslationServices(Class<? extends TranslationService> serviceClass) {
             this.serviceClass = serviceClass;
@@ -40,16 +81,18 @@ public class TranslationManager {
         @Override
         public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
             StringBuilder latinString = new StringBuilder();
-            for (String word : message.split("\\s")) {
-                if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {
-                    latinString.append(word).append("ay ");
-                } else {
-                    latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
+            if (message != null || !message.isEmpty()) {
+                for (String word : message.split("\\s")) {
+                    if (word.isEmpty()) continue;
+                    if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {
+                        latinString.append(word).append("ay ");
+                    } else {
+                        latinString.append(word.substring(1)).append(word.charAt(0)).append("ay ");
+                    }
                 }
             }
-            Thread thread = new Thread(() ->
-                    handleTranslation.accept(latinString.toString()));
-            thread.start();
+            Utils.runAsync(() -> handleTranslation.accept(latinString.toString()));
         }
     }
+
 }

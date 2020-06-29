@@ -46,6 +46,7 @@ public class RemoteTexture extends Texture {
     @Override
     public ActionResult unload() {
         if (!loaded) return ActionResult.ISSUE;
+
         TextureUtil.deleteTexture(glID);
         loaded = false;
         return ActionResult.SUCCESS;
@@ -54,7 +55,9 @@ public class RemoteTexture extends Texture {
     @Override
     public ActionResult bind() {
         if (!loaded) return ActionResult.ERROR;
+
         GlStateManager.bindTexture(glID);
         return ActionResult.SUCCESS;
     }
+
 }

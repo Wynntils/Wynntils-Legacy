@@ -129,5 +129,4 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final int getIndex() { return 4; }
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info4Format; }
     }
-
 }

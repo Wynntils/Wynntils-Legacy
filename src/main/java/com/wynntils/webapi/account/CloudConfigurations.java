@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit;
 
 public class CloudConfigurations {
 
-    private ScheduledExecutorService service;
+    private final ScheduledExecutorService service;
     private ScheduledFuture runningTask;
-    private String token;
+    private final String token;
 
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public CloudConfigurations(ScheduledExecutorService service, String token) {
         this.service = service; this.token = token;

@@ -33,6 +33,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -80,6 +81,24 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onReady(ClientEvent.Ready e) {
+        if (!UtilitiesConfig.INSTANCE.autoResourceOnLoad) return;
+
+        ServerResourcePackManager.loadServerResourcePack();
+    }
+
+    @SubscribeEvent
+    public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
+        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!protectionActivated) return;
+
+        InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
+        if (inv.getName().contains("AFK Protection activated")) return;
+
+        inv.setCustomName("" + TextFormatting.DARK_RED + TextFormatting.BOLD + "AFK Protection activated");
+    }
+
+    @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
         pushBlockingEnabled = false;
         protectionEnabled = false;
@@ -120,13 +139,13 @@ public class ClientEvents implements Listener {
         }
 
         if (UtilitiesConfig.INSTANCE.afkProtection) {
-            long longAfkThresholdMillis = (long)(UtilitiesConfig.INSTANCE.afkProtectionThreshold * 60 * 1000);
             if (protectionActivated) {
                 lastUserInput = currentTime;
                 protectionEnabled = false;
                 protectionActivated = false;
                 return;
             }
+            long longAfkThresholdMillis = (long)(UtilitiesConfig.INSTANCE.afkProtectionThreshold * 10 * 1000);
             if (!protectionEnabled) {
                 if (timeSinceActivity >= longAfkThresholdMillis) {
                     // Enable AFK protection

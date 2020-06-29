@@ -19,6 +19,7 @@ import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
+import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
@@ -44,9 +45,29 @@ public class ClientEvents {
 
     private String lastWorld = "";
     private boolean acceptLeft = false;
+    public static String statusMsg;
+
+    public static void setLoadingStatusMsg(String msg) {
+        statusMsg = msg;
+    }
+
+    @SubscribeEvent
+    public void onConnectScreen(GuiOpenEvent e) {
+        if (!(e.getGui() instanceof GuiConnecting)) return;
+
+        setLoadingStatusMsg("Trying to connect...");
+    }
+
+    @SubscribeEvent
+    public void onScreenDraw(GuiScreenEvent.DrawScreenEvent.Post e) {
+        if (!(e.getGui() instanceof GuiConnecting)) return;
+
+        e.getGui().drawCenteredString(Minecraft.getMinecraft().fontRenderer, statusMsg, e.getGui().width / 2, e.getGui().height / 2 - 20, 16777215);
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerJoin(FMLNetworkEvent.ClientConnectedToServerEvent e) {
+        setLoadingStatusMsg("Connected...");
         Reference.setUserWorld(null);
 
         if (Reference.onServer) MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Login());

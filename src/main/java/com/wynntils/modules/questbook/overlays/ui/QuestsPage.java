@@ -92,20 +92,10 @@ public class QuestsPage extends QuestBookPage {
                 }
             }
 
-            // Calculate Number of Pages
-            int pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
-            
-            // Set to last page if out of bounds
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
-
             // Next Page Button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 } else {
@@ -115,10 +105,8 @@ public class QuestsPage extends QuestBookPage {
 
             // Back Page Button
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
             } else {
-                acceptBack = true;
                 if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
                 } else {
@@ -259,7 +247,7 @@ public class QuestsPage extends QuestBookPage {
                 }
             } else {
                 String textToDisplay;
-                if (QuestManager.getCurrentQuests().size() == 0 || searchBarText.equals("") ||
+                if (QuestManager.getCurrentQuests().size() == 0 || textField.getText().equals("") ||
                     (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))) {
                     textToDisplay = String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "Mini-Quests" : "Quests");
                 } else {
@@ -354,13 +342,11 @@ public class QuestsPage extends QuestBookPage {
             }
         }
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
+            goForward();
             return;
         } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
+            goBack();
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -369,7 +355,7 @@ public class QuestsPage extends QuestBookPage {
         } else if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
-            searchBarText = "";
+            textField.setText("");
             updateSearch();
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
@@ -402,6 +388,10 @@ public class QuestsPage extends QuestBookPage {
         }
 
         questSearch.sort(sort.comparator);
+
+        pages = questSearch.size() <= 13 ? 1 : (int) Math.ceil(questSearch.size() / 13d);
+        currentPage = Math.min(currentPage, pages);
+        refreshAccepts();
     }
 
     @Override

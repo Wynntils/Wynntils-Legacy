@@ -10,7 +10,6 @@ import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.TabManager;
-import com.wynntils.webapi.services.TranslationManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,39 +87,6 @@ public class ChatConfig extends SettingsClass {
         } else if (name.equals("preset")) {
             TabManager.registerPresets();
         }
-    }
-
-    @SettingsInfo(name = "chat_translation", displayPath = "Chat/Translation")
-    public static class ChatTranslation extends SettingsClass {
-        public static ChatTranslation INSTANCE;
-
-        @Setting(displayName = "Enable Text Translation", description = "Should text messages be automatically translated to a foreign language?")
-        public boolean enableTextTranslation = false;
-
-        @Setting(displayName = "Translate Player Chat", description = "Should messages sent by other users be translated?")
-        public boolean translatePlayerChat = false;
-
-        @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
-        public boolean translateNpc = true;
-
-        @Setting(displayName = "Translate Other", description = "Should other messages, like system information, be translated?")
-        public boolean translateOther = false;
-
-        @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?")
-        public String languageName = "en";
-
-        @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
-        public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
-
-        @Override
-        public void onSettingChanged(String name) {
-            if (name.equals("translationService")) {
-                ChatManager.translator = null;
-            } else if (name.startsWith("translate")) {
-                ChatManager.translationPattern = null;
-            }
-        }
-
     }
 
 }

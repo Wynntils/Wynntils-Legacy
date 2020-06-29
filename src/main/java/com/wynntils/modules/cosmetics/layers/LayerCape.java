@@ -5,6 +5,7 @@
 package com.wynntils.modules.cosmetics.layers;
 
 import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;
@@ -23,21 +24,26 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
     private final RenderPlayer playerRenderer;
+    private final ModelRenderer bipedCape;
 
     public LayerCape(RenderPlayer playerRendererIn) {
         this.playerRenderer = playerRendererIn;
+        this.bipedCape = new ModelRenderer(playerRendererIn.getMainModel());
     }
 
-    public static void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale, int maxFrames) {
+    public void renderModel(AbstractClientPlayer player, ModelBase model, float scale, int capeScale, int maxFrames) {
         double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage) + 1;
-        ModelRenderer bipedCape = new ModelRenderer(model, 0, 32 * capeScale * currentFrame);
+
+        bipedCape.cubeList.clear();
+        bipedCape.setTextureOffset(0, 32 * capeScale * currentFrame);
         bipedCape.setTextureSize(64 * capeScale, 32 * capeScale * maxFrames);
         bipedCape.addBox(-5.0F * capeScale, 0.0F, -1.0F * capeScale, 10 * capeScale, 16 * capeScale, 1 * capeScale);
 
         if (player.isSneaking()) bipedCape.rotationPointY = 3.0F;
         else bipedCape.rotationPointY = 0.0F;
 
+        ReflectionFields.ModelRenderer_compiled.setValue(bipedCape, false);
         bipedCape.render(scale / capeScale);
     }
 

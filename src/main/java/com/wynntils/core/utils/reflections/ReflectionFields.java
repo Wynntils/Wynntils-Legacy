@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -35,7 +36,8 @@ public enum ReflectionFields {
     GuiChat_defaultInputFieldText(GuiChat.class, "defaultInputFieldText", "field_146409_v"),
     GuiPlayerTabOverlay_ENTRY_ORDERING(GuiPlayerTabOverlay.class, "ENTRY_ORDERING", "field_175252_a"),
     Minecraft_resourcePackRepository(Minecraft.class, "resourcePackRepository", "field_110448_aq"),
-    CPacketClientSettings_chatVisibility(CPacketClientSettings.class, "chatVisibility", "field_149529_c");
+    CPacketClientSettings_chatVisibility(CPacketClientSettings.class, "chatVisibility", "field_149529_c"),
+    ModelRenderer_compiled(ModelRenderer.class, "compiled", "field_78812_q");
 
     static {
         GuiPlayerTabOverlay_ENTRY_ORDERING.removeFinal();

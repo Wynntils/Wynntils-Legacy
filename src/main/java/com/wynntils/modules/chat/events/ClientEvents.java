@@ -14,6 +14,7 @@ import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.HeldItemChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.util.text.TextFormatting;
@@ -62,6 +63,12 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWynnLogin(WynncraftServerEvent.Login e) {
         ReflectionFields.GuiIngame_persistantChatGUI.setValue(Minecraft.getMinecraft().ingameGUI, new ChatOverlay());
+        TranslationManager.init();
+    }
+
+    @SubscribeEvent
+    public void onWynnLogout(WynncraftServerEvent.Leave e) {
+        TranslationManager.shutdown();
     }
 
     @SubscribeEvent
