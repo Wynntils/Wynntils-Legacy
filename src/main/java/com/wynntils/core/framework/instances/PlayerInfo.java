@@ -256,6 +256,42 @@ public class PlayerInfo {
         if (mc.player == null) return 0;
         return ItemUtils.countMoney(mc.player.inventory);
     }
+    
+    /**
+     * @return Total number of health potions in inventory
+     */
+    public int getHealthPotions() {
+        if (mc.player == null) return 0;
+        NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
+        
+        int count = 0;
+        
+        for (ItemStack item : contents) {
+            if (item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    /**
+     * @return Total number of mana potions in inventory
+     */
+    public int getManaPotions() {
+        if (mc.player == null) return 0;
+        NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
+        
+        int count = 0;
+        
+        for (ItemStack item : contents) {
+            if (item.hasDisplayName() && item.getDisplayName().contains("Potion of Mana")) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
 
     private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
     private static final Pattern unprocessedLoreRegex = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");

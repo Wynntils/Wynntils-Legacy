@@ -255,6 +255,16 @@ public class InfoFormatter {
             return cache.get("emeralds");
         }, "e", "emeralds");
         
+        // Count of health potions
+        registerFormatter((input) -> {
+            return Integer.toString(PlayerInfo.getPlayerInfo().getHealthPotions());
+        }, "potions_health");
+        
+        // Count of mana potions
+        registerFormatter((input) -> {
+            return Integer.toString(PlayerInfo.getPlayerInfo().getManaPotions());
+        }, "potions_mana");
+        
         // Current class
         registerFormatter((input) -> {
             String className = PlayerInfo.getPlayerInfo().getCurrentClass().name().toLowerCase();
