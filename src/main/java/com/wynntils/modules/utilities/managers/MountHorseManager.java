@@ -9,8 +9,6 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
-
-import io.netty.util.concurrent.ScheduledFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
