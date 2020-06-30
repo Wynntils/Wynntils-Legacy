@@ -587,6 +587,8 @@ public class OverlayConfig extends SettingsClass {
             HORSE_TIER("Current horse tier", "%horse_tier%"),
             POTIONS_HEALTH("Amount of health potions in inventory", "%potions_health%"),
             POTIONS_MANA("Amount of mana potions in inventory", "%potions_mana%"),
+            PARTY_COUNT("Amount of members in the players party", "%party_count%"),
+            PARTY_OWNER("Owner of the current party", "%party_owner%"),
             UNPROCESSED("Current amount of unprocessed materials", "%unprocessed%"),
             UNPROCESSED_MAX("Max amount of unprocessed materials", "%unprocessed_max%");
             

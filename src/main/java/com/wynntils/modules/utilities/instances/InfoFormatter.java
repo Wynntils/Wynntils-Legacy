@@ -335,11 +335,6 @@ public class InfoFormatter {
         registerFormatter((input) -> {
             return PlayerInfo.getPlayerInfo().getPlayerParty().getOwner();
         }, "party_owner");
-        
-        // Action bar
-        registerFormatter((input) -> {
-            return PlayerInfo.getPlayerInfo().getSpecialActionBar();
-        }, "special");
     }
     
     private void registerFormatter(InfoModule formatter, String... vars) {
