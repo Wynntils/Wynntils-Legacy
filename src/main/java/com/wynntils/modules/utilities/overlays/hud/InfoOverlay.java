@@ -79,7 +79,7 @@ public abstract class InfoOverlay extends Overlay {
             }
         }
     }
-    
+
     public static class _1 extends InfoOverlay {
         public _1() { super(1); }
         @Override public final int getIndex() { return 1; }

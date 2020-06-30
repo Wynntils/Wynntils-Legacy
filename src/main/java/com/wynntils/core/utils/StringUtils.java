@@ -346,7 +346,7 @@ public class StringUtils {
      * @return The formatted shortened string
      */
     public static String integerToShortString(int count) {
-        if (count < 1000) return "" + count;
+        if (count < 1000) return Integer.toString(count);
         int exp = (int) (Math.log(count) / Math.log(1000));
         DecimalFormat format = new DecimalFormat("0.#");
         String value = format.format(count / Math.pow(1000, exp));

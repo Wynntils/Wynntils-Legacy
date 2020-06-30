@@ -267,7 +267,7 @@ public class PlayerInfo {
         int count = 0;
         
         for (ItemStack item : contents) {
-            if (item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
+            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
                 count++;
             }
         }
@@ -285,7 +285,7 @@ public class PlayerInfo {
         int count = 0;
         
         for (ItemStack item : contents) {
-            if (item.hasDisplayName() && item.getDisplayName().contains("Potion of Mana")) {
+            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Mana")) {
                 count++;
             }
         }
@@ -444,7 +444,7 @@ public class PlayerInfo {
         if (horseData != null) {
             ItemStack stack = inventory.get(horseData.inventorySlot);
             
-            if (stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
                 horseData = new HorseData(stack, horseData.inventorySlot);
                 return horseData;
             }
@@ -453,7 +453,7 @@ public class PlayerInfo {
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack stack = inventory.get(i);
             
-            if (stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
                 horseData = new HorseData(stack, i);
                 return horseData;
             }
