@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
+import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -74,7 +75,9 @@ public class MountHorseManager {
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             mc.player.inventory.currentItem = prev;
             
-            return mountHorse(false);
+            UtilitiesModule.getModule().getClientEvents().isAwaitingHorseMount = true;
+            
+            return MountHorseStatus.SUCCESS;
         }
 
         double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
@@ -130,6 +133,14 @@ public class MountHorseManager {
         if (message == null) return;
 
         Reference.LOGGER.warn("mountHorse failed onHorseSpawn. Reason: " + message);
+    }
+    
+    // Called post horse spawn after key press
+    public static void retryMountHorseAndShowMessage() {
+        String message = getMountHorseErrorMessage(mountHorse(false));
+        if (message == null) return;
+
+        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
     }
 
 }

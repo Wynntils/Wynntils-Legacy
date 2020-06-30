@@ -70,6 +70,8 @@ public class ClientEvents implements Listener {
     private long lastUserInput = Long.MAX_VALUE;
     private int tickCounter;
 
+    public boolean isAwaitingHorseMount = false;
+
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
         lastUserInput = System.currentTimeMillis();
@@ -266,6 +268,12 @@ public class ClientEvents implements Listener {
             lastHorseId = thisId;
 
             if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
+            
+            if (isAwaitingHorseMount) {
+                MountHorseManager.retryMountHorseAndShowMessage();
+                isAwaitingHorseMount = false;
+                return;
+            }
 
             if(!UtilitiesConfig.INSTANCE.autoMount) return;
             MountHorseManager.mountHorseAndLogMessage();

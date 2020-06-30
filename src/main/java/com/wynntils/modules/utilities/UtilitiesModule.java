@@ -25,6 +25,7 @@ public class UtilitiesModule extends Module {
     private static UtilitiesModule module;
     private GameUpdateOverlay gameUpdateOverlay;
     private InfoFormatter infoFormatter;
+    private ClientEvents clientEvents;
 
     public void onEnable() {
         module = this;
@@ -33,7 +34,7 @@ public class UtilitiesModule extends Module {
 
         registerEvents(new ServerEvents());
         registerEvents(new OverlayEvents());
-        registerEvents(new ClientEvents());
+        registerEvents(clientEvents = new ClientEvents());
 
         // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
@@ -117,6 +118,10 @@ public class UtilitiesModule extends Module {
     
     public InfoFormatter getInfoFormatter() {
         return infoFormatter;
+    }
+    
+    public ClientEvents getClientEvents() {
+        return clientEvents;
     }
 
 }
