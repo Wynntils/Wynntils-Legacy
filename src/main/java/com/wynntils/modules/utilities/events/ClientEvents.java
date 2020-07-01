@@ -70,7 +70,7 @@ public class ClientEvents implements Listener {
     private long lastUserInput = Long.MAX_VALUE;
     private int tickCounter;
 
-    public boolean isAwaitingHorseMount = false;
+    public static boolean isAwaitingHorseMount = false;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {

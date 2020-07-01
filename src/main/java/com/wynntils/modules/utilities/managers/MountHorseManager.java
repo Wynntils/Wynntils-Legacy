@@ -8,7 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
-import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -75,7 +75,7 @@ public class MountHorseManager {
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             mc.player.inventory.currentItem = prev;
             
-            UtilitiesModule.getModule().getClientEvents().isAwaitingHorseMount = true;
+            ClientEvents.isAwaitingHorseMount = true;
             
             return MountHorseStatus.SUCCESS;
         }
