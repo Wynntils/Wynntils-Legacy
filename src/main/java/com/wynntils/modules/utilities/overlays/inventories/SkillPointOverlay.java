@@ -53,7 +53,13 @@ public class SkillPointOverlay implements Listener {
                 int start = lore.indexOf("Total Damage (+Bonus): ")+23;
                 int end = lore.indexOf(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER ? "[LRL]" : "[RLR]");
 
-                if (start < 0 || end > lore.length()) continue;
+                if (end == -1) {
+                    end = lore.indexOf(("[LRL]"));
+                    if (end == - 1) continue;
+                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.ARCHER);
+                }
+
+                if (start == -1 || end > lore.length()) continue;
                 String[] numbers = lore.substring(start, end).split("-");
                 if (numbers[0].isEmpty() || numbers[1].isEmpty()) continue;
 
