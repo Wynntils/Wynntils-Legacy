@@ -282,7 +282,17 @@ public class MapConfig extends SettingsClass {
     @Setting
     public IconTexture iconTexture = IconTexture.Classic;
     public enum IconTexture {
-        Classic, Medieval
+        Classic("CLASSIC"), Medieval("MEDIEVAL"), Modern("MODERN");
+
+        private final String key;
+
+        IconTexture(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
     }
 
 }

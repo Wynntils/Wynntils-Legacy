@@ -28,8 +28,7 @@ public class MapApiIcon extends MapTextureIcon {
     private int zoomNeeded;
 
     MapApiIcon(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
-        JsonObject iconMapping = Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIEVAL").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
-
+        JsonObject iconMapping = Mappings.Map.map_icons_mappings.get(iconTexture.getKey()).getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
         this.mmp = mmp;
 
         texPosX = iconMapping.get("texPosX").getAsInt();
@@ -160,6 +159,7 @@ public class MapApiIcon extends MapTextureIcon {
 
     private static List<MapIcon> classicApiMarkers = null;
     private static List<MapIcon> medievalApiMarkers = null;
+    private static List<MapIcon> modernApiMarkers = null;
 
     public static void resetApiMarkers() {
         if (Mappings.Map.map_icons_mappings == null) return;
@@ -173,9 +173,17 @@ public class MapApiIcon extends MapTextureIcon {
         } else {
             medievalApiMarkers.clear();
         }
+
+        if (modernApiMarkers == null) {
+            modernApiMarkers = new ArrayList<>();
+        } else {
+            modernApiMarkers.clear();
+        }
+
         for (MapMarkerProfile mmp : WebManager.getNonIgnoredApiMarkers()) {
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Medieval));
+            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Modern)) modernApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Modern));
         }
     }
 
@@ -199,6 +207,14 @@ public class MapApiIcon extends MapTextureIcon {
                     markers.clear();
                 }
                 break;
+            case Modern:
+                if (modernApiMarkers == null) {
+                    markers = modernApiMarkers = new ArrayList<>();
+                } else {
+                    markers = modernApiMarkers;
+                    markers.clear();
+                }
+                break;
             default:
                 return;
         }
@@ -217,13 +233,16 @@ public class MapApiIcon extends MapTextureIcon {
             case Medieval:
                 if (medievalApiMarkers == null) resetApiMarkers(MapConfig.IconTexture.Medieval);
                 return medievalApiMarkers;
+            case Modern:
+                if (modernApiMarkers == null) resetApiMarkers(MapConfig.IconTexture.Modern);
+                return modernApiMarkers;
             default:
                 return null;
         }
     }
 
     private static boolean isApiMarkerValid(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
-        boolean valid = Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIEVAL").getAsJsonObject().has(mmp.getIcon());
+        boolean valid = Mappings.Map.map_icons_mappings.get(iconTexture.getKey()).getAsJsonObject().has(mmp.getIcon());
         if (!valid && Reference.developmentEnvironment) {
             Reference.LOGGER.warn("No " + iconTexture + " texture for \"" + mmp.getIcon() + "\"");
         }
