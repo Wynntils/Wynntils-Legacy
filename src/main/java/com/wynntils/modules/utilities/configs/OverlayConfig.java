@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.configs;
 
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
@@ -12,6 +13,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
@@ -421,39 +423,75 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info1Format = "";
+        
+        @Setting(displayName = "Info 1 alignment", description = "How should the text in the first box be aligned?", order = 2)
+        public TextAlignment info1Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 2)
+        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 3)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info2Format = "";
+        
+        @Setting(displayName = "Info 2 alignment", description = "How should the text in the second box be aligned?", order = 4)
+        public TextAlignment info2Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 3)
+        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 5)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info3Format = "";
+        
+        @Setting(displayName = "Info 3 alignment", description = "How should the text in the third box be aligned?", order = 6)
+        public TextAlignment info3Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 4)
+        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 7)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info4Format = "";
 
-        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 5)
+        @Setting(displayName = "Info 4 alignment", description = "How should the text in the fourth box be aligned?", order = 8)
+        public TextAlignment info4Alignment = TextAlignment.MIDDLE;
+        
+        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 9)
         public Presets preset = Presets.CLICK_ME;
+        
+        @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 10)
+        public Variables variables = Variables.CLICK_ME;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 6)
+        @Setting(displayName = "Symbols/Escaped Characters ", description = "Copies the selected character to the clipboard (Paste to one of the fields above)", upload = false, order = 11)
+        public Escaped escapedChars = Escaped.CLICK_ME;
+      
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 12)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
+        
+        @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
+        public CustomColor backgroundColor = CustomColor.fromInt(000000, 0);
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+        
 
         @Override
         public void onSettingChanged(String name) {
-            if ("preset".equals(name)) {
+            backgroundColor.setA(opacity / 100f);
+            
+            if (name.contentEquals("preset")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
                     preset = Presets.CLICK_ME;
                 } else if (preset.value != null) {
                     Utils.copyToClipboard(preset.value);
+                }
+            } else if (name.contentEquals("variables")) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    variables = Variables.CLICK_ME;
+                } else if (variables.value != null) {
+                    Utils.copyToClipboard(variables.value);
+                }
+            } else if (name.contentEquals("escapedChars")) {
+                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                    escapedChars = Escaped.CLICK_ME;
+                } else if (escapedChars.value != null) {
+                    Utils.copyToClipboard(escapedChars.value);
                 }
             }
         }
@@ -466,7 +504,12 @@ public class OverlayConfig extends SettingsClass {
             CLASS("Class", "%Class%\\nLevel %lvl%"),
             LOCATION("Location", "[%world%] %location%"),
             BALANCE("Balance", "%le%\\L\\E %blocks%\\E\\B %emeralds%\\E (%money%\\E)"),
-            UNPROCESSED_MATERIALS("Unprocessed Materials", "Unprocessed materials: %unprocessed% / %unprocessed_max%"),
+            SOULPOINTS("Soul points", "%sp%/%sp_max%SP (%sp_timer)"),
+            LEVEL("Level", "Lv. %level%  (%xp_pct%\\%)"),
+            HORSE_INFO("Horse information", "%horse_level%/%horse_level_max% (%horse_xp%\\%)"),
+            POUCH("Ingredient pouch", "%pouch%"),
+            HEALH("Health bar", "%health% \\H %health_max%"),
+            MANA("Mana bar", "%mana% \\M %mana_max%"),
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
@@ -476,6 +519,83 @@ public class OverlayConfig extends SettingsClass {
             public final String value;
 
             Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
+        
+        public enum Escaped {
+            CLICK_ME("Click me to copy to clipboard", null),
+            NEW_LINE("New line", "\\n"),
+            SLASH("Back Slash (\\)", "\\\\"),
+            PERCENT("Percent (%)", "\\%"),
+            E("Emerald (" + EmeraldSymbols.E_STRING + ")", "\\E"),
+            EB("EB (" + EmeraldSymbols.B_STRING + ")", "\\B"),
+            LE("LE (" + EmeraldSymbols.L_STRING + ")", "\\L"),
+            M("Mana (✺)", "\\M"),
+            H("Heart (❤)", "\\H");
+
+            public final String displayName;
+            public final String value;
+
+            Escaped(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
+        
+        public enum Variables {
+            CLICK_ME("Click me to copy to clipboard", null),
+            BPS("Blocks per second", "%bps%"),
+            BPM("Blocks per minute", "%bpm%"),
+            KMPH("Kilometers per hour", "%kmph%"),
+            X("X Coordinate", "%x%"),
+            Y("Y Coordinate", "%y%"),
+            Z("Z Coordinate", "%z%"),
+            DIR("The facing direction", "%dir%"),
+            FPS("Frames per second", "%fps%"),
+            WORLD("The current world/server", "%world%"),
+            PING("THe current ping", "%ping%"),
+            MANA("Current mana", "%mana%"),
+            MAX_MANA("Max mana", "%mana_max%"),
+            HEALTH("Current health", "%health%"),
+            MAX_HEALTH("Max health", "%health_max%"),
+            XP("Current XP (Formatted)", "%xp%"),
+            XP_RAW("Current XP (Raw)", "%xp_raw%"),
+            XP_REQ("Required XP to level up (Formatted)", "%xp_req%"),
+            XP_REQ_RAW("Required XP to level up (Raw)", "%xp_req_raw%"),
+            XP_PCT("Percentage of XP through the current level", "%xp_pct%"),
+            POUCH("Current number of items in ingredient pouch)", "%pouch%"),
+            LOCATION("Current location", "%location%"),
+            LEVEL("Current level", "%level%"),
+            SP_TIMER("Time until next soul point (Formatted)", "%sp_timer%"),
+            SP_TIMER_M("Time until next soul point (Minutes only)", "%sp_timer_m%"),
+            SP_TIMER_S("Time until next soul point (Seconds only)", "%sp_timer_s%"),
+            SP("Current soul points", "%sp%"),
+            SP_MAX("Max soul points", "%sp_max%"),
+            MONEY("Total amount of money in inventory (Raw emerald count)", "%money%"),
+            LE("Amount of full liquid emeralds in the inventory", "%le%"),
+            EB("Amount of full emerald blocks in the inventory (excluding LE count)", "%eb%"),
+            E("Amount of emeralds in the inventory (excluding LE and EB count)", "%e%"),
+            CLASS("Current class (Capitalisation dependant)", "%Class%"),
+            MEM_MAX("Total allocated memory", "%mem_max%"),
+            MEM_USED("Total used memory", "%mem_used%"),
+            MEM_PCT("Percentage of memory used", "%mem_pct%"),
+            HORSE_LEVEL("Current horse level", "%horse_level%"),
+            HORSE_LEVEL_MAX("Max horse level", "%horse_level_max%"),
+            HORSE_XP("Current horse xp", "%horse_xp%"),
+            HORSE_TIER("Current horse tier", "%horse_tier%"),
+            POTIONS_HEALTH("Amount of health potions in inventory", "%potions_health%"),
+            POTIONS_MANA("Amount of mana potions in inventory", "%potions_mana%"),
+            PARTY_COUNT("Amount of members in the players party", "%party_count%"),
+            PARTY_OWNER("Owner of the current party", "%party_owner%"),
+            UNPROCESSED("Current amount of unprocessed materials", "%unprocessed%"),
+            UNPROCESSED_MAX("Max amount of unprocessed materials", "%unprocessed_max%");
+            
+            public final String displayName;
+            public final String value;
+
+            Variables(String displayName, String value) {
                 this.displayName = displayName;
                 this.value = value;
             }

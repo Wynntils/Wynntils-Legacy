@@ -13,6 +13,7 @@ import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
+import com.wynntils.modules.utilities.instances.InfoFormatter;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
@@ -23,6 +24,7 @@ public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
     private GameUpdateOverlay gameUpdateOverlay;
+    private InfoFormatter infoFormatter;
 
     public void onEnable() {
         module = this;
@@ -60,13 +62,15 @@ public class UtilitiesModule extends Module {
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
+        registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
+        registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
+        registerOverlay(new ObjectivesOverlay(), Priority.NORMAL);
+        
+        infoFormatter = new InfoFormatter();
         registerOverlay(new InfoOverlay._1(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._3(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
-        registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
-        registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
-        registerOverlay(new ObjectivesOverlay(), Priority.NORMAL);
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
@@ -110,5 +114,8 @@ public class UtilitiesModule extends Module {
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
     }
-
+    
+    public InfoFormatter getInfoFormatter() {
+        return infoFormatter;
+    }
 }
