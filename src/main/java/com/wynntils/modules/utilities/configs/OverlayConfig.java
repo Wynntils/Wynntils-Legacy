@@ -465,7 +465,7 @@ public class OverlayConfig extends SettingsClass {
         public int opacity = 0;
         
         @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
-        public CustomColor backgroundColor = CommonColors.BLACK;
+        public CustomColor backgroundColor = CustomColor.fromInt(000000, 0);
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
@@ -473,7 +473,7 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            backgroundColor.setA(OverlayConfig.InfoOverlays.INSTANCE.opacity / 100f);
+            backgroundColor.setA(opacity / 100f);
             
             if (name.contentEquals("preset")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
