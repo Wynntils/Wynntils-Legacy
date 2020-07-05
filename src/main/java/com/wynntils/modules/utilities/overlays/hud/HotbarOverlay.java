@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.events.ClientEvents;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -74,5 +75,8 @@ public class HotbarOverlay extends Overlay {
             drawItemStack(stack, x, 3);
         }
 
+        if (UtilitiesConfig.AfkProtection.INSTANCE.showOnHotbar && ClientEvents.isAfkProtectionEnabled()) {
+            drawRect(Textures.Overlays.hotbar, 68, 4, 22, textureY + 22, 24, 22);
+        }
     }
 }

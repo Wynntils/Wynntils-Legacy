@@ -65,7 +65,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
         registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
         registerOverlay(new ObjectivesOverlay(), Priority.NORMAL);
-        
+
         infoFormatter = new InfoFormatter();
         registerOverlay(new InfoOverlay._1(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
@@ -77,6 +77,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new StopWatchOverlay(), Priority.LOW);
 
         registerSettings(UtilitiesConfig.class);
+        registerSettings(UtilitiesConfig.AfkProtection.class);
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
@@ -114,7 +115,7 @@ public class UtilitiesModule extends Module {
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
     }
-    
+
     public InfoFormatter getInfoFormatter() {
         return infoFormatter;
     }

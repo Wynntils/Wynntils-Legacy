@@ -11,6 +11,7 @@ import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -48,6 +49,8 @@ public class KeyManager {
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", true, () -> {});
         favoriteTradeKey = UtilitiesModule.getModule().registerKeyBinding("Favorite Trade", Keyboard.KEY_F, "Wynntils", true, () -> {});
+
+         UtilitiesModule.getModule().registerKeyBinding("Toggle AFK Protection", Keyboard.KEY_N, "Wynntils", true, ClientEvents::toggleAfkProtection);
 
         zoomInKey = CoreModule.getModule().registerKeyBinding("Zoom In", Keyboard.KEY_EQUALS, "Wynntils", false, () -> {
             MiniMapOverlay.zoomBy(+1);

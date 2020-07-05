@@ -17,6 +17,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
@@ -62,12 +63,14 @@ public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
-    private boolean pushBlockingEnabled = false;
-    private boolean protectionEnabled = false;
-    private boolean protectionActivated = false;
+    private static boolean pushBlockingEnabled = false;
+    private static boolean afkProtectionEnabled = false;
+    private static boolean afkProtectionActivated = false;
+    private static boolean afkProtectionRequested = false;
 
-    private float lastHealth = 0;
-    private long lastUserInput = Long.MAX_VALUE;
+    private static float lastHealth = 0;
+    private static long lastUserInput = Long.MAX_VALUE;
+    private static long lastAfkRequested = Long.MAX_VALUE;
     private int tickCounter;
 
     public static boolean isAwaitingHorseMount = false;
@@ -79,7 +82,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onKeyboardEven(InputEvent.KeyInputEvent e) {
-        lastUserInput = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
+        // Events triggered just after the user pressed the Toggle AFK Protection key
+        // should be ignored
+        if (currentTime <= lastAfkRequested + 500) return;
+
+        lastUserInput = currentTime;
     }
 
     @SubscribeEvent
@@ -92,7 +100,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
-        if (!protectionActivated) return;
+        if (!afkProtectionActivated) return;
 
         InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
         if (inv.getName().contains("AFK Protection activated")) return;
@@ -103,8 +111,8 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
         pushBlockingEnabled = false;
-        protectionEnabled = false;
-        protectionActivated = false;
+        afkProtectionEnabled = false;
+        afkProtectionActivated = false;
 
         lastHealth = Minecraft.getMinecraft().player.getHealth();
         lastUserInput = System.currentTimeMillis();
@@ -112,19 +120,25 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
-        // Only trigger once a second
-        if (e.phase == TickEvent.Phase.END || (tickCounter++ % 20) != 0) return;
+        // Only trigger four times a second
+        if (e.phase == TickEvent.Phase.END || (tickCounter++ % 5) != 0) return;
         if (Reference.onServer) WindowIconManager.update();
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
 
-        if (!UtilitiesConfig.INSTANCE.blockAfkPushs && !UtilitiesConfig.INSTANCE.afkProtection) return;
+        if (!UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs && !UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
+
+        if (afkProtectionRequested) {
+            afkProtectionRequested = false;
+            // Immediate AFK requested, fake that last activity was long ago
+            lastUserInput = 0;
+        }
 
         long currentTime = System.currentTimeMillis();
         long timeSinceActivity = currentTime - this.lastUserInput;
 
-        if (UtilitiesConfig.INSTANCE.blockAfkPushs) {
+        if (UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs) {
             if (!pushBlockingEnabled) {
                 if (timeSinceActivity >= 10000 || !Display.isActive()) {
                     // If not enabled, but we lose focus or no activity for 10 seconds, turn on
@@ -140,37 +154,57 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.afkProtection) {
-            if (protectionActivated) {
+        if (UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) {
+            if (afkProtectionActivated) {
                 lastUserInput = currentTime;
-                protectionEnabled = false;
-                protectionActivated = false;
+                afkProtectionEnabled = false;
+                afkProtectionActivated = false;
                 return;
             }
-            long longAfkThresholdMillis = (long)(UtilitiesConfig.INSTANCE.afkProtectionThreshold * 10 * 1000);
-            if (!protectionEnabled) {
+            long longAfkThresholdMillis = (long)(UtilitiesConfig.AfkProtection.INSTANCE.afkProtectionThreshold * 60 * 1000);
+            if (!afkProtectionEnabled) {
                 if (timeSinceActivity >= longAfkThresholdMillis) {
                     // Enable AFK protection
+                    afkProtectionRequested = false;
                     lastHealth = Minecraft.getMinecraft().player.getHealth();
-                    Minecraft.getMinecraft().addScheduledTask(() ->
-                            ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection enabled due to lack of movement")));
-                    protectionEnabled = true;
+                    if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
+                        GameUpdateOverlay.queueMessage("AFK Protection enabled");
+                    } else {
+                        Minecraft.getMinecraft().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection enabled due to lack of movement")));
+                    }
+                    afkProtectionEnabled = true;
                 }
             } else {
                 float currentHealth = Minecraft.getMinecraft().player.getHealth();
                 if (currentHealth < lastHealth) {
                     // We're taking damage; activate AFK protection and go to class screen
-                    protectionActivated = true;
+                    afkProtectionActivated = true;
                     Minecraft.getMinecraft().addScheduledTask(() ->
                             ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection activated due to player taking damage")));
                     Minecraft.getMinecraft().player.sendChatMessage("/class");
                 }
                 if (timeSinceActivity < longAfkThresholdMillis) {
-                    Minecraft.getMinecraft().addScheduledTask(() ->
-                            ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection disabled")));
-                    protectionEnabled = false;
+                    if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
+                        GameUpdateOverlay.queueMessage("AFK Protection disabled");
+                    } else {
+                        Minecraft.getMinecraft().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection disabled")));
+                    }
+                    afkProtectionEnabled = false;
                 }
             }
+        }
+    }
+
+    public static boolean isAfkProtectionEnabled() {
+        return afkProtectionEnabled;
+    }
+
+    public static void toggleAfkProtection() {
+        if (!afkProtectionEnabled) {
+            afkProtectionRequested = true;
+            lastAfkRequested = System.currentTimeMillis();
         }
     }
 
@@ -268,7 +302,7 @@ public class ClientEvents implements Listener {
             lastHorseId = thisId;
 
             if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
-            
+
             if (isAwaitingHorseMount) {
                 MountHorseManager.retryMountHorseAndShowMessage();
                 isAwaitingHorseMount = false;
