@@ -334,6 +334,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Cooldown", description = "Should messages about needing to wait be redirected to the game-update-ticker?")
             public boolean redirectCooldown = true;
+
+            @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game-update-ticker?")
+            public boolean redirectAfk = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
@@ -423,7 +426,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info1Format = "";
-        
+
         @Setting(displayName = "Info 1 alignment", description = "How should the text in the first box be aligned?", order = 2)
         public TextAlignment info1Alignment = TextAlignment.MIDDLE;
 
@@ -431,7 +434,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 3)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info2Format = "";
-        
+
         @Setting(displayName = "Info 2 alignment", description = "How should the text in the second box be aligned?", order = 4)
         public TextAlignment info2Alignment = TextAlignment.MIDDLE;
 
@@ -439,7 +442,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 5)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info3Format = "";
-        
+
         @Setting(displayName = "Info 3 alignment", description = "How should the text in the third box be aligned?", order = 6)
         public TextAlignment info3Alignment = TextAlignment.MIDDLE;
 
@@ -450,31 +453,31 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Info 4 alignment", description = "How should the text in the fourth box be aligned?", order = 8)
         public TextAlignment info4Alignment = TextAlignment.MIDDLE;
-        
+
         @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 9)
         public Presets preset = Presets.CLICK_ME;
-        
+
         @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 10)
         public Variables variables = Variables.CLICK_ME;
 
         @Setting(displayName = "Symbols/Escaped Characters ", description = "Copies the selected character to the clipboard (Paste to one of the fields above)", upload = false, order = 11)
         public Escaped escapedChars = Escaped.CLICK_ME;
-      
+
         @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 12)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
-        
+
         @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
         public CustomColor backgroundColor = CustomColor.fromInt(000000, 0);
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
-        
+
 
         @Override
         public void onSettingChanged(String name) {
             backgroundColor.setA(opacity / 100f);
-            
+
             if (name.contentEquals("preset")) {
                 if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
                     preset = Presets.CLICK_ME;
@@ -523,7 +526,7 @@ public class OverlayConfig extends SettingsClass {
                 this.value = value;
             }
         }
-        
+
         public enum Escaped {
             CLICK_ME("Click me to copy to clipboard", null),
             NEW_LINE("New line", "\\n"),
@@ -543,7 +546,7 @@ public class OverlayConfig extends SettingsClass {
                 this.value = value;
             }
         }
-        
+
         public enum Variables {
             CLICK_ME("Click me to copy to clipboard", null),
             BPS("Blocks per second", "%bps%"),
@@ -591,7 +594,7 @@ public class OverlayConfig extends SettingsClass {
             PARTY_OWNER("Owner of the current party", "%party_owner%"),
             UNPROCESSED("Current amount of unprocessed materials", "%unprocessed%"),
             UNPROCESSED_MAX("Max amount of unprocessed materials", "%unprocessed_max%");
-            
+
             public final String displayName;
             public final String value;
 
