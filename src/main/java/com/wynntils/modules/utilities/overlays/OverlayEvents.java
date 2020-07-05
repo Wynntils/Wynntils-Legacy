@@ -47,7 +47,6 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
-        loginTime = Minecraft.getSystemTime();
     }
 
     @SubscribeEvent
@@ -669,6 +668,8 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        // WynnCraft seem to be off with its timer with around 10 seconds
+        loginTime = Minecraft.getSystemTime() + 10000;
     }
 
     @SubscribeEvent
