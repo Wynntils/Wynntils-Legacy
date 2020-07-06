@@ -108,6 +108,8 @@ public class RarityColorOverlay implements Listener {
 
             if (colour == null) continue;
 
+            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
+
             // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
             ScreenRenderer.beginGL(e.getGui().getGuiLeft() + s.xPos, e.getGui().getGuiTop() + s.yPos); {
@@ -123,37 +125,7 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerBackgroundLayer e) {
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.HorseOverlap.DrawGuiContainerBackgroundLayer e) {
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
-        }
-    }
-
     private static void drawSlotLevel(Slot s, int x, int y) {
-        if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
-            return;
-        if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
-            return;
-        if (!UtilitiesConfig.Items.INSTANCE.armorHighlight && s.slotNumber >= 5 && s.slotNumber <= 8)
-            return;
-        if (!UtilitiesConfig.Items.INSTANCE.mainHighlightInventory && s.slotNumber >= 13 && s.slotNumber <= 35)
-            return;
-
         ItemStack is = s.getStack();
         String lore = ItemUtils.getStringLore(is);
         int level = 0;
@@ -290,6 +262,8 @@ public class RarityColorOverlay implements Listener {
             } else {
                 continue;
             }
+
+            drawSlotLevel(s, guiContainer.getGuiLeft(), guiContainer.getGuiTop());
 
             // start rendering
             ScreenRenderer renderer = new ScreenRenderer();
