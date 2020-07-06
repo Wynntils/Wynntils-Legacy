@@ -26,6 +26,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -176,6 +177,12 @@ public class RarityColorOverlay implements Listener {
         }
 
         if (level == 0) return;
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+            is.setCount(level);
+        } else {
+            is.setCount(1);
+        }
 
         int i = s.xPos;
         int j = s.yPos;
