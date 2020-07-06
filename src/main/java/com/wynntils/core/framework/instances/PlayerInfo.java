@@ -256,40 +256,40 @@ public class PlayerInfo {
         if (mc.player == null) return 0;
         return ItemUtils.countMoney(mc.player.inventory);
     }
-    
+
     /**
      * @return Total number of health potions in inventory
      */
     public int getHealthPotions() {
         if (mc.player == null) return 0;
         NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
-        
+
         int count = 0;
-        
+
         for (ItemStack item : contents) {
             if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
                 count++;
             }
         }
-        
+
         return count;
     }
-    
+
     /**
      * @return Total number of mana potions in inventory
      */
     public int getManaPotions() {
         if (mc.player == null) return 0;
         NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
-        
+
         int count = 0;
-        
+
         for (ItemStack item : contents) {
             if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Mana")) {
                 count++;
             }
         }
-        
+
         return count;
     }
 
@@ -376,37 +376,51 @@ public class PlayerInfo {
         int ticks = ((int) (mc.world.getWorldTime() % 24000) + 24000) % 24000;
         return ((24000 - ticks) % 24000);
     }
-    
+
     /**
      * @return The amount of items inside the players ingredient pouch (parsed from the items lore)
+     * If countSlotsOnly is true, it only counts the number of used slots
      *
      * -1 if unable to determine
      */
-    public int getIngredientPouchCount() {
+    public int getIngredientPouchCount(boolean countSlotsOnly) {
         if (currentClass == ClassType.NONE || mc.player == null) return -1;
         ItemStack pouch = mc.player.inventory.mainInventory.get(13);
         int count = 0;
-        
+
         List<String> lore = ItemUtils.getLore(pouch);
-        
+
         for (int i = 4; i < lore.size(); i++) {
             String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
-            
+
             int end = line.indexOf(" x ");
-            
+
             if (end == -1) break;
-            
-            line = line.substring(0, end);
-            
-            count = count + Integer.valueOf(line);
+
+            if (countSlotsOnly) {
+                count++;
+            } else {
+                line = line.substring(0, end);
+                count = count + Integer.valueOf(line);
+            }
         }
-        
+
         return count;
     }
-    
+
+    /**
+     * @return The number of free slots in the user's inventory
+     *
+     * -1 if unable to determine
+     */
+    public int getFreeInventorySlots() {
+        if (currentClass == ClassType.NONE || mc.player == null) return -1;
+        return (int) mc.player.inventory.mainInventory.stream().filter(ItemStack::isEmpty).count();
+    }
+
     public static class HorseData {
         public int xp;
-        public int level; 
+        public int level;
         public int tier;
         public int maxLevel;
         public String armour;
@@ -421,9 +435,9 @@ public class PlayerInfo {
         }
         public HorseData(ItemStack saddle, int inventorySlot) {
             this.inventorySlot = inventorySlot;
-            
+
             List<String> lore = ItemUtils.getLore(saddle);
-            
+
             tier = Integer.valueOf(lore.get(0).substring(7));
             level = Integer.valueOf(lore.get(1).substring(9, lore.get(1).indexOf("/")));
             maxLevel = Integer.valueOf(lore.get(1).substring(lore.get(1).indexOf("/")+1));
@@ -431,34 +445,34 @@ public class PlayerInfo {
             xp = Integer.valueOf(lore.get(4).substring(6, lore.get(4).indexOf("/")));
         }
     }
-    
+
     /**
      * @return A HorseData object for the first horse found in the players inventory
      *
      */
     public HorseData getHorseData() {
         if (currentClass == ClassType.NONE || mc.player == null) return null;
-        
+
         NonNullList<ItemStack> inventory = mc.player.inventory.mainInventory;
-        
+
         if (horseData != null) {
             ItemStack stack = inventory.get(horseData.inventorySlot);
-            
-            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {
                 horseData = new HorseData(stack, horseData.inventorySlot);
                 return horseData;
             }
         }
-        
+
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack stack = inventory.get(i);
-            
-            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {                
+
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {
                 horseData = new HorseData(stack, i);
                 return horseData;
             }
         }
-        
+
         return null;
-    }    
+    }
 }
