@@ -124,27 +124,27 @@ public class RarityColorOverlay implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
+    public void drawLevel(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerBackgroundLayer e) {
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s);
+            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
+    public void drawLevel(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s);
+            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void drawLevel(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
+    public void drawLevel(GuiOverlapEvent.HorseOverlap.DrawGuiContainerBackgroundLayer e) {
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            drawSlotLevel(s);
+            drawSlotLevel(s, e.getGui().getGuiLeft(), e.getGui().getGuiTop());
         }
     }
 
-    private static void drawSlotLevel(Slot s) {
+    private static void drawSlotLevel(Slot s, int x, int y) {
         if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
             return;
         if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
@@ -184,8 +184,8 @@ public class RarityColorOverlay implements Listener {
             is.setCount(1);
         }
 
-        int i = s.xPos;
-        int j = s.yPos;
+        int i = x + s.xPos;
+        int j = y + s.yPos;
         drawLevelArc(level, i, j);
     }
 
