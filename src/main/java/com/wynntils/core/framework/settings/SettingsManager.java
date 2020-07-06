@@ -27,7 +27,7 @@ import java.util.Locale;
 
 public class SettingsManager {
 
-    private static Gson gson;
+    private static final Gson gson;
     private static final File configFolder = new File(Reference.MOD_STORAGE_ROOT, "configs");
 
     static {
@@ -99,6 +99,8 @@ public class SettingsManager {
         if (!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
 
         String jsonDecoded = WebManager.getAccount().getEncondedConfigs().get(name);
+        WebManager.getAccount().dumpEncodedConfig(name);
+
         return gson.fromJson(jsonDecoded, obj.getClass());
     }
 

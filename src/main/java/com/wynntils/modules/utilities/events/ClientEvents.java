@@ -13,9 +13,11 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
@@ -28,11 +30,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -50,6 +52,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.Display;
 
@@ -60,41 +63,149 @@ public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
-    boolean isAfk = false;
-    int lastPosition = 0;
-    long lastMovement = 0;
+    private static boolean pushBlockingEnabled = false;
+    private static boolean afkProtectionEnabled = false;
+    private static boolean afkProtectionActivated = false;
+    private static boolean afkProtectionRequested = false;
+
+    private static float lastHealth = 0;
+    private static long lastUserInput = Long.MAX_VALUE;
+    private static long lastAfkRequested = Long.MAX_VALUE;
+    private int tickCounter;
+
+    public static boolean isAwaitingHorseMount = false;
+
+    @SubscribeEvent
+    public void onMoveEvent(InputEvent.MouseInputEvent e) {
+        lastUserInput = System.currentTimeMillis();
+    }
+
+    @SubscribeEvent
+    public void onKeyboardEven(InputEvent.KeyInputEvent e) {
+        long currentTime = System.currentTimeMillis();
+        // Events triggered just after the user pressed the Toggle AFK Protection key
+        // should be ignored
+        if (currentTime <= lastAfkRequested + 500) return;
+
+        lastUserInput = currentTime;
+    }
+
+    @SubscribeEvent
+    public void onReady(ClientEvent.Ready e) {
+        if (!UtilitiesConfig.INSTANCE.autoResourceOnLoad) return;
+
+        ServerResourcePackManager.loadServerResourcePack();
+    }
+
+    @SubscribeEvent
+    public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
+        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!afkProtectionActivated) return;
+
+        InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
+        if (inv.getName().contains("AFK Protection activated")) return;
+
+        inv.setCustomName("" + TextFormatting.DARK_RED + TextFormatting.BOLD + "AFK Protection activated");
+    }
+
+    @SubscribeEvent
+    public void classChange(WynnClassChangeEvent e) {
+        pushBlockingEnabled = false;
+        afkProtectionEnabled = false;
+        afkProtectionActivated = false;
+
+        lastHealth = Minecraft.getMinecraft().player.getHealth();
+        lastUserInput = System.currentTimeMillis();
+    }
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent e) {
+        // Only trigger four times a second
+        if (e.phase == TickEvent.Phase.END || (tickCounter++ % 5) != 0) return;
         if (Reference.onServer) WindowIconManager.update();
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
 
-        if (!UtilitiesConfig.INSTANCE.blockAfkPushs) return;
+        if (!UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs && !UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
-        if (isAfk) Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
-
-        // Afk detection
-        if (!Display.isActive()) {  // by focus
-            isAfk = true;
-            return;
+        if (afkProtectionRequested) {
+            afkProtectionRequested = false;
+            // Immediate AFK requested, fake that last activity was long ago
+            lastUserInput = 0;
         }
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (player == null) return;
+        long currentTime = System.currentTimeMillis();
+        long timeSinceActivity = currentTime - this.lastUserInput;
 
-        // by position
-        int currentPosition = player.getPosition().getX() + player.getPosition().getY() + player.getPosition().getZ();
-        if (lastPosition == currentPosition) {
-            if (!isAfk && (System.currentTimeMillis() - lastMovement) >= 10000) isAfk = true;
-        } else {
-            lastMovement = System.currentTimeMillis();
-            isAfk = false;
-            Utils.removeFakeScoreboard("Afk");
+        if (UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs) {
+            if (!pushBlockingEnabled) {
+                if (timeSinceActivity >= 10000 || !Display.isActive()) {
+                    // If not enabled, but we lose focus or no activity for 10 seconds, turn on
+                    Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
+                    pushBlockingEnabled = true;
+                }
+            } else  {
+                if (timeSinceActivity < 10000 && Display.isActive()) {
+                    // If turned on, but we gain focus or have activity, turn off
+                    pushBlockingEnabled = false;
+                    Utils.removeFakeScoreboard("Afk");
+                }
+            }
         }
 
-        lastPosition = currentPosition;
+        if (UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) {
+            if (afkProtectionActivated) {
+                lastUserInput = currentTime;
+                afkProtectionEnabled = false;
+                afkProtectionActivated = false;
+                return;
+            }
+            long longAfkThresholdMillis = (long)(UtilitiesConfig.AfkProtection.INSTANCE.afkProtectionThreshold * 60 * 1000);
+            if (!afkProtectionEnabled) {
+                if (timeSinceActivity >= longAfkThresholdMillis) {
+                    // Enable AFK protection
+                    afkProtectionRequested = false;
+                    lastHealth = Minecraft.getMinecraft().player.getHealth();
+                    if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
+                        GameUpdateOverlay.queueMessage("AFK Protection enabled");
+                    } else {
+                        Minecraft.getMinecraft().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection enabled due to lack of movement")));
+                    }
+                    afkProtectionEnabled = true;
+                }
+            } else {
+                float currentHealth = Minecraft.getMinecraft().player.getHealth();
+                if (currentHealth < lastHealth) {
+                    // We're taking damage; activate AFK protection and go to class screen
+                    afkProtectionActivated = true;
+                    Minecraft.getMinecraft().addScheduledTask(() ->
+                            ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection activated due to player taking damage")));
+                    Minecraft.getMinecraft().player.sendChatMessage("/class");
+                }
+                if (timeSinceActivity < longAfkThresholdMillis) {
+                    if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
+                        GameUpdateOverlay.queueMessage("AFK Protection disabled");
+                    } else {
+                        Minecraft.getMinecraft().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessage(new TextComponentString(TextFormatting.GRAY + "AFK Protection disabled")));
+                    }
+                    afkProtectionEnabled = false;
+                }
+            }
+        }
+    }
+
+    public static boolean isAfkProtectionEnabled() {
+        return afkProtectionEnabled;
+    }
+
+    public static void toggleAfkProtection() {
+        if (!afkProtectionEnabled) {
+            afkProtectionRequested = true;
+            lastAfkRequested = System.currentTimeMillis();
+        }
     }
 
     @SubscribeEvent
@@ -191,6 +302,12 @@ public class ClientEvents implements Listener {
             lastHorseId = thisId;
 
             if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
+
+            if (isAwaitingHorseMount) {
+                MountHorseManager.retryMountHorseAndShowMessage();
+                isAwaitingHorseMount = false;
+                return;
+            }
 
             if(!UtilitiesConfig.INSTANCE.autoMount) return;
             MountHorseManager.mountHorseAndLogMessage();

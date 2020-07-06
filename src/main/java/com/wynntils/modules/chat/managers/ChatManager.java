@@ -8,6 +8,9 @@ import com.wynntils.ModCore;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
+import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -32,6 +35,19 @@ public class ChatManager {
 
     public static DateFormat dateFormat;
     public static boolean validDateFormat;
+    public static Pattern translationPatternChat = Pattern.compile("^(" +
+            "(?:§8\\[[0-9]{1,3}/[A-Z][a-z](?:/[A-Za-z]+)?\\] §r§7\\[[^]]+\\] [^:]*: §r§7)" + "|" +  // local chat
+            "(?:§3.* \\[[^]]+\\] shouts: §r§b)" + "|" + // shout
+            "(?:§7\\[§r§e.*§r§7\\] §r§f)" + "|" + // party chat
+            "(?:§7\\[§r.*§r§6 ➤ §r§2.*§r§7\\] §r§f)" + // private msg
+            ")(.*)(§r)$");
+    public static Pattern translationPatternNpc = Pattern.compile("^(" +
+            "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)" + // npc talking
+            ")(.*)(§r)$");
+    public static Pattern translationPatternOther = Pattern.compile("^(" +
+            "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
+            "(?:§[0-9a-z])" + // generic system message
+            ")(.*)(§r)$");
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -55,6 +71,12 @@ public class ChatManager {
             newMessage.getSiblings().addAll(in.getSiblings());
             in.getSiblings().clear();
             in = newMessage;
+        }
+
+        // language translation
+        if (TranslationConfig.INSTANCE.enableTextTranslation) {
+            boolean wasTranslated = translateMessage(in);
+            if (wasTranslated && !TranslationConfig.INSTANCE.keepOriginal) return null;
         }
 
         // timestamps
@@ -355,63 +377,122 @@ public class ChatManager {
         return in;
     }
 
+    private static boolean translateMessage(ITextComponent in) {
+        if (!in.getUnformattedText().startsWith(TranslationManager.TRANSLATED_PREFIX)) {
+            String formatted = in.getFormattedText();
+            Matcher chatMatcher = translationPatternChat.matcher(formatted);
+            if (chatMatcher.find()) {
+                if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
+                sendTranslation(chatMatcher);
+                return true;
+            }
+            Matcher npcMatcher = translationPatternNpc.matcher(formatted);
+            if (npcMatcher.find()) {
+                if (!TranslationConfig.INSTANCE.translateNpc) return false;
+                sendTranslation(npcMatcher);
+                return true;
+            }
+            Matcher otherMatcher = translationPatternOther.matcher(formatted);
+            if (otherMatcher.find()) {
+                if (!TranslationConfig.INSTANCE.translateOther) return false;
+                sendTranslation(otherMatcher);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void sendTranslation(Matcher m) {
+        // We only want to translate the actual message, not formatting, sender, etc.
+        String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
+        String prefix = m.group(1);
+        String suffix = m.group(3);
+        TranslationManager.getTranslator().translate(message, TranslationConfig.INSTANCE.languageName, translatedMsg -> {
+            try {
+                // Don't want translation to appear before original
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            Minecraft.getMinecraft().addScheduledTask(() ->
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
+        });
+    }
+
     public static ITextComponent renderMessage(ITextComponent in) {
         return in;
     }
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
-        boolean hasMention = false;
-        if (ChatConfig.INSTANCE.allowChatMentions) {
-            if (in != null && Minecraft.getMinecraft().player != null && in.getFormattedText().contains(ModCore.mc().player.getName())) {
-                // Patterns used to detect guild/party chat
+        if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
+            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "");
+            Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
+
+            Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
+
+            if (looseMatcher.find()) {
+                boolean hasMention = false;
+
                 boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
+
                 ArrayList<ITextComponent> components = new ArrayList<>();
+
                 for (ITextComponent component : in.getSiblings()) {
-                    if (component.getUnformattedComponentText().contains(ModCore.mc().player.getName()) && foundStart) {
-                        hasMention = true;
-                        String text = component.getUnformattedComponentText();
-                        String playerName = ModCore.mc().player.getName();
-                        while (text.contains(playerName)) {
-                            String section = text.substring(0, text.indexOf(playerName));
-                            ITextComponent sectionComponent = new TextComponentString(section);
-                            sectionComponent.setStyle(component.getStyle().createShallowCopy());
-                            components.add(sectionComponent);
+                    String text = component.getUnformattedText();
 
-                            ITextComponent playerComponent = new TextComponentString(ModCore.mc().player.getName());
-                            playerComponent.setStyle(component.getStyle().createShallowCopy());
-                            playerComponent.getStyle().setColor(TextFormatting.YELLOW);
-                            components.add(playerComponent);
-
-                            text = text.replaceFirst(".*" + ModCore.mc().player.getName(), "");
-                        }
-                        ITextComponent sectionComponent = new TextComponentString(text);
-                        sectionComponent.setStyle(component.getStyle().createShallowCopy());
-                        components.add(sectionComponent);
-                    } else if (!foundStart) {
-                        if (foundEndTimestamp) {
-                            if (in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/")) {
-                                foundStart = component.getUnformattedText().contains(":");
-                            } else if (isGuildOrParty) {
-                                foundStart = component.getUnformattedText().contains("]");
-                            }
-                        } else if (component.getUnformattedComponentText().contains("] ")) {
-                            foundEndTimestamp = true;
-                        }
+                    if (!foundEndTimestamp) {
+                        foundEndTimestamp = text.contains("]");
                         components.add(component);
-                    } else {
-                        components.add(component);
+                        continue;
                     }
+
+                    if (!foundStart) {
+                        foundStart = text.contains((isGuildOrParty ? "]" : ":")); // Party and guild messages end in ']' while normal chat end in ':'
+                        components.add(component);
+                        continue;
+                    }
+
+                    Matcher matcher = pattern.matcher(text);
+
+                    int nextStart = 0;
+
+                    while (matcher.find()) {
+                        hasMention = true;
+
+                        String before = text.substring(nextStart, matcher.start());
+                        String name = text.substring(matcher.start(), matcher.end());
+
+                        nextStart = matcher.end();
+
+                        ITextComponent beforeComponent = new TextComponentString(before);
+                        beforeComponent.setStyle(component.getStyle().createShallowCopy());
+
+                        ITextComponent nameComponent = new TextComponentString(name);
+                        nameComponent.setStyle(component.getStyle().createShallowCopy());
+                        nameComponent.getStyle().setColor(TextFormatting.YELLOW);
+
+                        components.add(beforeComponent);
+                        components.add(nameComponent);
+                    }
+
+                    ITextComponent afterComponent = new TextComponentString(text.substring(nextStart, text.length()));
+                    afterComponent.setStyle(component.getStyle().createShallowCopy());
+
+                    components.add(afterComponent);
                 }
-                in.getSiblings().clear();
-                in.getSiblings().addAll(components);
                 if (hasMention) {
                     ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+                    in.getSiblings().clear();
+                    in.getSiblings().addAll(components);
+
+                    return true; // Marks the chat tab as containing a mention
                 }
             }
         }
-        return hasMention;
+        return false;
     }
 
     public static Pair<String, Boolean> applyUpdatesToServer(String message) {

@@ -29,8 +29,8 @@ public class RequestHandler {
 
     public RequestHandler() {}
 
-    private ExecutorService pool = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("wynntils-web-request-pool-%d").build());
-    private ArrayList<Request> requests = new ArrayList<>();
+    private final ExecutorService pool = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("wynntils-web-request-pool-%d").build());
+    private final ArrayList<Request> requests = new ArrayList<>();
     private int maxParallelGroup = 0;
     private int dispatchId = 0;
 

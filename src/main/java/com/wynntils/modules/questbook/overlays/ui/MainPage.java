@@ -29,6 +29,13 @@ public class MainPage extends QuestBookPage {
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        pages = (int) Math.ceil(Arrays.stream(QuestBookPages.values()).max(Comparator.comparingInt(QuestBookPages::getSlotNb)).get().getSlotNb() / 4d);
+        refreshAccepts();
+    }
+
+    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         int x = width / 2; int y = height / 2;
@@ -85,17 +92,10 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            int pages = (int) Math.ceil(Arrays.stream(QuestBookPages.values()).max(Comparator.comparingInt(QuestBookPages::getSlotNb)).get().getSlotNb() / 4d);
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
-
             // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= 65 && posX <= 80 && posY >= -24 & posY <= -15) {
                     selected = -2;
                     render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
@@ -105,10 +105,8 @@ public class MainPage extends QuestBookPage {
             }
 
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x - 101, y + 15, 238, 234, 16, 9);
             } else {
-                acceptBack = true;
                 if (posX >= 86 && posX <= 101 && posY >= -24 & posY <= -15) {
                     selected = -1;
                     render.drawRect(Textures.UIs.quest_book, x - 101, y + 15, 238, 234, 16, 9);
@@ -141,11 +139,9 @@ public class MainPage extends QuestBookPage {
             WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.getPageBySlot(selected).open(false);
         } else if (selected == -1) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
+            goBack();
         } else if (selected == -2) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
+            goForward();
         }
     }
 }

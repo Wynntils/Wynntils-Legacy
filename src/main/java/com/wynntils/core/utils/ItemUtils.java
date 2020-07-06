@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils;
 
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -108,4 +109,31 @@ public class ItemUtils {
         return money;
     }
 
+    public static String describeMoney(int total) {
+        int leCount = total / 4096;
+        int leRest = total % 4096;
+        int emCount = leRest % 64;
+        int ebCount = leRest / 64;
+
+        StringBuilder desc = new StringBuilder();
+        if (leCount > 0) {
+            desc.append(leCount);
+            desc.append(" ");
+            desc.append(EmeraldSymbols.LE);
+            desc.append(" ");
+        }
+        if (ebCount > 0) {
+            desc.append(ebCount);
+            desc.append(" ");
+            desc.append(EmeraldSymbols.BLOCKS);
+            desc.append(" ");
+        }
+        if (emCount > 0) {
+            desc.append(emCount);
+            desc.append(" ");
+            desc.append(EmeraldSymbols.EMERALDS);
+            desc.append(" ");
+        }
+        return desc.toString();
+    }
 }

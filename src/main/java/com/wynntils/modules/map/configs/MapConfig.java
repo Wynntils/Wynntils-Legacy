@@ -250,16 +250,18 @@ public class MapConfig extends SettingsClass {
             "Potion Merchant", "Powder Merchant", "Scroll Merchant", "Seasail Merchant", "Weapon Merchant",
             "Blacksmith", "Guild Master", "Item Identifier", "Powder Master", "Fast Travel",
             "Fish Refinery", "Wood Refinery", "Crop Refinery", "Marketplace", "Nether Portal",
-            "Light's Secret", "Quests", "Boss Altar"
+            "Light's Secret", "Quests", "Boss Altar", "Corrupted Dungeons"
         }) {
             enabledIcons.put(icon, true);
         }
+
         for (String icon : new String[]{
             "Mini-Quests", "Runes", "Ultimate Discovery", "Caves", "Grind Spots", "Other Merchants",
             "Art Merchant", "Tool Merchant"
         }) {
             enabledIcons.put(icon, forMiniMap);
         }
+
         for (String icon : new String[]{
             "Weaponsmithing Station", "Armouring Station", "Alchemism Station",
             "Jeweling Station", "Tailoring Station", "Scribing Station",
@@ -280,7 +282,17 @@ public class MapConfig extends SettingsClass {
     @Setting
     public IconTexture iconTexture = IconTexture.Classic;
     public enum IconTexture {
-        Classic, Medieval
+        Classic("CLASSIC"), Medieval("MEDIEVAL"), Modern("MODERN");
+
+        private final String key;
+
+        IconTexture(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
     }
 
 }

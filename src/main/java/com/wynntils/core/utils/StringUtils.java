@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.helpers.MD5Verification;
 
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -76,7 +77,6 @@ public class StringUtils {
     public static String toMD5(String msg) {
         return new MD5Verification(msg.getBytes(StandardCharsets.UTF_8)).getMd5();
     }
-
 
     public static String[] wrapText(String s, int max) {
         String[] stringArray = s.split(" ");
@@ -340,6 +340,17 @@ public class StringUtils {
     public static boolean isWynnicNumber(char character) {
         return (0x2474 <= character && character <= 0x247C)
             || (0x247D <= character && character <= 0x247F);
+    }
+    /**
+     * @param count the number
+     * @return The formatted shortened string
+     */
+    public static String integerToShortString(int count) {
+        if (count < 1000) return Integer.toString(count);
+        int exp = (int) (Math.log(count) / Math.log(1000));
+        DecimalFormat format = new DecimalFormat("0.#");
+        String value = format.format(count / Math.pow(1000, exp));
+        return String.format("%s%c", value, "kMBTPE".charAt(exp - 1));
     }
 
 }

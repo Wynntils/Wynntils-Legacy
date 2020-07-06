@@ -17,7 +17,6 @@ public class Textures {
     public static void loadTextures() {
         List<Class<?>> textureClasses = new ArrayList<>();
 
-
         textureClasses.add(Masks.class);
         textureClasses.add(Overlays.class);
         textureClasses.add(UIs.class);
@@ -92,6 +91,7 @@ public class Textures {
     public static class World {
 
         public static AssetsTexture path_arrow;
+        public static AssetsTexture leaderboard_badges;
 
     }
 }

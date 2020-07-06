@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OverlayEvents implements Listener {
+
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
 
     private static boolean wynnExpTimestampNotified = false;
@@ -46,7 +47,6 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         WarTimerOverlay.onWorldJoin(e);
-        loginTime = Minecraft.getSystemTime();
     }
 
     @SubscribeEvent
@@ -668,6 +668,8 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        // WynnCraft seem to be off with its timer with around 10 seconds
+        loginTime = Minecraft.getSystemTime() + 10000;
     }
 
     @SubscribeEvent
@@ -704,4 +706,5 @@ public class OverlayEvents implements Listener {
             });
         }
     }
+
 }

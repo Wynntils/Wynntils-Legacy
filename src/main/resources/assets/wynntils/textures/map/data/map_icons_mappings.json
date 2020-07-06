@@ -362,6 +362,379 @@
       "size": 2
     }
   },
+  "MODERN": {
+    "Content_CorruptedDungeon": {
+      "texPosX": 12,
+      "texPosZ": 141,
+      "texSizeX": 22,
+      "texSizeZ": 151,
+      "zoomNeeded": -1000,
+      "size": 2
+    },
+    "Content_Dungeon": {
+      "texPosX": 0,
+      "texPosZ": 141,
+      "texSizeX": 10,
+      "texSizeZ": 151,
+      "zoomNeeded": -1000,
+      "size": 2
+    },
+    "Merchant_Accessory": {
+      "texPosX": 2,
+      "texPosZ": 123,
+      "texSizeX": 15,
+      "texSizeZ": 139,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Armour": {
+      "texPosX": 16,
+      "texPosZ": 121,
+      "texSizeX": 32,
+      "texSizeZ": 139,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Dungeon": {
+      "texPosX": 33,
+      "texPosZ": 123,
+      "texSizeX": 43,
+      "texSizeZ": 136,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Horse": {
+      "texPosX": 46,
+      "texPosZ": 118,
+      "texSizeX": 64,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_KeyForge": {
+      "texPosX": 64,
+      "texPosZ": 123,
+      "texSizeX": 80,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Liquid": {
+      "texPosX": 81,
+      "texPosZ": 123,
+      "texSizeX": 93,
+      "texSizeZ": 139,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Potion": {
+      "texPosX": 98,
+      "texPosZ": 123,
+      "texSizeX": 110,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Powder": {
+      "texPosX": 110,
+      "texPosZ": 125,
+      "texSizeX": 129,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Scroll": {
+      "texPosX": 130,
+      "texPosZ": 124,
+      "texSizeX": 147,
+      "texSizeZ": 140,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Seasail": {
+      "texPosX": 113,
+      "texPosZ": 141,
+      "texSizeX": 132,
+      "texSizeZ": 156,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Weapon": {
+      "texPosX": 148,
+      "texPosZ": 125,
+      "texSizeX": 164,
+      "texSizeZ": 135,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "NPC_Blacksmith": {
+      "texPosX": 147,
+      "texPosZ": 142,
+      "texSizeX": 163,
+      "texSizeZ": 155,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "NPC_GuildMaster": {
+      "texPosX": 43,
+      "texPosZ": 142,
+      "texSizeX": 58,
+      "texSizeZ": 157,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "NPC_ItemIdentifier": {
+      "texPosX": 61,
+      "texPosZ": 143,
+      "texSizeX": 75,
+      "texSizeZ": 157,
+      "zoomNeeded": -1000,
+      "size": 2
+    },
+    "NPC_PowderMaster": {
+      "texPosX": 94,
+      "texPosZ": 142,
+      "texSizeX": 113,
+      "texSizeZ": 158,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Special_FastTravel": {
+      "texPosX": 23,
+      "texPosZ": 140,
+      "texSizeX": 41,
+      "texSizeZ": 154,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "tnt": {
+      "texPosX": 131,
+      "texPosZ": 141,
+      "texSizeX": 146,
+      "texSizeZ": 158,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Ore_Refinery": {
+      "texPosX": 199,
+      "texPosZ": 125,
+      "texSizeX": 215,
+      "texSizeZ": 138,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Fish_Refinery": {
+      "texPosX": 182,
+      "texPosZ": 123,
+      "texSizeX": 198,
+      "texSizeZ": 140,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Wood_Refinery": {
+      "texPosX": 217,
+      "texPosZ": 124,
+      "texSizeX": 233,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Crop_Refinery": {
+      "texPosX": 164,
+      "texPosZ": 123,
+      "texSizeX": 180,
+      "texSizeZ": 141,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "NPC_TradeMarket": {
+      "texPosX": 76,
+      "texPosZ": 145,
+      "texSizeX": 94,
+      "texSizeZ": 155,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Content_Quest": {
+      "texPosX": 165,
+      "texPosZ": 142,
+      "texSizeX": 181,
+      "texSizeZ": 158,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Content_Miniquest": {
+      "texPosX": 165,
+      "texPosZ": 142,
+      "texSizeX": 181,
+      "texSizeZ": 158,
+      "zoomNeeded": 0,
+      "size": 4,
+      "__comment": "Just a smaller version of Content_Quest right now"
+    },
+    "Special_Rune": {
+      "texPosX": 64,
+      "texPosZ": 159,
+      "texSizeX": 80,
+      "texSizeZ": 175,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_UltimateDiscovery": {
+      "texPosX": 205,
+      "texPosZ": 141,
+      "texSizeX": 214,
+      "texSizeZ": 156,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_Cave": {
+      "texPosX": 234,
+      "texPosZ": 0,
+      "texSizeX": 250,
+      "texSizeZ": 18,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Content_GrindSpot": {
+      "texPosX": 220,
+      "texPosZ": 144,
+      "texSizeX": 232,
+      "texSizeZ": 153,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Other": {
+      "texPosX": 0,
+      "texPosZ": 154,
+      "texSizeX": 17,
+      "texSizeZ": 172,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Special_LightRealm": {
+      "texPosX": 52,
+      "texPosZ": 160,
+      "texSizeX": 62,
+      "texSizeZ": 174,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Special_RootsOfCorruption": {
+      "texPosX": 35,
+      "texPosZ": 158,
+      "texSizeX": 50,
+      "texSizeZ": 176,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Merchant_Emerald": {
+      "texPosX": 236,
+      "texPosZ": 143,
+      "texSizeX": 246,
+      "texSizeZ": 159,
+      "zoomNeeded": 0,
+      "size": 3
+    },
+    "Merchant_Tool": {
+      "texPosX": 96,
+      "texPosZ": 56,
+      "texSizeX": 113,
+      "texSizeZ": 71,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "painting": {
+      "texPosX": 18,
+      "texPosZ": 158,
+      "texSizeX": 34,
+      "texSizeZ": 176,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Profession_Alchemism": {
+      "texPosX": 115,
+      "texPosZ": 54,
+      "texSizeX": 131,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Armouring": {
+      "texPosX": 132,
+      "texPosZ": 55,
+      "texSizeX": 149,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Cooking": {
+      "texPosX": 150,
+      "texPosZ": 56,
+      "texSizeX": 168,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Jeweling": {
+      "texPosX": 169,
+      "texPosZ": 56,
+      "texSizeX": 186,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Scribing": {
+      "texPosX": 187,
+      "texPosZ": 56,
+      "texSizeX": 205,
+      "texSizeZ": 73,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Tailoring": {
+      "texPosX": 206,
+      "texPosZ": 57,
+      "texSizeX": 223,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Weaponsmithing": {
+      "texPosX": 224,
+      "texPosZ": 57,
+      "texSizeX": 242,
+      "texSizeZ": 72,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Profession_Woodworking": {
+      "texPosX": 0,
+      "texPosZ": 72,
+      "texSizeX": 17,
+      "texSizeZ": 87,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    },
+    "Content_BossAltar": {
+      "texPosX": 241,
+      "texPosZ": 36,
+      "texSizeX": 256,
+      "texSizeZ": 51,
+      "zoomNeeded": 0,
+      "size": 2,
+      "__comment": "Same as CLASSIC texture, not modern theme"
+    }
+  },
   "MEDIEVAL": {
     "Content_CorruptedDungeon": {
       "texPosX": 0,

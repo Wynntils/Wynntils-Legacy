@@ -194,12 +194,6 @@ public class ItemPage extends QuestBookPage {
 
             render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            // page counter including search
-            int pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
-
             if (byAlphabetical) itemSearch.sort((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName()));
             if (byLevel) itemSearch.sort(Comparator.comparingInt(c -> -c.getRequirements().getLevel()));
             if (byRarity) itemSearch.sort(Comparator.comparingInt(c -> -c.getTier().getPriority()));
@@ -209,9 +203,7 @@ public class ItemPage extends QuestBookPage {
             // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
                 } else {
@@ -220,10 +212,8 @@ public class ItemPage extends QuestBookPage {
             }
 
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
             } else {
-                acceptBack = true;
                 if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
                     render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
                 } else {
@@ -336,13 +326,11 @@ public class ItemPage extends QuestBookPage {
         ScaledResolution res = new ScaledResolution(mc);
         int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
 
-        if (acceptNext && posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage++;
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+            goForward();
             return;
-        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            currentPage--;
+        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+            goBack();
             return;
         } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             WynntilsSound.QUESTBOOK_PAGE.play();
@@ -444,6 +432,10 @@ public class ItemPage extends QuestBookPage {
             String lowerText = currentText.toLowerCase();
             itemSearch.removeIf(c -> !doesSearchMatch(c.getDisplayName().toLowerCase(), lowerText));
         }
+
+        pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
+        currentPage = Math.min(currentPage, pages);
+        refreshAccepts();
     }
 
     @Override

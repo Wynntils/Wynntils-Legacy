@@ -49,6 +49,7 @@ public class ConsumableTimerOverlay extends Overlay {
             persistant.removeIf(c -> !c.isPersistent());
             activeConsumables = persistant;
         }
+
         activeEffects = new HashMap<>();
     }
 

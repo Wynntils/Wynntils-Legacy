@@ -19,11 +19,13 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +51,7 @@ public class PlayerInfo {
     private boolean[] lastSpell = noSpell;
     private float experiencePercentage = -1;
     private int classId = CoreDBConfig.INSTANCE.lastSelectedClass;
+    private HorseData horseData = null;
 
     private String lastActionBar;
     private String specialActionBar = null;
@@ -254,6 +257,42 @@ public class PlayerInfo {
         return ItemUtils.countMoney(mc.player.inventory);
     }
 
+    /**
+     * @return Total number of health potions in inventory
+     */
+    public int getHealthPotions() {
+        if (mc.player == null) return 0;
+        NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
+
+        int count = 0;
+
+        for (ItemStack item : contents) {
+            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * @return Total number of mana potions in inventory
+     */
+    public int getManaPotions() {
+        if (mc.player == null) return 0;
+        NonNullList<ItemStack> contents = mc.player.inventory.mainInventory;
+
+        int count = 0;
+
+        for (ItemStack item : contents) {
+            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Mana")) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
     private static final Pattern unprocessedLoreRegex = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
 
@@ -338,4 +377,102 @@ public class PlayerInfo {
         return ((24000 - ticks) % 24000);
     }
 
+    /**
+     * @return The amount of items inside the players ingredient pouch (parsed from the items lore)
+     * If countSlotsOnly is true, it only counts the number of used slots
+     *
+     * -1 if unable to determine
+     */
+    public int getIngredientPouchCount(boolean countSlotsOnly) {
+        if (currentClass == ClassType.NONE || mc.player == null) return -1;
+        ItemStack pouch = mc.player.inventory.mainInventory.get(13);
+        int count = 0;
+
+        List<String> lore = ItemUtils.getLore(pouch);
+
+        for (int i = 4; i < lore.size(); i++) {
+            String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
+
+            int end = line.indexOf(" x ");
+
+            if (end == -1) break;
+
+            if (countSlotsOnly) {
+                count++;
+            } else {
+                line = line.substring(0, end);
+                count = count + Integer.valueOf(line);
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * @return The number of free slots in the user's inventory
+     *
+     * -1 if unable to determine
+     */
+    public int getFreeInventorySlots() {
+        if (currentClass == ClassType.NONE || mc.player == null) return -1;
+        return (int) mc.player.inventory.mainInventory.stream().filter(ItemStack::isEmpty).count();
+    }
+
+    public static class HorseData {
+        public int xp;
+        public int level;
+        public int tier;
+        public int maxLevel;
+        public String armour;
+        public int inventorySlot;
+        public HorseData(int tier, int level, int xp, int maxLevel, String armour, int inventorySlot) {
+            this.xp = xp;
+            this.level = level;
+            this.tier = tier;
+            this.maxLevel = maxLevel;
+            this.armour = armour;
+            this.inventorySlot = inventorySlot;
+        }
+        public HorseData(ItemStack saddle, int inventorySlot) {
+            this.inventorySlot = inventorySlot;
+
+            List<String> lore = ItemUtils.getLore(saddle);
+
+            tier = Integer.valueOf(lore.get(0).substring(7));
+            level = Integer.valueOf(lore.get(1).substring(9, lore.get(1).indexOf("/")));
+            maxLevel = Integer.valueOf(lore.get(1).substring(lore.get(1).indexOf("/")+1));
+            armour = lore.get(3).substring(11);
+            xp = Integer.valueOf(lore.get(4).substring(6, lore.get(4).indexOf("/")));
+        }
+    }
+
+    /**
+     * @return A HorseData object for the first horse found in the players inventory
+     *
+     */
+    public HorseData getHorseData() {
+        if (currentClass == ClassType.NONE || mc.player == null) return null;
+
+        NonNullList<ItemStack> inventory = mc.player.inventory.mainInventory;
+
+        if (horseData != null) {
+            ItemStack stack = inventory.get(horseData.inventorySlot);
+
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {
+                horseData = new HorseData(stack, horseData.inventorySlot);
+                return horseData;
+            }
+        }
+
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack stack = inventory.get(i);
+
+            if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains(" Horse")) {
+                horseData = new HorseData(stack, i);
+                return horseData;
+            }
+        }
+
+        return null;
+    }
 }
