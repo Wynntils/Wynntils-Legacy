@@ -73,6 +73,27 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
+    public static void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
+        int playerInvSlotNumber = 0;
+
+        for (Slot s : guiContainer.inventorySlots.inventorySlots) {
+            if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
+                playerInvSlotNumber++;
+                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
+                    continue;
+                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
+                    continue;
+                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !UtilitiesConfig.Items.INSTANCE.hotbarHighlight)
+                    continue;
+            } else {
+                if (!UtilitiesConfig.Items.INSTANCE.mainHighlightChest)
+                    continue;
+            }
+
+            drawItemSlot(guiContainer, true, s);
+        }
+    }
+
     private static void drawSlotLevel(Slot s, int x, int y) {
         ItemStack is = s.getStack();
         String lore = ItemUtils.getStringLore(is);
@@ -137,27 +158,6 @@ public class RarityColorOverlay implements Listener {
             renderer.pos(x + sin(angle) * 8.0F + 8, y - cos(angle) * 8.0F + 8, 0.0D).color(red, green, blue, alpha).endVertex();
         }
         Tessellator.getInstance().draw();
-    }
-
-    public static void drawChest(GuiContainer guiContainer, IInventory lowerInv, IInventory upperInv, boolean emeraldsUpperInv, boolean emeraldsLowerInv) {
-        int playerInvSlotNumber = 0;
-
-        for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
-                playerInvSlotNumber++;
-                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
-                    continue;
-                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
-                    continue;
-                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !UtilitiesConfig.Items.INSTANCE.hotbarHighlight)
-                    continue;
-            } else {
-                if (!UtilitiesConfig.Items.INSTANCE.mainHighlightChest)
-                    continue;
-            }
-
-            drawItemSlot(guiContainer, true, s);
-        }
     }
 
     private static void drawItemSlot(GuiContainer guiContainer, boolean isChest, Slot s) {
