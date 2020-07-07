@@ -156,6 +156,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Filter for Ingredients", description = "Should a filter for ingredients and crafted items be displayed?", order = 0)
         public boolean filterEnabled = true;
 
+        @Setting(displayName = "Item Combat Level Arc", description = "Should the required combat level be shown behind items as an arc?", order = 1)
+        public boolean itemLevelArc = false;
+
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)", order = 11)
         public boolean mainHighlightChest = true;
 
