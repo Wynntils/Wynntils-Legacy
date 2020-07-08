@@ -46,7 +46,7 @@ public class MusicProfile {
     }
 
     public Optional<File> getFile() {
-        return Optional.of(f);
+        return Optional.ofNullable(f);
     }
 
     public String getAsHash() {
