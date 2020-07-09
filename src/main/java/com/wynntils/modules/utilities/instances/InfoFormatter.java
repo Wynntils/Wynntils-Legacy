@@ -18,6 +18,9 @@ import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import net.minecraft.client.Minecraft;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +93,13 @@ public class InfoFormatter {
             PingManager.calculatePing();
             return Long.toString(PingManager.getLastPing());
         }, "ping");
+
+        // The wall clock time, formatted in the current locale style
+        registerFormatter((input) -> {
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+            return date.format(formatter);
+        }, "clock");
 
         // Current mana
         registerFormatter((input) -> {

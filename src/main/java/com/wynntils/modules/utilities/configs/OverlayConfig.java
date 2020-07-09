@@ -559,6 +559,7 @@ public class OverlayConfig extends SettingsClass {
             FPS("Frames per second"),
             WORLD("The current world/server"),
             PING("The current ping"),
+            CLOCK("The current time"),
             MANA("Current mana"),
             MANA_MAX("Max mana"),
             HEALTH("Current health"),
