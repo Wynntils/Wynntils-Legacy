@@ -114,8 +114,12 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean afkProtection = false;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
-        @Setting(displayName = "AFK Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
+        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
         public float afkProtectionThreshold = 10f;
+
+        @Setting.Limitations.FloatLimit(min = 1f, max = 100f)
+        @Setting(displayName = "Health Percentage Threshold", description = "AFK Protection should activate when your health drops to this level")
+        public float healthPercentage = 90f;
 
         @Setting(displayName = "Show on Hotbar", description = "Should AFK Protection status be shown on the hotbar?")
         public boolean showOnHotbar = true;

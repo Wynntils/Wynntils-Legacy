@@ -177,7 +177,7 @@ public class ClientEvents implements Listener {
                 }
             } else {
                 float currentHealth = Minecraft.getMinecraft().player.getHealth();
-                if (currentHealth < lastHealth) {
+                if (currentHealth < (lastHealth  * UtilitiesConfig.AfkProtection.INSTANCE.healthPercentage / 100.0f)) {
                     // We're taking damage; activate AFK protection and go to class screen
                     afkProtectionActivated = true;
                     Minecraft.getMinecraft().addScheduledTask(() ->
