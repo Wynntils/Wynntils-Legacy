@@ -16,6 +16,8 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
+import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
+import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -67,6 +69,7 @@ public class ClientEvents implements Listener {
     private static boolean afkProtectionEnabled = false;
     private static boolean afkProtectionActivated = false;
     private static boolean afkProtectionRequested = false;
+    private static boolean afkProtectionBlocked = false;
 
     private static float lastHealth = 0;
     private static long lastUserInput = Long.MAX_VALUE;
@@ -163,8 +166,8 @@ public class ClientEvents implements Listener {
             }
             long longAfkThresholdMillis = (long)(UtilitiesConfig.AfkProtection.INSTANCE.afkProtectionThreshold * 60 * 1000);
             if (!afkProtectionEnabled) {
-                if (timeSinceActivity >= longAfkThresholdMillis) {
-                    // Enable AFK protection
+                if (!afkProtectionBlocked && timeSinceActivity >= longAfkThresholdMillis) {
+                    // Enable AFK protection (but not if we're in a chest/inventory GUI)
                     afkProtectionRequested = false;
                     lastHealth = Minecraft.getMinecraft().player.getHealth();
                     if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
@@ -217,6 +220,13 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
+        if (e.getGui() == null) {
+            afkProtectionBlocked = false;
+            lastUserInput = System.currentTimeMillis();
+        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer ||
+                e.getGui() instanceof HorseReplacer) {
+            afkProtectionBlocked = true;
+        }
         if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
             firstNullOccurred = false;
             e.setGui(scheduledGuiScreen);
