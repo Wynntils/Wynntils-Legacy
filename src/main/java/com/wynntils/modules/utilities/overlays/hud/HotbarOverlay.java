@@ -27,8 +27,6 @@ public class HotbarOverlay extends Overlay {
         super("Hotbar", 182, 22, true, 0.5f, 1f, 0, -23, OverlayGrowFrom.TOP_CENTRE, RenderGameOverlayEvent.ElementType.HOTBAR);
     }
 
-
-
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!WIDGETS_TEXTURE.loaded) WIDGETS_TEXTURE.load();

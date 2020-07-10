@@ -83,7 +83,6 @@ public class LowHealthVignetteOverlay extends Overlay {
                 value = INTENSITY;
                 break;
         }
-
-
     }
+
 }

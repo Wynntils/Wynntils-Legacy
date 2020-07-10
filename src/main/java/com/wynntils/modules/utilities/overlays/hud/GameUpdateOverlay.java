@@ -33,11 +33,11 @@ public class GameUpdateOverlay extends Overlay {
     public int offsetY = 0;
 
     /* Message Management */
-    private static List<MessageContainer> messageQueue = new LinkedList<>();
+    private static final List<MessageContainer> messageQueue = new LinkedList<>();
 
     /* Rendering */
     private static final int LINE_HEIGHT = 12;
-    private static CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
+    private static final CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -59,14 +59,14 @@ public class GameUpdateOverlay extends Overlay {
             if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
-                        (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
+                        (-OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
                         alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
             else
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
-                        0 - (LINE_HEIGHT * lines),
+                        -(LINE_HEIGHT * lines),
                         alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
@@ -76,21 +76,22 @@ public class GameUpdateOverlay extends Overlay {
 
     }
 
-    public static boolean queueMessage(String message) {
-        if (!Reference.onWorld)
-            return false;
+    public static void queueMessage(String message) {
+        if (!Reference.onWorld) return;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
+
             if (message.endsWith("§"))
                 message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
             message = message + "...";
         }
+
         LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + message);
         messageQueue.add(new MessageContainer(message));
+
         if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
             messageQueue.remove(0);
-        return true;
     }
 
     public static void resetMessages() {
@@ -117,4 +118,5 @@ public class GameUpdateOverlay extends Overlay {
         }
 
     }
+
 }

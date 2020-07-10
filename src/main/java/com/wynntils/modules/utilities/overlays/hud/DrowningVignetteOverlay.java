@@ -67,4 +67,5 @@ public class DrowningVignetteOverlay extends Overlay {
         }
         GlStateManager.popMatrix();
     }
+
 }

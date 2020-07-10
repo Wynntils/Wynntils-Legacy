@@ -18,14 +18,15 @@ public class LobbyCleanerOverlay extends Overlay {
 
     @Setting(displayName = "No Health Bar", description = "Should the Health Bar be visible in the lobby")
     public boolean noHealth = true;
+
     @Setting(displayName = "No Food Bar", description = "Should the Food Bar be visible in the lobby")
     public boolean noFood = true;
+
     @Setting(displayName = "No Exp Bar", description = "Should the Exp Bar be visible in the lobby")
     public boolean noExp = true;
+
     @Setting(displayName = "No Air Amount Bar", description = "Should the Air Bubbles Bar be visible in the lobby")
     public boolean noAir = true;
-
-    // TODO HOTBAR IF POSSIBLE
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {

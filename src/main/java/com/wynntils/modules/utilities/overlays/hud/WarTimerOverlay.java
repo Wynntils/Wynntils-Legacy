@@ -237,4 +237,5 @@ public class WarTimerOverlay extends Overlay {
     public enum WarStage {
         WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR
     }
+
 }

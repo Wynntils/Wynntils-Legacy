@@ -14,7 +14,6 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -27,74 +26,75 @@ public class ActionBarOverlay extends Overlay {
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE);
+        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE,
+                RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!Reference.onWorld) return;
-        if (event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE || event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR) {
-            String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
-            if (lastActionBar == null) return;
 
-            String[] divisor = lastActionBar.split("/");
-            if (divisor.length < 2) {
-                return;
-            }
+        String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
+        if (lastActionBar == null) return;
 
-            String middle;
-            String l = "";
-            String r = "";
+        String[] divisor = lastActionBar.split("/");
+        if (divisor.length < 2) return;
 
-            boolean preference = false;
+        String middle;
+        String l = "";
+        String r = "";
 
-            int padding = 3;
-            int y = 0;
+        boolean preference = false;
 
-            BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
-            String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
-            String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
-            String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
-            // Order:
-            // Powder % | RLR | Sprint | and if there is nothing more coordinates
-            if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
-                drawString(lCoord, (0 - ScreenRenderer.mc.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                drawString(rCoord, (ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                y -= 11;
-                staticSize.y = 21;
-                growth = OverlayGrowFrom.MIDDLE_CENTRE;
-            }
-            if (lastActionBar.contains("%")) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[7] + " " + spaces[8];
-            } else if (lastActionBar.contains("R" + TextFormatting.GRAY + "-") || lastActionBar.contains("L" + TextFormatting.GRAY + "-")) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
-                preference = true;
-            } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
-                String[] spaces = lastActionBar.split(" ");
-                middle = spaces[5];
-            } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
-                l = lCoord;
-                middle = middleCoord;
-                r = rCoord;
-                staticSize.y = 10;
-                growth = OverlayGrowFrom.TOP_CENTRE;
-            } else {
-                middle = "";
-            }
-            if (preference || !renderItemName(new ScaledResolution(ScreenRenderer.mc))) {
-//            drawString((l + " " + middle + " " + r), 0, 0, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, shadow);
-                drawString(l, (0 - ScreenRenderer.mc.fontRenderer.getStringWidth(l) - ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-                drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-                drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
-            }
+        int padding = 3;
+        int y = 0;
+
+        BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
+        String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
+        String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+        String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
+        // Order:
+        // Powder % | RLR | Sprint | and if there is nothing more coordinates
+        if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
+            drawString(lCoord, (-ScreenRenderer.mc.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
+            drawString(rCoord, (ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            y -= 11;
+            staticSize.y = 21;
+            growth = OverlayGrowFrom.MIDDLE_CENTRE;
         }
+
+        if (lastActionBar.contains("%")) {
+            String[] spaces = lastActionBar.split(" ");
+            middle = spaces[7] + " " + spaces[8];
+        } else if (lastActionBar.contains("R" + TextFormatting.GRAY + "-") || lastActionBar.contains("L" + TextFormatting.GRAY + "-")) {
+            String[] spaces = lastActionBar.split(" ");
+            middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
+            preference = true;
+        } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
+            String[] spaces = lastActionBar.split(" ");
+            middle = spaces[5];
+        } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
+            l = lCoord;
+            middle = middleCoord;
+            r = rCoord;
+            staticSize.y = 10;
+            growth = OverlayGrowFrom.TOP_CENTRE;
+        } else {
+            middle = "";
+        }
+
+        // breaks if it's rendering an item name or if doesn't have preference
+        if (!preference && renderItemName()) return;
+
+        drawString(l, (-ScreenRenderer.mc.fontRenderer.getStringWidth(l) - ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+        drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
+        drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2 + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
     }
 
-    private boolean renderItemName(ScaledResolution scaledRes) {
+    private boolean renderItemName() {
         ScreenRenderer.mc.gameSettings.heldItemTooltips = false;
+
         int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
         ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 
@@ -130,4 +130,5 @@ public class ActionBarOverlay extends Overlay {
         }
         return false;
     }
+
 }

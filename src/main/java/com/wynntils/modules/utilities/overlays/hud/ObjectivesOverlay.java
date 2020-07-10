@@ -24,12 +24,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ObjectivesOverlay extends Overlay {
+
     private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
     private static final int MAX_OBJECTIVES = 3;
 
-    private static Objective[] objectives = new Objective[MAX_OBJECTIVES];
+    private static final Objective[] objectives = new Objective[MAX_OBJECTIVES];
     private static String sidebarObjectiveName;
     private static long keepVisibleTimestamp;
 
@@ -39,20 +40,20 @@ public class ObjectivesOverlay extends Overlay {
 
     public static void checkForSidebar(SPacketDisplayObjective displayObjective) {
         // Find the objective that is displayed in the sidebar (slot 1)
-        if (displayObjective.getPosition() == 1) {
-            // We're basically looking for "sb" + username. Ignore the "fb" + username scoreboard.
-            if (displayObjective.getName().startsWith("sb")) {
-                sidebarObjectiveName = displayObjective.getName();
-            }
-        }
+        // We're basically looking for "sb" + username. Ignore the "fb" + username scoreboard.
+        if (displayObjective.getPosition() != 1 && !displayObjective.getName().startsWith("sb")) return;
+
+        sidebarObjectiveName = displayObjective.getName();
     }
 
     public static void checkSidebarRemoved(SPacketScoreboardObjective scoreboardObjective) {
-        if (scoreboardObjective.getAction() == 1 && scoreboardObjective.getObjectiveName().equals(sidebarObjectiveName)) {
-            // Sidebar scoreboard is removed
-            for (int i = 0; i < MAX_OBJECTIVES; i++) {
-                objectives[i] = null;
-            }
+        if (scoreboardObjective.getAction() != 1 || !scoreboardObjective.getObjectiveName().equals(sidebarObjectiveName)) {
+            return;
+        }
+
+        // Sidebar scoreboard is removed
+        for (int i = 0; i < MAX_OBJECTIVES; i++) {
+            objectives[i] = null;
         }
     }
 
@@ -135,8 +136,8 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void refreshAllTimestamps() {
-        for (int i = 0; i < objectives.length; i++) {
-            if (objectives[i] != null) objectives[i].refreshTimestamp();
+        for (Objective objective : objectives) {
+            if (objective != null) objective.refreshTimestamp();
         }
     }
 
@@ -150,10 +151,10 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void checkRewardsClaimed(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (e.getGui().getLowerInv().getName().equals("Objective Rewards")) {
-            // When opening reward, remove reminder
-            objectives[0] = null;
-        }
+        if (!e.getGui().getLowerInv().getName().equals("Objective Rewards")) return;
+
+        // When opening reward, remove reminder
+        objectives[0] = null;
     }
 
     private int getTextureOffset() {
@@ -228,9 +229,9 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static class Objective {
-        private String goal;
-        private int score;
-        private int maxScore;
+        private final String goal;
+        private final int score;
+        private final int maxScore;
         private long updatedAt;
 
         public Objective(String goal) {
@@ -248,9 +249,9 @@ public class ObjectivesOverlay extends Overlay {
         public String toString() {
             if (hasProgress()) {
                 return goal + " [" + score + "/" + maxScore + "]";
-            } else {
-                return goal;
             }
+
+            return goal;
         }
 
         public boolean hasProgress() {
@@ -272,5 +273,7 @@ public class ObjectivesOverlay extends Overlay {
         public String getGoal() {
             return this.goal;
         }
+
     }
+
 }

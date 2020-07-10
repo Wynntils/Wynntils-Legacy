@@ -27,4 +27,5 @@ public class GammaOverlay extends Overlay {
             drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.INSTANCE.textShadow);
         }
     }
+
 }

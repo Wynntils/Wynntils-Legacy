@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 public class ToastOverlay extends Overlay {
 
-    private static int DISPLAY_AMNT = 3;
-    private static ArrayList<Toast> toastList = new ArrayList<>();
-    private static Toast[] displayedToast = new Toast[DISPLAY_AMNT];
+    private static final int DISPLAY_AMNT = 3;
+    private static final ArrayList<Toast> toastList = new ArrayList<>();
+    private static final Toast[] displayedToast = new Toast[DISPLAY_AMNT];
     public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
     private static final CustomColor questCompletedColor = new CustomColor(89, 149, 55);

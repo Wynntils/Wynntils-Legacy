@@ -17,7 +17,7 @@ import java.util.Queue;
 
 public class TerritoryFeedOverlay extends Overlay {
 
-    private static Queue<String> messageList = new LinkedList<>();
+    private static final Queue<String> messageList = new LinkedList<>();
     private static String currentMessage;
     private static long animationStartTime;
 
@@ -27,11 +27,11 @@ public class TerritoryFeedOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (currentMessage != null) {
-            float halfStringWidth = getStringWidth(currentMessage) / 2;
-            float currentAnimationPercent = (System.currentTimeMillis() - animationStartTime) / ((float) OverlayConfig.TerritoryFeed.INSTANCE.animationLength * 1000f);
-            drawCenteredString(currentMessage, (screen.getScaledWidth() + halfStringWidth) - ((screen.getScaledWidth() + halfStringWidth * 2) * currentAnimationPercent), 0, CommonColors.WHITE);
-        }
+        if (currentMessage == null) return;
+
+        float halfStringWidth = getStringWidth(currentMessage) / 2;
+        float currentAnimationPercent = (System.currentTimeMillis() - animationStartTime) / ((float) OverlayConfig.TerritoryFeed.INSTANCE.animationLength * 1000f);
+        drawCenteredString(currentMessage, (screen.getScaledWidth() + halfStringWidth) - ((screen.getScaledWidth() + halfStringWidth * 2) * currentAnimationPercent), 0, CommonColors.WHITE);
     }
 
     @Override
@@ -43,6 +43,7 @@ public class TerritoryFeedOverlay extends Overlay {
             currentMessage = messageList.remove();
             animationStartTime = System.currentTimeMillis();
         }
+
         staticSize.x = ScreenRenderer.screen.getScaledWidth();
     }
 
@@ -57,4 +58,5 @@ public class TerritoryFeedOverlay extends Overlay {
         LogManager.getFormatterLogger("TerritoryFeed").info("Cleared Queued Messages");
         messageList.clear();
     }
+
 }

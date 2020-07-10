@@ -14,6 +14,7 @@ import com.wynntils.modules.utilities.instances.InfoFormatter;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public abstract class InfoOverlay extends Overlay {
+
     private static final InfoFormatter formatter = UtilitiesModule.getModule().getInfoFormatter();
 
     private InfoOverlay(int index) {

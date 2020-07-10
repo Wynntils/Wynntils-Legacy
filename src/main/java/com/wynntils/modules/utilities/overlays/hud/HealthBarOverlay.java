@@ -23,15 +23,6 @@ public class HealthBarOverlay extends Overlay {
         super("Health Bar", 81, 21, true, 0.5f, 1.0f, -10, -38, OverlayGrowFrom.MIDDLE_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
-//    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-//    @Setting(displayName = "Animation Speed", description = "How fast should the bar changes happen(0 for instant)")
-//    public float animated = 2f;
-
-    /* Temp in UtilitiesConfig so users can change textures on the fly
-    @Setting(displayName = "Texture", description = "What texture to use")
-    public HealthTextures texture = HealthTextures.a;
-    */
-
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
     public boolean flip = false;
 
@@ -46,13 +37,12 @@ public class HealthBarOverlay extends Overlay {
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         if (!(visible = (getPlayerInfo().getCurrentHealth() != -1 && !Reference.onLobby))) return;
-//        if (this.animated > 0.0f && this.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
-//            health -= (animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
         if (OverlayConfig.Health.INSTANCE.animated > 0.0f && OverlayConfig.Health.INSTANCE.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
             health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
-        } else {
-            health = getPlayerInfo().getCurrentHealth();
+            return;
         }
+
+        health = getPlayerInfo().getCurrentHealth();
     }
 
     @Override
@@ -86,8 +76,10 @@ public class HealthBarOverlay extends Overlay {
         if (OverlayConfig.Health.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
             drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a  - (81-OverlayConfig.Health.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
         }
+
         rotate(OverlayConfig.Health.INSTANCE.overlayRotation.getDegrees());
         drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
     }
+
 }
 
