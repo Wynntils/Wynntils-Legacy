@@ -15,7 +15,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public abstract class InfoOverlay extends Overlay {
     private static final InfoFormatter formatter = UtilitiesModule.getModule().getInfoFormatter();
-    
+
     private InfoOverlay(int index) {
         super("Info " + index, 100, 9, true, 0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
     }
@@ -29,54 +29,52 @@ public abstract class InfoOverlay extends Overlay {
         if (!Reference.onWorld || e.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
         String format = getFormat();
-        
-        if (format != null && !format.isEmpty()) {
-            String formatted = formatter.doFormat(format);
-            
-            if (!formatted.isEmpty()) {
-                String[] lines = formatted.split("\n");
-                
-                // Determine width of largest string
-                int width = 0;
-                for (int i = 0; i < lines.length; ++i) {
-                    if (mc.fontRenderer.getStringWidth(lines[i]) > width) {
-                        width = mc.fontRenderer.getStringWidth(lines[i]);
-                    }
-                }
-                
-                // Determine element locations
-                int backgroundLeft = 0;
-                int backgroundRight = 0;
-                int textOrigin = 0;
-                switch (getAlignment()) {
-                    case LEFT_RIGHT: 
-                        backgroundLeft = 0;
-                        backgroundRight = width;
-                        textOrigin = 0;
-                        break;
-                    case MIDDLE:
-                        float center = staticSize.x / 2f;
-                        backgroundLeft = (int) (center - width / 2);
-                        backgroundRight = (int) (center + width / 2);
-                        textOrigin = (int) center;
-                        break;
-                    case RIGHT_LEFT:
-                        backgroundLeft = staticSize.x - width;
-                        backgroundRight = staticSize.x;
-                        textOrigin = staticSize.x;
-                        break;
-                }
-                
-                // Draw Background
-                if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
-                    drawRect(OverlayConfig.InfoOverlays.INSTANCE.backgroundColor, backgroundLeft - 2, -2, backgroundRight + 2, 11 * lines.length - 2);
-                }
+        if (format == null || format.isEmpty()) return;
 
-                // Draw Text
-                for (int i = 0; i < lines.length; i++) {
-                    drawString(lines[i], textOrigin, i*11, CommonColors.WHITE, getAlignment(), OverlayConfig.InfoOverlays.INSTANCE.textShadow);
-                }
+        String formatted = formatter.doFormat(format);
+        if (formatted.isEmpty()) return;
+
+        String[] lines = formatted.split("\n");
+
+        // Determine width of largest string
+        int width = 0;
+        for (String line : lines) {
+            if (mc.fontRenderer.getStringWidth(line) > width) {
+                width = mc.fontRenderer.getStringWidth(line);
             }
+        }
+
+        // Determine element locations
+        int backgroundLeft = 0;
+        int backgroundRight = 0;
+        int textOrigin = 0;
+        switch (getAlignment()) {
+            case LEFT_RIGHT:
+                backgroundLeft = 0;
+                backgroundRight = width;
+                textOrigin = 0;
+                break;
+            case MIDDLE:
+                float center = staticSize.x / 2f;
+                backgroundLeft = (int) (center - width / 2);
+                backgroundRight = (int) (center + width / 2);
+                textOrigin = (int) center;
+                break;
+            case RIGHT_LEFT:
+                backgroundLeft = staticSize.x - width;
+                backgroundRight = staticSize.x;
+                textOrigin = staticSize.x;
+                break;
+        }
+
+        // Draw Background
+        if (OverlayConfig.InfoOverlays.INSTANCE.opacity != 0) {
+            drawRect(OverlayConfig.InfoOverlays.INSTANCE.backgroundColor, backgroundLeft - 2, -2, backgroundRight + 2, 11 * lines.length - 2);
+        }
+
+        // Draw Text
+        for (int i = 0; i < lines.length; i++) {
+            drawString(lines[i], textOrigin, i*11, CommonColors.WHITE, getAlignment(), OverlayConfig.InfoOverlays.INSTANCE.textShadow);
         }
     }
 
@@ -107,4 +105,5 @@ public abstract class InfoOverlay extends Overlay {
         @Override public final String getFormat() { return OverlayConfig.InfoOverlays.INSTANCE.info4Format; }
         @Override public final TextAlignment getAlignment() { return OverlayConfig.InfoOverlays.INSTANCE.info4Alignment; }
     }
+
 }

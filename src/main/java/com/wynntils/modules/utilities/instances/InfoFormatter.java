@@ -4,12 +4,12 @@
 
 package com.wynntils.modules.utilities.instances;
 
-import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
 import com.wynntils.core.framework.instances.PlayerInfo.UnprocessedAmount;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.PingManager;
@@ -26,10 +26,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InfoFormatter {
+
     private Minecraft mc = Minecraft.getMinecraft();
 
-    public HashMap<String, String> cache = new HashMap<String, String>();
-    public HashMap<String, InfoModule> formatters = new HashMap<String, InfoModule>();
+    public HashMap<String, String> cache = new HashMap<>();
+    public HashMap<String, InfoModule> formatters = new HashMap<>();
 
     private int tick = 0;
 

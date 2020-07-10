@@ -125,6 +125,7 @@ public class SmartFontRenderer extends FontRenderer {
         float textLength = 0f;
         boolean obfuscated = false;
         boolean italic = false;
+        boolean bold = false;
 
         for (int index = 0; index < text.length(); index++) {
 
@@ -143,9 +144,14 @@ public class SmartFontRenderer extends FontRenderer {
                             italic = true;
                             index++; // skips the the next char
                             break;
+                        case 'l':
+                            bold = true;
+                            index++;
+                            break;
                         case 'r': // stands for reset
                             obfuscated = false;
                             italic = false;
+                            bold = false;
                             detectedColor = 0xFFFFFF;
                             index++; // skips the the next char
                             break;
@@ -153,6 +159,7 @@ public class SmartFontRenderer extends FontRenderer {
                 } else { // if a valid color is found remove special effects
                     obfuscated = false;
                     italic = false;
+                    bold = false;
                     index++;
                 }
 
@@ -187,18 +194,16 @@ public class SmartFontRenderer extends FontRenderer {
             // rendering shadows
             switch (shadow) {
                 case OUTLINE:
-                    posX = x - 1;
-                    posY = y;
+                    posX -= 1;
                     renderChar(character);
-                    posX = x + 1;
-                    posY = y;
+                    posX += bold ? 3 : 2;
                     renderChar(character);
-                    posX = x;
-                    posY = y - 1;
+                    posX -= bold ? 2 : 1;
+                    posY -= 1;
                     renderChar(character);
-                    posX = x;
-                    posY = y + 1;
+                    posY += 2;
                     renderChar(character);
+                    posY -= 1;
                     break;
                 case NORMAL:
                     posX = x + 1;
@@ -218,6 +223,14 @@ public class SmartFontRenderer extends FontRenderer {
 
             this.setColor(red, green, blue, alpha);
             float charLength = renderChar(character, italic);
+
+            if (bold) {
+                posX += 1;
+                renderChar(character);
+                posX -= 1;
+
+                charLength += 1;
+            }
 
             posX += charLength + CHAR_SPACING;
             textLength += charLength + CHAR_SPACING;
