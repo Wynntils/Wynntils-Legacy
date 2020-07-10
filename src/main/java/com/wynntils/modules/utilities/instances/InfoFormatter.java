@@ -154,7 +154,7 @@ public class InfoFormatter {
             }
 
             return cache.get("horsexp");
-        }, "horse_xp");
+        }, "horse_xp", "h_xp");
 
         // Horse Level
         registerFormatter((input) -> {
@@ -163,7 +163,7 @@ public class InfoFormatter {
             }
 
             return cache.get("horselevel");
-        }, "horse_level");
+        }, "horse_level", "h_lvl");
 
         // Max horse level
         registerFormatter((input) -> {
@@ -172,7 +172,7 @@ public class InfoFormatter {
             }
 
             return cache.get("horselevelmax");
-        }, "horse_level_max");
+        }, "horse_level_max", "h_mlvl");
 
         // Horse Tier
         registerFormatter((input) -> {
@@ -181,7 +181,7 @@ public class InfoFormatter {
             }
 
             return cache.get("horsetier");
-        }, "horse_tier");
+        }, "horse_tier", "h_tier");
 
         // Number of items in ingredient pouch
         registerFormatter((input) -> {
@@ -303,12 +303,12 @@ public class InfoFormatter {
         // Count of health potions
         registerFormatter((input) -> {
             return Integer.toString(PlayerInfo.getPlayerInfo().getHealthPotions());
-        }, "potions_health");
+        }, "potions_health", "hp_pot");
 
         // Count of mana potions
         registerFormatter((input) -> {
             return Integer.toString(PlayerInfo.getPlayerInfo().getManaPotions());
-        }, "potions_mana");
+        }, "potions_mana", "mp_pot");
 
         // Current class
         registerFormatter((input) -> {
