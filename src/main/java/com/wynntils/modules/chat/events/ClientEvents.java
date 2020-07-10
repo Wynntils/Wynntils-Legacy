@@ -77,11 +77,13 @@ public class ClientEvents implements Listener {
 
         Pair<String, Boolean> message = ChatManager.applyUpdatesToServer(e.getMessage());
         e.setMessage(message.a);
-        if (message.b) {
+        if (message.b || message.a.isEmpty() || message.a.equalsIgnoreCase(" ")) {
             e.setCanceled(true);
+            return;
         }
 
-        if (!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty()) e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());
+        if (!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty())
+            e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());
     }
 
     @SubscribeEvent
