@@ -681,15 +681,24 @@ public class OverlayEvents implements Listener {
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            SPacketEntityEffect effect = e.getPacket();
-            Potion potion = Potion.getPotionById(effect.getEffectId());
-
-            if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId() &&
-                    potion == MobEffects.SPEED) {
-                ConsumableTimerOverlay.addBasicTimer("Speed boost", effect.getDuration() / 20);
+        SPacketEntityEffect effect = e.getPacket();
+        Potion potion = Potion.getPotionById(effect.getEffectId());
+        if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId()) {
+            String timerName;
+            if (potion == MobEffects.SPEED) {
+                timerName = "Speed boost";
+            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
+                timerName = "War Scream I";
+            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
+                timerName = "War Scream II";
+            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
+                timerName = "War Scream III";
+            } else {
+                return;
             }
-        });
+            Minecraft.getMinecraft().addScheduledTask(() ->
+                    ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
+        }
     }
 
     @SubscribeEvent
