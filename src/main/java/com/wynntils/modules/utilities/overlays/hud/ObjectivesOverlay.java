@@ -120,7 +120,9 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void updateOverlayActivation() {
-        GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
+        if (Reference.onServer) {
+            GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
+        }
     }
 
     public static void restoreVanillaScoreboard() {
