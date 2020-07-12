@@ -146,11 +146,6 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public long dailyReminder = 0L;
-
-        @Override
-        public void onSettingChanged(String name) {
-
-        }
     }
 
     @SettingsInfo(name = "item_highlights", displayPath = "Utilities/Item Highlights")
@@ -274,12 +269,6 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 62)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
-
-
-        @Override
-        public void onSettingChanged(String name) {
-
-        }
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")
