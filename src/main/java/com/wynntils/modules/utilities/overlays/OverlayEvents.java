@@ -688,11 +688,11 @@ public class OverlayEvents implements Listener {
             if (potion == MobEffects.SPEED) {
                 timerName = "Speed boost";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
-                timerName = "War Scream I";
+                timerName = "Resistance I";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
-                timerName = "War Scream II";
+                timerName = "Resistance II";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
-                timerName = "War Scream III";
+                timerName = "Resistance III";
             } else {
                 return;
             }
