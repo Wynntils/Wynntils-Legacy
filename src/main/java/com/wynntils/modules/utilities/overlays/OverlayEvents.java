@@ -697,11 +697,11 @@ public class OverlayEvents implements Listener {
                 timerName = "Speed boost";
             }
             // if the effect is invisibility timer is "Vanish"
-            else if (potion == MobEffects.INVISIBILITY) {
+            else if (potion == MobEffects.INVISIBILITY && effect.getDuration() < 200) {
                 timerName = "Vanish";
                 isVanished = true;
             }
-            // if the player isn't invisible (used vanish)
+            // if the player isn't invisible (didn't use vanish)
             else if (!isVanished) {
                 // if the effect is resistance I timer is "War Scream I"
                 if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
@@ -714,6 +714,8 @@ public class OverlayEvents implements Listener {
                 // if the effect is resistance III timer is "War Scream III"
                 else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
                     timerName = "War Scream III";
+                } else {
+                    return;
                 }
             } else {
                 return;
