@@ -273,25 +273,25 @@ public class WorldMapUI extends GuiMovementScreen {
 
         if (needToReset[0]) resetAllIcons();
 
-        float playerPostionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
-        float playerPostionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
+        float playerPositionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
+        float playerPositionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
 
-        if (playerPostionX > 0 && playerPostionX < 1 && playerPostionZ > 0 && playerPostionZ < 1) {  // <--- player position
-            playerPostionX = width * playerPostionX;
-            playerPostionZ = height * playerPostionZ;
+        if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
+            playerPositionX = width * playerPositionX;
+            playerPositionZ = height * playerPositionZ;
 
             Point drawingOrigin = ScreenRenderer.drawingOrigin();
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(drawingOrigin.x + playerPostionX, drawingOrigin.y + playerPostionZ, 0);
+            GlStateManager.translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
             GlStateManager.rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw), 0, 0, 1);
-            GlStateManager.translate(-drawingOrigin.x - playerPostionX, -drawingOrigin.y - playerPostionZ, 0);
+            GlStateManager.translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
 
             MapConfig.Textures.INSTANCE.pointerColor.applyColor();
             GlStateManager.enableAlpha();
-            renderer.drawRectF(Textures.Map.map_pointers, playerPostionX - type.dWidth * 1.5f, playerPostionZ - type.dHeight * 1.5f, playerPostionX + type.dWidth * 1.5f, playerPostionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
+            renderer.drawRectF(Textures.Map.map_pointers, playerPositionX - type.dWidth * 1.5f, playerPositionZ - type.dHeight * 1.5f, playerPositionX + type.dWidth * 1.5f, playerPositionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
             GlStateManager.color(1, 1, 1, 1);
 
             GlStateManager.popMatrix();
@@ -336,10 +336,10 @@ public class WorldMapUI extends GuiMovementScreen {
         clicking[0] = Mouse.isButtonDown(0);
         clicking[1] = Mouse.isButtonDown(1);
 
-        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-        if (mDwehll > 0) {
+        int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDWheel > 0) {
             zoomBy(+1);
-        } else if (mDwehll < 0) {
+        } else if (mDWheel < 0) {
             zoomBy(-1);
         }
 

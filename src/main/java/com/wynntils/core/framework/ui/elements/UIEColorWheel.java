@@ -302,10 +302,10 @@ public class UIEColorWheel extends UIEClickZone {
 
         @Override
         public void handleMouseInput() throws IOException {
-            int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-            if (mDwehll > 0) {
+            int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+            if (mDWheel > 0) {
                 valueSlider.setSliderValue(Math.min(valueSlider.getSliderValue() + 0.1f, 1), true);
-            } else if (mDwehll < 0) {
+            } else if (mDWheel < 0) {
                 valueSlider.setSliderValue(Math.max(valueSlider.getSliderValue() - 0.1f, 0), true);
             }
 

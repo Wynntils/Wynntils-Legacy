@@ -52,7 +52,7 @@ public class StringUtils {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
-    // ported from a really really old C# code because im lazy, dont judge -SHCM
+    // ported from a really really old C# code because im lazy, don't judge -SHCM
     public static String getCutString(String inputIN, String startIN, String endIN, boolean keepStartAndEndIN) {
         StringBuilder returning = new StringBuilder();
         StringBuilder read = new StringBuilder();
@@ -157,7 +157,7 @@ public class StringUtils {
         return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
-    public static String millistToLongString(long duration) {
+    public static String millisToLongString(long duration) {
         long minute = (duration / (1000 * 60)) % 60,
              hour = (duration / (1000 * 60 * 60));
 

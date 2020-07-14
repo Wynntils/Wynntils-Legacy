@@ -197,14 +197,14 @@ public class QuestBookPage extends GuiScreen {
 
     @Override
     public void handleMouseInput() throws IOException {
-        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        if (mDwehll <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
+        if (mDWheel <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptNext) {
                 delay = Minecraft.getSystemTime();
                 goForward();
             }
-        } else if (mDwehll >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
+        } else if (mDWheel >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
                 delay = Minecraft.getSystemTime();
                 goBack();

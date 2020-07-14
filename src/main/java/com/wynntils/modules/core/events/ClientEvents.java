@@ -214,7 +214,7 @@ public class ClientEvents implements Listener {
      * Process the packet queue if the queue is not empty
      */
     @SubscribeEvent
-    public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
+    public void processPacketQueue(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END || !PacketQueue.hasQueuedPacket()) return;
 
         PingManager.calculatePing();

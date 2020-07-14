@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
  * Modules are the parts that make up the whole Wynntils mod,
  * They should be able to be turned off and on dynamically,
  * register their event listeners, overlays and keybindings,
- * and (TODO) house the module's user prefrences
+ * and (TODO) house the module's user preferences
  */
 @ModuleInfo(name = "example_snake-cased_name", displayName = "Display Name For The Module")
 public class ExampleModule extends Module {

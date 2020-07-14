@@ -48,7 +48,7 @@ public class IdentificationOrderer {
     /**
      * Order and returns a list of string based on the provided ids
      *
-     * @param holder a map containg as key the "short" id name and as value the id lore
+     * @param holder a map containing as key the "short" id name and as value the id lore
      * @param groups if ids should be grouped
      * @return a list with the ordered lore
      */

@@ -96,16 +96,16 @@ public class SettingsManager {
         String name = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase().replace(" ", "_") : info.name()) + ".config";
 
         if (WebManager.getAccount() == null) return null;
-        if (!WebManager.getAccount().getEncondedConfigs().containsKey(name)) return null;
+        if (!WebManager.getAccount().getEncodedConfigs().containsKey(name)) return null;
 
-        String jsonDecoded = WebManager.getAccount().getEncondedConfigs().get(name);
+        String jsonDecoded = WebManager.getAccount().getEncodedConfigs().get(name);
         WebManager.getAccount().dumpEncodedConfig(name);
 
         return gson.fromJson(jsonDecoded, obj.getClass());
     }
 
     /**
-     * HeyZeer0: This interpretates the common colors class, into/from the 'rgba(r,g,b,a)' format
+     * HeyZeer0: This interprets the common colors class, into/from the 'rgba(r,g,b,a)' format
      */
     private static class CustomColorSerializer implements JsonDeserializer<CustomColor>, JsonSerializer<CustomColor> {
 

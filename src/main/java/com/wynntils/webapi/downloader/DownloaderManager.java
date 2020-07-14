@@ -50,7 +50,7 @@ public class DownloaderManager {
     }
 
     /**
-     * @return if the game will be restarted when the queue finishs
+     * @return if the game will be restarted when the queue finishes
      */
     public static boolean isRestartOnQueueFinish() {
         return restartOnQueueFinish;

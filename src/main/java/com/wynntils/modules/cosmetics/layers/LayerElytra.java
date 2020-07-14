@@ -32,7 +32,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     /**
      * The model used by the Elytra.
      */
-    private final CustomElytraModel modelElytra = new CustomElytraModel();;
+    private final CustomElytraModel modelElytra = new CustomElytraModel();
 
     public LayerElytra(RenderPlayer playerRendererIn) {
         this.renderPlayer = playerRendererIn;

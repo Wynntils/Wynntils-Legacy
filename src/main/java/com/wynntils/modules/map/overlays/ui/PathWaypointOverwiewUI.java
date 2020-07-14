@@ -121,12 +121,12 @@ public class PathWaypointOverwiewUI extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-        if (mDwehll < 0 && nextPageBtn.enabled) {
+        int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDWheel < 0 && nextPageBtn.enabled) {
             ++page;
             checkAvailablePages();
             setEditButtons();
-        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+        } else if (mDWheel > 0 && previousPageBtn.enabled) {
             --page;
             checkAvailablePages();
             setEditButtons();

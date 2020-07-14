@@ -63,7 +63,7 @@ public class ChatManager {
         if (in == null) return in;
         ITextComponent original = in.createCopy();
 
-        // Reorginizing
+        // Reorganizing
         if (!in.getUnformattedComponentText().isEmpty()) {
             ITextComponent newMessage = new TextComponentString("");
             newMessage.setStyle(in.getStyle().createDeepCopy());
