@@ -401,7 +401,7 @@ public class PlayerInfo {
                 count++;
             } else {
                 line = line.substring(0, end);
-                count = count + Integer.valueOf(line);
+                count = count + Integer.parseInt(line);
             }
         }
 
@@ -438,11 +438,11 @@ public class PlayerInfo {
 
             List<String> lore = ItemUtils.getLore(saddle);
 
-            tier = Integer.valueOf(lore.get(0).substring(7));
-            level = Integer.valueOf(lore.get(1).substring(9, lore.get(1).indexOf("/")));
-            maxLevel = Integer.valueOf(lore.get(1).substring(lore.get(1).indexOf("/")+1));
+            tier = Integer.parseInt(lore.get(0).substring(7));
+            level = Integer.parseInt(lore.get(1).substring(9, lore.get(1).indexOf("/")));
+            maxLevel = Integer.parseInt(lore.get(1).substring(lore.get(1).indexOf("/")+1));
             armour = lore.get(3).substring(11);
-            xp = Integer.valueOf(lore.get(4).substring(6, lore.get(4).indexOf("/")));
+            xp = Integer.parseInt(lore.get(4).substring(6, lore.get(4).indexOf("/")));
         }
     }
 

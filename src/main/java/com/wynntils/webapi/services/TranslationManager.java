@@ -81,7 +81,7 @@ public class TranslationManager {
         @Override
         public void translate(String message, String toLanguage, Consumer<String> handleTranslation) {
             StringBuilder latinString = new StringBuilder();
-            if (message != null || !message.isEmpty()) {
+            if (message != null && !message.isEmpty()) {
                 for (String word : message.split("\\s")) {
                     if (word.isEmpty()) continue;
                     if ("AEIOUaeiou".indexOf(word.charAt(0)) != -1) {

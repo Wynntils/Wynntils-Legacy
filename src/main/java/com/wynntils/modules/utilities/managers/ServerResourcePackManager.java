@@ -62,7 +62,9 @@ public class ServerResourcePackManager {
             boolean hashMatches = false;
             try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
                 hashMatches = DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
-            } catch (IOException err) { }
+            } catch (IOException err) {
+                err.printStackTrace();
+            }
 
             // Already loaded this pack if matches so cancel
             return hashMatches;
@@ -83,7 +85,9 @@ public class ServerResourcePackManager {
 
         try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
             return DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
-        } catch (IOException err) { }
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
 
         return false;
     }
@@ -106,7 +110,9 @@ public class ServerResourcePackManager {
         boolean valid = false;
         try (InputStream is = new FileInputStream(f)) {
             valid = DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
-        } catch (IOException err) { }
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
 
         if (!valid) return;
 

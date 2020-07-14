@@ -97,7 +97,7 @@ public class WorldMapSettingsUI extends GuiScreen {
 
         // Draw labels rotated 45 degrees
         GlStateManager.pushMatrix();
-        GlStateManager.translate((this.width-399)/2 + 286, 29f, 0f);
+        GlStateManager.translate((this.width-399) / 2.0f + 286, 29f, 0f);
         GlStateManager.rotate(-45, 0, 0, 1);
         this.fontRenderer.drawString("Main map", 0, 0, 0xFFFFFFFF);
         GlStateManager.translate(11 / MathHelper.SQRT_2, 17 / MathHelper.SQRT_2, 0f);

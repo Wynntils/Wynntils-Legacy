@@ -34,16 +34,17 @@ public class HotbarOverlay extends Overlay {
         EntityPlayerSP player = ModCore.mc().player;
         int textureY = 0;
 
-        switch (OverlayConfig.Hotbar.INSTANCE.hotbarTexture) {
-            case Wynn: textureY = 0;
-                break;
-        }
-
         if (OverlayConfig.Hotbar.INSTANCE.hotbarTexture == OverlayConfig.Hotbar.HotbarTextures.Resource_Pack) {
             float scale = WIDGETS_TEXTURE.height / 256;
             drawRect(WIDGETS_TEXTURE, -91, 0, 91, 22, 0, 0, (int) (182 * scale), (int) (22 * scale));
             drawRect(WIDGETS_TEXTURE, -92 + player.inventory.currentItem * 20, -1, -68 + player.inventory.currentItem * 20, 21, 0, (int) (22 * scale), (int) (24 * scale), (int) (44 * scale));
         } else {
+            switch (OverlayConfig.Hotbar.INSTANCE.hotbarTexture) {
+                case Wynn: textureY = 0;
+                    break;
+                default: assert(false);
+            }
+
             drawRect(Textures.Overlays.hotbar, -91, 0, 0, textureY, 182, 22);
             drawRect(Textures.Overlays.hotbar, -92 + player.inventory.currentItem * 20, -1, 0, textureY + 22, 24, 22);
         }

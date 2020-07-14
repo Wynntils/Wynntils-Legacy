@@ -180,6 +180,7 @@ public class FakeInventory {
         return windowTitle;
     }
 
+    @Override
     public FakeInventory clone() {
         return new FakeInventory(expectedWindowTitle, openAction);
     }

@@ -71,9 +71,7 @@ public class LootRunManager {
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
-
-            activePath = path;
+            activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
 
             reader.close();
         } catch (Exception ex) {

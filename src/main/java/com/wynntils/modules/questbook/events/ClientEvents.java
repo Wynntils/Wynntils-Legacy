@@ -32,7 +32,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChat(GameEvent e)  {
-        AnalysePosition position = null;
+        AnalysePosition position;
         boolean fullRead = false;
         boolean readImmediately = false;
 

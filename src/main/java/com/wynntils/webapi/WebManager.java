@@ -344,7 +344,7 @@ public class WebManager {
                     JsonObject servers = json.getAsJsonObject("servers");
                     HashMap<String, ServerProfile> result = new HashMap<>();
 
-                    long serverTime = Long.valueOf(con.getHeaderField("timestamp"));
+                    long serverTime = Long.parseLong(con.getHeaderField("timestamp"));
                     for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
                         ServerProfile profile = gson.fromJson(entry.getValue(), ServerProfile.class);
                         profile.matchTime(serverTime);

@@ -32,7 +32,7 @@ public class QuestBookPage extends GuiScreen {
     private long time;
 
     // Page specific information
-    private String title = "";
+    private String title;
     private IconContainer icon;
     protected boolean showAnimation;
 
@@ -148,7 +148,7 @@ public class QuestBookPage extends GuiScreen {
             render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
 
             ScreenRenderer.scale(2f);
-            render.drawString(title, (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
             /*Render search bar when needed*/

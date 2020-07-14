@@ -27,7 +27,7 @@ public class SkillPointOverlay implements Listener {
             String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
 
-            int value = 0;
+            int value;
 
             if (name.contains("Upgrade")) {// Skill Points
                 int start = lore.indexOf(" points ")-3;
@@ -66,7 +66,7 @@ public class SkillPointOverlay implements Listener {
                 int min = Integer.parseInt(numbers[0]);
                 int max = Integer.parseInt(numbers[1]);
 
-                value = Math.round((max+min)/2);
+                value = Math.round((max+min) / 2.0f);
             } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ")+19;
                 int end = lore.indexOf("Log in everyday to");

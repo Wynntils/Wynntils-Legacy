@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.instances.account;
 
-import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.util.Base64;
 
-public class CosmeticInfo extends SimpleTexture {
+public class CosmeticInfo extends AbstractTexture {
 
     boolean ears;
     boolean cape;
@@ -24,8 +24,6 @@ public class CosmeticInfo extends SimpleTexture {
     ResourceLocation location;
 
     public CosmeticInfo(boolean ears, boolean cape, boolean elytra, String texture, ResourceLocation location) {
-        super(null);
-
         this.ears = ears;
         this.cape = cape;
         this.elytra = elytra;

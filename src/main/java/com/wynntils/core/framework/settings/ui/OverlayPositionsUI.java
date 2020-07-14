@@ -367,25 +367,25 @@ public class OverlayPositionsUI extends UI {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
                     overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_CENTRE) {
-                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2.0f));
                     overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.TOP_RIGHT) {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);
                     overlay.position.offsetY = roundToGridPosVertical(position.offsetY);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_LEFT) {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
-                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2.0f));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_CENTRE) {
-                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
-                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2.0f));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2.0f));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.MIDDLE_RIGHT) {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);
-                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2));
+                    overlay.position.offsetY = roundToGridPosVertical(position.offsetY + (overlay.staticSize.y / 2.0f));
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_LEFT) {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX);
                     overlay.position.offsetY = roundToGridPosVertical(position.offsetY + overlay.staticSize.y);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_CENTRE) {
-                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2));
+                    overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + (overlay.staticSize.x / 2.0f));
                     overlay.position.offsetY = roundToGridPosVertical(position.offsetY + overlay.staticSize.y);
                 } else if (overlay.growth == Overlay.OverlayGrowFrom.BOTTOM_RIGHT) {
                     overlay.position.offsetX = roundToGridPosHorizontal(position.offsetX + overlay.staticSize.x);

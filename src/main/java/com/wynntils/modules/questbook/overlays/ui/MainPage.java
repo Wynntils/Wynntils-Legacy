@@ -127,7 +127,7 @@ public class MainPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
 
             ScreenRenderer.scale(2f);
-            render.drawString("User Profile", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("User Profile", (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);

@@ -468,7 +468,7 @@ public class OverlayConfig extends SettingsClass {
         public int opacity = 0;
 
         @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
-        public CustomColor backgroundColor = CustomColor.fromInt(000000, 0);
+        public CustomColor backgroundColor = CustomColor.fromInt(0x000000, 0);
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;

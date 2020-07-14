@@ -45,7 +45,7 @@ public class QuestInfo {
     private Location targetLocation = null;
 
     private boolean valid = false;
-    private boolean isMiniQuest = false;
+    private boolean isMiniQuest;
 
     public QuestInfo(ItemStack originalStack, boolean isMiniQuest) {
         this.originalStack = originalStack;

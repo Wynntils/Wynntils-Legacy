@@ -316,7 +316,7 @@ public class WorldMapUI extends GuiMovementScreen {
         int worldX = getMouseWorldX(mouseX, map);
         int worldZ = getMouseWorldZ(mouseY, map);
 
-        renderer.drawString(worldX + ", " + worldZ, width / 2, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.drawString(worldX + ", " + worldZ, width / 2.0f, height - 20, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
     private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out

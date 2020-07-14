@@ -256,7 +256,6 @@ public final class CubicSplines {
          *
          * @param index Between 0 and points.size() - 1
          * @param t Between 0 and 1
-         * @return
          */
         public Location apply(int index, double t) {
             if (dirty) recalculateAllCubics();

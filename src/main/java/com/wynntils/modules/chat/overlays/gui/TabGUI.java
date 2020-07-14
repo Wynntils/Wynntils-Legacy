@@ -171,13 +171,9 @@ public class TabGUI extends GuiScreen {
             regexTextField.setVisible(!simple);
             regexLabel.visible = !simple;
             simpleSettings.visible = simple;
-            simpleRegexSettings.forEach(b -> {
-                b.visible = simple;
-            });
+            simpleRegexSettings.forEach(b -> b.visible = simple);
         } else if (button == allRegex) {
-            simpleRegexSettings.forEach(b -> {
-                b.setIsChecked(((GuiCheckBox) button).isChecked());
-            });
+            simpleRegexSettings.forEach(b -> b.setIsChecked(((GuiCheckBox) button).isChecked()));
         }
         if (button.id >= 10 && button.id <= 16) {
             regexTextField.setText(regexCreator());
@@ -274,9 +270,7 @@ public class TabGUI extends GuiScreen {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return null;
 
         HashMap<String, Boolean> r = new HashMap<>();
-        simpleRegexSettings.forEach(b->{
-            r.put(b.displayString, b.isChecked());
-        });
+        simpleRegexSettings.forEach(b-> r.put(b.displayString, b.isChecked()));
         return r;
     }
 

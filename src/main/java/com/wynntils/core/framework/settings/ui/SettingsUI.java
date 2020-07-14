@@ -273,12 +273,8 @@ public class SettingsUI extends UI {
         for (String word : words) {
             if (!word.isEmpty()) searchText.add(word);
         }
-        settings.elements.forEach(s -> {
-            ((SettingElement) s).isSearched = doesMatchSearch((SettingElement) s);
-        });
-        holders.elements.forEach(h -> {
-            ((HolderButton) h).isSearched = doesMatchSearch((HolderButton) h);
-        });
+        settings.elements.forEach(s -> ((SettingElement) s).isSearched = doesMatchSearch((SettingElement) s));
+        holders.elements.forEach(h -> ((HolderButton) h).isSearched = doesMatchSearch((HolderButton) h));
     }
 
     private boolean doesStringMatchSearch(String s) {

@@ -40,54 +40,54 @@ public class InfoFormatter {
 
     public InfoFormatter() {
         // Escape for % character
-        registerFormatter((input) -> {
-            return "%";
-        }, "%");
+        registerFormatter((input) ->
+                "%",
+                "%");
 
         // Blocks per second
-        registerFormatter((input) -> {
-            return PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed());
-        }, "bps");
+        registerFormatter((input) ->
+                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed()),
+                "bps");
 
         // Blocks per minute
-        registerFormatter((input) -> {
-            return PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 60);
-        }, "bpm");
+        registerFormatter((input) ->
+                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 60),
+                "bpm");
 
         // Kilometers per hour (1000 blocks per hour)
-        registerFormatter((input) -> {
-            return PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 3.6);
-        }, "kmph");
+        registerFormatter((input) ->
+                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 3.6),
+                "kmph");
 
         // X coordinate
-        registerFormatter((input) -> {
-            return Integer.toString((int) mc.player.posX);
-        }, "x");
+        registerFormatter((input) ->
+                Integer.toString((int) mc.player.posX),
+                "x");
 
         // Y coordinate
-        registerFormatter((input) -> {
-            return Integer.toString((int) mc.player.posY);
-        }, "y");
+        registerFormatter((input) ->
+                Integer.toString((int) mc.player.posY),
+                "y");
 
         // Z coordinate
-        registerFormatter((input) -> {
-            return Integer.toString((int) mc.player.posZ);
-        }, "z");
+        registerFormatter((input) ->
+                Integer.toString((int) mc.player.posZ),
+                "z");
 
         // The facing cardinal direction
-        registerFormatter((input) -> {
-            return Utils.getPlayerDirection(mc.player.rotationYaw);
-        }, "dir");
+        registerFormatter((input) ->
+                Utils.getPlayerDirection(mc.player.rotationYaw),
+                "dir");
 
         // Frames per second
-        registerFormatter((input) -> {
-            return Integer.toString(Minecraft.getDebugFPS());
-        }, "fps");
+        registerFormatter((input) ->
+                Integer.toString(Minecraft.getDebugFPS()),
+                "fps");
 
         // The world/server number
-        registerFormatter((input) -> {
-            return Reference.getUserWorld();
-        }, "world");
+        registerFormatter((input) ->
+                Reference.getUserWorld(),
+                "world");
 
         // The ping time to the server
         registerFormatter((input) -> {
@@ -103,49 +103,49 @@ public class InfoFormatter {
         }, "clock");
 
         // Current mana
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getCurrentMana());
-        },"mana");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getCurrentMana()),
+                "mana");
 
         // Max mana
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getMaxMana());
-        }, "mana_max");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getMaxMana()),
+                "mana_max");
 
         // Current health
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getCurrentHealth());
-        }, "health");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getCurrentHealth()),
+                "health");
 
         // Max health
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getMaxHealth());
-        }, "health_max");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getMaxHealth()),
+                "health_max");
 
         // Current XP (formatted)
-        registerFormatter((input) -> {
-            return StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getCurrentXP());
-        }, "xp");
+        registerFormatter((input) ->
+                StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getCurrentXP()),
+                "xp");
 
         // Current XP (raw)
-        registerFormatter((input) -> {
-            return Long.toString(PlayerInfo.getPlayerInfo().getCurrentXP());
-        }, "xp_raw");
+        registerFormatter((input) ->
+                Long.toString(PlayerInfo.getPlayerInfo().getCurrentXP()),
+                "xp_raw");
 
         // XP required to level up (formatted)
-        registerFormatter((input) -> {
-            return StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp());
-        }, "xp_req");
+        registerFormatter((input) ->
+                StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp()),
+                "xp_req");
 
         // XP required to level up (raw)
-        registerFormatter((input) -> {
-            return Long.toString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp());
-        }, "xp_req_raw");
+        registerFormatter((input) ->
+                Long.toString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp()),
+                "xp_req_raw");
 
         // Percentage XP to next level
-        registerFormatter((input) -> {
-            return PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage();
-        }, "xp_pct");
+        registerFormatter((input) ->
+                PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage(),
+                "xp_pct");
 
         // Horse XP
         registerFormatter((input) -> {
@@ -184,39 +184,39 @@ public class InfoFormatter {
         }, "horse_tier", "h_tier");
 
         // Number of items in ingredient pouch
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(false));
-        }, "pouch");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(false)),
+                "pouch");
 
         // Number of free slots in ingredient pouch
-        registerFormatter((input) -> {
-            return Integer.toString(27 - PlayerInfo.getPlayerInfo().getIngredientPouchCount(true));
-        }, "pouch_free");
+        registerFormatter((input) ->
+                Integer.toString(27 - PlayerInfo.getPlayerInfo().getIngredientPouchCount(true)),
+                "pouch_free");
 
         // Number of used slots in ingredient pouch
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(true));
-        }, "pouch_slots");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(true)),
+                "pouch_slots");
 
         // Number of free slots in the inventory
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getFreeInventorySlots());
-        }, "inv_free");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getFreeInventorySlots()),
+                "inv_free");
 
         // Number of used slots in the inventory
-        registerFormatter((input) -> {
-            return Integer.toString(28 - PlayerInfo.getPlayerInfo().getFreeInventorySlots());
-        }, "inv_slots");
+        registerFormatter((input) ->
+                Integer.toString(28 - PlayerInfo.getPlayerInfo().getFreeInventorySlots()),
+                "inv_slots");
 
         // Current location (town)
-        registerFormatter((input) -> {
-            return RichPresenceModule.getModule().getData().getLocation();
-        }, "location", "loc");
+        registerFormatter((input) ->
+                RichPresenceModule.getModule().getData().getLocation(),
+                "location", "loc");
 
         // Current level
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getLevel());
-        }, "level", "lvl");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getLevel()),
+                "level", "lvl");
 
         // Time until soul point (formatted)
         registerFormatter((input) -> {
@@ -246,14 +246,14 @@ public class InfoFormatter {
         }, "soulpointtimer_s", "sptimer_s");
 
         // Current soul points
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getSoulPoints());
-        }, "soulpoints", "sp");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getSoulPoints()),
+                "soulpoints", "sp");
 
         // Max soul points
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getMaxSoulPoints());
-        }, "soulpoints_max", "sp_max");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getMaxSoulPoints()),
+                "soulpoints_max", "sp_max");
 
         // Total money in inventory
         registerFormatter((input) -> {
@@ -301,14 +301,14 @@ public class InfoFormatter {
         }, "e", "emeralds");
 
         // Count of health potions
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getHealthPotions());
-        }, "potions_health", "hp_pot");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getHealthPotions()),
+                "potions_health", "hp_pot");
 
         // Count of mana potions
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getManaPotions());
-        }, "potions_mana", "mp_pot");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getManaPotions()),
+                "potions_mana", "mp_pot");
 
         // Current class
         registerFormatter((input) -> {
@@ -368,14 +368,14 @@ public class InfoFormatter {
         }, "unprocessed_max");
 
         // Number of players in the party
-        registerFormatter((input) -> {
-            return Integer.toString(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size());
-        }, "party_count");
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size()),
+                "party_count");
 
         // Owner of players party
-        registerFormatter((input) -> {
-            return PlayerInfo.getPlayerInfo().getPlayerParty().getOwner();
-        }, "party_owner");
+        registerFormatter((input) ->
+                PlayerInfo.getPlayerInfo().getPlayerParty().getOwner(),
+                "party_owner");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {

@@ -446,7 +446,7 @@ public class ClientEvents implements Listener {
                     List<String> lore = ItemUtils.getLore(item);
                     String price = lore.get(4);
                     int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
-                    int le = (int) Math.floor((double) actualPrice) / 4096;
+                    int le = (int) Math.floor(actualPrice) / 4096;
                     int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
                     int emeralds = actualPrice % 64;
                     String priceDisplay = "";
@@ -573,9 +573,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -588,9 +586,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -603,9 +599,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -659,7 +653,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    {
+    static {
         try {
             UtilitiesModule.getModule().registerEvents(new FailsToLoadIfNoColorEvent());
         } catch (NoClassDefFoundError e) { /* ignore */ }

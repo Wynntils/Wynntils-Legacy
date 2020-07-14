@@ -35,9 +35,8 @@ public enum WynntilsSound {
     }
 
     public void play(float volume, float pitch) {
-        ModCore.mc().addScheduledTask(() -> {
-            Minecraft.getMinecraft().player.playSound(event, volume, pitch);
-        });
+        ModCore.mc().addScheduledTask(() ->
+                Minecraft.getMinecraft().player.playSound(event, volume, pitch));
     }
 
     public void play() {

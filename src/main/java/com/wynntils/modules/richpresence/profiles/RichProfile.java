@@ -75,9 +75,7 @@ public class RichProfile {
                         return;
                     }
 
-                    ModCore.mc().addScheduledTask(() -> {
-                        setup(id);
-                    });
+                    ModCore.mc().addScheduledTask(() -> setup(id));
                 });
                 return true;
         }));

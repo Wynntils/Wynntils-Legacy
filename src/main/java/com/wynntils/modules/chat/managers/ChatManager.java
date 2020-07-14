@@ -478,7 +478,7 @@ public class ChatManager {
                         components.add(nameComponent);
                     }
 
-                    ITextComponent afterComponent = new TextComponentString(text.substring(nextStart, text.length()));
+                    ITextComponent afterComponent = new TextComponentString(text.substring(nextStart));
                     afterComponent.setStyle(component.getStyle().createShallowCopy());
 
                     components.add(afterComponent);
@@ -526,7 +526,7 @@ public class ChatManager {
                             number = 0;
                             continue;
                         }
-                        number = number * 10 + Integer.valueOf(Character.toString(character));
+                        number = number * 10 + Integer.parseInt(Character.toString(character));
                         oldNumber.append(character);
                         if (number >= 400) {
                             invalidNumber = true;
@@ -534,7 +534,6 @@ public class ChatManager {
                             newString.append(oldNumber);
                             oldNumber = new StringBuilder();
                             number = 0;
-                            continue;
                         } else {
                             isNumber = true;
                         }
