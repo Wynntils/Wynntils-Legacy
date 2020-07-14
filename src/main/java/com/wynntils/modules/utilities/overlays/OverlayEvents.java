@@ -677,29 +677,53 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.clearConsumables(false);
     }
 
+
+    static boolean isVanished = false;
     @SubscribeEvent
-    public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
+    public void onEffectApplied(PacketEvent<SPacketEntityEffect> e)
+    {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
+        // no idea what this does
         SPacketEntityEffect effect = e.getPacket();
         Potion potion = Potion.getPotionById(effect.getEffectId());
+
+        // if effect belongs to player?
         if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId()) {
-            String timerName;
+            String timerName = "";
+
+            // if the effect is speed timer is "Speed boost"
             if (potion == MobEffects.SPEED && effect.getAmplifier() == 2) {
                 timerName = "Speed boost";
-            } else if (potion == MobEffects.INVISIBILITY) {
+            }
+            // if the effect is invisibility timer is "Vanish"
+            else if (potion == MobEffects.INVISIBILITY) {
                 timerName = "Vanish";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
-                timerName = "War Scream I";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
-                timerName = "War Scream II";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
-                timerName = "War Scream III";
+                isVanished = true;
+            }
+            // if the player isn't invisible (used vanish)
+            else if (!isVanished) {
+                // if the effect is resistance I timer is "War Scream I"
+                if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
+                    timerName = "War Scream I";
+                }
+                // if the effect is resistance II timer is "War Scream II"
+                else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
+                    timerName = "War Scream II";
+                }
+                // if the effect is resistance III timer is "War Scream III"
+                else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
+                    timerName = "War Scream III";
+                }
             } else {
                 return;
             }
+            isVanished = false;
+            // without this line I was getting error
+            final String timerNameFinal = timerName;
+            // create timer with name and duration (duration in ticks)/20 -> seconds
             Minecraft.getMinecraft().addScheduledTask(() ->
-                    ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
+                    ConsumableTimerOverlay.addBasicTimer(timerNameFinal, effect.getDuration() / 20));
         }
     }
 
@@ -710,22 +734,21 @@ public class OverlayEvents implements Listener {
                 SPacketRemoveEntityEffect effect = e.getPacket();
                 Potion potion = effect.getPotion();
 
-                //When removing speed boost from (archer)
+                // When removing speed boost from (archer)
                 if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                        potion == MobEffects.SPEED)
-                { ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+                        potion == MobEffects.SPEED) {
+                    ConsumableTimerOverlay.removeBasicTimer("Speed boost");
                 }
-                //When removing invisibility from assassin
+                // When removing invisibility from assassin
                 else if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                        potion == MobEffects.INVISIBILITY)
-                {
+                        potion == MobEffects.INVISIBILITY) {
                     ConsumableTimerOverlay.removeBasicTimer("Vanish");
-                    ConsumableTimerOverlay.removeBasicTimer("War Scream II");
                 }
-                //When removing resistance from (warrior)
+                // When removing resistance from (warrior)
+                // I have no idea why does this exist
                 else if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                        potion == MobEffects.RESISTANCE)
-                { ConsumableTimerOverlay.removeBasicTimer("War SCream");
+                        potion == MobEffects.RESISTANCE) {
+                    ConsumableTimerOverlay.removeBasicTimer("War SCream");
                 }
             });
         }
