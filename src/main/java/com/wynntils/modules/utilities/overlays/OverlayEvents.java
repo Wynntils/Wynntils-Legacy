@@ -685,14 +685,16 @@ public class OverlayEvents implements Listener {
         Potion potion = Potion.getPotionById(effect.getEffectId());
         if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId()) {
             String timerName;
-            if (potion == MobEffects.SPEED) {
+            if (potion == MobEffects.SPEED && effect.getAmplifier() == 2) {
                 timerName = "Speed boost";
+            } else if (potion == MobEffects.INVISIBILITY) {
+                timerName = "Vanish";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
-                timerName = "Resistance I";
+                timerName = "War Scream I";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
-                timerName = "Resistance II";
+                timerName = "War Scream II";
             } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
-                timerName = "Resistance III";
+                timerName = "War Scream III";
             } else {
                 return;
             }
@@ -708,9 +710,22 @@ public class OverlayEvents implements Listener {
                 SPacketRemoveEntityEffect effect = e.getPacket();
                 Potion potion = effect.getPotion();
 
+                //When removing speed boost from (archer)
                 if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                        potion == MobEffects.SPEED) {
-                    ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+                        potion == MobEffects.SPEED)
+                { ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+                }
+                //When removing invisibility from assassin
+                else if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
+                        potion == MobEffects.INVISIBILITY)
+                {
+                    ConsumableTimerOverlay.removeBasicTimer("Vanish");
+                    ConsumableTimerOverlay.removeBasicTimer("War Scream II");
+                }
+                //When removing resistance from (warrior)
+                else if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
+                        potion == MobEffects.RESISTANCE)
+                { ConsumableTimerOverlay.removeBasicTimer("War SCream");
                 }
             });
         }
