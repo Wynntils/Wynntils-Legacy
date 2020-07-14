@@ -718,7 +718,6 @@ public class OverlayEvents implements Listener {
             } else {
                 return;
             }
-            isVanished = false;
             // without this line I was getting error
             final String timerNameFinal = timerName;
             // create timer with name and duration (duration in ticks)/20 -> seconds
