@@ -144,7 +144,6 @@ public class UIEColorWheel extends UIEClickZone {
         static final int circleRadius = 160/2;
 
         String colorText = null;
-        String text = "";
 
         boolean wheelSelected = false;
 
@@ -272,8 +271,6 @@ public class UIEColorWheel extends UIEClickZone {
             clickedPosX = mouseX; clickedPosY = mouseY;
             double h = Math.atan2(mousePosY, mousePosX) / (2*Math.PI);
             if (h < 0) h += 1;
-
-            text = h + "";
 
             toChange = CustomColor.fromHSV((float)h, (float)s, valueSlider.getSliderValue(), getAlpha());
             colorText = null;

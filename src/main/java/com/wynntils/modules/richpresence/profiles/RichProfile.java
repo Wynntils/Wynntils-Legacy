@@ -46,8 +46,6 @@ public class RichProfile {
     private DiscordActivity activityToUseWhenReady = null;
     private boolean isBlankGuiOpen = false;
 
-    private boolean updatedDiscordUser = false;
-
     private long applicationID = 0;
 
     public RichProfile(long id) {

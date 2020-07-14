@@ -249,9 +249,6 @@ public class ClientEvents implements Listener {
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }
 
-    long lastHealthRequest;
-    int lastPosition = 0, lastHealth = 0, lastMaxHealth = 0;
-
     @SubscribeEvent
     public void joinGuild(WynnSocialEvent.Guild.Join e) {
         GuildAndFriendManager.changePlayer(e.getMember(), true, As.GUILD, true);
