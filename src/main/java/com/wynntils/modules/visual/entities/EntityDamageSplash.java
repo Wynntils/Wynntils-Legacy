@@ -18,12 +18,14 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.WeakHashMap;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class EntityDamageSplash extends FakeEntity {
 
     private static final ScreenRenderer renderer = new ScreenRenderer();
+    private static final WeakHashMap<String, Boolean> added = new WeakHashMap<>();
 
     String displayText;
     private float scale = 1f;
@@ -42,6 +44,13 @@ public class EntityDamageSplash extends FakeEntity {
 
         displayText = text.toString();
         displayText = displayText.substring(0, displayText.length() -1);
+
+        if (added.containsKey(displayText)) {
+            remove();
+            return;
+        }
+
+        added.put(displayText, true);
     }
 
     @Override
