@@ -100,4 +100,5 @@ public class ConsumableContainer {
     public boolean isPersistent() {
         return persistent;
     }
+
 }

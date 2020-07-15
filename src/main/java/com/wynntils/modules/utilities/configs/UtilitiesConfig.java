@@ -293,6 +293,22 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean openChatMarket = true;
     }
 
+    @SettingsInfo(name = "damageSplash", displayPath = "Utilities/Damage Splash")
+    public static class DamageSplash extends SettingsClass {
+        public static DamageSplash INSTANCE;
+
+        @Setting(displayName = "Replace Wynncraft Damage Splashes", description = "Should the Wynncraft Damage splashes be replaced")
+        public boolean enabled = true;
+
+        @Setting(displayName = "Splash Duration", description = "How much ticks should the splash live.")
+        @Setting.Limitations.IntLimit(min = 50, max = 800)
+        public int maxLiving = 150;
+
+        @Setting(displayName = "Initial Splash Scale", description = "The initial size of the splash.")
+        @Setting.Limitations.FloatLimit(min = 1f, max = 4f)
+        public float initialScale = 2.5f;
+    }
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equalsIgnoreCase("addItemIdentificationSpacing"))

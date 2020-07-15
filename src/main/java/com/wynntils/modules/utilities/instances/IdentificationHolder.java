@@ -14,7 +14,7 @@ import static net.minecraft.util.text.TextFormatting.*;
  * Used for holding current identifications
  *
  * Ex: +35% Health Regen ->
- *  currentAmmount = 35
+ *  currentAmount = 35
  *  modifier = IdentificationModifier.PERCENTAGE
  *
  */

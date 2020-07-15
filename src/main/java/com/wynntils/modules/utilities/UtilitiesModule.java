@@ -82,6 +82,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
+        registerSettings(UtilitiesConfig.DamageSplash.class);
 
         registerSettings(TranslationConfig.class);
 

@@ -4,10 +4,14 @@
 
 package com.wynntils.core.events.custom;
 
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.utils.objects.Location;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.HashMap;
 
 /**
  * Called when something related to the game happens
@@ -160,6 +164,29 @@ public class GameEvent extends Event {
 
         public Location getLocation() {
             return location;
+        }
+
+    }
+
+    /**
+     * Called whenever an entity damage tag is received by the client
+     */
+    public static class DamageEntity extends GameEvent {
+
+        HashMap<DamageType, Integer> damageTypes = new HashMap<>();
+        Entity entity;
+
+        public DamageEntity(HashMap<DamageType, Integer> damageTypes, Entity entity) {
+            this.damageTypes = damageTypes;
+            this.entity = entity;
+        }
+
+        public Entity getEntity() {
+            return entity;
+        }
+
+        public HashMap<DamageType, Integer> getDamageTypes() {
+            return damageTypes;
         }
 
     }

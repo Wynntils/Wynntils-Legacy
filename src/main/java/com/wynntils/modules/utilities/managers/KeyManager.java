@@ -36,9 +36,10 @@ public class KeyManager {
             if (ModCore.mc().gameSettings.gammaSetting < 1000) {
                 lastGamma = ModCore.mc().gameSettings.gammaSetting;
                 ModCore.mc().gameSettings.gammaSetting = 1000;
-            } else {
-                ModCore.mc().gameSettings.gammaSetting = lastGamma;
+                return;
             }
+
+            ModCore.mc().gameSettings.gammaSetting = lastGamma;
         });
 
         checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);

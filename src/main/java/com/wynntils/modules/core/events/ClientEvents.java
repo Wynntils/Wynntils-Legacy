@@ -12,6 +12,7 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -19,6 +20,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.entities.EntityManager;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.managers.*;
@@ -51,6 +53,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -58,6 +61,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,15 +118,16 @@ public class ClientEvents implements Listener {
 
     private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [Ⓚ|Ⓒ|Ⓑ|Ⓙ] (.*?) XP\\] \\[([0-9]*)%\\]");
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     // bake status
     private GatheringBake bakeStatus = null;
 
     @SubscribeEvent
-    public void gatherDetection(PacketEvent<SPacketEntityMetadata> e) {
+    public void gatherAndDamageDetection(PacketEvent<SPacketEntityMetadata> e) {
         // makes this method always be called in main thread
         if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> gatherDetection(e));
+            Minecraft.getMinecraft().addScheduledTask(() -> gatherAndDamageDetection(e));
             return;
         }
 
@@ -151,6 +156,18 @@ public class ClientEvents implements Listener {
 
                 bakeStatus.setMaterialAmount(Integer.valueOf(m.group(1)));
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
+            } else { // third, damage detection
+                HashMap<DamageType, Integer> damageList = new HashMap<>();
+
+                m = MOB_DAMAGE.matcher(value);
+                while (m.find()) {
+                    damageList.put(DamageType.fromSymbol(m.group(2)), Integer.valueOf(m.group(1)));
+                }
+
+                if (damageList.isEmpty()) return;
+
+                FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
+                return;
             }
 
             if (bakeStatus == null || !bakeStatus.isReady()) return;
@@ -219,6 +236,14 @@ public class ClientEvents implements Listener {
 
         PingManager.calculatePing();
         PacketQueue.proccessQueue();
+    }
+
+    /**
+     * Renders and process fake entities
+     */
+    @SubscribeEvent
+    public void processFakeEntities(RenderWorldLastEvent e) {
+        EntityManager.tickEntities(e.getPartialTicks(), e.getContext());
     }
 
     GuiScreen lastScreen = null;

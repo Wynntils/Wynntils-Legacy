@@ -842,4 +842,8 @@ public class ScreenRenderer {
         RenderHelper.disableStandardItemLighting();
     }
 
+    public static void setRendering(boolean status) {
+        rendering = status;
+    }
+
 }

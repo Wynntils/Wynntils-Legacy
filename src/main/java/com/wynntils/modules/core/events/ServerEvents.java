@@ -14,6 +14,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.core.entities.EntityManager;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.packet.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.packet.PacketOutgoingFilter;
@@ -249,8 +250,9 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void joinServer(WynncraftServerEvent.Leave e) {
+    public void leaveServer(WynncraftServerEvent.Leave e) {
         UserManager.clearRegistry();
+        EntityManager.clearEntities();
     }
 
     public static BlockPos getCurrentSpawnPosition() {
