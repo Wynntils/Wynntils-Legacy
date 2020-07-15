@@ -35,7 +35,7 @@ public class WynntilsAccount {
     String token;
     boolean ready = false;
 
-    HashMap<String, String> encondedConfigs = new HashMap<>();
+    HashMap<String, String> encodedConfigs = new HashMap<>();
     HashMap<String, String> md5Verifications = new HashMap<>();
     CloudConfigurations configurationUploader;
 
@@ -45,12 +45,12 @@ public class WynntilsAccount {
         return token;
     }
 
-    public HashMap<String, String> getEncondedConfigs() {
-        return encondedConfigs;
+    public HashMap<String, String> getEncodedConfigs() {
+        return encodedConfigs;
     }
 
     public void dumpEncodedConfig(String name) {
-        encondedConfigs.remove(name);
+        encodedConfigs.remove(name);
     }
 
     int connectionAttempts = 0;
@@ -98,11 +98,11 @@ public class WynntilsAccount {
 
                     // configurations
                     JsonObject configFiles = json.getAsJsonObject("configFiles");
-                    configFiles.entrySet().forEach((k) -> encondedConfigs.put(k.getKey(), k.getValue().getAsString()));
+                    configFiles.entrySet().forEach((k) -> encodedConfigs.put(k.getKey(), k.getValue().getAsString()));
 
                     ready = true;
 
-                    Reference.LOGGER.info("Succesfully connected to Athena!");
+                    Reference.LOGGER.info("Successfully connected to Athena!");
                     return true;
                 }).onError(t -> { login(); return true; });
 

@@ -114,8 +114,12 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean afkProtection = false;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
-        @Setting(displayName = "AFK Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
+        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
         public float afkProtectionThreshold = 10f;
+
+        @Setting.Limitations.FloatLimit(min = 1f, max = 100f)
+        @Setting(displayName = "Health Percentage Threshold", description = "AFK Protection should activate when your health drops to this level")
+        public float healthPercentage = 90f;
 
         @Setting(displayName = "Show on Hotbar", description = "Should AFK Protection status be shown on the hotbar?")
         public boolean showOnHotbar = true;
@@ -142,11 +146,6 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public long dailyReminder = 0L;
-
-        @Override
-        public void onSettingChanged(String name) {
-
-        }
     }
 
     @SettingsInfo(name = "item_highlights", displayPath = "Utilities/Item Highlights")
@@ -270,12 +269,6 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 62)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
-
-
-        @Override
-        public void onSettingChanged(String name) {
-
-        }
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")

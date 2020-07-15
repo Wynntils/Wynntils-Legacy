@@ -45,7 +45,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
     private ArrayList<DiscoveryInfo> discoverySearch;
     private DiscoveryInfo overDiscovery;
-    
+
     private boolean territory = true;
     private boolean world = true;
     private boolean secret = true;
@@ -84,25 +84,25 @@ public class DiscoveriesPage extends QuestBookPage {
             // World and Territory Progress icon
             if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
                 render.drawRect(Textures.UIs.quest_book, x - 96, y - 100, 0, 271, 16, 16);
-                
-                hoveredText = new ArrayList<>(QuestManager.getDiscoveriesLore());  
+
+                hoveredText = new ArrayList<>(QuestManager.getDiscoveriesLore());
                 if (!hoveredText.isEmpty()) {
                     hoveredText.remove(0);
                 }
             } else {
                 render.drawRect(Textures.UIs.quest_book, x - 96, y - 100, 0, 255, 16, 16);
             }
-            
+
             // Secret Progress Icon
             if (posX >= 61 && posX <= 76 && posY >= 84 && posY <= 100) {
                 render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 0, 303, 16, 16);
-                
+
                 hoveredText = new ArrayList<>(QuestManager.getSecretDiscoveriesLore());
                 if (!hoveredText.isEmpty()) {
                     hoveredText.set(0, TextFormatting.AQUA + "Secret:");
                 }
             } else {
-                render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 0, 287, 16, 16);  
+                render.drawRect(Textures.UIs.quest_book, x - 76, y - 100, 0, 287, 16, 16);
             }
 
             // Next Page Button
@@ -136,7 +136,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 render.drawRect((territory ? selected_cube_2 : unselected_cube), x - 130, y + 15, x - 100, y + 45);
                 render.drawRect(Textures.UIs.quest_book, x - 127, y + 20, 305, 263, 24, 20);
             }
-            
+
             // Undiscovered Territories Filter
             if (mouseX >= x - 130 && mouseX <= x - 100 && mouseY >= y + 50 && mouseY <= y + 80) {
                 render.drawRect(selected_cube, x - 130, y + 50, x - 100, y + 80);
@@ -156,7 +156,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 render.drawRect((world ? selected_cube_2 : unselected_cube), x - 95, y + 15, x - 65, y + 45);
                 render.drawRect(Textures.UIs.quest_book, x - 89, y + 20, 307, 221, 18, 20);
             }
-            
+
             // Undiscovered World Filter
             if (mouseX >= x - 95 && mouseX <= x - 65 && mouseY >= y + 50 && mouseY <= y + 80) {
                 render.drawRect(selected_cube, x - 95, y + 50, x - 65, y + 80);
@@ -197,7 +197,7 @@ public class DiscoveriesPage extends QuestBookPage {
             } else {
                 render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
             }
-            
+
             // Draw all Discoveries
             int currentY = 12;
             if (discoverySearch.size() > 0) {
@@ -212,14 +212,14 @@ public class DiscoveriesPage extends QuestBookPage {
                     } catch (IndexOutOfBoundsException e) {
                         break;
                     }
-                    
-                    List<String> lore = new ArrayList<String>(selected.getLore());
-                    
+
+                    List<String> lore = new ArrayList<>(selected.getLore());
+
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
                             lastTick = Minecraft.getSystemTime();
                         }
-                        
+
                         this.selected = i;
 
                         int animationTick;
@@ -251,33 +251,33 @@ public class DiscoveriesPage extends QuestBookPage {
                     }
 
                     render.color(1, 1, 1, 1);
-                    
+
                     // Guild territory lore actions
                     if (selected.getGuildTerritoryProfile() != null) {
-                        if (!lore.get(lore.size() - 1).contentEquals("")) 
+                        if (!lore.get(lore.size() - 1).contentEquals(""))
                             lore.add("");
-                        
+
                         lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
                         lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on the map!"));
                     }
-                    
+
                     // Secret Discovery Actions
                     if (selected.getType() == DiscoveryType.SECRET) {
-                        if (!lore.get(lore.size() - 1).contentEquals("")) 
+                        if (!lore.get(lore.size() - 1).contentEquals(""))
                             lore.add("");
-                        
+
                         if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selected.wasDiscovered())) {
                             lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
                             lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
                         }
-                        
+
                         lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Middle click to open on the wiki!"));
                     }
-                    
+
                     // Removes blank space at the end of lores
-                    if (lore.get(lore.size() - 1).contentEquals("")) 
+                    if (lore.get(lore.size() - 1).contentEquals(""))
                         lore.remove(selected.getLore().size() - 1);
-                
+
 
                     if (selected.wasDiscovered()) {
                         switch (selected.getType()) {
@@ -334,12 +334,12 @@ public class DiscoveriesPage extends QuestBookPage {
         ScaledResolution res = new ScaledResolution(mc);
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
-        
+
         // Handle discovery click
         if (overDiscovery != null) {
             if (overDiscovery.getType() == DiscoveryType.SECRET) { // Secret discovery actions
                 String name = TextFormatting.getTextWithoutFormattingCodes(overDiscovery.getName());
-                
+
                 switch (mouseButton) {
                     case 0: // Left Click
                         if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(overDiscovery.wasDiscovered())) {
@@ -361,10 +361,10 @@ public class DiscoveriesPage extends QuestBookPage {
                 }
             } else if (overDiscovery.getGuildTerritoryProfile() != null) { // Guild territory actions
                 TerritoryProfile guildTerritory = overDiscovery.getGuildTerritoryProfile();
-                
+
                 int x = (guildTerritory.getStartX() + guildTerritory.getEndX()) / 2;
                 int z = (guildTerritory.getStartZ() + guildTerritory.getEndZ()) / 2;
- 
+
                 switch(mouseButton) {
                     case 0: // Left Click
                         CompassManager.setCompassLocation(new Location(x, 50, z));
@@ -430,7 +430,7 @@ public class DiscoveriesPage extends QuestBookPage {
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-    
+
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         overDiscovery = null;
@@ -456,7 +456,7 @@ public class DiscoveriesPage extends QuestBookPage {
                     return true;
             }
         });
-        
+
         // Apply search terms
         if (isSearching) {
             discoverySearch.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase()));
@@ -465,10 +465,10 @@ public class DiscoveriesPage extends QuestBookPage {
         // Undiscovered data collection
         if (undiscoveredSecret || undiscoveredTerritory || undiscoveredWorld) {
             List<DiscoveryProfile> allDiscoveriesSearch = new ArrayList<>(WebManager.getDiscoveries());
-            
+
             discoverySearch.addAll(allDiscoveriesSearch.stream()
                 .filter(c -> {
-                    // Shows/Hides discoveries if requirements met/not met 
+                    // Shows/Hides discoveries if requirements met/not met
                     if (!QuestBookConfig.INSTANCE.showAllDiscoveries) {
                         if (c.getLevel() > PlayerInfo.getPlayerInfo().getLevel()) {
                             return false;
@@ -482,20 +482,20 @@ public class DiscoveriesPage extends QuestBookPage {
                             return false;
                         }
                     }
-                    
+
                     // Apply search term
                     if (isSearching) {
                         if (!doesSearchMatch(c.getName().toLowerCase(), currentText.toLowerCase())) {
                             return false;
                         }
                     }
-                    
+
                     // Checks if already in list
                     if (QuestManager.getCurrentDiscoveries().stream().anyMatch(foundDiscovery -> {
                         boolean nameMatch = TextFormatting.getTextWithoutFormattingCodes(foundDiscovery.getName()).equals(c.getName());
                         boolean levelMatch = foundDiscovery.getMinLevel() == c.getLevel();
                         boolean typeMatch = foundDiscovery.getType().name().toLowerCase(Locale.ROOT).equals(c.getType());
-                        
+
                         return nameMatch && levelMatch && typeMatch;
                     })) {
                         return false;
@@ -504,13 +504,13 @@ public class DiscoveriesPage extends QuestBookPage {
                     // Removes based on filters
                     if (c.getType() == null) return false;
                     switch (c.getType()) {
-                        case "territory": 
+                        case "territory":
                             return undiscoveredTerritory;
-                        case "world": 
+                        case "world":
                             return undiscoveredWorld;
-                        case "secret": 
+                        case "secret":
                             return undiscoveredSecret;
-                        default: 
+                        default:
                             return false;
                     }
                 }).map(discoveryProfile -> {
@@ -539,50 +539,50 @@ public class DiscoveriesPage extends QuestBookPage {
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Discoveries", TextFormatting.GRAY + "See and sort all", TextFormatting.GRAY + "of the discoveries.", "", TextFormatting.GREEN + "Left click to select");
     }
-    
+
     /**
      * Uses the Wynncraft Wiki API to get the coordinates of a secret discovery from the Template:Infobox/Town
      */
     private void locateSecretDiscovery(String name, String action) {
         String queryUrl = "https://wynncraft.gamepedia.com/api.php?action=parse&format=json&prop=wikitext&section=0&redirects=true&page=";
-        
+
         try {
             queryUrl += URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
         } catch (UnsupportedEncodingException e) {}
-        
+
         Request query = new Request(queryUrl, "SecretWikiQuery");
         RequestHandler handler = new RequestHandler();
-        
+
         handler.addAndDispatch(query.handleJsonObject(jsonOutput -> {
             if (jsonOutput.has("error")) { // Returns error if page does not exist
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki page not found)"));
                 return true;
             }
-            
+
             String wikitext = jsonOutput.get("parse").getAsJsonObject().get("wikitext").getAsJsonObject().get("*").getAsString().replace(" ", "").replace("\n", "");
-            
-            String xlocation = wikitext.substring(wikitext.indexOf("xcoordinate="));                           
-            String zlocation = wikitext.substring(wikitext.indexOf("zcoordinate=")); 
-            
-            int xend = (xlocation.indexOf("|") < xlocation.indexOf("}}") ? xlocation.indexOf("|") : xlocation.indexOf("}}"));
-            int zend = (zlocation.indexOf("|") < zlocation.indexOf("}}") ? zlocation.indexOf("|") : zlocation.indexOf("}}"));
-            
-            int x = 0;
-            int z = 0;
-            
+
+            String xlocation = wikitext.substring(wikitext.indexOf("xcoordinate="));
+            String zlocation = wikitext.substring(wikitext.indexOf("zcoordinate="));
+
+            int xend = Math.min(xlocation.indexOf("|"), xlocation.indexOf("}}"));
+            int zend = Math.min(zlocation.indexOf("|"), zlocation.indexOf("}}"));
+
+            int x;
+            int z;
+
             try {
-                x = Integer.valueOf(xlocation.substring(12, xend));
-                z = Integer.valueOf(zlocation.substring(12, zend));
+                x = Integer.parseInt(xlocation.substring(12, xend));
+                z = Integer.parseInt(zlocation.substring(12, zend));
             } catch (NumberFormatException e) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki template not located)"));
                 return true;
             }
-            
+
             if (x == 0 && z == 0) {
                 Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki coordinates not located)"));
                 return true;
             }
-            
+
             switch (action) {
                 case "compass":
                     CompassManager.setCompassLocation(new Location(x, 50, z));
@@ -595,7 +595,7 @@ public class DiscoveriesPage extends QuestBookPage {
                     CompassManager.setCompassLocation(new Location(x, 50, z));
                 break;
             }
-            
+
             return true;
         }), true);
     }

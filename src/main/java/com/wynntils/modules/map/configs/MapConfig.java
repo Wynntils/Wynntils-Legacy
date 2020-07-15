@@ -239,9 +239,6 @@ public class MapConfig extends SettingsClass {
         }
     }
 
-    @Override
-    public void onSettingChanged(String name) { }
-
     public static HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
         HashMap<String, Boolean> enabledIcons = new HashMap<>();
         for (String icon : new String[]{

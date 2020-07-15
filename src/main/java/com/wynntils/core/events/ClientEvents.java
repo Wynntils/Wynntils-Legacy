@@ -160,6 +160,7 @@ public class ClientEvents {
         if (!Reference.onServer) return;
         if (e.getPacket().getAction() != Action.UPDATE_DISPLAY_NAME && e.getPacket().getAction() != Action.REMOVE_PLAYER) return;
 
+        // DO NOT remove cast or reflection otherwise the build will fail
         for (Object player : (List<?>) e.getPacket().getEntries()) {
             // world handling below
             GameProfile profile = (GameProfile) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getProfile.invoke(player);

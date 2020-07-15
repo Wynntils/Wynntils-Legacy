@@ -40,14 +40,14 @@ public class ConsumableTimerOverlay extends Overlay {
         super("Consumable Timer", 125, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
     }
 
-    public static void clearConsumables(boolean clearPersistant) {
-        if (clearPersistant) {
+    public static void clearConsumables(boolean clearPersistent) {
+        if (clearPersistent) {
             // assigns a new object to avoid CME
             activeConsumables = new ArrayList<>();
         } else {
-            ArrayList<ConsumableContainer> persistant = new ArrayList<>(activeConsumables);
-            persistant.removeIf(c -> !c.isPersistent());
-            activeConsumables = persistant;
+            ArrayList<ConsumableContainer> persistent = new ArrayList<>(activeConsumables);
+            persistent.removeIf(c -> !c.isPersistent());
+            activeConsumables = persistent;
         }
 
         activeEffects = new HashMap<>();

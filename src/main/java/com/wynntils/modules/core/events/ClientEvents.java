@@ -116,7 +116,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [Ⓚ|Ⓒ|Ⓑ|Ⓙ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿ] (.*?) XP\\] \\[([0-9]*)%\\]");
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
@@ -139,22 +139,22 @@ public class ClientEvents implements Listener {
             if (!(next.getValue() instanceof String)) continue;
 
             String value = (String) next.getValue();
-            if (value.isEmpty() || value.contains("Combat") || value.contains("Guild")) continue;
+            if (value == null || value.isEmpty() || value.contains("Combat") || value.contains("Guild")) continue;
             value = TextFormatting.getTextWithoutFormattingCodes(value);
 
             Matcher m = GATHERING_STATUS.matcher(value);
             if (m.matches()) { // first, gathering status
                 if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
 
-                bakeStatus.setXpAmount(Double.valueOf(m.group(1)));
+                bakeStatus.setXpAmount(Double.parseDouble(m.group(1)));
                 bakeStatus.setType(ProfessionType.valueOf(m.group(2).toUpperCase()));
-                bakeStatus.setXpPercentage(Double.valueOf(m.group(3)));
+                bakeStatus.setXpPercentage(Double.parseDouble(m.group(3)));
             } else if ((m = GATHERING_RESOURCE.matcher(value)).matches()) { // second, gathering resource
                 if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
 
                 String resourceType = m.group(2).contains(" ") ? m.group(2).split(" ")[0] : m.group(2);
 
-                bakeStatus.setMaterialAmount(Integer.valueOf(m.group(1)));
+                bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
             } else { // third, damage detection
                 HashMap<DamageType, Integer> damageList = new HashMap<>();
@@ -231,7 +231,7 @@ public class ClientEvents implements Listener {
      * Process the packet queue if the queue is not empty
      */
     @SubscribeEvent
-    public void proccessPacketQueue(TickEvent.ClientTickEvent e) {
+    public void processPacketQueue(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END || !PacketQueue.hasQueuedPacket()) return;
 
         PingManager.calculatePing();
@@ -273,9 +273,6 @@ public class ClientEvents implements Listener {
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }
-
-    long lastHealthRequest;
-    int lastPosition = 0, lastHealth = 0, lastMaxHealth = 0;
 
     @SubscribeEvent
     public void joinGuild(WynnSocialEvent.Guild.Join e) {

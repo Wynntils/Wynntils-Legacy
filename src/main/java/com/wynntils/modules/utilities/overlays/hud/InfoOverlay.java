@@ -46,9 +46,9 @@ public abstract class InfoOverlay extends Overlay {
         }
 
         // Determine element locations
-        int backgroundLeft = 0;
-        int backgroundRight = 0;
-        int textOrigin = 0;
+        int backgroundLeft;
+        int backgroundRight;
+        int textOrigin;
         switch (getAlignment()) {
             case LEFT_RIGHT:
                 backgroundLeft = 0;
@@ -61,6 +61,7 @@ public abstract class InfoOverlay extends Overlay {
                 backgroundRight = (int) (center + width / 2);
                 textOrigin = (int) center;
                 break;
+            default:
             case RIGHT_LEFT:
                 backgroundLeft = staticSize.x - width;
                 backgroundRight = staticSize.x;

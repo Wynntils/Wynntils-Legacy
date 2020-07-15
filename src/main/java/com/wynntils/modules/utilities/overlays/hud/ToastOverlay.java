@@ -74,7 +74,7 @@ public class ToastOverlay extends Overlay {
                 drawRectF(Textures.Overlays.toast, getAnimated -160, y + 22, getAnimated, y + height + 41, middleT_X1, 23, middleT_X2, 42);  // middle
                 drawRectF(Textures.Overlays.toast, getAnimated -160, y + height + 41, getAnimated, y + height + 64, bottomT_X1, 43, bottomT_X2, 66);  // bottom
                 // Icon
-                drawRectF(Textures.Overlays.toast, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -32 : -144), y + (height/2) + 24, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -16 : -128), y + (height/2) + 40, iconX, iconY, iconX+16, iconY+16);
+                drawRectF(Textures.Overlays.toast, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -32 : -144), y + (height / 2.0f) + 24, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -16 : -128), y + (height / 2.0f) + 40, iconX, iconY, iconX+16, iconY+16);
                 // Text
                 drawString(displayedToast[j].getTitle(), getAnimated -160 + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? 8 : 35), 22 + y, c, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 for (int n = 0; n < displayedToast[j].getSubtitle().length; n++) {

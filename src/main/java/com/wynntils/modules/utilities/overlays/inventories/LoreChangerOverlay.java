@@ -1,4 +1,4 @@
-/**
+/*
  *  * Copyright © Wynntils - 2018 - 2020.
  */
 
@@ -44,7 +44,7 @@ public class LoreChangerOverlay implements Listener {
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
-    
+
     private static void replaceLore(ItemStack stack) {
         // Soul Point Timer
         if ((stack.getItem() == Items.NETHER_STAR || stack.getItem() == Item.getItemFromBlock(Blocks.SNOW_LAYER)) && stack.getDisplayName().contains("Soul Point")) {
@@ -80,7 +80,7 @@ public class LoreChangerOverlay implements Listener {
                     for (int index = 0; index < loreList.tagCount(); index++) {
                         String lore = loreList.getStringTagAt(index);
                         if (StringUtils.hasWynnic(lore)) {
-                            String translated = "";
+                            StringBuilder translated = new StringBuilder();
                             boolean colorCode = false;
                             StringBuilder number = new StringBuilder();
                             for (char character : lore.toCharArray()) {
@@ -88,7 +88,7 @@ public class LoreChangerOverlay implements Listener {
                                     number.append(character);
                                 } else {
                                     if (!number.toString().isEmpty()) {
-                                        translated += StringUtils.translateNumberFromWynnic(number.toString());
+                                        translated.append(StringUtils.translateNumberFromWynnic(number.toString()));
                                         number = new StringBuilder();
                                     }
 
@@ -102,7 +102,7 @@ public class LoreChangerOverlay implements Listener {
                                         translatedCharacter = String.valueOf(character);
                                     }
 
-                                    translated += translatedCharacter;
+                                    translated.append(translatedCharacter);
 
                                     if (".?!".contains(translatedCharacter)) {
                                         capital = true;
@@ -116,11 +116,11 @@ public class LoreChangerOverlay implements Listener {
                                 }
                             }
                             if (!number.toString().isEmpty()) {
-                                translated += StringUtils.translateNumberFromWynnic(number.toString());
+                                translated.append(StringUtils.translateNumberFromWynnic(number.toString()));
                                 number = new StringBuilder();
                             }
 
-                            loreList.set(index, new NBTTagString(translated));
+                            loreList.set(index, new NBTTagString(translated.toString()));
                         }
                     }
                 }

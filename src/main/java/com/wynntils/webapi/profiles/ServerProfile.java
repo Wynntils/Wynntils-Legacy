@@ -26,7 +26,7 @@ public class ServerProfile {
     }
 
     public String getUptime() {
-        return StringUtils.millistToLongString(System.currentTimeMillis() - firstSeen);
+        return StringUtils.millisToLongString(System.currentTimeMillis() - firstSeen);
     }
 
     /**

@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.enums.wynntils;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +35,8 @@ public enum WynntilsSound {
     }
 
     public void play(float volume, float pitch) {
-        Minecraft.getMinecraft().player.playSound(event, volume, pitch);
+        ModCore.mc().addScheduledTask(() ->
+                Minecraft.getMinecraft().player.playSound(event, volume, pitch));
     }
 
     public void play() {

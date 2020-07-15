@@ -81,9 +81,7 @@ public class MainMenuButtons {
             super(buttonId, x, y, 20, 20, "");
 
             serverIcon = new ServerIcon(server, true);
-            serverIcon.onDone(r -> {
-                serverList.saveServerList();
-            });
+            serverIcon.onDone(r -> serverList.saveServerList());
         }
 
         @Override

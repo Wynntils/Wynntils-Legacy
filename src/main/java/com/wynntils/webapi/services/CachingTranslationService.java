@@ -32,7 +32,7 @@ public abstract class CachingTranslationService implements TranslationService {
         translationCache.put(message, translatedMessage);
         if (++counter % 16 == 0) {
             // Persist translation cache in background
-            Utils.runAsync(() -> CachingTranslationService.saveTranslationCache());
+            Utils.runAsync(CachingTranslationService::saveTranslationCache);
         }
     }
 

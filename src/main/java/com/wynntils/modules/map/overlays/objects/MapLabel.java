@@ -40,7 +40,7 @@ public class MapLabel extends MapIcon {
     }
 
     @Override public float getSizeX() {
-        return ScreenRenderer.fontRenderer.getStringWidth(getName()) / 2;
+        return ScreenRenderer.fontRenderer.getStringWidth(getName()) / 2.0f;
     }
 
     @Override public float getSizeZ() {

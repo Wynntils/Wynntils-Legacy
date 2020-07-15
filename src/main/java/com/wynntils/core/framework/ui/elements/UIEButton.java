@@ -53,7 +53,7 @@ public class UIEButton extends UIEClickZone {
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, (2.0f / 3.0f), 1f, 1f);
             }
             if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         } else if (hovering) {
             if (texture != null) {
                 drawRect(texture, this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0.5f, (1.0f / 3.0f), 0.5f, (2.0f / 3.0f));
@@ -61,7 +61,7 @@ public class UIEButton extends UIEClickZone {
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, (1.0f / 3.0f), 1f, (2.0f / 3.0f));
             }
             if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         } else {
             if (texture != null) {
                 drawRect(texture, this.position.getDrawingX() + (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY() + height, 0.5f, 0f, 0.5f, (1.0f / 3.0f));
@@ -69,12 +69,12 @@ public class UIEButton extends UIEClickZone {
                 drawRect(texture, this.position.getDrawingX() + width - (int) (texture.width * 0.5f), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, 0.5f, 0f, 1f, (1.0f / 3.0f));
             }
             if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width/2, this.position.getDrawingY()+height/2-4f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         }
     }
 
     public static class Toggle extends UIEButton {
-        public boolean value = true;
+        public boolean value;
         public String trueText, falseText;
         public Texture trueTexture, falseTexture;
 

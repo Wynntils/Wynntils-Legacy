@@ -243,7 +243,7 @@ public class LootRunPath {
         return getPoints().isEmpty();
     }
 
-    public class LootRunPathLocation {
+    public static class LootRunPathLocation {
         private Location location;
         private CustomColor color;
 

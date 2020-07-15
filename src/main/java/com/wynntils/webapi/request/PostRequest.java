@@ -101,7 +101,7 @@ public class PostRequest extends Request {
 
     @Override
     public HttpURLConnection establishConnection() throws IOException {
-        HttpURLConnection st = (HttpURLConnection) super.establishConnection();
+        HttpURLConnection st = super.establishConnection();
         st.setDoOutput(true);
         st.setRequestMethod("POST");
         writer.accept(st);

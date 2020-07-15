@@ -133,13 +133,13 @@ public class ChatOverlay extends GuiNewChat {
 
                     // draws the text
                     if (currentTab == i)
-                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2.0f)) + 1, 6, CommonColors.GREEN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     else if (tab.hasMentions())
-                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2.0f)) + 1, 6, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     else if (tab.hasNewMessages())
-                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2.0f)) + 1, 6, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     else
-                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2)) + 1, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                        renderer.drawString(tab.getName(), (x1 + ((x2 - x1) / 2.0f)) + 1, 6, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
                     // updates the offset
                     offsetX+=40;
@@ -224,7 +224,7 @@ public class ChatOverlay extends GuiNewChat {
                 found = true;
             }
 
-            if (!found && chatLineId == 0) {
+            if (!found) {
                 for (ChatTab tab : TabManager.getAvailableTabs()) {
                     if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
                         continue;

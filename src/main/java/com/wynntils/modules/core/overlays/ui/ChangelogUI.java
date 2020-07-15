@@ -33,7 +33,7 @@ public class ChangelogUI extends GuiScreen {
     ArrayList<String> changelogContent = new ArrayList<>();
 
     int scrollbarPosition = 0;
-    int scrollbarSize = 0;
+    int scrollbarSize;
 
     boolean major;
 
@@ -127,9 +127,9 @@ public class ChangelogUI extends GuiScreen {
         int textX = (int)middleX - 105;
         int baseY = (int)middleY - 70;
 
-        float scrollPostionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size()/15) * 159) * scrollPercent);
+        float scrollPositionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size() / 15.0f) * 159) * scrollPercent);
         for (String changelogLine : changelogContent) {
-            renderer.drawString(changelogLine.replace("%user%", Minecraft.getMinecraft().getSession().getUsername()), textX, baseY - scrollPostionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString(changelogLine.replace("%user%", Minecraft.getMinecraft().getSession().getUsername()), textX, baseY - scrollPositionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             baseY += 10;
         }
@@ -155,11 +155,11 @@ public class ChangelogUI extends GuiScreen {
 
     @Override
     public void handleMouseInput() {
-        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        if (mDwehll <= -1) {
+        if (mDWheel <= -1) {
             updateScrollbarPosition(true);
-        } else if (mDwehll >= 1) updateScrollbarPosition(false);
+        } else if (mDWheel >= 1) updateScrollbarPosition(false);
 
     }
 

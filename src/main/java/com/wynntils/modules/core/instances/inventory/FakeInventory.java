@@ -92,7 +92,7 @@ public class FakeInventory {
 
         FrameworkManager.getEventBus().register(this);
 
-        openAction.onOpen(this, () -> close(InventoryResult.CLOSED_PREMATURELLY));
+        openAction.onOpen(this, () -> close(InventoryResult.CLOSED_PREMATURELY));
     }
 
     public void close() {
@@ -180,6 +180,7 @@ public class FakeInventory {
         return windowTitle;
     }
 
+    @Override
     public FakeInventory clone() {
         return new FakeInventory(expectedWindowTitle, openAction);
     }
@@ -191,7 +192,7 @@ public class FakeInventory {
         if (!expectingResponse) return;
         if (Minecraft.getSystemTime() - lastAction < limitTime) return;
 
-        close(InventoryResult.CLOSED_PREMATURELLY);
+        close(InventoryResult.CLOSED_PREMATURELY);
     }
 
     // detects the GUI open, and gatters information

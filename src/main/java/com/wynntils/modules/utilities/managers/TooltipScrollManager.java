@@ -53,9 +53,9 @@ public class TooltipScrollManager {
     public static void onGuiMouseInput(GuiScreen on) {
         if (on != lastGuiScreen) return;
 
-        int mDwehll = Integer.signum(Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection());
-        // if (UtilitiesConfig.INSTANCE.renderTooltipsFromTop) mDwehll = -mDwehll;
-        scrollAmount = MathHelper.clamp(scrollAmount - scrollPower * mDwehll, 0, maxScroll);
+        int mDWheel = Integer.signum(Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection());
+        // if (UtilitiesConfig.INSTANCE.renderTooltipsFromTop) mDWheel = -mDWheel;
+        scrollAmount = MathHelper.clamp(scrollAmount - scrollPower * mDWheel, 0, maxScroll);
     }
 
     public static void onBeforeDrawScreen(GuiScreen on) {

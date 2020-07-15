@@ -237,7 +237,8 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static boolean isPowder(ItemStack is) {
-        return (is.getItem() == Items.DYE && is.hasDisplayName() && is.getDisplayName().contains("Powder") && TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).contains("Effect on Weapons"));
+        return (is.getItem() == Items.DYE && is.hasDisplayName() && is.getDisplayName().contains("Powder") &&
+                TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).contains("Effect on Weapons"));
     }
 
     private static int getPowderTier(ItemStack is) {

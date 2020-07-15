@@ -41,9 +41,11 @@ public class ObjectivesOverlay extends Overlay {
     public static void checkForSidebar(SPacketDisplayObjective displayObjective) {
         // Find the objective that is displayed in the sidebar (slot 1)
         // We're basically looking for "sb" + username. Ignore the "fb" + username scoreboard.
-        if (displayObjective.getPosition() != 1 && !displayObjective.getName().startsWith("sb")) return;
+        if (displayObjective.getPosition() != 1) return;
+        String name = displayObjective.getName();
+        if (!name.startsWith("sb")) return;
 
-        sidebarObjectiveName = displayObjective.getName();
+        sidebarObjectiveName = name;
     }
 
     public static void checkSidebarRemoved(SPacketScoreboardObjective scoreboardObjective) {
@@ -121,7 +123,9 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void updateOverlayActivation() {
-        GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
+        if (Reference.onServer) {
+            GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
+        }
     }
 
     public static void restoreVanillaScoreboard() {

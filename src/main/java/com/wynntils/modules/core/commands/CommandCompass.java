@@ -61,7 +61,6 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     /**
      * Parse a single minecraft coordinate number. A ~ prefix means a relative position
-     * @throws NumberFormatException
      */
     private int getSingleCoordinate(String str, int relativePosition) throws NumberFormatException {
         if (str.startsWith("~")) {

@@ -30,9 +30,7 @@ public class ServerEvents implements Listener {
     public void leaveServer(WynncraftServerEvent.Leave e) {
         WindowIconManager.update();
         if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
-            ModCore.mc().addScheduledTask(() -> {
-                Display.setTitle(oldWindowTitle);
-            });
+            ModCore.mc().addScheduledTask(() -> Display.setTitle(oldWindowTitle));
         }
     }
 
@@ -46,9 +44,7 @@ public class ServerEvents implements Listener {
             oldWindowTitle = title;
         }
         if (UtilitiesConfig.INSTANCE.changeWindowTitle) {
-            ModCore.mc().addScheduledTask(() -> {
-                Display.setTitle("Wynncraft");
-            });
+            ModCore.mc().addScheduledTask(() -> Display.setTitle("Wynncraft"));
         }
         ClientEvents.setLoadingStatusMsg("Loading resources...");
         ServerResourcePackManager.applyOnServerJoin();

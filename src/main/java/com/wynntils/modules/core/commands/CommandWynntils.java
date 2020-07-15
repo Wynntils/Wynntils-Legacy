@@ -151,19 +151,13 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 WebManager.setupWebApi(false);
                 break;
             case "changelog":
-                new Delay(() -> {
-                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, false);
-                }, 1);
+                new Delay(() -> ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, false), 1);
                 break;
             case "changeloglatest":
-                new Delay(() -> {
-                    ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, true);
-                }, 1);
+                new Delay(() -> ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, true), 1);
                 break;
             case "changelogmajor":
-                new Delay(() -> {
-                    ChangelogUI.loadChangelogAndShow(true, false);
-                }, 1);
+                new Delay(() -> ChangelogUI.loadChangelogAndShow(true, false), 1);
                 break;
             case "debug":
                 if (!Reference.developmentEnvironment) {
@@ -204,8 +198,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             return;
         }
 
-        TextComponentString releaseStreamText = null;
-        TextComponentString buildText = null;
+        TextComponentString releaseStreamText;
+        TextComponentString buildText;
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
             releaseStreamText = new TextComponentString("You are using Stable release stream: ");
             buildText = new TextComponentString("Version " + Reference.VERSION);
@@ -223,8 +217,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
 
-        TextComponentString updateCheckText = null;
-        TextFormatting color = null;
+        TextComponentString updateCheckText;
+        TextFormatting color;
         if (WebManager.getUpdate().updateCheckFailed()) {
             updateCheckText = new TextComponentString("Wynntils failed to check for updates. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to try again.");
             color = TextFormatting.DARK_RED;

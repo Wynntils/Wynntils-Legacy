@@ -145,7 +145,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         }
     }
 
-    private static Pattern WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
+    private static Pattern WYNNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
 
     /**
      * Search for a Wynncraft World.
@@ -157,7 +157,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
     private static void joinWorld(String worldType, int worldNumber) {
         if (!Reference.onServer || Reference.onWorld) return;
 
-        FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(0));
+        FakeInventory serverSelector = new FakeInventory(WYNNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(0));
         serverSelector.onReceiveItems(inventory -> {
             String prefix = "";
             if (worldType.equals("WC")) {

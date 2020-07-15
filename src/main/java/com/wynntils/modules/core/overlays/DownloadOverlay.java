@@ -20,7 +20,7 @@ public class DownloadOverlay extends Overlay {
     private static CustomColor progress = CustomColor.fromInt(0x80fd80, 1);
     private static CustomColor back = CustomColor.fromInt(0xececec, 1);
 
-    private static CustomColor brackgroundRed = CustomColor.fromInt(0x6e3737, 1);
+    private static CustomColor backgroundRed = CustomColor.fromInt(0x6e3737, 1);
     private static CustomColor boxRed = CustomColor.fromInt(0xfd8080, 1);
 
     static int lastPercent = 0;
@@ -51,7 +51,7 @@ public class DownloadOverlay extends Overlay {
                     return;
                 }
 
-                drawRect(brackgroundRed, -172, 0 - size, 0, 52 - size);
+                drawRect(backgroundRed, -172, 0 - size, 0, 52 - size);
                 drawRect(boxRed, -170, 0 - size, 0, 50 - size);
                 drawString("Your game will be closed in", -84, 15 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 drawString(((timeToRestart - System.currentTimeMillis()) / 1000) + " seconds", -84, 25 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);

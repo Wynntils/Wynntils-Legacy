@@ -19,8 +19,6 @@ public class UpdateProfile {
     boolean updateCheckFailed = false;
     String latestUpdate = Reference.VERSION;
 
-    private WebReader versions;
-
     public UpdateProfile() {
         new Thread(() -> {
             try {

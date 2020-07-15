@@ -76,8 +76,7 @@ public class PointRenderer {
                         Iterable<BlockPos> blocks = BlockPos.getAllInBox(minPos, maxPos);
                         boolean barrier = false;
                         boolean validBlock = false;
-                        for (Iterator<BlockPos> iterator = blocks.iterator(); iterator.hasNext();) {
-                            BlockPos blockInArea = iterator.next();
+                        for (BlockPos blockInArea : blocks) {
                             IBlockState blockStateInArea = world.getBlockState(blockInArea);
                             if (blockStateInArea.getBlock() == Blocks.BARRIER) {
                                 barrier = true;

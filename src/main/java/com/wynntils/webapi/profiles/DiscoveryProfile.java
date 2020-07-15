@@ -1,4 +1,4 @@
-/**
+/*
  *  * Copyright © Wynntils - 2018 - 2020.
  */
 

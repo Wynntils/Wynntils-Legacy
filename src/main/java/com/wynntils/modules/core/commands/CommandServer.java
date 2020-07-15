@@ -38,7 +38,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/s <command> [options]\n\ncommands:\nl,ls,list | list avaiable servers\ni,info | get info about a server\n\nmore detailed help:\n/s <command> help";
+        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\n\nmore detailed help:\n/s <command> help";
     }
 
     @Override

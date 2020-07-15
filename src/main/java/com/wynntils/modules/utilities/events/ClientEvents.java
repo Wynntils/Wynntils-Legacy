@@ -18,6 +18,8 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.entities.EntityManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
+import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
+import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -70,6 +72,7 @@ public class ClientEvents implements Listener {
     private static boolean afkProtectionEnabled = false;
     private static boolean afkProtectionActivated = false;
     private static boolean afkProtectionRequested = false;
+    private static boolean afkProtectionBlocked = false;
 
     private static float lastHealth = 0;
     private static long lastUserInput = Long.MAX_VALUE;
@@ -175,8 +178,8 @@ public class ClientEvents implements Listener {
             }
             long longAfkThresholdMillis = (long)(UtilitiesConfig.AfkProtection.INSTANCE.afkProtectionThreshold * 60 * 1000);
             if (!afkProtectionEnabled) {
-                if (timeSinceActivity >= longAfkThresholdMillis) {
-                    // Enable AFK protection
+                if (!afkProtectionBlocked && timeSinceActivity >= longAfkThresholdMillis) {
+                    // Enable AFK protection (but not if we're in a chest/inventory GUI)
                     afkProtectionRequested = false;
                     lastHealth = Minecraft.getMinecraft().player.getHealth();
                     if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectAfk) {
@@ -189,7 +192,7 @@ public class ClientEvents implements Listener {
                 }
             } else {
                 float currentHealth = Minecraft.getMinecraft().player.getHealth();
-                if (currentHealth < lastHealth) {
+                if (currentHealth < (lastHealth  * UtilitiesConfig.AfkProtection.INSTANCE.healthPercentage / 100.0f)) {
                     // We're taking damage; activate AFK protection and go to class screen
                     afkProtectionActivated = true;
                     Minecraft.getMinecraft().addScheduledTask(() ->
@@ -229,6 +232,13 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
+        if (e.getGui() == null) {
+            afkProtectionBlocked = false;
+            lastUserInput = System.currentTimeMillis();
+        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer ||
+                e.getGui() instanceof HorseReplacer) {
+            afkProtectionBlocked = true;
+        }
         if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
             firstNullOccurred = false;
             e.setGui(scheduledGuiScreen);
@@ -448,7 +458,7 @@ public class ClientEvents implements Listener {
                     List<String> lore = ItemUtils.getLore(item);
                     String price = lore.get(4);
                     int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
-                    int le = (int) Math.floor((double) actualPrice) / 4096;
+                    int le = (int) Math.floor(actualPrice) / 4096;
                     int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
                     int emeralds = actualPrice % 64;
                     String priceDisplay = "";
@@ -575,9 +585,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -590,9 +598,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -605,9 +611,7 @@ public class ClientEvents implements Listener {
         if (player.getHealth() != player.getMaxHealth()) return;
 
         e.setCanceled(true);
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!");
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You are already at full health!"));
     }
 
     @SubscribeEvent
@@ -661,7 +665,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    {
+    static {
         try {
             UtilitiesModule.getModule().registerEvents(new FailsToLoadIfNoColorEvent());
         } catch (NoClassDefFoundError e) { /* ignore */ }
