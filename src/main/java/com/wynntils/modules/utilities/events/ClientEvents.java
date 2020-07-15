@@ -12,11 +12,9 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
-import com.wynntils.modules.core.entities.EntityManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
@@ -24,7 +22,6 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.modules.utilities.entities.DamageSplashEntity;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
@@ -80,15 +77,6 @@ public class ClientEvents implements Listener {
     private int tickCounter;
 
     public static boolean isAwaitingHorseMount = false;
-
-    @SubscribeEvent
-    public void damageIndicators(GameEvent.DamageEntity e) {
-        if (!UtilitiesConfig.DamageSplash.INSTANCE.enabled) return;
-        EntityManager.spawnEntity(new DamageSplashEntity(e.getDamageTypes(),
-                new Location(e.getEntity())));
-
-        e.getEntity().world.removeEntity(e.getEntity());
-    }
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {

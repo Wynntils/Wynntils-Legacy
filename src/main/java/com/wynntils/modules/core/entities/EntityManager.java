@@ -4,8 +4,10 @@
 
 package com.wynntils.modules.core.entities;
 
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.entities.instances.FakeEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
 
@@ -56,6 +58,9 @@ public class EntityManager {
             }
 
             RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+            if (renderManager == null || renderManager.options == null) return;
+
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
             // ticks each entity
             it = entityList.iterator();
             while (it.hasNext()) {
@@ -70,6 +75,7 @@ public class EntityManager {
                 Minecraft.getMinecraft().profiler.startSection(next.getName());
                 { // render
                     next.livingTicks += 1;
+                    next.tick(partialTicks, Utils.getRandom(), player);
 
                     pushMatrix();
                     {

@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2020.
  */
 
-package com.wynntils.modules.utilities.entities;
+package com.wynntils.modules.visual.entities;
 
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -10,22 +10,25 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.entities.instances.FakeEntity;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.visual.configs.VisualConfig;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class DamageSplashEntity extends FakeEntity {
+public class EntityDamageSplash extends FakeEntity {
 
     private static final ScreenRenderer renderer = new ScreenRenderer();
 
     String displayText;
+    private float scale = 1f;
 
-    public DamageSplashEntity(HashMap<DamageType, Integer> damages, Location currentLocation) {
+    public EntityDamageSplash(HashMap<DamageType, Integer> damages, Location currentLocation) {
         super(currentLocation);
 
         StringBuilder text = new StringBuilder();
@@ -43,25 +46,26 @@ public class DamageSplashEntity extends FakeEntity {
 
     @Override
     public String getName() {
-        return "DamageSplashEntity";
+        return "EntityDamageSplash";
     }
 
     @Override
-    public void render(float partialTicks, RenderGlobal context, RenderManager render) {
-        int maxLiving = UtilitiesConfig.DamageSplash.INSTANCE.maxLiving;
-        // remove the damage after 150 rendering ticks
+    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
+        int maxLiving = VisualConfig.DamageSplash.INSTANCE.maxLiving;
         if (livingTicks > maxLiving) {
             remove();
             return;
         }
 
-        float initialScale = UtilitiesConfig.DamageSplash.INSTANCE.initialScale;
+        float initialScale = VisualConfig.DamageSplash.INSTANCE.initialScale;
 
         // makes the text goes down and resize
-
         currentLocation.subtract(0, 2 / (double)maxLiving, 0);
-        float scale = initialScale - ((livingTicks * initialScale) / maxLiving);
+        scale = initialScale - ((livingTicks * initialScale) / maxLiving);
+    }
 
+    @Override
+    public void render(float partialTicks, RenderGlobal context, RenderManager render) {
         boolean thirdPerson = render.options.thirdPersonView == 2;
         Location loc = getCurrentLocation();
 

@@ -5,9 +5,11 @@
 package com.wynntils.modules.core.entities.instances;
 
 import com.wynntils.core.utils.objects.Location;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
 
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -41,8 +43,17 @@ public class FakeEntity {
     }
 
     /**
+     * Called before rendering.
+     * Use this to calculate pathfinders and related things.
+     *
+     * @param partialTicks the world partial ticks
+     */
+    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
+
+    }
+
+    /**
      * Called every world rendering tick
-     * call super for an automatic translation
      *
      * @param partialTicks the world partial ticks
      * @param context the rendering context

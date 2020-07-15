@@ -115,9 +115,12 @@ public class Location extends Point3d {
         return new BlockPos(x, y, z);
     }
 
-
     public final net.minecraft.util.math.Vec3d toMinecraftVec3d() {
         return new net.minecraft.util.math.Vec3d(x, y, z);
+    }
+
+    public Location clone() {
+        return new Location(x, y, z);
     }
 
     @Override
