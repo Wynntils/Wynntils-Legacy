@@ -20,7 +20,7 @@ import java.util.UUID;
  * This is not attached to ANY WORLD
  * meaning that the entity will show in any world without exception.
  *
- * <b>THESE ENTITIES ARE NOT PERSISTANT</b>.
+ * <b>THESE ENTITIES ARE NOT PERSISTENT</b>.
  */
 public class FakeEntity {
 

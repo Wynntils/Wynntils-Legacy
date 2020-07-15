@@ -58,7 +58,8 @@ public class DamageSplashEntity extends FakeEntity {
         float initialScale = UtilitiesConfig.DamageSplash.INSTANCE.initialScale;
 
         // makes the text goes down and resize
-        currentLocation.subtract(0, 1 / maxLiving, 0);
+
+        currentLocation.subtract(0, 2 / (double)maxLiving, 0);
         float scale = initialScale - ((livingTicks * initialScale) / maxLiving);
 
         boolean thirdPerson = render.options.thirdPersonView == 2;
