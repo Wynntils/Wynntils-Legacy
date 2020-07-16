@@ -55,6 +55,9 @@ public class VisualConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.01f, max = 1f, precision = 0.01f)
         public float scale = 0.04f;
 
+        @Setting(displayName = "3D Fireflies", description = "Should the fireflies be 3D.")
+        public boolean threeDimensions = true;
+
     }
 
 }

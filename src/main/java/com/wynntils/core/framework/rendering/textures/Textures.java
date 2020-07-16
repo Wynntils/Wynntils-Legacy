@@ -92,6 +92,7 @@ public class Textures {
 
         public static AssetsTexture path_arrow;
         public static AssetsTexture leaderboard_badges;
+        public static AssetsTexture solid_color;
 
     }
 }
