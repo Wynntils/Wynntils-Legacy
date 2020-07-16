@@ -211,8 +211,10 @@ public class ClientEvents {
 
         ScreenRenderer.refresh();
         if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
+        FrameworkManager.triggerNaturalSpawn(e);
     }
 
     @SubscribeEvent

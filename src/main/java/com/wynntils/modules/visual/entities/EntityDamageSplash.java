@@ -4,12 +4,12 @@
 
 package com.wynntils.modules.visual.entities;
 
+import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.core.entities.instances.FakeEntity;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;

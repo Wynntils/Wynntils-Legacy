@@ -2,10 +2,10 @@
  *  * Copyright © Wynntils - 2020.
  */
 
-package com.wynntils.modules.core.entities;
+package com.wynntils.core.framework.entities;
 
+import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.modules.core.entities.instances.FakeEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;

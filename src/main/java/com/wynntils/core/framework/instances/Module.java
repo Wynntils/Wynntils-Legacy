@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.instances;
 
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -38,6 +39,10 @@ public abstract class Module {
 
     public void registerEvents(Listener listenerClass) {
         FrameworkManager.registerEvents(this, listenerClass);
+    }
+
+    public void registerSpawnCondition(EntitySpawnCodition entity) {
+        FrameworkManager.registerSpawnCondition(this, entity);
     }
 
     public void registerSettings(Class<? extends SettingsHolder> settingsClass) {

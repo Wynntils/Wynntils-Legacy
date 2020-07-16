@@ -7,6 +7,8 @@ package com.wynntils.core.framework;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.framework.entities.EntityManager;
+import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
@@ -18,8 +20,11 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
+import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -27,10 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
+import java.util.*;
 
 import static net.minecraft.client.gui.Gui.ICONS;
 
@@ -38,8 +40,9 @@ public class FrameworkManager {
 
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
     public static LinkedHashMap<Priority, ArrayList<Overlay>> registeredOverlays = new LinkedHashMap<>();
+    public static HashSet<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
 
-    private static EventBus eventBus = new EventBus();
+    private static final EventBus eventBus = new EventBus();
 
     static {
         registeredOverlays.put(Priority.LOWEST, new ArrayList<>());
@@ -67,6 +70,15 @@ public class FrameworkManager {
         }
 
         availableModules.get(info.name()).registerEvents(listener);
+    }
+
+    public static void registerSpawnCondition(Module module, EntitySpawnCodition entity) {
+        ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
+        if (info == null) {
+            return;
+        }
+
+        registeredSpawnConditions.add(entity);
     }
 
     public static void registerSettings(Module module, Class<? extends SettingsHolder> settingsClass) {
@@ -208,9 +220,31 @@ public class FrameworkManager {
         }
     }
 
+    public static void triggerNaturalSpawn(TickEvent.ClientTickEvent e) {
+        if (registeredSpawnConditions.isEmpty()) return;
+
+        Random r = Utils.getRandom();
+        if (r.nextBoolean()) return; // reduce spawn chances by half
+
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        for (double x = -10; x < 10; x++) {
+            for (double y = -1; y < 6; y++) {
+                for (double z = -10; z < 10; z++) {
+                    for (EntitySpawnCodition condition : registeredSpawnConditions) {
+                        Location relative = new Location(player).add(x, y, z);
+                        if (!condition.shouldSpawn(relative, player.world, player, r)) continue;
+
+                        EntityManager.spawnEntity(condition.createEntity(relative, player, r));
+                    }
+                }
+            }
+        }
+    }
+
     public static void triggerKeyPress() {
-        if (Reference.onServer)
-            availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
+        if (!Reference.onServer) return;
+
+        availableModules.values().forEach(ModuleContainer::triggerKeyBinding);
     }
 
     public static SettingsContainer getSettings(Module module, SettingsHolder holder) {

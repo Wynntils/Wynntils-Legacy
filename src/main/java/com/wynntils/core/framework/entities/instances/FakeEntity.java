@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2020.
  */
 
-package com.wynntils.modules.core.entities.instances;
+package com.wynntils.core.framework.entities.instances;
 
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.client.entity.EntityPlayerSP;

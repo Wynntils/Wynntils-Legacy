@@ -4,8 +4,8 @@
 
 package com.wynntils.modules.visual.entities;
 
+import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.core.entities.instances.FakeEntity;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -79,7 +79,7 @@ public class EntityFirefly extends FakeEntity {
         boolean thirdPerson = render.options.thirdPersonView == 2;
 
         { // setting up
-            disableLighting();
+            //disableLighting();
             enableBlend();
             disableTexture2D();
 
@@ -95,10 +95,10 @@ public class EntityFirefly extends FakeEntity {
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
             // square
-            buffer.pos(-.5, .5, 0).color(0f, 1f, 0, alpha).endVertex();
-            buffer.pos(.5, .5, 0).color(0f, 1f, 0, alpha).endVertex();
-            buffer.pos(.5, -.5, 0).color(0f, 1f, 0, alpha).endVertex();
-            buffer.pos(-.5, -.5, 0).color(0f, 1f, 0, alpha).endVertex();
+            buffer.pos(-.5, .5, 0).color(1f, 1f, 0, alpha).endVertex();
+            buffer.pos(.5, .5, 0).color(1f, 1f, 0, alpha).endVertex();
+            buffer.pos(.5, -.5, 0).color(1f, 1f, 0, alpha).endVertex();
+            buffer.pos(-.5, -.5, 0).color(1f, 1f, 0, alpha).endVertex();
 
             tes.draw();
         }

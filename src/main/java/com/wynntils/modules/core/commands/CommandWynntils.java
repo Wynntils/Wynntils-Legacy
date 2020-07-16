@@ -5,11 +5,11 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.entities.EntityManager;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.richpresence.RichPresenceModule;
