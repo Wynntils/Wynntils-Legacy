@@ -77,7 +77,7 @@ public class ClientEvents implements Listener {
 
         Pair<String, Boolean> message = ChatManager.applyUpdatesToServer(e.getMessage());
         e.setMessage(message.a);
-        if (message.b || message.a.isEmpty() || message.a.equalsIgnoreCase(" ")) {
+        if (message.b || message.a.isEmpty() || message.a.trim().isEmpty()) {
             e.setCanceled(true);
             return;
         }
