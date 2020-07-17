@@ -60,4 +60,33 @@ public class VisualConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "ashes", displayPath = "Visual/Ashes")
+    public static class Ashes extends SettingsClass {
+        public static Ashes INSTANCE;
+
+        @Setting(displayName = "Visual Ashes", description = "Should ashes be rendered in certain areas.")
+        public boolean enabled = true;
+
+        @Setting(displayName = "Max Duration", description = "How much ticks should an ashe live in max.")
+        @Setting.Limitations.IntLimit(min = 50, max = 5000, precision = 5)
+        public int maxLiving = 2200;
+
+        @Setting(displayName = "Spawn Limit", description = "How much ashes in max should spawn around you.")
+        @Setting.Limitations.IntLimit(min = 50, max = 500)
+        public int spawnLimit = 175;
+
+        @Setting(displayName = "Max Scale", description = "How big ashes should be in max.")
+        @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.5f, precision = 0.01f)
+        public float maxScale = 0.2f;
+
+        @Setting(displayName = "Max Gray Scale", description = "How white in max should ashes be.")
+        @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f, precision = 0.1f)
+        public float maxGrayScale = 0.8f;
+
+        @Setting(displayName = "Spawn Rate", description = "How frequently ashes should spawn. Bigger = lesser.")
+        @Setting.Limitations.IntLimit(min = 100, max = 1000)
+        public int spawnRate = 375;
+
+    }
+
 }
