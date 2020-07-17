@@ -59,6 +59,7 @@ public class WebManager {
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
+    private static ArrayList<LocationProfile> npcLocations = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
@@ -167,6 +168,10 @@ public class WebManager {
 
     public static ArrayList<MapLabelProfile> getMapLabels() {
         return mapLabels;
+    }
+
+    public static ArrayList<LocationProfile> getNpcLocations() {
+        return npcLocations;
     }
 
     public static Iterable<MapMarkerProfile> getNonIgnoredApiMarkers() {
@@ -433,6 +438,12 @@ public class WebManager {
                 }.getType();
 
                 mapLabels = gson.fromJson(labelArray, labelType);
+
+                JsonArray npcLocationArray = main.getAsJsonArray("npc-locations");
+                Type npcLocationType = new TypeToken<ArrayList<LocationProfile>>() {
+                }.getType();
+
+                npcLocations = gson.fromJson(npcLocationArray, npcLocationType);
 
                 MapApiIcon.resetApiMarkers();
                 return true;

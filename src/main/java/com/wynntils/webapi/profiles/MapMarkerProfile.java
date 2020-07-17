@@ -9,7 +9,7 @@ import com.wynntils.core.utils.StringUtils;
 
 import java.util.*;
 
-public class MapMarkerProfile {
+public class MapMarkerProfile extends LocationProfile {
 
     private static final Map<String, String> MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>() {{
         put("Content_Dungeon", "Dungeons");
@@ -76,17 +76,12 @@ public class MapMarkerProfile {
         }
     }});
 
-    String name;
-    int x;
     int y;
-    int z;
     String icon;
 
     public MapMarkerProfile(String name, int x, int y, int z, String icon) {
-        this.name = name;
-        this.x = x;
+        super(name, x, z);
         this.y = y;
-        this.z = z;
         this.icon = icon;
         ensureNormalized();
     }
@@ -95,20 +90,8 @@ public class MapMarkerProfile {
         return IGNORED_MARKERS.contains(this.name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getX() {
-        return x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public int getZ() {
-        return z;
     }
 
     public String getIcon() {
@@ -120,6 +103,7 @@ public class MapMarkerProfile {
         icon = icon.replace(".png", "");
     }
 
+    @Override
     public String getTranslatedName() {
         return MAPMARKERNAME_TRANSLATION.get(icon);
     }

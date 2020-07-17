@@ -6,7 +6,7 @@ package com.wynntils.modules.map.commands;
 
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.MapMarkerProfile;
+import com.wynntils.webapi.profiles.LocationProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -23,26 +23,31 @@ import java.util.*;
 import static net.minecraft.util.text.TextFormatting.GRAY;
 
 public class CommandLocate extends CommandBase implements IClientCommand {
-    Map<String, List<MapMarkerProfile>> mapFeatures = new HashMap<>();
+    Map<String, List<LocationProfile>> mapFeatures = new HashMap<>();
 
     public CommandLocate() {
-        for (MapMarkerProfile mmp : WebManager.getNonIgnoredApiMarkers()) {
-            registerFeature(mmp);
+        for (LocationProfile location : WebManager.getNonIgnoredApiMarkers()) {
+            mapFeatures.put(getFeatureKey(location), getProfileList(location));
+        }
+        for (LocationProfile location : WebManager.getNpcLocations()) {
+            mapFeatures.put(getFeatureKey(location), Collections.singletonList(location));
+        }
+        for (LocationProfile location : WebManager.getMapLabels()) {
+            mapFeatures.put(getFeatureKey(location), Collections.singletonList(location));
         }
     }
 
-    private String getFeatureKey(MapMarkerProfile mmp) {
-        return mmp.getTranslatedName().replace(" ", "_");
-    }
-
-    private void registerFeature(MapMarkerProfile mmp) {
-        String featureKey = getFeatureKey(mmp);
-        List<MapMarkerProfile> knownProfiles = mapFeatures.get(featureKey);
+    private List<LocationProfile> getProfileList(LocationProfile location) {
+        List<LocationProfile> knownProfiles = mapFeatures.get(getFeatureKey(location));
         if (knownProfiles == null) {
             knownProfiles = new LinkedList<>();
         }
-        knownProfiles.add(mmp);
-        mapFeatures.put(featureKey, knownProfiles);
+        knownProfiles.add(location);
+        return knownProfiles;
+    }
+
+    private String getFeatureKey(LocationProfile location) {
+        return location.getTranslatedName().replace(" ", "_");
     }
 
     @Override
@@ -71,26 +76,32 @@ public class CommandLocate extends CommandBase implements IClientCommand {
             throw new WrongUsageException("/" + getUsage(sender));
         }
 
-        List<MapMarkerProfile> knownProfiles = mapFeatures.get(args[0]);
+        List<LocationProfile> knownProfiles = mapFeatures.get(args[0]);
         if (knownProfiles == null) {
-            throw new WrongUsageException("Unknown map feature: " + args[0]);
+            // Try case insensitive search
+            Optional<String> match = mapFeatures.keySet().stream().filter(key -> key.toLowerCase().equals(args[0].toLowerCase())).findFirst();
+            if (!match.isPresent()) {
+                throw new WrongUsageException("Unknown map feature: " + args[0]);
+            } else {
+                knownProfiles = mapFeatures.get(match.get());
+            }
         }
 
-        TreeMap<Double, MapMarkerProfile> distanceToLocations = new TreeMap<>();
+        TreeMap<Double, LocationProfile> distanceToLocations = new TreeMap<>();
         Location currentLocation = new Location(Minecraft.getMinecraft().player);
 
-        for (MapMarkerProfile mmp : knownProfiles) {
-            Location location = new Location(mmp.getX(), currentLocation.getY(), mmp.getZ());
+        for (LocationProfile locationProfile : knownProfiles) {
+            Location location = new Location(locationProfile.getX(), currentLocation.getY(), locationProfile.getZ());
             double distance = location.distance(currentLocation);
-            distanceToLocations.put(distance, mmp);
+            distanceToLocations.put(distance, locationProfile);
         }
 
         int numPrinted = 0;
-        for (Map.Entry<Double, MapMarkerProfile> entry : distanceToLocations.entrySet()) {
+        for (Map.Entry<Double, LocationProfile> entry : distanceToLocations.entrySet()) {
             double distance = entry.getKey();
-            MapMarkerProfile mmp = entry.getValue();
+            LocationProfile mmp = entry.getValue();
 
-            ITextComponent startingPointMsg = new TextComponentString(mmp.getTranslatedName() + " at [" +
+            ITextComponent startingPointMsg = new TextComponentString(mmp.getTranslatedName() + " is located at [" +
                     mmp.getX() + ", " + mmp.getZ() + "] (" + (int) distance + " blocks)");
             startingPointMsg.getStyle().setColor(GRAY);
             sender.sendMessage(startingPointMsg);

@@ -4,44 +4,28 @@
 
 package com.wynntils.webapi.profiles;
 
-public class MapLabelProfile {
+public class MapLabelProfile extends LocationProfile {
 
-    String name;
+    int y;
+    int layer;
     String level;
 
-    int x;
-    int y;
-    int z;
-
-    int layer;
-
     public MapLabelProfile(String name, int x, int y, int z, int layer, String level) {
-        if (layer == 1) {
-            this.name = name.toUpperCase();
-        } else {
-            this.name = name;
-        }
-        this.x = x;
+        super(name, x, z);
         this.y = y;
-        this.z = z;
         this.layer = layer;
         this.level = level;
+        ensureNormalized();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getX() {
-        return x;
+    public void ensureNormalized() {
+        if (name != null && layer == 1) {
+            this.name = name.toUpperCase();
+        }
     }
 
     public int getY() {
         return y;
-    }
-
-    public int getZ() {
-        return z;
     }
 
     public int getLayer() {
