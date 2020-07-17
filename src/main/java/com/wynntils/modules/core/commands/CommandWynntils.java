@@ -5,17 +5,14 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.helpers.TextAction;
-import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.visual.entities.EntityFirefly;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -168,7 +165,6 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     Minecraft.getMinecraft().player.sendMessage(message);
                     return;
                 }
-                EntityManager.spawnEntity(new EntityFirefly(new Location(Minecraft.getMinecraft().player).add(0, 2, 0)));
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

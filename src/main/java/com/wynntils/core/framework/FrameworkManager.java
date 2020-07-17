@@ -234,7 +234,7 @@ public class FrameworkManager {
                         Location relative = new Location(player).add(x, y, z);
                         if (!condition.shouldSpawn(relative, player.world, player, r)) continue;
 
-                        EntityManager.spawnEntity(condition.createEntity(relative, player, r));
+                        EntityManager.spawnEntity(condition.createEntity(relative, player.world, player, r));
                     }
                 }
             }

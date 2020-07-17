@@ -26,13 +26,18 @@ public class EntityFirefly extends FakeEntity {
     public static AtomicInteger fireflies = new AtomicInteger();
 
     int lifespan;
+    float r, g, b;
 
     // movement
     Location step = null;
     long nextChange = 0;
 
-    public EntityFirefly(Location currentLocation) {
+    public EntityFirefly(Location currentLocation, float r, float g, float b) {
         super(currentLocation);
+
+        this.r = r;
+        this.g = g;
+        this.b = b;
 
         lifespan = VisualConfig.Fireflies.INSTANCE.maxLiving;
         fireflies.incrementAndGet();
@@ -84,7 +89,9 @@ public class EntityFirefly extends FakeEntity {
         { // setting up
             depthMask(false);
             enableBlend();
+            enableAlpha();
             disableTexture2D();
+            color(1f, 1f, 1f, alpha);
 
             if (!threeDimensions) {
                 rotate(-render.playerViewY, 0f, 1f, 0f); // rotates yaw
@@ -105,11 +112,11 @@ public class EntityFirefly extends FakeEntity {
 
             // vertexes
             if (!threeDimensions) {
-                buffer.pos(-.5, .5, 0).tex(0, 1f).color(1f, 1f, 0, alpha).lightmap(0, 15728880).endVertex();
-                buffer.pos(.5, .5, 0).tex(1f, 1f).color(1f, 1f, 0, alpha).lightmap(0, 15728880).endVertex();
-                buffer.pos(.5, -.5, 0).tex(1f, 0f).color(1f, 1f, 0, alpha).lightmap(0, 15728880).endVertex();
-                buffer.pos(-.5, -.5, 0).tex(0, 0f).color(1f, 1f, 0, alpha).lightmap(0, 15728880).endVertex();
-            } else generateVertexBox(buffer, -.5, -.5, -.5, .5, .5, .5, 1f, 1f, 0, alpha);
+                buffer.pos(-.5, .5, 0).tex(0, 1f).color(r, g, b, alpha).lightmap(0, 15728880).endVertex();
+                buffer.pos(.5, .5, 0).tex(1f, 1f).color(r, g, b, alpha).lightmap(0, 15728880).endVertex();
+                buffer.pos(.5, -.5, 0).tex(1f, 0f).color(r, g, b, alpha).lightmap(0, 15728880).endVertex();
+                buffer.pos(-.5, -.5, 0).tex(0, 0f).color(r, g, b, alpha).lightmap(0, 15728880).endVertex();
+            } else generateVertexBox(buffer, -.5, -.5, -.5, .5, .5, .5, r, g, b, alpha);
 
             tes.draw();
         }
@@ -118,6 +125,7 @@ public class EntityFirefly extends FakeEntity {
             disableBlend();
             enableTexture2D();
             depthMask(true);
+            color(1f, 1f, 1f, 1f);
         }
     }
 
