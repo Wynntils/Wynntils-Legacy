@@ -19,6 +19,7 @@ public class Textures {
 
         textureClasses.add(Masks.class);
         textureClasses.add(Overlays.class);
+        textureClasses.add(Particles.class);
         textureClasses.add(UIs.class);
         textureClasses.add(Map.class);
         textureClasses.add(World.class);
@@ -52,6 +53,10 @@ public class Textures {
         public static AssetsTexture hotbar;
         public static AssetsTexture toast;
         public static AssetsTexture professions;
+    }
+
+    public static class Particles {
+        public static AssetsTexture snow;
     }
 
     public static class Map {
@@ -89,10 +94,8 @@ public class Textures {
     }
 
     public static class World {
-
         public static AssetsTexture path_arrow;
         public static AssetsTexture leaderboard_badges;
         public static AssetsTexture solid_color;
-
     }
 }

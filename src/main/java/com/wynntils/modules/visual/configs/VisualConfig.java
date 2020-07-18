@@ -89,4 +89,33 @@ public class VisualConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "snowflakes", displayPath = "Visual/Snowflakes")
+    public static class Snowflakes extends SettingsClass {
+        public static Snowflakes INSTANCE;
+
+        @Setting(displayName = "Visual Snowflakes", description = "Should snowflakes be rendered in certain areas.")
+        public boolean enabled = true;
+
+        @Setting(displayName = "Max Duration", description = "How much ticks should an snowflake live in max.")
+        @Setting.Limitations.IntLimit(min = 50, max = 5000, precision = 5)
+        public int maxLiving = 1000;
+
+        @Setting(displayName = "Spawn Limit", description = "How much snowflakes in max should spawn around you.")
+        @Setting.Limitations.IntLimit(min = 50, max = 500)
+        public int spawnLimit = 200;
+
+        @Setting(displayName = "Max Scale", description = "How big snowflakes should be in max.")
+        @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.5f, precision = 0.01f)
+        public float maxScale = 0.1f;
+
+        @Setting(displayName = "Max White Scale", description = "How white in max should snowflakes be.")
+        @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f, precision = 0.1f)
+        public float maxWhiteScale = 0.8f;
+
+        @Setting(displayName = "Spawn Rate", description = "How frequently snowflakes should spawn. Bigger = lesser.")
+        @Setting.Limitations.IntLimit(min = 100, max = 1000)
+        public int spawnRate = 300;
+
+    }
+
 }
