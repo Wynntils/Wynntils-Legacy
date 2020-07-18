@@ -23,7 +23,7 @@ public class FireflySpawnCondition implements EntitySpawnCodition {
 
     @Override
     public boolean shouldSpawn(Location pos, World world, EntityPlayerSP player, Random random) {
-        if (!VisualConfig.Fireflies.INSTANCE.enabled) return false;
+        if (!VisualConfig.Fireflies.INSTANCE.enabled || world.isDaytime()) return false;
         if (world.getBiome(pos.toBlockPos()) != Biomes.FOREST && world.getBiome(pos.toBlockPos()) != Biomes.SWAMPLAND) return false;
         if (!LIGHT_FOREST.isInside(pos) && !DARK_FOREST.isInside(pos)) return false;
 
