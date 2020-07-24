@@ -16,6 +16,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 public class UserManager {
@@ -46,11 +48,15 @@ public class UserManager {
                             rl
                     );
 
-                    // loading
-                    TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-                    textureManager.loadTexture(rl, info);
+                    // loading needs to occur inside the client thread
+                    // otherwise some weird texture corruption WILL happen
+                    Minecraft.getMinecraft().addScheduledTask(() -> {
+                        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+                        textureManager.loadTexture(rl, info);
 
-                    users.put(uuid, new WynntilsUser(AccountType.valueOf(user.get("accountType").getAsString()), info));
+                        users.put(uuid, new WynntilsUser(AccountType.valueOf(user.get("accountType").getAsString()), info));
+                    });
+
                     return true;
                 }).onError(i -> false);
 
@@ -66,7 +72,21 @@ public class UserManager {
     }
 
     public static void clearRegistry() {
-        users.clear();
+        Minecraft mc = Minecraft.getMinecraft();
+
+        // needs to be run inside the client thread
+        // otherwise some weird corrupting issues WILL happen
+        mc.addScheduledTask(() -> {
+            Iterator<Map.Entry<UUID, WynntilsUser>> it = users.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<UUID, WynntilsUser> next = it.next();
+
+                // removes the texture from the texture registry as well
+                mc.getTextureManager().deleteTexture(next.getValue().getCosmetics().getLocation());
+
+                it.remove();
+            }
+        });
     }
 
 }
