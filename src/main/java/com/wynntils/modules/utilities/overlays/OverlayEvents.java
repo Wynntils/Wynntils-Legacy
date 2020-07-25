@@ -720,6 +720,7 @@ public class OverlayEvents implements Listener {
             }
             else if (potion == MobEffects.RESISTANCE && isVanished) {
                 isVanished = false;
+                return;
             }
             else {
                 return;
