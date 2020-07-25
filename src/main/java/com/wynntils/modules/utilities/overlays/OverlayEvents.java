@@ -718,6 +718,10 @@ public class OverlayEvents implements Listener {
                     return;
                 }
             }
+            else if (potion == MobEffects.RESISTANCE && isVanished) {
+                isVanished = false;
+                return;
+            }
             else {
                 return;
 
