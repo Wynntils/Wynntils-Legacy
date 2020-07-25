@@ -718,6 +718,9 @@ public class OverlayEvents implements Listener {
                     return;
                 }
             }
+            else if (potion == MobEffects.RESISTANCE && isVanished) {
+                isVanished = false;
+            }
             else {
                 return;
 
@@ -743,7 +746,6 @@ public class OverlayEvents implements Listener {
                 // When removing invisibility from assassin
                 else if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
                         potion == MobEffects.INVISIBILITY) {
-                    isVanished = false; // So it won't skip
                     ConsumableTimerOverlay.removeBasicTimer("Vanish");
                 }
             });
