@@ -80,6 +80,9 @@ public class UserManager {
             Iterator<Map.Entry<UUID, WynntilsUser>> it = users.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<UUID, WynntilsUser> next = it.next();
+                if (next.getValue() == null) {
+                    continue;
+                }
 
                 // removes the texture from the texture registry as well
                 mc.getTextureManager().deleteTexture(next.getValue().getCosmetics().getLocation());
