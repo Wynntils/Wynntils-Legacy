@@ -31,6 +31,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
@@ -42,9 +43,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
-import net.minecraft.network.play.server.SPacketSetSlot;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.*;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -60,6 +59,8 @@ import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
@@ -284,6 +285,181 @@ public class ClientEvents implements Listener {
     private static int lastHorseId = -1;
     @SuppressWarnings("unchecked")
     private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+
+    enum TotemState { NONE, CREATED, CAST, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
+    TotemState totemState = TotemState.NONE;
+    int trackedTotemId = -1;
+    double trackedX, trackedY, trackedZ;
+    double potentialX, potentialY, potentialZ;
+    int potentialTrackedId = -1;
+    int trackedTime;
+    long spellCastTimestamp = 0;
+    long totemThrownTimestamp = Long.MAX_VALUE;
+
+    int bufferedId = -1;
+    double bufferedX = -1;
+    double bufferedY = -1;
+    double bufferedZ = -1;
+
+    private void checkTotemSummoned() {
+        // If we have both thrown and cast at roughly the same time
+        if (Math.abs(totemThrownTimestamp - spellCastTimestamp) < 500) {
+            if (totemState != TotemState.NONE) {
+                // has an active totem already, signal that it is removed first
+                updateTotem(TotemState.NONE);
+            }
+            trackedTotemId = potentialTrackedId;
+            trackedTime  = -1;
+
+            updateTotem(TotemState.SUMMONED, potentialX, potentialY, potentialZ);
+        }
+    }
+
+    public void castPotentialTotem() {
+        spellCastTimestamp = System.currentTimeMillis();
+        checkTotemSummoned();
+    }
+
+    public void throwPotentialTotem(int entityId, double x, double y, double z) {
+            potentialTrackedId = entityId;
+            potentialX = x;
+            potentialY = y;
+            potentialZ = z;
+            totemThrownTimestamp = System.currentTimeMillis();
+        checkTotemSummoned();
+    }
+
+    public void updateTotem(TotemState newState, double x, double y, double z) {
+        trackedX = x;
+        trackedY = y;
+        trackedZ = z;
+        updateTotem(newState);
+    }
+
+    public void updateTotem(TotemState newState, int time) {
+        trackedTime = time;
+        updateTotem(newState);
+    }
+
+    public void updateTotem(TotemState newState) {
+        totemState = newState;
+        updateTotem();
+    }
+
+    public void updateTotem() {
+        if (totemState == TotemState.SUMMONED) {
+            ConsumableTimerOverlay.addBasicTimer("Shaman Totem Summoned", 1000);
+        } else if (totemState == TotemState.ACTIVATING) {
+            totemState = TotemState.ACTIVE;
+            ConsumableTimerOverlay.removeBasicTimer("Shaman Totem Summoned");
+            ConsumableTimerOverlay.addBasicTimer("Shaman Totem", 18);
+        } else if (totemState == TotemState.NONE) {
+            ConsumableTimerOverlay.removeBasicTimer("Shaman Totem");
+            trackedTotemId = -1;
+            trackedTime = -1;
+            trackedX = 0;
+            trackedY = 0;
+            trackedZ = 0;
+        }
+        System.out.println("TOTEM: state: " + totemState + " x " + trackedX + " y " + trackedY + " z " + trackedZ + " time " +  trackedTime + " id " + trackedTotemId);
+    }
+
+    public static boolean almostEqual(double a, double b)
+    {
+        double diff = Math.abs(a - b);
+        return  (diff < 3);
+    }
+
+    public Entity getBufferedEntity(int entityId) {
+        Entity entity = ModCore.mc().world.getEntityByID(entityId);
+        if (entity != null) return entity;
+
+        if (entityId == bufferedId) {
+            return new EntityArmorStand(ModCore.mc().world, bufferedX, bufferedY, bufferedZ);
+        }
+
+        return null;
+    }
+
+    @SubscribeEvent
+    public void onTotemSpellCast(SpellEvent e) {
+        if (e.getSpell().equals("Totem")) {
+            castPotentialTotem();
+        }
+    }
+
+    @SubscribeEvent
+    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        if (e.getPacket().getType() == 78) {
+            bufferedId = e.getPacket().getEntityID();
+            bufferedX = e.getPacket().getX();
+            bufferedY = e.getPacket().getY();
+            bufferedZ = e.getPacket().getZ();
+
+            if (e.getPacket().getEntityID() == trackedTotemId) {
+                // Totems respawn with the same entityID when landing
+                updateTotem(TotemState.LANDING, e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
+                return;
+            }
+
+            if (almostEqual(e.getPacket().getX(), Minecraft.getMinecraft().player.posX) &&
+                    almostEqual(e.getPacket().getY(), Minecraft.getMinecraft().player.posY + 1.0) &&
+                    almostEqual(e.getPacket().getZ(), Minecraft.getMinecraft().player.posZ)) {
+                throwPotentialTotem(e.getPacket().getEntityID(), e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
+        int thisId = e.getPacket().getEntityId();
+
+        if (thisId == trackedTotemId && (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING)) {
+            updateTotem(TotemState.PREPARING, e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
+        }
+    }
+
+    @SubscribeEvent
+    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
+        if (!Reference.onServer || !Reference.onWorld) return;
+
+        String name = null;
+        assert nameKey != null;
+        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
+            if (!nameKey.equals(entry.getKey())) continue;
+            name = (String) entry.getValue();
+        }
+        if (name == null || name.isEmpty()) return;
+
+        Entity entity = getBufferedEntity(e.getPacket().getEntityId());
+        if (!(entity instanceof EntityArmorStand)) return;
+
+        Pattern shamanTotemTimer = Pattern.compile("^§c([0-9][0-9]?)s$");
+        Matcher m = shamanTotemTimer.matcher(name);
+        if (m.find()) {
+            double distanceXZ = Math.abs(entity.posX  - trackedX) +  Math.abs(entity.posZ  - trackedZ);
+            if (distanceXZ < 3.0 && entity.posY <= (trackedY + 3.0) && entity.posY >= ((trackedY + 2.0))) {
+                int time = Integer.parseInt(m.group(1));
+
+                if (trackedTime == -1) {
+                    updateTotem(TotemState.ACTIVATING, time);
+                } else if (time != trackedTime) {
+                    updateTotem(TotemState.ACTIVE, time);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
+        for (int id : e.getPacket().getEntityIDs()) {
+            if (id == trackedTotemId) {
+                if (totemState == TotemState.ACTIVE && trackedTime == 0) {
+                    updateTotem(TotemState.NONE);
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
