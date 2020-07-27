@@ -251,7 +251,7 @@ public class ConsumableTimerOverlay extends Overlay {
                 continue;
             }
 
-            drawString(consumable.getName() + " (" + StringUtils.timeLeft(consumable.getExpirationTime() - Minecraft.getSystemTime()) + ")"
+            drawString(consumable.getName() + " (" + StringUtils.timeLeft(consumable.getExpirationTime() - Minecraft.getSystemTime() + 1000) + ")"
                     , 0, extraY, CommonColors.WHITE, getAlignment(), SmartFontRenderer.TextShadow.OUTLINE);
 
             extraY+=10;
