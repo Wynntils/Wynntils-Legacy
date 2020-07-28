@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -82,20 +83,24 @@ public class GameUpdateOverlay extends Overlay {
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
 
-            if (message.endsWith("§"))
+            if (message.endsWith("§")) {
                 message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+            }
             message = message + "...";
         }
 
-        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + message);
-        messageQueue.add(new MessageContainer(message));
+        String processedMessage = message;
+        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
+        ModCore.mc().addScheduledTask(() -> {
+            messageQueue.add(new MessageContainer(processedMessage));
 
-        if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
-            messageQueue.remove(0);
+            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
+                messageQueue.remove(0);
+        });
     }
 
     public static void resetMessages() {
-        messageQueue.clear();
+        ModCore.mc().addScheduledTask(() -> messageQueue.clear());
     }
 
 
