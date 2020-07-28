@@ -43,6 +43,12 @@ public class TotemTracker {
 
     private int heldWeaponSlot = -1;
 
+    int mobTotemId = -1;
+    int mobTotemTime = -1;
+    MobTotem mobTotem;
+    String mobTotemOwner;
+    double mobTotemX, mobTotemY, mobTotemZ;
+
     private int bufferedId = -1;
     private double bufferedX = -1;
     private double bufferedY = -1;
@@ -175,7 +181,42 @@ public class TotemTracker {
                     totemTime = time;
                 }
             }
+            return;
         }
+
+        Pattern mobTotemName = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
+        Matcher m3 = mobTotemName.matcher(name);
+        if (m3.find()) {
+            mobTotemId = e.getPacket().getEntityId();
+            mobTotemOwner = m3.group(1);
+            mobTotemTime = -1;
+            mobTotemX = entity.posX;
+            mobTotemY = entity.posY - 4.5;
+            mobTotemZ = entity.posZ;
+            System.out.println("totem id " + mobTotemId + " of " + mobTotemOwner + " x " + entity.posX + " y " + mobTotemY + " z " + entity.posZ);
+            return;
+        }
+
+        if (entity.posX == mobTotemX && entity.posZ == mobTotemZ && entity.posY == mobTotemY + 4.7) {
+            Pattern mobTotemTimeP = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
+            Matcher m4 = mobTotemTimeP.matcher(name);
+            if (m4.find()) {
+                System.out.println("matched MOB TIME EXACT:" + m4.group(1) + ":" + m4.group(2) + ".");
+                int minutes = Integer.parseInt(m4.group(1));
+                int seconds = Integer.parseInt(m4.group(2));
+                int time  = minutes*60 + seconds;
+                if (mobTotemTime == -1) {
+                    mobTotemTime = time;
+                    System.out.println("STARTING COUNTER AT: " + time);
+                    mobTotem = new MobTotem(mobTotemId, new Location(mobTotemX, mobTotemY, mobTotemZ), mobTotemOwner);
+                    postEvent(new SpellEvent.MobTotemActivated(mobTotem, mobTotemTime + 1));
+                }  else if (mobTotemTime != time) {
+                    System.out.println("COUNTER DOWN TO: " + time);
+                }
+                return;
+            }
+        }
+
     }
 
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
@@ -184,6 +225,11 @@ public class TotemTracker {
             if (totemState == TotemState.ACTIVE && totemTime == 0) {
                 removeTotem(false);
             }
+        }
+        if (entityIDs.filter(id -> id == mobTotemId).findFirst().isPresent()) {
+            System.out.println("DESTROYING MOB TOTEM: " + mobTotemId);
+            postEvent(new SpellEvent.MobTotemRemoved(mobTotem));
+
         }
     }
 
@@ -194,6 +240,30 @@ public class TotemTracker {
     public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
         if (e.getPacket().getSlotId() != heldWeaponSlot) {
             removeTotem(true);
+        }
+    }
+
+    public static class MobTotem {
+        private final int totemId;
+        private final Location location;
+        private final String owner;
+
+        public MobTotem(int totemId, Location location, String owner) {
+            this.totemId = totemId;
+            this.location = location;
+            this.owner = owner;
+        }
+
+        public int getTotemId() {
+            return totemId;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
+        public String getOwner() {
+            return owner;
         }
     }
 }

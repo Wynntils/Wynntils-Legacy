@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.core.instances.TotemTracker;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
@@ -740,6 +741,22 @@ public class OverlayEvents implements Listener {
 
         ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
         ConsumableTimerOverlay.removeBasicTimer(totemName);
+    }
+
+    private String getMobTotemTimerName(TotemTracker.MobTotem mobTotem) {
+        return "Mob Totem (" + mobTotem.getOwner() + ") " + mobTotem.getLocation();
+    }
+
+    @SubscribeEvent
+    public void onMobTotemEvent(SpellEvent.MobTotemActivated e) {
+        System.out.println("ON ACT EVENT: " + e);
+        ConsumableTimerOverlay.addBasicTimer(getMobTotemTimerName(e.getMobTotem()), e.getTime());
+    }
+
+    @SubscribeEvent
+    public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
+        System.out.println("ON REM EVENT: " + e);
+    //    ConsumableTimerOverlay.removeBasicTimer(getMobTotemTimerName(e.getMobTotem()));
     }
 
 }
