@@ -43,6 +43,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -424,6 +425,11 @@ public class ClientEvents implements Listener {
         totemTracker.onTotemClassChange(e);
     }
 
+    @SubscribeEvent
+    public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
+        totemTracker.onWeaponChange(e);
+    }
+
     private static class TotemTracker {
         public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
         private TotemState totemState = TotemState.NONE;
@@ -432,6 +438,7 @@ public class ClientEvents implements Listener {
         private double potentialX, potentialY, potentialZ;
         private int potentialTrackedId = -1;
         private int trackedTime;
+        private int heldWeaponSlot = -1;
         private long spellCastTimestamp = 0;
         private long totemCreatedTimestamp = Long.MAX_VALUE;
 
@@ -484,6 +491,7 @@ public class ClientEvents implements Listener {
         private void removeTotem(boolean forcefullyRemoved) {
             if (totemState != TotemState.NONE) {
                 totemState = TotemState.NONE;
+                heldWeaponSlot = -1;
                 trackedTotemId = -1;
                 trackedTime = -1;
                 trackedX = 0;
@@ -525,6 +533,7 @@ public class ClientEvents implements Listener {
         public void onTotemSpellCast(SpellEvent.Cast e) {
             if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
                 spellCastTimestamp = System.currentTimeMillis();
+                heldWeaponSlot =  Minecraft.getMinecraft().player.inventory.currentItem;
                 checkTotemSummoned();
             }
         }
@@ -579,6 +588,12 @@ public class ClientEvents implements Listener {
 
         public void onTotemClassChange(WynnClassChangeEvent e) {
             removeTotem(true);
+        }
+
+        public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
+            if (e.getPacket().getSlotId() != heldWeaponSlot) {
+                removeTotem(true);
+            }
         }
     }
 

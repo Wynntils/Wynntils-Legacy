@@ -738,6 +738,7 @@ public class OverlayEvents implements Listener {
     public void onTotemEvent(SpellEvent.TotemRemoved e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
+        ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
         ConsumableTimerOverlay.removeBasicTimer(totemName);
     }
 
