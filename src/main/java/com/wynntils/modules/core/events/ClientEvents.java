@@ -523,7 +523,7 @@ public class ClientEvents implements Listener {
         }
 
         public void onTotemSpellCast(SpellEvent.Cast e) {
-            if (e.getSpell().equals("Totem")) {
+            if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
                 spellCastTimestamp = System.currentTimeMillis();
                 checkTotemSummoned();
             }
