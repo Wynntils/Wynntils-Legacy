@@ -5,6 +5,7 @@
 package com.wynntils.core.events.custom;
 
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.core.instances.TotemTracker;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 
@@ -64,4 +65,34 @@ public class SpellEvent extends Event {
         }
     }
 
+    public static class MobTotem extends SpellEvent {
+        private final TotemTracker.MobTotem mobTotem;
+
+        public MobTotem(TotemTracker.MobTotem mobTotem) {
+            this.mobTotem = mobTotem;
+        }
+
+        public TotemTracker.MobTotem getMobTotem() {
+            return mobTotem;
+        }
+    }
+
+    public static class MobTotemActivated extends MobTotem {
+        private final int time;
+
+        public MobTotemActivated(TotemTracker.MobTotem mobTotem, int time) {
+            super(mobTotem);
+            this.time = time;
+        }
+
+        public int getTime() {
+            return time;
+        }
+    }
+
+    public static class MobTotemRemoved extends MobTotem {
+        public MobTotemRemoved(TotemTracker.MobTotem mobTotem) {
+            super(mobTotem);
+        }
+    }
 }

@@ -139,7 +139,7 @@ public class Location extends Point3d {
     }
 
     public String toString() {
-        return "[" + (int) this.x + ", " + (int) this.y + ", " + (int) this.z + "]";
+        return "[" + (int) Math.round(this.x) + ", " + (int) Math.round(this.y) + ", " + (int) Math.round(this.z) + "]";
     }
 
 }

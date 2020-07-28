@@ -742,4 +742,14 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.removeBasicTimer(totemName);
     }
 
+    @SubscribeEvent
+    public void onMobTotemEvent(SpellEvent.MobTotemActivated e) {
+        ConsumableTimerOverlay.addBasicTimer(e.getMobTotem().toString(), e.getTime());
+    }
+
+    @SubscribeEvent
+    public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
+        ConsumableTimerOverlay.removeBasicTimer(e.getMobTotem().toString());
+    }
+
 }
