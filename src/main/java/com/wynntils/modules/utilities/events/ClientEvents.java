@@ -30,6 +30,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
@@ -39,9 +40,7 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
-import net.minecraft.network.play.server.SPacketSetSlot;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.*;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -57,6 +56,8 @@ import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
@@ -277,6 +278,147 @@ public class ClientEvents implements Listener {
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+    }
+
+    @SubscribeEvent
+    public void onDestroy(PacketEvent<SPacketDestroyEntities> e) {
+        for (int id : e.getPacket().getEntityIDs()) {
+            if (id == trackedMobTotemId) {
+                    System.out.println("DESTROYING MOB TOTEM: " + trackedMobTotemId);
+                    // ConsumableTimerOverlay.removeBasicTimer("Mob Totem");
+            }
+        }
+    }
+
+    int trackedMobTotemId = -1;
+    int mobTotemTime = -1;
+    double trackedX, trackedY, trackedZ;
+
+    int bufferedId = -1;
+    double bufferedX = -1;
+    double bufferedY = -1;
+    double bufferedZ = -1;
+
+    @SubscribeEvent
+    public void onObjSpawn(PacketEvent<SPacketSpawnObject> e) {
+        if (e.getPacket().getType() == 78) {
+            bufferedId = e.getPacket().getEntityID();
+            bufferedX = e.getPacket().getX();
+            bufferedY = e.getPacket().getY();
+            bufferedZ = e.getPacket().getZ();
+            Reference.LOGGER.info("buffering  id "  + bufferedId);
+        }
+
+    }
+
+    public Entity getBufferedEntity(int entityId) {
+        Entity entity = ModCore.mc().world.getEntityByID(entityId);
+        if (entity != null) return entity;
+
+        if (entityId == bufferedId) {
+            Reference.LOGGER.info("returning buffered coordinates for " + bufferedId);
+            return new EntityArmorStand(ModCore.mc().world, bufferedX, bufferedY, bufferedZ);
+        }
+
+        return null;
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void mobTotemChat(ClientChatReceivedEvent e) {
+        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
+            return;
+        }
+        String msg = e.getMessage().getUnformattedText();
+        if (msg.contains("mob totem")) {
+            String fullMsg = e.getMessage().getFormattedText();
+            System.out.println("CHAT ABOUT TOTEM:" + msg);
+            System.out.println("full:" + fullMsg);
+            System.out.println("full2:" + fullMsg.replace("§", "&"));
+
+
+            // mag_icus's Mob Totem has run out. Get your own mob totems by buying a rank at wynncraft.com/store
+            // mag_icus has placed a mob totem in Ragni at -880, 67, -1541!
+            // You are inside of mag_icus's mob totem. Get your own mob totems by buying a rank at wynncraft.com/stor
+
+            Pattern runOut =  Pattern.compile("^§(.*)'s Mob Totem has run out. Get your own mob totems by buying a rank at §r§bwynncraft.com/store§r$");
+            Matcher runOutM = runOut.matcher(fullMsg);
+            if (runOutM.find()) {
+                System.out.println("RUN OUT_by:" + runOutM.group(1)+":");
+            }
+
+            Pattern placed =  Pattern.compile("^§b(.*)§r§3 has placed a mob totem in §r§b(.*) §r§3at §r§b(.*), (.*), (.*)§r§3!§r$");
+            Matcher placedM = placed.matcher(msg);
+            if (placedM.find()) {
+                System.out.println("PLACED OUT_by:" + placedM.group(1) + ":in:" + placedM.group(2) + ":x:" + placedM.group(3)
+                        +":y:" +placedM.group(4) + ":z:" + placedM.group(5) + ":");
+            }
+
+            Pattern inside =  Pattern.compile("^§3You are inside of §r§b(.*)'s§r§3 mob totem. Get your own mob totems by buying a rank at §r§bwynncraft.com/store§r$");
+            Matcher insideM = inside.matcher(msg);
+            if (insideM.find()) {
+                System.out.println("INSIDE_by:" + insideM.group(1)+":");
+            }
+
+        }
+    }
+
+
+    @SubscribeEvent
+    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
+        if (!Reference.onServer || !Reference.onWorld) return;
+
+        int thisId = e.getPacket().getEntityId();
+        Entity entity = getBufferedEntity(thisId);
+
+        if (entity == null) {
+            System.out.println("FAILURE: no buffered entity for "  + thisId);
+        }
+
+        if (e.getPacket().getDataManagerEntries().isEmpty()) {
+            return;
+        }
+
+        String name = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+        if (name == null || name.isEmpty()) return;
+        if (entity == null) {
+            Reference.LOGGER.info("very strange, entity is now NULL");
+            Reference.LOGGER.info("name is:" + name);
+            return;
+        }
+
+        // §f§lmag_icus's§6§l Mob Totem
+        Pattern mobTotemName = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
+        Matcher m3 = mobTotemName.matcher(name);
+        if (m3.find()) {
+            //  THIS IS WORKING OK!
+            System.out.println("matched MOB NAME:" + m3.group(1));
+            trackedMobTotemId = thisId;
+            mobTotemTime = -1;
+            Reference.LOGGER.info("entity is " + entity);
+            trackedX = entity.posX;
+            trackedY = entity.posY;
+            trackedZ = entity.posZ;
+            System.out.println("totem id " + thisId + " x " + entity.posX + " y " + entity.posY + " z " + entity.posZ);
+        }
+
+        if (entity.posX == trackedX && entity.posZ == trackedZ && entity.posY == trackedY + 0.2) {
+            Pattern mobTotemTimeP = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
+            Matcher m4 = mobTotemTimeP.matcher(name);
+            if (m4.find()) {
+                System.out.println("matched MOB TIME EXACT:" + m4.group(1) + ":" + m4.group(2) + ".");
+                int minutes = Integer.parseInt(m4.group(1));
+                int seconds = Integer.parseInt(m4.group(2));
+                int time  = minutes*60 + seconds;
+                if (mobTotemTime == -1) {
+                    mobTotemTime = time;
+                    System.out.println("STARTING COUNTER AT: " + time);
+                    ConsumableTimerOverlay.addBasicTimer("Mob Totem", time + 1);
+                }  else if (mobTotemTime != time) {
+                    System.out.println("COUNTER DOWN TO: " + time);
+                }
+            }
+        }
+
     }
 
     @SubscribeEvent
