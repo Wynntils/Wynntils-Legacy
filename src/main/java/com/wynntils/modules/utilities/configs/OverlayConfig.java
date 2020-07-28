@@ -642,6 +642,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Show Spell Effects", description = "Should spell effects such as speed boost be displayed?")
         public boolean showSpellEffects = true;
 
+        @Setting(displayName = "Track Totem (experimental)", description = "Should the Shaman's totem be displayed?")
+        public boolean trackTotem = false;
+
         @Setting(displayName = "Show Server Restart", description = "Should server restart countdown be displayed?")
         public boolean showServerRestart = false;
     }

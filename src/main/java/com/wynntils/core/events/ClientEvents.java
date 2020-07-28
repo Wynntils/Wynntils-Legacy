@@ -246,7 +246,7 @@ public class ClientEvents {
                     String spellName = m.group(1);
                     int manaCost = Integer.parseInt(m.group(2));
 
-                    FrameworkManager.getEventBus().post(new SpellEvent(spellName, manaCost));
+                    FrameworkManager.getEventBus().post(new SpellEvent.Cast(spellName, manaCost));
                 }
             }
         }

@@ -6,13 +6,17 @@ package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -41,6 +45,9 @@ import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> NAME_KEY = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
@@ -344,6 +351,16 @@ public class Utils {
         selected.setFocused(true);
         selected.setCursorPosition(0);
         selected.setSelectionPos(selected.getText().length());
+    }
+
+    public static String getNameFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert NAME_KEY != null;
+        for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+            if (NAME_KEY.equals(entry.getKey())) {
+                return (String) entry.getValue();
+            }
+        }
+        return null;
     }
 
     // Alias if using already imported org.apache.commons.lang3.StringUtils

@@ -12,7 +12,6 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -38,8 +37,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -77,6 +74,7 @@ public class ClientEvents implements Listener {
     private int tickCounter;
 
     public static boolean isAwaitingHorseMount = false;
+    private static int lastHorseId = -1;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -281,10 +279,6 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static int lastHorseId = -1;
-    @SuppressWarnings("unchecked")
-    private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
-
     @SubscribeEvent
     public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
         if (!Reference.onServer || !Reference.onWorld) return;
@@ -303,26 +297,22 @@ public class ClientEvents implements Listener {
         }
 
         EntityPlayerSP player = ModCore.mc().player;
-        assert nameKey != null;
-        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if (!nameKey.equals(entry.getKey())) continue;
-            Object value = entry.getValue();
-            if (value == null || !MountHorseManager.isPlayersHorse((String)value, player.getName())) continue;
+        String entityName = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+        if (entityName == null ||  entityName.isEmpty() ||
+                !MountHorseManager.isPlayersHorse(entityName, player.getName())) return;
 
-            lastHorseId = thisId;
+        lastHorseId = thisId;
 
-            if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
+        if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
 
-            if (isAwaitingHorseMount) {
-                MountHorseManager.retryMountHorseAndShowMessage();
-                isAwaitingHorseMount = false;
-                return;
-            }
-
-            if(!UtilitiesConfig.INSTANCE.autoMount) return;
-            MountHorseManager.mountHorseAndLogMessage();
+        if (isAwaitingHorseMount) {
+            MountHorseManager.retryMountHorseAndShowMessage();
+            isAwaitingHorseMount = false;
             return;
         }
+
+        if(!UtilitiesConfig.INSTANCE.autoMount) return;
+        MountHorseManager.mountHorseAndLogMessage();
     }
 
     @SubscribeEvent
