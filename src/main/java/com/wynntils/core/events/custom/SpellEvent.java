@@ -53,6 +53,12 @@ public class SpellEvent extends Event {
         }
     }
 
+    public static class TotemRenewed extends TotemActivated {
+        public TotemRenewed(int time, Location location) {
+            super(time, location);
+        }
+    }
+
     public static class TotemRemoved extends Totem {
         private final boolean forcefullyRemoved;
 

@@ -186,6 +186,10 @@ public class TotemTracker {
                     totemState = TotemState.ACTIVE;
                     postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
                 } else if (time != totemTime) {
+                    if (time > totemTime) {
+                        // Timer restarted using uproot
+                        postEvent(new SpellEvent.TotemRenewed(totemTime, new Location(totemX, totemY, totemZ)));
+                    }
                     totemTime = time;
                 }
             }
