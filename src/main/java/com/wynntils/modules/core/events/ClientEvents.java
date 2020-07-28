@@ -560,7 +560,7 @@ public class ClientEvents implements Listener {
                     if (trackedTime == -1) {
                         trackedTime = time;
                         totemState = TotemState.ACTIVE;
-                        postEvent(new SpellEvent.TotemActivated(trackedTime));
+                        postEvent(new SpellEvent.TotemActivated(trackedTime, new Location(trackedX, trackedY, trackedZ)));
                     } else if (time != trackedTime) {
                         trackedTime = time;
                     }

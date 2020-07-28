@@ -38,6 +38,8 @@ public class OverlayEvents implements Listener {
     private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
+    private static String totemName;
+
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
@@ -728,14 +730,15 @@ public class OverlayEvents implements Listener {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
         ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
-        ConsumableTimerOverlay.addBasicTimer("Totem", e.getTime());
+        totemName = "Totem " + e.getLocation();
+        ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemRemoved e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeBasicTimer("Totem");
+        ConsumableTimerOverlay.removeBasicTimer(totemName);
     }
 
 }

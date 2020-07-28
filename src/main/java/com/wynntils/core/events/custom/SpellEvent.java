@@ -4,6 +4,7 @@
 
 package com.wynntils.core.events.custom;
 
+import com.wynntils.core.utils.objects.Location;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 
@@ -35,13 +36,19 @@ public class SpellEvent extends Event {
 
     public static class TotemActivated extends Totem {
         private final int time;
+        private final Location location;
 
-        public TotemActivated(int time) {
+        public TotemActivated(int time, Location location) {
             this.time = time;
+            this.location = location;
         }
 
         public int getTime() {
             return time;
+        }
+
+        public Location getLocation() {
+            return location;
         }
     }
 

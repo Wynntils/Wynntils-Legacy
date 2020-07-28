@@ -138,4 +138,8 @@ public class Location extends Point3d {
         return x == other.x && y == other.y && z == other.z;
     }
 
+    public String toString() {
+        return "[" + (int) this.x + ", " + (int) this.y + ", " + (int) this.z + "]";
+    }
+
 }
