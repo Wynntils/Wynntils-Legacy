@@ -69,6 +69,7 @@ import java.util.stream.IntStream;
 import static com.wynntils.core.framework.instances.PlayerInfo.getPlayerInfo;
 
 public class ClientEvents implements Listener {
+    TotemTracker totemTracker = new TotemTracker();
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -392,7 +393,36 @@ public class ClientEvents implements Listener {
 
         UserManager.loadUser(e.getEntity().getUniqueID());
     }
-    TotemTracker totemTracker = new TotemTracker();
+
+    @SubscribeEvent
+    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        totemTracker.onTotemSpawn(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemSpellCast(SpellEvent.Cast e) {
+        totemTracker.onTotemSpellCast(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
+        totemTracker.onTotemTeleport(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
+        totemTracker.onTotemRename(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
+        totemTracker.onTotemDestroy(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemClassChange(WynnClassChangeEvent e) {
+        totemTracker.onTotemClassChange(e);
+    }
 
     private static class TotemTracker {
         public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
@@ -410,24 +440,14 @@ public class ClientEvents implements Listener {
         private double bufferedY = -1;
         private double bufferedZ = -1;
 
-        private void updateTotemPosition(double x, double y, double z) {
-            trackedX = x;
-            trackedY = y;
-            trackedZ = z;
-        }
-
-        private void resetTotemTracking() {
-            trackedTotemId = -1;
-            trackedTime = -1;
-            trackedX = 0;
-            trackedY = 0;
-            trackedZ = 0;
-        }
-
         private static boolean isClose(double a, double b)
         {
             double diff = Math.abs(a - b);
             return  (diff < 3);
+        }
+
+        private void postEvent(Event event) {
+            ModCore.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
         }
 
         private Entity getBufferedEntity(int entityId) {
@@ -441,25 +461,35 @@ public class ClientEvents implements Listener {
             return null;
         }
 
-        private void postEvent(Event event) {
-            ModCore.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
+        private void updateTotemPosition(double x, double y, double z) {
+            trackedX = x;
+            trackedY = y;
+            trackedZ = z;
         }
 
         private void checkTotemSummoned() {
             // Check if we have both creation and spell cast at roughly the same time
             if (Math.abs(totemCreatedTimestamp - spellCastTimestamp) < 500) {
-                if (totemState != TotemState.NONE) {
-                    // We have an active totem already, first remove that one
-                    totemState = TotemState.NONE;
-                    resetTotemTracking();
-                    postEvent(new SpellEvent.TotemRemoved(true));
-                }
+                // If we have an active totem already, first remove that one
+                removeTotem(true);
                 trackedTotemId = potentialTrackedId;
                 trackedTime  = -1;
 
                 updateTotemPosition(potentialX, potentialY, potentialZ);
                 totemState = TotemState.SUMMONED;
                 postEvent(new SpellEvent.TotemSummoned());
+            }
+        }
+
+        private void removeTotem(boolean forcefullyRemoved) {
+            if (totemState != TotemState.NONE) {
+                totemState = TotemState.NONE;
+                trackedTotemId = -1;
+                trackedTime = -1;
+                trackedX = 0;
+                trackedY = 0;
+                trackedZ = 0;
+                postEvent(new SpellEvent.TotemRemoved(forcefullyRemoved));
             }
         }
 
@@ -542,45 +572,14 @@ public class ClientEvents implements Listener {
             IntStream entityIDs = Arrays.stream(e.getPacket().getEntityIDs());
             if (entityIDs.filter(id -> id == trackedTotemId).findFirst().isPresent()) {
                 if (totemState == TotemState.ACTIVE && trackedTime == 0) {
-                    totemState = TotemState.NONE;
-                    resetTotemTracking();
-                    postEvent(new SpellEvent.TotemRemoved(false));
+                    removeTotem(false);
                 }
             }
         }
 
         public void onTotemClassChange(WynnClassChangeEvent e) {
-            resetTotemTracking();
+            removeTotem(true);
         }
     }
 
-    @SubscribeEvent
-    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
-        totemTracker.onTotemSpawn(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemSpellCast(SpellEvent.Cast e) {
-        totemTracker.onTotemSpellCast(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
-        totemTracker.onTotemTeleport(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
-        totemTracker.onTotemRename(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
-        totemTracker.onTotemDestroy(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemClassChange(WynnClassChangeEvent e) {
-        totemTracker.onTotemClassChange(e);
-    }
 }
