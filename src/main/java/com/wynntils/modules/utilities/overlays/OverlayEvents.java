@@ -743,20 +743,16 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.removeBasicTimer(totemName);
     }
 
-    private String getMobTotemTimerName(TotemTracker.MobTotem mobTotem) {
-        return "Mob Totem (" + mobTotem.getOwner() + ") " + mobTotem.getLocation();
-    }
-
     @SubscribeEvent
     public void onMobTotemEvent(SpellEvent.MobTotemActivated e) {
         System.out.println("ON ACT EVENT: " + e);
-        ConsumableTimerOverlay.addBasicTimer(getMobTotemTimerName(e.getMobTotem()), e.getTime());
+        ConsumableTimerOverlay.addBasicTimer(e.getMobTotem().toString(), e.getTime());
     }
 
     @SubscribeEvent
     public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
         System.out.println("ON REM EVENT: " + e);
-    //    ConsumableTimerOverlay.removeBasicTimer(getMobTotemTimerName(e.getMobTotem()));
+        ConsumableTimerOverlay.removeBasicTimer(e.getMobTotem().toString());
     }
 
 }
