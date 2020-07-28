@@ -199,8 +199,6 @@ public class TotemTracker {
             MobTotem mobTotem = new MobTotem(mobTotemId,
                     new Location(entity.posX, entity.posY - 4.5, entity.posZ), m2.group(1));
             mobTotemUnstarted.put(mobTotemId, mobTotem);
-
-            System.out.println("totem id " + mobTotemId + " : " + mobTotem);
             return;
         }
 
@@ -214,8 +212,6 @@ public class TotemTracker {
                     mobTotemStarted.put(mobTotem.totemId, mobTotem);
                     mobTotemUnstarted.remove(mobTotem.totemId);
                     postEvent(new SpellEvent.MobTotemActivated(mobTotem, minutes * 60 + seconds + 1));
-
-                    System.out.println("matched MOB TIME EXACT:" + m3.group(1) + ":" + m3.group(2) + ".");
                     return;
                 }
             }
@@ -239,7 +235,6 @@ public class TotemTracker {
             if (mobTotem == null) continue;
             mobTotemStarted.remove(id);
 
-            System.out.println("DESTROYING MOB TOTEM: " + id);
             postEvent(new SpellEvent.MobTotemRemoved(mobTotem));
         }
     }

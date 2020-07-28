@@ -30,7 +30,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
@@ -40,7 +39,10 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -56,8 +58,6 @@ import org.lwjgl.opengl.Display;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
@@ -290,45 +290,6 @@ public class ClientEvents implements Listener {
 
         e.setCanceled(true);
         GameUpdateOverlay.queueMessage(packet.getMessage().getFormattedText());
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void mobTotemChat(ClientChatReceivedEvent e) {
-        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
-            return;
-        }
-        String msg = e.getMessage().getUnformattedText();
-        if (msg.contains("mob totem")) {
-            String fullMsg = e.getMessage().getFormattedText();
-            System.out.println("CHAT ABOUT TOTEM:" + msg);
-            System.out.println("full:" + fullMsg);
-            System.out.println("full2:" + fullMsg.replace("§", "&"));
-
-
-            // mag_icus's Mob Totem has run out. Get your own mob totems by buying a rank at wynncraft.com/store
-            // mag_icus has placed a mob totem in Ragni at -880, 67, -1541!
-            // You are inside of mag_icus's mob totem. Get your own mob totems by buying a rank at wynncraft.com/stor
-
-            Pattern runOut =  Pattern.compile("^§(.*)'s Mob Totem has run out. Get your own mob totems by buying a rank at §r§bwynncraft.com/store§r$");
-            Matcher runOutM = runOut.matcher(fullMsg);
-            if (runOutM.find()) {
-                System.out.println("RUN OUT_by:" + runOutM.group(1)+":");
-            }
-
-            Pattern placed =  Pattern.compile("^§b(.*)§r§3 has placed a mob totem in §r§b(.*) §r§3at §r§b(.*), (.*), (.*)§r§3!§r$");
-            Matcher placedM = placed.matcher(msg);
-            if (placedM.find()) {
-                System.out.println("PLACED OUT_by:" + placedM.group(1) + ":in:" + placedM.group(2) + ":x:" + placedM.group(3)
-                        +":y:" +placedM.group(4) + ":z:" + placedM.group(5) + ":");
-            }
-
-            Pattern inside =  Pattern.compile("^§3You are inside of §r§b(.*)'s§r§3 mob totem. Get your own mob totems by buying a rank at §r§bwynncraft.com/store§r$");
-            Matcher insideM = inside.matcher(msg);
-            if (insideM.find()) {
-                System.out.println("INSIDE_by:" + insideM.group(1)+":");
-            }
-
-        }
     }
 
     @SubscribeEvent
