@@ -719,20 +719,17 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemSummoned e) {
         ConsumableTimerOverlay.addBasicTimer("Totem Summoned", 59);
-        System.out.println("SUMMONED");
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemActivated e) {
         ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
         ConsumableTimerOverlay.addBasicTimer("Totem", e.getTime());
-        System.out.println("ACTIVATED " + e.getTime());
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemRemoved e) {
         ConsumableTimerOverlay.removeBasicTimer("Totem");
-        System.out.println("REMOVED");
     }
 
 }
