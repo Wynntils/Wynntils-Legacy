@@ -12,7 +12,6 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.core.events.ClientEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -31,14 +30,18 @@ import java.util.stream.IntStream;
 public class TotemTracker {
     public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
     private TotemState totemState = TotemState.NONE;
-    private int trackedTotemId = -1;
-    private double trackedX, trackedY, trackedZ;
-    private double potentialX, potentialY, potentialZ;
-    private int potentialTrackedId = -1;
-    private int trackedTime;
-    private int heldWeaponSlot = -1;
-    private long spellCastTimestamp = 0;
+
+    private int totemId = -1;
+    private double totemX, totemY, totemZ;
+    private int totemTime = -1;
+
+    private long totemCastTimestamp = 0;
     private long totemCreatedTimestamp = Long.MAX_VALUE;
+
+    private int potentialId = -1;
+    private double potentialX, potentialY, potentialZ;
+
+    private int heldWeaponSlot = -1;
 
     private int bufferedId = -1;
     private double bufferedX = -1;
@@ -67,18 +70,18 @@ public class TotemTracker {
     }
 
     private void updateTotemPosition(double x, double y, double z) {
-        trackedX = x;
-        trackedY = y;
-        trackedZ = z;
+        totemX = x;
+        totemY = y;
+        totemZ = z;
     }
 
     private void checkTotemSummoned() {
         // Check if we have both creation and spell cast at roughly the same time
-        if (Math.abs(totemCreatedTimestamp - spellCastTimestamp) < 500) {
+        if (Math.abs(totemCreatedTimestamp - totemCastTimestamp) < 500) {
             // If we have an active totem already, first remove that one
             removeTotem(true);
-            trackedTotemId = potentialTrackedId;
-            trackedTime  = -1;
+            totemId = potentialId;
+            totemTime = -1;
 
             updateTotemPosition(potentialX, potentialY, potentialZ);
             totemState = TotemState.SUMMONED;
@@ -90,11 +93,11 @@ public class TotemTracker {
         if (totemState != TotemState.NONE) {
             totemState = TotemState.NONE;
             heldWeaponSlot = -1;
-            trackedTotemId = -1;
-            trackedTime = -1;
-            trackedX = 0;
-            trackedY = 0;
-            trackedZ = 0;
+            totemId = -1;
+            totemTime = -1;
+            totemX = 0;
+            totemY = 0;
+            totemZ = 0;
             postEvent(new SpellEvent.TotemRemoved(forcefullyRemoved));
         }
     }
@@ -106,7 +109,7 @@ public class TotemTracker {
             bufferedY = e.getPacket().getY();
             bufferedZ = e.getPacket().getZ();
 
-            if (e.getPacket().getEntityID() == trackedTotemId) {
+            if (e.getPacket().getEntityID() == totemId) {
                 // Totems respawn with the same entityID when landing.
                 // Update with more precise coordinates
                 updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
@@ -118,7 +121,7 @@ public class TotemTracker {
             if (isClose(e.getPacket().getX(), Minecraft.getMinecraft().player.posX) &&
                     isClose(e.getPacket().getY(), Minecraft.getMinecraft().player.posY + 1.0) &&
                     isClose(e.getPacket().getZ(), Minecraft.getMinecraft().player.posZ)) {
-                potentialTrackedId = e.getPacket().getEntityID();
+                potentialId = e.getPacket().getEntityID();
                 potentialX = e.getPacket().getX();
                 potentialY = e.getPacket().getY();
                 potentialZ = e.getPacket().getZ();
@@ -130,7 +133,7 @@ public class TotemTracker {
 
     public void onTotemSpellCast(SpellEvent.Cast e) {
         if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
-            spellCastTimestamp = System.currentTimeMillis();
+            totemCastTimestamp = System.currentTimeMillis();
             heldWeaponSlot =  Minecraft.getMinecraft().player.inventory.currentItem;
             checkTotemSummoned();
         }
@@ -139,7 +142,7 @@ public class TotemTracker {
     public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
         int thisId = e.getPacket().getEntityId();
 
-        if (thisId == trackedTotemId && (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING)) {
+        if (thisId == totemId && (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING)) {
             // Now the totem has gotten it's final coordinates
             updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
             totemState = TotemState.PREPARING;
@@ -159,17 +162,17 @@ public class TotemTracker {
         Matcher m = shamanTotemTimer.matcher(name);
         if (m.find()) {
             // We got a armor stand with a timer nametag
-            double distanceXZ = Math.abs(entity.posX  - trackedX) +  Math.abs(entity.posZ  - trackedZ);
-            if (distanceXZ < 3.0 && entity.posY <= (trackedY + 3.0) && entity.posY >= ((trackedY + 2.0))) {
+            double distanceXZ = Math.abs(entity.posX  - totemX) +  Math.abs(entity.posZ  - totemZ);
+            if (distanceXZ < 3.0 && entity.posY <= (totemY + 3.0) && entity.posY >= ((totemY + 2.0))) {
                 // ... and it's close to our totem; regard this as our timer
                 int time = Integer.parseInt(m.group(1));
 
-                if (trackedTime == -1) {
-                    trackedTime = time;
+                if (totemTime == -1) {
+                    totemTime = time;
                     totemState = TotemState.ACTIVE;
-                    postEvent(new SpellEvent.TotemActivated(trackedTime, new Location(trackedX, trackedY, trackedZ)));
-                } else if (time != trackedTime) {
-                    trackedTime = time;
+                    postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
+                } else if (time != totemTime) {
+                    totemTime = time;
                 }
             }
         }
@@ -177,8 +180,8 @@ public class TotemTracker {
 
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
         IntStream entityIDs = Arrays.stream(e.getPacket().getEntityIDs());
-        if (entityIDs.filter(id -> id == trackedTotemId).findFirst().isPresent()) {
-            if (totemState == TotemState.ACTIVE && trackedTime == 0) {
+        if (entityIDs.filter(id -> id == totemId).findFirst().isPresent()) {
+            if (totemState == TotemState.ACTIVE && totemTime == 0) {
                 removeTotem(false);
             }
         }
