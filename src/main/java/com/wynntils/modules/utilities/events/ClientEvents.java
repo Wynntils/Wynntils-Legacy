@@ -295,16 +295,16 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onDestroy(PacketEvent<SPacketDestroyEntities> e) {
         for (int id : e.getPacket().getEntityIDs()) {
-            if (id == trackedMobTotemId) {
-                    System.out.println("DESTROYING MOB TOTEM: " + trackedMobTotemId);
+            if (id == mobTotemId) {
+                    System.out.println("DESTROYING MOB TOTEM: " + mobTotemId);
                     // ConsumableTimerOverlay.removeBasicTimer("Mob Totem");
             }
         }
     }
 
-    int trackedMobTotemId = -1;
+    int mobTotemId = -1;
     int mobTotemTime = -1;
-    double trackedX, trackedY, trackedZ;
+    double mobTotemX, mobTotemY, mobTotemZ;
 
     int bufferedId = -1;
     double bufferedX = -1;
@@ -334,6 +334,67 @@ public class ClientEvents implements Listener {
 
         return null;
     }
+
+
+    @SubscribeEvent
+    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
+        if (!Reference.onServer || !Reference.onWorld) return;
+
+        int thisId = e.getPacket().getEntityId();
+        Entity entity = getBufferedEntity(thisId);
+
+        if (entity == null) {
+            System.out.println("FAILURE: no buffered entity for "  + thisId);
+        }
+
+        if (e.getPacket().getDataManagerEntries().isEmpty()) {
+            return;
+        }
+
+        String name = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+        if (name == null || name.isEmpty()) return;
+
+        if (entity == null) {
+            Reference.LOGGER.info("very strange, entity is now NULL");
+            Reference.LOGGER.info("name is:" + name);
+            return;
+        }
+
+        // §f§lmag_icus's§6§l Mob Totem
+        Pattern mobTotemName = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
+        Matcher m3 = mobTotemName.matcher(name);
+        if (m3.find()) {
+            //  THIS IS WORKING OK!
+            System.out.println("matched MOB NAME:" + m3.group(1));
+            mobTotemId = thisId;
+            mobTotemTime = -1;
+            Reference.LOGGER.info("entity is " + entity);
+            mobTotemX = entity.posX;
+            mobTotemY = entity.posY;
+            mobTotemZ = entity.posZ;
+            System.out.println("totem id " + thisId + " x " + entity.posX + " y " + entity.posY + " z " + entity.posZ);
+        }
+
+        if (entity.posX == mobTotemX && entity.posZ == mobTotemZ && entity.posY == mobTotemY + 0.2) {
+            Pattern mobTotemTimeP = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
+            Matcher m4 = mobTotemTimeP.matcher(name);
+            if (m4.find()) {
+                System.out.println("matched MOB TIME EXACT:" + m4.group(1) + ":" + m4.group(2) + ".");
+                int minutes = Integer.parseInt(m4.group(1));
+                int seconds = Integer.parseInt(m4.group(2));
+                int time  = minutes*60 + seconds;
+                if (mobTotemTime == -1) {
+                    mobTotemTime = time;
+                    System.out.println("STARTING COUNTER AT: " + time);
+                    ConsumableTimerOverlay.addBasicTimer("Mob Totem", time + 1);
+                }  else if (mobTotemTime != time) {
+                    System.out.println("COUNTER DOWN TO: " + time);
+                }
+            }
+        }
+
+    }
+
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void mobTotemChat(ClientChatReceivedEvent e) {
@@ -372,65 +433,6 @@ public class ClientEvents implements Listener {
             }
 
         }
-    }
-
-
-    @SubscribeEvent
-    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
-        if (!Reference.onServer || !Reference.onWorld) return;
-
-        int thisId = e.getPacket().getEntityId();
-        Entity entity = getBufferedEntity(thisId);
-
-        if (entity == null) {
-            System.out.println("FAILURE: no buffered entity for "  + thisId);
-        }
-
-        if (e.getPacket().getDataManagerEntries().isEmpty()) {
-            return;
-        }
-
-        String name = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
-        if (name == null || name.isEmpty()) return;
-        if (entity == null) {
-            Reference.LOGGER.info("very strange, entity is now NULL");
-            Reference.LOGGER.info("name is:" + name);
-            return;
-        }
-
-        // §f§lmag_icus's§6§l Mob Totem
-        Pattern mobTotemName = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
-        Matcher m3 = mobTotemName.matcher(name);
-        if (m3.find()) {
-            //  THIS IS WORKING OK!
-            System.out.println("matched MOB NAME:" + m3.group(1));
-            trackedMobTotemId = thisId;
-            mobTotemTime = -1;
-            Reference.LOGGER.info("entity is " + entity);
-            trackedX = entity.posX;
-            trackedY = entity.posY;
-            trackedZ = entity.posZ;
-            System.out.println("totem id " + thisId + " x " + entity.posX + " y " + entity.posY + " z " + entity.posZ);
-        }
-
-        if (entity.posX == trackedX && entity.posZ == trackedZ && entity.posY == trackedY + 0.2) {
-            Pattern mobTotemTimeP = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
-            Matcher m4 = mobTotemTimeP.matcher(name);
-            if (m4.find()) {
-                System.out.println("matched MOB TIME EXACT:" + m4.group(1) + ":" + m4.group(2) + ".");
-                int minutes = Integer.parseInt(m4.group(1));
-                int seconds = Integer.parseInt(m4.group(2));
-                int time  = minutes*60 + seconds;
-                if (mobTotemTime == -1) {
-                    mobTotemTime = time;
-                    System.out.println("STARTING COUNTER AT: " + time);
-                    ConsumableTimerOverlay.addBasicTimer("Mob Totem", time + 1);
-                }  else if (mobTotemTime != time) {
-                    System.out.println("COUNTER DOWN TO: " + time);
-                }
-            }
-        }
-
     }
 
     @SubscribeEvent
