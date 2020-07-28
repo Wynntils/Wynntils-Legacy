@@ -41,6 +41,7 @@ import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
@@ -277,6 +278,18 @@ public class ClientEvents implements Listener {
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+    }
+
+    @SubscribeEvent
+    public void onTitle(PacketEvent<SPacketTitle> e) {
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPouch) return;
+
+        SPacketTitle packet = e.getPacket();
+        if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
+        if (!packet.getMessage().getUnformattedText().matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(packet.getMessage().getFormattedText());
     }
 
     @SubscribeEvent

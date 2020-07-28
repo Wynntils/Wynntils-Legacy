@@ -337,6 +337,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game-update-ticker?")
             public boolean redirectAfk = true;
+
+            @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game-updatee-ticker?")
+            public boolean redirectPouch = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
