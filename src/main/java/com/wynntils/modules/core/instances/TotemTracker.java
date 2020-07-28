@@ -198,19 +198,22 @@ public class TotemTracker {
 
             MobTotem mobTotem = new MobTotem(mobTotemId,
                     new Location(entity.posX, entity.posY - 4.5, entity.posZ), m2.group(1));
+
             mobTotemUnstarted.put(mobTotemId, mobTotem);
             return;
         }
 
         for (MobTotem mobTotem : mobTotemUnstarted.values()) {
-            if (entity.posX == mobTotem.location.x && entity.posZ == mobTotem.location.z
-                    && entity.posY == mobTotem.location.y + 4.7) {
+            if (entity.posX == mobTotem.getLocation().getX() && entity.posZ == mobTotem.getLocation().getZ()
+                    && entity.posY == mobTotem.getLocation().getY() + 4.7) {
                 Matcher m3 = MOB_TOTEM_TIMER.matcher(name);
                 if (m3.find()) {
                     int minutes = Integer.parseInt(m3.group(1));
                     int seconds = Integer.parseInt(m3.group(2));
+
                     mobTotemStarted.put(mobTotem.totemId, mobTotem);
                     mobTotemUnstarted.remove(mobTotem.totemId);
+
                     postEvent(new SpellEvent.MobTotemActivated(mobTotem, minutes * 60 + seconds + 1));
                     return;
                 }
