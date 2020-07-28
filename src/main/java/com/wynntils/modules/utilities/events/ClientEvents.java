@@ -301,6 +301,7 @@ public class ClientEvents implements Listener {
     }
 
     TotemTracker totemTracker = new TotemTracker();
+
     private static class TotemTracker {
         public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
         private TotemState totemState = TotemState.NONE;
@@ -455,6 +456,10 @@ public class ClientEvents implements Listener {
                 }
             }
         }
+
+        public void onTotemClassChange(WynnClassChangeEvent e) {
+            resetTotemTracking();
+        }
     }
 
     @SubscribeEvent
@@ -483,22 +488,8 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemSummoned e) {
-        ConsumableTimerOverlay.addBasicTimer("Shaman Totem Summoned", 1000);
-        System.out.println("SUMMONED");
-    }
-
-    @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemActivated e) {
-        ConsumableTimerOverlay.removeBasicTimer("Shaman Totem Summoned");
-        ConsumableTimerOverlay.addBasicTimer("Shaman Totem", e.getTime());
-        System.out.println("ACTIVATED " + e.getTime());
-    }
-
-    @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemRemoved e) {
-        ConsumableTimerOverlay.removeBasicTimer("Shaman Totem");
-        System.out.println("REMOVED");
+    public void onTotemClassChange(WynnClassChangeEvent e) {
+        totemTracker.onTotemClassChange(e);
     }
 
     @SubscribeEvent
