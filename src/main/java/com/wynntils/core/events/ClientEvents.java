@@ -232,6 +232,8 @@ public class ClientEvents {
 
     @SubscribeEvent
     public void checkSpellCast(TickEvent.ClientTickEvent e) {
+        if (!Reference.onWorld) return;
+
         int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
         ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 

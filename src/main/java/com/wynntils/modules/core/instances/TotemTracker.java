@@ -118,6 +118,8 @@ public class TotemTracker {
     }
 
     public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        if (!Reference.onWorld) return;
+
         if (e.getPacket().getType() == 78) {
             bufferedId = e.getPacket().getEntityID();
             bufferedX = e.getPacket().getX();
@@ -155,6 +157,8 @@ public class TotemTracker {
     }
 
     public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
+        if (!Reference.onWorld) return;
+
         int thisId = e.getPacket().getEntityId();
 
         if (thisId == totemId && (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING)) {
@@ -165,7 +169,7 @@ public class TotemTracker {
     }
 
     public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
-        if (!Reference.onServer || !Reference.onWorld) return;
+        if (!Reference.onWorld) return;
 
         String name = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
         if (name == null || name.isEmpty()) return;
@@ -227,6 +231,8 @@ public class TotemTracker {
     }
 
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
+        if (!Reference.onWorld) return;
+
         IntStream entityIDs = Arrays.stream(e.getPacket().getEntityIDs());
         if (entityIDs.filter(id -> id == totemId).findFirst().isPresent()) {
             if (totemState == TotemState.ACTIVE && totemTime == 0) {
@@ -252,6 +258,8 @@ public class TotemTracker {
     }
 
     public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
+        if (!Reference.onWorld) return;
+
         if (e.getPacket().getSlotId() != heldWeaponSlot) {
             removeTotem(true);
         }
