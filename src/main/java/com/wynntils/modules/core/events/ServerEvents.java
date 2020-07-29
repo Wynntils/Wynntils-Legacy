@@ -42,8 +42,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServerEvents implements Listener {
+
+    private static final Pattern FRIENDS_LIST = Pattern.compile("^§e(.*)'s? friends \\([0-9]+\\): §r§6(.*)§r$");
 
     /**
      * Does 5 different things and is triggered when the user joins Wynncraft:
@@ -122,24 +126,33 @@ public class ServerEvents implements Listener {
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
         String messageText = e.getMessage().getUnformattedText();
-        if (messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
-            String[] splited = messageText.split(":");
-
-            String[] friends;
-            if (splited[1].contains(",")) {
-                friends = splited[1].substring(1).split(", ");
-            } else { friends = new String[] {splited[1].substring(1)}; }
+        String formatted = e.getMessage().getFormattedText();
+        Matcher m = FRIENDS_LIST.matcher(formatted);
+        if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
+            String[] friends = m.group(2).split(", ");
 
             HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
             HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
             PlayerInfo.getPlayerInfo().setFriendList(newFriendsList);
 
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.intersection(friendsList, newFriendsList), false));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.difference(newFriendsList, friendsList), false));
 
             if (waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
             return;
+        }
+        // If you don't have any friends, we get a two line response. Hide both.
+        if (waitingForFriendList && formatted.equals("§eWe couldn't find any friends.§r")) {
+            e.setCanceled(true);
+        }
+        if (waitingForFriendList && formatted.equals("§eTry typing §r§6/friend add Username§r§e!§r")) {
+            waitingForFriendList = false;
+            e.setCanceled(true);
+        }
+        if (waitingForGuildList && formatted.equals("§cYou are not in a guild.§r")) {
+            waitingForGuildList = false;
+            e.setCanceled(true);
         }
         if (messageText.startsWith("#") && messageText.contains(" XP -")) {
             if (waitingForGuildList) e.setCanceled(true);
