@@ -615,7 +615,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ConsumableTimerOverlay.clearConsumables(false); // clear consumable list
+        ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
     }
 
     @SubscribeEvent
