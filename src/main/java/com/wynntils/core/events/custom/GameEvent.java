@@ -30,27 +30,22 @@ public class GameEvent extends Event {
      */
     public static class LevelUp extends GameEvent {
 
-        int oldLevel, currentLevel;
+        int newLevel;
 
-        public LevelUp(int oldLevel, int currentLevel) {
-            this.oldLevel = oldLevel;
-            this.currentLevel = currentLevel;
+        public LevelUp(int newLevel) {
+            this.newLevel = newLevel;
         }
 
-        public int getCurrentLevel() {
-            return currentLevel;
-        }
-
-        public int getOldLevel() {
-            return oldLevel;
+        public int getNewLevel() {
+            return newLevel;
         }
 
         public static class Profession extends LevelUp {
 
             ProfessionType profession;
 
-            public Profession(ProfessionType profession, int oldLevel, int currentLevel) {
-                super(oldLevel, currentLevel);
+            public Profession(ProfessionType profession, int newLevel) {
+                super(newLevel);
 
                 this.profession = profession;
             }

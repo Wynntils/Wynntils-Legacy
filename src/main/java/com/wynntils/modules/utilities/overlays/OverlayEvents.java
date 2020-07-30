@@ -134,6 +134,14 @@ public class OverlayEvents implements Listener {
         }
     }
 
+    @SubscribeEvent
+    public void onLevelUp(GameEvent.LevelUp e) {
+        if (e instanceof GameEvent.LevelUp.Profession || !OverlayConfig.ToastsSettings.INSTANCE.enableToast ||
+                !OverlayConfig.ToastsSettings.INSTANCE.enableLevelUp) return;
+
+        ToastOverlay.addToast(new Toast(Toast.ToastType.LEVEL_UP, "Level Up!", "You are now level " + e.getNewLevel()));
+    }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {

@@ -25,11 +25,12 @@ public class ToastOverlay extends Overlay {
     private static final Toast[] displayedToast = new Toast[DISPLAY_AMNT];
     public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
-    private static final CustomColor questCompletedColor = new CustomColor(89, 149, 55);
-    private static final CustomColor discoveryColor = new CustomColor(140, 79, 193);
-    private static final CustomColor territoryColor = new CustomColor(112, 112, 239);
-    private static final CustomColor areaDiscoveredColor = new CustomColor(184, 89, 181);
-    private static final CustomColor defaultColor = new CustomColor(0, 0, 0);
+    private static final CustomColor questCompletedColor = new CustomColor(89, 149, 55); // green
+    private static final CustomColor discoveryColor = new CustomColor(140, 79, 193);  // purple
+    private static final CustomColor territoryColor = new CustomColor(112, 112, 239); // indigo
+    private static final CustomColor areaDiscoveredColor = new CustomColor(184, 89, 181); // magenta
+    private static final CustomColor levelUpColor = new CustomColor(85, 144, 182); // blue
+    private static final CustomColor defaultColor = new CustomColor(0, 0, 0); // black
 
     public ToastOverlay() {
         super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
@@ -58,6 +59,10 @@ public class ToastOverlay extends Overlay {
                     case AREA_DISCOVERED:
                         c = areaDiscoveredColor;
                         iconX = 176; iconY = 16;
+                        break;
+                    case LEVEL_UP:
+                        c = levelUpColor;
+                        iconX = 160; iconY = 32;
                         break;
                     default:
                         c = defaultColor;

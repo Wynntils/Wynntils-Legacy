@@ -122,7 +122,7 @@ public class ClientEvents {
         else if (message.contains("[Mini-Quest Completed]") && !message.contains(":"))
             isNextQuestCompleted = true;
         else if (message.contains("You are now combat level") && !message.contains(":"))
-            toDispatch = new GameEvent.LevelUp(Minecraft.getMinecraft().player.experienceLevel - 1, Minecraft.getMinecraft().player.experienceLevel);
+            toDispatch = new GameEvent.LevelUp(Integer.parseInt(message.substring(message.indexOf("level")+6)));
         else if (message.contains("[Area Discovered]") && !message.contains(":"))
             toDispatch = new GameEvent.DiscoveryFound();
         else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":"))
@@ -134,7 +134,7 @@ public class ClientEvents {
         Matcher m = PROF_LEVEL_UP.matcher(message);
         if (m.find()) {
             int currentLevel = Integer.parseInt(m.group(1));
-            toDispatch = new GameEvent.LevelUp.Profession(ProfessionType.fromMessage(m.group(2)), currentLevel - 1, currentLevel);
+            toDispatch = new GameEvent.LevelUp.Profession(ProfessionType.fromMessage(m.group(2)), currentLevel);
         }
 
         if (toDispatch == null) return;

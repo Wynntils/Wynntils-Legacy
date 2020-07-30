@@ -25,7 +25,7 @@ public class Toast {
     }
 
     public enum ToastType {
-        QUEST_COMPLETED, TERRITORY, DISCOVERY, AREA_DISCOVERED
+        QUEST_COMPLETED, TERRITORY, DISCOVERY, AREA_DISCOVERED, LEVEL_UP
     }
 
     public long getCreationTime() {
