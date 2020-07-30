@@ -136,10 +136,18 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onLevelUp(GameEvent.LevelUp e) {
-        if (e instanceof GameEvent.LevelUp.Profession || !OverlayConfig.ToastsSettings.INSTANCE.enableToast ||
+        if (!OverlayConfig.ToastsSettings.INSTANCE.enableToast ||
                 !OverlayConfig.ToastsSettings.INSTANCE.enableLevelUp) return;
 
-        ToastOverlay.addToast(new Toast(Toast.ToastType.LEVEL_UP, "Level Up!", "You are now level " + e.getNewLevel()));
+        if (e instanceof GameEvent.LevelUp.Profession) {
+            if ((e.getNewLevel() % 5) == 0 && e.getNewLevel() <= 110) {
+                // For professions, only display Toast when you get new perks
+                String profession = ((GameEvent.LevelUp.Profession) e).getProfession().getName();
+                ToastOverlay.addToast(new Toast(Toast.ToastType.LEVEL_UP, "Level Up!", "You are now level " + e.getNewLevel() + " in " + profession));
+            }
+        } else {
+            ToastOverlay.addToast(new Toast(Toast.ToastType.LEVEL_UP, "Level Up!", "You are now level " + e.getNewLevel()));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
