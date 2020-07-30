@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -670,6 +671,9 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        if (e.getCurrentClass() != ClassType.NONE) {
+            ObjectivesOverlay.removeAllObjectives();
+        }
         // WynnCraft seem to be off with its timer with around 10 seconds
         loginTime = Minecraft.getSystemTime() + 10000;
     }

@@ -54,9 +54,7 @@ public class ObjectivesOverlay extends Overlay {
         }
 
         // Sidebar scoreboard is removed
-        for (int i = 0; i < MAX_OBJECTIVES; i++) {
-            objectives[i] = null;
-        }
+        removeAllObjectives();
     }
 
     private static Objective parseObjectiveLine(String objectiveLine) {
@@ -97,6 +95,12 @@ public class ObjectivesOverlay extends Overlay {
             if (objectives[i] != null && objectives[i].getGoal().equals(goalToRemove)) {
                 objectives[i] = null;
             }
+        }
+    }
+
+    public static void removeAllObjectives() {
+        for (int i = 0; i < objectives.length; i++) {
+            objectives[i] = null;
         }
     }
 
