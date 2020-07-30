@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemLockOverlay implements Listener {
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
@@ -30,7 +30,7 @@ public class ItemLockOverlay implements Listener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
@@ -41,7 +41,7 @@ public class ItemLockOverlay implements Listener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onHorseGui(GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
 
