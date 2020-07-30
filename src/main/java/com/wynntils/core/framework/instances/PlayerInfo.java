@@ -133,6 +133,8 @@ public class PlayerInfo {
     }
 
     public void updatePlayerClass(ClassType currentClass) {
+        // this updates your last class
+        // this is needed because of the Wynncraft autojoin setting
         if (currentClass != ClassType.NONE) {
             CoreDBConfig.INSTANCE.lastClass = currentClass;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
@@ -178,7 +180,7 @@ public class PlayerInfo {
 
     public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE || mc.player == null ? "" : perFormat.format(mc.player.experience * 100); }
 
-    public int getCurrentXP() { return currentClass == ClassType.NONE  || mc.player == null? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
+    public int getCurrentXP() { return currentClass == ClassType.NONE || mc.player == null? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
 
     public int getLevel() { return currentClass == ClassType.NONE ? -1 : level; }
 

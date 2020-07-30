@@ -5,6 +5,8 @@
 package com.wynntils;
 
 import com.sun.jna.Platform;
+import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import net.minecraft.client.multiplayer.ServerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,12 +41,12 @@ public class Reference {
         onLobby = onServer && !onWorld;
     }
 
-    public static void setClassSelection(boolean inClassSelection) {
-        Reference.inClassSelection = inClassSelection;
-    }
-
     public static String getUserWorld() {
         return userWorld;
+    }
+
+    public static boolean inClassSelection() {
+        return onWorld && PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE;
     }
 
     public static boolean onServer = false;
@@ -54,7 +56,6 @@ public class Reference {
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
-    public static boolean inClassSelection = false;
 
     public static boolean developmentEnvironment = false;
 

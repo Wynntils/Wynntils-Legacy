@@ -141,21 +141,27 @@ public class ClientEvents {
         FrameworkManager.getEventBus().post(toDispatch);
     }
 
+    // class selection stuff
+    boolean loadingClassSelection = false;
+
+    // this is not triggered if autojoin is disabled!
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onChat(ClientChatEvent e) {
-        if (Reference.onWorld && e.getMessage().startsWith("/class")) {
-            Reference.setClassSelection(true);
-        }
+    public void detectClassCommand(ClientChatEvent e) {
+        if (!Reference.onWorld || !e.getMessage().startsWith("/class")) return;
+
+        loadingClassSelection = true;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void receiveTp(GuiScreenEvent.DrawScreenEvent.Post e) {
-        if (Reference.inClassSelection) {
-            PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
-            Reference.setClassSelection(false);
-        }
+    public void openClassSelection(GuiScreenEvent.DrawScreenEvent.Post e) {
+        if (!loadingClassSelection) return;
+
+        // updates the user class to NONE since it's not using a class anymore
+        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+        loadingClassSelection = false;
     }
 
+    //
     @SubscribeEvent
     public void onTabListChange(PacketEvent<SPacketPlayerListItem> e) {
         if (!Reference.onServer) return;

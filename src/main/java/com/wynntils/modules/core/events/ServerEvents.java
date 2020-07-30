@@ -89,8 +89,12 @@ public class ServerEvents implements Listener {
         if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
             Minecraft.getMinecraft().player.sendChatMessage("/class");
 
-        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE)
+        // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
+        // Reason: When you join a world with autojoin enabled, your current class is NONE,
+        // while joining without autojoin will make your current class into the selected over the character selection.
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
             PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+        }
 
         DownloaderManager.startDownloading();
 

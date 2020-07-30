@@ -11,6 +11,8 @@ public enum ClassType {
     WARRIOR("Warrior/Knight"),
     ASSASSIN("Assassin/Ninja"),
     SHAMAN("Shaman/Skyseer"),
+
+    // This represents the class selection menu
     NONE("none");
 
     String displayName;
