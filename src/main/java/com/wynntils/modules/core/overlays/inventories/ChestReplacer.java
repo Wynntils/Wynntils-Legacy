@@ -91,6 +91,12 @@ public class ChestReplacer extends GuiChest {
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
+    @Override
+    public void onGuiClosed() {
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.GuiClosed(this));
+        super.onGuiClosed();
+    }
+
     public List<GuiButton> getButtonList() {
         return this.buttonList;
     }

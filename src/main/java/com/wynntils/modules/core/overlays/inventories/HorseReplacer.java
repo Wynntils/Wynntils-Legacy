@@ -78,6 +78,12 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
         super.renderToolTip(stack, x, y);
     }
 
+    @Override
+    public void onGuiClosed() {
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.GuiClosed(this));
+        super.onGuiClosed();
+    }
+
     public List<GuiButton> getButtonList() {
         return buttonList;
     }

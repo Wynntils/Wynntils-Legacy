@@ -207,6 +207,14 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             }
 
         }
+
+        public static class GuiClosed extends InventoryOverlap {
+
+            public GuiClosed(InventoryReplacer guiInventory) {
+                super(guiInventory);
+            }
+        }
+
     }
 
     public static class ChestOverlap extends GuiScreenOverlapEvent<ChestReplacer> {
@@ -414,6 +422,13 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
         }
 
+        public static class GuiClosed extends ChestOverlap {
+
+            public GuiClosed(ChestReplacer guiInventory) {
+                super(guiInventory);
+            }
+        }
+
     }
 
     public static class HorseOverlap extends GuiScreenOverlapEvent<HorseReplacer> {
@@ -583,6 +598,13 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 }
             }
 
+        }
+
+        public static class GuiClosed extends HorseOverlap {
+
+            public GuiClosed(HorseReplacer guiHorse) {
+                super(guiHorse);
+            }
         }
 
     }

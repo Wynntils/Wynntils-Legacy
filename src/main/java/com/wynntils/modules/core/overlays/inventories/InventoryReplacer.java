@@ -88,6 +88,12 @@ public class InventoryReplacer extends GuiInventory {
         super.renderToolTip(stack, x, y);
     }
 
+    @Override
+    public void onGuiClosed() {
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.GuiClosed(this));
+        super.onGuiClosed();
+    }
+
     public List<GuiButton> getButtonList() {
         return buttonList;
     }

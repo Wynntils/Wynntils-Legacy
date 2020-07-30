@@ -45,6 +45,33 @@ public class RarityColorOverlay implements Listener {
     private static String professionFilter = "-";
 
     @SubscribeEvent
+    public void onChestClosed(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
+        resetCount(e.getGui());
+    }
+
+    @SubscribeEvent
+    public void onHorseClosed(GuiOverlapEvent.HorseOverlap.GuiClosed e) {
+        resetCount(e.getGui());
+    }
+
+    @SubscribeEvent
+    public void onInventoryClosed(GuiOverlapEvent.InventoryOverlap.GuiClosed e) {
+        resetCount(e.getGui());
+    }
+
+    private void resetCount(GuiContainer guiContainer) {
+        for (Slot s : guiContainer.inventorySlots.inventorySlots) {
+            ItemStack is = s.getStack();
+            String lore = ItemUtils.getStringLore(is);
+            int level = getLevel(lore);
+
+            if (level != -1) {
+                is.setCount(1);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         drawChest(e.getGui(), e.getGui().getLowerInv(), e.getGui().getUpperInv(), true, true);
     }
