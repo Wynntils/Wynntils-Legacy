@@ -12,6 +12,7 @@ import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 
@@ -56,16 +57,36 @@ public class MapProfile {
                 centerZ = Double.parseDouble(reader.get("CenterZ"));
                 if (!downloadDirect) {
                     if (new MD5Verification(mapFile).equals(reader.get("MD5"))) {
-                        readyToUse = true;
+                        setReadyToUse();
                         return true;
                     }
                 }
 
-                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, c -> readyToUse = c);
+                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, success -> {
+                    if (success) setReadyToUse();
+                });
                 return true;
             })
         );
         handler.dispatchAsync();
+    }
+
+    private void setReadyToUse() {
+        // make sure this is being called from the main thread
+        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
+            Minecraft.getMinecraft().addScheduledTask(this::setReadyToUse);
+            return;
+        }
+        readyToUse = true;
+
+        // this allocates the texture to the OpenGL container
+        // calling it here avoids the game stuttering while entering the world
+        try {
+            setTexture();
+            Reference.LOGGER.info("Successfully loaded map " + mapFile.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setTexture() throws Exception {

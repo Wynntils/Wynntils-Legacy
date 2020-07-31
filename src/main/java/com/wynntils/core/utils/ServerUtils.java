@@ -111,11 +111,11 @@ public class ServerUtils {
     }
 
     public static ServerData getWynncraftServerData(boolean addNew) {
-        return getWynncraftServerData(new ServerList(Minecraft.getMinecraft()), addNew, Reference.ServerIPS.us);
+        return getWynncraftServerData(new ServerList(Minecraft.getMinecraft()), addNew, Reference.ServerIPS.GAME);
     }
 
     public static ServerData getWynncraftServerData(ServerList serverList, boolean addNew) {
-        return getWynncraftServerData(serverList, addNew, Reference.ServerIPS.us);
+        return getWynncraftServerData(serverList, addNew, Reference.ServerIPS.GAME);
     }
 
     /**

@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team;
@@ -329,7 +330,14 @@ public class NametagManager {
                 default: color = CommonColors.RAINBOW;
             }
 
-            labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()), 0.4f));
+            // this solves an unidentified item showcase exploit
+            // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
+            String displayName;
+            if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
+                displayName = "Unidentified Item";
+            } else displayName = is.getDisplayName();
+
+            labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(displayName), 0.4f));
         }
 
         return labels;
