@@ -22,7 +22,9 @@ import net.minecraft.network.play.server.SPacketEntityTeleport;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -241,9 +243,7 @@ public class TotemTracker {
         }
 
         for (int id : e.getPacket().getEntityIDs()) {
-            if (mobTotemUnstarted.containsKey(id)) {
-                mobTotemUnstarted.remove(id);
-            }
+            mobTotemUnstarted.remove(id);
             MobTotem mobTotem = mobTotemStarted.get(id);
             if (mobTotem == null) continue;
             mobTotemStarted.remove(id);
@@ -293,4 +293,5 @@ public class TotemTracker {
             return "Mob Totem (" + owner + ") at " + location;
         }
     }
+
 }

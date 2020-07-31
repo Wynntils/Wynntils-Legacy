@@ -31,24 +31,25 @@ import java.util.regex.Pattern;
 
 public class PlayerInfo {
 
-    private static PlayerInfo instance;
-    private static final int[] xpNeeded = new int[] {110,190,275,385,505,645,790,940,1100,1370,1570,1800,2090,2400,2720,3100,3600,4150,4800,5300,5900,6750,7750,8900,10200,11650,13300,15200,17150,19600,22100,24900,28000,31500,35500,39900,44700,50000,55800,62000,68800,76400,84700,93800,103800,114800,126800,140000,154500,170300,187600,206500,227000,249500,274000,300500,329500,361000,395000,432200,472300,515800,562800,613700,668600,728000,792000,860000,935000,1040400,1154400,1282600,1414800,1567500,1730400,1837000,1954800,2077600,2194400,2325600,2455000,2645000,2845000,3141100,3404710,3782160,4151400,4604100,5057300,5533840,6087120,6685120,7352800,8080800,8725600,9578400,10545600,11585600,12740000,14418250,16280000,21196500,23315500,25649000,249232940};
-    public static final DecimalFormat perFormat = new DecimalFormat("##.#");
-    private static final Pattern actionbarPattern = Pattern.compile("(?:§❤ *([0-9]+)/([0-9]+))?.*? {2,}(?:§([LR])§-(?:§([LR])§-§([LR])?)?)?.*".replace("§", "(?:§[0-9a-fklmnor])*"));
-    private static final boolean[] noSpell = new boolean[0];
+    private static PlayerInfo INSTANCE;
+    private static final int[] LEVEL_REQUIREMENTS = new int[] {110,190,275,385,505,645,790,940,1100,1370,1570,1800,2090,2400,2720,3100,3600,4150,4800,5300,5900,6750,7750,8900,10200,11650,13300,15200,17150,19600,22100,24900,28000,31500,35500,39900,44700,50000,55800,62000,68800,76400,84700,93800,103800,114800,126800,140000,154500,170300,187600,206500,227000,249500,274000,300500,329500,361000,395000,432200,472300,515800,562800,613700,668600,728000,792000,860000,935000,1040400,1154400,1282600,1414800,1567500,1730400,1837000,1954800,2077600,2194400,2325600,2455000,2645000,2845000,3141100,3404710,3782160,4151400,4604100,5057300,5533840,6087120,6685120,7352800,8080800,8725600,9578400,10545600,11585600,12740000,14418250,16280000,21196500,23315500,25649000,249232940};
+    public static final DecimalFormat PER_FORMAT = new DecimalFormat("##.#");
+    private static final Pattern ACTIONBAR_PATTERN = Pattern.compile("(?:§❤ *([0-9]+)/([0-9]+))?.*? {2,}(?:§([LR])§-(?:§([LR])§-§([LR])?)?)?.*".replace("§", "(?:§[0-9a-fklmnor])*"));
+    private static final boolean[] NO_SPELL = new boolean[0];
 
     /** Represents `L` in the currently casting spell */
     public static final boolean SPELL_LEFT = false;
     /** Represents `R` in the currently casting spell */
     public static final boolean SPELL_RIGHT = true;
 
-    private Minecraft mc;
+    private final Minecraft mc;
 
     private ClassType currentClass = ClassType.NONE;
     private int health = -1;
     private int maxHealth = -1;
     private int level = -1;
-    private boolean[] lastSpell = noSpell;
+
+    private boolean[] lastSpell = NO_SPELL;
     private float experiencePercentage = -1;
     private int classId = CoreDBConfig.INSTANCE.lastSelectedClass;
     private HorseData horseData = null;
@@ -58,7 +59,7 @@ public class PlayerInfo {
 
     private HashSet<String> friendList = new HashSet<>();
     private HashSet<String> guildList = new HashSet<>();
-    private PartyContainer playerParty = new PartyContainer();
+    private final PartyContainer playerParty = new PartyContainer();
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -66,7 +67,7 @@ public class PlayerInfo {
     public PlayerInfo(Minecraft mc) {
         this.mc = mc;
 
-        instance = this;
+        INSTANCE = this;
     }
 
     public void updateActionBar(String actionBar) {
@@ -82,7 +83,7 @@ public class PlayerInfo {
                 specialActionBar = null;
             }
 
-            Matcher match = actionbarPattern.matcher(actionBar);
+            Matcher match = ACTIONBAR_PATTERN.matcher(actionBar);
 
             if (match.matches()) {
                 if (match.group(1) != null) {
@@ -132,16 +133,16 @@ public class PlayerInfo {
         return lastActionBar;
     }
 
-    public void updatePlayerClass(ClassType currentClass) {
+    public void updatePlayerClass(ClassType newClass) {
         // this updates your last class
         // this is needed because of the Wynncraft autojoin setting
-        if (currentClass != ClassType.NONE) {
-            CoreDBConfig.INSTANCE.lastClass = currentClass;
+        if (newClass != ClassType.NONE) {
+            CoreDBConfig.INSTANCE.lastClass = newClass;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
         }
 
-        FrameworkManager.getEventBus().post(new WynnClassChangeEvent(this.currentClass, currentClass));
-        this.currentClass = currentClass;
+        FrameworkManager.getEventBus().post(new WynnClassChangeEvent(this.currentClass, newClass));
+        this.currentClass = newClass;
     }
 
     public ClassType getCurrentClass() {
@@ -166,19 +167,19 @@ public class PlayerInfo {
             if (mc.player != null
                     && mc.player.experienceLevel != 0
                     && currentClass != ClassType.NONE
-                    && mc.player.experienceLevel <= xpNeeded.length
+                    && mc.player.experienceLevel <= LEVEL_REQUIREMENTS.length
                     && lastLevel != mc.player.experienceLevel) {
                 lastLevel = mc.player.experienceLevel;
-                lastXp = xpNeeded[mc.player.experienceLevel - 1];
+                lastXp = LEVEL_REQUIREMENTS[mc.player.experienceLevel - 1];
             }
-            return currentClass == ClassType.NONE || (mc.player != null && (mc.player.experienceLevel == 0 || mc.player.experienceLevel > xpNeeded.length)) ? -1 : lastXp;
+            return currentClass == ClassType.NONE || (mc.player != null && (mc.player.experienceLevel == 0 || mc.player.experienceLevel > LEVEL_REQUIREMENTS.length)) ? -1 : lastXp;
         } catch (NullPointerException ex) {
             ex.printStackTrace();
             return -1;
         }
     }
 
-    public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE || mc.player == null ? "" : perFormat.format(mc.player.experience * 100); }
+    public String getCurrentXPAsPercentage() { return currentClass == ClassType.NONE || mc.player == null ? "" : PER_FORMAT.format(mc.player.experience * 100); }
 
     public int getCurrentXP() { return currentClass == ClassType.NONE || mc.player == null? -1 : (int)((getXpNeededToLevelUp()) * mc.player.experience); }
 
@@ -212,11 +213,11 @@ public class PlayerInfo {
         }
         lastParsedTitle = subtitle;
         if (subtitle.isEmpty()) {
-            return (lastSpell = noSpell);
+            return (lastSpell = NO_SPELL);
         }
         String right = level == 1 ? "Right" : "R";
         Matcher m = (level == 1 ? level1SpellPattern : lowLevelSpellPattern).matcher(TextFormatting.getTextWithoutFormattingCodes(subtitle));
-        if (!m.matches() || m.group(1).equals("?")) return (lastSpell = noSpell);
+        if (!m.matches() || m.group(1).equals("?")) return (lastSpell = NO_SPELL);
         boolean spell1 = m.group(1).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
         if (m.group(2).equals("?")) return (lastSpell = new boolean[]{ spell1 });
         boolean spell2 = m.group(2).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
@@ -233,7 +234,7 @@ public class PlayerInfo {
      */
     public boolean[] getLastSpell() {
         if (getCurrentClass() == ClassType.NONE) {
-            return noSpell;
+            return NO_SPELL;
         }
         int level = getLevel();
         if (level <= 11) {
@@ -245,10 +246,11 @@ public class PlayerInfo {
     }
 
     public static PlayerInfo getPlayerInfo() {
-        if (instance == null)
+        if (INSTANCE == null) {
             return new PlayerInfo(Minecraft.getMinecraft());
-        else
-            return instance;
+        }
+
+        return INSTANCE;
     }
 
     /**
@@ -295,8 +297,8 @@ public class PlayerInfo {
         return count;
     }
 
-    private static final Pattern unprocessedNameRegex = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
-    private static final Pattern unprocessedLoreRegex = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
+    private static final Pattern UNPROCESSED_NAME_REGEX = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
+    private static final Pattern UNPROCESSED_LORE_REGEX = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
 
     public static class UnprocessedAmount {
         public int current;
@@ -318,13 +320,13 @@ public class PlayerInfo {
             ItemStack it = mc.player.inventory.getStackInSlot(i);
             if (it.isEmpty()) continue;
 
-            Matcher nameMatcher = unprocessedNameRegex.matcher(it.getDisplayName());
+            Matcher nameMatcher = UNPROCESSED_NAME_REGEX.matcher(it.getDisplayName());
             if (!nameMatcher.matches()) continue;
 
             NBTTagList lore = ItemUtils.getLoreTag(it);
             if (lore == null || lore.tagCount() == 0) continue;
 
-            Matcher loreMatcher = unprocessedLoreRegex.matcher(lore.getStringTagAt(0));
+            Matcher loreMatcher = UNPROCESSED_LORE_REGEX.matcher(lore.getStringTagAt(0));
             if (!loreMatcher.matches()) continue;
 
             // Found an unprocessed item
@@ -427,6 +429,7 @@ public class PlayerInfo {
         public int maxLevel;
         public String armour;
         public int inventorySlot;
+
         public HorseData(int tier, int level, int xp, int maxLevel, String armour, int inventorySlot) {
             this.xp = xp;
             this.level = level;
@@ -435,6 +438,7 @@ public class PlayerInfo {
             this.armour = armour;
             this.inventorySlot = inventorySlot;
         }
+
         public HorseData(ItemStack saddle, int inventorySlot) {
             this.inventorySlot = inventorySlot;
 
@@ -446,6 +450,7 @@ public class PlayerInfo {
             armour = lore.get(3).substring(11);
             xp = Integer.parseInt(lore.get(4).substring(6, lore.get(4).indexOf("/")));
         }
+
     }
 
     /**
@@ -477,4 +482,5 @@ public class PlayerInfo {
 
         return null;
     }
+
 }

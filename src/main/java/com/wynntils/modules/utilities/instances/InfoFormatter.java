@@ -46,17 +46,17 @@ public class InfoFormatter {
 
         // Blocks per second
         registerFormatter((input) ->
-                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed()),
+                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed()),
                 "bps");
 
         // Blocks per minute
         registerFormatter((input) ->
-                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 60),
+                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 60),
                 "bpm");
 
         // Kilometers per hour (1000 blocks per hour)
         registerFormatter((input) ->
-                PlayerInfo.perFormat.format(SpeedometerManager.getCurrentSpeed() * 3.6),
+                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
                 "kmph");
 
         // X coordinate

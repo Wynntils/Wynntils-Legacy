@@ -323,4 +323,5 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     public int getRequiredPermissionLevel() {
         return 0;
     }
+
 }
