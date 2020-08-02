@@ -687,7 +687,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
-        if (e.getCurrentClass() != ClassType.NONE) {
+        if (e.getNewClass() != ClassType.NONE) {
             ObjectivesOverlay.removeAllObjectives();
         }
         // WynnCraft seem to be off with its timer with around 10 seconds

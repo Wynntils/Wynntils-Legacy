@@ -85,7 +85,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if (e.getCurrentClass() == ClassType.NONE) return;
+        if (e.getNewClass() == ClassType.NONE) return;
 
         QuestManager.clearData();
     }

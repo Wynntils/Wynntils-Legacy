@@ -45,6 +45,7 @@ public class PlayerInfo {
     private final Minecraft mc;
 
     private ClassType currentClass = ClassType.NONE;
+    private boolean currentClassIsReskinned = false;
     private int health = -1;
     private int maxHealth = -1;
     private int level = -1;
@@ -133,16 +134,18 @@ public class PlayerInfo {
         return lastActionBar;
     }
 
-    public void updatePlayerClass(ClassType newClass) {
+    public void updatePlayerClass(ClassType newClass, boolean newClassIsReskinned) {
         // this updates your last class
         // this is needed because of the Wynncraft autojoin setting
         if (newClass != ClassType.NONE) {
             CoreDBConfig.INSTANCE.lastClass = newClass;
+            CoreDBConfig.INSTANCE.lastClassIsReskinned = newClassIsReskinned;
             CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
         }
 
-        FrameworkManager.getEventBus().post(new WynnClassChangeEvent(this.currentClass, newClass));
+        FrameworkManager.getEventBus().post(new WynnClassChangeEvent(newClass, newClassIsReskinned));
         this.currentClass = newClass;
+        this.currentClassIsReskinned = newClassIsReskinned;
     }
 
     public ClassType getCurrentClass() {

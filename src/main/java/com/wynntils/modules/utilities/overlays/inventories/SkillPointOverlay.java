@@ -70,7 +70,8 @@ public class SkillPointOverlay implements Listener {
                 if (end == -1) {
                     end = lore.indexOf(("[LRL]"));
                     if (end == -1) continue;
-                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.ARCHER);
+                    // FIXME: We ought to have an updated player class by now, so why is this needed?
+                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.ARCHER, false);
                 }
 
                 if (start == -1 || end > lore.length()) continue;

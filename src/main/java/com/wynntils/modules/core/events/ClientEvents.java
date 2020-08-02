@@ -60,7 +60,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -303,33 +302,12 @@ public class ClientEvents implements Listener {
         getPlayerInfo().setClassId(e.getSlotId());
 
         String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
-        String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
+        String className = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
 
-        ClassType selectedClass = ClassType.NONE;
+        ClassType selectedClass = ClassType.fromName(className);
+        boolean selectedClassIsReskinned = ClassType.isReskinned(className);
 
-        try {
-            selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
-        } catch (Exception ex) {
-            switch (classS) {
-                case "Hunter":
-                    selectedClass = ClassType.ARCHER;
-                    break;
-                case "Knight":
-                    selectedClass = ClassType.WARRIOR;
-                    break;
-                case "Dark Wizard":
-                    selectedClass = ClassType.MAGE;
-                    break;
-                case "Ninja":
-                    selectedClass = ClassType.ASSASSIN;
-                    break;
-                case "Skyseer":
-                    selectedClass = ClassType.SHAMAN;
-                    break;
-            }
-        }
-
-        getPlayerInfo().updatePlayerClass(selectedClass);
+        getPlayerInfo().updatePlayerClass(selectedClass, selectedClassIsReskinned);
     }
 
     @SubscribeEvent

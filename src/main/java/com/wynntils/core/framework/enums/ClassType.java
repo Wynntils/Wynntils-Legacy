@@ -6,23 +6,41 @@ package com.wynntils.core.framework.enums;
 
 public enum ClassType {
 
-    MAGE("Mage/Dark Wizard"),
-    ARCHER("Archer/Hunter"),
-    WARRIOR("Warrior/Knight"),
-    ASSASSIN("Assassin/Ninja"),
-    SHAMAN("Shaman/Skyseer"),
+    MAGE("Mage", "Dark Wizard"),
+    ARCHER("Archer", "Hunter"),
+    WARRIOR("Warrior", "Knight"),
+    ASSASSIN("Assassin", "Ninja"),
+    SHAMAN("Shaman", "Skyseer"),
 
     // This represents the class selection menu
-    NONE("none");
+    NONE("none", "none");
 
-    String displayName;
+    private final String name;
+    private final String vipName;
 
-    ClassType(String displayName) {
-        this.displayName = displayName;
+    ClassType(String name, String vipName) {
+        this.name = name;
+        this.vipName = vipName;
+    }
+
+    public static ClassType fromName(String className) {
+        for (ClassType type : values()) {
+            if (className.equalsIgnoreCase(type.name) || className.equalsIgnoreCase(type.vipName)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isReskinned(String className) {
+        for (ClassType type : values()) {
+            if (className.equalsIgnoreCase(type.name)) return false;
+            if (className.equalsIgnoreCase(type.vipName)) return true;
+        }
+        return false;
     }
 
     public String getDisplayName() {
-        return displayName;
+        return name + "/" + vipName;
     }
-
 }

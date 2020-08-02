@@ -157,7 +157,7 @@ public class ClientEvents {
         if (!loadingClassSelection) return;
 
         // updates the user class to NONE since it's not using a class anymore
-        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE, false);
         loadingClassSelection = false;
     }
 
@@ -189,7 +189,7 @@ public class ClientEvents {
                     lastWorld = "";
                     Reference.setUserWorld(null);
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Leave());
-                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE);
+                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE, false);
                 }
             }
             // Add uuid of newly joined player

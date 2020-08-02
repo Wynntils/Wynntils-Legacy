@@ -25,7 +25,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
-        if (e.getCurrentClass() == ClassType.NONE) MusicManager.getPlayer().stop();
+        if (e.getNewClass() == ClassType.NONE) MusicManager.getPlayer().stop();
     }
 
     @SubscribeEvent

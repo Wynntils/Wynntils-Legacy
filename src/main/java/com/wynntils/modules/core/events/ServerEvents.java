@@ -93,7 +93,7 @@ public class ServerEvents implements Listener {
         // Reason: When you join a world with autojoin enabled, your current class is NONE,
         // while joining without autojoin will make your current class into the selected over the character selection.
         if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
-            PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
+            PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
         }
 
         DownloaderManager.startDownloading();
@@ -226,7 +226,7 @@ public class ServerEvents implements Listener {
     public void onJoinLobby(WynnClassChangeEvent e) {
         if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
         if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
-        if (e.getCurrentClass() == ClassType.NONE) return;
+        if (e.getNewClass() == ClassType.NONE) return;
 
         synchronized (this) {
             if (triedToShowChangelog) return;
