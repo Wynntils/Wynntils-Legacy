@@ -15,6 +15,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
@@ -29,6 +30,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkillPointOverlay implements Listener {
+
+    @SubscribeEvent
+    public void onMouseClick(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+        if (!Reference.onWorld) return;
+        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+
+        addManaTables(e.getGui());
+    }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.PreDraw e) {
@@ -52,10 +61,6 @@ public class SkillPointOverlay implements Listener {
                 String number = lore.substring(start, start + 3).trim();
 
                 value = Integer.parseInt(number);
-
-                if (SkillPoint.findSkillPoint(name) == SkillPoint.INTELLIGENCE) {
-                    addManaTableToLore(stack, value);
-                }
             } else if (name.contains("Profession")) { // Profession Icons
                 int start = lore.indexOf("Level: ") + 7;
                 int end = lore.indexOf("XP: ");
@@ -90,7 +95,20 @@ public class SkillPointOverlay implements Listener {
         return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
     }
 
-    private void addManaTableToLore(ItemStack stack, int intelligenceLevel) {
+    private int getIntelligencePoints(ItemStack stack) {
+        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
+        int start = lore.indexOf(" points ") - 3;
+
+        return Integer.parseInt(lore.substring(start, start + 3).trim());
+    }
+
+    public void addManaTables(ChestReplacer gui) {
+        ItemStack stack = gui.getLowerInv().getStackInSlot(11);
+        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
+
+        int intelligencePoints = getIntelligencePoints(stack);
+        if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
+
         int closestUpgradeLevel = Integer.MAX_VALUE;
         int level = PlayerInfo.getPlayerInfo().getLevel();
 
@@ -100,17 +118,17 @@ public class SkillPointOverlay implements Listener {
             SpellType spell = SpellType.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
 
             if (spell.getUnlockLevel(1) <= level) {
-                int nextUpgrade = spell.getNextManaReduction(level, intelligenceLevel);
+                int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
                 if (nextUpgrade < closestUpgradeLevel) {
                     closestUpgradeLevel = nextUpgrade;
                 }
-                int manaCost = spell.getManaCost(level, intelligenceLevel);
+                int manaCost = spell.getManaCost(level, intelligencePoints);
                 String spellName = PlayerInfo.getPlayerInfo().isCurrentClassReskinned() ? spell.getReskinned() : spell.getName();
                 String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
                         + "-" + manaCost + " ✺";
                 if (nextUpgrade < Integer.MAX_VALUE) {
                     spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "
-                            + remainingLevelsDescription(nextUpgrade - intelligenceLevel) + ")";
+                            + remainingLevelsDescription(nextUpgrade - intelligencePoints) + ")";
                 }
                 newLore.add(spellInfo);
             }
@@ -120,13 +138,14 @@ public class SkillPointOverlay implements Listener {
         if (closestUpgradeLevel < Integer.MAX_VALUE) {
             loreTag.add("");
             loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
-                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligenceLevel) + ")");
+                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligencePoints) + ")");
         }
 
         loreTag.add("");
         loreTag.addAll(newLore);
 
         ItemUtils.replaceLore(stack, loreTag);
+        stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
