@@ -94,7 +94,7 @@ public class SkillPointOverlay implements Listener {
     }
 
     private String remainingLevelsDescription(int remainingLevels) {
-        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " level" + (remainingLevels == 1 ? "" : "s");
+        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
     }
 
     private void addManaTableToLore(ItemStack stack, int intelligenceLevel) {
@@ -125,8 +125,8 @@ public class SkillPointOverlay implements Listener {
         List<String> loreTag = new LinkedList<>(ItemUtils.getLore(stack));
         if (closestUpgradeLevel < Integer.MAX_VALUE) {
             loreTag.add("");
-            loreTag.add(TextFormatting.GRAY + "Next upgrade: Level " + TextFormatting.WHITE + closestUpgradeLevel
-                    + TextFormatting.GRAY + " (in " + remainingLevelsDescription(closestUpgradeLevel - intelligenceLevel) + ")");
+            loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
+                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligenceLevel) + ")");
         }
 
         loreTag.add("");
