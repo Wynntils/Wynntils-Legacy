@@ -42,12 +42,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
 
     @SuppressWarnings("unchecked")
     private static final DataParameter<String> NAME_KEY = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
@@ -137,7 +139,9 @@ public class Utils {
      * Return true if the GuiScreen is the character information page (selected from the compass)
      */
     public static boolean isCharacterInfoPage(GuiScreen gui) {
-        return (gui instanceof GuiContainer && ((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining"));
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = CHAR_INFO_PAGE_TITLE.matcher(((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
     }
 
     /**

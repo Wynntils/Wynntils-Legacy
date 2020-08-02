@@ -4,15 +4,23 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.Utils;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.LinkedList;
@@ -24,8 +32,7 @@ public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.PreDraw e) {
-        Pattern charInfoPageTitle = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
-        Matcher m = charInfoPageTitle.matcher(e.getGui().getLowerInv().getName());
+        Matcher m = Utils.CHAR_INFO_PAGE_TITLE.matcher(e.getGui().getLowerInv().getName());
         if (!m.find()) return;
 
         // FIXME: Not really used -- we should keep track of this
@@ -120,6 +127,25 @@ public class SkillPointOverlay implements Listener {
         loreTag.addAll(newLore);
 
         ItemUtils.replaceLore(stack, loreTag);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
+        if (!Reference.onWorld) return;
+        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            String name = TextFormatting.getTextWithoutFormattingCodes(s.getStack().getDisplayName());
+            SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
+            if (skillPoint != null) {
+                ScreenRenderer.beginGL(e.getGui().getGuiLeft() , e.getGui().getGuiTop());
+                GlStateManager.translate(0, 0, 251);
+                ScreenRenderer r = new ScreenRenderer();
+                RenderHelper.disableStandardItemLighting();
+                r.drawString(skillPoint.getColoredSymbol(), s.xPos + 2, s.yPos, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.endGL();
+            }
+        }
     }
 
 }

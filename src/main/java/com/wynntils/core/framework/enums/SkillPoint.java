@@ -17,8 +17,9 @@ public enum SkillPoint {
     DEFENCE("✹", TextFormatting.RED),
     AGILITY("❋", TextFormatting.WHITE);
 
-    String symbol, color;
-    Pattern regexMatcher;
+    private final String symbol;
+    private final String color;
+    private final Pattern regexMatcher;
 
     SkillPoint(String symbol, TextFormatting color) {
         this.symbol = symbol;
@@ -29,6 +30,10 @@ public enum SkillPoint {
 
     public String getSymbol() {
         return symbol;
+    }
+
+    public String getColoredSymbol() {
+        return color + symbol;
     }
 
     public String getAsName() {
