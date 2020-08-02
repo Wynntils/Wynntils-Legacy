@@ -3,7 +3,7 @@ package com.wynntils.core.framework.enums;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum SpellInfo {
+public enum SpellType {
     ARROW_STORM(ClassType.ARCHER, 1, "Arrow Storm", "Bolt Blizzard", 6, 0),
     ESCAPE(ClassType.ARCHER, 2, "Escape", "Spider Jump", 3, 0),
     BOMB(ClassType.ARCHER, 3, "Bomb", "Creeper Dart", 8, 0),
@@ -119,7 +119,7 @@ public enum SpellInfo {
         return Integer.MAX_VALUE;
     }
 
-    SpellInfo(ClassType classType, int spellNumber, String name, String vipName, int startManaCost, int gradeManaChange) {
+    SpellType(ClassType classType, int spellNumber, String name, String vipName, int startManaCost, int gradeManaChange) {
         this.classType = classType;
         this.spellNumber = spellNumber;
         this.name = name;
@@ -128,10 +128,10 @@ public enum SpellInfo {
         this.gradeManaChange = gradeManaChange;
     }
 
-    public static SpellInfo fromName(String name) {
-        for (SpellInfo spellInfo : values()) {
-            if (spellInfo.name.matches("^" + name + "\\b") || spellInfo.vipName.matches("^" + name + "\\b")) {
-                return spellInfo;
+    public static SpellType fromName(String name) {
+        for (SpellType spellType : values()) {
+            if (spellType.name.matches("^" + name + "\\b") || spellType.vipName.matches("^" + name + "\\b")) {
+                return spellType;
             }
         }
         return null;
@@ -141,11 +141,11 @@ public enum SpellInfo {
         return UpdatableSpellType.values()[spellNumber-1];
     }
 
-    public static SpellInfo forClass(ClassType classRequired, int spellNumber) {
-        for (SpellInfo spellInfo : values()) {
-            if (spellInfo.classType.equals(classRequired)
-                    && spellInfo.spellNumber ==spellNumber) {
-                return spellInfo;
+    public static SpellType forClass(ClassType classRequired, int spellNumber) {
+        for (SpellType spellType : values()) {
+            if (spellType.classType.equals(classRequired)
+                    && spellType.spellNumber ==spellNumber) {
+                return spellType;
             }
         }
         return null;

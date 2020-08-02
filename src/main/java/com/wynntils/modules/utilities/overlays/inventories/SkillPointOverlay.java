@@ -7,7 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SkillPoint;
-import com.wynntils.core.framework.enums.SpellInfo;
+import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -104,7 +104,7 @@ public class SkillPointOverlay implements Listener {
         List<String> newLore = new LinkedList<>();
 
         for (int j = 0; j < 4; j++) {
-            SpellInfo spell = SpellInfo.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
+            SpellType spell = SpellType.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
 
             if (spell.getUnlockLevel(1) <= level) {
                 int nextUpgrade = spell.getNextManaReduction(level, intelligenceLevel);
