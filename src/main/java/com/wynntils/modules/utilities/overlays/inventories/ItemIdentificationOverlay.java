@@ -6,7 +6,6 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.SpellInfo;
-import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -133,7 +132,7 @@ public class ItemIdentificationOverlay implements Listener {
                 String longName = IdentificationContainer.getAsLongName(idName);
                 SpellInfo spellInfo = SpellInfo.fromName(longName);
                 if (spellInfo != null) {
-                    SpellType spell = spellInfo.getUpdatableSpellType();
+                    SpellInfo.UpdatableSpellType spell = spellInfo.getUpdatableSpellType();
                     longName = spell.replaceWithShortAndCurrentName(longName);
                 }
 
@@ -415,7 +414,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                         SpellInfo spellInfo = SpellInfo.fromName(idName);
                         if (spellInfo != null) {
-                            SpellType spell = spellInfo.getUpdatableSpellType();
+                            SpellInfo.UpdatableSpellType spell = spellInfo.getUpdatableSpellType();
                             spell.updateCurrentName(idName);
                             idName = spell.replaceWithShortName(idName);
                         }
