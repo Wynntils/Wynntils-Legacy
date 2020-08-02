@@ -113,7 +113,8 @@ public class SkillPointOverlay implements Listener {
                     closestUpgradeLevel = nextUpgrade;
                 }
                 int manaCost = spell.getManaCost(level, intelligenceLevel);
-                String spellInfo = TextFormatting.LIGHT_PURPLE + spell.getName() + " Spell: " + TextFormatting.AQUA
+                String spellName = PlayerInfo.getPlayerInfo().isCurrentClassReskinned() ? spell.getReskinned() : spell.getName();
+                String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
                         + "-" + manaCost + " ✺";
                 if (nextUpgrade < Integer.MAX_VALUE) {
                     spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "

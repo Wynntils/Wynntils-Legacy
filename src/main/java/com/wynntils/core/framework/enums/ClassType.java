@@ -16,16 +16,16 @@ public enum ClassType {
     NONE("none", "none");
 
     private final String name;
-    private final String vipName;
+    private final String reskinnedName;
 
-    ClassType(String name, String vipName) {
+    ClassType(String name, String reskinnedName) {
         this.name = name;
-        this.vipName = vipName;
+        this.reskinnedName = reskinnedName;
     }
 
     public static ClassType fromName(String className) {
         for (ClassType type : values()) {
-            if (className.equalsIgnoreCase(type.name) || className.equalsIgnoreCase(type.vipName)) {
+            if (className.equalsIgnoreCase(type.name) || className.equalsIgnoreCase(type.reskinnedName)) {
                 return type;
             }
         }
@@ -35,12 +35,12 @@ public enum ClassType {
     public static boolean isReskinned(String className) {
         for (ClassType type : values()) {
             if (className.equalsIgnoreCase(type.name)) return false;
-            if (className.equalsIgnoreCase(type.vipName)) return true;
+            if (className.equalsIgnoreCase(type.reskinnedName)) return true;
         }
         return false;
     }
 
     public String getDisplayName() {
-        return name + "/" + vipName;
+        return name + "/" + reskinnedName;
     }
 }

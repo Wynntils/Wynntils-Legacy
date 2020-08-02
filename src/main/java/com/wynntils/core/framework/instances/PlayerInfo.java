@@ -152,6 +152,10 @@ public class PlayerInfo {
         return currentClass;
     }
 
+    public boolean isCurrentClassReskinned() {
+        return currentClassIsReskinned;
+    }
+
     public int getCurrentHealth() {
         return currentClass == ClassType.NONE ? -1 : health;
     }

@@ -55,7 +55,7 @@ public enum SpellType {
     private ClassType classType;
     private int spellNumber;
     private String name;
-    private String vipName;
+    private String reskinnedName;
     private int startManaCost;
     private int gradeManaChange;
 
@@ -71,8 +71,8 @@ public enum SpellType {
         return name;
     }
 
-    public String getVipName() {
-        return vipName;
+    public String getReskinned() {
+        return reskinnedName;
     }
 
     public int getUnlockLevel(int grade) {
@@ -123,18 +123,18 @@ public enum SpellType {
         return Integer.MAX_VALUE;
     }
 
-    SpellType(ClassType classType, int spellNumber, String name, String vipName, int startManaCost, int gradeManaChange) {
+    SpellType(ClassType classType, int spellNumber, String name, String reskinnedName, int startManaCost, int gradeManaChange) {
         this.classType = classType;
         this.spellNumber = spellNumber;
         this.name = name;
-        this.vipName = vipName;
+        this.reskinnedName = reskinnedName;
         this.startManaCost = startManaCost;
         this.gradeManaChange = gradeManaChange;
     }
 
     public static SpellType fromName(String name) {
         for (SpellType spellType : values()) {
-            if (spellType.name.matches("^" + name + "\\b") || spellType.vipName.matches("^" + name + "\\b")) {
+            if (spellType.name.matches("^" + name + "\\b") || spellType.reskinnedName.matches("^" + name + "\\b")) {
                 return spellType;
             }
         }
