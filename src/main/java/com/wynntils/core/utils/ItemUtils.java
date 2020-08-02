@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -54,6 +55,22 @@ public class ItemUtils {
         }
 
         return lore;
+    }
+
+    /**
+     * Replace the lore on an item's NBT tag.
+     *
+     * @param stack
+     * @param lore
+     */
+    public static void replaceLore(ItemStack stack, List<String> lore) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        NBTTagCompound display = nbt.getCompoundTag("display");
+        NBTTagList tag = new NBTTagList();
+        lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+        display.setTag("Lore", tag);
+        nbt.setTag("display", display);
+        stack.setTagCompound(nbt);
     }
 
     /**

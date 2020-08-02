@@ -59,13 +59,7 @@ public class LoreChangerOverlay implements Listener {
                 int minutesUntilSoulPoint = secondsUntilSoulPoint / 60;
                 secondsUntilSoulPoint %= 60;
                 lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));
-                NBTTagCompound nbt = stack.getTagCompound();
-                NBTTagCompound display = nbt.getCompoundTag("display");
-                NBTTagList tag = new NBTTagList();
-                lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
-                display.setTag("Lore", tag);
-                nbt.setTag("display", display);
-                stack.setTagCompound(nbt);
+                ItemUtils.replaceLore(stack, lore);
                 return;
             }
         }
