@@ -386,6 +386,15 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
         }
 
+        /**
+         * Sent once before starting to draw the GUI.
+         */
+        public static class PreDraw extends ChestOverlap {
+            public PreDraw(ChestReplacer guiInventory) {
+                super(guiInventory);
+            }
+        }
+
         public static class HoveredToolTip extends ChestOverlap {
 
             int x, y;

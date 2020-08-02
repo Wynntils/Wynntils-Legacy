@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
-    public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChestInventory(GuiOverlapEvent.ChestOverlap.PreDraw e) {
         Pattern charInfoPageTitle = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
         Matcher m = charInfoPageTitle.matcher(e.getGui().getLowerInv().getName());
         if (!m.find()) return;
@@ -33,7 +33,7 @@ public class SkillPointOverlay implements Listener {
 
         for (int i = 0; i < e.getGui().getLowerInv().getSizeInventory(); i++) {
             ItemStack stack = e.getGui().getLowerInv().getStackInSlot(i);
-            if (stack.isEmpty() || !stack.hasDisplayName() || stack.getTagCompound().hasKey("wynntilsAnalyzed")) continue; // display name also checks for tag compound
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
 
             String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
@@ -76,7 +76,6 @@ public class SkillPointOverlay implements Listener {
             } else continue;
 
             stack.setCount(value <= 0 ? 1 : value);
-            stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
         }
     }
 
