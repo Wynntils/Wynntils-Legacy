@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
-    public void onMouseClick(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
         if (!Reference.onWorld) return;
         if (!Utils.isCharacterInfoPage(e.getGui())) return;
 
