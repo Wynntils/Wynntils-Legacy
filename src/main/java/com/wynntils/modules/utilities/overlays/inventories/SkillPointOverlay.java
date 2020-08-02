@@ -60,26 +60,12 @@ public class SkillPointOverlay implements Listener {
 
                 value = Integer.parseInt(lore.substring(start, end));
             } else if (name.contains("Damage Info")) { //Average Damage
-                //Ensure lore keys will exist
-                if (lore.contains("[Put an allowed weapon in your hotbar]"))
-                    continue;
+                Pattern pattern = Pattern.compile("Total Damage \\(\\+Bonus\\): ([0-9]+)-([0-9]+)");
+                Matcher m2  = pattern.matcher(lore);
+                if (!m2.find()) continue;
 
-                int start = lore.indexOf("Total Damage (+Bonus): ") + 23;
-                int end = lore.indexOf(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER ? "[LRL]" : "[RLR]");
-
-                if (end == -1) {
-                    end = lore.indexOf(("[LRL]"));
-                    if (end == -1) continue;
-                    // FIXME: We ought to have an updated player class by now, so why is this needed?
-                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.ARCHER, false);
-                }
-
-                if (start == -1 || end > lore.length()) continue;
-                String[] numbers = lore.substring(start, end).split("-");
-                if (numbers[0].isEmpty() || numbers[1].isEmpty()) continue;
-
-                int min = Integer.parseInt(numbers[0]);
-                int max = Integer.parseInt(numbers[1]);
+                int min = Integer.parseInt(m2.group(1));
+                int max = Integer.parseInt(m2.group(2));
 
                 value = Math.round((max + min) / 2.0f);
             } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
