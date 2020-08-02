@@ -144,9 +144,8 @@ public class ConsumableTimerOverlay extends Overlay {
         String suffix = m.group("Suffix");
         boolean isRaw = suffix == null;
 
-        SpellType spellType = SpellType.fromName(idName);
-        if (spellType != null) {
-            SpellType.UpdatableSpellType spell = spellType.getUpdatableSpellType();
+        SpellType spell = SpellType.fromName(idName);
+        if (spell != null) {
             idName = spell.replaceWithShortName(idName);
         }
 

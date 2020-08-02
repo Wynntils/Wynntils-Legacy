@@ -137,10 +137,6 @@ public enum SpellType {
         return null;
     }
 
-    public UpdatableSpellType getUpdatableSpellType() {
-        return UpdatableSpellType.values()[spellNumber-1];
-    }
-
     public static SpellType forClass(ClassType classRequired, int spellNumber) {
         for (SpellType spellType : values()) {
             if (spellType.classType.equals(classRequired)
@@ -151,7 +147,23 @@ public enum SpellType {
         return null;
     }
 
-    public enum UpdatableSpellType {
+    private UpdatableSpellType getUpdatableSpellType() {
+        return UpdatableSpellType.values()[spellNumber-1];
+    }
+
+    public String replaceWithShortAndCurrentName(String id) {
+        return getUpdatableSpellType().replaceWithShortAndCurrentName(id);
+    }
+
+    public String replaceWithShortName(String id) {
+        return getUpdatableSpellType().replaceWithShortName(id);
+    }
+
+    public void updateCurrentName(String id) {
+        getUpdatableSpellType().updateCurrentName(id);
+    }
+
+    private enum UpdatableSpellType {
 
         FIRST_SPELL  ("1st Spell", "^(?:Arrow Storm|Bolt Blizzard|Bash|Holy Blast|Heal|Remedy|Spin Attack|Whirlwind|Totem|Sky Emblem|1st Spell)\\b"),
         SECOND_SPELL ("2nd Spell", "^(?:Escape|Spider Jump|Charge|Leap|Teleport|Blink|Vanish|Shadow Clone|Haul|Soar|2nd Spell)\\b"),

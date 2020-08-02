@@ -130,9 +130,8 @@ public class ItemIdentificationOverlay implements Listener {
 
                 // id color
                 String longName = IdentificationContainer.getAsLongName(idName);
-                SpellType spellType = SpellType.fromName(longName);
-                if (spellType != null) {
-                    SpellType.UpdatableSpellType spell = spellType.getUpdatableSpellType();
+                SpellType spell = SpellType.fromName(longName);
+                if (spell != null) {
                     longName = spell.replaceWithShortAndCurrentName(longName);
                 }
 
@@ -412,9 +411,8 @@ public class ItemIdentificationOverlay implements Listener {
                         boolean isRaw = idMatcher.group("Suffix") == null;
                         int stars = idMatcher.group("Stars").length();
 
-                        SpellType spellType = SpellType.fromName(idName);
-                        if (spellType != null) {
-                            SpellType.UpdatableSpellType spell = spellType.getUpdatableSpellType();
+                        SpellType spell = SpellType.fromName(idName);
+                        if (spell != null) {
                             spell.updateCurrentName(idName);
                             idName = spell.replaceWithShortName(idName);
                         }
