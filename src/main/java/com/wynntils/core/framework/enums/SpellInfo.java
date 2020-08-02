@@ -127,11 +127,15 @@ public enum SpellInfo {
 
     public static SpellInfo fromName(String name) {
         for (SpellInfo spellInfo : values()) {
-            if (spellInfo.name.equals(name)) {
+            if (spellInfo.name.matches("^" + name + "\\b") || spellInfo.vipName.matches("^" + name + "\\b")) {
                 return spellInfo;
             }
         }
         return null;
+    }
+
+    public SpellType getUpdatableSpellType() {
+        return SpellType.values()[spellNumber-1];
     }
 
     public static SpellInfo forClass(ClassType classRequired, int spellNumber) {

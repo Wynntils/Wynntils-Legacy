@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.core.framework.enums.SkillPoint;
+import com.wynntils.core.framework.enums.SpellInfo;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -144,8 +145,11 @@ public class ConsumableTimerOverlay extends Overlay {
         String suffix = m.group("Suffix");
         boolean isRaw = suffix == null;
 
-        SpellType spell = SpellType.getSpell(idName);
-        if (spell != null) idName = spell.replaceWithShortName(idName);
+        SpellInfo spellInfo = SpellInfo.fromName(idName);
+        if (spellInfo != null) {
+            SpellType spell = spellInfo.getUpdatableSpellType();
+            idName = spell.replaceWithShortName(idName);
+        }
 
         String shortIdName = ItemIdentificationOverlay.toShortIdName(idName, isRaw);
 

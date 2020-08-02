@@ -5,6 +5,7 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.enums.SpellInfo;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -130,8 +131,9 @@ public class ItemIdentificationOverlay implements Listener {
 
                 // id color
                 String longName = IdentificationContainer.getAsLongName(idName);
-                SpellType spell = SpellType.getSpell(longName);
-                if (spell != null) {
+                SpellInfo spellInfo = SpellInfo.fromName(longName);
+                if (spellInfo != null) {
+                    SpellType spell = spellInfo.getUpdatableSpellType();
                     longName = spell.replaceWithShortAndCurrentName(longName);
                 }
 
@@ -411,8 +413,9 @@ public class ItemIdentificationOverlay implements Listener {
                         boolean isRaw = idMatcher.group("Suffix") == null;
                         int stars = idMatcher.group("Stars").length();
 
-                        SpellType spell = SpellType.getSpell(idName);
-                        if (spell != null) {
+                        SpellInfo spellInfo = SpellInfo.fromName(idName);
+                        if (spellInfo != null) {
+                            SpellType spell = spellInfo.getUpdatableSpellType();
                             spell.updateCurrentName(idName);
                             idName = spell.replaceWithShortName(idName);
                         }
