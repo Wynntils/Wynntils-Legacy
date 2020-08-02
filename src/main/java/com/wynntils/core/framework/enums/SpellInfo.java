@@ -24,7 +24,13 @@ public enum SpellInfo {
     TOTEM(ClassType.SHAMAN, 1, "Totem", "Sky Emblem", 4, 0),
     HAUL(ClassType.SHAMAN, 2, "Haul", "Soar", 3, -1),
     AURA(ClassType.SHAMAN, 3, "Aura", "Wind Surge", 8, 0),
-    UPROOT(ClassType.SHAMAN, 4, "Uproot", "Gale Funnel", 6, 0);
+    UPROOT(ClassType.SHAMAN, 4, "Uproot", "Gale Funnel", 6, 0),
+
+    // Unspecified spells
+    FIRST_SPELL(null, 1, "1st Spell", "1st Spell", 0, 0),
+    SECOND_SPELL(null, 2, "2nd Spell", "2nd Spell", 0, 0),
+    THIRD_SPELL(null, 3, "3rd Spell", "3rd Spell", 0, 0),
+    FOURTH_SPELL(null, 4, "4th Spell", "4th Spell", 0, 0);
 
     static final int[][] MANA_REDUCTION_LEVELS = new int[][] {
         {},

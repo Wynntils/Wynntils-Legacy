@@ -14,25 +14,14 @@ public enum SpellType {
     THIRD_SPELL  ("3rd Spell", "^(?:Bomb(?: Arrow)?|Creeper Dart|Uppercut|Heaven Jolt|Meteor|Dead Star|Multi Hit|Leopard Punches|Aura|Wind Surge|3rd Spell)\\b"),
     FOURTH_SPELL ("4th Spell", "^(?:Arrow Shield|Dagger Aura|War Scream|Cry of the Gods|Ice Snake|Crystal Reptile|Smoke Bomb|Blinding Cloud|Uproot|Gale Funnel|4th Spell)\\b");
 
-    final String shortName; final Pattern regex;
-    String currentName;
+    private final String shortName;
+    private final Pattern regex;
+    private String currentName;
 
     SpellType(String shortName, String regex) {
         this.shortName = shortName;
         this.regex = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         this.currentName = shortName;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public String getCurrentName() {
-        return currentName;
-    }
-
-    public Pattern getRegex() {
-        return regex;
     }
 
     public void updateCurrentName(String id) {
@@ -45,6 +34,10 @@ public enum SpellType {
 
     public String replaceWithShortName(String id) {
         return regex.matcher(id).replaceFirst(shortName);
+    }
+
+    public String replaceWithShortAndCurrentName(String id) {
+        return regex.matcher(id).replaceFirst(shortName + " (" + currentName + ")");
     }
 
     public static SpellType getSpell(String input) {
