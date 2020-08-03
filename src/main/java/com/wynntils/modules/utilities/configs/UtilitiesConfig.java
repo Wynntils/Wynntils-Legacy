@@ -158,8 +158,11 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Item Combat Level Arc", description = "Should the required combat level be shown behind items as an arc?", order = 1)
         public boolean itemLevelArc = false;
 
-        @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 9)
+        @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
         public boolean keySpecification = true;
+
+        @Setting(displayName = "Skill Potion Specification", description = "Should a symbol indicating the skill of skill potions be displayed?", order = 9)
+        public boolean potionSpecification = true;
 
         @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 10)
         public boolean transportationSpecification = true;

@@ -4,6 +4,8 @@
 
 package com.wynntils.core.framework.rendering.colors;
 
+import net.minecraft.util.text.TextFormatting;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -66,5 +68,9 @@ public class MinecraftChatColors extends CustomColor.SetBase {
     }
 
     public static final ColorSet<MinecraftChatColors> set = new ColorSet<>(colors, names, aliases);
+
+    public static MinecraftChatColors fromTextFormatting(TextFormatting textFormatting) {
+        return set.fromName(textFormatting.name());
+    }
 
 }

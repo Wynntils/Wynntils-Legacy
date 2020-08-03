@@ -18,12 +18,12 @@ public enum SkillPoint {
     AGILITY("❋", TextFormatting.WHITE);
 
     private final String symbol;
-    private final String color;
+    private final TextFormatting color;
     private final Pattern regexMatcher;
 
     SkillPoint(String symbol, TextFormatting color) {
         this.symbol = symbol;
-        this.color = color.toString();
+        this.color = color;
 
         regexMatcher = Pattern.compile(".*?(" + symbol + " " + StringUtils.capitalizeFirst(toString().toLowerCase()) + ").*?");
     }
@@ -32,12 +32,16 @@ public enum SkillPoint {
         return symbol;
     }
 
+    public TextFormatting getColor() {
+        return color;
+    }
+
     public String getColoredSymbol() {
-        return color + symbol;
+        return color.toString() + symbol;
     }
 
     public String getAsName() {
-        return color + symbol + " " + StringUtils.capitalizeFirst(name().toLowerCase());
+        return color.toString() + symbol + " " + StringUtils.capitalizeFirst(name().toLowerCase());
     }
 
     public static SkillPoint findSkillPoint(String input) {

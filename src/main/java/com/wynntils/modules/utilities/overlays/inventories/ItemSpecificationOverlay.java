@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -42,6 +43,14 @@ public class ItemSpecificationOverlay implements Listener {
 
             String destinationName = null;
             CustomColor color = null;
+
+            if (UtilitiesConfig.Items.INSTANCE.potionSpecification) {
+                if (name.startsWith("§aPotion of §")) {
+                    SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
+                    destinationName = skillPoint.getSymbol();
+                    color = MinecraftChatColors.fromTextFormatting(skillPoint.getColor());
+                }
+            }
 
             if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
