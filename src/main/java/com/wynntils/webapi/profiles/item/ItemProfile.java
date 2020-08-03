@@ -4,6 +4,7 @@
 
 package com.wynntils.webapi.profiles.item;
 
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
@@ -101,6 +102,10 @@ public class ItemProfile {
 
     public String getRestriction() {
         return restriction;
+    }
+
+    public ClassType getClassNeeded() {
+        return this.getRequirements().getRealClass(this.getItemInfo().getType());
     }
 
     public String getLore() {
