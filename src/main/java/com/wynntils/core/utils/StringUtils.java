@@ -31,7 +31,7 @@ public class StringUtils {
         if (input == null) return "";
         return input
             .trim()
-            .replace("À", "").replace("\u058e", "")
+            .replace("ÀÀÀ", " ").replace("À", "").replace("\u058e", "")
             .replace('\u2019', '\'')
             .trim();
     }

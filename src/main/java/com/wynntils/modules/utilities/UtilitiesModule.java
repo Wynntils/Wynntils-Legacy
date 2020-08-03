@@ -46,6 +46,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new EmeraldCountOverlay());
         registerEvents(new LoreChangerOverlay());
         registerEvents(new WynnDataOverlay());
+        registerEvents(new ItemSpecificationOverlay());
         registerEvents(new ServerUptimeOverlay());
 
         // Real overlays
