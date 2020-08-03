@@ -135,9 +135,11 @@ public class ItemIdentificationOverlay implements Listener {
                 SpellType spell = SpellType.fromName(longName);
                 if (spell != null) {
                     ClassType requiredClass = item.getClassNeeded();
-                    if (requiredClass == null) requiredClass = PlayerInfo.getPlayerInfo().getCurrentClass();
-
-                    longName = spell.forOtherClass(requiredClass).getGenericAndSpecificName();
+                    if (requiredClass != null) {
+                        longName = spell.forOtherClass(requiredClass).getName() + " Spell Cost";
+                    } else {
+                        longName = spell.forOtherClass(PlayerInfo.getPlayerInfo().getCurrentClass()).getGenericAndSpecificName() + " Cost";
+                    }
                 }
 
                 String lore;
