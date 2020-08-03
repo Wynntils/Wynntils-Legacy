@@ -140,6 +140,9 @@ public enum SpellType {
         }
         return null;
     }
+    public SpellType forOtherClass(ClassType otherClass) {
+        return forClass(otherClass, getSpellNumber());
+    }
 
     public static SpellType forClass(ClassType classRequired, int spellNumber) {
         for (SpellType spellType : values()) {
