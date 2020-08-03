@@ -5,6 +5,8 @@
 package com.wynntils.modules.core.events;
 
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -27,7 +29,9 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +46,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,6 +120,8 @@ public class ServerEvents implements Listener {
 
         // party members
         PartyManager.handlePartyList();  // party list here
+
+        startUpdateRegionName();
     }
 
     /**
@@ -270,10 +280,56 @@ public class ServerEvents implements Listener {
     public void leaveServer(WynncraftServerEvent.Leave e) {
         UserManager.clearRegistry();
         EntityManager.clearEntities();
+
+        if (updateTimer != null && !updateTimer.isCancelled()) {
+            updateTimer.cancel(true);
+        }
     }
 
     public static BlockPos getCurrentSpawnPosition() {
         return currentSpawn;
+    }
+
+    @SubscribeEvent
+    public void worldLeave(WynnWorldEvent.Leave e) {
+        if (updateTimer != null) {
+            updateTimer.cancel(true);
+        }
+    }
+
+    private static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-location-updater").build());
+    private static ScheduledFuture updateTimer;
+
+    /**
+     * Starts to check player location for current player territory info
+     */
+    private static void startUpdateRegionName() {
+        updateTimer = executor.scheduleAtFixedRate(() -> {
+            EntityPlayerSP pl = ModCore.mc().player;
+
+            if (!PlayerInfo.getPlayerInfo().isInUnknownLocation()) {
+                String location = PlayerInfo.getPlayerInfo().getLocation();
+                if (!WebManager.getTerritories().containsKey(location)) {
+                    location = location.replace('\'', '’');
+                }
+
+                if (WebManager.getTerritories().get(location).insideArea((int) pl.posX, (int) pl.posZ)) {
+                    return;
+                }
+            }
+
+            for (TerritoryProfile pf : WebManager.getTerritories().values()) {
+                if (pf.insideArea((int) pl.posX, (int) pl.posZ)) {
+                    PlayerInfo.getPlayerInfo().setLocation(pf.getFriendlyName());
+                    return;
+                }
+            }
+
+            if (!PlayerInfo.getPlayerInfo().isInUnknownLocation()) {
+                PlayerInfo.getPlayerInfo().setLocation("");
+            }
+
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
 }

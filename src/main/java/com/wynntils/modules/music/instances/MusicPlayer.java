@@ -4,9 +4,9 @@
 
 package com.wynntils.modules.music.instances;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.MusicManager;
-import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import javazoom.jl.player.JavaSoundAudioDevice;
@@ -87,7 +87,7 @@ public class MusicPlayer {
         paused = !paused;
 
 
-        if (!paused) MusicManager.checkForMusic(RichPresenceModule.getModule().getData().getLocation());
+        if (!paused) MusicManager.checkForMusic(PlayerInfo.getPlayerInfo().getLocation());
         if (paused) stop();
     }
 

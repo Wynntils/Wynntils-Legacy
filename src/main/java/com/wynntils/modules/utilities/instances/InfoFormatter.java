@@ -210,7 +210,7 @@ public class InfoFormatter {
 
         // Current location (town)
         registerFormatter((input) ->
-                RichPresenceModule.getModule().getData().getLocation(),
+                PlayerInfo.getPlayerInfo().getLocation(),
                 "location", "loc");
 
         // Current level

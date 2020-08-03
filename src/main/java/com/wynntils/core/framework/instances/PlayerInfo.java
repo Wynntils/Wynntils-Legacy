@@ -4,7 +4,9 @@
 
 package com.wynntils.core.framework.instances;
 
+import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
@@ -61,6 +63,8 @@ public class PlayerInfo {
     private HashSet<String> friendList = new HashSet<>();
     private HashSet<String> guildList = new HashSet<>();
     private final PartyContainer playerParty = new PartyContainer();
+
+    private String location = "";
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -427,6 +431,29 @@ public class PlayerInfo {
     public int getFreeInventorySlots() {
         if (currentClass == ClassType.NONE || mc.player == null) return -1;
         return (int) mc.player.inventory.mainInventory.stream().filter(ItemStack::isEmpty).count();
+    }
+
+    /**
+     * @return The territory the player is in
+     *
+     *         "" if not in a territory
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        ModCore.mc().addScheduledTask(() -> {
+            FrameworkManager.getEventBus().post(new WynnTerritoryChangeEvent(this.location, location));
+        });
+        this.location = location;
+    }
+
+    /**
+     * @return If the player is outside of a territory
+     */
+    public boolean isInUnknownLocation() {
+        return location.equals("");
     }
 
     public static class HorseData {
