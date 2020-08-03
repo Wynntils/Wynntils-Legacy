@@ -49,7 +49,7 @@ public class ItemIdentificationOverlay implements Listener {
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     @SubscribeEvent
-    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());

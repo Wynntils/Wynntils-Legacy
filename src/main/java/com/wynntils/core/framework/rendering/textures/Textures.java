@@ -91,6 +91,8 @@ public class Textures {
         public static AssetsTexture quest_book;
 
         public static AssetsTexture tab_overlay;
+
+        public static AssetsTexture class_selection;
     }
 
     public static class World {

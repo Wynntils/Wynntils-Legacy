@@ -250,6 +250,27 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return mouseY;
             }
 
+            public static class Pre extends DrawScreen {
+
+                public Pre(ChestReplacer guiChest, int mouseX, int mouseY, float partialTicks) {
+                    super(guiChest, mouseX, mouseY, partialTicks);
+                }
+
+                @Override
+                public boolean isCancelable() {
+                    return true;
+                }
+
+            }
+
+            public static class Post extends DrawScreen {
+
+                public Post(ChestReplacer guiChest, int mouseX, int mouseY, float partialTicks) {
+                    super(guiChest, mouseX, mouseY, partialTicks);
+                }
+
+            }
+
         }
 
         public static class HandleMouseClick extends ChestOverlap {
@@ -356,6 +377,11 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.mouseX = mouseX; this.mouseY = mouseY; this.mouseButton = mouseButton;
             }
 
+            @Override
+            public boolean isCancelable() {
+                return true;
+            }
+
             public int getMouseY() {
                 return mouseY;
             }
@@ -384,15 +410,6 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return buttonList;
             }
 
-        }
-
-        /**
-         * Sent once before starting to draw the GUI.
-         */
-        public static class PreDraw extends ChestOverlap {
-            public PreDraw(ChestReplacer guiInventory) {
-                super(guiInventory);
-            }
         }
 
         public static class HoveredToolTip extends ChestOverlap {

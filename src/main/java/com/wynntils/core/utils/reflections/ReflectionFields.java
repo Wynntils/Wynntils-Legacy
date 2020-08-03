@@ -49,9 +49,9 @@ public enum ReflectionFields {
         this.field = ReflectionHelper.findField(holdingClass, values);
     }
 
-    public Object getValue(Object parent) {
+    public <T> T getValue(Object parent) {
         try {
-            return field.get(parent);
+            return (T) field.get(parent);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;

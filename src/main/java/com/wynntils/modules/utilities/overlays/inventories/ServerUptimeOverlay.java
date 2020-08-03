@@ -21,7 +21,7 @@ import java.util.List;
 public class ServerUptimeOverlay implements Listener {
 
     @SubscribeEvent
-    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         if (!Reference.onLobby) return;
         if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
 

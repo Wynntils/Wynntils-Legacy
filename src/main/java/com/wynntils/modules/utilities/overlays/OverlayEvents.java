@@ -636,7 +636,7 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onChestDraw(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChestDraw(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         // Refresh overlay if hidden and chest is open
         ObjectivesOverlay.refreshVisibility();
     }

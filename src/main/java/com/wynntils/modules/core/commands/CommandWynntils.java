@@ -165,6 +165,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     Minecraft.getMinecraft().player.sendMessage(message);
                     return;
                 }
+
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

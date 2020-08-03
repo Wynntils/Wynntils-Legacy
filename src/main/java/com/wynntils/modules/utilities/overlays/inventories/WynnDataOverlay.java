@@ -45,7 +45,7 @@ public class WynnDataOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         e.getButtonList().forEach(gb -> {
             if (gb.id == 12 && gb.isMouseOver()) {
                 e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnData", "Shift + Right click on item: Open Item on WynnData"), e.getMouseX(), e.getMouseY());

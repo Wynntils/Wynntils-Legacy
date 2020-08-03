@@ -40,7 +40,7 @@ public class SkillPointOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onChestInventory(GuiOverlapEvent.ChestOverlap.PreDraw e) {
+    public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
         Matcher m = Utils.CHAR_INFO_PAGE_TITLE.matcher(e.getGui().getLowerInv().getName());
         if (!m.find()) return;
 

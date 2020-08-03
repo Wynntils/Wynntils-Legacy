@@ -20,7 +20,6 @@ public class ChestReplacer extends GuiChest {
 
     IInventory lowerInv;
     IInventory upperInv;
-    private boolean isDrawn = false;
 
     public ChestReplacer(IInventory upperInv, IInventory lowerInv) {
         super(upperInv, lowerInv);
@@ -45,12 +44,12 @@ public class ChestReplacer extends GuiChest {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (!isDrawn) {
-            isDrawn = true;
-            FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.PreDraw(this));
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.DrawScreen.Pre(this, mouseX, mouseY, partialTicks))) {
+            return;
         }
+
         super.drawScreen(mouseX, mouseY, partialTicks);
-        FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.DrawScreen(this, mouseX, mouseY, partialTicks));
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.DrawScreen.Post(this, mouseX, mouseY, partialTicks));
     }
 
     @Override
@@ -92,7 +91,7 @@ public class ChestReplacer extends GuiChest {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.MouseClicked(this, mouseX, mouseY, mouseButton));
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.ChestOverlap.MouseClicked(this, mouseX, mouseY, mouseButton))) return;
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

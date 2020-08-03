@@ -22,7 +22,7 @@ import java.io.File;
 
 public class MapProfile {
 
-    private static final File mapLocation = new File(Reference.MOD_STORAGE_ROOT, "map");
+    private static final File MAP_LOCATION = new File(Reference.MOD_STORAGE_ROOT, "map");
 
     String url;
     File mapFile;
@@ -36,7 +36,7 @@ public class MapProfile {
     int imageWidth = 0; int imageHeight = 0;
 
     public MapProfile(String url, String name) {
-        this.url = url; this.mapFile = new File(mapLocation, name + ".png");
+        this.url = url; this.mapFile = new File(MAP_LOCATION, name + ".png");
 
         if (!mapFile.exists()) downloadDirect = true;
     }
@@ -51,7 +51,7 @@ public class MapProfile {
 
         RequestHandler handler = new RequestHandler();
         handler.addRequest(new Request(url, "main_map.info")
-            .cacheTo(new File(mapLocation, "main-map.txt"))
+            .cacheTo(new File(MAP_LOCATION, "main-map.txt"))
             .handleWebReader(reader -> {
                 centerX = Double.parseDouble(reader.get("CenterX"));
                 centerZ = Double.parseDouble(reader.get("CenterZ"));
@@ -62,7 +62,7 @@ public class MapProfile {
                     }
                 }
 
-                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, success -> {
+                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), MAP_LOCATION, DownloadAction.SAVE, success -> {
                     if (success) setReadyToUse();
                 });
                 return true;

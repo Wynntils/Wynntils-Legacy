@@ -25,7 +25,7 @@ import java.util.List;
 public class LoreChangerOverlay implements Listener {
 
     @SubscribeEvent
-    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
