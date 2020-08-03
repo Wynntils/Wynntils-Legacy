@@ -132,7 +132,7 @@ public class ItemIdentificationOverlay implements Listener {
                 String longName = IdentificationContainer.getAsLongName(idName);
                 SpellType spell = SpellType.fromName(longName);
                 if (spell != null) {
-                    longName = spell.replaceWithShortAndCurrentName(longName);
+                    longName = spell.getGenericAndSpecificName();
                 }
 
                 String lore;
@@ -398,6 +398,8 @@ public class ItemIdentificationOverlay implements Listener {
             for (String loreLine : ItemUtils.getLore(stack)) {
                 String lColor = getTextWithoutFormattingCodes(loreLine);
 
+                if (lColor.isEmpty()) continue;
+
                 // set bonus detection
                 if (lColor.contains("Set Bonus:")) {
                     isBonus = true;
@@ -413,8 +415,7 @@ public class ItemIdentificationOverlay implements Listener {
 
                         SpellType spell = SpellType.fromName(idName);
                         if (spell != null) {
-                            spell.updateCurrentName(idName);
-                            idName = spell.replaceWithShortName(idName);
+                            idName = spell.getGenericName();
                         }
 
                         String shortIdName = toShortIdName(idName, isRaw);

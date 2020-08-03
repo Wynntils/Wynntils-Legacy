@@ -12,7 +12,7 @@ public enum ClassType {
     ASSASSIN("Assassin", "Ninja"),
     SHAMAN("Shaman", "Skyseer"),
 
-    // This represents the class selection menu
+    // This represents the class selection menu, or the generic spell
     NONE("none", "none");
 
     private final String name;
