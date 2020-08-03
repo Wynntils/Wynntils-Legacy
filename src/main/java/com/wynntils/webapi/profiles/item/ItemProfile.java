@@ -105,7 +105,7 @@ public class ItemProfile {
     }
 
     public ClassType getClassNeeded() {
-        return this.getRequirements().getRealClass(this.getItemInfo().getType());
+        return getRequirements().getRealClass(this.getItemInfo().getType());
     }
 
     public String getLore() {

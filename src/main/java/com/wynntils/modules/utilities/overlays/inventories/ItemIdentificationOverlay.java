@@ -5,7 +5,9 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SpellType;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -132,7 +134,10 @@ public class ItemIdentificationOverlay implements Listener {
                 String longName = IdentificationContainer.getAsLongName(idName);
                 SpellType spell = SpellType.fromName(longName);
                 if (spell != null) {
-                    longName = spell.forOtherClass(item.getClassNeeded()).getGenericAndSpecificName();
+                    ClassType requiredClass = item.getClassNeeded();
+                    if (requiredClass == null) requiredClass = PlayerInfo.getPlayerInfo().getCurrentClass();
+
+                    longName = spell.forOtherClass(requiredClass).getGenericAndSpecificName();
                 }
 
                 String lore;
