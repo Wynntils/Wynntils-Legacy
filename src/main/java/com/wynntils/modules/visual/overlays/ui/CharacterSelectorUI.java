@@ -80,8 +80,8 @@ public class CharacterSelectorUI extends GuiScreen {
         Tessellator tes = Tessellator.getInstance();
         BufferBuilder builder = tes.getBuffer();
 
-        this.mouseX = (int)(mouseX / scale);
-        this.mouseY = (int)(mouseY / scale);
+        this.mouseX = (int) (mouseX / scale);
+        this.mouseY = (int) (mouseY / scale);
 
         hoveredButton = -1;
         hoveredText = null;
@@ -178,21 +178,21 @@ public class CharacterSelectorUI extends GuiScreen {
         }
 
         if (hoveredButton == 51) { // create class
-            chest.handleMouseClick(null, createCharacterSlot, 0, ClickType.PICKUP);
+            chest.handleMouseClick(chest.inventorySlots.getSlot(createCharacterSlot), createCharacterSlot, 0, ClickType.PICKUP);
         } else if (hoveredButton == 52) { // edit menu
-            chest.handleMouseClick(null, 8, 0, ClickType.PICKUP);
+            chest.handleMouseClick(chest.inventorySlots.getSlot(8), 8, 0, ClickType.PICKUP);
         } else if (hoveredButton == 53) { // delete class
             if (selectedCharacter == -1) return;
 
             CharacterProfile selected = availableCharacters.get(selectedCharacter);
-            chest.handleMouseClick(null, selected.getSlot(), 1, ClickType.PICKUP);
+            chest.handleMouseClick(chest.inventorySlots.getSlot(selected.getSlot()), selected.getSlot(), 1, ClickType.PICKUP);
         } else if (hoveredButton == 57) { // play button
             if (selectedCharacter == -1) return;
 
             CharacterProfile selected = availableCharacters.get(selectedCharacter);
-            chest.handleMouseClick(null, selected.getSlot(), 0, ClickType.PICKUP);
+            chest.handleMouseClick(chest.inventorySlots.getSlot(selected.getSlot()), selected.getSlot(), 0, ClickType.PICKUP);
         } else if (hoveredButton == 58) { // class deletion
-            chest.handleMouseClick(null, 26, 0, ClickType.PICKUP);
+            chest.handleMouseClick(chest.inventorySlots.getSlot(26), 26, 0, ClickType.PICKUP);
         }
     }
 
