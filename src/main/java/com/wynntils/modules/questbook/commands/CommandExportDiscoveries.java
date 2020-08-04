@@ -31,10 +31,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CommandExportDiscoveries extends CommandBase implements IClientCommand {
 
@@ -65,7 +62,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             throw new CommandException("You need to select a class to run %s", command);
 
         FrameworkManager.getEventBus().register(this);
-        QuestManager.readQuestBook();
+        QuestManager.updateAnalysis(Arrays.asList(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), false, true);
     }
 
     @Override
