@@ -713,7 +713,7 @@ public class OverlayEvents implements Listener {
             else if (effect.getAmplifier() == 1) {
                 timerName += "II";
             }
-            else if (ffect.getAmplifier() == 2) {
+            else if (effect.getAmplifier() == 2) {
                 timerName += "III";
             } else {
                 return;
@@ -730,10 +730,11 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
+        
+        SPacketRemoveEntityEffect effect = e.getPacket();
         if (effect.getEntity(Minecraft.getMinecraft().world) != Minecraft.getMinecraft().player) return;
         
         Minecraft.getMinecraft().addScheduledTask(() -> {
-            SPacketRemoveEntityEffect effect = e.getPacket();
             Potion potion = effect.getPotion();
 
             // When removing speed boost from (archer)
