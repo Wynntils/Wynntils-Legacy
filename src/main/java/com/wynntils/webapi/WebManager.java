@@ -97,7 +97,12 @@ public class WebManager {
             tryReloadApiUrls(false, true);
         }
 
-        ProgressManager.ProgressBar progressBar = withProgress ? ProgressManager.push(apiUrls != null ? "Loading data from APIs" : "Loading data from cache", 0) : null;
+        ProgressManager.ProgressBar progressBar;
+        if (withProgress) {
+            progressBar = ProgressManager.push("Loading data from " + (apiUrls != null ? "APIs" : "cache"), 0);
+        } else {
+            progressBar = null;
+        }
 
         updateTerritories(handler);
         updateItemList(handler);
@@ -109,7 +114,9 @@ public class WebManager {
 
         handler.dispatchAsync();
 
-        if (withProgress) ProgressManager.pop(progressBar);
+        if (progressBar != null) {
+            ProgressManager.pop(progressBar);
+        }
 
         updateTerritoryThreadStatus(true);
     }
@@ -228,7 +235,8 @@ public class WebManager {
      * Request a update to territories {@link ArrayList}
      */
     public static void updateTerritories(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/territoryList";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/territoryList";
         handler.addRequest(new Request(url, "territory")
             .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
             .handleJsonObject(json -> {
@@ -259,13 +267,14 @@ public class WebManager {
      *
      * @return a {@link ArrayList} containing all guild names, or an empty list if an error occurred
      */
-    public static ArrayList<String> getGuilds()  {
+    public static List<String> getGuilds()  {
         class ResultHolder {
             private ArrayList<String> result;
         }
         ResultHolder resultHolder = new ResultHolder();
 
-        String url = apiUrls == null ? null : apiUrls.get("GuildList");
+        if (apiUrls == null) return Collections.emptyList();
+        String url = apiUrls.get("GuildList");
         handler.addRequest(new Request(url, "guild_list")
             .cacheTo(new File(API_CACHE_ROOT, "guilds.json"))
             .handleJsonObject(json -> {
@@ -317,7 +326,8 @@ public class WebManager {
      * @see LeaderboardProfile
      */
     public static void getLeaderboard(Consumer<HashMap<UUID, LeaderboardProfile>> onReceive) {
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/leaderboard";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/leaderboard";
 
         handler.addAndDispatch(
                 new Request(url, "leaderboard")
@@ -341,7 +351,8 @@ public class WebManager {
      * @see ServerProfile
      */
     public static void getServerList(Consumer<HashMap<String, ServerProfile>> onReceive) {
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/serverList";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/serverList";
 
         handler.addAndDispatch(
                 new Request(url, "serverList")
@@ -394,7 +405,8 @@ public class WebManager {
      * Update all Wynn items on the {@link HashMap} items
      */
     public static void updateItemList(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/itemList";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/itemList";
         handler.addRequest(new Request(url, "itemList")
             .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
@@ -420,7 +432,8 @@ public class WebManager {
      * Update all Wynn MapLocation on the {@link HashMap} mapMarkers and {@link HashMap} mapLabels
      */
     public static void updateMapLocations(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("Athena") + "/cache/get/mapLocations";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/mapLocations";
         handler.addRequest(new Request(url, "map_locations")
             .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
@@ -455,7 +468,8 @@ public class WebManager {
      * Update all Wynn ItemGuesses on the {@link HashMap} itemGuesses
      */
     public static void updateItemGuesses(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("ItemGuesses");
+        if (apiUrls == null) return;
+        String url = apiUrls.get("ItemGuesses");
         handler.addRequest(new Request(url, "item_guesses")
             .cacheTo(new File(API_CACHE_ROOT, "item_guesses.json"))
             .handleJsonObject(json -> {
@@ -473,7 +487,8 @@ public class WebManager {
     }
 
     public static void updatePlayerProfile(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
+        if (apiUrls == null) return;
+        String url = apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
         handler.addRequest(new Request(url, "player_profile")
             .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
             .addHeader("apikey", apiUrls.get("WynnApiKey"))
@@ -492,7 +507,8 @@ public class WebManager {
     }
 
     public static void updateDiscoveries(RequestHandler handler) {
-        String url = apiUrls == null ? null : apiUrls.get("Discoveries");
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Discoveries");
         handler.addRequest(new Request(url, "discoveries")
             .cacheTo(new File(API_CACHE_ROOT, "discoveries.json"))
             .handleJsonArray(discoveriesJson -> {
