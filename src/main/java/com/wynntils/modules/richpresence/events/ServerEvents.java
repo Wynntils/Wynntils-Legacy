@@ -65,7 +65,7 @@ public class ServerEvents implements Listener {
             RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", e.getNewClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
         } else if (!Reference.onWars && Reference.onWorld && e.getNewClass() == ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", null, currentTime);
+            RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Selecting a class", null, currentTime);
             forceUpdate = false;
         }
     }
@@ -109,13 +109,12 @@ public class ServerEvents implements Listener {
         if (Reference.onWorld && !Reference.onWars && forceUpdate && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) {
             forceUpdate = false;
             if (!PlayerInfo.getPlayerInfo().isInUnknownLocation()) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "In " + PlayerInfo.getPlayerInfo().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "In " + PlayerInfo.getPlayerInfo().getLocation(), PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
             } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Exploring Wynncraft", PlayerInfo.getPlayerInfo().getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
             }
         }
     }
-
     public static void onEnableSettingChange() {
         if (RichPresenceConfig.INSTANCE.enableRichPresence) {
             if (Reference.onLobby) {
@@ -143,7 +142,7 @@ public class ServerEvents implements Listener {
                 }
             } else if (Reference.onWorld) {
                 if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE) {
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WC", ""), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
+                    RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Selecting a class", getPlayerInfo(), OffsetDateTime.now());
                 }
             }
         } else {
@@ -151,6 +150,11 @@ public class ServerEvents implements Listener {
         }
     }
 
+    private static String getWorldDescription() {
+        if (Reference.getUserWorld() == null) return "Lobby";
+
+        return "World " + Reference.getUserWorld().replace("WC", "");
+    }
 
     /**
      * Just a simple method to short other ones
