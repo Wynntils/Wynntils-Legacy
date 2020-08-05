@@ -32,11 +32,17 @@ import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
@@ -56,7 +62,11 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.Display;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClientEvents implements Listener {
@@ -336,6 +346,77 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void inventoryOpened(GuiScreenEvent.InitGuiEvent.Post e) {
         DailyReminderManager.openedDailyInventory(e);
+    }
+
+    private int getSecondsUntilDailyReward() {
+        return (int) ((UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward + 86400000 - System.currentTimeMillis()) / 1000);
+    }
+
+    private int getSecondsUntilDailyObjectiveReset() {
+        LocalDateTime tomorrowMidnight = LocalDateTime.of(LocalDate.now(ZoneOffset.UTC), LocalTime.MIDNIGHT).plusDays(1).plusSeconds(1);
+        return (int) Duration.between(LocalDateTime.now(ZoneOffset.UTC), tomorrowMidnight).getSeconds();
+    }
+
+    private String getFormattedTimeString(int secondsLeft) {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+
+        int hoursLeft = secondsLeft / 3600;
+        int minutesLeft = secondsLeft % 3600 / 60;
+        return String.format(TextFormatting.AQUA + date.plusSeconds(secondsLeft).format(formatter) + TextFormatting.GRAY
+                + " (in " + TextFormatting.WHITE + "%02d:%02d" + TextFormatting.GRAY + ")", hoursLeft, minutesLeft);
+    }
+
+    @SubscribeEvent
+    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+        if (!Reference.onWorld) return;
+        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+
+        Slot slot = e.getGui().inventorySlots.getSlot(20);
+
+        ItemStack stack = slot.getStack();
+        if (stack.getItem() == Item.getItemFromBlock(Blocks.SNOW_LAYER) || stack.getItem() == Items.CLOCK) {
+            // There's no chest, create a clock with timer as lore
+            NBTTagCompound nbt = new NBTTagCompound();
+            ItemStack newStack = new ItemStack(Items.CLOCK);
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            display.setTag("Name", new NBTTagString("" + TextFormatting.GREEN + "Daily Reward Countdown"));
+            nbt.setTag("display", display);
+            newStack.setTagCompound(nbt);
+
+            List<String> lore = new LinkedList<>();
+            lore.add("");
+            lore.add(TextFormatting.GOLD + "Daily Reward");
+            if (UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward == 0) {
+                lore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Unknown renewal time");
+            } else {
+                lore.add(TextFormatting.GRAY + "Will renew " + getFormattedTimeString(getSecondsUntilDailyReward()));
+            }
+
+            ItemUtils.replaceLore(newStack, lore);
+            slot.putStack(newStack);
+            stack = newStack; // use this for next check
+        }
+
+        if (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)  || stack.getItem() == Items.CLOCK) {
+            // We need to strip the old time from the lore, if existent
+            List<String> lore = ItemUtils.getLore(stack);
+            List<String> newLore = new LinkedList<>();
+            for (String line : lore) {
+                if (line.contains("Daily Objective and VIP Chest")) break;
+                newLore.add(line);
+            }
+            int lastLine = newLore.size()-1;
+            if (lastLine >= 0 && newLore.get(lastLine).isEmpty()) {
+                newLore.remove(lastLine);
+            }
+
+            newLore.add("");
+            newLore.add(TextFormatting.GOLD + "Daily Objective and VIP Chest");
+            newLore.add(TextFormatting.GRAY + "Will renew " + getFormattedTimeString(getSecondsUntilDailyObjectiveReset()));
+            ItemUtils.replaceLore(stack, newLore);
+            slot.putStack(stack);
+        }
     }
 
     // HeyZeer0: Handles the inventory lock, 7 methods below, first 6 on inventory, last one by dropping the item (without inventory)
