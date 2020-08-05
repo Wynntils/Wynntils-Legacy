@@ -699,43 +699,75 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.clearConsumables(false);
     }
 
+    boolean isVanished = false;
+    
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
-
+        
         SPacketEntityEffect effect = e.getPacket();
+        if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
+        
         Potion potion = Potion.getPotionById(effect.getEffectId());
-        if (effect.getEntityId() == Minecraft.getMinecraft().player.getEntityId()) {
-            String timerName;
-            if (potion == MobEffects.SPEED) {
-                timerName = "Speed boost";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 0) {
+
+        String timerName;
+
+        // if the effect is speed timer is "Speed boost"
+        if (potion == MobEffects.SPEED && effect.getAmplifier() == 2) {
+            timerName = "Speed boost";
+        }
+        // if the effect is invisibility timer is "Vanish"
+        else if (potion == MobEffects.INVISIBILITY && effect.getDuration() < 200) {
+            timerName = "Vanish";
+            isVanished = true;
+        }
+        // if the player isn't invisible (didn't use vanish)
+        else if (potion == MobEffects.RESISTANCE) { // War Scream effect
+            if (isVanished) { // remove the vanish indicator
+                isVanished = false;
+                return;
+            }
+            
+            if (effect.getAmplifier() == 0) {
                 timerName = "War Scream I";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 1) {
+            }
+            else if (effect.getAmplifier() == 1) {
                 timerName = "War Scream II";
-            } else if (potion == MobEffects.RESISTANCE && effect.getAmplifier() == 2) {
+            }
+            else if (effect.getAmplifier() == 2) {
                 timerName = "War Scream III";
             } else {
                 return;
             }
-            Minecraft.getMinecraft().addScheduledTask(() ->
-                    ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
+        } else {
+            return;
         }
+        
+        // create timer with name and duration (duration in ticks)/20 -> seconds
+        Minecraft.getMinecraft().addScheduledTask(() ->
+                ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
     }
 
     @SubscribeEvent
     public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
-        if (Reference.onWorld && OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-            Minecraft.getMinecraft().addScheduledTask(() -> {
-                SPacketRemoveEntityEffect effect = e.getPacket();
-                Potion potion = effect.getPotion();
+        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
+        
+        SPacketRemoveEntityEffect effect = e.getPacket();
+        if (effect.getEntity(Minecraft.getMinecraft().world) != Minecraft.getMinecraft().player) return;
+        
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            Potion potion = effect.getPotion();
 
-                if (effect.getEntity(Minecraft.getMinecraft().world) == Minecraft.getMinecraft().player &&
-                        potion == MobEffects.SPEED) {
-                    ConsumableTimerOverlay.removeBasicTimer("Speed boost");
-                }
-            });
-        }
+            // When removing speed boost from (archer)
+            if (potion == MobEffects.SPEED) {
+                ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+            }
+            // When removing invisibility from assassin
+            else if (potion == MobEffects.INVISIBILITY) {
+                isVanished = false; // So it won't skip
+                ConsumableTimerOverlay.removeBasicTimer("Vanish");
+            }
+        });
     }
 
     @SubscribeEvent
