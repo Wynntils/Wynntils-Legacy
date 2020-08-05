@@ -706,15 +706,14 @@ public class OverlayEvents implements Listener {
                 return;
             }
             
-            timerName = "War Scream ";
             if (effect.getAmplifier() == 0) {
-                timerName += "I";
+                timerName = "War Scream I";
             }
             else if (effect.getAmplifier() == 1) {
-                timerName += "II";
+                timerName = "War Scream II";
             }
             else if (effect.getAmplifier() == 2) {
-                timerName += "III";
+                timerName = "War Scream III";
             } else {
                 return;
             }
