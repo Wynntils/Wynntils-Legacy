@@ -146,6 +146,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public long dailyReminder = 0L;
+
+        @Setting
+        public long lastOpenedDailyReward = 0L;
     }
 
     @SettingsInfo(name = "item_highlights", displayPath = "Utilities/Item Highlights")
