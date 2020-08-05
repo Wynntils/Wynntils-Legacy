@@ -682,10 +682,10 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
-         if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
         
-        // Gets the actual effect
         SPacketEntityEffect effect = e.getPacket();
+        if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
+        
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
         String timerName;
