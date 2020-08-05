@@ -154,7 +154,7 @@ public class ObjectivesOverlay extends Overlay {
 
         String msg = e.getMessage().getUnformattedText();
         if (msg.contains("Click here to claim your rewards")) {
-            objectives[0] = new Objective("Claim your reward");
+            objectives[0] = new Objective("Claim your reward with /daily");
         }
     }
 
