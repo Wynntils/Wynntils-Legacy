@@ -78,6 +78,8 @@ public class ServerEvents implements Listener {
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();
+
+        DownloaderManager.startDownloading();
     }
 
     boolean waitingForFriendList = false;
@@ -103,8 +105,6 @@ public class ServerEvents implements Listener {
         if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
             PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
         }
-
-        DownloaderManager.startDownloading();
 
         if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
 
