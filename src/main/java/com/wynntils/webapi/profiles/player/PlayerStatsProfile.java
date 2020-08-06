@@ -318,10 +318,29 @@ public class PlayerStatsProfile {
     }
 
     public enum PlayerTag {
-        NONE,
-        VIP,
-        VIPPLUS,
-        HERO
+        NONE("Basic"),
+        VIP("VIP"),
+        VIPPLUS("VIP+"),
+        HERO("HERO");
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
+
+        PlayerTag(String name) {
+            this.name = name;
+        }
+
+        public boolean isVip() {
+            return this.ordinal() >= 1;
+        }
+
+        public boolean isVipPlus() {
+            return this.ordinal() >= 2;
+        }
     }
 
     public enum GuildRank {
