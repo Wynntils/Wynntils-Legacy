@@ -389,6 +389,10 @@ public class ClientEvents implements Listener {
             List<String> lore = new LinkedList<>();
             lore.add("");
             lore.add(TextFormatting.GOLD + "Daily Reward");
+            if (getSecondsUntilDailyReward() < 0) {
+                // We've missed last time the user opened the chest; reset timer
+                UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward = 0;
+            }
             if (UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward == 0) {
                 lore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Unknown renewal time");
             } else {
