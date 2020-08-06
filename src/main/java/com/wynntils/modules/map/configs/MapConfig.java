@@ -131,6 +131,13 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public ArrayList<PathWaypointProfile> pathWaypoints = new ArrayList<>();
 
+        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoint become more clearer the closer you are height wise?\n\nWaypoint below will darken and waypoints above will lighten", order = 1)
+        public boolean iconFade = true;
+
+        @Setting(displayName = "Minimap Waypoint Fade Scale", description = "At which Y difference should waypoints become invisible?", order = 2)
+        @Setting.Limitations.IntLimit(min = 10, max = 100, precision = 10)
+        public int iconFadeScale = 30;
+
 
         @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§8Tiers higher than the specified value will also be recorded.", order = 6)
         public ChestTiers chestTiers = ChestTiers.TIER_3;

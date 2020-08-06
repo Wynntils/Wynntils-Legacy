@@ -11,6 +11,8 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -132,10 +134,27 @@ public class MapWaypointIcon extends MapTextureIcon {
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+        int distancePlayerWp = 0;
+        float percentage = 1f;
+        // TODO: Find a better solution to detect whether icon is being drawn on minimap
+        if (MapConfig.Waypoints.INSTANCE.iconFade && Minecraft.getMinecraft().currentScreen == null) {
+            // If negative the waypoint is above the player
+            distancePlayerWp = (int) (Minecraft.getMinecraft().player.posY - wp.getY());
+
+            if (MathHelper.abs(distancePlayerWp) > MapConfig.Waypoints.INSTANCE.iconFadeScale) return;
+            percentage = (float) ((1 - (MathHelper.abs(distancePlayerWp) / (float) MapConfig.Waypoints.INSTANCE.iconFadeScale)) * 0.8 + 0.2);
+        }
+
         CustomColor color = wp.getColor();
         if (color != null) {
             GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
-            GL11.glColor4f(color.r, color.g, color.b, color.a * currentColorBuf.get(3));
+            if (distancePlayerWp < 0) {
+                // Lighten icon
+                GL11.glColor4f(color.r, color.g, color.b, color.a * percentage * currentColorBuf.get(3));
+            } else {
+                // Darken icon
+                GL11.glColor4f(color.r * percentage, color.g * percentage, color.b * percentage, color.a * currentColorBuf.get(3));
+            }
         }
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
         if (color != null) {
