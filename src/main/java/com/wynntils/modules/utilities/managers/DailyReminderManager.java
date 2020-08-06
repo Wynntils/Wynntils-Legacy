@@ -53,7 +53,9 @@ public class DailyReminderManager {
     public static void openedDaily() {
         if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
+        long now = System.currentTimeMillis();
+        UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward = now;
+        UtilitiesConfig.Data.INSTANCE.dailyReminder = now + 86400000;
         UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 
