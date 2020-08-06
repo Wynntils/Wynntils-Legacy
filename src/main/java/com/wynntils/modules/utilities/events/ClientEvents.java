@@ -24,6 +24,8 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -403,7 +405,7 @@ public class ClientEvents implements Listener {
             List<String> lore = ItemUtils.getLore(stack);
             List<String> newLore = new LinkedList<>();
             for (String line : lore) {
-                if (line.contains("Daily Objective and VIP Chest")) break;
+                if (line.contains("Daily Objective")) break;
                 newLore.add(line);
             }
             int lastLine = newLore.size()-1;
@@ -411,9 +413,32 @@ public class ClientEvents implements Listener {
                 newLore.remove(lastLine);
             }
 
+            PlayerStatsProfile.PlayerTag playerRank = WebManager.getPlayerProfile().getTag();
+
             newLore.add("");
-            newLore.add(TextFormatting.GOLD + "Daily Objective and VIP Chest");
+            newLore.add(TextFormatting.GOLD + "Daily Objective");
+            if (playerRank.isVip()) {
+                newLore.add(TextFormatting.GOLD + "Daily Mob Totems");
+            }
+            if (playerRank.isVipPlus()) {
+                newLore.add(TextFormatting.GOLD + "Daily Crate");
+            }
             newLore.add(TextFormatting.GRAY + "Will renew " + getFormattedTimeString(getSecondsUntilDailyObjectiveReset()));
+
+            if (!playerRank.isVip()) {
+                newLore.add("");
+                newLore.add(TextFormatting.GOLD + "Daily Mob Totems");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Purchase a rank at wynncraft.com");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "for daily mob totems");
+            }
+
+            if (!playerRank.isVipPlus()) {
+                newLore.add("");
+                newLore.add(TextFormatting.GOLD + "Daily Crate");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Get VIP+ or Hero rank");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "for daily crates");
+            }
+
             ItemUtils.replaceLore(stack, newLore);
             slot.putStack(stack);
         }
