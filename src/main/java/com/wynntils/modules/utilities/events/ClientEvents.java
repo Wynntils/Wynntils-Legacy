@@ -417,7 +417,8 @@ public class ClientEvents implements Listener {
                 newLore.remove(lastLine);
             }
 
-            PlayerStatsProfile.PlayerTag playerRank = WebManager.getPlayerProfile().getTag();
+            PlayerStatsProfile profile = WebManager.getPlayerProfile();
+            PlayerStatsProfile.PlayerTag playerRank = profile != null ? profile.getTag() : PlayerStatsProfile.PlayerTag.NONE;
 
             newLore.add("");
             newLore.add(TextFormatting.GOLD + "Daily Objective");
