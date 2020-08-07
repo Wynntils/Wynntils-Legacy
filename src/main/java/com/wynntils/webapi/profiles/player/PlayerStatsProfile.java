@@ -314,7 +314,8 @@ public class PlayerStatsProfile {
         Item,
         Builder,
         Hybrid,
-        CMD
+        CMD,
+        Media
     }
 
     public enum PlayerTag {
