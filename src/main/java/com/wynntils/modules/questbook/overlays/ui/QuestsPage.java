@@ -323,8 +323,8 @@ public class QuestsPage extends QuestBookPage {
                     handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
                         boolean needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
                         
-                        String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_');
-                        
+                        String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_').replace("?", "%3F");
+
                         Utils.openUrl(baseUrl + wikiName);
                         return true;
                     }).onError(code -> {
