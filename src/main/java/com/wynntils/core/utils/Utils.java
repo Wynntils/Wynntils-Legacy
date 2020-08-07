@@ -359,9 +359,11 @@ public class Utils {
 
     public static String getNameFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
         assert NAME_KEY != null;
-        for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
-            if (NAME_KEY.equals(entry.getKey())) {
-                return (String) entry.getValue();
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (NAME_KEY.equals(entry.getKey())) {
+                    return (String) entry.getValue();
+                }
             }
         }
         return null;
