@@ -99,6 +99,9 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onLevelChange(PacketEvent<SPacketSetExperience> e) {
+        if (!RichPresenceConfig.INSTANCE.enableRichPresence || !Reference.onWorld
+                || PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE) return;
+
         if (e.getPacket().getLevel() != Minecraft.getMinecraft().player.experienceLevel) {
             forceUpdate = true;
         }
