@@ -277,7 +277,7 @@ public class ChatOverlay extends GuiNewChat {
                                 .collect(Collectors.toList())
                         );
 
-                        while (tab.getCurrentMessages().size() > 100) {
+                        while (tab.getCurrentMessages().size() > ChatConfig.INSTANCE.chatHistorySize) {
                             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
                         }
                         tab.updateLastMessageAndAmount(originalMessage, tab.getLastAmount() + 1);
@@ -310,7 +310,7 @@ public class ChatOverlay extends GuiNewChat {
             tab.addMessage(noProcessing ? new ChatLine(updateCounter, itextcomponent, chatLineId) : new GroupedChatLine(updateCounter, itextcomponent, chatLineId, thisGroupId));
         }
 
-        while (tab.getCurrentMessages().size() > 100) {
+        while (tab.getCurrentMessages().size() > ChatConfig.INSTANCE.chatHistorySize) {
             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
         }
     }

@@ -45,6 +45,10 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Show Held Item Chat Message", description = "Should the details of your compass and soul points be shown in chat whilst you are holding them?")
     public boolean heldItemChat = true;
 
+    @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?")
+    @Setting.Limitations.IntLimit(min = 10, max = 2000)
+    public int chatHistorySize = 100;
+
     @Setting
     public boolean registeredDefaultTabs = false;
 
