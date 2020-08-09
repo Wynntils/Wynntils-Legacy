@@ -31,7 +31,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -84,8 +83,8 @@ public class QuestsPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
             if ( posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) {
                 hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
-                
-                if (!hoveredText.isEmpty()) { 
+
+                if (!hoveredText.isEmpty()) {
                     hoveredText.set(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
                     hoveredText.add(" ");
                     hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
@@ -280,7 +279,7 @@ public class QuestsPage extends QuestBookPage {
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
     }
-    
+
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(mc);
@@ -292,7 +291,7 @@ public class QuestsPage extends QuestBookPage {
             if (mouseButton == 0) { // left click
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
-                
+
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
@@ -305,24 +304,24 @@ public class QuestsPage extends QuestBookPage {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.gamepedia.com/";
-                
+
                 if (overQuest.isMiniQuest()) {
                     String type = overQuest.getFriendlyName().split(" ")[0];
-                    
+
                     String wikiName = "Quests#" + type + "ing_posts"; // Don't encode #
-                    
+
                     Utils.openUrl(baseUrl + wikiName);
                 } else {
                     String name = overQuest.getName();
-                    
-                    String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + URLEncoder.encode(name + " (Quest)", "UTF-8");
+
+                    String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + Utils.encodeUrl(name + " (Quest)");
                     Request req = new Request(url, "WikiQuestQuery");
-                    
+
                     RequestHandler handler = new RequestHandler();
-                    
+
                     handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
                         boolean needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
-                        
+
                         String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_').replace("?", "%3F");
 
                         Utils.openUrl(baseUrl + wikiName);
