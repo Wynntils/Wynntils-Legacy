@@ -322,20 +322,20 @@ public class ItemIdentificationOverlay implements Listener {
     private static void addItemGuesses(ItemStack stack) {
         String name = StringUtils.normalizeBadString(stack.getDisplayName());
         String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
-        String level = null;
+        String levelRange = null;
 
         List<String> lore = ItemUtils.getLore(stack);
 
         for (String aLore : lore) {
             if (aLore.contains("Lv. Range")) {
-                level = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
+                levelRange = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
                 break;
             }
         }
 
-        if (itemType == null || level == null) return;
+        if (itemType == null || levelRange == null) return;
 
-        ItemGuessProfile igp = WebManager.getItemGuesses().get(level);
+        ItemGuessProfile igp = WebManager.getItemGuesses().get(levelRange);
         if (igp == null) return;
 
         HashMap<String, String> rarityMap = igp.getItems().get(itemType);
@@ -343,30 +343,62 @@ public class ItemIdentificationOverlay implements Listener {
 
         String items = null;
         String color = null;
+        int baseCost = 0;
+        double costMultiplier = 1.0;
 
         if (name.startsWith(AQUA.toString())) {
             items = rarityMap.get("Legendary");
             color = AQUA.toString();
+            baseCost = 40;
+            costMultiplier = 5.2;
         } else if (name.startsWith(LIGHT_PURPLE.toString())) {
             items = rarityMap.get("Rare");
             color = LIGHT_PURPLE.toString();
+            baseCost = 15;
+            costMultiplier = 1.2;
         } else if (name.startsWith(YELLOW.toString())) {
             items = rarityMap.get("Unique");
             color = YELLOW.toString();
+            baseCost = 5;
+            costMultiplier = 0.5;
         } else if (name.startsWith(DARK_PURPLE.toString())) {
             items = rarityMap.get("Mythic");
             color = DARK_PURPLE.toString();
+            baseCost = 90;
+            costMultiplier = 18.0;
         } else if (name.startsWith(RED.toString())) {
             items = rarityMap.get("Fabled");
             color = RED.toString();
+            baseCost = 60;
+            costMultiplier = 12.0;
         } else if (name.startsWith(GREEN.toString())) {
             items = rarityMap.get("Set");
             color = GREEN.toString();
+            baseCost = 12;
+            costMultiplier = 1.6;
         }
 
         if (items == null) return;
+        String itemNamesAndCosts = "";
+        String[] possiblitiesNames = items.split(", ");
+        for (String possibleItem : possiblitiesNames) {
+            ItemProfile itemProfile = WebManager.getItems().get(possibleItem);
+            String itemDescription;
+            if (itemProfile != null) {
+                int level = itemProfile.getRequirements().getLevel();
+                int itemCost = baseCost + (int) Math.ceil(level*costMultiplier);
+                itemDescription = color + possibleItem + GRAY + " [" + GREEN + itemCost + " "
+                        + EmeraldSymbols.E_STRING + GRAY + "]";
+            } else {
+                itemDescription = color + possibleItem;
+            }
+            if (!itemNamesAndCosts.isEmpty()) {
+                itemNamesAndCosts += GRAY + ", ";
+            }
+            itemNamesAndCosts += itemDescription;
+        }
 
-        ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + color + items));
+        ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + itemNamesAndCosts));
     }
 
     private static NBTTagCompound generateData(ItemStack stack) {
