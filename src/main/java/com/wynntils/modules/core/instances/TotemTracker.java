@@ -172,6 +172,10 @@ public class TotemTracker {
                 totemState = TotemState.PREPARING;
                 totemPreparedTimestamp = System.currentTimeMillis();
             }
+            if (totemState == TotemState.ACTIVE) {
+                // Uproot; update our location
+                updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
+            }
         }
     }
 
