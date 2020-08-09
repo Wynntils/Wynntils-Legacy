@@ -155,6 +155,8 @@ public class TotemTracker {
             totemCastTimestamp = System.currentTimeMillis();
             heldWeaponSlot =  Minecraft.getMinecraft().player.inventory.currentItem;
             checkTotemSummoned();
+        } else if (e.getSpell().equals("Uproot") || e.getSpell().equals("Gale Funnel")) {
+            totemCastTimestamp = System.currentTimeMillis();
         }
     }
 
@@ -162,11 +164,19 @@ public class TotemTracker {
         if (!Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
-
-        if (thisId == totemId && (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING)) {
-            // Now the totem has gotten it's final coordinates
-            updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
-            totemState = TotemState.PREPARING;
+        if (thisId == totemId) {
+            if (totemState == TotemState.SUMMONED || totemState == TotemState.LANDING) {
+                // Now the totem has gotten it's final coordinates
+                updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
+                totemState = TotemState.PREPARING;
+            } else if (totemState == TotemState.ACTIVE) {
+                potentialId = e.getPacket().getEntityId();
+                potentialX = e.getPacket().getX();
+                potentialY = e.getPacket().getY();
+                potentialZ = e.getPacket().getZ();
+                totemCreatedTimestamp = System.currentTimeMillis();
+                checkTotemSummoned();
+            }
         }
     }
 
@@ -194,7 +204,7 @@ public class TotemTracker {
                 } else if (time != totemTime) {
                     if (time > totemTime) {
                         // Timer restarted using uproot
-                        postEvent(new SpellEvent.TotemRenewed(totemTime, new Location(totemX, totemY, totemZ)));
+                        postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
                     }
                     totemTime = time;
                 }

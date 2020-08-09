@@ -782,6 +782,7 @@ public class OverlayEvents implements Listener {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
         ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
+        ConsumableTimerOverlay.removeBasicTimer(totemName);
         totemName = "Totem " + e.getLocation();
         ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
     }
