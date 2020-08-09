@@ -304,6 +304,57 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             }
         }
 
+        public static class MouseClickMove extends ChestOverlap {
+
+            int mouseX;
+            int mouseY;
+            int clickedMouseButton;
+            long timeSinceLastClick;
+
+            public MouseClickMove(ChestReplacer guiChest, int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)  {
+                super(guiChest);
+
+                this.gui = guiChest;
+                this.mouseX = mouseX;
+                this.mouseY = mouseY;
+                this.clickedMouseButton = clickedMouseButton;
+                this.timeSinceLastClick = timeSinceLastClick;
+            }
+
+            public boolean isCancelable() {
+                return true;
+            }
+
+            public int getClickedMouseButton() {
+                return clickedMouseButton;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public long getTimeSinceLastClick() {
+                return timeSinceLastClick;
+            }
+
+        }
+
+        public static class HandleMouseInput extends ChestOverlap {
+
+            public HandleMouseInput(ChestReplacer guiChest)  {
+                super(guiChest);
+            }
+
+            public boolean isCancelable() {
+                return true;
+            }
+
+        }
+
         public static class DrawGuiContainerForegroundLayer extends ChestOverlap {
 
             int mouseX, mouseY;

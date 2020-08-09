@@ -50,4 +50,19 @@ public class OverlayEvents implements Listener {
         e.setCanceled(true);
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void replaceMouseClickMove(GuiOverlapEvent.ChestOverlap.MouseClickMove e) {
+        if (fakeCharacterSelector == null) return;
+
+        fakeCharacterSelector.mouseClickMove(e.getMouseX(), e.getMouseY(), e.getClickedMouseButton(), e.getTimeSinceLastClick());
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void replaceMouseInput(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) {
+        if (fakeCharacterSelector == null) return;
+
+        fakeCharacterSelector.handleMouseInput();
+    }
+
 }

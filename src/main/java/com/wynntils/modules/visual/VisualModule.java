@@ -20,7 +20,7 @@ public class VisualModule extends Module {
 
     private static VisualModule module;
 
-    private SplashProfile classSelectionSplash;
+    private SplashProfile charSelectionSplash;
 
     @Override
     public void onEnable() {
@@ -39,16 +39,16 @@ public class VisualModule extends Module {
         registerEvents(new ClientEvents());
         registerEvents(new OverlayEvents());
 
-        classSelectionSplash = new SplashProfile(WebManager.getApiUrls().get("ClassSelectionSplash"));
-        classSelectionSplash.downloadSplash();
+        charSelectionSplash = new SplashProfile(WebManager.getApiUrls().get("ClassSelectionSplash"));
+        charSelectionSplash.downloadSplash();
     }
 
     public static VisualModule getModule() {
         return module;
     }
 
-    public SplashProfile getClassSelectionSplash() {
-        return classSelectionSplash;
+    public SplashProfile getCharSelectionSplash() {
+        return charSelectionSplash;
     }
 
 }
