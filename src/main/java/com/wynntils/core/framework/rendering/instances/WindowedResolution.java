@@ -31,8 +31,6 @@ public class WindowedResolution {
 
         // remove the minecraft scale factor
         scaleFactor /= minecraftScale / 2f;
-
-        System.out.println(scaleFactor );
     }
 
     public float getScaleFactor() {

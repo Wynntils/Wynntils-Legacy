@@ -4,10 +4,12 @@
 
 package com.wynntils.modules.visual.overlays.ui;
 
+import com.wynntils.core.framework.enums.CharacterGameMode;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.visual.VisualModule;
@@ -18,6 +20,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
@@ -150,7 +153,7 @@ public class CharacterSelectorUI extends GuiScreen {
             // selected badge
             if (selectedCharacter != -1 && availableCharacters.size() > selectedCharacter) {
                 CharacterProfile selected = availableCharacters.get(selectedCharacter);
-                drawSelectedBadge(selected.getSoulPoints(), selected.getFinishedQuests(), selected.getXpPercentage());
+                drawSelectedBadge(selected.getSoulPoints(), selected.getFinishedQuests(), selected.getXpPercentage(), selected.getEnabledGameModes());
             }
 
             // play button
@@ -226,7 +229,7 @@ public class CharacterSelectorUI extends GuiScreen {
     public void handleMouseInput() {
         int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        float jump = 32 / (availableCharacters.size() - 7) * 32;
+        float jump = availableCharacters.size() <= 7 ? 0 : 32 / (availableCharacters.size() - 7) * 32;
 
         if (mDWheel <= -1 && (Minecraft.getSystemTime() - scrollDelay >= 15)) {
             if (scrollPosition >= 1f || availableCharacters.size() <= 7) return;
@@ -331,7 +334,7 @@ public class CharacterSelectorUI extends GuiScreen {
         }
     }
 
-    private void drawSelectedBadge(int soulPoints, int quests, float xpPercentage) {
+    private void drawSelectedBadge(int soulPoints, int quests, float xpPercentage, List<CharacterGameMode> gameModes) {
         int posX = 196; int posY = 25;
 
         // base
@@ -363,7 +366,24 @@ public class CharacterSelectorUI extends GuiScreen {
                 hoveredButton = 56;
             }
 
+            if (!gameModes.isEmpty()) {
+                for (int i = 0; i < gameModes.size(); i++) {
+                    CharacterGameMode gm = gameModes.get(i);
+
+                    int gY = posY + (10 * i);
+
+                    if (mouseX >= posX + 132 - 5 && mouseX <= posX + 132 + 5 && mouseY >= gY && mouseY <= gY + 7) {
+                        hoveredText = Arrays.asList(gm.getColor() + "" + gm.getSymbol() + " "
+                                + StringUtils.capitalizeFirst(gm.toString()) + ": "
+                                + TextFormatting.GRAY + gm.getDescription());
+                    }
+
+                    renderer.drawString(gm.getColor() + "" + gm.getSymbol(), posX + 132, gY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                }
+            }
+
             renderer.drawRect(Textures.UIs.character_selection, posX + 86, posY + 7, posX + 87 + 8, posY + 21, 119, 102, 128, 116);
+            GlStateManager.color(1f, 1f, 1f);
         }
 
         // xp percentage

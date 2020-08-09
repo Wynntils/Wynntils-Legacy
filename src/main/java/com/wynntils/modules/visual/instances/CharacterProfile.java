@@ -4,12 +4,20 @@
 
 package com.wynntils.modules.visual.instances;
 
+import com.wynntils.core.framework.enums.CharacterGameMode;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class CharacterProfile {
+
+    private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("([☠❂✿⚔]*)? ?(.*)");
 
     String className = "";
     int level = 0;
@@ -17,6 +25,8 @@ public class CharacterProfile {
     int soulPoints = 0;
     int finishedQuests = 0;
     String deletion = "";
+
+    List<CharacterGameMode> enabledGameModes = new ArrayList<>();
 
     ItemStack stack;
     int slot;
@@ -39,7 +49,24 @@ public class CharacterProfile {
             if (split.length < 2) continue;
 
             if (split[0].contains("class")) {
-                className = StringUtils.capitalizeFirst(split[1]);
+                String input = split[1];
+
+                Matcher m = CLASS_NAME_PATTERN.matcher(input);
+                if (m.matches()) {
+                    if (m.group(1) != null) { // gamemmode detection
+                        String gameModes = m.group(1);
+
+                        for (char c : gameModes.toCharArray()) {
+                            CharacterGameMode gameMode = CharacterGameMode.fromSymbol(c);
+                            if (gameMode == null) continue;
+
+                            enabledGameModes.add(gameMode);
+                        }
+                    }
+
+                    className = StringUtils.capitalizeFirst(m.group(2));
+                }
+
             } else if (split[0].contains("level")) {
                 level = Integer.valueOf(split[1]);
             } else if (split[0].contains("xp")) {
@@ -82,6 +109,10 @@ public class CharacterProfile {
 
     public int getSoulPoints() {
         return soulPoints;
+    }
+
+    public List<CharacterGameMode> getEnabledGameModes() {
+        return enabledGameModes;
     }
 
     public ItemStack getStack() {
