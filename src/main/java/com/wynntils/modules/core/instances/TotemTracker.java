@@ -34,7 +34,7 @@ public class TotemTracker {
     private static final Pattern MOB_TOTEM_NAME = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
     private static final Pattern MOB_TOTEM_TIMER = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
 
-    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVATING, ACTIVE}
+    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVE}
     private TotemState totemState = TotemState.NONE;
 
     private int totemId = -1;
@@ -43,6 +43,7 @@ public class TotemTracker {
 
     private long totemCastTimestamp = 0;
     private long totemCreatedTimestamp = Long.MAX_VALUE;
+    private long totemPreparedTimestamp = 0;
 
     private int potentialId = -1;
     private double potentialX, potentialY, potentialZ;
@@ -128,7 +129,7 @@ public class TotemTracker {
             bufferedY = e.getPacket().getY();
             bufferedZ = e.getPacket().getZ();
 
-            if (e.getPacket().getEntityID() == totemId) {
+            if (e.getPacket().getEntityID() == totemId && totemState == TotemState.SUMMONED) {
                 // Totems respawn with the same entityID when landing.
                 // Update with more precise coordinates
                 updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
@@ -169,13 +170,7 @@ public class TotemTracker {
                 // Now the totem has gotten it's final coordinates
                 updateTotemPosition(e.getPacket().getX(), e.getPacket().getY(), e.getPacket().getZ());
                 totemState = TotemState.PREPARING;
-            } else if (totemState == TotemState.ACTIVE) {
-                potentialId = e.getPacket().getEntityId();
-                potentialX = e.getPacket().getX();
-                potentialY = e.getPacket().getY();
-                potentialZ = e.getPacket().getZ();
-                totemCreatedTimestamp = System.currentTimeMillis();
-                checkTotemSummoned();
+                totemPreparedTimestamp = System.currentTimeMillis();
             }
         }
     }
@@ -189,27 +184,41 @@ public class TotemTracker {
         Entity entity = getBufferedEntity(e.getPacket().getEntityId());
         if (!(entity instanceof EntityArmorStand)) return;
 
-        Matcher m = SHAMAN_TOTEM_TIMER.matcher(name);
-        if (m.find()) {
-            // We got a armor stand with a timer nametag
-            double distanceXZ = Math.abs(entity.posX  - totemX) +  Math.abs(entity.posZ  - totemZ);
-            if (distanceXZ < 3.0 && entity.posY <= (totemY + 3.0) && entity.posY >= ((totemY + 2.0))) {
-                // ... and it's close to our totem; regard this as our timer
-                int time = Integer.parseInt(m.group(1));
-
-                if (totemTime == -1) {
-                    totemTime = time;
-                    totemState = TotemState.ACTIVE;
-                    postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
-                } else if (time != totemTime) {
-                    if (time > totemTime) {
-                        // Timer restarted using uproot
-                        postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
+        if (totemState == TotemState.PREPARING || totemState == TotemState.ACTIVE) {
+            Matcher m = SHAMAN_TOTEM_TIMER.matcher(name);
+            if (m.find()) {
+                // We got a armor stand with a timer nametag
+                if (totemState == TotemState.PREPARING ) {
+                    // Widen search range until found
+                    double acceptableDistance = 3.0 + (System.currentTimeMillis() - totemPreparedTimestamp)/1000;
+                    double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
+                    if (distanceXZ < acceptableDistance && entity.posY <= (totemY + 2.0 + (acceptableDistance/3.0)) && entity.posY >= ((totemY + 2.0))) {
+                        // Update totem location if it was too far away
+                        totemX = entity.posX;
+                        totemY = entity.posY - 2.0;
+                        totemZ = entity.posZ;
                     }
-                    totemTime = time;
                 }
+
+                double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
+                if (distanceXZ < 1.0 && entity.posY <= (totemY + 3.0) && entity.posY >= ((totemY + 2.0))) {
+                    // ... and it's close to our totem; regard this as our timer
+                    int time = Integer.parseInt(m.group(1));
+
+                    if (totemTime == -1) {
+                        totemTime = time;
+                        totemState = TotemState.ACTIVE;
+                        postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
+                    } else if (time != totemTime) {
+                        if (time > totemTime) {
+                            // Timer restarted using uproot
+                            postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
+                        }
+                        totemTime = time;
+                    }
+                }
+                return;
             }
-            return;
         }
 
         Matcher m2 = MOB_TOTEM_NAME.matcher(name);
