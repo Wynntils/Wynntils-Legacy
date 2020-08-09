@@ -266,11 +266,7 @@ public class Utils {
      */
     public static String encodeItemNameForUrl(ItemStack stack) {
         String name = getRawItemName(stack);
-        try {
-            name = URLEncoder.encode(name, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        name = Utils.encodeUrl(name);
         return name;
     }
 
@@ -308,6 +304,15 @@ public class Utils {
         text.appendSibling(urlComponent);
 
         ModCore.mc().player.sendMessage(text);
+    }
+
+    public static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ignored) {
+            // will not happen since UTF-8 is part of core charsets
+            return null;
+        }
     }
 
     public static void clearClipboard() {

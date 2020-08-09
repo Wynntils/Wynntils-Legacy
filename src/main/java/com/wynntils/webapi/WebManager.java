@@ -38,7 +38,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
@@ -304,7 +303,7 @@ public class WebManager {
     public static GuildProfile getGuildProfile(String guild) throws IOException {
         if (apiUrls == null) return null;
 
-        URLConnection st = new URL(apiUrls.get("GuildInfo") + URLEncoder.encode(guild, "UTF-8")).openConnection();
+        URLConnection st = new URL(apiUrls.get("GuildInfo") + Utils.encodeUrl(guild)).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setRequestProperty("apikey", apiUrls.get("WynnApiKey"));
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);

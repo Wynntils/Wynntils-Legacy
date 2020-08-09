@@ -36,8 +36,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -354,7 +352,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         }
                     break;
                     case 2: //Middle Click
-                        String wikiUrl = "https://wynncraft.gamepedia.com/" + URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
+                        String wikiUrl = "https://wynncraft.gamepedia.com/" + Utils.encodeUrl(name.replace(" ", "_"));
                         Utils.openUrl(wikiUrl);
                         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
@@ -545,10 +543,7 @@ public class DiscoveriesPage extends QuestBookPage {
      */
     private void locateSecretDiscovery(String name, String action) {
         String queryUrl = "https://wynncraft.gamepedia.com/api.php?action=parse&format=json&prop=wikitext&section=0&redirects=true&page=";
-
-        try {
-            queryUrl += URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {}
+        queryUrl += Utils.encodeUrl(name.replace(" ", "_"));
 
         Request query = new Request(queryUrl, "SecretWikiQuery");
         RequestHandler handler = new RequestHandler();
