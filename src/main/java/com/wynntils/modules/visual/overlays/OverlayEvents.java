@@ -4,10 +4,10 @@
 
 package com.wynntils.modules.visual.overlays;
 
-import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.instances.WindowedResolution;
+import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.overlays.ui.CharacterSelectorUI;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -19,7 +19,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initClassMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!Reference.developmentEnvironment) return; // TODO remove
+        if (!VisualConfig.CharacterSelector.INSTANCE.enabled) return; // TODO remove
         if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
         WindowedResolution res = new WindowedResolution(480, 254);

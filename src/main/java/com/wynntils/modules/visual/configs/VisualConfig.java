@@ -118,4 +118,13 @@ public class VisualConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "characterSelector", displayPath = "Visual/Character Selector")
+    public static class CharacterSelector extends SettingsClass {
+        public static CharacterSelector INSTANCE;
+
+        @Setting(displayName = "Custom Character Selector", description = "Should the custom Character Selector be displayed.")
+        public boolean enabled = true;
+
+    }
+
 }
