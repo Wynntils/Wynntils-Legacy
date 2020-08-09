@@ -313,22 +313,16 @@ public class QuestsPage extends QuestBookPage {
                     Utils.openUrl(baseUrl + wikiName);
                 } else {
                     String name = overQuest.getName();
-
-                    String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + Utils.encodeUrl(name + " (Quest)");
+                    String wikiQuestPageNameQuery = "index.php?title=Special:CargoExport&format=json&tables=Quests&fields=Quests._pageTitle&where=Quests.name=";
+                    String url = baseUrl + wikiQuestPageNameQuery + Utils.encodeForCargoQuery(name);
                     Request req = new Request(url, "WikiQuestQuery");
 
                     RequestHandler handler = new RequestHandler();
 
-                    handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
-                        boolean needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
-
-                        String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_').replace("?", "%3F");
-
-                        Utils.openUrl(baseUrl + wikiName);
+                    handler.addAndDispatch(req.handleJsonArray(jsonOutput -> {
+                        String pageTitle = jsonOutput.get(0).getAsJsonObject().get("_pageTitle").getAsString();
+                        Utils.openUrl(baseUrl + Utils.encodeForWikiTitle(pageTitle));
                         return true;
-                    }).onError(code -> {
-                        Utils.openUrl(baseUrl + name);
-                        return false;
                     }), true);
                 }
                 return;

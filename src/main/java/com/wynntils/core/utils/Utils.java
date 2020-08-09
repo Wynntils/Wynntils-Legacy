@@ -315,6 +315,14 @@ public class Utils {
         }
     }
 
+    public static String encodeForWikiTitle(String pageTitle) {
+        return encodeUrl(pageTitle.replace(" ", "_"));
+    }
+
+    public static String encodeForCargoQuery(String name) {
+        return encodeUrl("'" + name.replace("'", "\\'") + "'");
+    }
+
     public static void clearClipboard() {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
             public DataFlavor[] getTransferDataFlavors() { return new DataFlavor[0]; }
