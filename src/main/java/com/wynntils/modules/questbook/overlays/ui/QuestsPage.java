@@ -19,6 +19,7 @@ import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
 import net.minecraft.client.Minecraft;
@@ -313,8 +314,8 @@ public class QuestsPage extends QuestBookPage {
                     Utils.openUrl(baseUrl + wikiName);
                 } else {
                     String name = overQuest.getName();
-                    String wikiQuestPageNameQuery = "index.php?title=Special:CargoExport&format=json&tables=Quests&fields=Quests._pageTitle&where=Quests.name=";
-                    String url = baseUrl + wikiQuestPageNameQuery + Utils.encodeForCargoQuery(name);
+                    String wikiQuestPageNameQuery = WebManager.getApiUrl("WikiQuestQuery");
+                    String url = wikiQuestPageNameQuery + Utils.encodeForCargoQuery(name);
                     Request req = new Request(url, "WikiQuestQuery");
 
                     RequestHandler handler = new RequestHandler();

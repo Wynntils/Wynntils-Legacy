@@ -807,4 +807,10 @@ public class WebManager {
     public static @Nullable WebReader getApiUrls() {
         return apiUrls;
     }
+
+    public static String getApiUrl(String key) {
+        if (apiUrls == null) return null;
+
+        return apiUrls.get(key);
+    }
 }

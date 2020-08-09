@@ -542,7 +542,7 @@ public class DiscoveriesPage extends QuestBookPage {
      * Uses the Wynncraft Wiki API to get the coordinates of a secret discovery from the Template:Infobox/Town
      */
     private void locateSecretDiscovery(String name, String action) {
-        String queryUrl = "https://wynncraft.gamepedia.com/api.php?action=parse&format=json&prop=wikitext&section=0&redirects=true&page=";
+        String queryUrl = WebManager.getApiUrl("WikiDiscoveryQuery");
 
         Request query = new Request(queryUrl + Utils.encodeForWikiTitle(name), "SecretWikiQuery");
         RequestHandler handler = new RequestHandler();
