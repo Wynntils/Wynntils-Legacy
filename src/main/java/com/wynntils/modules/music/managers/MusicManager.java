@@ -41,7 +41,7 @@ public class MusicManager {
     }
 
     public static void checkForUpdates() {
-        if (!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!MusicConfig.INSTANCE.enabled) return;
 
         musicFolder = new File(Reference.MOD_STORAGE_ROOT, "sounds");
         if (!musicFolder.exists() || !musicFolder.isDirectory()) musicFolder.mkdirs();
@@ -61,7 +61,7 @@ public class MusicManager {
     }
 
     public static void playSong(String fullName, boolean instantSwitch) {
-        if (!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!MusicConfig.INSTANCE.enabled) return;
         if (fullName == null) return;
         MusicProfile selected = null;
 
@@ -90,7 +90,10 @@ public class MusicManager {
     }
 
     public static void checkForMusic(String location) {
-        if (!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!MusicConfig.INSTANCE.enabled || !MusicConfig.INSTANCE.replaceJukebox) {
+            player.stop();
+            return;
+        }
 
         if (!isListUpdated) {
             checkForUpdates();

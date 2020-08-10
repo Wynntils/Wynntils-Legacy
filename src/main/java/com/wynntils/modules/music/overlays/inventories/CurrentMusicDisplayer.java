@@ -19,7 +19,7 @@ public class CurrentMusicDisplayer implements Listener {
 
     @SubscribeEvent
     public void onDrawInGameMenu(GuiOverlapEvent.IngameMenuOverlap.DrawScreen e) {
-        if (!Reference.onWorld || !MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
 
         ScreenRenderer r = new ScreenRenderer();
 
@@ -48,7 +48,7 @@ public class CurrentMusicDisplayer implements Listener {
 
     @SubscribeEvent
     public void onClickInGameGui(GuiOverlapEvent.IngameMenuOverlap.MouseClicked e) {
-        if (!Reference.onWorld || !MusicConfig.INSTANCE.allowMusicModule) return;
+        if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
 
         int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();
 

@@ -16,8 +16,11 @@ public class MusicConfig extends SettingsClass {
 
     public static MusicConfig INSTANCE;
 
-    @Setting(displayName = "Music System", description = "Should Wynncraft's music system be replaced by Wynntils'?", order = 0)
-    public boolean allowMusicModule = false;
+    @Setting(displayName = "Music System", description = "Should Wynntils Music Player be enabled", order = 0)
+    public boolean enabled = true;
+
+    @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should the Wynncraft Jukebox be replaced with an offline version\nThis is a useful solution if you're lagged but\nit's not precise as Wynncraft (86.7% precision).\n\nType /toggle music to avoid duplicates.", order = 0)
+    public boolean replaceJukebox = false;
 
     @Setting(displayName = "Base Volume", description = "How loud should all soundtracks be?")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
@@ -29,8 +32,8 @@ public class MusicConfig extends SettingsClass {
 
     @Override
     public void onSettingChanged(String name) {
-        if (!allowMusicModule && Reference.onWorld) MusicManager.getPlayer().stop();
-        if (allowMusicModule && Reference.onWorld) MusicManager.checkForMusic(PlayerInfo.getPlayerInfo().getLocation());
+        if (!enabled && Reference.onWorld) MusicManager.getPlayer().stop();
+        if (replaceJukebox && Reference.onWorld) MusicManager.checkForMusic(PlayerInfo.getPlayerInfo().getLocation());
     }
 
 }
