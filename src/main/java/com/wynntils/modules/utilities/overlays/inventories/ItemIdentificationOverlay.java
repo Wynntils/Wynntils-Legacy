@@ -349,8 +349,8 @@ public class ItemIdentificationOverlay implements Listener {
         if (name.startsWith(AQUA.toString())) {
             items = rarityMap.get("Legendary");
             color = AQUA.toString();
-            baseCost = 40;
-            costMultiplier = 5.2;
+            baseCost = 35;
+            costMultiplier = 4.8;
         } else if (name.startsWith(LIGHT_PURPLE.toString())) {
             items = rarityMap.get("Rare");
             color = LIGHT_PURPLE.toString();
