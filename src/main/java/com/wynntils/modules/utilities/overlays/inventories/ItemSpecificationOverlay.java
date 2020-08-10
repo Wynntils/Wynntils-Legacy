@@ -15,6 +15,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
@@ -28,12 +29,11 @@ import java.util.regex.Pattern;
 
 public class ItemSpecificationOverlay implements Listener {
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onChestGui2(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
+    private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
         if (!UtilitiesConfig.Items.INSTANCE.transportationSpecification && !UtilitiesConfig.Items.INSTANCE.keySpecification) return;
 
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+        for (Slot s : gui.inventorySlots.inventorySlots) {
             ItemStack stack = s.getStack();
             if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
 
@@ -98,13 +98,32 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (destinationName != null) {
-                ScreenRenderer.beginGL(e.getGui().getGuiLeft(), e.getGui().getGuiTop());
+                ScreenRenderer.beginGL(gui.getGuiLeft(), gui.getGuiTop());
                 GlStateManager.translate(0, 0, 251);
                 ScreenRenderer r = new ScreenRenderer();
                 RenderHelper.disableStandardItemLighting();
-                r.drawString(destinationName.substring(0, 1), s.xPos + 2, s.yPos, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NORMAL);
+                // Make a modifiable copy
+                color = new CustomColor(color);
+                color.setA(0.8f);
+                r.drawString(destinationName.substring(0, 1), s.xPos + 2, s.yPos + 1, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }
     }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
+        renderOverlay(e.getGui());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.HoveredToolTip.Pre e) {
+        renderOverlay(e.getGui());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onHorseGui(GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre e) {
+        renderOverlay(e.getGui());
+    }
+
 }
