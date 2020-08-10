@@ -19,7 +19,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initClassMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!VisualConfig.CharacterSelector.INSTANCE.enabled) return; // TODO remove
+        if (!VisualConfig.CharacterSelector.INSTANCE.enabled) return;
         if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
         WindowedResolution res = new WindowedResolution(480, 254);

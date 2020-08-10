@@ -63,7 +63,9 @@ public class CharacterSelectorUI extends GuiScreen {
     float scrollPosition = 0f;
     long scrollDelay = Minecraft.getSystemTime();
 
+    // scaled positions
     int mouseX, mouseY;
+    int scaledWidth, scaledHeight;
 
     /**
      * 0~50 = characters id
@@ -147,13 +149,16 @@ public class CharacterSelectorUI extends GuiScreen {
                 translate(118 * animationPercentage, 0, 0); // animation reset
             }
 
+            // selectorOffset + ((width - selectorOffset - playButtonOffset) / 2)
+            int middleX = 118 + ((scaledWidth - 118 - 94) /2);
+
             // player
-            drawPlayer();
+            drawPlayer(middleX);
 
             // selected badge
             if (selectedCharacter != -1 && availableCharacters.size() > selectedCharacter) {
                 CharacterProfile selected = availableCharacters.get(selectedCharacter);
-                drawSelectedBadge(selected.getSoulPoints(), selected.getFinishedQuests(), selected.getXpPercentage(), selected.getEnabledGameModes());
+                drawSelectedBadge(middleX, selected.getSoulPoints(), selected.getFinishedQuests(), selected.getXpPercentage(), selected.getEnabledGameModes());
             }
 
             // play button
@@ -169,6 +174,7 @@ public class CharacterSelectorUI extends GuiScreen {
                     double divisionScale = 1 / scale;
 
                     scale(divisionScale, divisionScale, divisionScale);
+
                     drawHoveringText(hoveredText, mouseX, mouseY);
                 }
             }
@@ -334,8 +340,8 @@ public class CharacterSelectorUI extends GuiScreen {
         }
     }
 
-    private void drawSelectedBadge(int soulPoints, int quests, float xpPercentage, List<CharacterGameMode> gameModes) {
-        int posX = 196; int posY = 25;
+    private void drawSelectedBadge(int middleX, int soulPoints, int quests, float xpPercentage, List<CharacterGameMode> gameModes) {
+        int posX = middleX - 61; int posY = 25;
 
         // base
         renderer.drawRect(Textures.UIs.character_selection, posX, posY, posX + 123, posY + 38, 118, 0, 241, 38);
@@ -390,14 +396,13 @@ public class CharacterSelectorUI extends GuiScreen {
         drawExperienceBar(posX + 10, posY + 26, xpPercentage);
     }
 
-    private void drawPlayer() {
+    private void drawPlayer(int middleX) {
         {
             enableAlpha();
             enableBlend();
         }
 
-        renderer.drawRect(Textures.UIs.character_selection, 220, 198, 220 + 76, 198 + 22, 118, 131, 194, 153);
-        GuiInventory.drawEntityOnScreen(258, 210, 60, 0, 0, Minecraft.getMinecraft().player);
+        GuiInventory.drawEntityOnScreen(middleX, 210, 60, 0, 0, Minecraft.getMinecraft().player);
     }
 
     private void drawCharacterBadge(int posX, int posY, ItemStack item, String name, String level, String deletion, float xp, boolean selected, int id) {
@@ -450,7 +455,7 @@ public class CharacterSelectorUI extends GuiScreen {
     }
 
     private void drawPlayButton(boolean selected) {
-        if (mouseX >= 385 && mouseY >= 205 && mouseX <= 385 + 79 && mouseY <= 205 + 39) { // mouse over
+        if (mouseX >= scaledWidth - 79 - 15 && mouseY >= 205 && mouseX <= scaledWidth - 15 && mouseY <= 205 + 39) { // mouse over
             hoveredButton = 57;
 
             if (selected) {
@@ -466,7 +471,7 @@ public class CharacterSelectorUI extends GuiScreen {
             color(0.8f, 0.8f, 0.8f, 1f);
         }
 
-        renderer.drawRect(Textures.UIs.character_selection, 385, 205, 385 + 79, 205 + 39, 118,
+        renderer.drawRect(Textures.UIs.character_selection, scaledWidth - 79 - 15, 205, scaledWidth - 15, 205 + 39, 118,
                 selected ? 153 : 191, 197, selected ? 191 : 229);
 
         color(1f, 1f, 1f, 1f);
@@ -483,6 +488,7 @@ public class CharacterSelectorUI extends GuiScreen {
     }
 
     private void drawExperienceBar(int posX, int posY, float progress) {
+        if (progress > 1f) progress = 1f;
 
         renderer.drawRect(Textures.UIs.character_selection, posX, posY, posX + 100, posY + 6, 118, 119, 218, 125);
         renderer.drawRect(Textures.UIs.character_selection, posX, posY, posX + (int) (100 * progress), posY + 6, 118, 125,
@@ -512,6 +518,14 @@ public class CharacterSelectorUI extends GuiScreen {
             disableBlend();
             color(1f, 1f, 1f, 1f);
         }
+    }
+
+    @Override
+    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+        scaledWidth = (int)(width / scale);
+        scaledHeight = (int)(height / scale);
+
+        super.setWorldAndResolution(mc, width, height);
     }
 
 }
