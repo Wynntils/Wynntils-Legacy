@@ -198,7 +198,7 @@ public class ItemProfile {
                     statusLore.put(idName, getIDLore(id, idName));
                 }
 
-                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
+                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.Identifications.INSTANCE.addSpacing));
                 itemLore.add(" ");
             }
 

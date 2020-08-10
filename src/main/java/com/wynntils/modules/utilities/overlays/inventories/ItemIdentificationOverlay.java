@@ -72,14 +72,14 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static void replaceLore(ItemStack stack)  {
-        if (!stack.hasDisplayName() || !stack.hasTagCompound()) return;
+        if (!UtilitiesConfig.Identifications.INSTANCE.enabled || !stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;
 
         String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
 
         // Check if unidentified item.
-        if (itemName.contains("Unidentified")) {
+        if (itemName.contains("Unidentified") && UtilitiesConfig.Identifications.INSTANCE.showItemGuesses) {
             // Add possible identifications
             nbt.setBoolean("wynntilsIgnore", true);
             addItemGuesses(stack);
@@ -150,7 +150,7 @@ public class ItemIdentificationOverlay implements Listener {
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
                             + currentValue + id.getType().getInGame();
 
-                if (UtilitiesConfig.INSTANCE.addItemIdentificationStars && ids.hasKey(idName + "*")) {
+                if (UtilitiesConfig.Identifications.INSTANCE.addStars && ids.hasKey(idName + "*")) {
                     lore += DARK_GREEN + "***".substring(0, ids.getInteger(idName + "*"));
                 }
                 lore += " " + GRAY + longName;
@@ -228,7 +228,7 @@ public class ItemIdentificationOverlay implements Listener {
         // Add id lores
         if (idLore.size() > 0) {
             newLore.addAll(IdentificationOrderer.INSTANCE.order(idLore,
-                    UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
+                    UtilitiesConfig.Identifications.INSTANCE.addSpacing));
 
             newLore.add(" ");
         }
@@ -256,7 +256,7 @@ public class ItemIdentificationOverlay implements Listener {
                 bonusOrder.put(idName, ids.getString(idName));
             }
 
-            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.INSTANCE.addSetBonusSpacing));
+            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.Identifications.INSTANCE.addSetBonusSpacing));
             newLore.add(" ");
         }
 
@@ -264,7 +264,7 @@ public class ItemIdentificationOverlay implements Listener {
         String quality = item.getTier().asLore();
 
         // adds reroll amount if the item is not identified
-        if (!item.isIdentified()) {
+        if (UtilitiesConfig.Identifications.INSTANCE.showRerollPrice && !item.isIdentified()) {
             int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
             if (rollAmount != 0) quality += " [" + rollAmount + "]";
 
@@ -384,7 +384,7 @@ public class ItemIdentificationOverlay implements Listener {
         for (String possibleItem : possiblitiesNames) {
             ItemProfile itemProfile = WebManager.getItems().get(possibleItem);
             String itemDescription;
-            if (itemProfile != null) {
+            if (UtilitiesConfig.Identifications.INSTANCE.showGuessesPrice && itemProfile != null) {
                 int level = itemProfile.getRequirements().getLevel();
                 int itemCost = baseCost + (int) Math.ceil(level*costMultiplier);
                 itemDescription = color + possibleItem + GRAY + " [" + GREEN + itemCost + " "

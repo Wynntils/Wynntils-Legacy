@@ -68,18 +68,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
     public boolean openChatBankSearch = true;
 
-    @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identification be shown?")
-    public boolean addItemIdentificationStars = false;
-
-    @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
-    public boolean addItemIdentificationSpacing = true;
-
-    @Setting(displayName = "Categorize Set Bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
-    public boolean addSetBonusSpacing = true;
-
-    @Setting(displayName = "Indicate Newly Added Items", description = "Should the mod append a \"NEW\" tag to the name of items that have recently been added to the game?")
-    public boolean showNewItems = false;
-
     @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
     public boolean changeWindowTitle = true;
 
@@ -103,6 +91,33 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting
     public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
+
+    @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
+    public static class Identifications extends SettingsClass {
+        public static Identifications INSTANCE;
+
+        @Setting(displayName = "Enable Advanced Identifications", description = "Should your items be advanced identified?", order = 0)
+        public boolean enabled = true;
+
+        @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identification be shown?")
+        public boolean addStars = false;
+
+        @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
+        public boolean addSpacing = true;
+
+        @Setting(displayName = "Categorize Set Bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
+        public boolean addSetBonusSpacing = true;
+
+        @Setting(displayName = "Show Item Reroll Price", description = "Should the reroll price be displayed in your item?")
+        public boolean showRerollPrice = true;
+
+        @Setting(displayName = "Show Unidentified Item Guesses", description = "Should guesses for your unidentified items be displayed?")
+        public boolean showItemGuesses = true;
+
+        @Setting(displayName = "Show Guesses Identification Price", description = "Should the price for identification of unidentified items guesses be displayed?\nRequires your inventory to be reloaded to update\nto do that open the bank once.")
+        public boolean showGuessesPrice = false;
+
+    }
 
     @SettingsInfo(name = "afk", displayPath = "Utilities/AFK Protection")
     public static class AfkProtection extends SettingsClass {
