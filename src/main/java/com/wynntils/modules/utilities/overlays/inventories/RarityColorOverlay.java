@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -24,7 +25,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -37,6 +37,7 @@ import static net.minecraft.client.renderer.GlStateManager.color;
 import static net.minecraft.client.renderer.GlStateManager.glTexEnvi;
 import static net.minecraft.util.math.MathHelper.cos;
 import static net.minecraft.util.math.MathHelper.sin;
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
 
 public class RarityColorOverlay implements Listener {
 
@@ -123,7 +124,7 @@ public class RarityColorOverlay implements Listener {
     private static void drawItemSlot(GuiContainer guiContainer, boolean isChest, Slot s) {
         ItemStack is = s.getStack();
         String lore = ItemUtils.getStringLore(is);
-        String name = is.getDisplayName();
+        String name = StringUtils.normalizeBadString(is.getDisplayName());
 
         CustomColor colour = getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse());
         int level = getLevel(lore);
@@ -144,7 +145,7 @@ public class RarityColorOverlay implements Listener {
     private static CustomColor getHighlightColor(Slot s, ItemStack is, String lore, String name, boolean isChest, Slot slotUnderMouse) {
         if (is.isEmpty()) {
             return null;
-        } else if (!isChest && (lore.contains("Reward") || StringUtils.containsIgnoreCase(lore, "rewards"))) {
+        } else if (!isChest && (lore.contains("Reward") || containsIgnoreCase(lore, "rewards"))) {
             return null;
         } else if (isChest && UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
             return new CustomColor(0.078f, 0.35f, 0.8f);
@@ -269,15 +270,16 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static int getPowderTier(ItemStack is) {
-        if (is.getDisplayName().endsWith("III")) {
+        String name = StringUtils.normalizeBadString(is.getDisplayName());
+        if (name.endsWith("III")) {
             return 3;
-        } else if (is.getDisplayName().endsWith("IV")) {
+        } else if (name.endsWith("IV")) {
             return 4;
-        } else if (is.getDisplayName().endsWith("VI")) {
+        } else if (name.endsWith("VI")) {
             return 6;
-        } else if (is.getDisplayName().endsWith("V")) {
+        } else if (name.endsWith("V")) {
             return 5;
-        } else if (is.getDisplayName().endsWith("II")) {
+        } else if (name.endsWith("II")) {
             return 2;
         } else {
             return 1;
