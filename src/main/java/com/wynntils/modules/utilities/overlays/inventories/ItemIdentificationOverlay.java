@@ -346,31 +346,31 @@ public class ItemIdentificationOverlay implements Listener {
         int baseCost = 0;
         double costMultiplier = 1.0;
 
-        if (name.startsWith(AQUA.toString())) {
-            items = rarityMap.get("Legendary");
-            color = AQUA.toString();
-            baseCost = 35;
-            costMultiplier = 4.8;
+        if (name.startsWith(YELLOW.toString())) {
+            items = rarityMap.get("Unique");
+            color = YELLOW.toString();
+            baseCost = 5;
+            costMultiplier = 0.5;
         } else if (name.startsWith(LIGHT_PURPLE.toString())) {
             items = rarityMap.get("Rare");
             color = LIGHT_PURPLE.toString();
             baseCost = 15;
             costMultiplier = 1.2;
-        } else if (name.startsWith(YELLOW.toString())) {
-            items = rarityMap.get("Unique");
-            color = YELLOW.toString();
-            baseCost = 5;
-            costMultiplier = 0.5;
-        } else if (name.startsWith(DARK_PURPLE.toString())) {
-            items = rarityMap.get("Mythic");
-            color = DARK_PURPLE.toString();
-            baseCost = 90;
-            costMultiplier = 18.0;
+        } else if (name.startsWith(AQUA.toString())) {
+            items = rarityMap.get("Legendary");
+            color = AQUA.toString();
+            baseCost = 35;
+            costMultiplier = 4.8;
         } else if (name.startsWith(RED.toString())) {
             items = rarityMap.get("Fabled");
             color = RED.toString();
             baseCost = 60;
             costMultiplier = 12.0;
+        } else if (name.startsWith(DARK_PURPLE.toString())) {
+            items = rarityMap.get("Mythic");
+            color = DARK_PURPLE.toString();
+            baseCost = 90;
+            costMultiplier = 18.0;
         } else if (name.startsWith(GREEN.toString())) {
             items = rarityMap.get("Set");
             color = GREEN.toString();
