@@ -70,6 +70,9 @@ public class ManaBarOverlay extends Overlay {
             case Skyrim:
                 drawDefaultBar(-1, 8, 148, 163, textColor);
                 break;
+            case Rune:
+                drawDefaultBar(-1, 8, 164, 179, textColor);
+                break;
         }
     }
 

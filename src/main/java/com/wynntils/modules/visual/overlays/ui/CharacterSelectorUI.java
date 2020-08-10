@@ -150,7 +150,7 @@ public class CharacterSelectorUI extends GuiScreen {
             }
 
             // selectorOffset + ((width - selectorOffset - playButtonOffset) / 2)
-            int middleX = 118 + ((scaledWidth - 118 - 94) /2);
+            int middleX = 118 + ((scaledWidth - 118 - 94) / 2);
 
             // player
             drawPlayer(middleX);

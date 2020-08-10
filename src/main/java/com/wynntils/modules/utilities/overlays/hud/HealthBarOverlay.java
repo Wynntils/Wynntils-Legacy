@@ -69,6 +69,9 @@ public class HealthBarOverlay extends Overlay {
             case Skyrim:
                 drawDefaultBar(-1, 8, 132, 147, textColor);
                 break;
+            case Rune:
+                drawDefaultBar(-1, 8, 148, 163, textColor);
+                break;
         }
     }
 
