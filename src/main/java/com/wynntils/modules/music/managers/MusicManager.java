@@ -21,17 +21,23 @@ import java.util.regex.Pattern;
 
 public class MusicManager {
 
-    private static HashMap<String, MusicProfile> downloadedMusics = new HashMap<>();
-    private static HashMap<String, MusicProfile> availableMusics = new HashMap<>();
+    private static final Pattern TERRITORY_NAME_REGEX = Pattern.compile("\\(([^)]+)\\)");
 
-    private static final Pattern regex = Pattern.compile("\\(([^)]+)\\)");
-    private static MusicPlayer player = new MusicPlayer();
+    private static final HashMap<String, MusicProfile> downloadedMusics = new HashMap<>();
+    private static final HashMap<String, MusicProfile> availableMusics = new HashMap<>();
+
+    private static final MusicPlayer player = new MusicPlayer();
 
     private static boolean isListUpdated = false;
+    private static boolean fastSwitchNext = false;
     private static File musicFolder = null;
 
     public static MusicPlayer getPlayer() {
         return player;
+    }
+
+    public static void setFastSwitchNext() {
+        fastSwitchNext = true;
     }
 
     public static void checkForUpdates() {
@@ -54,6 +60,35 @@ public class MusicManager {
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 
+    public static void playSong(String fullName, boolean instantSwitch) {
+        if (!MusicConfig.INSTANCE.allowMusicModule) return;
+        if (fullName == null) return;
+        MusicProfile selected = null;
+
+        for (MusicProfile mp : availableMusics.values()) {
+            if (!mp.getFormattedName().equalsIgnoreCase(fullName)) continue;
+
+            selected = mp;
+            break;
+        }
+
+        if (selected == null) return;
+
+        if (downloadedMusics.containsKey(selected.getAsHash()) && downloadedMusics.get(selected.getAsHash()).getFile().isPresent()) {
+            player.play(downloadedMusics.get(selected.getAsHash()).getFile().get(), instantSwitch);
+            return;
+        }
+
+        final MusicProfile toDownlaod = selected;
+        downloadedMusics.put(toDownlaod.getAsHash(), toDownlaod);
+        DownloaderManager.queueDownload(selected.getFormattedName(), selected.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
+            if (c) {
+                downloadedMusics.replace(toDownlaod.getAsHash(), new MusicProfile(new File(musicFolder, toDownlaod.getName())));
+                playSong(fullName, instantSwitch);
+            }
+        });
+    }
+
     public static void checkForMusic(String location) {
         if (!MusicConfig.INSTANCE.allowMusicModule) return;
 
@@ -70,7 +105,7 @@ public class MusicManager {
 
         for (MusicProfile mp : availableMusics.values()) {
             if (mp.getName().contains("(") && mp.getName().contains(")")) {
-                Matcher mc = regex.matcher(mp.getName());
+                Matcher mc = TERRITORY_NAME_REGEX.matcher(mp.getName());
                 while (mc.find()) {
                     String value = mc.group(1).replace("(", "").replace(")", "");
                     String toSearch = location.contains(" ") ? location.split(" ")[0] : location;
@@ -92,17 +127,19 @@ public class MusicManager {
         if (selected == null) return;
 
         if (downloadedMusics.containsKey(selected.getAsHash()) && downloadedMusics.get(selected.getAsHash()).getFile().isPresent()) {
-            player.play(downloadedMusics.get(selected.getAsHash()).getFile().get());
-        } else {
-            final MusicProfile toDownlaod = selected;
-            downloadedMusics.put(toDownlaod.getAsHash(), toDownlaod);
-            DownloaderManager.queueDownload(selected.getNameWithoutMP3(), selected.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
-                if (c) {
-                    downloadedMusics.replace(toDownlaod.getAsHash(), new MusicProfile(new File(musicFolder, toDownlaod.getName())));
-                    checkForMusic(location);
-                }
-            });
+            player.play(downloadedMusics.get(selected.getAsHash()).getFile().get(), fastSwitchNext);
+            fastSwitchNext = false;
+            return;
         }
+
+        final MusicProfile toDownlaod = selected;
+        downloadedMusics.put(toDownlaod.getAsHash(), toDownlaod);
+        DownloaderManager.queueDownload(selected.getFormattedName(), selected.getDownloadUrl(), musicFolder, DownloadAction.SAVE, c -> {
+            if (c) {
+                downloadedMusics.replace(toDownlaod.getAsHash(), new MusicProfile(new File(musicFolder, toDownlaod.getName())));
+                checkForMusic(location);
+            }
+        });
     }
 
 }

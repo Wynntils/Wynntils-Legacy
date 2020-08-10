@@ -30,8 +30,9 @@ public class MusicPlayer {
     AdvancedPlayer currentPlayer;
 
     boolean paused = false;
+    boolean fastSwitch = false;
 
-    public void play(File f) {
+    public void play(File f, boolean fastSwitch) {
         if (currentMusic != null && currentMusic.getName().equalsIgnoreCase(f.getName())) return;
 
         // Queue the music change to the game update ticker
@@ -40,8 +41,9 @@ public class MusicPlayer {
                     .replace("%np%", f.getName().replace(".mp3", "")));
         }
 
+        this.fastSwitch = fastSwitch;
         nextMusic = f;
-        setupController();
+        updatePlayer();
     }
 
     public void stop() {
@@ -64,15 +66,14 @@ public class MusicPlayer {
         return currentMusic;
     }
 
-    public void setVolume(float volume) {
+    public void setGain(float gain) {
         if (!active || currentPlayer == null) return;
         if (currentPlayer.getAudioDevice() == null) return;
+        if (!(currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice)) return;
 
-        if (currentPlayer.getAudioDevice() instanceof JavaSoundAudioDevice) {
-            JavaSoundAudioDevice dv = (JavaSoundAudioDevice) currentPlayer.getAudioDevice();
-            dv.setLineGain(volume);
-            currentVolume = volume;
-        }
+        JavaSoundAudioDevice dv = (JavaSoundAudioDevice) currentPlayer.getAudioDevice();
+        dv.setLineGain(gain);
+        currentVolume = gain;
     }
 
     public float getCurrentVolume() {
@@ -91,33 +92,32 @@ public class MusicPlayer {
         if (paused) stop();
     }
 
-    public void setupController() {
+    public void updatePlayer() {
         active = true;
 
         if (nextMusic != null) {
-            if (currentMusic == null) {
+            if (currentMusic == null || currentVolume < -30) {
                 currentMusic = nextMusic;
                 nextMusic = null;
+
+                fastSwitch = false;
+
                 startReproduction();
-            } else {
-                if (currentVolume <= -30) {
-                    currentMusic = nextMusic;
-                    nextMusic = null;
-                    startReproduction();
-                } else {
-                    setVolume(getCurrentVolume() - 0.2f);
-                }
+                return;
             }
-        } else {
-            if (getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                if (getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
-                } else { setVolume(getCurrentVolume() - 0.2f); }
-            } else if (getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                if (getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
-                    setVolume((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
-                } else { setVolume(getCurrentVolume() + 0.2f); }
-            }
+
+            setGain(getCurrentVolume() - (fastSwitch ? 1f : 0.2f));
+            return;
+        }
+
+        if (getCurrentVolume() > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+            if (getCurrentVolume() - 0.2f < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                setGain((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
+            } else { setGain(getCurrentVolume() - 0.2f); }
+        } else if (getCurrentVolume() < (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+            if (getCurrentVolume() + 0.2f > (Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume)) {
+                setGain((Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume));
+            } else { setGain(getCurrentVolume() + 0.2f); }
         }
     }
 
@@ -137,7 +137,7 @@ public class MusicPlayer {
                 currentPlayer = new AdvancedPlayer(bis);
                 currentPlayer.setPlayBackListener(new PlaybackListener() {
                     public void playbackStarted(PlaybackEvent var1) {
-                        setVolume(-30);
+                        setGain(-30);
                     }
                     public void playbackFinished(PlaybackEvent var1) { checkForTheEnd(); }
                 });
@@ -148,7 +148,8 @@ public class MusicPlayer {
                 bis.close();
             } catch (Exception ex) { ex.printStackTrace(); }
         });
-        musicPlayer.setName("Wynntils - Music Reproducer"); musicPlayer.start();
+
+        musicPlayer.setName("Wynntils - Music Player"); musicPlayer.start();
     }
 
 }
