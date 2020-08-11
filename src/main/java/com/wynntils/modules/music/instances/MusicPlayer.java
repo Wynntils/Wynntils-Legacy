@@ -86,8 +86,7 @@ public class MusicPlayer {
     }
 
     public void stop() {
-        clear();
-        kill();
+        STATUS.setStopping(true);
     }
 
     public boolean isPlaying() {
