@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.managers.LootRunManager;
 import net.minecraft.command.CommandBase;
@@ -19,6 +20,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +41,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "lootrun <load/save/delete/rename/record/list/clear/help>";
+        return "lootrun <load/save/delete/rename/record/list/folder/clear/help>";
     }
 
     @Override
@@ -161,9 +163,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     }
                 }
                 ITextComponent messageText = new TextComponentString(message.toString());
-                if (!LootRunManager.STORAGE_FOLDER.exists()) {
-                    LootRunManager.STORAGE_FOLDER.mkdirs();
-                }
                 try {
                     messageText.getStyle()
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
@@ -174,6 +173,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     // Shouldn't throw
                 }
                 sender.sendMessage(messageText);
+                return;
+            }
+            case "folder": {
+                URI uri = LootRunManager.STORAGE_FOLDER.toURI();
+                Utils.openUrl(uri.toString());
                 return;
             }
             case "clear":
@@ -194,6 +198,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "rename <oldname> <newname> " + GRAY + "Rename a lootrun (Will overwrite any lootrun called <newname>)\n" +
                     DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
+                    DARK_GRAY + "/lootrun " + RED + "folder " + GRAY + "Open the folder where lootruns are stored, for import\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +
                     DARK_GRAY + "/lootrun " + RED + "help " + GRAY + "View this help message"
                 ));
@@ -214,11 +219,12 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length > 2) return Collections.emptyList();
                 return getListOfStringsMatchingLastWord(args, LootRunManager.getStoredLootruns());
             case "list":
+            case "folder":
             case "help":
             case "record":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "clear", "help");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help");
         }
     }
 

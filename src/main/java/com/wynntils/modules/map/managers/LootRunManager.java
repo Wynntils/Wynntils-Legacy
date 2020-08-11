@@ -35,6 +35,13 @@ public class LootRunManager {
     private static LootRunPath activePath = null;
     private static LootRunPath recordingPath = null;
 
+    public static void setup() {
+        // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
+        if (!LootRunManager.STORAGE_FOLDER.exists()) {
+            LootRunManager.STORAGE_FOLDER.mkdirs();
+        }
+    }
+
     public static List<String> getStoredLootruns() {
         String[] files = STORAGE_FOLDER.list();
         if (files == null) return Collections.emptyList();
@@ -64,8 +71,6 @@ public class LootRunManager {
     }
 
     public static boolean loadFromFile(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         File file = new File(STORAGE_FOLDER, lootRunName + ".json");
         if (!file.exists()) return false;
 
@@ -83,8 +88,6 @@ public class LootRunManager {
     }
 
     public static boolean saveToFile(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) STORAGE_FOLDER.mkdirs();
-
         try {
             File file = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!file.exists()) file.createNewFile();
@@ -102,8 +105,6 @@ public class LootRunManager {
     }
 
     public static boolean delete(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         try {
             File f = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!f.exists()) return false;
@@ -117,8 +118,6 @@ public class LootRunManager {
     }
 
     public static boolean rename(String oldName, String newName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         try {
             File f = new File(STORAGE_FOLDER, oldName + ".json");
             if (!f.exists()) return false;

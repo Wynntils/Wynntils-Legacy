@@ -15,6 +15,7 @@ import com.wynntils.modules.map.commands.CommandLootRun;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
@@ -37,6 +38,8 @@ public class MapModule extends Module {
         WebReader webApi = WebManager.getApiUrls();
         mainMap = new MapProfile(webApi == null ? null : webApi.get("MainMap"), "main-map");
         mainMap.updateMap();
+
+        LootRunManager.setup();
 
         registerEvents(new ClientEvents());
 
