@@ -5,6 +5,7 @@
 package com.wynntils.modules.music.configs;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
@@ -19,8 +20,11 @@ public class MusicConfig extends SettingsClass {
     @Setting(displayName = "Music System", description = "Should Wynntils Music Player be enabled", order = 0)
     public boolean enabled = true;
 
-    @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should the Wynncraft Jukebox be replaced with an offline version\nThis is a useful solution if you're lagged but\nit's not precise as Wynncraft (86.7% precision).\n\nType /toggle music to avoid duplicates.", order = 0)
+    @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should the Wynncraft Jukebox be replaced with an offline version\nThis is a useful solution if you're lagged but\nit's not precise as Wynncraft (86.7% precision).\n\nType /toggle music to avoid duplicates.", order = 1)
     public boolean replaceJukebox = false;
+
+    @Setting(displayName = "Class Selection Music", description = "Should the Class Selection Music be played", order = 2)
+    public boolean classSelectionMusic = true;
 
     @Setting(displayName = "Base Volume", description = "How loud should all soundtracks be?")
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
@@ -34,6 +38,7 @@ public class MusicConfig extends SettingsClass {
     public void onSettingChanged(String name) {
         if (!enabled && Reference.onWorld) MusicManager.getPlayer().stop();
         if (replaceJukebox && Reference.onWorld) MusicManager.checkForMusic(PlayerInfo.getPlayerInfo().getLocation());
+        if (!replaceJukebox && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) MusicManager.getPlayer().stop();
     }
 
 }

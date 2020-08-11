@@ -61,10 +61,9 @@ public class MusicManager {
     }
 
     public static void playSong(String fullName, boolean instantSwitch) {
-        if (!MusicConfig.INSTANCE.enabled) return;
-        if (fullName == null) return;
-        MusicProfile selected = null;
+        if (!MusicConfig.INSTANCE.enabled || fullName == null) return;
 
+        MusicProfile selected = null;
         for (MusicProfile mp : availableMusics.values()) {
             if (!mp.getFormattedName().equalsIgnoreCase(fullName)) continue;
 

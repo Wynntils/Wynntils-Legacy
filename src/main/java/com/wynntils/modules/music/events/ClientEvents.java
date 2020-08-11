@@ -11,6 +11,7 @@ import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.MusicManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -36,17 +37,24 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void openClassSelection(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
         MusicManager.playSong(WebManager.getApiUrl("CharacterSelectionSong"), true);
         MusicManager.setFastSwitchNext();
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void closeClassSelection(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
+        if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+
+        MusicManager.getPlayer().getStatus().setStopping(true);
     }
 
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START) return;
 
-        MusicManager.getPlayer().updatePlayer();
+        MusicManager.getPlayer().update();
     }
 
     @SubscribeEvent

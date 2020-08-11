@@ -560,6 +560,12 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onMusicStart(MusicPlayerEvent.Playback.Start e) {
+        GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
+                .replace("%np%", e.getSongName()));
+    }
+
+    @SubscribeEvent
     public void onTerritoryWar(WynnGuildWarEvent e) {
         if (!Reference.onServer)
             return;
@@ -700,14 +706,14 @@ public class OverlayEvents implements Listener {
     }
 
     boolean isVanished = false;
-    
+
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
-        
+
         SPacketEntityEffect effect = e.getPacket();
         if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
-        
+
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
         String timerName;
@@ -727,7 +733,7 @@ public class OverlayEvents implements Listener {
                 isVanished = false;
                 return;
             }
-            
+
             if (effect.getAmplifier() == 0) {
                 timerName = "War Scream I";
             }
@@ -742,7 +748,7 @@ public class OverlayEvents implements Listener {
         } else {
             return;
         }
-        
+
         // create timer with name and duration (duration in ticks)/20 -> seconds
         Minecraft.getMinecraft().addScheduledTask(() ->
                 ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
@@ -751,10 +757,10 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
-        
+
         SPacketRemoveEntityEffect effect = e.getPacket();
         if (effect.getEntity(Minecraft.getMinecraft().world) != Minecraft.getMinecraft().player) return;
-        
+
         Minecraft.getMinecraft().addScheduledTask(() -> {
             Potion potion = effect.getPotion();
 
