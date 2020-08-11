@@ -40,6 +40,7 @@ public class MusicPlayer {
             return;
         }
 
+        // stopping/pause transition
         if (STATUS.isStopping() || STATUS.isPaused()) {
             if (STATUS.getCurrentGain() < -30f) { // song already vanished off
                 if (STATUS.isStopping()) {
@@ -56,6 +57,7 @@ public class MusicPlayer {
             return;
         }
 
+        // next song transition
         if (STATUS.getNextSong() != null) {
             if (STATUS.getCurrentGain() < -30f) { // current song already vanished off
                 // resetting statuses
@@ -115,11 +117,15 @@ public class MusicPlayer {
     private void kill() {
         if (!isPlaying()) return;
 
-        player.stop();
-        player = null;
+        if (player != null) {
+            player.stop();
+            player = null;
+        }
 
-        musicThread.interrupt();
-        musicThread = null;
+        if (musicThread != null) {
+            musicThread.interrupt();
+            musicThread = null;
+        }
     }
 
     private void initialize() {
