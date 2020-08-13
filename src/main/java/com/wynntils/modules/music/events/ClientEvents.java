@@ -10,6 +10,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.MusicManager;
+import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
@@ -22,7 +23,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        if (e.getNewTerritory().equals("")) return;
+        if (e.getNewTerritory().equals("") || Reference.onWars) return;
 
         MusicManager.checkForMusic(e.getNewTerritory());
     }
@@ -63,13 +64,20 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void dungeonTracks(PacketEvent<SPacketTitle> e) {
-        if (e.getPacket().getType() != SPacketTitle.Type.TITLE) return;
+        if (!MusicConfig.INSTANCE.replaceJukebox || e.getPacket().getType() != SPacketTitle.Type.TITLE) return;
 
         String title = TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getMessage().getFormattedText());
         String songName = WebManager.getMusicLocations().getDungeonTrack(title);
         if (songName == null) return;
 
         MusicManager.playSong(songName, true);
+    }
+
+    @SubscribeEvent
+    public void warTrack(WarStageEvent e) {
+        if (!MusicConfig.INSTANCE.replaceJukebox || e.getNewStage() != WarTimerOverlay.WarStage.WAITING_FOR_MOB_TIMER) return;
+
+        MusicManager.playSong(WebManager.getMusicLocations().getEntryTrack("wars"), true);
     }
 
 }
