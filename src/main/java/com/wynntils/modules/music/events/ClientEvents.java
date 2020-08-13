@@ -5,15 +5,14 @@
 package com.wynntils.modules.music.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.events.custom.WynnClassChangeEvent;
-import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
-import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.MusicManager;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -60,6 +59,17 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void serverLeft(WynncraftServerEvent.Leave e) {
         MusicManager.getPlayer().stop();
+    }
+
+    @SubscribeEvent
+    public void dungeonTracks(PacketEvent<SPacketTitle> e) {
+        if (e.getPacket().getType() != SPacketTitle.Type.TITLE) return;
+
+        String title = TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getMessage().getFormattedText());
+        String songName = WebManager.getMusicLocations().getDungeonTrack(title);
+        if (songName == null) return;
+
+        MusicManager.playSong(songName, true);
     }
 
 }

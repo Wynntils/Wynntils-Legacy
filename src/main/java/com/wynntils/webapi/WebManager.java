@@ -66,6 +66,8 @@ public class WebManager {
 
     private static ArrayList<DiscoveryProfile> discoveries = new ArrayList<>();
 
+    private static MusicLocationsProfile musicLocations = new MusicLocationsProfile();
+
     private static WynntilsAccount account = null;
 
     private static Gson gson = new Gson();
@@ -109,6 +111,7 @@ public class WebManager {
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
         updateDiscoveries(handler);
+        updateMusicLocations(handler);
         updateCurrentSplash();
 
         handler.dispatchAsync();
@@ -196,6 +199,10 @@ public class WebManager {
 
     public static ArrayList<DiscoveryProfile> getDiscoveries() {
         return discoveries;
+    }
+
+    public static MusicLocationsProfile getMusicLocations() {
+        return musicLocations;
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
@@ -516,6 +523,18 @@ public class WebManager {
                 discoveries = gson.fromJson(discoveriesJson, type);
                 return true;
             }));
+    }
+
+    public static void updateMusicLocations(RequestHandler handler) {
+        if (apiUrls == null) return;
+        String url = apiUrls.get("MusicLocations");
+        handler.addRequest(new Request(url, "musicLocations")
+                .cacheTo(new File(API_CACHE_ROOT, "musicLocations.json"))
+                .handleJsonObject(json -> {
+                    musicLocations = gson.fromJson(json, MusicLocationsProfile.class);
+                    return true;
+                })
+        );
     }
 
     public static String getStableJarFileUrl() throws IOException {
