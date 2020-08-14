@@ -8,10 +8,13 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.music.configs.MusicConfig;
+import com.wynntils.modules.music.managers.AreaManager;
 import com.wynntils.modules.music.managers.MusicManager;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -23,7 +26,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        if (e.getNewTerritory().equals("") || Reference.onWars) return;
+        if (e.getNewTerritory().equals("") || Reference.onWars || AreaManager.isTerritoryUpdateBlocked()) return;
 
         MusicManager.checkForMusic(e.getNewTerritory());
     }
@@ -78,6 +81,13 @@ public class ClientEvents implements Listener {
         if (!MusicConfig.INSTANCE.replaceJukebox || e.getNewStage() != WarTimerOverlay.WarStage.WAITING_FOR_MOB_TIMER) return;
 
         MusicManager.playSong(WebManager.getMusicLocations().getEntryTrack("wars"), true);
+    }
+
+    @SubscribeEvent
+    public void specialAreas(SchedulerEvent.RegionUpdate e) {
+        if (!MusicConfig.INSTANCE.replaceJukebox) return;
+
+        AreaManager.update(new Location(Minecraft.getMinecraft().player));
     }
 
 }

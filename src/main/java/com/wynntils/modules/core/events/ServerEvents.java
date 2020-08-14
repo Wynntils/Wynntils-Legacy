@@ -307,6 +307,8 @@ public class ServerEvents implements Listener {
         updateTimer = executor.scheduleAtFixedRate(() -> {
             EntityPlayerSP pl = ModCore.mc().player;
 
+            FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
+
             if (!PlayerInfo.getPlayerInfo().isInUnknownLocation()) {
                 String location = PlayerInfo.getPlayerInfo().getLocation();
                 if (!WebManager.getTerritories().containsKey(location)) {

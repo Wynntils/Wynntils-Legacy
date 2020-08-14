@@ -168,7 +168,7 @@ public class GameEvent extends Event {
      */
     public static class DamageEntity extends GameEvent {
 
-        HashMap<DamageType, Integer> damageTypes = new HashMap<>();
+        HashMap<DamageType, Integer> damageTypes;
         Entity entity;
 
         public DamageEntity(HashMap<DamageType, Integer> damageTypes, Entity entity) {

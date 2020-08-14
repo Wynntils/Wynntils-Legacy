@@ -22,6 +22,7 @@ import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
