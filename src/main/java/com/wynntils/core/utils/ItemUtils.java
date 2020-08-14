@@ -114,11 +114,11 @@ public class ItemUtils {
             ItemStack it = inv.getStackInSlot(i);
             if (it.isEmpty()) continue;
 
-            if (it.getItem() == Items.EMERALD) {
+            if (it.getItem() == Items.EMERALD && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald")) {
                 money += it.getCount();
-            } else if (it.getItem() == EMERALD_BLOCK) {
+            } else if (it.getItem() == EMERALD_BLOCK && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald Block")) {
                 money += it.getCount() * 64;
-            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE && it.getDisplayName().equals(TextFormatting.GREEN + "Liquid Emerald")) {
                 money += it.getCount() * (64 * 64);
             }
         }
