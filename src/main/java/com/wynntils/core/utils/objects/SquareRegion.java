@@ -19,6 +19,19 @@ public class SquareRegion {
     }
 
     public boolean isInside(double x, double z) {
+        // this inverts the region if needed
+        if (endX < startX) {
+            double oldStartX = startX;
+            startX = endX;
+            endX = oldStartX;
+        }
+
+        if (endZ < startZ) {
+            double oldStartZ = startZ;
+            startZ = endZ;
+            endZ = oldStartZ;
+        }
+
         return startX <= x && endX >= x && startZ <= z && endZ >= z;
     }
 

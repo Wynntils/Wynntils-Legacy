@@ -13,8 +13,6 @@ public class AreaManager {
     private static MusicAreaProfile currentArea = null;
 
     public static void update(Location playerPosition) {
-        if (currentArea != null && currentArea.getRegion().isInside(playerPosition)) return;
-
         currentArea = WebManager.getMusicLocations().getAreaTrack(playerPosition);
         if (currentArea == null) return;
 
