@@ -62,6 +62,12 @@ public class KeyManager {
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", true, MountHorseManager::mountHorseAndShowMessage);
 
+        CoreModule.getModule().registerKeyBinding("Mob Totem Menu", Keyboard.KEY_J, "Wynntils", true, () -> {
+            if (!Reference.onWorld) return;
+
+            Minecraft.getMinecraft().player.sendChatMessage("/totem");
+        });
+
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", true, () -> {
             if (!Reference.onWorld) return;
 
