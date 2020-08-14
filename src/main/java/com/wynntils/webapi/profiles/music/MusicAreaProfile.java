@@ -11,13 +11,15 @@ public class MusicAreaProfile {
     String id;
     String trackName;
     boolean ignoreTerritory;
+    boolean fastSwitch;
 
     SquareRegion region;
 
-    public MusicAreaProfile(String id, String trackName, boolean ignoreTerritory, SquareRegion region) {
+    public MusicAreaProfile(String id, String trackName, boolean ignoreTerritory, boolean fastSwitch, SquareRegion region) {
         this.id = id;
         this.trackName = trackName;
         this.ignoreTerritory = ignoreTerritory;
+        this.fastSwitch = fastSwitch;
         this.region = region;
     }
 
@@ -35,6 +37,10 @@ public class MusicAreaProfile {
 
     public boolean isIgnoreTerritory() {
         return ignoreTerritory;
+    }
+
+    public boolean isFastSwitch() {
+        return fastSwitch;
     }
 
 }

@@ -16,7 +16,7 @@ public class AreaManager {
         currentArea = WebManager.getMusicLocations().getAreaTrack(playerPosition);
         if (currentArea == null) return;
 
-        MusicManager.playSong(currentArea.getTrackName(), true);
+        MusicManager.playSong(currentArea.getTrackName(), currentArea.isFastSwitch());
     }
 
     public static MusicAreaProfile getCurrentArea() {
