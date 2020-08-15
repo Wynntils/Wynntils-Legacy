@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -414,25 +415,29 @@ public class WebManager {
     public static void updateItemList(RequestHandler handler) {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/itemList";
-        handler.addRequest(new Request(url, "itemList")
-            .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
-            .handleJsonObject(j -> {
-                ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
+        Request request = new Request(url, "itemList")
+                .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
+                .handleJsonObject(j -> {
+                    ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
 
-                HashMap<String, ItemProfile> citems = new HashMap<>();
-                for (ItemProfile prof : gItems) {
-                    prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
-                    citems.put(prof.getDisplayName(), prof);
-                }
+                    HashMap<String, ItemProfile> citems = new HashMap<>();
+                    for (ItemProfile prof : gItems) {
+                        prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
+                        citems.put(prof.getDisplayName(), prof);
+                    }
 
-                directItems = citems.values();
-                items = citems;
+                    directItems = citems.values();
+                    items = citems;
 
-                IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
-                return true;
-            })
-        );
+                    IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
+                    return true;
+                });
+        if (account.isReady() || account.isFailed()) {
+            handler.addRequest(request);
+        } else {
+            account.queue(request);
+        }
     }
 
     /**
@@ -441,34 +446,35 @@ public class WebManager {
     public static void updateMapLocations(RequestHandler handler) {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/mapLocations";
-        handler.addRequest(new Request(url, "map_locations")
-            .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
-            .handleJsonObject(main -> {
-                JsonArray locationArray = main.getAsJsonArray("locations");
-                Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {
-                }.getType();
+        Request request = new Request(url, "map_locations")
+                .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
+                .handleJsonObject(main -> {
+                    JsonArray locationArray = main.getAsJsonArray("locations");
+                    Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {}.getType();
 
-                mapMarkers = gson.fromJson(locationArray, locationType);
-                mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
-                mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
+                    mapMarkers = gson.fromJson(locationArray, locationType);
+                    mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
+                    mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
 
-                JsonArray labelArray = main.getAsJsonArray("labels");
-                Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {
-                }.getType();
+                    JsonArray labelArray = main.getAsJsonArray("labels");
+                    Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {}.getType();
 
-                mapLabels = gson.fromJson(labelArray, labelType);
+                    mapLabels = gson.fromJson(labelArray, labelType);
 
-                JsonArray npcLocationArray = main.getAsJsonArray("npc-locations");
-                Type npcLocationType = new TypeToken<ArrayList<LocationProfile>>() {
-                }.getType();
+                    JsonArray npcLocationArray = main.getAsJsonArray("npc-locations");
+                    Type npcLocationType = new TypeToken<ArrayList<LocationProfile>>() {}.getType();
 
-                npcLocations = gson.fromJson(npcLocationArray, npcLocationType);
+                    npcLocations = gson.fromJson(npcLocationArray, npcLocationType);
 
-                MapApiIcon.resetApiMarkers();
-                return true;
-            })
-        );
+                    MapApiIcon.resetApiMarkers();
+                    return true;
+                });
+        if (account.isReady() || account.isFailed()) {
+            handler.addRequest(request);
+        } else {
+            account.queue(request);
+        }
     }
 
     /**

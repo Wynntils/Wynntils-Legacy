@@ -21,10 +21,13 @@ import net.minecraft.util.CryptManager;
 
 import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -34,10 +37,13 @@ public class WynntilsAccount {
 
     String token;
     boolean ready = false;
+    boolean failed = false;
 
     HashMap<String, String> encodedConfigs = new HashMap<>();
     HashMap<String, String> md5Verifications = new HashMap<>();
     CloudConfigurations configurationUploader;
+    List<Request> queue = new ArrayList<>();
+    List<Request> allQueue = new ArrayList<>();
 
     public WynntilsAccount() { }
 
@@ -56,7 +62,18 @@ public class WynntilsAccount {
     int connectionAttempts = 0;
 
     public boolean login() {
-        if (WebManager.getApiUrls() == null || connectionAttempts >= 4) return false;
+        if (WebManager.getApiUrls() == null || connectionAttempts >= 4) {
+            failed = true;
+            queue.clear();
+            if (!allQueue.isEmpty()) {
+                for (Request request : allQueue) {
+                    WebManager.getHandler().addRequest(request);
+                }
+                WebManager.getHandler().dispatchAsync();
+                allQueue.clear();
+            }
+            return false;
+        }
         connectionAttempts++;
 
         RequestHandler handler = WebManager.getHandler();
@@ -68,51 +85,94 @@ public class WynntilsAccount {
 
         Request getPublicKey = new Request(baseUrl + "/auth/getPublicKey", "getPublicKey")
                 .handleJsonObject(json -> {
-                    if (!json.has("publicKeyIn")) return false;
+                    if (!json.has("publicKeyIn")) {
+                        failed = true;
+                        queue.clear();
+                        if (!allQueue.isEmpty()) {
+                            for (Request request : allQueue) {
+                                WebManager.getHandler().addRequest(request);
+                            }
+                            WebManager.getHandler().dispatchAsync();
+                            allQueue.clear();
+                        }
+                        return false;
+                    }
 
                     secretKey[0] = parseAndJoinPublicKey(json.get("publicKeyIn").getAsString());
+                    // response
+
+                    JsonObject authParams = new JsonObject();
+                    authParams.addProperty("username", ModCore.mc().getSession().getUsername());
+                    authParams.addProperty("key", secretKey[0]);
+                    authParams.addProperty("version", Reference.VERSION + "_" + Reference.BUILD_NUMBER);
+
+                    Request responseEncryption = new PostRequest(baseUrl + "/auth/responseEncryption", "responseEncryption")
+                            .postJsonElement(authParams)
+                            .handleJsonObject(response -> {
+                                if (!response.has("authToken")) {
+                                    failed = true;
+                                    queue.clear();
+                                    if (!allQueue.isEmpty()) {
+                                        for (Request request : allQueue) {
+                                            WebManager.getHandler().addRequest(request);
+                                        }
+                                        WebManager.getHandler().dispatchAsync();
+                                        allQueue.clear();
+                                    }
+                                    return false;
+                                }
+
+                                token = response.get("authToken").getAsString();
+
+                                // md5 hashes
+                                JsonObject hashes = response.getAsJsonObject("hashes");
+                                hashes.entrySet().forEach((k) -> md5Verifications.put(k.getKey(), k.getValue().getAsString()));
+
+                                configurationUploader = new CloudConfigurations(service, token);
+
+                                // configurations
+                                JsonObject configFiles = response.getAsJsonObject("configFiles");
+                                configFiles.entrySet().forEach((k) -> encodedConfigs.put(k.getKey(), k.getValue().getAsString()));
+
+                                ready = true;
+                                if (!queue.isEmpty()) {
+                                    for (Request request : queue) {
+                                        handler.addRequest(request);
+                                    }
+                                    handler.dispatchAsync();
+                                }
+
+                                Reference.LOGGER.info("Successfully connected to Athena!");
+                                return true;
+                            }).onError(t -> {
+                                login();
+                                return true;
+                            });
+
+                    handler.addAndDispatch(responseEncryption, true);
                     return true;
-                }).onError(t -> { login(); return true; });
-
-        handler.addAndDispatch(getPublicKey);
-
-        // response
-
-        JsonObject authParams = new JsonObject();
-        authParams.addProperty("username", ModCore.mc().getSession().getUsername());
-        authParams.addProperty("key", secretKey[0]);
-        authParams.addProperty("version", Reference.VERSION + "_" + Reference.BUILD_NUMBER);
-
-        Request responseEncryption = new PostRequest(baseUrl + "/auth/responseEncryption", "responseEncryption")
-                .postJsonElement(authParams)
-                .handleJsonObject(json -> {
-                    if (!json.has("authToken")) return false;
-
-                    token = json.get("authToken").getAsString();
-
-                    // md5 hashes
-                    JsonObject hashes = json.getAsJsonObject("hashes");
-                    hashes.entrySet().forEach((k) -> md5Verifications.put(k.getKey(), k.getValue().getAsString()));
-
-                    configurationUploader = new CloudConfigurations(service, token);
-
-                    // configurations
-                    JsonObject configFiles = json.getAsJsonObject("configFiles");
-                    configFiles.entrySet().forEach((k) -> encodedConfigs.put(k.getKey(), k.getValue().getAsString()));
-
-                    ready = true;
-
-                    Reference.LOGGER.info("Successfully connected to Athena!");
+                }).onError(t -> {
+                    login();
                     return true;
-                }).onError(t -> { login(); return true; });
+                }).onTimeout(() -> {
+                    failed = true;
+                    queue.clear();
+                    if (!allQueue.isEmpty()) {
+                        for (Request request : allQueue) {
+                            WebManager.getHandler().addRequest(request);
+                        }
+                        WebManager.getHandler().dispatchAsync();
+                        allQueue.clear();
+                    }
+                });
 
-        handler.addAndDispatch(responseEncryption);
+        handler.addAndDispatch(getPublicKey, true);
 
         return true;
     }
 
     public void updateDiscord(String id, String username) {
-        if (!ready || WebManager.getApiUrls() == null) return;
+        if (failed || WebManager.getApiUrls() == null) return;
 
         JsonObject postData = new JsonObject();
         postData.addProperty("authToken", token);
@@ -123,12 +183,16 @@ public class WynntilsAccount {
                 .postJsonElement(postData)
                 .handleJsonObject(json -> true);
 
-        RequestHandler handler = WebManager.getHandler();
-        handler.addAndDispatch(request, true);
+        if (ready) {
+            RequestHandler handler = WebManager.getHandler();
+            handler.addAndDispatch(request, true);
+        } else {
+            queue.add(request);
+        }
     }
 
     public void sendGatheringSpot(ProfessionType type, GatheringMaterial material, Location loc) {
-        if (!ready || WebManager.getApiUrls() == null) return;
+        if (failed || WebManager.getApiUrls() == null) return;
 
         JsonObject postData = new JsonObject();
         postData.addProperty("authToken", token);
@@ -146,11 +210,15 @@ public class WynntilsAccount {
                 .postJsonElement(postData)
                 .handleJsonObject(json -> true);
 
-        WebManager.getHandler().addAndDispatch(request, true);
+        if (ready) {
+            WebManager.getHandler().addAndDispatch(request, true);
+        } else {
+            queue.add(request);
+        }
     }
 
     public void uploadConfig(File f) {
-        if (!ready || configurationUploader == null)  {
+        if (failed || configurationUploader == null) {
             if(!login()) return;
 
             uploadConfig(f); // try again
@@ -158,6 +226,18 @@ public class WynntilsAccount {
         }
 
         configurationUploader.queueConfig(f);
+    }
+
+    public void queue(Request request) {
+        allQueue.add(request);
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public boolean isFailed() {
+        return failed;
     }
 
     private String parseAndJoinPublicKey(String key) {
