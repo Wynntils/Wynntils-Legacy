@@ -40,8 +40,10 @@ public class VisualModule extends Module {
         registerEvents(new ClientEvents());
         registerEvents(new OverlayEvents());
 
-        charSelectionSplash = new SplashProfile(WebManager.getApiUrls().get("ClassSelectionSplash"));
-        charSelectionSplash.downloadSplash();
+        if (WebManager.getApiUrls() != null && WebManager.getApiUrls().get("ClassSelectionSplash") != null) {
+            charSelectionSplash = new SplashProfile(WebManager.getApiUrls().get("ClassSelectionSplash"));
+            charSelectionSplash.downloadSplash();
+        }
     }
 
     public static VisualModule getModule() {
