@@ -348,8 +348,7 @@ public class WebManager {
 
                     onReceive.accept(result);
                     return true;
-                })
-        );
+                }), true);
     }
 
     /**
