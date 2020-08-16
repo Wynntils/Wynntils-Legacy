@@ -17,6 +17,7 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -27,7 +28,7 @@ public class Request {
     int parallelGroup = 0;
     ThrowingBiPredicate<URLConnection, byte[], IOException> handler;
     Predicate<Integer> onError;
-    HashMap<String, String> headers = new HashMap<>();
+    Map<String, String> headers = new HashMap<>();
     File cacheFile;
     Predicate<byte[]> cacheValidator = null;
     Runnable onTimeout = null;

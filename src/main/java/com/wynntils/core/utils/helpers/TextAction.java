@@ -9,10 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Used to create a {@link ClickEvent} that runs a Runnable.
@@ -25,8 +22,8 @@ public class TextAction {
         return prefix.equals(s);
     }
 
-    private static HashMap<String, Constructor<? extends Runnable>> staticNameMap = new HashMap<>();
-    private static HashMap<String, List<Runnable>> dynamicNameMap = new HashMap<>();
+    private static Map<String, Constructor<? extends Runnable>> staticNameMap = new HashMap<>();
+    private static Map<String, List<Runnable>> dynamicNameMap = new HashMap<>();
 
     /**
      * Gets an event that will construct the given class and then call the {@link Runnable#run()} method.

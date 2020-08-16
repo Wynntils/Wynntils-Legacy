@@ -28,6 +28,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -39,8 +40,8 @@ public class WynntilsAccount {
     boolean ready = false;
     boolean failed = false;
 
-    HashMap<String, String> encodedConfigs = new HashMap<>();
-    HashMap<String, String> md5Verifications = new HashMap<>();
+    Map<String, String> encodedConfigs = new HashMap<>();
+    Map<String, String> md5Verifications = new HashMap<>();
     CloudConfigurations configurationUploader;
     List<Request> queue = new ArrayList<>();
     List<Request> allQueue = new ArrayList<>();
@@ -51,7 +52,7 @@ public class WynntilsAccount {
         return token;
     }
 
-    public HashMap<String, String> getEncodedConfigs() {
+    public Map<String, String> getEncodedConfigs() {
         return encodedConfigs;
     }
 

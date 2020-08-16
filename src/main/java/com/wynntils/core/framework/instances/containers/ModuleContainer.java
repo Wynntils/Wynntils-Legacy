@@ -14,10 +14,7 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class ModuleContainer {
 
@@ -25,8 +22,8 @@ public class ModuleContainer {
     Module module;
 
     List<KeyHolder> keyHolders = new ArrayList<>();
-    HashMap<String, SettingsContainer> registeredSettings = new HashMap<>();
-    HashSet<Object> registeredEvents = new HashSet<>();
+    Map<String, SettingsContainer> registeredSettings = new HashMap<>();
+    Set<Object> registeredEvents = new HashSet<>();
 
     public ModuleContainer(ModuleInfo info, Module module) {
         this.info = info; this.module = module;
@@ -100,7 +97,7 @@ public class ModuleContainer {
         });
     }
 
-    public HashMap<String, SettingsContainer> getRegisteredSettings() {
+    public Map<String, SettingsContainer> getRegisteredSettings() {
         return registeredSettings;
     }
 

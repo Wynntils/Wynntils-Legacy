@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Contains all the player currently party status
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class PartyContainer {
 
-    HashSet<String> partyMembers = new HashSet<>();
+    Set<String> partyMembers = new HashSet<>();
     String owner = "";
 
     public PartyContainer() {}
@@ -101,7 +102,7 @@ public class PartyContainer {
      *
      * @return the party members list
      */
-    public HashSet<String> getPartyMembers() {
+    public Set<String> getPartyMembers() {
         return partyMembers;
     }
 

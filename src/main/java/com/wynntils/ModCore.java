@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 @Mod(
         name = Reference.NAME,
@@ -66,7 +67,7 @@ public class ModCore {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        HashMap<String, String> conflicts = new HashMap<>();
+        Map<String, String> conflicts = new HashMap<>();
         for (ModContainer mod : Loader.instance().getActiveModList()) {
             if (!mod.getModId().equalsIgnoreCase("labymod")) continue;
 

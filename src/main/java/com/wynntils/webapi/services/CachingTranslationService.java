@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -22,13 +23,13 @@ public abstract class CachingTranslationService implements TranslationService {
     public static final File TRANSLATION_CACHE_ROOT = new File(Reference.MOD_STORAGE_ROOT, "translationcache");
 
     // Map language code (String) to a translation map (String -> String)
-    private static HashMap<String, ConcurrentHashMap<String, String>> translationCaches = new HashMap<>();
+    private static Map<String, ConcurrentHashMap<String, String>> translationCaches = new HashMap<>();
     private static int counter;
 
     protected abstract void translateNew(String message, String toLanguage, Consumer<String> handleTranslation);
 
     protected void saveTranslation(String toLanguage, String message, String translatedMessage) {
-        ConcurrentHashMap<String, String> translationCache = translationCaches.get(toLanguage);
+        Map<String, String> translationCache = translationCaches.get(toLanguage);
         translationCache.put(message, translatedMessage);
         if (++counter % 16 == 0) {
             // Persist translation cache in background
@@ -43,7 +44,7 @@ public abstract class CachingTranslationService implements TranslationService {
             return;
         }
 
-        ConcurrentHashMap<String, String> translationCache = translationCaches.computeIfAbsent(toLanguage, k -> new ConcurrentHashMap<>());
+        Map<String, String> translationCache = translationCaches.computeIfAbsent(toLanguage, k -> new ConcurrentHashMap<>());
         String cachedTranslation = translationCache.get(message);
         if (cachedTranslation != null) {
             Utils.runAsync(() -> handleTranslation.accept(cachedTranslation));

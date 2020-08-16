@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagString;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static net.minecraft.util.text.TextFormatting.*;
@@ -38,9 +39,9 @@ public class ItemProfile {
     ItemInfoContainer itemInfo;
     ItemRequirementsContainer requirements;
 
-    HashMap<String, String> damageTypes = new HashMap<>();
-    HashMap<String, Integer> defenseTypes = new HashMap<>();
-    HashMap<String, IdentificationContainer> statuses = new HashMap<>();
+    Map<String, String> damageTypes = new HashMap<>();
+    Map<String, Integer> defenseTypes = new HashMap<>();
+    Map<String, IdentificationContainer> statuses = new HashMap<>();
 
     List<MajorIdentification> majorIds = new ArrayList<>();
 
@@ -52,8 +53,8 @@ public class ItemProfile {
 
     public ItemProfile(String displayName,
                        ItemTier tier, boolean identified, ItemAttackSpeed attackSpeed, ItemInfoContainer itemInfo,
-                       ItemRequirementsContainer requirements, HashMap<String, String> damageTypes,
-                       HashMap<String, Integer> defenseTypes, HashMap<String, IdentificationContainer> statuses,
+                       ItemRequirementsContainer requirements, Map<String, String> damageTypes,
+                       Map<String, Integer> defenseTypes, Map<String, IdentificationContainer> statuses,
                        ArrayList<MajorIdentification> majorIds, String restriction, String lore) {}
 
     public String getDisplayName() {
@@ -84,15 +85,15 @@ public class ItemProfile {
         return requirements;
     }
 
-    public HashMap<String, String> getDamageTypes() {
+    public Map<String, String> getDamageTypes() {
         return damageTypes;
     }
 
-    public HashMap<String, Integer> getDefenseTypes() {
+    public Map<String, Integer> getDefenseTypes() {
         return defenseTypes;
     }
 
-    public HashMap<String, IdentificationContainer> getStatuses() {
+    public Map<String, IdentificationContainer> getStatuses() {
         return statuses;
     }
 
@@ -191,7 +192,7 @@ public class ItemProfile {
 
             // ids
             if (statuses.size() > 0) {
-                HashMap<String, String> statusLore = new HashMap<>();
+                Map<String, String> statusLore = new HashMap<>();
                 for (String idName : statuses.keySet()) {
                     IdentificationContainer id = statuses.get(idName);
 

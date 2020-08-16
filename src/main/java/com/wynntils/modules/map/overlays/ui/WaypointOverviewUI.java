@@ -242,7 +242,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 return;
             }
             int newWaypoints = 0;
-            HashSet<Location> existing = new HashSet<>(waypoints.size());
+            Set<Location> existing = new HashSet<>(waypoints.size());
             for (WaypointProfile wp : waypoints) {
                 existing.add(new Location(wp.getX(), wp.getY(), wp.getZ()));
             }

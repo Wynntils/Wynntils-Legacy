@@ -7,17 +7,18 @@ package com.wynntils.webapi.profiles;
 import com.wynntils.core.utils.StringUtils;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class ServerProfile {
 
     long firstSeen;
-    HashSet<String> players;
+    Set<String> players;
 
-    public ServerProfile(long firstSeem, HashSet<String> players) {
+    public ServerProfile(long firstSeem, Set<String> players) {
         this.firstSeen = firstSeem; this.players = players;
     }
 
-    public HashSet<String> getPlayers() {
+    public Set<String> getPlayers() {
         return players;
     }
 

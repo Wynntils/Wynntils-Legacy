@@ -14,6 +14,7 @@ import com.wynntils.core.utils.helpers.MD5Verification;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -115,8 +116,8 @@ public class StringUtils {
         return result.toString().split("\\|");
     }
 
-    private static HashMap<String, CustomColor> registeredColors = new HashMap<>();
-    private static HashMap<Integer, CustomColor> registeredHexColors = new HashMap<>();
+    private static Map<String, CustomColor> registeredColors = new HashMap<>();
+    private static Map<Integer, CustomColor> registeredHexColors = new HashMap<>();
 
     /**
      * Generates a Color based in the input string

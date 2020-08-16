@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Triggered for Wynncraft Social Events
@@ -82,7 +83,7 @@ public class WynnSocialEvent extends Event {
             super(member);
         }
 
-        public HashSet<String> getGuildList() {
+        public Set<String> getGuildList() {
             return PlayerInfo.getPlayerInfo().getGuildList();
         }
 

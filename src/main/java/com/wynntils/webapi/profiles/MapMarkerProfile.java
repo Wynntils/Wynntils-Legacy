@@ -119,7 +119,7 @@ public class MapMarkerProfile extends LocationProfile {
     /*
      * Debug function run in developmentEnvironment to verify consistency
      */
-    public static void validateIcons(HashMap<String, Boolean> enabledIcons) {
+    public static void validateIcons(Map<String, Boolean> enabledIcons) {
         for (String icon : MAPMARKERNAME_TRANSLATION.values()) {
             if (IGNORED_MARKERS.contains(icon)) continue;
             if (!enabledIcons.containsKey(icon)) Reference.LOGGER.warn("Missing option for icon \"" + icon + "\"");

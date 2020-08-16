@@ -28,6 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,8 +61,8 @@ public class PlayerInfo {
     private String lastActionBar;
     private String specialActionBar = null;
 
-    private HashSet<String> friendList = new HashSet<>();
-    private HashSet<String> guildList = new HashSet<>();
+    private Set<String> friendList = new HashSet<>();
+    private Set<String> guildList = new HashSet<>();
     private final PartyContainer playerParty = new PartyContainer();
 
     private String location = "";
@@ -114,19 +115,19 @@ public class PlayerInfo {
         this.experiencePercentage = mc.player.experience;
     }
 
-    public HashSet<String> getFriendList() {
+    public Set<String> getFriendList() {
         return friendList;
     }
 
-    public HashSet<String> getGuildList() {
+    public Set<String> getGuildList() {
         return guildList;
     }
 
-    public void setFriendList(HashSet<String> value) {
+    public void setFriendList(Set<String> value) {
         friendList = value;
     }
 
-    public void setGuildList(HashSet<String> value) {
+    public void setGuildList(Set<String> value) {
         guildList = value;
     }
 

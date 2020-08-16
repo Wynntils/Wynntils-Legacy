@@ -13,10 +13,7 @@ import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -267,10 +264,10 @@ public class TabGUI extends GuiScreen {
         regexValid = false;
     }
 
-    private HashMap<String, Boolean> regexSettingsCreator() {
+    private Map<String, Boolean> regexSettingsCreator() {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return null;
 
-        HashMap<String, Boolean> r = new HashMap<>();
+        Map<String, Boolean> r = new HashMap<>();
         simpleRegexSettings.forEach(b-> r.put(b.displayString, b.isChecked()));
         return r;
     }
@@ -289,7 +286,7 @@ public class TabGUI extends GuiScreen {
     private String regexCreator() {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return "";
 
-        HashMap<String, Boolean> regexSettings = regexSettingsCreator();
+        Map<String, Boolean> regexSettings = regexSettingsCreator();
         List<String> result = new ArrayList<>();
         boolean allIsPresent = regexSettings.get("All");
 

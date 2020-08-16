@@ -8,10 +8,11 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ServerProfile;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ServerListManager {
 
-    private static HashMap<String, ServerProfile> availableServers = new HashMap<>();
+    private static Map<String, ServerProfile> availableServers = new HashMap<>();
 
     public static synchronized void updateServers() {
         WebManager.getServerList((list) -> availableServers = list);

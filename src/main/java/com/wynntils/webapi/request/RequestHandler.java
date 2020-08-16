@@ -17,6 +17,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -227,8 +228,8 @@ public class RequestHandler {
             interrupted = true;
         }
         if (interrupted) {
-            HashSet<String> completedIds = new HashSet<>();
-            HashSet<String> interruptedIds = new HashSet<>();
+            Set<String> completedIds = new HashSet<>();
+            Set<String> interruptedIds = new HashSet<>();
             for (List<Request> requests : groupedRequests) for (Request request : requests) {
                 (request.currentlyHandling == 2 ? completedIds : interruptedIds).add(request.id);
             }
@@ -266,7 +267,7 @@ public class RequestHandler {
         }
 
         // Last group; Remove handled requests
-        HashSet<String> ids = new HashSet<>();
+        Set<String> ids = new HashSet<>();
         for (List<Request> requests : groupedRequests) for (Request request : requests) {
             ids.add(request.id);
         }

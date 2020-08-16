@@ -25,7 +25,7 @@ public class LootRunPath {
     private static List<CustomColor> COLORS = Arrays.asList(CommonColors.RED, CommonColors.ORANGE, CommonColors.YELLOW, CommonColors.GREEN, CommonColors.BLUE, new CustomColor(63, 0, 255), CommonColors.PURPLE);
 
     private CubicSplines.Spline3D spline;
-    private LinkedHashSet<BlockPos> chests;
+    private Set<BlockPos> chests;
 
     private transient List<LootRunPath.LootRunPathLocation> lastSmoothSample;
     private transient List<Vector3d> lastSmoothDerivative;

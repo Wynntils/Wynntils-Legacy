@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class OtherPlayerProfile {
@@ -31,8 +32,8 @@ public class OtherPlayerProfile {
     private boolean isMutualFriend = false;
     private boolean inSameWorld = false;
 
-    private static HashMap<UUID, OtherPlayerProfile> profiles = new HashMap<>();
-    private static HashMap<String, OtherPlayerProfile> nameMap = new HashMap<>();
+    private static Map<UUID, OtherPlayerProfile> profiles = new HashMap<>();
+    private static Map<String, OtherPlayerProfile> nameMap = new HashMap<>();
 
     private OtherPlayerProfile(UUID uuid, String username) {
         this.uuid = uuid;

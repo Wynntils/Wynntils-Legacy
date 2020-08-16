@@ -109,7 +109,7 @@ public class MapApiIcon extends MapTextureIcon {
 
         if (enabled == null) {
             // Missing some keys; Add them all
-            HashMap<String, Boolean> defaulted = MapConfig.resetMapIcons(false);
+            Map<String, Boolean> defaulted = MapConfig.resetMapIcons(false);
             for (Map.Entry<String, Boolean> e : defaulted.entrySet()) {
                 String icon = e.getKey();
 

@@ -29,6 +29,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -286,7 +287,7 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    private static final HashMap<Character, CustomColor> POWDER_COLOUR_MAP = new HashMap<>(10);
+    private static final Map<Character, CustomColor> POWDER_COLOUR_MAP = new HashMap<>(10);
     static {
         // Lightning
         POWDER_COLOUR_MAP.put(TextFormatting.YELLOW.toString().charAt(1), new CustomColor(1, 1, 1 / 3f));

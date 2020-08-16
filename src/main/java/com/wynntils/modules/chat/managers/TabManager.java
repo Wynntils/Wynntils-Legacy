@@ -8,10 +8,7 @@ import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.instances.ChatTab;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class TabManager {
 
@@ -93,7 +90,7 @@ public class TabManager {
         return availableTabs.get(id);
     }
 
-    public static void updateTab(int id, String name, String regex, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+    public static void updateTab(int id, String name, String regex, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         availableTabs.get(id).update(name, regex.replace("&", "§"), regexSettings, autoCommand, lowPriority, orderNb);
         Collections.sort(availableTabs);
         saveConfigs();

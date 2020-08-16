@@ -15,14 +15,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WebReader {
 
     String url;
     File file;
 
-    private HashMap<String, String> values;
-    private HashMap<String, List<String>> lists;
+    private Map<String, String> values;
+    private Map<String, List<String>> lists;
 
     public WebReader(String url) throws Exception {
         this.url = url;
@@ -46,7 +47,7 @@ public class WebReader {
         return result;
     }
 
-    public HashMap<String, String> getValues() {
+    public Map<String, String> getValues() {
         return values;
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class MinecraftChatColors extends CustomColor.SetBase {
 
@@ -46,7 +47,7 @@ public class MinecraftChatColors extends CustomColor.SetBase {
         "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
     };
 
-    private static final HashMap<String, MinecraftChatColors> aliases = new HashMap<>();
+    private static final Map<String, MinecraftChatColors> aliases = new HashMap<>();
 
     static {
         aliases.put("DARK_CYAN", DARK_AQUA);

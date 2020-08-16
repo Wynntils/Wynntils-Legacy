@@ -38,9 +38,9 @@ import static net.minecraft.client.gui.Gui.ICONS;
 
 public class FrameworkManager {
 
-    public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
-    public static LinkedHashMap<Priority, List<Overlay>> registeredOverlays = new LinkedHashMap<>();
-    public static HashSet<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
+    public static Map<String, ModuleContainer> availableModules = new HashMap<>();
+    public static Map<Priority, List<Overlay>> registeredOverlays = new LinkedHashMap<>();
+    public static Set<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
 
     private static final EventBus eventBus = new EventBus();
 

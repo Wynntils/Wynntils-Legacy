@@ -60,6 +60,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,7 +156,7 @@ public class ClientEvents implements Listener {
                 bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
             } else { // third, damage detection
-                HashMap<DamageType, Integer> damageList = new HashMap<>();
+                Map<DamageType, Integer> damageList = new HashMap<>();
 
                 m = MOB_DAMAGE.matcher(value);
                 while (m.find()) {

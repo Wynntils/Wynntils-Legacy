@@ -15,9 +15,9 @@ public class LeaderboardProfile {
     String name;
     int timePlayed;
 
-    HashMap<ProfessionType, Integer> ranks;
+    Map<ProfessionType, Integer> ranks;
 
-    public LeaderboardProfile(String name, int timePlayed, HashMap<ProfessionType, Integer> ranks) {
+    public LeaderboardProfile(String name, int timePlayed, Map<ProfessionType, Integer> ranks) {
         this.name = name;
         this.timePlayed = timePlayed;
         this.ranks = ranks;

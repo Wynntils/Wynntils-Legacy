@@ -45,7 +45,7 @@ public class SettingsUI extends UI {
     private String currentSettingsPath = "";
     private Map<String, SettingsContainer> registeredSettings = new HashMap<>();
     private List<String> sortedSettings = new ArrayList<>();
-    private HashSet<String> changedSettings = new HashSet<>();
+    private Set<String> changedSettings = new HashSet<>();
     private List<String> searchText = Collections.emptyList();
 
     public UIEList holders = new UIEList(0.5f, 0.5f, -170, -87);

@@ -9,11 +9,12 @@ import com.wynntils.core.utils.objects.Location;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MusicLocationsProfile {
 
-    HashMap<String, String> dungeons = new HashMap<>();
-    HashMap<String, String> entries = new HashMap<>();
+    Map<String, String> dungeons = new HashMap<>();
+    Map<String, String> entries = new HashMap<>();
 
     List<MusicAreaProfile> areas = new ArrayList<>();
 

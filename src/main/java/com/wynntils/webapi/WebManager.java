@@ -50,20 +50,20 @@ public class WebManager {
 
     private static @Nullable WebReader apiUrls;
 
-    private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
+    private static Map<String, TerritoryProfile> territories = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static boolean ignoringJoinUpdate = false;
 
-    private static HashMap<String, ItemProfile> items = new HashMap<>();
+    private static Map<String, ItemProfile> items = new HashMap<>();
     private static Collection<ItemProfile> directItems = new ArrayList<>();
-    private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+    private static Map<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static List<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static List<MapLabelProfile> mapLabels = new ArrayList<>();
     private static List<LocationProfile> npcLocations = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
-    private static HashMap<String, GuildProfile> guilds = new HashMap<>();
+    private static Map<String, GuildProfile> guilds = new HashMap<>();
     private static String currentSplash = "";
 
     private static List<DiscoveryProfile> discoveries = new ArrayList<>();
@@ -165,11 +165,11 @@ public class WebManager {
         return currentSplash;
     }
 
-    public static HashMap<String, TerritoryProfile> getTerritories() {
+    public static Map<String, TerritoryProfile> getTerritories() {
         return territories;
     }
 
-    public static HashMap<String, ItemProfile> getItems() {
+    public static Map<String, ItemProfile> getItems() {
         return items;
     }
 
@@ -193,7 +193,7 @@ public class WebManager {
         return updateProfile;
     }
 
-    public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
+    public static Map<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
 
     public static Collection<ItemProfile> getDirectItems() {
         return directItems;
@@ -333,14 +333,14 @@ public class WebManager {
      * @param onReceive Consumes a hashmap containing as key the profession type and as value the Leaderboard Data
      * @see LeaderboardProfile
      */
-    public static void getLeaderboard(Consumer<HashMap<UUID, LeaderboardProfile>> onReceive) {
+    public static void getLeaderboard(Consumer<Map<UUID, LeaderboardProfile>> onReceive) {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/leaderboard";
 
         handler.addAndDispatch(
                 new Request(url, "leaderboard")
                 .handleJsonObject((json) -> {
-                    HashMap<UUID, LeaderboardProfile> result = new HashMap<>();
+                    Map<UUID, LeaderboardProfile> result = new HashMap<>();
 
                     for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
                         result.put(UUID.fromString(entry.getKey()), gson.fromJson(entry.getValue(), LeaderboardProfile.class));
@@ -357,7 +357,7 @@ public class WebManager {
      * @param onReceive Consumes a hashmap containing as key the server name and as value the ServerProfile
      * @see ServerProfile
      */
-    public static void getServerList(Consumer<HashMap<String, ServerProfile>> onReceive) {
+    public static void getServerList(Consumer<Map<String, ServerProfile>> onReceive) {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/serverList";
 
@@ -365,7 +365,7 @@ public class WebManager {
                 new Request(url, "serverList")
                 .handleJsonObject((con, json) -> {
                     JsonObject servers = json.getAsJsonObject("servers");
-                    HashMap<String, ServerProfile> result = new HashMap<>();
+                    Map<String, ServerProfile> result = new HashMap<>();
 
                     long serverTime = Long.parseLong(con.getHeaderField("timestamp"));
                     for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
@@ -384,10 +384,10 @@ public class WebManager {
     /**
      * Request all online players to WynnAPI
      *
-     * @return a {@link HashMap} who the key is the server and the value is an array containing all players on it
+     * @return a {@link Map} who the key is the server and the value is an array containing all players on it
      * @throws IOException thrown by URLConnection
      */
-    public static HashMap<String, List<String>> getOnlinePlayers() throws IOException {
+    public static Map<String, List<String>> getOnlinePlayers() throws IOException {
         if (apiUrls == null) return new HashMap<>();
 
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
@@ -420,7 +420,7 @@ public class WebManager {
                 .handleJsonObject(j -> {
                     ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
 
-                    HashMap<String, ItemProfile> citems = new HashMap<>();
+                    Map<String, ItemProfile> citems = new HashMap<>();
                     for (ItemProfile prof : gItems) {
                         prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
                         citems.put(prof.getDisplayName(), prof);
@@ -440,7 +440,7 @@ public class WebManager {
     }
 
     /**
-     * Update all Wynn MapLocation on the {@link HashMap} mapMarkers and {@link HashMap} mapLabels
+     * Update all Wynn MapLocation on the {@link Map} mapMarkers and {@link HashMap} mapLabels
      */
     public static void updateMapLocations(RequestHandler handler) {
         if (apiUrls == null) return;
@@ -477,7 +477,7 @@ public class WebManager {
     }
 
     /**
-     * Update all Wynn ItemGuesses on the {@link HashMap} itemGuesses
+     * Update all Wynn ItemGuesses on the {@link Map} itemGuesses
      */
     public static void updateItemGuesses(RequestHandler handler) {
         if (apiUrls == null) return;
@@ -673,7 +673,7 @@ public class WebManager {
             try {
                 Thread.sleep(30000);
                 while (!isInterrupted()) {
-                    HashMap<String, TerritoryProfile> prevList = new HashMap<>(territories);
+                    Map<String, TerritoryProfile> prevList = new HashMap<>(territories);
                     updateTerritories(handler);
                     handler.dispatch();
                     for (TerritoryProfile prevTerritory : prevList.values()) {
@@ -733,7 +733,7 @@ public class WebManager {
         boolean failed = false;
 
         if (major) {
-            HashMap<String, List<String>> changelogs = null;
+            Map<String, List<String>> changelogs = null;
             Type type = new TypeToken<HashMap<String, ArrayList<String>>>() { }.getType();
             String url = apiUrls.get("Changelog");
             Reference.LOGGER.info("Requesting changelog from " + url);

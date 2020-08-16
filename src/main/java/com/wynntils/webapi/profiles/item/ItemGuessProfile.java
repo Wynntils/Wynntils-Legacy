@@ -9,12 +9,13 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class ItemGuessProfile {
 
     String range;
-    HashMap<String, HashMap<String, String>> items = new HashMap<>();
+    Map<String, Map<String, String>> items = new HashMap<>();
 
     public ItemGuessProfile(String range) {
         this.range = range;
@@ -24,11 +25,11 @@ public class ItemGuessProfile {
         return range;
     }
 
-    public HashMap<String, HashMap<String, String>> getItems() {
+    public Map<String, Map<String, String>> getItems() {
         return items;
     }
 
-    public void addItems(String part, HashMap<String, String> rarity) {
+    public void addItems(String part, Map<String, String> rarity) {
         items.put(part, rarity);
     }
 

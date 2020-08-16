@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class UserManager {
 
-    private static final HashMap<UUID, WynntilsUser> users = new HashMap<>();
+    private static final Map<UUID, WynntilsUser> users = new HashMap<>();
 
     public static void loadUser(UUID uuid) {
         if (users.containsKey(uuid)) return;

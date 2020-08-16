@@ -42,10 +42,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -145,8 +142,8 @@ public class ServerEvents implements Listener {
         if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
             String[] friends = m.group(2).split(", ");
 
-            HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
-            HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
+            Set<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
+            Set<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
             PlayerInfo.getPlayerInfo().setFriendList(newFriendsList);
 
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));

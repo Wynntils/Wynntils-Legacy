@@ -39,9 +39,9 @@ public class QuestManager {
     private static final int MESSAGE_ID = 423375494;
 
     private static FakeInventory lastInventory = null;
-    private static LinkedHashMap<String, QuestInfo> currentQuests = new LinkedHashMap<>();
-    private static LinkedHashMap<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
-    private static LinkedHashMap<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
+    private static Map<String, QuestInfo> currentQuests = new LinkedHashMap<>();
+    private static Map<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
+    private static Map<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
     private static String trackedQuest = null;
 
     private static List<String> questsLore = new ArrayList<>();

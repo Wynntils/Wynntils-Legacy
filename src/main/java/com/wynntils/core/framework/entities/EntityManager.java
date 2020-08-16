@@ -13,13 +13,14 @@ import net.minecraft.client.renderer.entity.RenderManager;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class EntityManager {
 
-    private static final HashSet<FakeEntity> entityList = new HashSet<>();
-    private static final HashSet<FakeEntity> toSpawn = new HashSet<>();
+    private static final Set<FakeEntity> entityList = new HashSet<>();
+    private static final Set<FakeEntity> toSpawn = new HashSet<>();
 
     /**
      * Spawns and register a fake entity into the world

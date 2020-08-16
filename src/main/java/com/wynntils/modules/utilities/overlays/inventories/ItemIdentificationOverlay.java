@@ -32,10 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -116,7 +113,7 @@ public class ItemIdentificationOverlay implements Listener {
         List<String> newLore = new ArrayList<>();
 
         // Generating id lores
-        HashMap<String, String> idLore = new HashMap<>();
+        Map<String, String> idLore = new HashMap<>();
 
         double cumRelative = 0;
         int idAmount = 0;
@@ -251,7 +248,7 @@ public class ItemIdentificationOverlay implements Listener {
             newLore.add(GREEN + "Set Bonus:");
             NBTTagCompound ids = wynntils.getCompoundTag("setBonus");
 
-            HashMap<String, String> bonusOrder = new HashMap<>();
+            Map<String, String> bonusOrder = new HashMap<>();
             for (String idName : ids.getKeySet()) {
                 bonusOrder.put(idName, ids.getString(idName));
             }
@@ -338,7 +335,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemGuessProfile igp = WebManager.getItemGuesses().get(levelRange);
         if (igp == null) return;
 
-        HashMap<String, String> rarityMap = igp.getItems().get(itemType);
+        Map<String, String> rarityMap = igp.getItems().get(itemType);
         if (rarityMap == null) return;
 
         String items = null;

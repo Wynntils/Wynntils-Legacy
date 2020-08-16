@@ -15,6 +15,8 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
@@ -90,7 +92,7 @@ public class UtilitiesConfig extends SettingsClass {
     public String lastServerResourcePackHash = "";
 
     @Setting
-    public HashMap<Integer, HashSet<Integer>> locked_slots = new HashMap<>();
+    public Map<Integer, Set<Integer>> locked_slots = new HashMap<>();
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
     public static class Identifications extends SettingsClass {

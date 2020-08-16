@@ -34,7 +34,7 @@ public class ConsumableTimerOverlay extends Overlay {
     transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
 
     transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
-    transient private static HashMap<String, IdentificationHolder> activeEffects = new HashMap<>();
+    transient private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
 
     public ConsumableTimerOverlay() {
         super("Consumable Timer", 125, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
@@ -165,7 +165,7 @@ public class ConsumableTimerOverlay extends Overlay {
     }
 
     private static void updateActiveEffects() {
-        HashMap<String, IdentificationHolder> effects = new HashMap<>();
+        Map<String, IdentificationHolder> effects = new HashMap<>();
         for (ConsumableContainer consumable : activeConsumables) {
             for (String cEf : consumable.getEffects().keySet()) {
                 IdentificationHolder holder = consumable.getEffects().get(cEf);

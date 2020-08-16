@@ -27,7 +27,7 @@ import java.util.*;
 
 public class WorldMapSettingsUI extends GuiScreen {
 
-    private HashMap<String, Boolean> enabledMapIcons, enabledMinimapIcons;
+    private Map<String, Boolean> enabledMapIcons, enabledMinimapIcons;
     private int page = 0;
     private int maxPage;
     private List<Button> settingButtons = Collections.EMPTY_LIST;

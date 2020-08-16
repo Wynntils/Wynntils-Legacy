@@ -60,7 +60,7 @@ public class NametagManager {
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
-    private static final HashMap<String, NametagLabel> wynncraftTagLabels = new HashMap<>();
+    private static final Map<String, NametagLabel> wynncraftTagLabels = new HashMap<>();
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
     private static final ScreenRenderer renderer = new ScreenRenderer();

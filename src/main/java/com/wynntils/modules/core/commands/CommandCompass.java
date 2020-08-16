@@ -305,7 +305,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
         if (args.length >= 2 && args[0].equalsIgnoreCase("share")) {
             // Allow easy completion of friends' names
-            HashSet<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
+            Set<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
             completions.add("party");
             if (args.length == 3 && args[1].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, completions);

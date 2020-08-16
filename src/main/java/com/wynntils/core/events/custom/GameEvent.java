@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Called when something related to the game happens
@@ -168,10 +169,10 @@ public class GameEvent extends Event {
      */
     public static class DamageEntity extends GameEvent {
 
-        HashMap<DamageType, Integer> damageTypes;
+        Map<DamageType, Integer> damageTypes;
         Entity entity;
 
-        public DamageEntity(HashMap<DamageType, Integer> damageTypes, Entity entity) {
+        public DamageEntity(Map<DamageType, Integer> damageTypes, Entity entity) {
             this.damageTypes = damageTypes;
             this.entity = entity;
         }
@@ -180,7 +181,7 @@ public class GameEvent extends Event {
             return entity;
         }
 
-        public HashMap<DamageType, Integer> getDamageTypes() {
+        public Map<DamageType, Integer> getDamageTypes() {
             return damageTypes;
         }
 

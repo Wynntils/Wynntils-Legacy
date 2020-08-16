@@ -15,6 +15,7 @@ import com.wynntils.webapi.profiles.MusicProfile;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +24,8 @@ public class MusicManager {
 
     private static final Pattern TERRITORY_NAME_REGEX = Pattern.compile("\\(([^)]+)\\)");
 
-    private static final HashMap<String, MusicProfile> downloadedMusics = new HashMap<>();
-    private static final HashMap<String, MusicProfile> availableMusics = new HashMap<>();
+    private static final Map<String, MusicProfile> downloadedMusics = new HashMap<>();
+    private static final Map<String, MusicProfile> availableMusics = new HashMap<>();
 
     private static final MusicPlayer player = new MusicPlayer();
 

@@ -11,6 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ChatTab implements Comparable<ChatTab> {
@@ -20,7 +21,7 @@ public class ChatTab implements Comparable<ChatTab> {
     int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
-    HashMap<String, Boolean> regexSettings;
+    Map<String, Boolean> regexSettings;
 
     // not stored ones
     transient List<ChatLine> currentMessages = new ArrayList<>();
@@ -37,7 +38,7 @@ public class ChatTab implements Comparable<ChatTab> {
     @SuppressWarnings("unused")
     private ChatTab() {}
 
-    public ChatTab(String name, String regexFinder, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+    public ChatTab(String name, String regexFinder, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
         this.regexSettings = regexSettings;
         this.autoCommand = autoCommand;
@@ -84,7 +85,7 @@ public class ChatTab implements Comparable<ChatTab> {
         this.regexFinder = Pattern.compile(regex);
     }
 
-    public HashMap<String, Boolean> getRegexSettings() {
+    public Map<String, Boolean> getRegexSettings() {
         return regexSettings;
     }
 
@@ -150,7 +151,7 @@ public class ChatTab implements Comparable<ChatTab> {
         hasNewMessages = false; hasMentions = false;
     }
 
-    public void update(String name, String regex, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+    public void update(String name, String regex, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.regexSettings = regexSettings; this.autoCommand = autoCommand; this.orderNb = orderNb;
     }
 

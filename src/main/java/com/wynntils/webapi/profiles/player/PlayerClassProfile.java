@@ -10,13 +10,14 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayerClassProfile {
 
     private String name;
     private int level;
-    private HashMap<String, Integer> dungeonsCompleted;
-    private ArrayList<String> questsCompleted;
+    private Map<String, Integer> dungeonsCompleted;
+    private List<String> questsCompleted;
     private int itemsIdentified;
     private int mobsKilled;
     private int pvpKills;
@@ -61,7 +62,7 @@ public class PlayerClassProfile {
     private int eventsWon;
     private boolean preEconomyUpdate;
 
-    public PlayerClassProfile(String name, int level, HashMap<String, Integer> dungeonsCompleted, ArrayList<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefence, int skillAgility, int alchemismLevel, float alchemismXp, int armouringLevel, float armouringXp, int combatLevel, float combatXp, int cookingLevel, float cookingXp, int farmingLevel, float farmingXp, int fishingLevel, float fishingXp, int jewelingLevel, float jewelingXp, int miningLevel, float miningXp, int scribingLevel, float scribingXp, int tailoringLevel, float tailoringXp, int weaponsmithingLevel, float weaponsmithingXp, int woodcuttingLevel, float woodcuttingXp, int woodworkingLevel, float woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
+    public PlayerClassProfile(String name, int level, Map<String, Integer> dungeonsCompleted, List<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefence, int skillAgility, int alchemismLevel, float alchemismXp, int armouringLevel, float armouringXp, int combatLevel, float combatXp, int cookingLevel, float cookingXp, int farmingLevel, float farmingXp, int fishingLevel, float fishingXp, int jewelingLevel, float jewelingXp, int miningLevel, float miningXp, int scribingLevel, float scribingXp, int tailoringLevel, float tailoringXp, int weaponsmithingLevel, float weaponsmithingXp, int woodcuttingLevel, float woodcuttingXp, int woodworkingLevel, float woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
         this.name = name;
         this.level = level;
         this.dungeonsCompleted = dungeonsCompleted;
@@ -119,7 +120,7 @@ public class PlayerClassProfile {
         return level;
     }
 
-    public HashMap<String, Integer> getDungeonsCompleted() {
+    public Map<String, Integer> getDungeonsCompleted() {
         return dungeonsCompleted;
     }
 
@@ -307,7 +308,7 @@ public class PlayerClassProfile {
             String name = playerClass.get("name").getAsString();
             int level = playerClass.get("level").getAsInt();
 
-            HashMap<String, Integer> dungeonsCompleted = new HashMap<>();
+            Map<String, Integer> dungeonsCompleted = new HashMap<>();
             JsonArray dungeonsJson = playerClass.get("dungeons").getAsJsonObject().get("list").getAsJsonArray();
             for (JsonElement dungeonJson : dungeonsJson) {
                 JsonObject object = dungeonJson.getAsJsonObject();

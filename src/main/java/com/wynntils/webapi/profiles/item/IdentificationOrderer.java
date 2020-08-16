@@ -11,13 +11,13 @@ public class IdentificationOrderer {
 
     public static IdentificationOrderer INSTANCE = new IdentificationOrderer(null, null, null);
 
-    HashMap<String, Integer> order = new HashMap<>();
+    Map<String, Integer> order = new HashMap<>();
     ArrayList<String> groups = new ArrayList<>();
     ArrayList<String> inverted = new ArrayList<>();
 
-    transient HashMap<Integer, Integer> organizedGroups = null;
+    transient Map<Integer, Integer> organizedGroups = null;
 
-    public IdentificationOrderer(HashMap<String, Integer> idOrders, ArrayList<String> groupRanges, ArrayList<String> inveverted) {}
+    public IdentificationOrderer(Map<String, Integer> idOrders, ArrayList<String> groupRanges, ArrayList<String> inveverted) {}
 
     /**
      * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
@@ -52,7 +52,7 @@ public class IdentificationOrderer {
      * @param groups if ids should be grouped
      * @return a list with the ordered lore
      */
-    public List<String> order(HashMap<String, String> holder, boolean groups) {
+    public List<String> order(Map<String, String> holder, boolean groups) {
         List<String> result = new ArrayList<>();
         if (holder.isEmpty()) return result;
 

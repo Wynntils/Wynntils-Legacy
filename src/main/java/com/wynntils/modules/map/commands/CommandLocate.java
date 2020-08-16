@@ -87,7 +87,7 @@ public class CommandLocate extends CommandBase implements IClientCommand {
             }
         }
 
-        TreeMap<Double, LocationProfile> distanceToLocations = new TreeMap<>();
+        Map<Double, LocationProfile> distanceToLocations = new TreeMap<>();
         Location currentLocation = new Location(Minecraft.getMinecraft().player);
 
         for (LocationProfile locationProfile : knownProfiles) {

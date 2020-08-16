@@ -20,10 +20,7 @@ import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
@@ -76,10 +73,10 @@ public class MapConfig extends SettingsClass {
     public int mapZoom = 30;
 
     @Setting
-    public HashMap<String, Boolean> enabledMapIcons = resetMapIcons(false);
+    public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
 
     @Setting
-    public HashMap<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
+    public Map<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
 
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
     public static class WorldMap extends SettingsClass {
@@ -247,8 +244,8 @@ public class MapConfig extends SettingsClass {
         }
     }
 
-    public static HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
-        HashMap<String, Boolean> enabledIcons = new HashMap<>();
+    public static Map<String, Boolean> resetMapIcons(boolean forMiniMap) {
+        Map<String, Boolean> enabledIcons = new HashMap<>();
         for (String icon : new String[]{
             "Dungeons", "Accessory Merchant", "Armour Merchant", "Dungeon Merchant", "Horse Merchant",
             "Key Forge Merchant", "LE Merchant", "Emerald Merchant", "TNT Merchant", "Ore Refinery",

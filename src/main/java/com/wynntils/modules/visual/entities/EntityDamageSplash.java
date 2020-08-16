@@ -30,7 +30,7 @@ public class EntityDamageSplash extends FakeEntity {
     String displayText;
     private float scale = 1f;
 
-    public EntityDamageSplash(HashMap<DamageType, Integer> damages, Location currentLocation) {
+    public EntityDamageSplash(Map<DamageType, Integer> damages, Location currentLocation) {
         super(currentLocation);
 
         StringBuilder text = new StringBuilder();

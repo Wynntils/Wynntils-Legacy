@@ -8,11 +8,12 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LeaderboardProfile;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class LeaderboardManager {
 
-    private static HashMap<UUID, LeaderboardProfile> leaderboard = new HashMap<>();
+    private static Map<UUID, LeaderboardProfile> leaderboard = new HashMap<>();
 
     public static synchronized void updateLeaders() {
         WebManager.getLeaderboard(result -> leaderboard = result);
