@@ -188,9 +188,6 @@ public class RequestHandler {
                             Reference.LOGGER.info("Error occurred whilst fetching " + req.id + " from " + req.url + (req.cacheFile == null ? "" : "; Attempting to use cache"));
                             e.printStackTrace();
                         }
-                        if (req.onTimeout != null) {
-                            req.onTimeout.run();
-                        }
                     }
                 }
 
