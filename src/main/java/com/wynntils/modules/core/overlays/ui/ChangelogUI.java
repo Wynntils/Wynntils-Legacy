@@ -30,7 +30,7 @@ public class ChangelogUI extends GuiScreen {
 
     GuiScreen previousGui;
 
-    ArrayList<String> changelogContent = new ArrayList<>();
+    List<String> changelogContent = new ArrayList<>();
 
     int scrollbarPosition = 0;
     int scrollbarSize;
@@ -88,7 +88,7 @@ public class ChangelogUI extends GuiScreen {
             if (mc.currentScreen != loadingScreen) {
                 return;
             }
-            ArrayList<String> changelog = WebManager.getChangelog(major, forceLatest);
+            List<String> changelog = WebManager.getChangelog(major, forceLatest);
             if (mc.currentScreen != loadingScreen) {
                 return;
             }

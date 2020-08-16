@@ -58,15 +58,15 @@ public class WebManager {
     private static Collection<ItemProfile> directItems = new ArrayList<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
-    private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
-    private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
-    private static ArrayList<LocationProfile> npcLocations = new ArrayList<>();
+    private static List<MapMarkerProfile> mapMarkers = new ArrayList<>();
+    private static List<MapLabelProfile> mapLabels = new ArrayList<>();
+    private static List<LocationProfile> npcLocations = new ArrayList<>();
 
     private static PlayerStatsProfile playerProfile;
     private static HashMap<String, GuildProfile> guilds = new HashMap<>();
     private static String currentSplash = "";
 
-    private static ArrayList<DiscoveryProfile> discoveries = new ArrayList<>();
+    private static List<DiscoveryProfile> discoveries = new ArrayList<>();
 
     private static MusicLocationsProfile musicLocations = new MusicLocationsProfile();
 
@@ -173,15 +173,15 @@ public class WebManager {
         return items;
     }
 
-    public static ArrayList<MapMarkerProfile> getMapMarkers() {
+    public static List<MapMarkerProfile> getMapMarkers() {
         return mapMarkers;
     }
 
-    public static ArrayList<MapLabelProfile> getMapLabels() {
+    public static List<MapLabelProfile> getMapLabels() {
         return mapLabels;
     }
 
-    public static ArrayList<LocationProfile> getNpcLocations() {
+    public static List<LocationProfile> getNpcLocations() {
         return npcLocations;
     }
 
@@ -199,7 +199,7 @@ public class WebManager {
         return directItems;
     }
 
-    public static ArrayList<DiscoveryProfile> getDiscoveries() {
+    public static List<DiscoveryProfile> getDiscoveries() {
         return discoveries;
     }
 
@@ -277,7 +277,7 @@ public class WebManager {
      */
     public static List<String> getGuilds()  {
         class ResultHolder {
-            private ArrayList<String> result;
+            private List<String> result;
         }
         ResultHolder resultHolder = new ResultHolder();
 
@@ -387,7 +387,7 @@ public class WebManager {
      * @return a {@link HashMap} who the key is the server and the value is an array containing all players on it
      * @throws IOException thrown by URLConnection
      */
-    public static HashMap<String, ArrayList<String>> getOnlinePlayers() throws IOException {
+    public static HashMap<String, List<String>> getOnlinePlayers() throws IOException {
         if (apiUrls == null) return new HashMap<>();
 
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
@@ -603,13 +603,13 @@ public class WebManager {
         return main.getAsJsonObject().get("number").getAsInt();
     }
 
-    public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws IOException {
+    public static List<MusicProfile> getCurrentAvailableSongs() throws IOException {
         URLConnection st = new URL(apiUrls.get("WynnSounds")).openConnection();
         st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-        ArrayList<MusicProfile> result = new ArrayList<>();
+        List<MusicProfile> result = new ArrayList<>();
         JsonArray array = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonArray();
         for (int i = 0; i < array.size(); i++) {
             JsonObject obj = array.get(i).getAsJsonObject();
@@ -727,13 +727,13 @@ public class WebManager {
      *
      * @return an ArrayList of ChangelogProfile's
      */
-    public static ArrayList<String> getChangelog(boolean major, boolean forceLatest) {
+    public static List<String> getChangelog(boolean major, boolean forceLatest) {
         if (apiUrls == null) return null;
 
         boolean failed = false;
 
         if (major) {
-            HashMap<String, ArrayList<String>> changelogs = null;
+            HashMap<String, List<String>> changelogs = null;
             Type type = new TypeToken<HashMap<String, ArrayList<String>>>() { }.getType();
             String url = apiUrls.get("Changelog");
             Reference.LOGGER.info("Requesting changelog from " + url);
@@ -780,7 +780,7 @@ public class WebManager {
             JsonArray changesArray = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8))
                 .getAsJsonObject().getAsJsonObject("changeSet").getAsJsonArray("items");
 
-            ArrayList<String> changelog = new ArrayList<>(changesArray.size());
+            List<String> changelog = new ArrayList<>(changesArray.size());
             for (JsonElement el : changesArray) {
                 changelog.add(el.getAsJsonObject().get("msg").getAsString());
             }

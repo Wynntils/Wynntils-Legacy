@@ -23,17 +23,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public class WorldMapSettingsUI extends GuiScreen {
 
     private HashMap<String, Boolean> enabledMapIcons, enabledMinimapIcons;
     private int page = 0;
     private int maxPage;
-    private ArrayList<Button> settingButtons = new ArrayList<>();
+    private List<Button> settingButtons = Collections.EMPTY_LIST;
     private GuiButton textureButton, nextPageButton, previousPageButton;
 
     public WorldMapSettingsUI() {
@@ -55,10 +52,9 @@ public class WorldMapSettingsUI extends GuiScreen {
         page = 0;
         maxPage = 0;
 
-        settingButtons.clear();
-        settingButtons.ensureCapacity(2 * enabledMapIcons.size());
+        this.settingButtons = new ArrayList<>(2 * enabledMapIcons.size());
 
-        ArrayList<String> keys = new ArrayList<>(enabledMapIcons.keySet());
+        List<String> keys = new ArrayList<>(enabledMapIcons.keySet());
         keys.sort(Comparator.<String, Float>comparing(i -> {
             MapApiIcon icon = MapApiIcon.getFree(i, IconTexture.Classic);
             return -icon.getSizeX() * icon.getSizeZ();

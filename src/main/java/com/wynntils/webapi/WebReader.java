@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class WebReader {
 
@@ -21,7 +22,7 @@ public class WebReader {
     File file;
 
     private HashMap<String, String> values;
-    private HashMap<String, ArrayList<String>> lists;
+    private HashMap<String, List<String>> lists;
 
     public WebReader(String url) throws Exception {
         this.url = url;
@@ -85,7 +86,7 @@ public class WebReader {
                 if (split[1].contains(",")) {
                     String[] array = split[1].split(",");
 
-                    ArrayList<String> values = new ArrayList<>();
+                    List<String> values = new ArrayList<>();
                     for (String x : array) {
                         if (x.startsWith(" ")) {
                             x = x.substring(1);
@@ -95,7 +96,7 @@ public class WebReader {
 
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
                 } else {
-                    ArrayList<String> values = new ArrayList<>();
+                    List<String> values = new ArrayList<>();
                     values.add(split[1]);
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
                 }
@@ -108,7 +109,7 @@ public class WebReader {
         return values.getOrDefault(key, null);
     }
 
-    public ArrayList<String> getList(String key) {
+    public List<String> getList(String key) {
         return lists.getOrDefault(key, new ArrayList<>());
     }
 

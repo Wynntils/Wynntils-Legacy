@@ -12,6 +12,7 @@ import com.wynntils.webapi.downloader.enums.DownloadAction;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class FileUpdater {
 
@@ -42,7 +43,7 @@ public class FileUpdater {
 
         HashMap<String, String> values = reader.getValues();
 
-        ArrayList<String> localFiles = new ArrayList<>();
+        List<String> localFiles = new ArrayList<>();
         for (File f : location.listFiles()) {
             localFiles.add(f.getName());
         }

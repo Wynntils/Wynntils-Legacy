@@ -438,7 +438,7 @@ public class ChatManager {
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
 
-                ArrayList<ITextComponent> components = new ArrayList<>();
+                List<ITextComponent> components = new ArrayList<>();
 
                 for (ITextComponent component : in.getSiblings()) {
                     String text = component.getUnformattedText();

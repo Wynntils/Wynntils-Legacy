@@ -13,6 +13,7 @@ import com.wynntils.modules.chat.managers.TabManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 @SettingsInfo(name = "chat", displayPath = "Chat")
 public class ChatConfig extends SettingsClass {
@@ -53,7 +54,7 @@ public class ChatConfig extends SettingsClass {
     public boolean registeredDefaultTabs = false;
 
     @Setting
-    public ArrayList<ChatTab> available_tabs = new ArrayList<>();
+    public List<ChatTab> available_tabs = new ArrayList<>();
 
     @Setting(displayName = "Alter Chat Tab by Presets", description = "Which pre-made selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All")
     public Presets preset = Presets.a;

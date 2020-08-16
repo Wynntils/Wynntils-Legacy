@@ -17,11 +17,12 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ToastOverlay extends Overlay {
 
     private static final int DISPLAY_AMNT = 3;
-    private static final ArrayList<Toast> toastList = new ArrayList<>();
+    private static final List<Toast> toastList = new ArrayList<>();
     private static final Toast[] displayedToast = new Toast[DISPLAY_AMNT];
     public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
 
@@ -119,7 +120,7 @@ public class ToastOverlay extends Overlay {
                 bottomT_X1 = 0; bottomT_X2 = 160;
             }
             // Adds new toasts
-            ArrayList<Integer> toBeRemoved = new ArrayList<>();
+            List<Integer> toBeRemoved = new ArrayList<>();
             int curHeight = 0;
             for (int j = 0; j < DISPLAY_AMNT; j++) {
                 if (displayedToast[j] != null) {

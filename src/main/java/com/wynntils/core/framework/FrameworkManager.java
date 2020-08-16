@@ -39,7 +39,7 @@ import static net.minecraft.client.gui.Gui.ICONS;
 public class FrameworkManager {
 
     public static HashMap<String, ModuleContainer> availableModules = new HashMap<>();
-    public static LinkedHashMap<Priority, ArrayList<Overlay>> registeredOverlays = new LinkedHashMap<>();
+    public static LinkedHashMap<Priority, List<Overlay>> registeredOverlays = new LinkedHashMap<>();
     public static HashSet<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
 
     private static final EventBus eventBus = new EventBus();
@@ -153,7 +153,7 @@ public class FrameworkManager {
             }
 
             Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
-            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+            for (List<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if (!overlay.active) continue;
 
@@ -188,7 +188,7 @@ public class FrameworkManager {
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
             Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
-            for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+            for (List<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if (!overlay.active) continue;
 
@@ -210,7 +210,7 @@ public class FrameworkManager {
     public static void triggerHudTick(TickEvent.ClientTickEvent e) {
         if (e.phase == TickEvent.Phase.START || !Reference.onServer) return;
 
-        for (ArrayList<Overlay> overlays : registeredOverlays.values()) {
+        for (List<Overlay> overlays : registeredOverlays.values()) {
             for (Overlay overlay : overlays) {
                 if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.active) {
                     overlay.position.refresh(ScreenRenderer.screen);

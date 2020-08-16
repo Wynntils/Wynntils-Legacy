@@ -23,6 +23,7 @@ import com.wynntils.webapi.profiles.MapMarkerProfile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
@@ -126,10 +127,10 @@ public class MapConfig extends SettingsClass {
 
         // HeyZeer0: this stores all waypoints
         @Setting(upload = true)
-        public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
+        public List<WaypointProfile> waypoints = new ArrayList<>();
 
         @Setting(upload = true)
-        public ArrayList<PathWaypointProfile> pathWaypoints = new ArrayList<>();
+        public List<PathWaypointProfile> pathWaypoints = new ArrayList<>();
 
         @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoint become more clearer the closer you are height wise?\n\nWaypoint below will darken and waypoints above will lighten", order = 1)
         public boolean iconFade = true;
@@ -157,7 +158,7 @@ public class MapConfig extends SettingsClass {
             }
 
             public boolean isTierAboveThis(String testTier) {
-                ArrayList<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                List<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
                 return allowedTiers.contains(testTier);
             }
         }

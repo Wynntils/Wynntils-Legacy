@@ -42,7 +42,7 @@ public class ItemProfile {
     HashMap<String, Integer> defenseTypes = new HashMap<>();
     HashMap<String, IdentificationContainer> statuses = new HashMap<>();
 
-    ArrayList<MajorIdentification> majorIds = new ArrayList<>();
+    List<MajorIdentification> majorIds = new ArrayList<>();
 
     String restriction;
     String lore;
@@ -96,7 +96,7 @@ public class ItemProfile {
         return statuses;
     }
 
-    public ArrayList<MajorIdentification> getMajorIds() {
+    public List<MajorIdentification> getMajorIds() {
         return majorIds;
     }
 

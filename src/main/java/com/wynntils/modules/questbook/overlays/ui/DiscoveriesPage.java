@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 public class DiscoveriesPage extends QuestBookPage {
 
-    private ArrayList<DiscoveryInfo> discoverySearch;
+    private List<DiscoveryInfo> discoverySearch;
     private DiscoveryInfo overDiscovery;
 
     private boolean territory = true;

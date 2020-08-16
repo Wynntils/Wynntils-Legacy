@@ -11,6 +11,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,7 +26,7 @@ public class TextAction {
     }
 
     private static HashMap<String, Constructor<? extends Runnable>> staticNameMap = new HashMap<>();
-    private static HashMap<String, ArrayList<Runnable>> dynamicNameMap = new HashMap<>();
+    private static HashMap<String, List<Runnable>> dynamicNameMap = new HashMap<>();
 
     /**
      * Gets an event that will construct the given class and then call the {@link Runnable#run()} method.
@@ -59,7 +60,7 @@ public class TextAction {
      */
     public static ClickEvent getDynamicEvent(Runnable action) {
         String clazz = action.getClass().getName();
-        ArrayList<Runnable> runnables = dynamicNameMap.computeIfAbsent(clazz, k -> new ArrayList<>());
+        List<Runnable> runnables = dynamicNameMap.computeIfAbsent(clazz, k -> new ArrayList<>());
         int index = runnables.size();
         runnables.add(action);
         return new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/wynntils " + prefix + " dynamic " + clazz + (" " + index));
@@ -95,7 +96,7 @@ public class TextAction {
             return;
         }
         if (args.length == 4 && args[1].equals("dynamic") && args[2] != null && StringUtils.isValidInteger(args[3])) {
-            ArrayList<Runnable> runnables = dynamicNameMap.get(args[2]);
+            List<Runnable> runnables = dynamicNameMap.get(args[2]);
             if (runnables == null) return;
             int index = Integer.parseInt(args[3]);
             if (0 > index || index >= runnables.size()) return;

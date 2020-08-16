@@ -241,8 +241,7 @@ public class MapPathWaypointIcon extends MapIcon {
         if (size == 0) return null;
 
         int nSegments = profile.size() + (profile.isCircular ? 1 : 0) - 1;
-        ArrayList<PathSegment> path = new ArrayList<>();
-        path.ensureCapacity(nSegments);
+        ArrayList<PathSegment> path = new ArrayList<>(nSegments);
         PathPoint first;
         PathPoint second = profile.getPoint(0);
         for (int i = 1; i < nSegments + 1; ++i) {

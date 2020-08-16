@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class QuestsPage extends QuestBookPage {
 
-    private ArrayList<QuestInfo> questSearch;
+    private List<QuestInfo> questSearch;
     private QuestInfo overQuest;
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;

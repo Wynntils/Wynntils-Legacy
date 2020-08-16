@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,7 +31,7 @@ public class RequestHandler {
     public RequestHandler() {}
 
     private final ExecutorService pool = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("wynntils-web-request-pool-%d").build());
-    private final ArrayList<Request> requests = new ArrayList<>();
+    private final List<Request> requests = new ArrayList<>();
     private int maxParallelGroup = 0;
     private int dispatchId = 0;
 
@@ -83,7 +84,7 @@ public class RequestHandler {
     }
 
     private Thread dispatch(boolean async) {
-        ArrayList<Request>[] groupedRequests;
+        List<Request>[] groupedRequests;
         boolean anyRequests = false;
         int thisDispatch;
 
@@ -120,13 +121,13 @@ public class RequestHandler {
         return null;
     }
 
-    private void handleDispatch(int dispatchId, ArrayList<Request>[] groupedRequests, int currentGroupIndex) {
-        ArrayList<Request> currentGroup = groupedRequests[currentGroupIndex];
+    private void handleDispatch(int dispatchId, List<Request>[] groupedRequests, int currentGroupIndex) {
+        List<Request> currentGroup = groupedRequests[currentGroupIndex];
         if (currentGroup.size() == 0) {
             nextDispatch(dispatchId, groupedRequests, currentGroupIndex);
             return;
         }
-        ArrayList<Callable<Void>> tasks = new ArrayList<>(currentGroup.size());
+        List<Callable<Void>> tasks = new ArrayList<>(currentGroup.size());
         for (Request req : currentGroup) {
             tasks.add(() -> {
                 if (req.cacheValidator != null) {
@@ -228,7 +229,7 @@ public class RequestHandler {
         if (interrupted) {
             HashSet<String> completedIds = new HashSet<>();
             HashSet<String> interruptedIds = new HashSet<>();
-            for (ArrayList<Request> requests : groupedRequests) for (Request request : requests) {
+            for (List<Request> requests : groupedRequests) for (Request request : requests) {
                 (request.currentlyHandling == 2 ? completedIds : interruptedIds).add(request.id);
             }
             synchronized (this) {
@@ -258,7 +259,7 @@ public class RequestHandler {
         } catch (Exception ignore) {}
     }
 
-    private void nextDispatch(int dispatchId, ArrayList<Request>[] groupedRequests, int currentGroupIndex) {
+    private void nextDispatch(int dispatchId, List<Request>[] groupedRequests, int currentGroupIndex) {
         if (currentGroupIndex != groupedRequests.length - 1) {
             handleDispatch(dispatchId, groupedRequests, currentGroupIndex + 1);
             return;
@@ -266,7 +267,7 @@ public class RequestHandler {
 
         // Last group; Remove handled requests
         HashSet<String> ids = new HashSet<>();
-        for (ArrayList<Request> requests : groupedRequests) for (Request request : requests) {
+        for (List<Request> requests : groupedRequests) for (Request request : requests) {
             ids.add(request.id);
         }
         synchronized (this) {

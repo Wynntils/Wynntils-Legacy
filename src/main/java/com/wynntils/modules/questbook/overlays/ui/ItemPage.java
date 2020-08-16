@@ -34,7 +34,7 @@ import java.util.List;
 
 public class ItemPage extends QuestBookPage {
 
-    private ArrayList<ItemProfile> itemSearch;
+    private List<ItemProfile> itemSearch;
 
     private boolean byAlphabetical = true;
     private boolean byLevel = false;
@@ -296,7 +296,7 @@ public class ItemPage extends QuestBookPage {
 
                     render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
 
-                    ArrayList<String> lore = new ArrayList<>();
+                    List<String> lore = new ArrayList<>();
                     lore.add(pf.getGuideStack().getDisplayName());
                     lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
 

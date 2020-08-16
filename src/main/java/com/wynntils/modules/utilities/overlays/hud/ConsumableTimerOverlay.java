@@ -33,7 +33,7 @@ public class ConsumableTimerOverlay extends Overlay {
     transient private static final Pattern DURATION_PATTERN = Pattern.compile("^- Duration: ([0-9]*) (.*?)");
     transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
 
-    transient private static ArrayList<ConsumableContainer> activeConsumables = new ArrayList<>();
+    transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
     transient private static HashMap<String, IdentificationHolder> activeEffects = new HashMap<>();
 
     public ConsumableTimerOverlay() {
@@ -45,7 +45,7 @@ public class ConsumableTimerOverlay extends Overlay {
             // assigns a new object to avoid CME
             activeConsumables = new ArrayList<>();
         } else {
-            ArrayList<ConsumableContainer> persistent = new ArrayList<>(activeConsumables);
+            List<ConsumableContainer> persistent = new ArrayList<>(activeConsumables);
             persistent.removeIf(c -> !c.isPersistent());
             activeConsumables = persistent;
         }

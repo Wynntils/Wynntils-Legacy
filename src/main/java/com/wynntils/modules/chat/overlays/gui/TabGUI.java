@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -30,7 +31,7 @@ public class TabGUI extends GuiScreen {
         if (id != -2)
             tab = TabManager.getTabById(id);
     }
-    ArrayList<GuiCheckBox> simpleRegexSettings = new ArrayList<>();
+    List<GuiCheckBox> simpleRegexSettings = new ArrayList<>();
 
     // ui things
     GuiButton saveButton;
@@ -289,7 +290,7 @@ public class TabGUI extends GuiScreen {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return "";
 
         HashMap<String, Boolean> regexSettings = regexSettingsCreator();
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         boolean allIsPresent = regexSettings.get("All");
 
         regexSettings.forEach((k, v) -> {

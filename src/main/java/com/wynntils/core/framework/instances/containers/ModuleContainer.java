@@ -17,13 +17,14 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class ModuleContainer {
 
     ModuleInfo info;
     Module module;
 
-    ArrayList<KeyHolder> keyHolders = new ArrayList<>();
+    List<KeyHolder> keyHolders = new ArrayList<>();
     HashMap<String, SettingsContainer> registeredSettings = new HashMap<>();
     HashSet<Object> registeredEvents = new HashSet<>();
 

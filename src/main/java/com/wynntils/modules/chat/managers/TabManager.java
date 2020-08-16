@@ -11,13 +11,14 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class TabManager {
 
     public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&r&b★{0,4})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
     public static final String DEFAULT_PARTY_REGEX = "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)";
 
-    private static ArrayList<ChatTab> availableTabs;
+    private static List<ChatTab> availableTabs;
 
     public static void startTabs() {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
@@ -83,7 +84,7 @@ public class TabManager {
         return id == 0 ? 0 : id - 1;
     }
 
-    public static ArrayList<ChatTab> getAvailableTabs() {
+    public static List<ChatTab> getAvailableTabs() {
         return availableTabs;
     }
 

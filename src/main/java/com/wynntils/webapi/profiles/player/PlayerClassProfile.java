@@ -9,6 +9,7 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerClassProfile {
 
@@ -122,7 +123,7 @@ public class PlayerClassProfile {
         return dungeonsCompleted;
     }
 
-    public ArrayList<String> getQuestsCompleted() {
+    public List<String> getQuestsCompleted() {
         return questsCompleted;
     }
 

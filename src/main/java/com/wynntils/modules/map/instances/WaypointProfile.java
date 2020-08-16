@@ -255,15 +255,15 @@ public class WaypointProfile {
         }
     }
 
-    public static ArrayList<WaypointProfile> decode(String base64) throws IllegalArgumentException {
+    public static List<WaypointProfile> decode(String base64) throws IllegalArgumentException {
         if (base64 == null) throw new IllegalArgumentException("Invalid waypoint list\\nWas null");
         return decode(Base64.getDecoder().decode(base64));
     }
 
-    public static ArrayList<WaypointProfile> decode(byte[] data) throws IllegalArgumentException {
+    public static List<WaypointProfile> decode(byte[] data) throws IllegalArgumentException {
         if (data == null) throw new IllegalArgumentException("Invalid waypoint list\\nWas null");
         ByteBuffer buf = ByteBuffer.wrap(data);
-        ArrayList<WaypointProfile> result;
+        List<WaypointProfile> result;
         try {
             result = decode(buf);
         } catch (BufferUnderflowException e) {
@@ -275,7 +275,7 @@ public class WaypointProfile {
         return result;
     }
 
-    public static ArrayList<WaypointProfile> decode(ByteBuffer buf) throws IllegalArgumentException, BufferUnderflowException {
+    public static List<WaypointProfile> decode(ByteBuffer buf) throws IllegalArgumentException, BufferUnderflowException {
         byte format = buf.get();
         int uformat = Byte.toUnsignedInt(format);
         if (!(0 <= uformat && uformat <= (int) currentFormat)) {
@@ -296,7 +296,7 @@ public class WaypointProfile {
         if (size < 0 || size > 8192) {
             throw new IllegalArgumentException("Invalid waypoint list size");
         }
-        ArrayList<WaypointProfile> result = new ArrayList<>(size);
+        List<WaypointProfile> result = new ArrayList<>(size);
         while (size-- > 0) {
             WaypointProfile wp = new WaypointProfile(null, 0, 0, 0, null, null, 0);
             wp.decode(format, buf);

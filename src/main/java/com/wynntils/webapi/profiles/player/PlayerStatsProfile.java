@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PlayerStatsProfile {
@@ -161,7 +162,7 @@ public class PlayerStatsProfile {
         return veteran;
     }
 
-    public ArrayList<PlayerClassProfile> getClasses() {
+    public List<PlayerClassProfile> getClasses() {
         return classes;
     }
 

@@ -101,9 +101,9 @@ public class QuestManager {
         sendMessage(GRAY + "[Analysing quest book...]");
         hasInterrupted = false;
 
-        ArrayList<ItemStack> gatheredQuests = new ArrayList<>();
-        ArrayList<ItemStack> gatheredMiniQuests = new ArrayList<>();
-        ArrayList<ItemStack> gatheredDiscoveries = new ArrayList<>();
+        List<ItemStack> gatheredQuests = new ArrayList<>();
+        List<ItemStack> gatheredMiniQuests = new ArrayList<>();
+        List<ItemStack> gatheredDiscoveries = new ArrayList<>();
 
         FakeInventory inv = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(7));
         inv.setLimitTime(15000); // 15 seconds
@@ -299,7 +299,7 @@ public class QuestManager {
         if (secretDiscoveries != null) secretDiscoveriesLore = ItemUtils.getLore(secretDiscoveries.b);
     }
 
-    private static void parseQuests(ArrayList<ItemStack> quests) {
+    private static void parseQuests(List<ItemStack> quests) {
         for (ItemStack stack : quests) {
             try {
                 QuestInfo quest = new QuestInfo(stack, false);
@@ -318,7 +318,7 @@ public class QuestManager {
         }
     }
 
-    private static void parseMiniQuests(ArrayList<ItemStack> miniQuests) {
+    private static void parseMiniQuests(List<ItemStack> miniQuests) {
         for (ItemStack stack : miniQuests) {
             try {
                 QuestInfo miniQuest = new QuestInfo(stack, true);
@@ -331,7 +331,7 @@ public class QuestManager {
         }
     }
 
-    private static void parseDiscoveries(ArrayList<ItemStack> discoveries) {
+    private static void parseDiscoveries(List<ItemStack> discoveries) {
         for (ItemStack stack : discoveries) {
             try {
                 DiscoveryInfo discovery = new DiscoveryInfo(stack, true);
