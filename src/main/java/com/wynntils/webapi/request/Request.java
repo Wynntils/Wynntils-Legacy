@@ -31,6 +31,7 @@ public class Request {
     Map<String, String> headers = new HashMap<>();
     File cacheFile;
     Predicate<byte[]> cacheValidator = null;
+    Runnable onTimeout = null;
     int currentlyHandling = 0;
     int timeout = 16000;
 
@@ -225,6 +226,11 @@ public class Request {
      */
     public Request addHeader(String key, String value) {
         headers.put(key, value);
+        return this;
+    }
+
+    public Request onTimeout(Runnable timeout) {
+        this.onTimeout = timeout;
         return this;
     }
 
