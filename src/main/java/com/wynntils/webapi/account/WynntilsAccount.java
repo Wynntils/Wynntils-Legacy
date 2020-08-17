@@ -142,6 +142,13 @@ public class WynntilsAccount {
                                     }
                                     handler.dispatchAsync();
                                 }
+                                if (!allQueue.isEmpty()) {
+                                    for (Request request : allQueue) {
+                                        WebManager.getHandler().addRequest(request);
+                                    }
+                                    WebManager.getHandler().dispatchAsync();
+                                    allQueue.clear();
+                                }
 
                                 Reference.LOGGER.info("Successfully connected to Athena!");
                                 return true;
