@@ -10,7 +10,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
-import com.wynntils.modules.music.managers.MusicManager;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 
 @SettingsInfo(name = "music", displayPath = "Music")
 public class MusicConfig extends SettingsClass {
@@ -34,11 +34,15 @@ public class MusicConfig extends SettingsClass {
     @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
     public float focusVolume = -15;
 
+    @Setting(displayName = "Transition Jump", description = "How fast should the song transition be?")
+    @Setting.Limitations.FloatLimit(max = 2f, min= 0f)
+    public float switchJump = 0.5f;
+
     @Override
     public void onSettingChanged(String name) {
-        if (!enabled && Reference.onWorld) MusicManager.getPlayer().stop();
-        if (replaceJukebox && Reference.onWorld) MusicManager.checkForMusic(PlayerInfo.getPlayerInfo().getLocation());
-        if (!replaceJukebox && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) MusicManager.getPlayer().stop();
+        if (!enabled && Reference.onWorld) SoundTrackManager.getPlayer().stop();
+        if (replaceJukebox && Reference.onWorld) SoundTrackManager.findTrack(PlayerInfo.getPlayerInfo().getLocation());
+        if (!replaceJukebox && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) SoundTrackManager.getPlayer().stop();
     }
 
 }

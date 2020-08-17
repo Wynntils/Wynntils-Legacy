@@ -16,7 +16,7 @@ public class MusicLocationsProfile {
     Map<String, String> dungeons = new HashMap<>();
     Map<String, String> entries = new HashMap<>();
 
-    List<MusicAreaProfile> areas = new ArrayList<>();
+    List<SongAreaProfile> areas = new ArrayList<>();
 
     public MusicLocationsProfile() { }
 
@@ -28,8 +28,8 @@ public class MusicLocationsProfile {
         return entries.getOrDefault(name, null);
     }
 
-    public MusicAreaProfile getAreaTrack(Location loc) {
-        for (MusicAreaProfile area : areas) {
+    public SongAreaProfile getAreaTrack(Location loc) {
+        for (SongAreaProfile area : areas) {
             if (!area.getRegion().isInside(loc)) continue;
 
             return area;
@@ -38,8 +38,8 @@ public class MusicLocationsProfile {
         return null;
     }
 
-    public MusicAreaProfile getAreaTrack(String id) {
-        for (MusicAreaProfile area : areas) {
+    public SongAreaProfile getAreaTrack(String id) {
+        for (SongAreaProfile area : areas) {
             if (!area.getId().equalsIgnoreCase(id)) continue;
 
             return area;

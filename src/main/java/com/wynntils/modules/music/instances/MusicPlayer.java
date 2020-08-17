@@ -70,7 +70,7 @@ public class MusicPlayer {
                 return;
             }
 
-            STATUS.setCurrentGain(STATUS.getCurrentGain() - (STATUS.isFastSwitch() ? 1f : 0.2f));
+            STATUS.setCurrentGain(STATUS.getCurrentGain() - (STATUS.isFastSwitch() ? 1f : MusicConfig.INSTANCE.switchJump));
             setGain(STATUS.getCurrentGain());
             return;
         }
@@ -89,14 +89,6 @@ public class MusicPlayer {
 
     public void stop() {
         STATUS.setStopping(true);
-    }
-
-    public boolean isPlaying() {
-        return player != null || musicThread != null;
-    }
-
-    public PlayerStatus getStatus() {
-        return STATUS;
     }
 
     private void setGain(float gain) {
@@ -162,6 +154,14 @@ public class MusicPlayer {
 
         musicThread.setName("Wynntils - Music Player");
         musicThread.start();
+    }
+
+    public boolean isPlaying() {
+        return player != null || musicThread != null;
+    }
+
+    public PlayerStatus getStatus() {
+        return STATUS;
     }
 
 }

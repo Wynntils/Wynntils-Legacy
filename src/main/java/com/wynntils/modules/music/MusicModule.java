@@ -8,7 +8,7 @@ import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.events.ClientEvents;
-import com.wynntils.modules.music.managers.MusicManager;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.music.overlays.inventories.CurrentMusicDisplayer;
 
 @ModuleInfo(name = "sounds", displayName = "WynnSounds")
@@ -20,7 +20,7 @@ public class MusicModule extends Module {
         registerEvents(new ClientEvents());
         registerEvents(new CurrentMusicDisplayer());
 
-        MusicManager.checkForUpdates();
+        SoundTrackManager.updateSongList();
     }
 
 }

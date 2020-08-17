@@ -6,7 +6,7 @@ package com.wynntils.webapi.profiles.music;
 
 import com.wynntils.core.utils.objects.SquareRegion;
 
-public class MusicAreaProfile {
+public class SongAreaProfile {
 
     String id;
     String trackName;
@@ -15,7 +15,7 @@ public class MusicAreaProfile {
 
     SquareRegion region;
 
-    public MusicAreaProfile(String id, String trackName, boolean ignoreTerritory, boolean fastSwitch, SquareRegion region) {
+    public SongAreaProfile(String id, String trackName, boolean ignoreTerritory, boolean fastSwitch, SquareRegion region) {
         this.id = id;
         this.trackName = trackName;
         this.ignoreTerritory = ignoreTerritory;
