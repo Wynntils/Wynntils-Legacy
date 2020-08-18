@@ -91,7 +91,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void bossTracking(PacketEvent<SPacketEntityMetadata> e) {
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-        if (Reference.onWorld || Minecraft.getMinecraft().world == null) return;
+        if (!Reference.onWorld || Minecraft.getMinecraft().world == null) return;
 
         Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
         if (i == null) return;
