@@ -24,11 +24,11 @@ public class BossTrackManager {
         SoundTrackManager.getPlayer().getStatus().setStopping(true);
     }
 
-    public static void checkEntity(int entityId, String name) {
+    public static void checkEntity(Entity entity, String name) {
         String soundTrack = WebManager.getMusicLocations().getBossTrack(name);
-        if (soundTrack == null) return;
+        if (soundTrack == null || entity.getDistance(Minecraft.getMinecraft().player) > 20) return;
 
-        bossEntityId = entityId;
+        bossEntityId = entity.getEntityId();
         SoundTrackManager.findTrack(soundTrack, true);
     }
 

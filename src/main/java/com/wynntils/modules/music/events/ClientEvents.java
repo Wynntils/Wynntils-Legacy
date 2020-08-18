@@ -16,6 +16,7 @@ import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketTitle;
@@ -91,6 +92,9 @@ public class ClientEvents implements Listener {
     public void bossTracking(PacketEvent<SPacketEntityMetadata> e) {
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
 
+        Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
+        if (i == null) return;
+
         for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
             if (!(next.getValue() instanceof String)) continue;
 
@@ -98,7 +102,7 @@ public class ClientEvents implements Listener {
             Matcher m = MOB_NAMETAG.matcher(TextFormatting.getTextWithoutFormattingCodes(entityName));
             if (!m.matches()) return;
 
-            BossTrackManager.checkEntity(e.getPacket().getEntityId(), m.group(1));
+            BossTrackManager.checkEntity(i, m.group(1));
         }
     }
 
