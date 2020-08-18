@@ -25,7 +25,7 @@ public class MusicPlayer {
     AdvancedPlayer player = null;
 
     public void play(File f, boolean fastSwitch) {
-        if (STATUS.getCurrentSong() != null && STATUS.getCurrentSong().getName().equalsIgnoreCase(f.getName())) return;
+        if ((STATUS.getCurrentSong() != null && STATUS.getCurrentSong() == f) || (STATUS.getNextSong() != null && STATUS.getNextSong() == f)) return;
 
         STATUS.setFastSwitch(fastSwitch);
         STATUS.setStopping(false);

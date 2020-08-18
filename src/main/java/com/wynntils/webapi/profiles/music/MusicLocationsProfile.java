@@ -15,6 +15,7 @@ public class MusicLocationsProfile {
 
     Map<String, String> dungeons = new HashMap<>();
     Map<String, String> entries = new HashMap<>();
+    Map<String, String> bosses = new HashMap<>();
 
     List<SongAreaProfile> areas = new ArrayList<>();
 
@@ -26,6 +27,10 @@ public class MusicLocationsProfile {
 
     public String getEntryTrack(String name) {
         return entries.getOrDefault(name, null);
+    }
+
+    public String getBossTrack(String name) {
+        return bosses.getOrDefault(name, null);
     }
 
     public SongAreaProfile getAreaTrack(Location loc) {
