@@ -6,6 +6,8 @@ package com.wynntils.modules.music.managers;
 
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+
 
 public class BossTrackManager {
 
@@ -15,8 +17,8 @@ public class BossTrackManager {
         if (bossEntityId == -1) return;
 
         // check if the boss is still alive
-        boolean alive = Minecraft.getMinecraft().world.getEntityByID(bossEntityId) != null;
-        if (alive) return;
+        Entity in = Minecraft.getMinecraft().world.getEntityByID(bossEntityId);
+        if (in != null && in.getDistance(Minecraft.getMinecraft().player) <= 20) return;
 
         bossEntityId = -1;
         SoundTrackManager.getPlayer().getStatus().setStopping(true);
