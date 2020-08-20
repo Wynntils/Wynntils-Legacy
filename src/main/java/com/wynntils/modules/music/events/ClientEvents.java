@@ -91,7 +91,7 @@ public class ClientEvents implements Listener {
     public void specialAreas(SchedulerEvent.RegionUpdate e) {
         if (!MusicConfig.INSTANCE.replaceJukebox) return;
 
-        BossTrackManager.update();
+        Minecraft.getMinecraft().addScheduledTask(BossTrackManager::update);
 
         if (BossTrackManager.isAlive()) return;
         AreaTrackManager.update(new Location(Minecraft.getMinecraft().player));
