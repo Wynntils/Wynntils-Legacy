@@ -31,8 +31,6 @@ import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
 
-    private static final Pattern MOB_NAMETAG = Pattern.compile("(?<Name>.*?)? ?(?<Phases>▪*?) \\[Lv\\.(?<Level>.*?)\\]");
-
     // player ticking
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent e) {
@@ -86,25 +84,6 @@ public class ClientEvents implements Listener {
         if (!MusicConfig.INSTANCE.replaceJukebox || e.getNewStage() != WarTimerOverlay.WarStage.WAITING_FOR_MOB_TIMER) return;
 
         SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("wars"), true);
-    }
-
-    @SubscribeEvent
-    public void bossTracking(PacketEvent<SPacketEntityMetadata> e) {
-        if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-        if (!Reference.onWorld || Minecraft.getMinecraft().world == null) return;
-
-        Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
-        if (i == null) return;
-
-        for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-            if (!(next.getValue() instanceof String)) continue;
-
-            String entityName = (String) next.getValue();
-            Matcher m = MOB_NAMETAG.matcher(TextFormatting.getTextWithoutFormattingCodes(entityName));
-            if (!m.matches()) return;
-
-            BossTrackManager.checkEntity(i, m.group(1));
-        }
     }
 
     // area tracks
