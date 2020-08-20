@@ -10,7 +10,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PathWaypointProfile {
@@ -23,7 +22,7 @@ public class PathWaypointProfile {
     private transient int minX, minZ, maxX, maxZ, posX, posZ;
     private transient float sizeX, sizeZ;
 
-    private List<PathPoint> points = Collections.EMPTY_LIST;
+    private List<PathPoint> points = new ArrayList<>();
 
     public PathWaypointProfile() {
         this("Path");
