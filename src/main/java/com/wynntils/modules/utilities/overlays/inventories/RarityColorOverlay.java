@@ -228,7 +228,7 @@ public class RarityColorOverlay implements Listener {
     
     private static void drawDurabilityArc(GuiContainer guiContainer, Slot s, float durability){
     	if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
-    	if(durability == -1) return;
+    	if (durability == -1) return;
     	
     	int x = guiContainer.getGuiLeft() + s.xPos;
         int y = guiContainer.getGuiTop() + s.yPos;
