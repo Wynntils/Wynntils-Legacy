@@ -178,7 +178,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Item Combat Level Arc", description = "Should the required combat level be shown behind items as an arc?", order = 1)
         public boolean itemLevelArc = false;
         
-        @Setting(displayName = "Crafted Item Durability Bars", description = "Should crafted item's durability be shown with a bar?", order = 2)
+        @Setting(displayName = "Crafted Item Durability Arc", description = "Should crafted item's durability be shown with an arc?", order = 2)
         public boolean craftedDurabilityBars = true;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
