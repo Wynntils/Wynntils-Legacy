@@ -88,20 +88,13 @@ public class ClientEvents implements Listener {
 
     // area tracks
     @SubscribeEvent
-    public void specialAreas(SchedulerEvent.RegionUpdate e) {
+    public void areaTracks(SchedulerEvent.RegionUpdate e) {
         if (!MusicConfig.INSTANCE.replaceJukebox) return;
 
         Minecraft.getMinecraft().addScheduledTask(BossTrackManager::update);
 
         if (BossTrackManager.isAlive()) return;
         AreaTrackManager.update(new Location(Minecraft.getMinecraft().player));
-    }
-
-    @SubscribeEvent
-    public void onTerritoryUpdate(WynnTerritoryChangeEvent e) {
-        if (e.getNewTerritory().equals("") || Reference.onWars || AreaTrackManager.isTerritoryUpdateBlocked() || BossTrackManager.isAlive()) return;
-
-        SoundTrackManager.findTrack(e.getNewTerritory());
     }
 
 }

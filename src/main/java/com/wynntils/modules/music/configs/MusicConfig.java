@@ -41,7 +41,6 @@ public class MusicConfig extends SettingsClass {
     @Override
     public void onSettingChanged(String name) {
         if (!enabled && Reference.onWorld) SoundTrackManager.getPlayer().stop();
-        if (replaceJukebox && Reference.onWorld) SoundTrackManager.findTrack(PlayerInfo.getPlayerInfo().getLocation());
         if (!replaceJukebox && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) SoundTrackManager.getPlayer().stop();
     }
 
