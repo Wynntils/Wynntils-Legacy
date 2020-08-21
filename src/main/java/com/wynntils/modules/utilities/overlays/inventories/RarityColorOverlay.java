@@ -23,6 +23,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
@@ -44,6 +45,7 @@ public class RarityColorOverlay implements Listener {
 
     public static final float MAX_LEVEL = 105.0f;
     public static final float MAX_CIRCLE_STEPS = 16.0f;
+    private static final Pattern DURABILITY_PATTERN = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
     private static String professionFilter = "-";
 
     @SubscribeEvent
@@ -129,6 +131,7 @@ public class RarityColorOverlay implements Listener {
 
         CustomColor colour = getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse());
         int level = getLevel(lore);
+        float durability = getDurability(lore);
 
         if (level != -1) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
@@ -141,6 +144,8 @@ public class RarityColorOverlay implements Listener {
         // start rendering
         drawLevelArc(guiContainer, s, level);
         drawHighlightColor(guiContainer, s, colour);
+        drawDurabilityArc(guiContainer, s, durability);
+        
     }
 
     private static CustomColor getHighlightColor(Slot s, ItemStack is, String lore, String name, boolean isChest, Slot slotUnderMouse) {
@@ -211,13 +216,48 @@ public class RarityColorOverlay implements Listener {
         }
         return -1;
     }
+    
+    private static float getDurability(String lore) {
+    	Matcher m = DURABILITY_PATTERN.matcher(lore);
+    	if(m.find()) {
+    		return Float.parseFloat(m.group(1)) / Float.parseFloat(m.group(2));
+    	}
+    	return -1;
+    	
+    }
+    
+    private static void drawDurabilityArc(GuiContainer guiContainer, Slot s, float durability){
+    	if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
+    	if (durability == -1) return;
+    	
+    	int x = guiContainer.getGuiLeft() + s.xPos;
+        int y = guiContainer.getGuiTop() + s.yPos;
+        
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.glLineWidth(4.0f);
 
-    private static void drawArc(BufferBuilder renderer, int x, int y, int level, int red, int green, int blue, int alpha) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        int arcColor = MathHelper.hsvToRGB(Math.max(0.0F, durability) / 3.0F, 1.0F, 1.0F);
+        drawArc(bufferbuilder, x, y, durability, 7, arcColor >> 16 & 255, arcColor >> 8 & 255, arcColor & 255, 160);
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
+    }
+
+    private static void drawArc(BufferBuilder renderer, int x, int y, float fill, int radius, int red, int green, int blue, int alpha) {
         renderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-        int numSteps = (int)((level / MAX_LEVEL) * MAX_CIRCLE_STEPS);
+        int numSteps = (int) Math.min(fill * MAX_CIRCLE_STEPS, MAX_CIRCLE_STEPS - 1); //otherwise arc can overlap itself
         for (int i = 0; i <= numSteps; i++) {
             float angle = 2 * (float) PI * i / (MAX_CIRCLE_STEPS - 1.0f);
-            renderer.pos(x + sin(angle) * 8.0F + 8, y - cos(angle) * 8.0F + 8, 0.0D).color(red, green, blue, alpha).endVertex();
+            renderer.pos(x + sin(angle) * radius + 8, y - cos(angle) * radius + 8, 0.0D).color(red, green, blue, alpha).endVertex();
         }
         Tessellator.getInstance().draw();
     }
@@ -238,7 +278,8 @@ public class RarityColorOverlay implements Listener {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        drawArc(bufferbuilder, x, y, level, 0, 0, 0, 120);
+        float arcFill = (level / MAX_LEVEL);
+        drawArc(bufferbuilder, x, y, arcFill, 8, 0, 0, 0, 120);
 
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
