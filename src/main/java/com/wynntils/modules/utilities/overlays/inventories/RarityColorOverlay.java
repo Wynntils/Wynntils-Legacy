@@ -244,7 +244,6 @@ public class RarityColorOverlay implements Listener {
         int y = guiContainer.getGuiTop() + s.yPos;
         
         GlStateManager.disableLighting();
-        //GlStateManager.disableDepth();
         GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
         GlStateManager.disableBlend();
@@ -260,7 +259,6 @@ public class RarityColorOverlay implements Listener {
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
-        //GlStateManager.enableDepth();
     }
 
     private static void drawArc(BufferBuilder renderer, int x, int y, int level, int red, int green, int blue, int alpha) {
