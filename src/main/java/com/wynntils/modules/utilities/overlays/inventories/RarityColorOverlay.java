@@ -45,6 +45,7 @@ public class RarityColorOverlay implements Listener {
 
     public static final float MAX_LEVEL = 105.0f;
     public static final float MAX_CIRCLE_STEPS = 16.0f;
+    private static final Pattern DURABILITY_PATTERN = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
     private static String professionFilter = "-";
 
     @SubscribeEvent
@@ -216,8 +217,7 @@ public class RarityColorOverlay implements Listener {
     }
     
     private static int getDurability(String lore) {
-    	Pattern p = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
-    	Matcher m = p.matcher(lore);
+    	Matcher m = DURABILITY_PATTERN.matcher(lore);
     	if(m.find()) {
     		double pct = Double.parseDouble(m.group(1)) / Double.parseDouble(m.group(2));
     		return (int) (pct * 100);
