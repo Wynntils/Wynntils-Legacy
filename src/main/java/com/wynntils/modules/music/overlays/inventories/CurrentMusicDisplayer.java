@@ -20,6 +20,7 @@ public class CurrentMusicDisplayer implements Listener {
     @SubscribeEvent
     public void onDrawInGameMenu(GuiOverlapEvent.IngameMenuOverlap.DrawScreen e) {
         if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
+        if (!SoundTrackManager.getPlayer().isPlaying() && !SoundTrackManager.getPlayer().getStatus().isPaused()) return;
 
         ScreenRenderer r = new ScreenRenderer();
 
