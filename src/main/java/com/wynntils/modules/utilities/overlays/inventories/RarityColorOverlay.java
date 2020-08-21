@@ -23,6 +23,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
@@ -129,6 +130,7 @@ public class RarityColorOverlay implements Listener {
 
         CustomColor colour = getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse());
         int level = getLevel(lore);
+        int durabilityPct = getDurability(lore);
 
         if (level != -1) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
@@ -139,6 +141,7 @@ public class RarityColorOverlay implements Listener {
         }
 
         // start rendering
+        drawDurabilityBar(guiContainer, s, durabilityPct);
         drawLevelArc(guiContainer, s, level);
         drawHighlightColor(guiContainer, s, colour);
     }
@@ -210,6 +213,54 @@ public class RarityColorOverlay implements Listener {
             }
         }
         return -1;
+    }
+    
+    private static int getDurability(String lore) {
+    	Pattern p = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
+    	Matcher m = p.matcher(lore);
+    	if(m.find()) {
+    		double pct = Double.parseDouble(m.group(1)) / Double.parseDouble(m.group(2));
+    		return (int) (pct * 100);
+    	}
+    	return -1;
+    	
+    }
+    
+    private static void drawBar(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        renderer.pos((double)(x + 0), (double)(y + 0), 500.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double)(x + 0), (double)(y + height), 500.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double)(x + width), (double)(y + height), 500.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos((double)(x + width), (double)(y + 0), 500.0D).color(red, green, blue, alpha).endVertex();
+        
+        Tessellator.getInstance().draw();
+    }
+    
+    private static void drawDurabilityBar(GuiContainer guiContainer, Slot s, int durabilityPct){
+    	if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
+    	if(durabilityPct == -1) return;
+    	
+    	int x = guiContainer.getGuiLeft() + s.xPos;
+        int y = guiContainer.getGuiTop() + s.yPos;
+        
+        GlStateManager.disableLighting();
+        //GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableBlend();
+        
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        int barcolor = MathHelper.hsvToRGB(Math.max(0.0F, (float) (durabilityPct/100.0F)) / 3.0F, 1.0F, 1.0F);
+        int barx = Math.round(13.0F * (durabilityPct / 100.0F));
+        drawBar(bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+        drawBar(bufferbuilder, x + 2, y + 13, barx, 1, barcolor >> 16 & 255, barcolor >> 8 & 255, barcolor & 255, 255);
+        
+        GlStateManager.enableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
+        //GlStateManager.enableDepth();
     }
 
     private static void drawArc(BufferBuilder renderer, int x, int y, int level, int red, int green, int blue, int alpha) {
