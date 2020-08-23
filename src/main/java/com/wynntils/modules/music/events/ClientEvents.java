@@ -16,17 +16,11 @@ import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ClientEvents implements Listener {

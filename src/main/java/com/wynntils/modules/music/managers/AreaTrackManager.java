@@ -33,12 +33,4 @@ public class AreaTrackManager {
         return currentArea;
     }
 
-    /**
-     * This is used to overule territory songs
-     * @return if territory update should be blocked
-     */
-    public static boolean isTerritoryUpdateBlocked() {
-        return currentArea != null && currentArea.isIgnoreTerritory();
-    }
-
 }
