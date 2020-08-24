@@ -389,7 +389,6 @@ public class ChatManager {
                 chapter.getStyle()
                         .setColor(TextFormatting.GOLD)
                         .setUnderlined(true)
-                        //.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "test"))
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to read Chapter " + i)));
                 chapter = TextAction.withDynamicEvent(chapter, new ChapterReader(i));
                 
