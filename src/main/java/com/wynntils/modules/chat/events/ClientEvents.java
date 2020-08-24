@@ -6,6 +6,7 @@ package com.wynntils.modules.chat.events;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
+import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
@@ -26,6 +27,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents implements Listener {
+    
+    private boolean ignoreNextBlank = false;
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -43,6 +46,13 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         } else if (e.getMessage().getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
+        } else if (PowderManualChapter.isPowderManualLine(e.getMessage().getUnformattedText()) && ChatConfig.INSTANCE.customPowderManual) {
+            e.setCanceled(true);
+        } else if (e.getMessage().getUnformattedText().equals("                         Powder Manual") && ChatConfig.INSTANCE.customPowderManual) {
+            ignoreNextBlank = true;
+        } else if (e.getMessage().getUnformattedText().isEmpty() && ignoreNextBlank) {
+            e.setCanceled(true);
+            ignoreNextBlank = false;
         }
     }
 
