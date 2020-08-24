@@ -6,6 +6,7 @@ package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -373,6 +374,33 @@ public class ChatManager {
                 break;
             }
         }
+        
+        //powder manual
+        if (ChatConfig.INSTANCE.customPowderManual && in.getUnformattedText().equals("                         Powder Manual")) {
+            List<ITextComponent> chapterSelect = new ArrayList<ITextComponent>();
+            
+            ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
+            ITextComponent spacer = new TextComponentString("   "); //space between chapters
+            
+            chapterSelect.add(offset);
+            
+            for (int i = 1; i <= 3; i++) {
+                ITextComponent chapter = new TextComponentString("Chapter " + i);
+                chapter.getStyle()
+                        .setColor(TextFormatting.GOLD)
+                        .setUnderlined(true)
+                        //.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "test"))
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to read Chapter " + i)));
+                chapter = TextAction.withDynamicEvent(chapter, new ChapterReader(i));
+                
+                chapterSelect.add(chapter);
+                chapterSelect.add(spacer);
+            }
+            
+            chapterSelect.add(new TextComponentString("\n"));
+            in.getSiblings().addAll(chapterSelect);
+            
+        }
 
         return in;
     }
@@ -680,6 +708,58 @@ public class ChatManager {
         }
 
         return new Pair<>(after, cancel);
+    }
+    
+    private static class ChapterReader implements Runnable {
+        
+        private static final String CHAPTER_1 = "                     §6Chapter 1 - The Basics\n\n" +
+                "    §7§oThere exist five varieties of magic powder, each corresponding to one of five different elements; §c✹ Fire§7§o, §b❉ Water§7§o, §e✦ Thunder§7§o, §2✤ Earth§7§o, and §f❋ Air§7§o.\n" +
+                "    §7§oIt is possible to augment items with these powders, if one is versed in the art of enchantment. Many offer this service for a price, as Powder Masters.\n" +
+                "    Certain items have a higher magical capacity, and thusly are able to hold more powders within them. Some have many, some have few, others still have none.\n" +
+                "    Should a §lweapon§r§7§o be enchanted with a powder, the powder will imbue the item with a slight amount of elemental damage, but also transfer basic neutral damage into its element.\n" +
+                "    Should a piece of §larmour§r§7§o be enchanted with a powder, the garment will gain a resistance towards that powder's element, at the cost of an elemental weakness.";
+        
+        private static final String CHAPTER_2 = "                  §6Chapter 2 - Elemental Abilities\n\n" +
+                "    §7§oIf a powder is more concentrated, they can unlock powerful elemental magicks within an item. Powders appraised to be Tier IV or higher are capable of forming these special abilities.\n" +
+                "    Two or more like-elemented powders are necessary for this. While items can be augmented with powders even after unlocking an ability, only one amplified magic power can be kept within an item at one time.\n" +
+                "    Weapons and armour channel this magical energy in radically different ways, just as powders change their more mundane abilities. The method of use for each piece can be referred to in Chapter 3.\n" +
+                "    Using different tiers of powder to try to form an ability on an item is somewhat unpredictable in the end potency of the magic, but using higher tiers of powder will generally lead to a stronger effect.\n" +
+                "    To unleash the unique ability imbued in your weapon, one must first charge the power by attacking enemies. Then, heavily focus on the latent energies within the item, and release them with a swing. §r(Shift+Left-Click)";
+        
+        private static final String CHAPTER_3 = "                  §6Chapter 3 - Elemental Abilities\n\n" +
+                "    §2§l✤ Earth:  §7§oEarth-imbued weapons will unleash a powerful quake, rupturing the nearby ground and disorienting enemies. Earth-augmented armors produce a rage-state in the user as they near death, turning Earth-based attacks more potent, and more violent.\n" +
+                "    §e§l✦ Thunder:  §7§oThunder-imbued weapons can release a streak of lightning that seeks enemies, bouncing from one foe to the next nearby. Thunder-augmented armors will steal the life force of the slain, and in kind increase the power of Thunder-based attacks temporarily.\n" +
+                "    §b§l❉ Water:  §7§oWater-imbued weapons will curse one's nearby enemies. This curse weakens armor, and turns them vulnerable to further attack. Water-augmented armors recycle used mana, transferring it into a short boost to Water-affiliated techniques, depending on how much mana was consumed.\n" +
+                "    §c§l✹ Fire:  §7§oFire-imbued weapons will generate a fan of flames that burn one's enemies and empower one's allies. Fire-augmented armors react to being struck, turning the impact of the blow, no matter how weak, into a temporary power boost to Fire-based attacks.\n" +
+                "    §f§l❋ Air:  §7§oAir-imbued weapons trap nearby enemies in a vortex of wind, and blow the victims away when struck. Air-augmented armors will, so long as they are kept close, leach energy from nearby foes to improve the strength of Air-based attacks.";
+        
+        ITextComponent chapterText;
+
+        public ChapterReader(int chapter) {
+            String text;
+            switch (chapter) {
+                case 1:
+                    text = CHAPTER_1;
+                    break;
+                case 2:
+                    text = CHAPTER_2;
+                    break;
+                case 3:
+                    text = CHAPTER_3;
+                    break;
+                default: text = "";
+            }
+            chapterText = new TextComponentString(text);
+            chapterText.getStyle()
+                    .setColor(TextFormatting.GRAY)
+                    .setItalic(true);
+        }
+        
+        @Override
+        public void run() {
+            Minecraft.getMinecraft().player.sendMessage(chapterText);
+        }
+        
     }
 
 }
