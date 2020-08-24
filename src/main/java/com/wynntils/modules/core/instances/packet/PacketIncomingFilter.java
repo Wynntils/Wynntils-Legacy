@@ -11,8 +11,10 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.network.play.server.SPacketMoveVehicle;
+import net.minecraft.network.play.server.SPacketMultiBlockChange;
 import net.minecraftforge.common.MinecraftForge;
 
 public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
