@@ -40,7 +40,6 @@ public enum PowderManualChapter {
         }
         
         return false;
-        
     }
 
 }
