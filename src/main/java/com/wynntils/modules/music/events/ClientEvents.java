@@ -50,7 +50,7 @@ public class ClientEvents implements Listener {
     public void openClassSelection(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
-        SoundTrackManager.findTrack(WebManager.getApiUrl("CharacterSelectionSong"), true);
+        SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("characterSelector"), true);
         SoundTrackManager.setFastSwitchNext();
     }
 
