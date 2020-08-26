@@ -22,16 +22,16 @@ import java.util.Set;
 public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
-    @Setting(displayName = "Add Class & Hub Buttons to Menu", description = "Should 'Class selection' and 'Back to Hub' buttons be displayed on the in-game menu?", order = 1)
+    @Setting(displayName = "Class & Hub Buttons", description = "Should 'Class selection' and 'Back to Hub' buttons be displayed on the in-game menu?", order = 1)
     public boolean addClassHubButtons = true;
 
-    @Setting(displayName = "Add Options & Profile Buttons to Menu", description = "Should 'Wynntils Option' and 'User Profile'  buttons be displayed on the in-game menu?", order = 2)
+    @Setting(displayName = "Options & Profile Buttons", description = "Should 'Wynntils Option' and 'User Profile' buttons be displayed on the in-game menu?", order = 2)
     public boolean addOptionsProfileButtons = true;
 
     @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Hide Vanilla Active Potions Indicators", description = "Should the indicator for active potion effects (black squares) be hidden?")
+    @Setting(displayName = "Hide Vanilla Potions Indicators", description = "Should the vanilla indicators for active potion effects be hidden?")
     public boolean hidePotionGui = true;
 
     @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
@@ -43,28 +43,28 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?\n\n§8Crafted armour cannot be displayed.")
     public boolean showArmors = false;
 
-    @Setting(displayName = "Prevent Mythic Loot Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
+    @Setting(displayName = "Prevent Mythic Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
     public boolean preventMythicChestClose = true;
 
-    @Setting(displayName = "Prevent Slot Click on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
+    @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
-    @Setting(displayName = "Disable FOV Changes with Speed Effect", description = "Should your FOV remain unchanged when you have speed?")
+    @Setting(displayName = "Disable FOV Changes with Speed", description = "Should your FOV remain unchanged when you have speed?")
     public boolean disableFovChanges = false;
 
     @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
     public boolean autoMount = false;
 
-    @Setting(displayName = "Block Health Potions When at Full Health", description = "Should the mod prevent you from using your health potions when you are at full health?")
+    @Setting(displayName = "Block Health ", description = "Should the mod prevent you from using your health potions when you are at full health?")
     public boolean blockHealingPots = true;
 
-    @Setting(displayName = "Apply Wynncraft Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when picking your class?")
+    @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when selecting your class?")
     public boolean autoResource = true;
 
-    @Setting(displayName = "Apply Wynncraft Resource Pack During Startup", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
+    @Setting(displayName = "Startup Resource Pack", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
     public boolean autoResourceOnLoad = false;
 
-    @Setting(displayName = "Display Confirmation for Buying Bank Pages", description = "Should Wynntils display a GUI confirmation when buying bank pages?")
+    @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?")
     public boolean addBankConfirmation = true;
 
     @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
@@ -73,16 +73,16 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
     public boolean changeWindowTitle = true;
 
-    @Setting(displayName = "Change Window Icon", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\nThis does not work on macOS systems")
+    @Setting(displayName = "Change Window Icon", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\n§8This does not work on macOS systems.")
     public boolean changeWindowIcon = true;
 
-    @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top by default?")
+    @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top?")
     public boolean renderTooltipsFromTop = true;
 
     @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?")
     public boolean renderTooltipsScaled = false;
 
-    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard members have a badge over their heads?")
+    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have a badge above their heads?")
     public boolean renderLeaderboardBadges = true;
 
     @Setting(upload = false)
@@ -98,25 +98,25 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Identifications extends SettingsClass {
         public static Identifications INSTANCE;
 
-        @Setting(displayName = "Enable Advanced Identifications", description = "Should your items be advanced identified?", order = 0)
+        @Setting(displayName = "Show Advanced Identifications", description = "Should items show advanced identifications?", order = 0)
         public boolean enabled = true;
 
-        @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identification be shown?")
+        @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
         public boolean addStars = false;
 
-        @Setting(displayName = "Categorize Item Identifications", description = "Should the identifications in an item's tooltip be categorized?")
+        @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
 
-        @Setting(displayName = "Categorize Set Bonus Identifications", description = "Should the set bonus in an item's tooltip be categorized?")
+        @Setting(displayName = "Categorize Set Bonuses", description = "Should the set bonus in an item's tooltip be categorized?")
         public boolean addSetBonusSpacing = true;
 
         @Setting(displayName = "Show Item Reroll Price", description = "Should the reroll price be displayed in your item?")
         public boolean showRerollPrice = true;
 
-        @Setting(displayName = "Show Unidentified Item Guesses", description = "Should guesses for your unidentified items be displayed?")
+        @Setting(displayName = "Unidentified Item Guesses", description = "Should guesses for your unidentified items be displayed?")
         public boolean showItemGuesses = true;
 
-        @Setting(displayName = "Show Guesses Identification Price", description = "Should the price for identification of unidentified items guesses be displayed?\nRequires your inventory to be reloaded to update\nto do that open the bank once.")
+        @Setting(displayName = "Identification Price Guesses", description = "Should the guesses for prices of identifying unidentified items be displayed?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
         public boolean showGuessesPrice = false;
 
     }
@@ -127,15 +127,15 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Block Player Collision When AFK", description = "Should player collision be blocked when you are AFK?")
         public boolean blockAfkPushs = true;
 
-        @Setting(displayName = "AFK Protection", description = "Should you enter class selection when you are AFK?")
+        @Setting(displayName = "AFK Protection", description = "Should you enter the class selection menu when you are AFK?")
         public boolean afkProtection = false;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
-        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection.")
+        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection?")
         public float afkProtectionThreshold = 10f;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 100f)
-        @Setting(displayName = "Health Percentage Threshold", description = "AFK Protection should activate when your health drops to this level")
+        @Setting(displayName = "Health Percentage Threshold", description = "At what percentage of health should AFK Protection be activated?")
         public float healthPercentage = 90f;
 
         @Setting(displayName = "Show on Hotbar", description = "Should AFK Protection status be shown on the hotbar?")
@@ -178,7 +178,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Item Combat Level Arc", description = "Should the required combat level be shown behind items as an arc?", order = 1)
         public boolean itemLevelArc = false;
         
-        @Setting(displayName = "Crafted Item Durability Arc", description = "Should crafted item's durability be shown with an arc?", order = 2)
+        @Setting(displayName = "Crafted Item Durability Arc", description = "Should crafted items' durability be shown with an arc?", order = 2)
         public boolean craftedDurabilityBars = true;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
@@ -190,7 +190,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 10)
         public boolean transportationSpecification = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers? (chests, bank, etc.)", order = 11)
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 11)
         public boolean mainHighlightChest = true;
 
         @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 12)
@@ -242,7 +242,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean commonEffectsHighlight = true;
 
         // TODO: move these 3 configs
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers? (chests, bank, etc.)", order = 101)
+        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 101)
         public boolean emeraldCountChest = true;
 
         @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
@@ -307,7 +307,7 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
 
-        @Setting(displayName = "Display Market Prices in a Custom Format", description = "Should market prices be displayed in a custom format?")
+        @Setting(displayName = "Price Formatting", description = "Should market prices be displayed in a custom format?")
         public boolean displayInCustomFormat = true;
 
         @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
