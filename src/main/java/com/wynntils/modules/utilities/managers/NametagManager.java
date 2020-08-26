@@ -159,14 +159,16 @@ public class NametagManager {
                 }
             }
 
-            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
+            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeadeFrboardManager.isLeader(entity.getUniqueID())) {
                 LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
 
                 double horizontalShift = -(((leader.rankSize() - 1) * 21f) / 2);
 
                 // TODO limit max badges to 3 and switch between them by time
                 for (Map.Entry<ProfessionType, Integer> badge : leader.getRanks()) {
-                    drawBadge(badge.getKey(), (int)(1 + (badge.getValue() / 3.0d)) - 1,
+                    if (badge.getValue() == 10) continue;
+
+                    drawBadge(badge.getKey(), ((badge.getValue()-1) / 3),
                             (float)x, (float)y + position, (float)z, horizontalShift, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
 
                     horizontalShift += 21f;
