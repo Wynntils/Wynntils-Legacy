@@ -29,7 +29,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
     public boolean showCompassBeam = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 1)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions be displayed on the minimap?\n\n§8Cardinal directions are the north, east, south, and west points on a compass.", order = 1)
     public boolean showCompass = true;
 
     @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
@@ -48,7 +48,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
     public boolean showCoords = false;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 7)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if compass directions are disabled.", order = 7)
     public boolean northOnly = false;
 
     @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
@@ -68,7 +68,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
-    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?", order = 13)
+    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 13)
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
@@ -88,7 +88,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
+        @Setting(displayName = "Territory Guild Tags", description = "Should guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
         @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
@@ -98,7 +98,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
-        @Setting(displayName = "Show Labels", description = "Should place labels be displayed on your map?")
+        @Setting(displayName = "Show Location Labels", description = "Should location labels be displayed?")
         public boolean showLabels = true;
     }
 
@@ -129,7 +129,7 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public List<PathWaypointProfile> pathWaypoints = new ArrayList<>();
 
-        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoint become more clearer the closer you are height wise?\n\nWaypoint below will darken and waypoints above will lighten", order = 1)
+        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoints become more clear the closer you are in elevation?\n\n§8Waypoints below you will darken, and waypoints above you will lighten.", order = 1)
         public boolean iconFade = true;
 
         @Setting(displayName = "Minimap Waypoint Fade Scale", description = "At which Y difference should waypoints become invisible?", order = 2)
@@ -160,7 +160,7 @@ public class MapConfig extends SettingsClass {
             }
         }
 
-        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
+        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
 
         @Override
@@ -182,14 +182,14 @@ public class MapConfig extends SettingsClass {
     public static class LootRun extends SettingsClass {
         public static LootRun INSTANCE;
 
-        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?\n\n§8Available options are textures and lines.", order = 1)
+        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?", order = 1)
         public PathType pathType = PathType.TEXTURED;
 
-        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed path be?", order = 2)
+        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of displayed paths be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor activePathColour = MinecraftChatColors.AQUA;
 
-        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?", order = 3)
+        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?\n\n§aClick the coloured box to open the colour wheel.", order = 3)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor recordingPathColour = CommonColors.RED;
 
