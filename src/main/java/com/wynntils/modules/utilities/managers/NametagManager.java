@@ -159,7 +159,7 @@ public class NametagManager {
                 }
             }
 
-            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeadeFrboardManager.isLeader(entity.getUniqueID())) {
+            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
                 LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
 
                 double horizontalShift = -(((leader.rankSize() - 1) * 21f) / 2);
