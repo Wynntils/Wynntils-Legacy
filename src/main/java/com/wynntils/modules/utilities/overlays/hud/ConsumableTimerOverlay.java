@@ -32,6 +32,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
     transient private static final Pattern DURATION_PATTERN = Pattern.compile("^- Duration: ([0-9]*) (.*?)");
     transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
+    transient private static final Pattern MANA_PATTERN = Pattern.compile("^- Mana: ([0-9]*) (.*?)");
 
     transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
     transient private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
@@ -61,9 +62,17 @@ public class ConsumableTimerOverlay extends Overlay {
         if (!stack.getDisplayName().startsWith(DARK_AQUA.toString())) {
             String displayName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
             SkillPoint sp = SkillPoint.findSkillPoint(displayName);
-            if (sp == null) return;
-
-            ConsumableContainer consumable = new ConsumableContainer(sp.getAsName());
+            
+            ConsumableContainer consumable;
+            if (sp == null) {
+                if (displayName.contains("Potion of Mana")) {
+                    consumable = new ConsumableContainer(AQUA + "✺ Mana");
+                } else {
+                    return;
+                }
+            } else {
+                consumable = new ConsumableContainer(sp.getAsName());
+            }
 
             List<String> itemLore = ItemUtils.getLore(stack);
             for (String line : itemLore) {
@@ -80,20 +89,27 @@ public class ConsumableTimerOverlay extends Overlay {
 
                 // effects | - Effect: <id>
                 m = EFFECT_PATTERN.matcher(line);
-                if (!m.matches()) continue; // continues if not a valid effect
-
-                String id = m.group(1);
-                if (id == null || id.isEmpty()) continue; // continues if id is null or empty
-
-                // removing skill point symbols
-                for (SkillPoint skillPoint : SkillPoint.values()) {
-                    id = id.replace(skillPoint.getSymbol() + " ", "");
+                if (m.matches()) {
+                    String id = m.group(1);
+                    if (id == null || id.isEmpty()) continue; // continues if id is null or empty
+    
+                    // removing skill point symbols
+                    for (SkillPoint skillPoint : SkillPoint.values()) {
+                        id = id.replace(skillPoint.getSymbol() + " ", "");
+                    }
+    
+                    m = ItemIdentificationOverlay.ID_PATTERN.matcher(id);
+                    if (!m.matches()) continue; // continues if the effect is not a valid id
+    
+                    verifyIdentification(m, consumable);
+                    continue;
                 }
-
-                m = ItemIdentificationOverlay.ID_PATTERN.matcher(id);
-                if (!m.matches()) continue; // continues if the effect is not a valid id
-
-                verifyIdentification(m, consumable);
+                
+                //mana | - Mana: <group1> <mana symbol>
+                m = MANA_PATTERN.matcher(line);
+                if(m.matches() && m.group(1) != null) {
+                    consumable.addEffect("Mana", Integer.parseInt(m.group(1)), IdentificationModifier.INTEGER);
+                }
             }
 
             activeConsumables.add(consumable);
