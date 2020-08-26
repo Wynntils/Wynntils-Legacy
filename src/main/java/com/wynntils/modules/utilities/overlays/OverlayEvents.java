@@ -544,7 +544,7 @@ public class OverlayEvents implements Listener {
                     long timeNow = Minecraft.getSystemTime();
                     int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
                     if (timeLeft > 0) {
-                        ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, true);
+                        ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
                     }
                 }
                 return;
