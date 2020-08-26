@@ -33,7 +33,8 @@ public class ConsumableTimerOverlay extends Overlay {
     transient private static final Pattern DURATION_PATTERN = Pattern.compile("^- Duration: ([0-9]*) (.*?)");
     transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
     transient private static final Pattern MANA_PATTERN = Pattern.compile("^- Mana: ([0-9]*) (.*?)");
-
+    transient private static final Pattern CHAT_DURATION_PATTERN = Pattern.compile("([0-9]*) seconds(.*?)");
+    
     transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
     transient private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
 
@@ -121,7 +122,7 @@ public class ConsumableTimerOverlay extends Overlay {
         String name;
         if (stack.getItem() == Items.POTIONITEM)
             name = LIGHT_PURPLE + "Ⓛ Potion";
-        else if (stack.getItemDamage() >= 70 && stack.getItemDamage() <= 75) // food, 70 <= damage <= 75
+        else if (stack.getItemDamage() >= 69 && stack.getItemDamage() <= 75) // food, 69 <= damage <= 75
             name = GOLD + "Ⓐ Food";
         else if (stack.getItemDamage() >= 42 && stack.getItemDamage() <= 44) // scrolls, 42 <= damage <= 44
             name = YELLOW + "Ⓔ Scroll";
@@ -152,6 +153,47 @@ public class ConsumableTimerOverlay extends Overlay {
         if (!consumable.isValid()) return;
 
         activeConsumables.add(consumable);
+        updateActiveEffects();
+    }
+    
+    public static void addExternalScroll(String chatMsg) {
+        String[] splitMsg = chatMsg.split(" for ");
+        String effect = splitMsg[0].substring(1);
+        String duration = splitMsg[1];
+        
+        Matcher m = ItemIdentificationOverlay.ID_PATTERN.matcher(effect);
+        if (!m.matches()) return;
+        
+        Matcher m2 = CHAT_DURATION_PATTERN.matcher(duration);
+        if (!m2.matches() || m2.group(1) == null) return;
+                
+        long expiration = Minecraft.getSystemTime() + (Integer.parseInt(m2.group(1)) * 1000);
+        int value = Integer.parseInt(m.group("Value"));
+        String shortIdName = ItemIdentificationOverlay.toShortIdName(m.group("ID"), m.group("Suffix") == null);
+        ConsumableContainer consumable = null;
+        
+        for (ConsumableContainer c : activeConsumables) {
+            if (Math.abs(expiration - c.getExpirationTime()) <= 1000) { // check within a second
+                for (String cEf : c.getEffects().keySet()) {
+                    if (cEf.equals(shortIdName) && c.getEffects().get(cEf).getCurrentAmount() == value) {
+                        return; // consumable was triggered by player, already in list
+                    }
+                }
+                if (c.getName().contains("Scroll")) { //external scroll already created, add effect to it
+                    consumable = c;
+                }
+            }
+        }
+        
+        if (consumable == null) {
+            consumable = new ConsumableContainer(YELLOW + "Ⓔ Scroll");
+            consumable.setExpirationTime(expiration);
+        }
+                
+        verifyIdentification(m, consumable);
+        if (!consumable.isValid()) return;
+        
+        if (!activeConsumables.contains(consumable)) activeConsumables.add(consumable);
         updateActiveEffects();
     }
 

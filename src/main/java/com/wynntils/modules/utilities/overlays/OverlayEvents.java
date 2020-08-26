@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
@@ -150,6 +151,15 @@ public class OverlayEvents implements Listener {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onScrollUsed(ChatEvent.Post e) {
+        String messageText = e.getMessage().getUnformattedText();
+        if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
+            //10 tick delay, since chat event occurs before default consumable event
+            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10); 
+        }
+    }
+    
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
