@@ -535,32 +535,34 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-            if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+        if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
                 e.setCanceled(true);
-
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                    long timeNow = Minecraft.getSystemTime();
-                    int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
-                    if (timeLeft > 0) {
-                        ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
-                    }
-                }
-                return;
             }
+                
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                long timeNow = Minecraft.getSystemTime();
+                int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
+                if (timeLeft > 0) {
+                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
+                }
+            }      
+            return;
+        }
 
-            Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
-            if (matcher.find()) {
-                int minutes = Integer.parseInt(matcher.group(1));
+        Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        if (matcher.find()) {
+            int minutes = Integer.parseInt(matcher.group(1));
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
                 e.setCanceled(true);
-
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                    ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
-                }
-                return;
             }
+
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
+            }
+            return;
         }
     }
 
