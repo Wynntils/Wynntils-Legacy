@@ -36,7 +36,7 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
-    @Setting(displayName = "Show Changelog", description = "Should the changelog of the recent update be displayed upon logging in after updating?")
+    @Setting(displayName = "Show Changelog", description = "After updating Wynntils, should a changelog be displayed upon logging in?")
     public boolean enableChangelogOnUpdate = true;
 
     @Setting(upload = false)

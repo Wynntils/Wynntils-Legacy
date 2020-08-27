@@ -14,22 +14,22 @@ import com.wynntils.webapi.services.TranslationManager;
 public class TranslationConfig extends SettingsClass {
     public static TranslationConfig INSTANCE;
 
-    @Setting(displayName = "Enable Text Translation", description = "Should text messages be automatically translated to a foreign language?")
+    @Setting(displayName = "Text Translations", description = "Should text messages be automatically translated to a foreign language?")
     public boolean enableTextTranslation = false;
 
-    @Setting(displayName = "Translate Player Chat", description = "Should messages sent by other users be translated?")
+    @Setting(displayName = "Translate Player Chat", description = "Should messages sent by other players be translated?")
     public boolean translatePlayerChat = false;
 
     @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
     public boolean translateNpc = true;
 
-    @Setting(displayName = "Translate Other", description = "Should other messages, like system information, be translated?")
+    @Setting(displayName = "Translate Other", description = "Should other messages, such as system information, be translated?")
     public boolean translateOther = false;
 
-    @Setting(displayName = "Translate Tracked Quest", description = "Should the tracked quest overlay be translated? (needs restart)")
+    @Setting(displayName = "Translate Tracked Quest", description = "Should the tracked quest overlay be translated?\n\n§8The game needs to be restarted for this setting to take effect when modified.")
     public boolean translateTrackedQuest = false;
 
-    @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?")
+    @Setting(displayName = "Target Language Code", description = "What is the ISO two letter language code of the target language?\n\n§8You can find a list of ISO codes by searching for `List of ISO 639-1 codes` on Wikipedia.")
     public String languageName = "en";
 
     @Setting(displayName = "Keep Original", description = "Should the original message be displayed alongside the translation?")

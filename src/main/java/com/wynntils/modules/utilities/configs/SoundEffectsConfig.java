@@ -12,13 +12,13 @@ import com.wynntils.core.framework.settings.instances.SettingsClass;
 public class SoundEffectsConfig extends SettingsClass {
     public static SoundEffectsConfig INSTANCE;
 
-    @Setting(displayName = "Horse Whistle", description = "Should the horse whistle be played?")
+    @Setting(displayName = "Horse Whistle", description = "Should a horse whistle be played when you summon your horse?")
     public boolean horseWhistle = true;
 
-    @Setting(displayName = "War Horn", description = "Should the warn horn be played?")
+    @Setting(displayName = "War Horn", description = "Should a war horn be played when your guild attacks a territory?")
     public boolean warHorn = true;
 
-    @Setting(displayName = "Mythic Found", description = "Should the mythic found sound be played?")
+    @Setting(displayName = "Mythic Found", description = "Should a sound be played when a mythic is found in a loot chest?")
     public boolean mythicFound = true;
 
 }
