@@ -25,7 +25,7 @@ public class CustomElytraModel extends ModelBase {
         rightWing.mirror = true;
     }
 
-    public void update(int maxFrames, int scale) {
+    public void update(int maxFrames) {
         double percentage = ((System.currentTimeMillis() % 2000) / 2000d);
         int currentFrame = (int) (maxFrames * percentage);
 
