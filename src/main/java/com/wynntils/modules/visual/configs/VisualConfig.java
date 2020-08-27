@@ -16,14 +16,14 @@ public class VisualConfig extends SettingsClass {
     public static class DamageSplash extends SettingsClass {
         public static DamageSplash INSTANCE;
 
-        @Setting(displayName = "Replace Wynncraft Damage Splashes", description = "Should the Wynncraft Damage splashes be replaced.")
+        @Setting(displayName = "Replace Damage Splashes", description = "Should Wynncraft damage splashes be replaced?")
         public boolean enabled = true;
 
-        @Setting(displayName = "Splash Duration", description = "How much ticks should the splash live.")
+        @Setting(displayName = "Splash Duration", description = "In ticks, how long should splashes last for?")
         @Setting.Limitations.IntLimit(min = 50, max = 800)
         public int maxLiving = 150;
 
-        @Setting(displayName = "Initial Splash Scale", description = "The initial size of the splash.")
+        @Setting(displayName = "Initial Splash Scale", description = "How large should the initial size of the splash be?")
         @Setting.Limitations.FloatLimit(min = 1f, max = 4f)
         public float initialScale = 2.5f;
     }
@@ -32,30 +32,30 @@ public class VisualConfig extends SettingsClass {
     public static class Fireflies extends SettingsClass {
         public static Fireflies INSTANCE;
 
-        @Setting(displayName = "Visual Fireflies", description = "Should fireflies be rendered in certain areas.")
+        @Setting(displayName = "Visual Fireflies", description = "Should fireflies be rendered in certain areas?")
         public boolean enabled = true;
 
-        @Setting(displayName = "Max Duration", description = "How much ticks should the firefly live in max.")
+        @Setting(displayName = "Max Duration", description = "In ticks, up to how long should fireflies live for?")
         @Setting.Limitations.IntLimit(min = 50, max = 1500)
         public int maxLiving = 1000;
 
-        @Setting(displayName = "Path Duration", description = "How much ticks should take in max to the firefly change direction.")
+        @Setting(displayName = "Path Duration", description = "In ticks, up to how long should fireflies take for them to change directions?")
         @Setting.Limitations.IntLimit(min = 50, max = 500)
         public int maxGoal = 300;
 
-        @Setting(displayName = "Spawn Limit", description = "How much Fireflies in max should spawn around you.")
+        @Setting(displayName = "Spawn Limit", description = "Up to how many fireflies can spawn around you?")
         @Setting.Limitations.IntLimit(min = 50, max = 500)
         public int spawnLimit = 200;
 
-        @Setting(displayName = "Spawn Rate", description = "How frequently fireflies should spawn. Bigger = lesser.")
+        @Setting(displayName = "Spawn Rate", description = "How frequently should fireflies spawn?\n\n§8The higher the number is set to, the longer it takes for fireflies to spawn.")
         @Setting.Limitations.IntLimit(min = 100, max = 1000)
         public int spawnRate = 500;
 
-        @Setting(displayName = "Scale", description = "How big fireflies should be.")
+        @Setting(displayName = "Scale", description = "Up to how big should fireflies be?")
         @Setting.Limitations.FloatLimit(min = 0.01f, max = 1f, precision = 0.01f)
         public float scale = 0.04f;
 
-        @Setting(displayName = "3D Fireflies", description = "Should the fireflies be 3D.")
+        @Setting(displayName = "3D Fireflies", description = "Should fireflies be rendered in 3D?")
         public boolean threeDimensions = true;
 
     }
@@ -64,26 +64,26 @@ public class VisualConfig extends SettingsClass {
     public static class Ashes extends SettingsClass {
         public static Ashes INSTANCE;
 
-        @Setting(displayName = "Visual Ashes", description = "Should ashes be rendered in certain areas.")
+        @Setting(displayName = "Visual Ashes", description = "Should ashes be rendered in certain areas?")
         public boolean enabled = true;
 
-        @Setting(displayName = "Max Duration", description = "How much ticks should an ashe live in max.")
+        @Setting(displayName = "Max Duration", description = "In ticks, up to how long should ashes appear for?")
         @Setting.Limitations.IntLimit(min = 50, max = 5000, precision = 5)
         public int maxLiving = 2200;
 
-        @Setting(displayName = "Spawn Limit", description = "How much ashes in max should spawn around you.")
+        @Setting(displayName = "Spawn Limit", description = "Up to how many ashes can spawn around you?")
         @Setting.Limitations.IntLimit(min = 50, max = 500)
         public int spawnLimit = 175;
 
-        @Setting(displayName = "Max Scale", description = "How big ashes should be in max.")
+        @Setting(displayName = "Max Scale", description = "Up to how big should ashes be?")
         @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.5f, precision = 0.01f)
         public float maxScale = 0.2f;
 
-        @Setting(displayName = "Max Gray Scale", description = "How white in max should ashes be.")
+        @Setting(displayName = "Max Grey Scale", description = "Up to how grey should ashes appear?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f, precision = 0.1f)
         public float maxGrayScale = 0.8f;
 
-        @Setting(displayName = "Spawn Rate", description = "How frequently ashes should spawn. Bigger = lesser.")
+        @Setting(displayName = "Spawn Rate", description = "How frequently should ashes appear?\n\n§8The higher the number is set to, the longer it takes for ashes to appear.")
         @Setting.Limitations.IntLimit(min = 100, max = 1000)
         public int spawnRate = 375;
 
@@ -93,26 +93,26 @@ public class VisualConfig extends SettingsClass {
     public static class Snowflakes extends SettingsClass {
         public static Snowflakes INSTANCE;
 
-        @Setting(displayName = "Visual Snowflakes", description = "Should snowflakes be rendered in certain areas.")
+        @Setting(displayName = "Visual Snowflakes", description = "Should snowflakes be rendered in certain areas?")
         public boolean enabled = true;
 
-        @Setting(displayName = "Max Duration", description = "How much ticks should an snowflake live in max.")
+        @Setting(displayName = "Max Duration", description = "In ticks, up to how long should snowflakes appear for?")
         @Setting.Limitations.IntLimit(min = 50, max = 5000, precision = 5)
         public int maxLiving = 1000;
 
-        @Setting(displayName = "Spawn Limit", description = "How much snowflakes in max should spawn around you.")
+        @Setting(displayName = "Spawn Limit", description = "Up to how many snowflakes can spawn around you?")
         @Setting.Limitations.IntLimit(min = 50, max = 500)
         public int spawnLimit = 200;
 
-        @Setting(displayName = "Max Scale", description = "How big snowflakes should be in max.")
+        @Setting(displayName = "Max Scale", description = "Up to how big should snowflakes be?")
         @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.5f, precision = 0.01f)
         public float maxScale = 0.1f;
 
-        @Setting(displayName = "Max White Scale", description = "How white in max should snowflakes be.")
+        @Setting(displayName = "Max White Scale", description = "Up to how white should snowflakes appear?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f, precision = 0.1f)
         public float maxWhiteScale = 0.8f;
 
-        @Setting(displayName = "Spawn Rate", description = "How frequently snowflakes should spawn. Bigger = lesser.")
+        @Setting(displayName = "Spawn Rate", description = "How frequently should snowflakes appear?\n\n§8The higher the number is set to, the longer it takes for snowflakes to appear.")
         @Setting.Limitations.IntLimit(min = 100, max = 1000)
         public int spawnRate = 300;
 
@@ -122,7 +122,7 @@ public class VisualConfig extends SettingsClass {
     public static class CharacterSelector extends SettingsClass {
         public static CharacterSelector INSTANCE;
 
-        @Setting(displayName = "Custom Character Selector", description = "Should the custom Character Selector be displayed.")
+        @Setting(displayName = "Custom Character Selector", description = "Should the custom character selector be enabled?")
         public boolean enabled = true;
 
     }
