@@ -151,6 +151,17 @@ public class ConsumableTimerOverlay extends Overlay {
         }
 
         if (!consumable.isValid()) return;
+        
+        //check for duplicates to avoid doubling timers
+        for (ConsumableContainer c : activeConsumables) {
+            if (Math.abs(consumable.getExpirationTime() - c.getExpirationTime()) <= 1000) { // check within a second
+                for (String cEf : c.getEffects().keySet()) {
+                    if (consumable.getEffects().containsKey(cEf) && c.getEffects().get(cEf).getCurrentAmount() == consumable.getEffects().get(cEf).getCurrentAmount()) {
+                        return; // consumable has already been added, ignore this one
+                    }
+                }
+            }
+        }
 
         activeConsumables.add(consumable);
         updateActiveEffects();
