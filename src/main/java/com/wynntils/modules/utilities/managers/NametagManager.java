@@ -317,27 +317,33 @@ public class NametagManager {
         if (Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
-            if (!is.hasDisplayName() || !WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) continue;
-
-            ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+            if (!is.hasDisplayName()) continue;
+            System.out.println(is.getDisplayName());
             CustomColor color;
-            switch (itemProfile.getTier()) {
-                case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
-                case FABLED: color = MinecraftChatColors.RED; break;
-                case LEGENDARY: color = MinecraftChatColors.AQUA; break;
-                case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
-                case UNIQUE: color = MinecraftChatColors.YELLOW; break;
-                case SET: color = MinecraftChatColors.GREEN; break;
-                case NORMAL: color = MinecraftChatColors.WHITE; break;
-                default: color = CommonColors.RAINBOW;
-            }
-
-            // this solves an unidentified item showcase exploit
-            // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
             String displayName;
-            if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
-                displayName = "Unidentified Item";
-            } else displayName = is.getDisplayName();
+            if (WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) {
+
+                ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+                switch (itemProfile.getTier()) {
+                    case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
+                    case FABLED: color = MinecraftChatColors.RED; break;
+                    case LEGENDARY: color = MinecraftChatColors.AQUA; break;
+                    case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
+                    case UNIQUE: color = MinecraftChatColors.YELLOW; break;
+                    case SET: color = MinecraftChatColors.GREEN; break;
+                    case NORMAL: color = MinecraftChatColors.WHITE; break;
+                    default: color = CommonColors.RAINBOW;
+                }
+    
+                // this solves an unidentified item showcase exploit
+                // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
+                if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
+                    displayName = "Unidentified Item";
+                } else displayName = is.getDisplayName();
+            } else if (is.getDisplayName().contains("Crafted")) {
+                color = MinecraftChatColors.DARK_AQUA;
+                displayName = is.getDisplayName();
+            } else continue;
 
             labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(displayName), 0.4f));
         }
