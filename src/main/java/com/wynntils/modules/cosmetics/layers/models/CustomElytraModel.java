@@ -30,13 +30,13 @@ public class CustomElytraModel extends ModelBase {
         int currentFrame = (int) (maxFrames * percentage);
 
         leftWing.cubeList.clear();
-        leftWing.setTextureOffset(22, (32 * scale) * currentFrame);
+        leftWing.setTextureOffset(22, 32 * currentFrame);
         leftWing.setTextureSize(64, 32 * maxFrames);
         leftWing.addBox(-10.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
         ReflectionFields.ModelRenderer_compiled.setValue(leftWing, false);
 
         rightWing.cubeList.clear();
-        rightWing.setTextureOffset(22, (32 * scale) * currentFrame);
+        rightWing.setTextureOffset(22, 32 * currentFrame);
         rightWing.setTextureSize(64, 32 * maxFrames);
         rightWing.addBox(0.0F, 0.0F, 0.0F, 10, 20, 2, 1.0F);
         ReflectionFields.ModelRenderer_compiled.setValue(rightWing, false);

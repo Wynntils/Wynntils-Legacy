@@ -12,6 +12,8 @@ import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -101,10 +103,9 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
 
-            int elytraScale = info.getCosmetics().getImage().getWidth() / 64;
             int frameCount = info.getCosmetics().getImage().getHeight() / (info.getCosmetics().getImage().getWidth() / 2);
 
-            modelElytra.update(frameCount, elytraScale);
+            modelElytra.update(frameCount);
             modelElytra.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, player);
             modelElytra.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
