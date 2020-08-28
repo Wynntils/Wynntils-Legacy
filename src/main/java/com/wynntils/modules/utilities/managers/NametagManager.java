@@ -317,9 +317,12 @@ public class NametagManager {
         if (Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
-            if (!is.hasDisplayName() || !WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) continue;
+            if (!is.hasDisplayName()) continue;
 
-            ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+            String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+            if (!WebManager.getItems().containsKey(itemName)) continue;
+
+            ItemProfile itemProfile = WebManager.getItems().get(itemName);
             CustomColor color;
             switch (itemProfile.getTier()) {
                 case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;

@@ -42,6 +42,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class WebManager {
 
@@ -55,6 +56,7 @@ public class WebManager {
 
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static Collection<ItemProfile> directItems = new ArrayList<>();
+    private static HashMap<String, String> translatedReferences = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
@@ -185,7 +187,7 @@ public class WebManager {
     }
 
     public static Iterable<MapMarkerProfile> getNonIgnoredApiMarkers() {
-        return Iterables.filter(mapMarkers, o -> !o.isIgnored());
+        return mapMarkers.stream().filter(o -> !o.isIgnored()).collect(Collectors.toList());
     }
 
     public static UpdateProfile getUpdate() {
@@ -204,6 +206,10 @@ public class WebManager {
 
     public static MusicLocationsProfile getMusicLocations() {
         return musicLocations;
+    }
+
+    public static String getTranslatedItemName(String name) {
+        return translatedReferences.getOrDefault(name, name);
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
@@ -429,6 +435,7 @@ public class WebManager {
                 directItems = citems.values();
                 items = citems;
 
+                translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
                 IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
                 return true;
             })
