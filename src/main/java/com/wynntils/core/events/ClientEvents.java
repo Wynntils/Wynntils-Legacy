@@ -240,8 +240,8 @@ public class ClientEvents {
     public void checkSpellCast(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld) return;
 
-        int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
+        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 
         if (remainingHighlightTicks == 0 || highlightingItemStack.isEmpty()) {
             heldItem = "";

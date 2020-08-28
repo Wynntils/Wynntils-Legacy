@@ -27,14 +27,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents implements Listener {
-    
+
     private boolean ignoreNextBlank = false;
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
         if (e.getGui() instanceof GuiChat) {
             if (e.getGui() instanceof ChatGUI) return;
-            String defaultText = (String) ReflectionFields.GuiChat_defaultInputFieldText.getValue(e.getGui());
+            String defaultText = ReflectionFields.GuiChat_defaultInputFieldText.getValue(e.getGui());
 
             e.setGui(new ChatGUI(defaultText));
         }

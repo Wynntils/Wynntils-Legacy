@@ -100,13 +100,13 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof GuiChest) {
             if (e.getGui() instanceof ChestReplacer) return;
 
-            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
+            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
         if (e.getGui() instanceof GuiScreenHorseInventory) {
             if (e.getGui() instanceof HorseReplacer) return;
 
-            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
         if (e.getGui() instanceof GuiIngameMenu) {
             if (e.getGui() instanceof IngameMenuReplacer) return;

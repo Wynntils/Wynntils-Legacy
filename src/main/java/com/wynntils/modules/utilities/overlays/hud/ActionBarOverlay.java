@@ -95,8 +95,8 @@ public class ActionBarOverlay extends Overlay {
     private boolean renderItemName() {
         ScreenRenderer.mc.gameSettings.heldItemTooltips = false;
 
-        int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
+        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 
         if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
             String s = highlightingItemStack.getDisplayName();
