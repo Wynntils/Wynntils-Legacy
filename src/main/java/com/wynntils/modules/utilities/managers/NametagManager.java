@@ -318,7 +318,6 @@ public class NametagManager {
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName()) continue;
-            System.out.println(is.getDisplayName());
             CustomColor color;
             String displayName;
             if (WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) {
