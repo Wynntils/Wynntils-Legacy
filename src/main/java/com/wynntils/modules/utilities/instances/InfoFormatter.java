@@ -16,6 +16,7 @@ import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 
 import java.time.LocalDateTime;
@@ -209,10 +210,29 @@ public class InfoFormatter {
                 Integer.toString(28 - PlayerInfo.getPlayerInfo().getFreeInventorySlots()),
                 "inv_slots");
 
-        // Current location (town)
+        // Current territory
         registerFormatter((input) ->
                 PlayerInfo.getPlayerInfo().getLocation(),
                 "location", "loc");
+
+
+        // Current guild that owns current territory
+        registerFormatter((input) -> {
+                    String territory = PlayerInfo.getPlayerInfo().getLocation();
+                    //System.out.println("################################################################## "+territory);
+                    return territory != null ? WebManager.getTerritories().get(territory).getGuild() : "";
+                },
+                "terguild");
+
+
+        // Current guild that owns current territory (prefix)
+        registerFormatter((input) -> {
+                    String territory = PlayerInfo.getPlayerInfo().getLocation();
+                    //System.out.println("################################################################## "+territory);
+                    return territory != null ? WebManager.getTerritories().get(territory).getGuildPrefix() : "";
+                },
+                "terguild_pref");
+
 
         // Current level
         registerFormatter((input) ->
