@@ -10,6 +10,7 @@ import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -166,6 +167,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     return;
                 }
 
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("regionCompleted"), true, false, true, false, true);
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

@@ -11,6 +11,7 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.Display;
 
 import java.io.BufferedInputStream;
@@ -24,14 +25,23 @@ public class MusicPlayer {
     Thread musicThread = null;
     AdvancedPlayer player = null;
 
-    public void play(File f, boolean fastSwitch) {
-        if ((STATUS.getCurrentSong() != null && STATUS.getCurrentSong() == f) || (STATUS.getNextSong() != null && STATUS.getNextSong() == f)) return;
+    public void play(File f, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue) {
+        QueuedTrack track = new QueuedTrack(f, fadeIn, fadeOut, fastSwitch, repeat, lockQueue);
+        if (STATUS.getCurrentSong() != null && (STATUS.getCurrentSong().isLockQueue() || STATUS.getCurrentSong().equals(track))) return;
+        if (STATUS.getNextSong() != null && STATUS.getNextSong().equals(track)) return;
 
-        STATUS.setFastSwitch(fastSwitch);
         STATUS.setStopping(false);
-        STATUS.setNextSong(f);
+        STATUS.setNextSong(track);
 
-        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(f.getName().replace(".mp3", "")));
+        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(f.getName()));
+    }
+
+    public void play(File f, boolean fastSwitch) {
+        play(f, true, true, fastSwitch, true, false);
+    }
+
+    public void play(File f, boolean fastSwitch, boolean lockQueue) {
+        play(f, true, true, fastSwitch, true, lockQueue);
     }
 
     public void update() {
@@ -59,18 +69,17 @@ public class MusicPlayer {
 
         // next song transition
         if (STATUS.getNextSong() != null) {
-            if (STATUS.getCurrentGain() < -30f) { // current song already vanished off
+            if (!STATUS.getNextSong().fadeOut || STATUS.getCurrentGain() < -30f) { // current song already vanished off
                 // resetting statuses
                 STATUS.setCurrentSong(STATUS.getNextSong());
                 STATUS.setNextSong(null);
-                STATUS.setFastSwitch(false);
 
                 // restarting the player
                 kill();
                 return;
             }
 
-            STATUS.setCurrentGain(STATUS.getCurrentGain() - (STATUS.isFastSwitch() ? 1f : MusicConfig.INSTANCE.switchJump));
+            STATUS.setCurrentGain(STATUS.getCurrentGain() - (STATUS.getNextSong().isFastSwitch() ? 1f : MusicConfig.INSTANCE.switchJump));
             setGain(STATUS.getCurrentGain());
             return;
         }
@@ -126,21 +135,24 @@ public class MusicPlayer {
 
         musicThread = new Thread(() -> {
             try {
-                FileInputStream fis = new FileInputStream(STATUS.getCurrentSong());
+                FileInputStream fis = new FileInputStream(STATUS.getCurrentSong().getTrack());
                 BufferedInputStream bis = new BufferedInputStream(fis);
 
                 player = new AdvancedPlayer(bis);
                 player.setPlayBackListener(new PlaybackListener() {
                     // starts the song muted
                     public void playbackStarted(PlaybackEvent var1) {
-                        STATUS.setCurrentGain(-30f);
+                        STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : MusicConfig.INSTANCE.baseVolume);
                     }
 
                     // handles the replay
                     public void playbackFinished(PlaybackEvent var1) {
-                        if (!STATUS.isRepeat() || STATUS.isPaused()) return;
+                        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.End(STATUS.getCurrentSong().getName()));
+                        if (STATUS.isPaused()) {
+                            STATUS.setCurrentSong(null);
+                            return;
+                        }
 
-                        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.End(STATUS.getFormattedCurrentSongName()));
                         STATUS.setNextSong(STATUS.getCurrentSong());
                         STATUS.setCurrentSong(null);
                     }
