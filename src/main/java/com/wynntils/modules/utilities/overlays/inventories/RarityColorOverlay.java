@@ -243,7 +243,8 @@ public class RarityColorOverlay implements Listener {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         int arcColor = MathHelper.hsvToRGB(Math.max(0.0F, durability) / 3.0F, 1.0F, 1.0F);
-        drawArc(bufferbuilder, x, y, durability, 7, arcColor >> 16 & 255, arcColor >> 8 & 255, arcColor & 255, 160);
+        int radius = (UtilitiesConfig.Items.INSTANCE.itemLevelArc) ? 7 : 8;
+        drawArc(bufferbuilder, x, y, durability, radius, arcColor >> 16 & 255, arcColor >> 8 & 255, arcColor & 255, 160);
 
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
