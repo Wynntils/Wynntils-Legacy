@@ -222,7 +222,7 @@ public class InfoFormatter {
         // Current guild that owns current territory
         registerFormatter((input) -> {
                     String territory = PlayerInfo.getPlayerInfo().getLocation();
-                    return territory.equals("") ? "" : WebManager.getTerritories().get(territory).getGuild();
+                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuild();
                 },
                 "territory_owner", "terguild");
 
@@ -230,13 +230,14 @@ public class InfoFormatter {
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
                     String territory = PlayerInfo.getPlayerInfo().getLocation();
-                    return territory.equals("") ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
+                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
                 },
                 "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
         registerFormatter((input) ->{
             Location compass = CompassManager.getCompassLocation();
+
             if (compass == null) return "";
 
             double compassX = compass.getX();
