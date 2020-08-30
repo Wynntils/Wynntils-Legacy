@@ -219,19 +219,17 @@ public class InfoFormatter {
         // Current guild that owns current territory
         registerFormatter((input) -> {
                     String territory = PlayerInfo.getPlayerInfo().getLocation();
-                    //System.out.println("################################################################## "+territory);
-                    return territory != null ? WebManager.getTerritories().get(territory).getGuild() : "";
+                    return territory.equals("") ? "" : WebManager.getTerritories().get(territory).getGuild();
                 },
-                "terguild");
+                "territory_owner", "terguild");
 
 
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
                     String territory = PlayerInfo.getPlayerInfo().getLocation();
-                    //System.out.println("################################################################## "+territory);
-                    return territory != null ? WebManager.getTerritories().get(territory).getGuildPrefix() : "";
+                    return territory.equals("") ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
                 },
-                "terguild_pref");
+                "territory_owner_prefix", "terguild_pref");
 
 
         // Current level
