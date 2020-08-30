@@ -11,13 +11,16 @@ import com.wynntils.core.framework.instances.PlayerInfo.UnprocessedAmount;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -230,6 +233,20 @@ public class InfoFormatter {
                     return territory.equals("") ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
                 },
                 "territory_owner_prefix", "terguild_pref");
+
+        // Distance from compass beacon
+        registerFormatter((input) ->{
+            Location compass = CompassManager.getCompassLocation();
+            if (compass == null) return "";
+
+            double compassX = compass.getX();
+            double compassZ = compass.getZ();
+            double playerX = Minecraft.getMinecraft().player.posX;
+            double playerZ = Minecraft.getMinecraft().player.posZ;
+
+            return String.valueOf(MathHelper.floor(MathHelper.sqrt(
+                    (compassX - playerX) * (compassX - playerX) + (compassZ - playerZ) * (compassZ - playerZ))));
+        }, "beacon_distance", "beacdist");
 
 
         // Current level
