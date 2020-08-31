@@ -240,7 +240,6 @@ public class InfoFormatter {
             Location playerPos = new Location(Minecraft.getMinecraft().player);
 
             if (compass == null) return "";
-
             return String.valueOf((int) compass.distance(playerPos));
 
         }, "beacon_distance", "beacdist");
