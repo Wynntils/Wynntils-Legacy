@@ -27,6 +27,7 @@ public class QuestBookModule extends Module {
         registerCommand(new CommandExportDiscoveries());
 
         registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> QuestBookPages.QUESTS.getPage().open(true));
+        registerKeyBinding("Open Discoveries", Keyboard.KEY_U, "Wynntils", true, () -> QuestBookPages.DISCOVERIES.getPage().open(true));
         registerKeyBinding("Open Menu", Keyboard.KEY_I, "Wynntils", true, () -> {
             QuestBookPages.MAIN.getPage().open(true);
             QuestManager.readQuestBook();
