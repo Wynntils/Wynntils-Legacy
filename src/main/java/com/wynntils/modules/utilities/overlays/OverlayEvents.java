@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
@@ -150,6 +151,15 @@ public class OverlayEvents implements Listener {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onScrollUsed(ChatEvent.Post e) {
+        String messageText = e.getMessage().getUnformattedText();
+        if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
+            //10 tick delay, since chat event occurs before default consumable event
+            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10); 
+        }
+    }
+    
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
@@ -535,32 +545,34 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-            if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+        if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
                 e.setCanceled(true);
-
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                    long timeNow = Minecraft.getSystemTime();
-                    int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
-                    if (timeLeft > 0) {
-                        ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, true);
-                    }
-                }
-                return;
             }
+                
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                long timeNow = Minecraft.getSystemTime();
+                int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
+                if (timeLeft > 0) {
+                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
+                }
+            }      
+            return;
+        }
 
-            Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
-            if (matcher.find()) {
-                int minutes = Integer.parseInt(matcher.group(1));
+        Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        if (matcher.find()) {
+            int minutes = Integer.parseInt(matcher.group(1));
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
                 e.setCanceled(true);
-
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                    ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
-                }
-                return;
             }
+
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
+            }
+            return;
         }
     }
 
