@@ -237,14 +237,12 @@ public class InfoFormatter {
         // Distance from compass beacon
         registerFormatter((input) ->{
             Location compass = CompassManager.getCompassLocation();
+            Location playerPos = new Location(Minecraft.getMinecraft().player);
 
             if (compass == null) return "";
 
+            return String.valueOf((int) compass.distance(playerPos));
 
-            Location playerPos = new Location(Minecraft.getMinecraft().player);
-            return String.valueOf(MathHelper.floor(MathHelper.sqrt((compass.getX() - playerPos.getX()) * (compass.getX() - playerPos.getX())
-                    + (compass.getZ() - playerPos.getZ()) * (compass.getZ() - playerPos.getZ()))));
-            
         }, "beacon_distance", "beacdist");
 
 
