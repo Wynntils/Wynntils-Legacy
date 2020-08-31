@@ -241,7 +241,6 @@ public class InfoFormatter {
 
             if (compass == null) return "";
             return String.valueOf((int) compass.distance(playerPos));
-
         }, "beacon_distance", "beacdist");
 
 
