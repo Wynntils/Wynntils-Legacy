@@ -34,7 +34,7 @@ public class MusicPlayer {
         STATUS.setStopping(false);
         STATUS.setNextSong(track);
 
-        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(f.getName()));
+        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(track.getName()));
     }
 
     public void play(File f, boolean fastSwitch) {
