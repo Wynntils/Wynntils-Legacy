@@ -283,9 +283,8 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
-        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
-            return;
-        }
+        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
+
         String msg = e.getMessage().getUnformattedText();
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();

@@ -26,13 +26,9 @@ public class MusicConfig extends SettingsClass {
     @Setting(displayName = "Class Selection Music", description = "Should the class selection music be played?", order = 2)
     public boolean classSelectionMusic = true;
 
-    @Setting(displayName = "Base Volume", description = "How loud should soundtracks be?")
-    @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
-    public float baseVolume = -10;
-
-    @Setting(displayName = "Off Focus Volume", description = "How loud should soundtracks be when Minecraft is not focused on?")
-    @Setting.Limitations.FloatLimit(max = 1f, min= -50f, precision = 1f)
-    public float focusVolume = -15;
+    @Setting(displayName = "Off Focus Volume Offset", description = "How loud should soundtracks be when Minecraft is not focused on?")
+    @Setting.Limitations.FloatLimit(max = 0f, min= -32f, precision = 1f)
+    public float focusOffset = -10;
 
     @Setting(displayName = "Transition Jump", description = "How long should song transitions be?")
     @Setting.Limitations.FloatLimit(max = 2f, min= 0f)

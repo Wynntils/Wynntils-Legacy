@@ -12,6 +12,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.SoundCategory;
 import org.lwjgl.opengl.Display;
 
 import java.io.BufferedInputStream;
@@ -52,7 +53,7 @@ public class MusicPlayer {
 
         // stopping/pause transition
         if (STATUS.isStopping() || STATUS.isPaused()) {
-            if (STATUS.getCurrentGain() < -30f) { // song already vanished off
+            if (STATUS.getCurrentGain() < -36f) { // song already vanished off
                 if (STATUS.isStopping()) {
                     STATUS.setStopping(false);
                     clear();
@@ -69,7 +70,7 @@ public class MusicPlayer {
 
         // next song transition
         if (STATUS.getNextSong() != null) {
-            if (!STATUS.getNextSong().fadeOut || STATUS.getCurrentGain() < -30f) { // current song already vanished off
+            if (!STATUS.getNextSong().fadeOut || STATUS.getCurrentGain() < -36f) { // current song already vanished off
                 // resetting statuses
                 STATUS.setCurrentSong(STATUS.getNextSong());
                 STATUS.setNextSong(null);
@@ -85,7 +86,8 @@ public class MusicPlayer {
         }
 
         // update the volume
-        float expectedGain = Display.isActive() ? MusicConfig.INSTANCE.baseVolume : MusicConfig.INSTANCE.focusVolume;
+        float baseVolume = -36 + (36 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+        float expectedGain = Display.isActive() ? baseVolume : Math.max(-30, baseVolume + MusicConfig.INSTANCE.focusOffset);
 
         if (STATUS.getCurrentGain() > expectedGain) {
             STATUS.setCurrentGain(Math.max(STATUS.getCurrentGain() - 0.2f, expectedGain));
@@ -142,13 +144,14 @@ public class MusicPlayer {
                 player.setPlayBackListener(new PlaybackListener() {
                     // starts the song muted
                     public void playbackStarted(PlaybackEvent var1) {
-                        STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : MusicConfig.INSTANCE.baseVolume);
+                        float baseVolume = -32 + (32 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+                        STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : baseVolume);
                     }
 
                     // handles the replay
                     public void playbackFinished(PlaybackEvent var1) {
                         FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.End(STATUS.getCurrentSong().getName()));
-                        if (STATUS.isPaused()) {
+                        if (!STATUS.getCurrentSong().isRepeat() || STATUS.isPaused()) {
                             STATUS.setCurrentSong(null);
                             return;
                         }
