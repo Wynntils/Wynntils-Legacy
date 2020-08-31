@@ -240,13 +240,11 @@ public class InfoFormatter {
 
             if (compass == null) return "";
 
-            double compassX = compass.getX();
-            double compassZ = compass.getZ();
-            double playerX = Minecraft.getMinecraft().player.posX;
-            double playerZ = Minecraft.getMinecraft().player.posZ;
 
-            return String.valueOf(MathHelper.floor(MathHelper.sqrt(
-                    (compassX - playerX) * (compassX - playerX) + (compassZ - playerZ) * (compassZ - playerZ))));
+            Location playerPos = new Location(Minecraft.getMinecraft().player);
+            return String.valueOf(MathHelper.floor(MathHelper.sqrt((compass.getX() - playerPos.getX()) * (compass.getX() - playerPos.getX())
+                    + (compass.getZ() - playerPos.getZ()) * (compass.getZ() - playerPos.getZ()))));
+            
         }, "beacon_distance", "beacdist");
 
 
