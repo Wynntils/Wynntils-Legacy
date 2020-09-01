@@ -30,7 +30,6 @@ public class SoundTrackManager {
     private static final MusicPlayer player = new MusicPlayer();
 
     private static boolean isListUpdated = false;
-    private static boolean fastSwitchNext = false;
     private static File musicFolder = null;
 
     /**
@@ -39,13 +38,6 @@ public class SoundTrackManager {
      */
     public static MusicPlayer getPlayer() {
         return player;
-    }
-
-    /**
-     * Requires the next song to be fast switched
-     */
-    public static void setFastSwitchNext() {
-        fastSwitchNext = true;
     }
 
     /**
@@ -77,8 +69,12 @@ public class SoundTrackManager {
      *
      * @param song the track profile
      * @param fastSwitch if it should fast switch to the song
+     * @param fadeIn if the song should start with a fade in
+     * @param fadeOut if while transitioning the old song should fadeOut
+     * @param repeat if the song should repeat until changed
+     * @param lockQueue no more songs will be allowed until the provided ends
      */
-    private static void playSong(MusicProfile song, boolean fastSwitch) {
+    private static void playSong(MusicProfile song, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue) {
         if (!MusicConfig.INSTANCE.enabled || song == null) return;
 
         // updates the song list if possible
@@ -91,8 +87,7 @@ public class SoundTrackManager {
         if (downloadedMusics.containsKey(song.getAsHash())) {
             if (!downloadedMusics.get(song.getAsHash()).getFile().isPresent()) return; // available to play (downloaded)
 
-            fastSwitchNext = false;
-            player.play(downloadedMusics.get(song.getAsHash()).getFile().get(), fastSwitch);
+            player.play(downloadedMusics.get(song.getAsHash()).getFile().get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue);
             return;
         }
 
@@ -103,7 +98,7 @@ public class SoundTrackManager {
             if (!success) return;
 
             downloadedMusics.replace(toDownload.getAsHash(), new MusicProfile(new File(musicFolder, toDownload.getName())));
-            playSong(song, fastSwitch);
+            playSong(song, fastSwitch, fadeIn, fadeOut, repeat, lockQueue);
         });
     }
 
@@ -112,8 +107,12 @@ public class SoundTrackManager {
      *
      * @param fullName the track name
      * @param fastSwitch if it should fast switch to the song
+     * @param fadeIn if the song should start with a fade in
+     * @param fadeOut if while transitioning the old song should fadeOut
+     * @param repeat if the song should repeat until changed
+     * @param lockQueue no more songs will be allowed until the provided ends
      */
-    public static void findTrack(String fullName, boolean fastSwitch) {
+    public static void findTrack(String fullName, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue) {
         if (!MusicConfig.INSTANCE.enabled || fullName == null) return;
 
         MusicProfile selected = null;
@@ -124,7 +123,17 @@ public class SoundTrackManager {
             break;
         }
 
-        playSong(selected, fastSwitch || fastSwitchNext);
+        playSong(selected, fastSwitch, fadeIn, fadeOut, repeat, lockQueue);
+    }
+
+    /**
+     * Tries to fiend a song track based on it's name
+     *
+     * @param fullName the track name
+     * @param fastSwitch if it should fast switch to the song
+     */
+    public static void findTrack(String fullName, boolean fastSwitch) {
+        findTrack(fullName, fastSwitch, true, true, true, false);
     }
 
     /**
@@ -176,7 +185,7 @@ public class SoundTrackManager {
         } else if (firstWord.isPresent()) { selected = firstWord.get();
         } else if (lessPossible.isPresent()) { selected = lessPossible.get(); }
 
-       playSong(selected, fastSwitchNext);
+       playSong(selected, false, false, true, true, false);
     }
 
 }

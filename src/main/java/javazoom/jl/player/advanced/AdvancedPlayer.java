@@ -129,8 +129,8 @@ public class AdvancedPlayer {
     public boolean play(int var1, int var2) throws JavaLayerException {
         boolean var3 = true;
 
-        for (int var4 = var1; var4-- > 0 && var3; var3 = this.skipFrame()) {
-            ;
+        while (var1-- > 0 && this.skipFrame()) {
+            // skipping frames
         }
 
         return this.play(var2 - var1);

@@ -39,7 +39,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
         }
 
         public List<GuiButton> getButtonList() {
-            return (List<GuiButton>) ReflectionFields.GuiScreen_buttonList.getValue(getGui());
+            return ReflectionFields.GuiScreen_buttonList.getValue(getGui());
         }
 
     }

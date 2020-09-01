@@ -8,66 +8,44 @@ import java.io.File;
 
 public class PlayerStatus {
 
-    private boolean repeat = true;
     private boolean paused = false;
-    private boolean fastSwitch = false;
     private boolean stopping = false;
 
     private float currentGain = 1f;
 
-    private File currentSong = null;
-    private File nextSong = null;
+    private QueuedTrack currentSong = null;
+    private QueuedTrack nextSong = null;
 
-    public File getCurrentSong() {
+    public QueuedTrack getCurrentSong() {
         return currentSong;
     }
 
-    public File getNextSong() {
+    public QueuedTrack getNextSong() {
         return nextSong;
-    }
-
-    public String getFormattedCurrentSongName() {
-        return currentSong.getName().replace(".mp3", "");
     }
 
     public float getCurrentGain() {
         return currentGain;
     }
 
-    public boolean isFastSwitch() {
-        return fastSwitch;
-    }
-
     public boolean isPaused() {
         return paused;
-    }
-
-    public boolean isRepeat() {
-        return repeat;
     }
 
     public boolean isStopping() {
         return stopping;
     }
 
-    public void setCurrentSong(File currentSong) {
+    public void setCurrentSong(QueuedTrack currentSong) {
         this.currentSong = currentSong;
     }
 
-    public void setNextSong(File nextSong) {
+    public void setNextSong(QueuedTrack nextSong) {
         this.nextSong = nextSong;
     }
 
     public void setPaused(boolean paused) {
         this.paused = paused;
-    }
-
-    public void setRepeat(boolean repeat) {
-        this.repeat = repeat;
-    }
-
-    public void setFastSwitch(boolean fastSwitch) {
-        this.fastSwitch = fastSwitch;
     }
 
     public void setCurrentGain(float currentGain) {

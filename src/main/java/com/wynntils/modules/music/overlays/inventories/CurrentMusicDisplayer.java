@@ -25,13 +25,13 @@ public class CurrentMusicDisplayer implements Listener {
         ScreenRenderer r = new ScreenRenderer();
 
         ScreenRenderer.beginGL(e.getGui().width / 2, e.getGui().height / 4 - 16);
-        float size = r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getFormattedCurrentSongName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+        float size = r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getCurrentSong().getName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
         r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)) - 4, 150, 0, 17, 4, 49);  // left corner
         r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)), 150, (int)(size/2), 199, 5, 17, 9, 66);  // middle
         r.drawRect(Textures.UIs.hud_overlays, (int)(size/2), 150, 10, 17, 4, 49);  // right corner
 
-        r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getFormattedCurrentSongName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+        r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getCurrentSong().getName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
         int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();
         if (SoundTrackManager.getPlayer() != null) {

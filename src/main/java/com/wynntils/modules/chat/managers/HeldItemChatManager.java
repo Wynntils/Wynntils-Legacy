@@ -51,7 +51,7 @@ public class HeldItemChatManager {
             mc.player == null || mc.world == null ||
             mc.player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
             mc.player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
-            mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR && 
+            mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
             mc.player.inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
             PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE
         ) {
@@ -170,7 +170,7 @@ public class HeldItemChatManager {
         } else {
             int seconds = (time / 20) % 60;
             add(text, new TextComponentString(String.format(
-                "§e[§l%s§e:§l%s§e]", Integer.toString(time / (20 * 60)), String.format("%02d", seconds)
+                "§e[§l%s§e:§l%s§e]", time / (20 * 60), String.format("%02d", seconds)
             )));
         }
 
@@ -200,14 +200,15 @@ public class HeldItemChatManager {
         ITextComponent msg = new TextComponentString("[x]");
         msg.getStyle().setColor(TextFormatting.DARK_RED);
         msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Do not show this text")));
+
         return TextAction.withStaticEvent(msg, OnCancelClick.class);
     }
 
     private static void deleteMessage() {
-        if (hasMessage) {
-            hasMessage = false;
-            ChatOverlay.getChat().deleteChatLine(MESSAGE_ID);
-        }
+        if (!hasMessage) return;
+
+        hasMessage = false;
+        ChatOverlay.getChat().deleteChatLine(MESSAGE_ID);
     }
 
     private static void showMessage(ITextComponent msg) {
@@ -215,6 +216,7 @@ public class HeldItemChatManager {
             deleteMessage();
             return;
         }
+
         hasMessage = true;
         boolean oldClickableCoords = ChatConfig.INSTANCE.clickableCoordinates;
         ChatConfig.INSTANCE.clickableCoordinates = false;

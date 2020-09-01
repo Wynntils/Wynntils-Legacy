@@ -250,7 +250,7 @@ public class PlayerInfo {
         }
         int level = getLevel();
         if (level <= 11) {
-            String subtitle = (String) ReflectionFields.GuiIngame_displayedSubTitle.getValue(mc.ingameGUI);
+            String subtitle = ReflectionFields.GuiIngame_displayedSubTitle.getValue(mc.ingameGUI);
             return parseSpellFromTitle(subtitle);
         }
 

@@ -51,7 +51,6 @@ public class ClientEvents implements Listener {
         if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
         SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("characterSelector"), true);
-        SoundTrackManager.setFastSwitchNext();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

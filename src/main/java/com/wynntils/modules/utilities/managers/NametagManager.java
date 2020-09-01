@@ -318,11 +318,13 @@ public class NametagManager {
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName()) continue;
+            String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+            
             CustomColor color;
             String displayName;
-            if (WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) {
+            if (WebManager.getItems().containsKey(itemName)) {
 
-                ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
+                ItemProfile itemProfile = WebManager.getItems().get(itemName);
                 switch (itemProfile.getTier()) {
                     case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
                     case FABLED: color = MinecraftChatColors.RED; break;
@@ -338,7 +340,7 @@ public class NametagManager {
                 // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
                 if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
                     displayName = "Unidentified Item";
-                } else displayName = is.getDisplayName();
+                } else displayName = itemProfile.getDisplayName();
             } else if (is.getDisplayName().contains("Crafted")) {
                 color = MinecraftChatColors.DARK_AQUA;
                 displayName = is.getDisplayName();
