@@ -341,9 +341,9 @@ public class NametagManager {
                 if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
                     displayName = "Unidentified Item";
                 } else displayName = itemProfile.getDisplayName();
-            } else if (is.getDisplayName().contains("Crafted")) {
+            } else if (itemName.contains("Crafted")) {
                 color = MinecraftChatColors.DARK_AQUA;
-                displayName = is.getDisplayName();
+                displayName = itemName;
             } else continue;
 
             labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(displayName), 0.4f));
