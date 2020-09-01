@@ -319,11 +319,17 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Quick Access Page Numbers", description = "Should the page number that the bank quick access buttons send you to be shown?", order = 1)
         public boolean showQuickAccessNumbers = true;
         
-        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?")
+        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?", order = 2)
+        public boolean showBankSearchBar = true;
+        
+        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?", order = 3)
         public boolean addBankConfirmation = true;
 
-        @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
+        @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 4)
         public boolean openChatBankSearch = true;
+        
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)
+        public CustomColor searchHighlightColor = new CustomColor(0.9f, .3f, 0f);
         
         @Setting(displayName = "Quick Access 1 Destination", description = "Which bank page should the first quick access button take you to?", order = 10)
         @Setting.Limitations.IntLimit(min = 1, max = 21)

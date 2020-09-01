@@ -1,9 +1,12 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.wynntils.ModCore;
@@ -45,12 +48,16 @@ public class BankOverlay implements Listener {
     
     private boolean editButtonHover = false;
     private GuiTextField nameField = null;
+    private GuiTextField searchField = null;
+    
+    public static List<ItemStack> searchedItems = new ArrayList<ItemStack>();
     
     @SubscribeEvent
     public void onBankClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
         page = -1;
         inBank = false;
         nameField = null;
+        searchedItems.clear();
     }
     
     @SubscribeEvent
@@ -68,17 +75,25 @@ public class BankOverlay implements Listener {
         if (destinationPage == page) destinationPage = -1; // if we've already arrived, reset destination
         if (destinationPage != -1 && destinationPage != page)
             new Delay(() -> gotoPage(e.getGui()), 0); //slight delay to let bank items load in
+        
+        if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
+            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, 50, 127, 120, 10);
+            searchField.setText("Search...");
+        }
     }
     
     @SubscribeEvent
     public void onBankDraw(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if (!inBank) return;
         
+        // update search
+        searchPageForItems(e.getGui().getLowerInv());
+        
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         
-        //quick access numbers
+        // quick access numbers
         int destinations[] = getQuickAccessDestinations();
-        for(int i = 0; i < QA_BUTTONS; i++) {
+        for (int i = 0; i < QA_BUTTONS; i++) {
             Slot s = e.getGui().inventorySlots.getSlot(QA_SLOTS[i]);
             int destination = destinations[i];
             
@@ -93,15 +108,19 @@ public class BankOverlay implements Listener {
             }
         }
         
-        //draw page name edit field
+        // draw textboxes
+        GL11.glPushMatrix();
+        GL11.glTranslatef(0f, 0f, 300f);
         if (nameField != null) nameField.drawTextBox();
+        if (searchField != null) searchField.drawTextBox();
+        GL11.glPopMatrix();
         
-        //draw page name edit button
+        // draw page name edit button
         int x = e.getGui().getXSize() - 12 - fr.getStringWidth(EDIT_ICON);
         int y = 1;
         TextFormatting color = TextFormatting.DARK_GRAY;
         
-        //is mouse over edit button
+        // is mouse over edit button
         if (e.getMouseX() >= e.getGui().getGuiLeft() + x - 4 && e.getMouseX() <=  e.getGui().getGuiLeft() + x + fr.getStringWidth(EDIT_ICON) + 4 &&
                 e.getMouseY() >= e.getGui().getGuiTop() + y - 4 && e.getMouseY() <= e.getGui().getGuiTop() + y + fr.FONT_HEIGHT + 4) {
             color = TextFormatting.GRAY;
@@ -122,7 +141,7 @@ public class BankOverlay implements Listener {
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if(!inBank || e.getSlotIn() == null) return;
         
-        //override default quick access if necessary
+        // override default quick access if custom destination is defined
         Slot s = e.getSlotIn();
         int destinations[] = getQuickAccessDestinations();
         for (int i = 0; i < QA_BUTTONS; i++) {
@@ -141,10 +160,26 @@ public class BankOverlay implements Listener {
     public void onMouseClicked(GuiOverlapEvent.ChestOverlap.MouseClicked e) {
         if (!inBank) return;
         
-        //handle mouse input on name editor
-        if(nameField != null) nameField.mouseClicked(e.getMouseX() - e.getGui().getGuiLeft(), e.getMouseY() - e.getGui().getGuiTop(), e.getMouseButton());
+        int offsetMouseX = e.getMouseX() - e.getGui().getGuiLeft();
+        int offsetMouseY = e.getMouseY() - e.getGui().getGuiTop();
         
-        //handle mouse input on edit button
+        // handle mouse input on name editor
+        if (nameField != null) nameField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
+        
+        // handle mouse input on search box
+        if (searchField != null) {
+            searchField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
+            if (e.getMouseButton() == 0) { // left click
+                if (searchField.isFocused()) {
+                    searchField.setCursorPositionEnd();
+                    searchField.setSelectionPos(0);
+                } else {
+                    searchField.setSelectionPos(searchField.getCursorPosition());
+                }
+            }
+        }
+        
+        // handle mouse input on edit button
         if (editButtonHover) {
             if (e.getMouseButton() == 0) {
                 ((InventoryBasic) e.getGui().getLowerInv()).setCustomName("");
@@ -167,7 +202,7 @@ public class BankOverlay implements Listener {
         
         if (nameField != null && nameField.isFocused()) {
             e.setCanceled(true);
-            if(e.getKeyCode() == 28) { //enter
+            if (e.getKeyCode() == Keyboard.KEY_RETURN) { // enter
                 String name = nameField.getText();
                 nameField = null;
                 
@@ -175,15 +210,20 @@ public class BankOverlay implements Listener {
                 UtilitiesConfig.Bank.INSTANCE.pageNames.put(page, name);
                 UtilitiesConfig.Bank.INSTANCE.saveSettings(UtilitiesModule.getModule());
                 updateName(e.getGui().getLowerInv());
-            } else if (e.getKeyCode() == 1) { //escape
+            } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) { // escape
                 nameField = null;
                 updateName(e.getGui().getLowerInv());
             } else {
                 nameField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
             }
-        } else {
-            if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { //bank was closed by player
+        } else if (searchField != null && searchField.isFocused()) {
+            e.setCanceled(true);
+            searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
+        }
+        else {
+            if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
                 destinationPage = -1;
+                searchField = null;
             }
         }
     }
@@ -213,7 +253,7 @@ public class BankOverlay implements Listener {
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_FORWARD).getStack();
                 
                 // ensure arrow is there
-                if(!is.hasDisplayName() || !is.getDisplayName().contains(">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">")) {
+                if (!is.hasDisplayName() || !is.getDisplayName().contains(">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">")) {
                     destinationPage = -1;
                     return;
                 }
@@ -223,7 +263,7 @@ public class BankOverlay implements Listener {
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_BACK).getStack();
                 
                 // ensure arrow is there
-                if(!is.hasDisplayName() || !is.getDisplayName().contains("<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<")) {
+                if (!is.hasDisplayName() || !is.getDisplayName().contains("<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<")) {
                     destinationPage = -1;
                     return;
                 }
@@ -239,6 +279,18 @@ public class BankOverlay implements Listener {
         ModCore.mc().getConnection().sendPacket(packet);
     }
     
+    public void searchPageForItems(IInventory bankGui) {
+        searchedItems.clear();
+        if (searchField == null || searchField.getText().equals("Searching...") || searchField.getText().isEmpty()) return;
+        
+        String searchText = searchField.getText().toLowerCase();
+        for (int i = 0; i < bankGui.getSizeInventory(); i++) {
+            if (i % 9 > 6) continue; //ignore sidebar items
+            ItemStack is = bankGui.getStackInSlot(i);
+            if (TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()).toLowerCase().contains(searchText)) searchedItems.add(is);
+        }
+    }
+    
     public void updateMaxPages() {
         if (UtilitiesConfig.Bank.INSTANCE.maxPages < page) {
             UtilitiesConfig.Bank.INSTANCE.maxPages = page;
@@ -248,9 +300,9 @@ public class BankOverlay implements Listener {
     
     public String addFormatting(String in) {
         String out = "";
-        for(int i = 0; i < in.length(); i++) {
+        for (int i = 0; i < in.length(); i++) {
             char c = in.charAt(i);
-            if(c == '&' && i + 1 < in.length() && FORMATTING_CHAR.matcher(in.charAt(i + 1) + "").matches()) c = '§';  
+            if (c == '&' && i + 1 < in.length() && FORMATTING_CHAR.matcher(in.charAt(i + 1) + "").matches()) c = '§';  
             out += c;
         }
         return out;
