@@ -64,12 +64,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Startup Resource Pack", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
     public boolean autoResourceOnLoad = false;
 
-    @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?")
-    public boolean addBankConfirmation = true;
-
-    @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
-    public boolean openChatBankSearch = true;
-
     @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
     public boolean changeWindowTitle = true;
 
@@ -316,6 +310,50 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
+    }
+    
+    @SettingsInfo(name = "bank", displayPath = "Utilities/Bank")
+    public static class Bank extends SettingsClass {
+        public static Bank INSTANCE;
+        
+        @Setting(displayName = "Show Quick Access Page Numbers", description = "Should the page number that the bank quick access buttons send you to be shown?", order = 1)
+        public boolean showQuickAccessNumbers = true;
+        
+        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?")
+        public boolean addBankConfirmation = true;
+
+        @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?")
+        public boolean openChatBankSearch = true;
+        
+        @Setting(displayName = "Quick Access 1 Destination", description = "Which bank page should the first quick access button take you to?", order = 10)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessOne = 1;
+        
+        @Setting(displayName = "Quick Access 2 Destination", description = "Which bank page should the second quick access button take you to?", order = 11)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessTwo = 5;
+        
+        @Setting(displayName = "Quick Access 3 Destination", description = "Which bank page should the third quick access button take you to?", order = 12)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessThree = 9;
+        
+        @Setting(displayName = "Quick Access 4 Destination", description = "Which bank page should the fourth quick access button take you to?", order = 13)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessFour = 13;
+        
+        @Setting(displayName = "Quick Access 5 Destination", description = "Which bank page should the fifth quick access button take you to?", order = 14)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessFive = 17;
+        
+        @Setting(displayName = "Quick Access 6 Destination", description = "Which bank page should the sixth quick access button take you to?", order = 15)
+        @Setting.Limitations.IntLimit(min = 1, max = 21)
+        public int quickAccessSix = 21;
+        
+        @Setting
+        public Map<Integer, String> pageNames = new HashMap<>();
+        
+        @Setting
+        public int maxPages = 1;
     }
 
     @Override

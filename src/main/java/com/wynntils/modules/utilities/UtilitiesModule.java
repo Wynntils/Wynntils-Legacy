@@ -48,6 +48,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new WynnDataOverlay());
         registerEvents(new ItemSpecificationOverlay());
         registerEvents(new ServerUptimeOverlay());
+        registerEvents(new BankOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
@@ -83,6 +84,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
+        registerSettings(UtilitiesConfig.Bank.class);
         registerSettings(UtilitiesConfig.Identifications.class);
 
         registerSettings(TranslationConfig.class);
