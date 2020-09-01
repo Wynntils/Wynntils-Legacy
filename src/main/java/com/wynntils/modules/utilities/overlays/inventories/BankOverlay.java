@@ -12,6 +12,8 @@ import org.lwjgl.opengl.GL11;
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -32,7 +34,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class BankOverlay implements Listener {
     
     private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9]*'s Bank");
-    private static final Pattern FORMATTING_CHAR = Pattern.compile("[0-9a-fk-or]");
     
     private static final String EDIT_ICON = "✎";
     
@@ -77,8 +78,9 @@ public class BankOverlay implements Listener {
             new Delay(() -> gotoPage(e.getGui()), 0); //slight delay to let bank items load in
         
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
-            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, 50, 127, 120, 10);
+            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, 50, 128, 120, 10);
             searchField.setText("Search...");
+            searchField.setEnableBackgroundDrawing(false);
         }
     }
     
@@ -111,8 +113,16 @@ public class BankOverlay implements Listener {
         // draw textboxes
         GL11.glPushMatrix();
         GL11.glTranslatef(0f, 0f, 300f);
-        if (nameField != null) nameField.drawTextBox();
-        if (searchField != null) searchField.drawTextBox();
+        if (nameField != null) {
+            drawTextFieldBox(nameField);
+            nameField.drawTextBox();
+        }
+        
+        if (searchField != null) {
+            drawTextFieldBox(searchField);
+            searchField.drawTextBox();
+        }
+        
         GL11.glPopMatrix();
         
         // draw page name edit button
@@ -185,6 +195,7 @@ public class BankOverlay implements Listener {
                 ((InventoryBasic) e.getGui().getLowerInv()).setCustomName("");
                 nameField = new GuiTextField(200, Minecraft.getMinecraft().fontRenderer, 4, 4, 120, 10);
                 nameField.setFocused(true);
+                nameField.setEnableBackgroundDrawing(false);
                 if(UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page)) 
                     nameField.setText(UtilitiesConfig.Bank.INSTANCE.pageNames.get(page).replace("§", "&"));
             } else if (e.getMouseButton() == 1) {
@@ -202,15 +213,15 @@ public class BankOverlay implements Listener {
         
         if (nameField != null && nameField.isFocused()) {
             e.setCanceled(true);
-            if (e.getKeyCode() == Keyboard.KEY_RETURN) { // enter
+            if (e.getKeyCode() == Keyboard.KEY_RETURN) {
                 String name = nameField.getText();
                 nameField = null;
                 
-                name = addFormatting(name);
+                name = name.replaceAll("&([a-f0-9k-or])", "§$1");
                 UtilitiesConfig.Bank.INSTANCE.pageNames.put(page, name);
                 UtilitiesConfig.Bank.INSTANCE.saveSettings(UtilitiesModule.getModule());
                 updateName(e.getGui().getLowerInv());
-            } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) { // escape
+            } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
                 nameField = null;
                 updateName(e.getGui().getLowerInv());
             } else {
@@ -218,7 +229,11 @@ public class BankOverlay implements Listener {
             }
         } else if (searchField != null && searchField.isFocused()) {
             e.setCanceled(true);
-            searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
+            if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
+                searchField.setFocused(false);
+            } else {
+                searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
+            }
         }
         else {
             if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
@@ -233,6 +248,14 @@ public class BankOverlay implements Listener {
                 ? UtilitiesConfig.Bank.INSTANCE.pageNames.get(page) : TextFormatting.DARK_GRAY 
                         + ModCore.mc().player.getName() + "'s" + TextFormatting.BLACK + " Bank";
         ((InventoryBasic) bankGui).setCustomName(TextFormatting.BLACK + "[Pg. " + page + "] " + name);
+    }
+    
+    private void drawTextFieldBox(GuiTextField text) {
+        ScreenRenderer renderer = new ScreenRenderer();
+        ScreenRenderer.beginGL(0, 0);
+        renderer.drawRect(new CustomColor(232, 201, 143), text.x - 2, text.y - 2, text.x + text.width, text.y + text.height);
+        renderer.drawRect(new CustomColor(120, 90, 71), text.x - 1, text.y - 1, text.x + text.width - 1, text.y + text.height - 1);
+        ScreenRenderer.endGL();
     }
     
     private void gotoPage(ChestReplacer bankGui) {
@@ -296,16 +319,6 @@ public class BankOverlay implements Listener {
             UtilitiesConfig.Bank.INSTANCE.maxPages = page;
             UtilitiesConfig.Bank.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
-    }
-    
-    public String addFormatting(String in) {
-        String out = "";
-        for (int i = 0; i < in.length(); i++) {
-            char c = in.charAt(i);
-            if (c == '&' && i + 1 < in.length() && FORMATTING_CHAR.matcher(in.charAt(i + 1) + "").matches()) c = '§';  
-            out += c;
-        }
-        return out;
     }
     
     private static int[] getQuickAccessDestinations() {
