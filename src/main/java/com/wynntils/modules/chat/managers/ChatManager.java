@@ -375,16 +375,16 @@ public class ChatManager {
                 break;
             }
         }
-        
+
         //powder manual
         if (ChatConfig.INSTANCE.customPowderManual && in.getUnformattedText().equals("                         Powder Manual")) {
             List<ITextComponent> chapterSelect = new ArrayList<ITextComponent>();
-            
+
             ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
             ITextComponent spacer = new TextComponentString("   "); //space between chapters
-            
+
             chapterSelect.add(offset);
-            
+
             for (int i = 1; i <= 3; i++) {
                 ITextComponent chapter = new TextComponentString("Chapter " + i);
                 chapter.getStyle()
@@ -392,14 +392,14 @@ public class ChatManager {
                         .setUnderlined(true)
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to read Chapter " + i)));
                 chapter = TextAction.withDynamicEvent(chapter, new ChapterReader(i));
-                
+
                 chapterSelect.add(chapter);
                 chapterSelect.add(spacer);
             }
-            
+
             chapterSelect.add(new TextComponentString("\n"));
             in.getSiblings().addAll(chapterSelect);
-            
+
         }
 
         return in;
@@ -454,7 +454,7 @@ public class ChatManager {
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
-            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "");
+            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + "\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
             Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
@@ -709,9 +709,9 @@ public class ChatManager {
 
         return new Pair<>(after, cancel);
     }
-    
+
     private static class ChapterReader implements Runnable {
-        
+
         ITextComponent chapterText;
 
         public ChapterReader(int chapter) {
@@ -728,16 +728,16 @@ public class ChatManager {
                     break;
                 default: text = "";
             }
-            
+
             chapterText = new TextComponentString(text);
 
         }
-        
+
         @Override
         public void run() {
             Minecraft.getMinecraft().player.sendMessage(chapterText);
         }
-        
+
     }
 
 }
