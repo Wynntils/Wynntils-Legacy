@@ -28,9 +28,11 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -229,6 +231,28 @@ public class CharacterSelectorUI extends GuiScreen {
         if (hoveredButton != 59 || availableCharacters.size() <= 7) return;
 
         scrollPosition = (this.mouseY - 3) / 245f;
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode)  {
+        if (keyCode <= 1 || keyCode > 10) return; // key offset from num 1~9
+        int position = keyCode - 2;
+        if (availableCharacters.size() <= position) return;
+        hoveredButton = position;
+
+        // double click detection
+        boolean isDoubleClick = (hoveredButton == lastButton) && (System.currentTimeMillis() - lastClick) <= 250;
+        lastClick = System.currentTimeMillis();
+        lastButton = hoveredButton;
+
+        if (isDoubleClick) {
+            hoveredButton = 57;
+            mouseClicked(0, 0, 1);
+            return;
+        }
+
+        // character picking
+        selectedCharacter = position;
     }
 
     @Override

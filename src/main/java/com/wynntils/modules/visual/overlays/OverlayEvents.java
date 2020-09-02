@@ -65,4 +65,12 @@ public class OverlayEvents implements Listener {
         fakeCharacterSelector.handleMouseInput();
     }
 
+    @SubscribeEvent
+    public void replaceKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
+        if (fakeCharacterSelector == null) return;
+
+        fakeCharacterSelector.keyTyped(e.getTypedChar(), e.getKeyCode());
+        e.setCanceled(true);
+    }
+
 }
