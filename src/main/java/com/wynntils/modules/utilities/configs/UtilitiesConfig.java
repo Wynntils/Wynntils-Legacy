@@ -40,7 +40,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?\n\n§8Crafted armour cannot be displayed.")
+    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?")
     public boolean showArmors = false;
 
     @Setting(displayName = "Prevent Mythic Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
@@ -319,13 +319,16 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Quick Access Page Numbers", description = "Should the page number that the bank quick access buttons send you to be shown?", order = 1)
         public boolean showQuickAccessNumbers = true;
         
-        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?", order = 2)
+        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?\n\n§aBank items that match the search will be highlighted.", order = 2)
         public boolean showBankSearchBar = true;
         
-        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?", order = 3)
+        @Setting(displayName = "Automatic Page Searching", description = "Should pressing a bank page button automatically cycle through pages until the searched item is found?", order = 3)
+        public boolean autoPageSearch = false;
+        
+        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?", order = 6)
         public boolean addBankConfirmation = true;
 
-        @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 4)
+        @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 7)
         public boolean openChatBankSearch = true;
         
         @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)

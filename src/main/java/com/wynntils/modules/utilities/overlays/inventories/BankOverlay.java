@@ -44,8 +44,9 @@ public class BankOverlay implements Listener {
     private static final int QA_BUTTONS = 6;
     
     private boolean inBank = false;
-    private int page = -1;
-    private int destinationPage = -1;
+    private int page = 0;
+    private int destinationPage = 0;
+    private int searching = 0;
     
     private boolean editButtonHover = false;
     private GuiTextField nameField = null;
@@ -55,7 +56,7 @@ public class BankOverlay implements Listener {
     
     @SubscribeEvent
     public void onBankClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        page = -1;
+        page = 0;
         inBank = false;
         nameField = null;
         searchedItems.clear();
@@ -73,23 +74,22 @@ public class BankOverlay implements Listener {
         if (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
             updateName(e.getGui().getLowerInv());
         
-        if (destinationPage == page) destinationPage = -1; // if we've already arrived, reset destination
-        if (destinationPage != -1 && destinationPage != page)
-            new Delay(() -> gotoPage(e.getGui()), 0); //slight delay to let bank items load in
+        if (destinationPage == page) destinationPage = 0; // if we've already arrived, reset destination
+        if (destinationPage != 0 && destinationPage != page)
+            new Delay(() -> gotoPage(e.getGui()), 0); // slight delay to let bank items load in
         
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
             searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, 50, 128, 120, 10);
             searchField.setText("Search...");
             searchField.setEnableBackgroundDrawing(false);
         }
+        
+        new Delay(() -> searchPageForItems(e.getGui()), 0);
     }
     
     @SubscribeEvent
     public void onBankDraw(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if (!inBank) return;
-        
-        // update search
-        searchPageForItems(e.getGui().getLowerInv());
         
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         
@@ -150,9 +150,9 @@ public class BankOverlay implements Listener {
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if(!inBank || e.getSlotIn() == null) return;
+        Slot s = e.getSlotIn();
         
         // override default quick access if custom destination is defined
-        Slot s = e.getSlotIn();
         int destinations[] = getQuickAccessDestinations();
         for (int i = 0; i < QA_BUTTONS; i++) {
             if (s.slotNumber == QA_SLOTS[i]) {
@@ -163,6 +163,14 @@ public class BankOverlay implements Listener {
                 }
                 break;
             }
+        }
+        
+        // auto page searching
+        if (isSearching() && UtilitiesConfig.Bank.INSTANCE.autoPageSearch && (s.slotNumber == PAGE_FORWARD || s.slotNumber == PAGE_BACK)) {
+            e.setCanceled(true);
+            searching = (s.slotNumber == PAGE_FORWARD) ? 1 : -1;
+            destinationPage = page + searching;
+            gotoPage(e.getGui());
         }
     }
     
@@ -231,14 +239,20 @@ public class BankOverlay implements Listener {
             e.setCanceled(true);
             if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
                 searchField.setFocused(false);
+            } else if (e.getKeyCode() == Keyboard.KEY_RETURN && isSearching()) {
+                searching = 1;
+                destinationPage = page + 1;
+                gotoPage(e.getGui());
             } else {
                 searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
+                searchPageForItems(e.getGui());
             }
         }
         else {
             if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
-                destinationPage = -1;
+                destinationPage = 0;
                 searchField = null;
+                searching = 0;
             }
         }
     }
@@ -261,7 +275,7 @@ public class BankOverlay implements Listener {
     private void gotoPage(ChestReplacer bankGui) {
         // check if we've already arrived somehow
         if (destinationPage == page) {
-            destinationPage = -1;
+            destinationPage = 0;
             return;
         }
         
@@ -277,7 +291,8 @@ public class BankOverlay implements Listener {
                 
                 // ensure arrow is there
                 if (!is.hasDisplayName() || !is.getDisplayName().contains(">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">" + TextFormatting.DARK_GREEN + ">" + TextFormatting.GREEN + ">")) {
-                    destinationPage = -1;
+                    destinationPage = 0;
+                    searching = 0;
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_FORWARD, 0, ClickType.PICKUP, is,
@@ -287,7 +302,8 @@ public class BankOverlay implements Listener {
                 
                 // ensure arrow is there
                 if (!is.hasDisplayName() || !is.getDisplayName().contains("<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<" + TextFormatting.DARK_GREEN + "<" + TextFormatting.GREEN + "<")) {
-                    destinationPage = -1;
+                    destinationPage = 0;
+                    searching = 0;
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_BACK, 0, ClickType.PICKUP, is,
@@ -302,19 +318,32 @@ public class BankOverlay implements Listener {
         ModCore.mc().getConnection().sendPacket(packet);
     }
     
-    public void searchPageForItems(IInventory bankGui) {
+    private void searchPageForItems(ChestReplacer bankGui) {
         searchedItems.clear();
-        if (searchField == null || searchField.getText().equals("Searching...") || searchField.getText().isEmpty()) return;
+        if (!isSearching()) return;
         
         String searchText = searchField.getText().toLowerCase();
-        for (int i = 0; i < bankGui.getSizeInventory(); i++) {
-            if (i % 9 > 6) continue; //ignore sidebar items
-            ItemStack is = bankGui.getStackInSlot(i);
+        for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
+            if (i % 9 > 6) continue; // ignore sidebar items
+            ItemStack is = bankGui.getLowerInv().getStackInSlot(i);
             if (TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()).toLowerCase().contains(searchText)) searchedItems.add(is);
+        }
+        
+        if (searching != 0) {
+            if (searchedItems.isEmpty()) { // continue searching
+                destinationPage = page + searching;
+                gotoPage(bankGui);
+            } else {
+                searching = 0; // item found, search is done
+            }
         }
     }
     
-    public void updateMaxPages() {
+    private boolean isSearching() {
+        return (searchField != null && !searchField.getText().equals("Search...") && !searchField.getText().isEmpty());
+    }
+    
+    private void updateMaxPages() {
         if (UtilitiesConfig.Bank.INSTANCE.maxPages < page) {
             UtilitiesConfig.Bank.INSTANCE.maxPages = page;
             UtilitiesConfig.Bank.INSTANCE.saveSettings(UtilitiesModule.getModule());
