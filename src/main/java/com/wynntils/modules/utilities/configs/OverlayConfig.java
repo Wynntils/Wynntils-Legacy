@@ -414,7 +414,6 @@ public class OverlayConfig extends SettingsClass {
         @Override
         public void onSettingChanged(String name) {
             if (name.equals("enabled")) {
-                WebManager.updateTerritoryThreadStatus(enabled);
                 TerritoryFeedOverlay.clearQueue();
             }
         }
