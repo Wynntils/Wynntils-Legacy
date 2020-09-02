@@ -24,6 +24,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -131,7 +132,7 @@ public class ItemPage extends QuestBookPage {
             }
 
             // filter ++
-            render.drawString("Item Filter", x - 84, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("Item Filter", x - 80, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int placed = 0;
             int plusY = 0;
@@ -358,6 +359,7 @@ public class ItemPage extends QuestBookPage {
                 byLevel = false;
             }
         } else if (selected >= 10) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) resetFilters();
             switch (selected / 10) {
                 case 1:
                     allowHelmet = !allowHelmet;
@@ -441,6 +443,21 @@ public class ItemPage extends QuestBookPage {
     @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
+    }
+
+    private void resetFilters() {
+        allowHelmet = false;
+        allowChestplate = false;
+        allowBoots = false;
+        allowLeggings = false;
+        allowWands = false;
+        allowSpears = false;
+        allowDaggers = false;
+        allowBows = false;
+        allowReliks = false;
+        allowRings = false;
+        allowNecklaces = false;
+        allowBracelets = false;
     }
 
 }

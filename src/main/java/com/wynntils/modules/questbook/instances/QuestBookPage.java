@@ -57,7 +57,7 @@ public class QuestBookPage extends GuiScreen {
 
     protected static final CustomColor unselected_cube = new CustomColor(0, 0, 0, 0.2f);
     protected static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
-    protected static final CustomColor selected_cube_2 = CustomColor.fromInt(0xadf8b3, 0.3f);
+    protected static final CustomColor selected_cube_2 = CustomColor.fromInt(0x11c920, 0.3f);
 
     /**
      * Base class for all questbook pages
