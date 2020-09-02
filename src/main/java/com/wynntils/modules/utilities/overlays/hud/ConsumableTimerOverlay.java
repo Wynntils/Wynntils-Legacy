@@ -34,7 +34,7 @@ public class ConsumableTimerOverlay extends Overlay {
     transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
     transient private static final Pattern MANA_PATTERN = Pattern.compile("^- Mana: ([0-9]*) (.*?)");
     transient private static final Pattern CHAT_DURATION_PATTERN = Pattern.compile("([0-9]*) seconds(.*?)");
-    
+
     transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
     transient private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
 
@@ -63,7 +63,7 @@ public class ConsumableTimerOverlay extends Overlay {
         if (!stack.getDisplayName().startsWith(DARK_AQUA.toString())) {
             String displayName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
             SkillPoint sp = SkillPoint.findSkillPoint(displayName);
-            
+
             ConsumableContainer consumable;
             if (sp == null) {
                 if (displayName.contains("Potion of Mana")) {
@@ -93,19 +93,19 @@ public class ConsumableTimerOverlay extends Overlay {
                 if (m.matches()) {
                     String id = m.group(1);
                     if (id == null || id.isEmpty()) continue; // continues if id is null or empty
-    
+
                     // removing skill point symbols
                     for (SkillPoint skillPoint : SkillPoint.values()) {
                         id = id.replace(skillPoint.getSymbol() + " ", "");
                     }
-    
+
                     m = ItemIdentificationOverlay.ID_PATTERN.matcher(id);
                     if (!m.matches()) continue; // continues if the effect is not a valid id
-    
+
                     verifyIdentification(m, consumable);
                     continue;
                 }
-                
+
                 //mana | - Mana: <group1> <mana symbol>
                 m = MANA_PATTERN.matcher(line);
                 if(m.matches() && m.group(1) != null) {
@@ -151,7 +151,7 @@ public class ConsumableTimerOverlay extends Overlay {
         }
 
         if (!consumable.isValid()) return;
-        
+
         //check for duplicates to avoid doubling timers
         for (ConsumableContainer c : activeConsumables) {
             if (Math.abs(consumable.getExpirationTime() - c.getExpirationTime()) <= 1000) { // check within a second
@@ -166,23 +166,23 @@ public class ConsumableTimerOverlay extends Overlay {
         activeConsumables.add(consumable);
         updateActiveEffects();
     }
-    
+
     public static void addExternalScroll(String chatMsg) {
         String[] splitMsg = chatMsg.split(" for ");
         String effect = splitMsg[0].substring(1);
         String duration = splitMsg[1];
-        
+
         Matcher m = ItemIdentificationOverlay.ID_PATTERN.matcher(effect);
         if (!m.matches()) return;
-        
+
         Matcher m2 = CHAT_DURATION_PATTERN.matcher(duration);
         if (!m2.matches() || m2.group(1) == null) return;
-                
+
         long expiration = Minecraft.getSystemTime() + (Integer.parseInt(m2.group(1)) * 1000);
         int value = Integer.parseInt(m.group("Value"));
         String shortIdName = ItemIdentificationOverlay.toShortIdName(m.group("ID"), m.group("Suffix") == null);
         ConsumableContainer consumable = null;
-        
+
         for (ConsumableContainer c : activeConsumables) {
             if (Math.abs(expiration - c.getExpirationTime()) <= 1000) { // check within a second
                 for (String cEf : c.getEffects().keySet()) {
@@ -195,15 +195,15 @@ public class ConsumableTimerOverlay extends Overlay {
                 }
             }
         }
-        
+
         if (consumable == null) {
             consumable = new ConsumableContainer(YELLOW + "Ⓔ Scroll");
             consumable.setExpirationTime(expiration);
         }
-                
+
         verifyIdentification(m, consumable);
         if (!consumable.isValid()) return;
-        
+
         if (!activeConsumables.contains(consumable)) activeConsumables.add(consumable);
         updateActiveEffects();
     }
@@ -321,7 +321,8 @@ public class ConsumableTimerOverlay extends Overlay {
             }
 
             drawString(consumable.getName() + " (" + StringUtils.timeLeft(consumable.getExpirationTime() - Minecraft.getSystemTime() + 1000) + ")"
-                    , 0, extraY, CommonColors.WHITE, getAlignment(), SmartFontRenderer.TextShadow.OUTLINE);
+                    , 0, extraY, CommonColors.WHITE, OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
+                    OverlayConfig.ConsumableTimer.INSTANCE.textShadow);
 
             extraY+=10;
         }
@@ -331,7 +332,9 @@ public class ConsumableTimerOverlay extends Overlay {
         extraY+=10;
 
         for (Map.Entry<String, IdentificationHolder> entry : activeEffects.entrySet()) {
-            drawString(entry.getValue().getAsLore(entry.getKey()), 0, extraY, CommonColors.WHITE, getAlignment(), SmartFontRenderer.TextShadow.OUTLINE);
+            drawString(entry.getValue().getAsLore(entry.getKey()), 0, extraY, CommonColors.WHITE,
+                    OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
+                    OverlayConfig.ConsumableTimer.INSTANCE.textShadow);
 
             extraY += 10;
         }

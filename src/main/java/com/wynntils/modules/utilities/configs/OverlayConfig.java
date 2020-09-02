@@ -654,6 +654,12 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Server Restart", description = "Should server restart countdown be displayed?")
         public boolean showServerRestart = false;
+
+        @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
+        public TextAlignment textAlignment = TextAlignment.RIGHT_LEFT;
+
+        @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
     @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
