@@ -149,7 +149,7 @@ public class BankOverlay implements Listener {
     
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if(!inBank || e.getSlotIn() == null) return;
+        if (!inBank || e.getSlotIn() == null) return;
         Slot s = e.getSlotIn();
         
         // override default quick access if custom destination is defined
@@ -204,7 +204,7 @@ public class BankOverlay implements Listener {
                 nameField = new GuiTextField(200, Minecraft.getMinecraft().fontRenderer, 4, 4, 120, 10);
                 nameField.setFocused(true);
                 nameField.setEnableBackgroundDrawing(false);
-                if(UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page)) 
+                if (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page)) 
                     nameField.setText(UtilitiesConfig.Bank.INSTANCE.pageNames.get(page).replace("§", "&"));
             } else if (e.getMouseButton() == 1) {
                 if (UtilitiesConfig.Bank.INSTANCE.pageNames.remove(page) != null)
