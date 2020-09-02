@@ -128,7 +128,7 @@ public class SettingsUI extends UI {
         if (settingsScrollbar.active) {
             float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
             if (i != 0) {
-                i = MathHelper.clamp(i, -1, 1) * settingsScrollbar.precision * 8;
+                i = MathHelper.clamp(i, -1, 1) * settingsScrollbar.precision * 16;
 
                 if (mouseX >= screenWidth / 2 + 5 && mouseX < screenWidth / 2 + 185 && mouseY >= screenHeight / 2 - 100 && mouseY < screenHeight / 2 + 100) {
                     settingsScrollbar.setValue(settingsScrollbar.getValue() + i);
@@ -139,7 +139,7 @@ public class SettingsUI extends UI {
             float i = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
             if (i != 0) {
                 if (mouseX <= screenWidth / 2 - 5 && mouseX > screenWidth / 2 - 185 && mouseY >= screenHeight / 2 - 100 && mouseY < screenHeight / 2 + 100) {
-                    i = MathHelper.clamp(i, -1, 1) * holdersScrollbar.precision * 8;
+                    i = MathHelper.clamp(i, -1, 1) * holdersScrollbar.precision * 16;
                     holdersScrollbar.setValue(holdersScrollbar.getValue() + i);
                 }
             }

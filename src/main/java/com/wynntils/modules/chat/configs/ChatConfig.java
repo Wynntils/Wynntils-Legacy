@@ -19,10 +19,10 @@ import java.util.List;
 public class ChatConfig extends SettingsClass {
     public static ChatConfig INSTANCE;
 
-    @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?")
+    @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?", order = 3)
     public boolean addTimestampsToChat = false;
 
-    @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?")
+    @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?", order = 4)
     public boolean transparent = false;
 
     @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed?\n\n§8This has no effect if chat timestamps are disabled.")
@@ -31,7 +31,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?")
     public boolean allowChatMentions = true;
 
-    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger chat mentions?\n\n§8Multiple nicknames can be added by using commas as separators.")
+    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger chat mentions?\n\n§8Multiple nicknames can be added by using commas as separators.", order = 1)
     public String mentionNames = "";
 
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack?")
@@ -42,14 +42,14 @@ public class ChatConfig extends SettingsClass {
 
     @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.")
     public boolean filterTerritoryEnter = true;
-    
+
     @Setting(displayName = "Improved Powder Manual", description = "Should the powder manual be replaced with a cleaner menu?")
     public boolean customPowderManual = true;
 
     @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?")
     public boolean heldItemChat = true;
 
-    @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?")
+    @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?", order = 5)
     @Setting.Limitations.IntLimit(min = 10, max = 2000)
     public int chatHistorySize = 100;
 
@@ -59,7 +59,7 @@ public class ChatConfig extends SettingsClass {
     @Setting
     public List<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which premade selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All")
+    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which premade selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All", order = 0)
     public Presets preset = Presets.a;
 
     @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?")
