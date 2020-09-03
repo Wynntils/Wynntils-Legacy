@@ -235,24 +235,31 @@ public class CharacterSelectorUI extends GuiScreen {
 
     @Override
     public void keyTyped(char typedChar, int keyCode)  {
+        if (keyCode == Keyboard.KEY_RETURN) { // return select character
+            hoveredButton = 57;
+            mouseClicked(0, 0, 1);
+            return;
+        }
+
+        // character picker
         if (keyCode <= 1 || keyCode > 10) return; // key offset from num 1~9
-        int position = keyCode - 2;
-        if (availableCharacters.size() <= position) return;
-        hoveredButton = position;
+        int characterPosition = keyCode - 2;
+        if (availableCharacters.size() <= characterPosition) return;
+        hoveredButton = characterPosition;
 
         // double click detection
         boolean isDoubleClick = (hoveredButton == lastButton) && (System.currentTimeMillis() - lastClick) <= 250;
         lastClick = System.currentTimeMillis();
         lastButton = hoveredButton;
 
-        if (isDoubleClick) {
+        if (isDoubleClick) { // pick the class
             hoveredButton = 57;
             mouseClicked(0, 0, 1);
             return;
         }
 
         // character picking
-        selectedCharacter = position;
+        selectedCharacter = characterPosition;
     }
 
     @Override
