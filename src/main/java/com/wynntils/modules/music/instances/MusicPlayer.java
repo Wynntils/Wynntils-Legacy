@@ -46,7 +46,7 @@ public class MusicPlayer {
     }
 
     public void update() {
-        if (STATUS.getCurrentSong() != null && !isPlaying()) {
+        if (STATUS.getCurrentSong() != null && !isActive()) {
             initialize();
             return;
         }
@@ -111,14 +111,14 @@ public class MusicPlayer {
     }
 
     private void clear() {
-        if (!isPlaying()) return;
+        if (!isActive()) return;
 
         STATUS.setNextSong(null);
         STATUS.setCurrentSong(null);
     }
 
     private void kill() {
-        if (!isPlaying()) return;
+        if (!isActive()) return;
 
         if (player != null) {
             player.stop();
@@ -171,8 +171,12 @@ public class MusicPlayer {
         musicThread.start();
     }
 
-    public boolean isPlaying() {
+    private boolean isActive() {
         return player != null || musicThread != null;
+    }
+
+    public boolean isPlaying() {
+        return STATUS.getCurrentSong() != null;
     }
 
     public PlayerStatus getStatus() {
