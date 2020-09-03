@@ -21,9 +21,7 @@ public class TabManager {
         availableTabs = ChatConfig.INSTANCE.available_tabs;
 
         if (!ChatConfig.INSTANCE.registeredDefaultTabs) {
-            availableTabs.add(new ChatTab("Global", ".*", null, "", true, 0));
-            availableTabs.add(new ChatTab("Guild", DEFAULT_GUILD_REGEX, null, "/g", false, 1));
-            availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX, null, "/p", false, 2));
+            availableTabs.add(new ChatTab("All", ".*", null, "", false, 0));
 
             ChatConfig.INSTANCE.registeredDefaultTabs = true;
             Collections.sort(availableTabs);
