@@ -57,6 +57,7 @@ public class BankOverlay implements Listener {
     
     @SubscribeEvent
     public void onBankClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
+        // reset everything
         page = 0;
         inBank = false;
         itemsLoaded = false;
@@ -212,6 +213,7 @@ public class BankOverlay implements Listener {
     public void onKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!inBank) return;
         
+        // handle typing in text boxes
         if (nameField != null && nameField.isFocused()) {
             e.setCanceled(true);
             if (e.getKeyCode() == Keyboard.KEY_RETURN) {
@@ -239,19 +241,17 @@ public class BankOverlay implements Listener {
             } else {
                 searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
             }
-        }
-        else {
-            if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
-                destinationPage = 0;
-                searchField = null;
-                searching = 0;
-            }
+        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
+            destinationPage = 0;
+            searchField = null;
+            searching = 0;
         }
     }
     
     private void checkItemsLoaded(ChestReplacer bankGui) {
         if (itemsLoaded) return;
         
+        // if one of these is in inventory, items have loaded in
         if(!bankGui.inventorySlots.getSlot(PAGE_FORWARD).getStack().isEmpty() || !bankGui.inventorySlots.getSlot(PAGE_BACK).getStack().isEmpty()) {
             itemsLoaded = true;
             searchBank(bankGui);
