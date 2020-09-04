@@ -255,7 +255,7 @@ public class ClientEvents implements Listener {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
-        if (UtilitiesConfig.INSTANCE.openChatBankSearch) {
+        if (UtilitiesConfig.Bank.INSTANCE.openChatBankSearch) {
             if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
@@ -548,7 +548,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
             IInventory inventory = e.getSlotIn().inventory;
             if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();

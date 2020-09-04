@@ -167,6 +167,8 @@ public class RarityColorOverlay implements Listener {
             return new CustomColor(1f, 1f, 1f);
         } else if (isChest && lore.contains(TextFormatting.DARK_RED + " Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
             return new CustomColor(0f, 0f, 0f);
+        } else if (BankOverlay.searchedItems.contains(is)) {
+            return UtilitiesConfig.Bank.INSTANCE.searchHighlightColor;
         } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
             return UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
         } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
