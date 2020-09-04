@@ -1,30 +1,18 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.SpecialRendering;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.SpecialRendering;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -41,6 +29,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BankOverlay implements Listener {
 
@@ -80,6 +76,7 @@ public class BankOverlay implements Listener {
         itemsLoaded = false;
         nameField = null;
         searchedItems.clear();
+        Keyboard.enableRepeatEvents(false);
     }
 
     @SubscribeEvent
@@ -97,12 +94,15 @@ public class BankOverlay implements Listener {
         if (destinationPage == page) destinationPage = 0; // if we've already arrived, reset destination
 
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
-            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, 50, 128, 120, 10);
+            int nameWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(e.getGui().getUpperInv().getDisplayName().getUnformattedText());
+            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, nameWidth + 13, 128, 157 - nameWidth, 10);
             searchField.setText("Search...");
             searchField.setEnableBackgroundDrawing(false);
         }
 
         textureLoaded = isTextureLoaded(COLUMN_ARROW);
+
+        Keyboard.enableRepeatEvents(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
