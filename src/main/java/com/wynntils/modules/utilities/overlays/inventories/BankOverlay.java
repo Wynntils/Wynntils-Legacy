@@ -16,6 +16,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -141,6 +142,8 @@ public class BankOverlay implements Listener {
             
             ItemStack is = s.getStack();
             is.setStackDisplayName(TextFormatting.GRAY + "Jump to Page " + destination);
+            if (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(destination))
+                ItemUtils.replaceLore(is, Arrays.asList(TextFormatting.GRAY + " - " + UtilitiesConfig.Bank.INSTANCE.pageNames.get(destination)));
         }
         
         // draw textboxes
