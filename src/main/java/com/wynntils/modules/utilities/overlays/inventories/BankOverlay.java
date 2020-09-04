@@ -1,5 +1,6 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,13 +21,17 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,6 +41,7 @@ public class BankOverlay implements Listener {
     private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9]*'s Bank");
     
     private static final String EDIT_ICON = "✎";
+    private static final ResourceLocation COLUMN_ARROW = new ResourceLocation("minecraft:textures/wynn/gui/column_arrow_right.png");
     
     private static final int PAGE_FORWARD = 8;
     private static final int PAGE_BACK = 17;
@@ -48,6 +54,8 @@ public class BankOverlay implements Listener {
     private int page = 0;
     private int destinationPage = 0;
     private int searching = 0;
+    
+    private boolean textureLoaded = false;
     
     private boolean editButtonHover = false;
     private GuiTextField nameField = null;
@@ -84,10 +92,28 @@ public class BankOverlay implements Listener {
             searchField.setText("Search...");
             searchField.setEnableBackgroundDrawing(false);
         }
+        
+        textureLoaded = isTextureLoaded(COLUMN_ARROW);
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onBankDraw(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
+    public void onBankDrawBackground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
+        if (!inBank || !textureLoaded) return;
+        if (!UtilitiesConfig.Bank.INSTANCE.showQuickAccessIcons) return;
+        
+        // quick access icons
+        for (int i = 0; i < QA_BUTTONS; i++) {
+            Slot s = e.getGui().inventorySlots.getSlot(QA_SLOTS[i]);
+            
+            s.putStack(new ItemStack(Blocks.SNOW_LAYER));
+            ModCore.mc().getTextureManager().bindTexture(COLUMN_ARROW);
+            GlStateManager.color(1f, 1f, 1f);
+            Gui.drawModalRectWithCustomSizedTexture(e.getGui().getGuiLeft() + s.xPos - 8, e.getGui().getGuiTop() + s.yPos - 8, 0, 0, 32, 32, 32, 32);
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onBankDrawForeground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if (!inBank) return;
         
         searchPageForItems(e.getGui());
@@ -101,15 +127,15 @@ public class BankOverlay implements Listener {
             Slot s = e.getGui().inventorySlots.getSlot(QA_SLOTS[i]);
             int destination = destinations[i];
             
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0f, 0f, 300f);
-            fr.drawStringWithShadow(destination + "", (float)(s.xPos + 19 - 2 - fr.getStringWidth(destination + "")), (float)(s.yPos + 6 + 3), 0xFFFFFF);
-            GL11.glPopMatrix();
+            if (UtilitiesConfig.Bank.INSTANCE.showQuickAccessNumbers) {
+                GL11.glPushMatrix();
+                GL11.glTranslatef(0f, 0f, 300f);
+                fr.drawStringWithShadow(destination + "", (float)(s.xPos + 19 - 2 - fr.getStringWidth(destination + "")), (float)(s.yPos + 6 + 3), 0xFFFFFF);
+                GL11.glPopMatrix();
+            }
             
             ItemStack is = s.getStack();
-            if (!is.getDisplayName().endsWith("Page " + destination)) {
-                is.setStackDisplayName(TextFormatting.GRAY + "Jump to Page " + destination);
-            }
+            is.setStackDisplayName(TextFormatting.GRAY + "Jump to Page " + destination);
         }
         
         // draw textboxes
@@ -347,6 +373,15 @@ public class BankOverlay implements Listener {
     
     private boolean isSearching() {
         return (searchField != null && !searchField.getText().equals("Search...") && !searchField.getText().isEmpty());
+    }
+    
+    private boolean isTextureLoaded(ResourceLocation resource) {
+        try {
+            ModCore.mc().getResourceManager().getResource(resource);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
     
     private void updateMaxPages() {

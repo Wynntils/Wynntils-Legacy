@@ -319,10 +319,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Quick Access Page Numbers", description = "Should the page number that the bank quick access buttons send you to be shown?", order = 1)
         public boolean showQuickAccessNumbers = true;
         
-        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?\n\n§aBank items that match the search will be highlighted.", order = 2)
+        @Setting(displayName = "Show Quick Access Button Icons", description = "Should the quick access buttons have a custom icon?", order = 2)
+        public boolean showQuickAccessIcons = true;
+        
+        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?\n\n§aBank items that match the search will be highlighted.", order = 3)
         public boolean showBankSearchBar = true;
         
-        @Setting(displayName = "Automatic Page Searching", description = "Should pressing a bank page button automatically cycle through pages until the searched item is found?", order = 3)
+        @Setting(displayName = "Automatic Page Searching", description = "Should pressing a bank page button automatically cycle through pages until the searched item is found?", order = 4)
         public boolean autoPageSearch = false;
         
         @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?", order = 6)
