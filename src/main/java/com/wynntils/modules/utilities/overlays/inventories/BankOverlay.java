@@ -25,7 +25,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -110,7 +109,10 @@ public class BankOverlay implements Listener {
             s.putStack(new ItemStack(Blocks.SNOW_LAYER));
             ModCore.mc().getTextureManager().bindTexture(COLUMN_ARROW);
             GlStateManager.color(1f, 1f, 1f);
-            Gui.drawModalRectWithCustomSizedTexture(e.getGui().getGuiLeft() + s.xPos - 8, e.getGui().getGuiTop() + s.yPos - 8, 0, 0, 32, 32, 32, 32);
+            GL11.glPushMatrix();
+            GL11.glScalef(1.1f, 1.1f, 1.1f);
+            Gui.drawModalRectWithCustomSizedTexture((int) ((e.getGui().getGuiLeft() + s.xPos - 8)/1.1f) - 1, (int) ((e.getGui().getGuiTop() + s.yPos - 8)/1.1f) - 1, 0, 0, 32, 32, 32, 32);
+            GL11.glPopMatrix();
         }
     }
     
