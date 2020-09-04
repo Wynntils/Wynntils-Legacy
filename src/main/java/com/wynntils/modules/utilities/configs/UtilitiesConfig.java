@@ -334,7 +334,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 7)
         public boolean openChatBankSearch = true;
 
-        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)
+        @Setting(displayName = "Searched Item Highlight Color", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)
         public CustomColor searchHighlightColor = new CustomColor(0.9f, .3f, 0f);
 
         @Setting(displayName = "Quick Access 1 Destination", description = "Which bank page should the first quick access button take you to?", order = 10)

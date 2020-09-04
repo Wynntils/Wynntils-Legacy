@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.SpecialRendering;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import org.lwjgl.input.Keyboard;
@@ -126,6 +127,15 @@ public class BankOverlay implements Listener {
                 Gui.drawModalRectWithCustomSizedTexture((int) ((e.getGui().getGuiLeft() + s.xPos - 8) / 1.1f) - 1, (int) ((e.getGui().getGuiTop() + s.yPos - 8) / 1.1f) - 1, 0, 0, 32, 32, 32, 32);
             }
             GlStateManager.popMatrix();
+        }
+
+        // searched item highlight
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            if (s.getStack().isEmpty() || !s.getStack().hasDisplayName()) continue;
+            if (!searchedItems.contains(s.getStack())) continue;
+
+            SpecialRendering.renderGodRays(e.getGui().getGuiLeft() + s.xPos + 5,
+                    e.getGui().getGuiTop() + s.yPos + 6, 0, 5f, 35, UtilitiesConfig.Bank.INSTANCE.searchHighlightColor);
         }
     }
 
