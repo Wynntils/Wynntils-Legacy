@@ -15,6 +15,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -24,6 +25,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -40,7 +42,6 @@ public class BankOverlay implements Listener {
     
     private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9]*'s Bank");
     
-    private static final String EDIT_ICON = "✎";
     private static final ResourceLocation COLUMN_ARROW = new ResourceLocation("minecraft:textures/wynn/gui/column_arrow_right.png");
     
     private static final int PAGE_FORWARD = 8;
@@ -60,6 +61,7 @@ public class BankOverlay implements Listener {
     private boolean editButtonHover = false;
     private GuiTextField nameField = null;
     private GuiTextField searchField = null;
+    private ScreenRenderer renderer = new ScreenRenderer();
     
     public static List<ItemStack> searchedItems = new ArrayList<ItemStack>();
     
@@ -120,6 +122,7 @@ public class BankOverlay implements Listener {
         checkItemsLoaded(e.getGui());
         
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+        ScreenRenderer.beginGL(0, 0);
         
         // quick access numbers
         int destinations[] = getQuickAccessDestinations();
@@ -146,14 +149,12 @@ public class BankOverlay implements Listener {
         GL11.glPopMatrix();
         
         // draw page name edit button
-        int x = e.getGui().getXSize() - 12 - fr.getStringWidth(EDIT_ICON);
-        int y = 1;
-        TextFormatting color = TextFormatting.DARK_GRAY;
+        int x = e.getGui().getXSize() - 19;
+        int y = 2;
         
         // is mouse over edit button
-        if (e.getMouseX() >= e.getGui().getGuiLeft() + x - 4 && e.getMouseX() <=  e.getGui().getGuiLeft() + x + fr.getStringWidth(EDIT_ICON) + 4 &&
-                e.getMouseY() >= e.getGui().getGuiTop() + y - 4 && e.getMouseY() <= e.getGui().getGuiTop() + y + fr.FONT_HEIGHT + 4) {
-            color = TextFormatting.GRAY;
+        if (e.getMouseX() >= e.getGui().getGuiLeft() + x - 4 && e.getMouseX() <=  e.getGui().getGuiLeft() + x + 6 + 4 &&
+                e.getMouseY() >= e.getGui().getGuiTop() + y && e.getMouseY() <= e.getGui().getGuiTop() + y + 12) {
             editButtonHover = true;
             e.getGui().drawHoveringText(Arrays.asList("Click to edit page name", "Right-click to reset name"), 
                     e.getMouseX() - e.getGui().getGuiLeft(), e.getMouseY() - e.getGui().getGuiTop());
@@ -161,10 +162,9 @@ public class BankOverlay implements Listener {
             editButtonHover = false;
         }
         
-        GL11.glPushMatrix();
-        GL11.glScalef(1.5f, 1.5f, 1.5f);
-        e.getGui().drawString(fr, color + EDIT_ICON, (int) (x/1.5), y, 0xFFFFFF);
-        GL11.glPopMatrix();
+        renderer.color(1f, 1f, 1f, 1f);
+        renderer.drawRect(Textures.UIs.character_selection, x, y, x + 6, y + 12, 182, 102, 190, 118);        
+        ScreenRenderer.endGL();
     }
     
     @SubscribeEvent
@@ -295,11 +295,8 @@ public class BankOverlay implements Listener {
     }
     
     private void drawTextField(GuiTextField text) {
-        ScreenRenderer renderer = new ScreenRenderer();
-        ScreenRenderer.beginGL(0, 0);
         renderer.drawRect(new CustomColor(232, 201, 143), text.x - 2, text.y - 2, text.x + text.width, text.y + text.height);
         renderer.drawRect(new CustomColor(120, 90, 71), text.x - 1, text.y - 1, text.x + text.width - 1, text.y + text.height - 1);
-        ScreenRenderer.endGL();
         text.drawTextBox();
     }
     
