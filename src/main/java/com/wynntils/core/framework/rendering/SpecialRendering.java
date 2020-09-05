@@ -33,7 +33,7 @@ public class SpecialRendering {
 
     public static void renderGodRays(int x, int y, int z, double size, int rays, CustomColor color) {
         float time = Minecraft.getSystemTime() / 50f;
-        Random rand = new Random(425L);
+        Random rand = new Random(142L);
 
         boolean isRainbow = color == CommonColors.RAINBOW;
         GlStateManager.pushMatrix();
@@ -56,6 +56,8 @@ public class SpecialRendering {
             Vector4f b = new Vector4f();
             Vector4f c = new Vector4f();
 
+            Vector3f rotationAxis = new Vector3f(0, 1, 0);
+
             for (int i = 0; i < rays; i++) {
                 float pos = 1 / (float) (i + 1);
 
@@ -65,11 +67,11 @@ public class SpecialRendering {
 
                 float r = (1F + rand.nextFloat() * 2.5F) * 2;
 
-                MatrixMath.rotate(time / 180, new Vector3f(0, 1, 0), matrix, matrix);
+                MatrixMath.rotate(time / 180f, rotationAxis, matrix, matrix);
 
-                a.set(0F, 0.126F * r, 0.5F * r, 1);
-                b.set(0F, -0.126F * r, 0.5F * r, 1);
-                c.set(0F, 0, 0.6F * r, 1);
+                a.set(0F, 0.126f * r, 0.5f * r, 1);
+                b.set(0F, -0.126f * r, 0.5f * r, 1);
+                c.set(0F, 0, 0.6f * r, 1);
 
                 matrix.transform(a);
                 matrix.transform(b);
@@ -77,7 +79,7 @@ public class SpecialRendering {
 
                 float red, green, blue;
                 if (isRainbow) {
-                    int rgb = Color.HSBtoRGB(i / 16F, 1, 1);
+                    int rgb = Color.HSBtoRGB(i / 16f, 1, 1);
 
                     red = ((rgb & 0x00ff0000) >> 16) / 255.0f;
                     green = ((rgb & 0x0000ff00) >> 8) / 255.0f;
@@ -92,10 +94,10 @@ public class SpecialRendering {
                 BufferBuilder builder = tess.getBuffer();
                 {
                     builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                    builder.pos(0.5F * size, 0.5F * size, 0.5F * size).color(red, green, blue, 0.9F).endVertex();
-                    builder.pos((0.5F + a.x) * size, (0.5F + a.y) * size, (0.5F + a.z) * size).color(red, green, blue, 0.01F).endVertex();
-                    builder.pos((0.5F + c.x) * size, (0.5F + c.y) * size, (0.5F + c.z) * size).color(red, green, blue, 0.01F).endVertex();
-                    builder.pos((0.5F + b.x) * size, (0.5F + b.y) * size, (0.5F + b.z) * size).color(red, green, blue, 0.01F).endVertex();
+                    builder.pos(size, size, size).color(red, green, blue, 0.9F).endVertex();
+                    builder.pos(a.x * size, a.y * size, a.z * size).color(red, green, blue, 0.01F).endVertex();
+                    builder.pos(c.x * size, c.y * size, c.z * size).color(red, green, blue, 0.01F).endVertex();
+                    builder.pos(b.x * size, b.y * size, b.z * size).color(red, green, blue, 0.01F).endVertex();
                 }
                 tess.draw();
             }

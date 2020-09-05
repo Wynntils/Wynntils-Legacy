@@ -64,7 +64,7 @@ public class CharacterProfile {
                         }
                     }
 
-                    className = StringUtils.capitalizeFirst(m.group(2));
+                    className = StringUtils.capitalizeFirsts(m.group(2));
                 }
 
             } else if (split[0].contains("level")) {

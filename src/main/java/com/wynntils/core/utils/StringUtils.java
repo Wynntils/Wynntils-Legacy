@@ -53,6 +53,20 @@ public class StringUtils {
         return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
+    public static String capitalizeFirsts(String input) {
+        StringBuilder builder = new StringBuilder();
+        String[] split = input.split(" ");
+
+        for (String s : split) {
+            builder.append(capitalizeFirst(s));
+            builder.append(" ");
+        }
+
+        String result = builder.toString();
+
+        return result.substring(0, result.length() -1);
+    }
+
     // ported from a really really old C# code because im lazy, don't judge -SHCM
     public static String getCutString(String inputIN, String startIN, String endIN, boolean keepStartAndEndIN) {
         StringBuilder returning = new StringBuilder();
