@@ -122,6 +122,7 @@ public class BankOverlay implements Listener {
                 { // gl setting
                     GlStateManager.scale(1.1f, 1.1f, 1.1f);
                     GlStateManager.color(1f, 1f, 1f);
+                    GlStateManager.disableLighting();
                 }
 
                 Gui.drawModalRectWithCustomSizedTexture((int) ((e.getGui().getGuiLeft() + s.xPos - 8) / 1.1f) - 1, (int) ((e.getGui().getGuiTop() + s.yPos - 8) / 1.1f) - 1, 0, 0, 32, 32, 32, 32);
