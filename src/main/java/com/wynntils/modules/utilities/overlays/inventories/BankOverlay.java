@@ -1,22 +1,31 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.SpecialRendering;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.framework.ui.elements.GuiTextFieldWynn;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
@@ -29,14 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BankOverlay implements Listener {
 
@@ -50,9 +51,6 @@ public class BankOverlay implements Listener {
     private static final int[] QA_DEFAULTS = {1, 5, 9, 13, 17, 21};
     private static final int QA_BUTTONS = 6;
 
-    private static final CustomColor TEXT_FIELD_COLOR_1 = new CustomColor(87, 65, 51);
-    private static final CustomColor TEXT_FIELD_COLOR_2 = new CustomColor(120, 90, 71);
-
     private boolean inBank = false;
     private boolean itemsLoaded = false;
     private int page = 0;
@@ -62,8 +60,8 @@ public class BankOverlay implements Listener {
     private boolean textureLoaded = false;
 
     private boolean editButtonHover = false;
-    private GuiTextField nameField = null;
-    private GuiTextField searchField = null;
+    private GuiTextFieldWynn nameField = null;
+    private GuiTextFieldWynn searchField = null;
     private final ScreenRenderer renderer = new ScreenRenderer();
 
     public static List<ItemStack> searchedItems = new ArrayList<>();
@@ -95,9 +93,8 @@ public class BankOverlay implements Listener {
 
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
             int nameWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(e.getGui().getUpperInv().getDisplayName().getUnformattedText());
-            searchField = new GuiTextField(201, Minecraft.getMinecraft().fontRenderer, nameWidth + 13, 128, 157 - nameWidth, 10);
+            searchField = new GuiTextFieldWynn(201, Minecraft.getMinecraft().fontRenderer, nameWidth + 13, 128, 157 - nameWidth, 10);
             searchField.setText("Search...");
-            searchField.setEnableBackgroundDrawing(false);
         }
 
         textureLoaded = isTextureLoaded(COLUMN_ARROW);
@@ -175,8 +172,8 @@ public class BankOverlay implements Listener {
             }
 
             { // textboxes
-                if (nameField != null) drawTextField(nameField);
-                if (searchField != null) drawTextField(searchField);
+                if (nameField != null) nameField.drawTextBox();
+                if (searchField != null) searchField.drawTextBox();
             }
 
             { // draw page name edit button
@@ -264,9 +261,8 @@ public class BankOverlay implements Listener {
             }
 
             ((InventoryBasic) e.getGui().getLowerInv()).setCustomName("");
-            nameField = new GuiTextField(200, Minecraft.getMinecraft().fontRenderer, 8, 5, 120, 10);
+            nameField = new GuiTextFieldWynn(200, Minecraft.getMinecraft().fontRenderer, 8, 5, 120, 10);
             nameField.setFocused(true);
-            nameField.setEnableBackgroundDrawing(false);
 
             if (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
                 nameField.setText(UtilitiesConfig.Bank.INSTANCE.pageNames.get(page).replace("§", "&"));
@@ -338,12 +334,6 @@ public class BankOverlay implements Listener {
                         + ModCore.mc().player.getName() + "'s" + TextFormatting.BLACK + " Bank";
 
         ((InventoryBasic) bankGui).setCustomName(TextFormatting.BLACK + "[Pg. " + page + "] " + name);
-    }
-
-    private void drawTextField(GuiTextField text) {
-        renderer.drawRect(TEXT_FIELD_COLOR_1, text.x - 2, text.y - 1, text.x + text.width - 1, text.y + text.height - 1);
-        renderer.drawRect(TEXT_FIELD_COLOR_2, text.x -1, text.y, text.x + text.width - 2, text.y + text.height - 2);
-        text.drawTextBox();
     }
 
     private void gotoPage(ChestReplacer bankGui) {
