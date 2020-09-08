@@ -5,6 +5,10 @@ bin
 .metadata
 .classpath
 .project
+output
+logs
+.floo
+.flooignore
 
 # idea
 out
