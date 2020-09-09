@@ -156,128 +156,13 @@ public class SkillPointOverlay implements Listener {
         if (!Reference.onWorld) return;
         if (!Utils.isCharacterInfoPage(e.getGui())) return;
         
+        // draw name field
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 500);
         if (nameField != null) nameField.drawTextBox();
         GlStateManager.popMatrix();
     }
-
-    private String remainingLevelsDescription(int remainingLevels) {
-        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
-    }
-
-    private int getIntelligencePoints(ItemStack stack) {
-        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
-        int start = lore.indexOf(" points ") - 3;
-
-        return Integer.parseInt(lore.substring(start, start + 3).trim());
-    }
-
-    public void addManaTables(ChestReplacer gui) {
-        ItemStack stack = gui.getLowerInv().getStackInSlot(11);
-        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
-
-        int intelligencePoints = getIntelligencePoints(stack);
-        if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
-
-        int closestUpgradeLevel = Integer.MAX_VALUE;
-        int level = PlayerInfo.getPlayerInfo().getLevel();
-
-        List<String> newLore = new LinkedList<>();
-
-        for (int j = 0; j < 4; j++) {
-            SpellType spell = SpellType.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
-
-            if (spell.getUnlockLevel(1) <= level) {
-                int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
-                if (nextUpgrade < closestUpgradeLevel) {
-                    closestUpgradeLevel = nextUpgrade;
-                }
-                int manaCost = spell.getManaCost(level, intelligencePoints);
-                String spellName = PlayerInfo.getPlayerInfo().isCurrentClassReskinned() ? spell.getReskinned() : spell.getName();
-                String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
-                        + "-" + manaCost + " ✺";
-                if (nextUpgrade < Integer.MAX_VALUE) {
-                    spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "
-                            + remainingLevelsDescription(nextUpgrade - intelligencePoints) + ")";
-                }
-                newLore.add(spellInfo);
-            }
-        }
-
-        List<String> loreTag = new LinkedList<>(ItemUtils.getLore(stack));
-        if (closestUpgradeLevel < Integer.MAX_VALUE) {
-            loreTag.add("");
-            loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
-                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligencePoints) + ")");
-        }
-
-        loreTag.add("");
-        loreTag.addAll(newLore);
-
-        ItemUtils.replaceLore(stack, loreTag);
-        stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
-    }
     
-    private SkillPointAllocation getSkillPoints(ChestReplacer gui) {
-        int[] sp = new int[5];
-        
-        for (int i = 0; i < 5; i++) {
-            ItemStack stack = gui.getLowerInv().getStackInSlot(i + 9); // sp indicators start at 9
-            Matcher m = SKILLPOINT_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack)));
-            if (!m.find()) continue;
-            
-            sp[i] = Integer.parseInt(m.group(1));
-        }
-        
-        ItemStack info = gui.getLowerInv().getStackInSlot(6); // player info slot
-        for (String line : ItemUtils.getLore(info)) {
-            String unformattedLine = TextFormatting.getTextWithoutFormattingCodes(line);
-            for (int i = 0; i < 5; i++) {
-                Matcher m = MODIFIER_PATTERNS[i].matcher(unformattedLine);
-                if (!m.find()) continue;
-                
-                int modifier = Integer.parseInt(m.group(1));
-                sp[i] -= modifier;
-            }
-        }
-        
-        return new SkillPointAllocation(sp[0], sp[1], sp[2], sp[3], sp[4]);
-    }
-    
-    public void loadBuild(SkillPointAllocation build) {
-        if (build.getTotalSkillPoints() > skillPointsRemaining) {
-            TextComponentString text = new TextComponentString("Not enough free skill points!");
-            text.getStyle().setColor(TextFormatting.RED);
-
-            ModCore.mc().player.sendMessage(text);
-            ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
-            return;
-        }
-        
-        loadedBuild = build;
-        startBuild = true;
-    }
-    
-    private void allocateSkillPoints(ChestReplacer gui) {
-        if (loadedBuild == null) return;
-        if (gui.inventorySlots.getSlot(9).getStack().isEmpty()) return;
-        itemsLoaded = true;
-        
-        int[] currentSp = getSkillPoints(gui).getAsArray();
-        int[] buildSp = loadedBuild.getAsArray();
-        for (int i = 0; i < 5; i++) {
-            if (currentSp[i] < buildSp[i]) {
-                int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
-                CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button, ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
-                        gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
-                ModCore.mc().getConnection().sendPacket(packet);
-                return; // can only click once at a time
-            }
-        }
-        loadedBuild = null; // we've fully loaded the build if we reach this point
-    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
@@ -358,8 +243,125 @@ public class SkillPointOverlay implements Listener {
                 nameField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
             }
         } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
-            loadedBuild = null;
+            loadedBuild = null; // inventory was closed by player
         }
+    }
+
+    private String remainingLevelsDescription(int remainingLevels) {
+        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
+    }
+
+    private int getIntelligencePoints(ItemStack stack) {
+        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
+        int start = lore.indexOf(" points ") - 3;
+
+        return Integer.parseInt(lore.substring(start, start + 3).trim());
+    }
+
+    public void addManaTables(ChestReplacer gui) {
+        ItemStack stack = gui.getLowerInv().getStackInSlot(11);
+        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
+
+        int intelligencePoints = getIntelligencePoints(stack);
+        if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
+
+        int closestUpgradeLevel = Integer.MAX_VALUE;
+        int level = PlayerInfo.getPlayerInfo().getLevel();
+
+        List<String> newLore = new LinkedList<>();
+
+        for (int j = 0; j < 4; j++) {
+            SpellType spell = SpellType.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
+
+            if (spell.getUnlockLevel(1) <= level) {
+                int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
+                if (nextUpgrade < closestUpgradeLevel) {
+                    closestUpgradeLevel = nextUpgrade;
+                }
+                int manaCost = spell.getManaCost(level, intelligencePoints);
+                String spellName = PlayerInfo.getPlayerInfo().isCurrentClassReskinned() ? spell.getReskinned() : spell.getName();
+                String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
+                        + "-" + manaCost + " ✺";
+                if (nextUpgrade < Integer.MAX_VALUE) {
+                    spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "
+                            + remainingLevelsDescription(nextUpgrade - intelligencePoints) + ")";
+                }
+                newLore.add(spellInfo);
+            }
+        }
+
+        List<String> loreTag = new LinkedList<>(ItemUtils.getLore(stack));
+        if (closestUpgradeLevel < Integer.MAX_VALUE) {
+            loreTag.add("");
+            loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
+                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligencePoints) + ")");
+        }
+
+        loreTag.add("");
+        loreTag.addAll(newLore);
+
+        ItemUtils.replaceLore(stack, loreTag);
+        stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
+    }
+    
+    private SkillPointAllocation getSkillPoints(ChestReplacer gui) {
+        int[] sp = new int[5];
+        
+        for (int i = 0; i < 5; i++) {
+            ItemStack stack = gui.getLowerInv().getStackInSlot(i + 9); // sp indicators start at 9
+            Matcher m = SKILLPOINT_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack)));
+            if (!m.find()) continue;
+            
+            sp[i] = Integer.parseInt(m.group(1));
+        }
+        
+        // following code subtracts gear sp from total sp to find player-allocated sp
+        ItemStack info = gui.getLowerInv().getStackInSlot(6); // player info slot
+        for (String line : ItemUtils.getLore(info)) {
+            String unformattedLine = TextFormatting.getTextWithoutFormattingCodes(line);
+            for (int i = 0; i < 5; i++) {
+                Matcher m = MODIFIER_PATTERNS[i].matcher(unformattedLine);
+                if (!m.find()) continue;
+                
+                int modifier = Integer.parseInt(m.group(1));
+                sp[i] -= modifier;
+            }
+        }
+        
+        return new SkillPointAllocation(sp[0], sp[1], sp[2], sp[3], sp[4]);
+    }
+    
+    public void loadBuild(SkillPointAllocation build) {
+        if (build.getTotalSkillPoints() > skillPointsRemaining) {
+            TextComponentString text = new TextComponentString("Not enough free skill points!");
+            text.getStyle().setColor(TextFormatting.RED);
+
+            ModCore.mc().player.sendMessage(text);
+            ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+            return;
+        }
+        
+        loadedBuild = build;
+        startBuild = true;
+    }
+    
+    private void allocateSkillPoints(ChestReplacer gui) {
+        if (loadedBuild == null) return;
+        if (gui.inventorySlots.getSlot(9).getStack().isEmpty()) return;
+        itemsLoaded = true;
+        
+        int[] currentSp = getSkillPoints(gui).getAsArray();
+        int[] buildSp = loadedBuild.getAsArray();
+        for (int i = 0; i < 5; i++) {
+            if (currentSp[i] < buildSp[i]) {
+                int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
+                CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button, ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
+                        gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+                ModCore.mc().getConnection().sendPacket(packet);
+                return; // can only click once at a time
+            }
+        }
+        loadedBuild = null; // we've fully loaded the build if we reach this point
     }
 
 }
