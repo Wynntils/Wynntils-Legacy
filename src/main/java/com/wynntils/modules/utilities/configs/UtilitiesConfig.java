@@ -8,13 +8,16 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.events.ServerEvents;
+import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +90,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting
     public Map<Integer, Set<Integer>> locked_slots = new HashMap<>();
+
+    @Setting
+    public Map<String, SkillPointAllocation> skillPointLoadouts = new HashMap<>();
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
     public static class Identifications extends SettingsClass {
