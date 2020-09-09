@@ -40,7 +40,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
@@ -115,7 +114,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
@@ -132,7 +131,7 @@ public class ClientEvents implements Listener {
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
         Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
-        if (!(i instanceof EntityArmorStand)) return;
+        if (!(i instanceof EntityArmorStand) || !i.hasCustomName()) return;
 
         for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
             if (!(next.getValue() instanceof String)) continue;
@@ -154,6 +153,7 @@ public class ClientEvents implements Listener {
                 String resourceType = m.group(2).contains(" ") ? m.group(2).split(" ")[0] : m.group(2);
 
                 bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
+                System.out.println("gather");
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
             } else { // third, damage detection
                 Map<DamageType, Integer> damageList = new HashMap<>();
