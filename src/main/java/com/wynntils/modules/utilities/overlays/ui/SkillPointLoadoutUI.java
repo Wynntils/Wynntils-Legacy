@@ -3,6 +3,7 @@ package com.wynntils.modules.utilities.overlays.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -58,8 +59,11 @@ public class SkillPointLoadoutUI extends GuiContainer {
             if (i > 53) break;
             SkillPointAllocation sp = UtilitiesConfig.INSTANCE.skillPointLoadouts.get(name);
 
+            int levelRequirement = (sp.getTotalSkillPoints() / 2) + 1;
+            boolean hasRequirement = PlayerInfo.getPlayerInfo().getLevel() >= levelRequirement;
+
             ItemStack buildStack = new ItemStack(Items.DIAMOND_AXE);
-            buildStack.setItemDamage(42);
+            buildStack.setItemDamage(hasRequirement ? 42 : 44);
             buildStack.setStackDisplayName(TextFormatting.DARK_AQUA + name);
             buildStack.setTagInfo("Unbreakable", new NBTTagByte((byte) 1));
             buildStack.setTagInfo("HideFlags", new NBTTagInt(6));
@@ -70,8 +74,16 @@ public class SkillPointLoadoutUI extends GuiContainer {
             if (sp.getIntelligence() > 0) lore.add(TextFormatting.GRAY + "-" + TextFormatting.AQUA + " " + sp.getIntelligence() + " " + SkillPoint.INTELLIGENCE.getSymbol());
             if (sp.getDefence() > 0) lore.add(TextFormatting.GRAY + "-" + TextFormatting.RED + " " + sp.getDefence() + " " + SkillPoint.DEFENCE.getSymbol());
             if (sp.getAgility() > 0) lore.add(TextFormatting.GRAY + "-" + TextFormatting.WHITE + " " + sp.getAgility() + " " + SkillPoint.AGILITY.getSymbol());
+
+            // requirements
             lore.add(" ");
-            lore.add(TextFormatting.RED + "> Right-click to delete");
+            lore.add((hasRequirement ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "✖") +
+                    TextFormatting.GRAY + " Combat Lv. Min: " + levelRequirement);
+
+            // actions
+            lore.add(" ");
+            lore.add((hasRequirement ? (TextFormatting.GREEN) : TextFormatting.DARK_GRAY) + "Left-click to load");
+            lore.add(TextFormatting.RED + "Right-click to delete");
             ItemUtils.replaceLore(buildStack, lore);
 
             inventory.setInventorySlotContents(i, buildStack);
@@ -87,6 +99,10 @@ public class SkillPointLoadoutUI extends GuiContainer {
         String name = TextFormatting.getTextWithoutFormattingCodes(slotIn.getStack().getDisplayName());
         if (mouseButton == 0) { // left click <-> load
             SkillPointAllocation aloc = UtilitiesConfig.INSTANCE.skillPointLoadouts.get(name);
+
+            int levelRequirement = (aloc.getTotalSkillPoints() / 2) + 1;
+            if (PlayerInfo.getPlayerInfo().getLevel() < levelRequirement) return;
+
             parent.loadBuild(aloc); // sends the allocated loadout into
 
             ModCore.mc().displayGuiScreen(spMenu);

@@ -10,8 +10,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
+import net.minecraft.network.play.server.SPacketCustomSound;
+import net.minecraft.network.play.server.SPacketSoundEffect;
+import net.minecraft.util.SoundEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.wynntils.ModCore;
@@ -69,6 +73,7 @@ public class SkillPointOverlay implements Listener {
     private SkillPointAllocation loadedBuild = null;
     private boolean startBuild = false;
     private boolean itemsLoaded = false;
+    private float buildPercentage = 0.0f;
 
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
@@ -246,9 +251,18 @@ public class SkillPointOverlay implements Listener {
         } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
             nameField = null;
             loadedBuild = null;
+            buildPercentage = 0.0f;
         } else {
             nameField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
         }
+
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void removeLoadPling(PacketEvent<SPacketCustomSound> e) {
+        if (!Reference.onWorld || loadedBuild == null) return;
+        if (!e.getPacket().getSoundName().equalsIgnoreCase("entity.experience_orb.pickup")) return;
 
         e.setCanceled(true);
     }
@@ -358,20 +372,29 @@ public class SkillPointOverlay implements Listener {
 
         int[] currentSp = getSkillPoints(gui).getAsArray();
         int[] buildSp = loadedBuild.getAsArray();
-        for (int i = 0; i < 5; i++) {
-            if (currentSp[i] < buildSp[i]) {
-                int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
-                CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button,
-                        ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
-                        gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
 
-                ModCore.mc().getConnection().sendPacket(packet);
-                return; // can only click once at a time
-            }
+        float perSkill = 1 / (float) loadedBuild.getTotalSkillPoints();
+
+        for (int i = 0; i < 5; i++) {
+            if (currentSp[i] >= buildSp[i]) continue;
+            int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
+
+            buildPercentage += perSkill * (button == 1 ? 5 : 0);
+
+            CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button,
+                    ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
+                    gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+
+            Minecraft.getMinecraft().getSoundHandler().playSound(
+                    PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_ITEM_PICKUP, 0.3f + (1.2f * buildPercentage)));
+
+            ModCore.mc().getConnection().sendPacket(packet);
+            return; // can only click once at a time
         }
 
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1f));
         loadedBuild = null; // we've fully loaded the build if we reach this point
+        buildPercentage = 0.0f;
     }
 
 }
