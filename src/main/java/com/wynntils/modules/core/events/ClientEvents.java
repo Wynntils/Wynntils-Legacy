@@ -153,7 +153,6 @@ public class ClientEvents implements Listener {
                 String resourceType = m.group(2).contains(" ") ? m.group(2).split(" ")[0] : m.group(2);
 
                 bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
-                System.out.println("gather");
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
             } else { // third, damage detection
                 Map<DamageType, Integer> damageList = new HashMap<>();
