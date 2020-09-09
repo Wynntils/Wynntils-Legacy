@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.wynntils.core.framework.enums.MouseButton;
+import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
 import org.lwjgl.input.Keyboard;
 
 import com.wynntils.ModCore;
@@ -30,7 +32,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
-import com.wynntils.modules.utilities.overlays.ui.BuildsUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -49,7 +50,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SkillPointOverlay implements Listener {
-    
+
     private static final Pattern SKILLPOINT_PATTERN = Pattern.compile(".*?([-0-9]+)(?=\\spoints).*");
     private static final Pattern[] MODIFIER_PATTERNS = {
             Pattern.compile("- Strength: ([-+0-9]+)"),
@@ -58,22 +59,23 @@ public class SkillPointOverlay implements Listener {
             Pattern.compile("- Defence: ([-+0-9]+)"),
             Pattern.compile("- Agility: ([-+0-9]+)"),
     };
-    
+
     private static final int SAVE_SLOT = 1;
     private static final int LOAD_SLOT = 3;
-    
+
     private GuiTextFieldWynn nameField;
-    
+
     private int skillPointsRemaining;
     private SkillPointAllocation loadedBuild = null;
     private boolean startBuild = false;
     private boolean itemsLoaded = false;
-    
+
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
         nameField = null;
-        Keyboard.enableRepeatEvents(false);
         itemsLoaded = false;
+
+        Keyboard.enableRepeatEvents(false);
     }
 
     @SubscribeEvent
@@ -90,18 +92,18 @@ public class SkillPointOverlay implements Listener {
         if (!m.find()) return;
 
         skillPointsRemaining = Integer.parseInt(m.group(1));
-        
-        // load/save icons
+
+        // load/save loadout items
         ItemStack save = new ItemStack(Items.WRITABLE_BOOK);
-        save.setStackDisplayName(TextFormatting.GOLD + "[>] Save current build");
-        ItemUtils.replaceLore(save, Arrays.asList(TextFormatting.GRAY + "Allows you to save this build with a name"));
+        save.setStackDisplayName(TextFormatting.GOLD + "[>] Save current loadout");
+        ItemUtils.replaceLore(save, Arrays.asList(TextFormatting.GRAY + "Allows you to save this loadout with a name."));
         e.getGui().inventorySlots.getSlot(SAVE_SLOT).putStack(save);
-        
+
         ItemStack load = new ItemStack(Items.ENCHANTED_BOOK);
-        load.setStackDisplayName(TextFormatting.GOLD + "[>] Load build");
-        ItemUtils.replaceLore(load, Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved builds"));
+        load.setStackDisplayName(TextFormatting.GOLD + "[>] Load loadout");
+        ItemUtils.replaceLore(load, Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts."));
         e.getGui().inventorySlots.getSlot(LOAD_SLOT).putStack(load);
-        
+
         // skill point allocating
         if (!itemsLoaded || startBuild) {
             startBuild = false;
@@ -119,7 +121,7 @@ public class SkillPointOverlay implements Listener {
             if (name.contains("Upgrade")) {// Skill Points
                 Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
                 if (!spm.find()) continue;
-                
+
                 value = Integer.parseInt(spm.group(1));
             } else if (name.contains("Profession")) { // Profession Icons
                 int start = lore.indexOf("Level: ") + 7;
@@ -150,101 +152,105 @@ public class SkillPointOverlay implements Listener {
             stack.setCount(value <= 0 ? 1 : value);
         }
     }
-    
+
     @SubscribeEvent
     public void onChestForeground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
         if (!Reference.onWorld) return;
         if (!Utils.isCharacterInfoPage(e.getGui())) return;
-        
+
         // draw name field
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, 500);
         if (nameField != null) nameField.drawTextBox();
         GlStateManager.popMatrix();
     }
-    
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             String name = TextFormatting.getTextWithoutFormattingCodes(s.getStack().getDisplayName());
             SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
-            if (skillPoint != null) {
-                ScreenRenderer.beginGL(e.getGui().getGuiLeft() , e.getGui().getGuiTop());
+            if (skillPoint == null) continue;
+
+            ScreenRenderer.beginGL(e.getGui().getGuiLeft() , e.getGui().getGuiTop());
+            {
                 GlStateManager.translate(0, 0, 251);
                 ScreenRenderer r = new ScreenRenderer();
                 RenderHelper.disableStandardItemLighting();
                 r.drawString(skillPoint.getColoredSymbol(), s.xPos + 2, s.yPos, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                ScreenRenderer.endGL();
             }
+            ScreenRenderer.endGL();
         }
     }
-    
+
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
-        
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
+
         if (e.getSlotId() == SAVE_SLOT) {
-            e.setCanceled(true);
             nameField = new GuiTextFieldWynn(200, Minecraft.getMinecraft().fontRenderer, 8, 5, 130, 10);
             nameField.setFocused(true);
             nameField.setText("Enter build name");
             Keyboard.enableRepeatEvents(true);
-        } else if (e.getSlotId() == LOAD_SLOT) {
+
             e.setCanceled(true);
-            ModCore.mc().displayGuiScreen(new BuildsUI(this, ModCore.mc().currentScreen, new InventoryBasic("Builds", false, 54)));
+        } else if (e.getSlotId() == LOAD_SLOT) {
+            ModCore.mc().displayGuiScreen(
+                    new SkillPointLoadoutUI(this, ModCore.mc().currentScreen,
+                            new InventoryBasic("Skill Points Loadouts", false, 54))
+            );
+
+            e.setCanceled(true);
         }
     }
-    
+
     @SubscribeEvent
     public void onMouseClicked(GuiOverlapEvent.ChestOverlap.MouseClicked e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         int offsetMouseX = e.getMouseX() - e.getGui().getGuiLeft();
         int offsetMouseY = e.getMouseY() - e.getGui().getGuiTop();
 
         // handle mouse input on name editor
-        if (nameField != null) {
-            nameField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
-            if (e.getMouseButton() == 0) { // left click
-                if (nameField.isFocused()) {
-                    nameField.setCursorPositionEnd();
-                    nameField.setSelectionPos(0);
-                } else {
-                    nameField.setSelectionPos(nameField.getCursorPosition());
-                }
+        if (nameField == null) return;
+
+        nameField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
+        if (e.getMouseButton() == MouseButton.LEFT.ordinal()) { // left click
+            if (nameField.isFocused()) {
+                nameField.setCursorPositionEnd();
+                nameField.setSelectionPos(0);
+                return;
             }
+
+            nameField.setSelectionPos(nameField.getCursorPosition());
         }
     }
-    
+
     @SubscribeEvent
     public void onKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         // handle typing in text boxes
-        if (nameField != null && nameField.isFocused()) {
-            e.setCanceled(true);
-            if (e.getKeyCode() == Keyboard.KEY_RETURN) {
-                String name = nameField.getText();
-                nameField = null;
+        if (nameField == null || !nameField.isFocused()) return;
 
-                name = name.replaceAll("&([a-f0-9k-or])", "§$1");
-                UtilitiesConfig.INSTANCE.savedBuilds.add(new Pair(name, getSkillPoints(e.getGui())));
-                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-                
-            } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
-                nameField = null;
-            } else {
-                nameField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
-            }
-        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
-            loadedBuild = null; // inventory was closed by player
+        if (e.getKeyCode() == Keyboard.KEY_RETURN) {
+            String name = nameField.getText();
+            nameField = null;
+
+            name = name.replaceAll("&([a-f0-9k-or])", "§$1");
+            UtilitiesConfig.INSTANCE.skillPointLoadouts.put(name, getSkillPoints(e.getGui()));
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+            ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
+            nameField = null;
+            loadedBuild = null;
+        } else {
+            nameField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
         }
+
+        e.setCanceled(true);
     }
 
     private String remainingLevelsDescription(int remainingLevels) {
@@ -303,18 +309,18 @@ public class SkillPointOverlay implements Listener {
         ItemUtils.replaceLore(stack, loreTag);
         stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
     }
-    
+
     private SkillPointAllocation getSkillPoints(ChestReplacer gui) {
         int[] sp = new int[5];
-        
+
         for (int i = 0; i < 5; i++) {
             ItemStack stack = gui.getLowerInv().getStackInSlot(i + 9); // sp indicators start at 9
             Matcher m = SKILLPOINT_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack)));
             if (!m.find()) continue;
-            
+
             sp[i] = Integer.parseInt(m.group(1));
         }
-        
+
         // following code subtracts gear sp from total sp to find player-allocated sp
         ItemStack info = gui.getLowerInv().getStackInSlot(6); // player info slot
         for (String line : ItemUtils.getLore(info)) {
@@ -322,15 +328,15 @@ public class SkillPointOverlay implements Listener {
             for (int i = 0; i < 5; i++) {
                 Matcher m = MODIFIER_PATTERNS[i].matcher(unformattedLine);
                 if (!m.find()) continue;
-                
+
                 int modifier = Integer.parseInt(m.group(1));
                 sp[i] -= modifier;
             }
         }
-        
+
         return new SkillPointAllocation(sp[0], sp[1], sp[2], sp[3], sp[4]);
     }
-    
+
     public void loadBuild(SkillPointAllocation build) {
         if (build.getTotalSkillPoints() > skillPointsRemaining) {
             TextComponentString text = new TextComponentString("Not enough free skill points!");
@@ -340,27 +346,31 @@ public class SkillPointOverlay implements Listener {
             ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
             return;
         }
-        
+
         loadedBuild = build;
         startBuild = true;
     }
-    
+
     private void allocateSkillPoints(ChestReplacer gui) {
         if (loadedBuild == null) return;
         if (gui.inventorySlots.getSlot(9).getStack().isEmpty()) return;
         itemsLoaded = true;
-        
+
         int[] currentSp = getSkillPoints(gui).getAsArray();
         int[] buildSp = loadedBuild.getAsArray();
         for (int i = 0; i < 5; i++) {
             if (currentSp[i] < buildSp[i]) {
                 int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
-                CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button, ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
+                CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button,
+                        ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
                         gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+
                 ModCore.mc().getConnection().sendPacket(packet);
                 return; // can only click once at a time
             }
         }
+
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1f));
         loadedBuild = null; // we've fully loaded the build if we reach this point
     }
 

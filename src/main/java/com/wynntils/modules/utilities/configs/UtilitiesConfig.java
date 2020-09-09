@@ -90,9 +90,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting
     public Map<Integer, Set<Integer>> locked_slots = new HashMap<>();
-    
+
     @Setting
-    public List<Pair<String, SkillPointAllocation>> savedBuilds = new ArrayList<>();
+    public Map<String, SkillPointAllocation> skillPointLoadouts = new HashMap<>();
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
     public static class Identifications extends SettingsClass {
