@@ -51,7 +51,7 @@ public class OverlayPositionsUI extends UI {
             }
         }
         onClose();
-    });
+    }, 0, 0, 17, 45);
 
     public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a, 0.5f, 0.5f, -48, 0, -10, true, (ui, mouseButton) -> {
         for (OverlayButton settingsContainer : registeredOverlaySettings) {
@@ -70,7 +70,7 @@ public class OverlayPositionsUI extends UI {
             }
         }
         onClose();
-    });
+    }, 0, 0, 17, 45);
 
     public UIEButton resetButton = new UIEButton("Default", Textures.UIs.button_a, 0.5f, 0.5f, -22, 15, -10, true, (ui, mouseButton) -> {
         for (OverlayButton settingsContainer : registeredOverlaySettings) {
@@ -81,7 +81,7 @@ public class OverlayPositionsUI extends UI {
                 ex.printStackTrace();
             }
         }
-    });
+    }, 0, 0, 17, 45);
 
     public OverlayPositionsUI(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;

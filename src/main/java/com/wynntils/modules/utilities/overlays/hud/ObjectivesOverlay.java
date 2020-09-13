@@ -205,7 +205,7 @@ public class ObjectivesOverlay extends Overlay {
 
         if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objective.hasProgress()) {
             drawProgressBar(Textures.Overlays.bars_exp, -WIDTH, -HEIGHT + height + 11,
-                    -WIDTH / 3, -HEIGHT + height + 11 + 5, getTextureOffset(), getTextureOffset() + 9,
+                    -WIDTH / 3, -HEIGHT + height + 11 + 5, 0, getTextureOffset(), 182, getTextureOffset() + 9,
                     objective.getProgress(),OverlayConfig.Objectives.INSTANCE.objectivesAlpha * fadeAlpha);
         }
     }

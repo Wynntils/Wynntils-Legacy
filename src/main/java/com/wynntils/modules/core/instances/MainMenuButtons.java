@@ -111,7 +111,8 @@ public class MainMenuButtons {
 
             if (hasUpdate) {
                 Textures.UIs.main_menu.bind();
-                drawModalRectWithCustomSizedTexture(x, y, 0, 0, 20, 20, 20, 20);
+                // When not provided with the texture size vanilla automatically assumes both the height and width are 256
+                drawTexturedModalRect(x, y, 0, 0, 20, 20);
             }
 
             GlStateManager.disableBlend();

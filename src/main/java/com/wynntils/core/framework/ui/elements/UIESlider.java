@@ -22,11 +22,11 @@ public abstract class UIESlider extends UIEClickZone {
     int mouseOffset = 0;
     BiConsumer<UI, Float> onRelease;
 
-    public UIESlider(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
+    public UIESlider(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease, int tx1, int ty1, int tx2, int ty2) {
         super(anchorX, anchorY, offsetX, offsetY, width, height, active, null);
         this.onRelease = onRelease;
         this.backColor = backColor;
-        this.sliderButton = new UIEButton("", sliderButton, anchorX, anchorY, offsetX, offsetY, 0, active, null);
+        this.sliderButton = new UIEButton("", sliderButton, anchorX, anchorY, offsetX, offsetY, 0, active, null, tx1, ty1, tx2, ty2);
         this.sliderButton.clickSound = null;
         this.min = min;
         this.max = max;
@@ -55,8 +55,8 @@ public abstract class UIESlider extends UIEClickZone {
     }
 
     public static class Horizontal extends UIESlider {
-        public Horizontal(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
-            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, width, MathHelper.fastFloor(sliderButton.height/3), active, min, max, precision, progress, onRelease);
+        public Horizontal(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int width, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease, int tx1, int ty1, int tx2, int ty2) {
+            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, width, (ty2 - ty1) / 3, active, min, max, precision, progress, onRelease, tx1, ty1, tx2, ty2);
         }
 
         @Override
@@ -74,7 +74,7 @@ public abstract class UIESlider extends UIEClickZone {
         public void clickMove(int mouseX, int mouseY, MouseButton button, long timeSinceLastClick, UI ui) {
             super.clickMove(mouseX, mouseY, button, timeSinceLastClick, ui);
             if (moving && button == MouseButton.LEFT)
-                this.progress = Math.min(1f, Math.max(0f, ((float)(mouseX - mouseOffset - this.position.getDrawingX())) / ((float)this.width - this.sliderButton.width)));
+                this.progress = Math.min(1f, Math.max(0f, ((float) (mouseX - mouseOffset - this.position.getDrawingX())) / ((float) this.width - this.sliderButton.width)));
         }
 
         @Override
@@ -94,8 +94,8 @@ public abstract class UIESlider extends UIEClickZone {
     }
 
     public static class Vertical extends UIESlider {
-        public Vertical(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease) {
-            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, MathHelper.fastFloor(sliderButton.width), height, active, min, max, precision, progress, onRelease);
+        public Vertical(CustomColor backColor, Texture sliderButton, float anchorX, float anchorY, int offsetX, int offsetY, int height, boolean active, float min, float max, float precision, float progress, BiConsumer<UI, Float> onRelease, int tx1, int ty1, int tx2, int ty2) {
+            super(backColor, sliderButton, anchorX, anchorY, offsetX, offsetY, tx2 - tx1, height, active, min, max, precision, progress, onRelease, tx1, ty1, tx2, ty2);
         }
 
         @Override

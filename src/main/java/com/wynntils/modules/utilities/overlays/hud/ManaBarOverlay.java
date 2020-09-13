@@ -81,7 +81,7 @@ public class ManaBarOverlay extends Overlay {
             drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a - (81-OverlayConfig.Mana.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
         }
         rotate(OverlayConfig.Mana.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
+        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
     }
 
 }

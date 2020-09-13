@@ -81,7 +81,7 @@ public class HealthBarOverlay extends Overlay {
         }
 
         rotate(OverlayConfig.Health.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
     }
 
 }

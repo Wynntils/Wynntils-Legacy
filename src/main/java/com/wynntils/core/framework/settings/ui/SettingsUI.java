@@ -51,17 +51,17 @@ public class SettingsUI extends UI {
     public UIEList holders = new UIEList(0.5f, 0.5f, -170, -87);
     public UIEList settings = new UIEList(0.5f, 0.5f, 5, -90);
 
-    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar, 0.5f, 0.5f, -178, -88, 161, false, -85, 1, 1f, 0, null);
-    public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null);
+    public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar, 0.5f, 0.5f, -178, -88, 161, false, -85, 1, 1f, 0, null, 0, 0, 5, 27);
+    public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null, 0, 0, 5, 27);
 
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -180, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
-    });
+    }, 0, 0, 17, 45);
     public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a, 0.5f, 0.5f, -130, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
-    });
+    }, 0, 0, 17, 45);
     public UIETextBox searchField = new UIETextBox(0.5f, 0.5f, -90, 82, 85, true, "Search...", true, (ui, oldText) -> {
         updateSearchText();
     });
@@ -325,7 +325,7 @@ public class SettingsUI extends UI {
         int textWidth;
 
         public HolderButton(String path) {
-            super("", null, 0f, 0f, 0, 0, -1, true, null);
+            super("", null, 0f, 0f, 0, 0, -1, true, null, 0, 0, 0, 0);
             String[] paths = path.split("/");
             this.height = 9;
             this.path = path;
@@ -383,7 +383,7 @@ public class SettingsUI extends UI {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }));
+            }, 0, 0, 17, 45));
 
             updateValue();
         }
@@ -420,7 +420,7 @@ public class SettingsUI extends UI {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    });
+                    }, 0, 0, 17, 60);
                 } else if (value instanceof Enum) {
                     valueElement = new UIEButton.Enum(s -> s, Textures.UIs.button_b, (Class<? extends Enum>) type, (Enum) value, 0f, 0f, 0, 15, -10, true, (ui, mouseButton) -> {
                         try {
@@ -429,7 +429,7 @@ public class SettingsUI extends UI {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    });
+                    }, 0, 0, 17, 60);
                 } else if (type.isAssignableFrom(int.class)) {
                     Setting.Limitations.IntLimit limit = field.field.getAnnotation(Setting.Limitations.IntLimit.class);
                     if (limit != null) {
@@ -440,7 +440,7 @@ public class SettingsUI extends UI {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        });
+                        }, 0, 0, 17, 45);
                         ((UIESlider)valueElement).setValue((int)value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#");
                     }
@@ -454,7 +454,7 @@ public class SettingsUI extends UI {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        });
+                        }, 0, 0, 17, 45);
                         ((UIESlider)valueElement).setValue((float)value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }
@@ -468,7 +468,7 @@ public class SettingsUI extends UI {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        });
+                        }, 0, 0, 17, 45);
                         ((UIESlider)valueElement).setValue((float)(double) value);
                         ((UIESlider)valueElement).decimalFormat = new DecimalFormat("#.#");
                     }

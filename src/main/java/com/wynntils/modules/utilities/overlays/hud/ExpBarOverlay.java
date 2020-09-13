@@ -76,7 +76,7 @@ public class ExpBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
-        drawProgressBar(Textures.Overlays.bars_exp, -91, y1, 91, y2, ty1, ty2, (flip ? -exp : exp));
+        drawProgressBar(Textures.Overlays.bars_exp, -91, y1, 91, y2, 0, ty1, 182, ty2, (flip ? -exp : exp));
         drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 }
