@@ -279,7 +279,7 @@ public class MiniMapOverlay extends Overlay {
                 }
             } else if (MapConfig.INSTANCE.mapFormat == MapConfig.MapFormat.CIRCLE) {
                 if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Paper) {
-                    drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 217, 217, 434, 438);
+                    drawRect(Textures.Map.paper_map_textures, -3, -3, mapSize + 3, mapSize + 3, 0, 217, 217, 438);
                 } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Wynn) {
                     // todo texture
                 } else if (MapConfig.Textures.INSTANCE.textureType == MapConfig.TextureType.Gilded) {
