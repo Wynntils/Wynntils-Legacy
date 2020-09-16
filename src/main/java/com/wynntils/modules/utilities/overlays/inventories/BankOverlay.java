@@ -149,10 +149,6 @@ public class BankOverlay implements Listener {
         FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         ScreenRenderer.beginGL(0, 0);
         {
-            { // gl setup
-                GlStateManager.translate(0, 0, 500);
-            }
-
             { // quick access numbers
                 int[] destinations = getQuickAccessDestinations();
                 for (int i = 0; i < QA_BUTTONS; i++) {

@@ -345,6 +345,12 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
             public boolean redirectPouch = true;
+            
+            @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
+            public boolean redirectGatheringDura = true;
+            
+            @Setting(displayName = "Redirect Crafted Item Messages", description = "Should messages about crafted item durability be redirected to the game update ticker?")
+            public boolean redirectCraftedDura = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
