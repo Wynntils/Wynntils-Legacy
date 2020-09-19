@@ -17,6 +17,7 @@ public class MusicModule extends Module {
     @Override
     public void onEnable() {
         registerSettings(MusicConfig.class);
+
         registerEvents(new ClientEvents());
         registerEvents(new CurrentMusicDisplayer());
 

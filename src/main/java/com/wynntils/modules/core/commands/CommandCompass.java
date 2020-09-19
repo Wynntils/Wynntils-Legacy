@@ -282,6 +282,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
         String location = "[" + x + ", " + z + "]";
         if (recipientUser == null) {
             Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+        }else if (recipientUser.equalsIgnoreCase("guild")) {
+            Minecraft.getMinecraft().player.sendChatMessage("/g " + " My " + type + " is at " + location);
         } else {
             Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
         }
