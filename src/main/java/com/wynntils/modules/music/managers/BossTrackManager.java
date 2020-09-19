@@ -38,8 +38,6 @@ public class BossTrackManager {
     }
 
     private static boolean checkEntity(Entity entity, String name) {
-        if (entity.isInvisible()) entity.setInvisible(false);
-
         String soundTrack = WebManager.getMusicLocations().getBossTrack(name);
         if (soundTrack == null || Math.abs(Minecraft.getMinecraft().player.posY - entity.posY) >= 15) return false;
 
