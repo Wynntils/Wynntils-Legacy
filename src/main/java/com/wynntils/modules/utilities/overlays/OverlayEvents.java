@@ -66,6 +66,7 @@ public class OverlayEvents implements Listener {
     }
 
     private static long tickcounter = 0;
+    private static long msgcounter = 0;
 
     /* XP Gain Messages */
     private static int oldxp = 0;
@@ -544,6 +545,21 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectGatheringDura) {
+            if (messageText.equals("Your tool has 0 durability left! You will not receive any new resources until you repair it at a Blacksmith.")) {
+                if (msgcounter++ % 5 == 0)
+                    GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Your tool has 0 durability");
+                e.setCanceled(true);
+                return;
+            }
+        }
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCraftedDura) {
+            if (messageText.equals("Your items are damaged and have become less effective. Bring them to a Blacksmith to repair them.")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Your items are damaged");
+                e.setCanceled(true);
+                return;
+            }
+        }
 
         if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
@@ -715,6 +731,7 @@ public class OverlayEvents implements Listener {
         }
         // WynnCraft seem to be off with its timer with around 10 seconds
         loginTime = Minecraft.getSystemTime() + 10000;
+        msgcounter = 0;
     }
 
     @SubscribeEvent
