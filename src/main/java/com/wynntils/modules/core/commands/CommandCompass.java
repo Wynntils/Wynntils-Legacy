@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
-    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [party|user]";
+    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [guild|party|user]";
 
     private String[] directions = {
         "north",
