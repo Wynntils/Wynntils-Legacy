@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
 
-    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [party|user]";
+    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [guild|party|user]";
 
     private String[] directions = {
         "north",
@@ -309,6 +309,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             // Allow easy completion of friends' names
             Set<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
             completions.add("party");
+            completions.add("guild");
             if (args.length == 3 && args[1].equalsIgnoreCase("location")) {
                 return getListOfStringsMatchingLastWord(args, completions);
             }
