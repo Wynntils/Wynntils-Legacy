@@ -231,6 +231,11 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onDamage(GameEvent.DamageEntity e) {
+        e.getDamageTypes().forEach((k, v) -> AreaDPSManager.registerDamage(v));
+    }
+
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;

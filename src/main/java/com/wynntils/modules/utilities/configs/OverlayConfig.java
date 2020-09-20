@@ -345,10 +345,10 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
             public boolean redirectPouch = true;
-            
+
             @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
             public boolean redirectGatheringDura = true;
-            
+
             @Setting(displayName = "Redirect Crafted Item Messages", description = "Should messages about crafted item durability be redirected to the game update ticker?")
             public boolean redirectCraftedDura = true;
         }
@@ -529,7 +529,8 @@ public class OverlayConfig extends SettingsClass {
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
-            BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm");
+            BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm"),
+            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%");
 
             public final String displayName;
             public final String value;
@@ -612,7 +613,8 @@ public class OverlayConfig extends SettingsClass {
             PARTY_COUNT("Amount of members in the players party"),
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
-            UNPROCESSED_MAX("Max amount of unprocessed materials");
+            UNPROCESSED_MAX("Max amount of unprocessed materials"),
+            AREA_DPS("Current area damage per second");
 
             public final String displayName;
             public final String value;
