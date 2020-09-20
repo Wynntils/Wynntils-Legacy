@@ -64,7 +64,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 boolean result = LootRunManager.loadFromFile(name);
 
                 String message;
-                if (result) message = GREEN + "Loaded loot run " + name + " successfully!";
+                if (result) message = GREEN + "Loaded loot run " + name + " successfully! " + GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
                 else message = RED + "The specified loot run doesn't exist!";
 
                 sender.sendMessage(new TextComponentString(message));
