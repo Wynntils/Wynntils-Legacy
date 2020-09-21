@@ -21,6 +21,7 @@ import net.minecraftforge.client.IClientCommand;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +38,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
     @Override
     public String getName() {
         return "lootrun";
+    }
+    
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList("loot", "lr");
     }
 
     @Override
@@ -56,6 +62,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "l":
             case "load": {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun load [name]");
@@ -79,6 +86,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 return;
             }
+            case "s":
             case "save": {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun save [name]");
@@ -102,6 +110,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
+            case "d":
             case "delete": {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun delete [name]");
@@ -139,6 +148,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
+            case "r":
             case "record": {
                 String message;
                 if (LootRunManager.isRecording()) {
