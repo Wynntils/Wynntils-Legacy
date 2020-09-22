@@ -190,6 +190,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 Utils.openUrl(uri.toString());
                 return;
             }
+            case "c":
             case "clear":
                 if (!LootRunManager.isRecording() && LootRunManager.getActivePath() == null) {
                     sender.sendMessage(new TextComponentString(RED + "You have no loot runs to clear!"));
