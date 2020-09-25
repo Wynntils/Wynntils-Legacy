@@ -5,10 +5,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.model.*;
 
-public class ExtendedModelBox extends ModelBox
-{
-    /** The (x,y,z) vertex positions and (u,v) texture coordinates for each of the 8 points on a cube */
-    private PositionTextureVertex[] _vertexPositions;
+public class EarModelBox extends ModelBox {
+
     /** An array of 6 TexturedQuads, one for each face of a cube */
     private TexturedQuad[] quadList;
     /** X vertex coordinate of lower box corner */
@@ -26,8 +24,7 @@ public class ExtendedModelBox extends ModelBox
     public String boxName;
 
 
-    public ExtendedModelBox (ModelRenderer renderer, int texU, int texV, float x, float y, float z, int dx, int dy, int dz, float delta)
-    {
+    public EarModelBox(ModelRenderer renderer, int texU, int texV, float x, float y, float z, int dx, int dy, int dz, float delta) {
         super(renderer, texU, texV, x, y, z, dx, dy, dz, delta, renderer.mirror);
     }
 
@@ -46,8 +43,7 @@ public class ExtendedModelBox extends ModelBox
      * @param dz Depth of the overall box
      * @param delta Good f--king question.
      */
-    public ExtendedModelBox(ExtendedModelRenderer renderer, int texOffsetX1, int texOffsetY1, int texOffsetX2, int texOffsetY2, float x, float y, float z, int dx, int dy, int dz, float delta, boolean mirror)
-    {
+    public EarModelBox(EarModelRenderer renderer, int texOffsetX1, int texOffsetY1, int texOffsetX2, int texOffsetY2, float x, float y, float z, int dx, int dy, int dz, float delta, boolean mirror) {
         this(renderer.returnRenderer(), texOffsetX1, texOffsetY1, x, y, z, dx, dy, dz, delta);
 
         this.posX1 = x;
@@ -56,7 +52,6 @@ public class ExtendedModelBox extends ModelBox
         this.posX2 = x + (float)dx;
         this.posY2 = y + (float)dy;
         this.posZ2 = z + (float)dz;
-        this._vertexPositions = new PositionTextureVertex[8];
         this.quadList = new TexturedQuad[6];
         float f = x + (float)dx;
         float f1 = y + (float)dy;
@@ -68,13 +63,6 @@ public class ExtendedModelBox extends ModelBox
         f1 = f1 + delta;
         f2 = f2 + delta;
 
-//        if (mirror)
-//        {
-//            float f3 = f;
-//            f = x;
-//            x = f3;
-//        }
-
         // I hope to god this isn't relevant for this
         PositionTextureVertex positiontexturevertex7 = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
         PositionTextureVertex positiontexturevertex = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
@@ -84,14 +72,6 @@ public class ExtendedModelBox extends ModelBox
         PositionTextureVertex positiontexturevertex4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
         PositionTextureVertex positiontexturevertex5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
         PositionTextureVertex positiontexturevertex6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
-        this._vertexPositions[0] = positiontexturevertex7;
-        this._vertexPositions[1] = positiontexturevertex;
-        this._vertexPositions[2] = positiontexturevertex1;
-        this._vertexPositions[3] = positiontexturevertex2;
-        this._vertexPositions[4] = positiontexturevertex3;
-        this._vertexPositions[5] = positiontexturevertex4;
-        this._vertexPositions[6] = positiontexturevertex5;
-        this._vertexPositions[7] = positiontexturevertex6;
 
         // Ok, so here it uses the information about the coords to pull data from the skin to texture the model.
         // The math is really cool, but a bit convoluted. Here is a spreadsheet that you can use to mess with it
@@ -99,42 +79,33 @@ public class ExtendedModelBox extends ModelBox
         // https://l.jakecover.me/wynntils-extended-model-box-sheet
 
         // x1y1 based
-        this.quadList[0] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex4, positiontexturevertex, positiontexturevertex1, positiontexturevertex5},
+        this.quadList[0] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex4, positiontexturevertex, positiontexturevertex1, positiontexturevertex5 },
                 texOffsetX1 + dz + dx, texOffsetY1 + dz, texOffsetX1 + dz + dx + dz, texOffsetY1 + dz + dy, renderer.textureWidth, renderer.textureHeight);
-        this.quadList[1] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex7, positiontexturevertex3, positiontexturevertex6, positiontexturevertex2},
+        this.quadList[1] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex7, positiontexturevertex3, positiontexturevertex6, positiontexturevertex2 },
                 texOffsetX1, texOffsetY1 + dz, texOffsetX1 + dz, texOffsetY1 + dz + dy, renderer.textureWidth, renderer.textureHeight);
-        this.quadList[2] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex4, positiontexturevertex3, positiontexturevertex7, positiontexturevertex},
+        this.quadList[2] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex4, positiontexturevertex3, positiontexturevertex7, positiontexturevertex },
                 texOffsetX1 + dz, texOffsetY1, texOffsetX1 + dz + dx, texOffsetY1 + dz, renderer.textureWidth, renderer.textureHeight);
-        this.quadList[4] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex, positiontexturevertex7, positiontexturevertex2, positiontexturevertex1},
+        this.quadList[4] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex, positiontexturevertex7, positiontexturevertex2, positiontexturevertex1 },
                 texOffsetX1 + dz, texOffsetY1 + dz, texOffsetX1 + dz + dx, texOffsetY1 + dz + dy, renderer.textureWidth, renderer.textureHeight);
 
         // x2y2 based
-        this.quadList[3] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex1, positiontexturevertex2, positiontexturevertex6, positiontexturevertex5},
+        this.quadList[3] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex1, positiontexturevertex2, positiontexturevertex6, positiontexturevertex5 },
                 texOffsetX2, texOffsetY2, texOffsetX2 + dx, texOffsetY2 + dz, renderer.textureWidth, renderer.textureHeight);
-        this.quadList[5] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex3, positiontexturevertex4, positiontexturevertex5, positiontexturevertex6},
+        this.quadList[5] = new TexturedQuad(new PositionTextureVertex[] { positiontexturevertex3, positiontexturevertex4, positiontexturevertex5, positiontexturevertex6 },
                 texOffsetX2, texOffsetY2 + dz, texOffsetX2 + dx, texOffsetY1 + dz + dy, renderer.textureWidth, renderer.textureHeight);
-
-//        if (mirror)
-//        {
-//            for (TexturedQuad texturedquad : this.quadList)
-//            {
-//                texturedquad.flipFace();
-//            }
-//        }
     }
 
     @SideOnly(Side.CLIENT)
-    public void render(BufferBuilder renderer, float scale)
-    {
-        for (TexturedQuad texturedquad : this.quadList)
-        {
+    public void render(BufferBuilder renderer, float scale) {
+        for (TexturedQuad texturedquad : this.quadList) {
             texturedquad.draw(renderer, scale);
         }
     }
 
-    public ExtendedModelBox setBoxName(String name)
-    {
+    public EarModelBox setBoxName(String name) {
         this.boxName = name;
+
         return this;
     }
+
 }
