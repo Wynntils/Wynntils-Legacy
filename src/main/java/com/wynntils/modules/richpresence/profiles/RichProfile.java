@@ -59,6 +59,7 @@ public class RichProfile {
         RequestHandler handler = new RequestHandler();
         String apiRoot = (WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("RichPresenceRoot")) + GAME_SDK_VERSION;
         String url = apiRoot == null ? null : apiRoot + "/versioning.php";
+        setupTypeMapper();
         handler.addRequest(new Request(url, "richpresence_versioning_" + GAME_SDK_VERSION)
                 .cacheTo(new File(Reference.NATIVES_ROOT, "richpresence_versioning_" + GAME_SDK_VERSION + ".txt"))
                 .handleWebReader(reader -> {
@@ -90,7 +91,6 @@ public class RichProfile {
     private void setup(long id) {
         try {
             applicationID = id;
-            setupTypeMapper();
             DiscordGameSDKLibrary gameSDK = DiscordGameSDKLibrary.INSTANCE;
 
             IDiscordUserEvents.ByReference userEvents = new IDiscordUserEvents.ByReference();

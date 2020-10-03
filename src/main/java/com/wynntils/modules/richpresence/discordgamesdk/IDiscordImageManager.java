@@ -3,7 +3,6 @@ package com.wynntils.modules.richpresence.discordgamesdk;
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.TypeMapper;
 import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordResult;
 import com.wynntils.modules.richpresence.discordgamesdk.options.DiscordGameSDKOptions;
 
@@ -16,9 +15,7 @@ import java.util.List;
  * a tool written by <a href="http://ochafik.com/">Olivier Chafik</a> that <a href="http://code.google.com/p/jnaerator/wiki/CreditsAndLicense">uses a few opensource projects.</a>.<br>
  * For help, please visit <a href="http://nativelibs4java.googlecode.com/">NativeLibs4Java</a> , <a href="http://rococoa.dev.java.net/">Rococoa</a>, or <a href="http://jna.dev.java.net/">JNA</a>.
  */
-public class IDiscordImageManager extends Structure {
-
-    public static final TypeMapper TYPE_MAPPER = DiscordGameSDKLibrary.TYPE_MAPPER;
+public class IDiscordImageManager extends Structure implements DiscordGameSDKOptions {
 
     /** C type : fetch_callback* */
     public IDiscordImageManager.fetch_callback fetch;

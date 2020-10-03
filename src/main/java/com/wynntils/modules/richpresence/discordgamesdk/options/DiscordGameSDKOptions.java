@@ -4,10 +4,10 @@
 
 package com.wynntils.modules.richpresence.discordgamesdk.options;
 
-import com.wynntils.modules.richpresence.discordgamesdk.DiscordGameSDKLibrary;
+import com.wynntils.modules.richpresence.profiles.RichProfile;
 
 import java.util.Map;
 
 public interface DiscordGameSDKOptions {
-    public static final Map<String, Object> OPTIONS = DiscordGameSDKLibrary.OPTIONS;
+    public static final Map<String, Object> OPTIONS = RichProfile.OPTIONS;
 }
