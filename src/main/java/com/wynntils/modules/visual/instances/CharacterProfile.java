@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CharacterProfile {
+public class CharacterProfile implements Comparable<CharacterProfile> {
 
     private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("([☠❂✿⚔]*)? ?(.*)");
 
@@ -117,6 +117,11 @@ public class CharacterProfile {
 
     public ItemStack getStack() {
         return stack;
+    }
+
+    @Override
+    public int compareTo(CharacterProfile o) {
+        return (this.getSlot() - o.getSlot());
     }
 
 }

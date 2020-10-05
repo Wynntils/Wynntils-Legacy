@@ -13,7 +13,9 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.visual.VisualModule;
+import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.instances.CharacterProfile;
+import com.wynntils.modules.visual.managers.CharacterReorderManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -35,6 +37,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -80,6 +83,7 @@ public class CharacterSelectorUI extends GuiScreen {
      * 57 = play
      * 58 = character deletion
      * 59 = scroll
+     * 60 = reorder characters
      */
     int hoveredButton = -1;
 
@@ -209,6 +213,8 @@ public class CharacterSelectorUI extends GuiScreen {
             chest.handleMouseClick(chest.inventorySlots.getSlot(createCharacterSlot), createCharacterSlot, 0, ClickType.PICKUP);
         } else if (hoveredButton == 52) { // edit menu
             chest.handleMouseClick(chest.inventorySlots.getSlot(8), 8, 0, ClickType.PICKUP);
+        } else if (hoveredButton == 60) { // reorder characters
+            CharacterReorderManager.startReording();
         } else if (hoveredButton == 53) { // delete character
             if (selectedCharacter == -1) return;
 
@@ -300,8 +306,14 @@ public class CharacterSelectorUI extends GuiScreen {
             if (!displayName.contains("Select This Character") && !displayName.contains("Deleting")) continue;
 
             receivedItems = true;
-            availableCharacters.add(new CharacterProfile(stack, s.slotNumber));
+            int slotNumber = s.slotNumber;
+            if (VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.containsKey(slotNumber))
+                slotNumber = VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.get(slotNumber);
+            availableCharacters.add(new CharacterProfile(stack, slotNumber));
         }
+        
+        // sort character list by slot
+        Collections.sort(availableCharacters);
 
         // resets the animation timer
         if (receivedItems) animationEnd = System.currentTimeMillis() + 300;
@@ -312,7 +324,7 @@ public class CharacterSelectorUI extends GuiScreen {
 
         // new character button
         {
-            if (mouseX >= 26 && mouseY >= 232 && mouseX <= 26 + 14 && mouseY <= 232 + 14) { // mouse over
+            if (mouseX >= 15 && mouseY >= 232 && mouseX <= 15 + 14 && mouseY <= 232 + 14) { // mouse over
                 hoveredButton = 51;
 
                 if (createCharacterSlot != -1) {
@@ -328,7 +340,7 @@ public class CharacterSelectorUI extends GuiScreen {
                 }
             }
 
-            renderer.drawRect(Textures.UIs.character_selection, 26, 232, 26 + 14, 232 + 14,
+            renderer.drawRect(Textures.UIs.character_selection, 15, 232, 15 + 14, 232 + 14,
                     (createCharacterSlot != -1) ? 154 : 197,
                     102,
                     (createCharacterSlot != -1) ? 168 : 211,
@@ -337,7 +349,7 @@ public class CharacterSelectorUI extends GuiScreen {
 
         // edit character button
         {
-            if (mouseX >= 51 && mouseY >= 231 && mouseX <= 51 + 8 && mouseY <= 231 + 16) { // mouse over
+            if (mouseX >= 40 && mouseY >= 231 && mouseX <= 40 + 8 && mouseY <= 231 + 16) { // mouse over
                 hoveredButton = 52;
 
                 hoveredText = Arrays.asList(
@@ -346,14 +358,30 @@ public class CharacterSelectorUI extends GuiScreen {
                 );
             }
 
-            renderer.drawRect(Textures.UIs.character_selection, 51, 231, 51 + 8, 231 + 16,
+            renderer.drawRect(Textures.UIs.character_selection, 40, 231, 40 + 8, 231 + 16,
                     182, 102,
                     190, 118);
         }
 
+        // reorder character button
+        {
+            if (mouseX >= 59 && mouseY >= 232 && mouseX <= 59 + 14 && mouseY <= 232 + 14) { // mouse over
+                hoveredButton = 60;
+                
+                hoveredText = Arrays.asList(
+                        TextFormatting.YELLOW + "[>] Reorder your characters",
+                        TextFormatting.GRAY + "Click here to reorder your characters!"
+                );
+            }
+            
+            renderer.drawRect(Textures.UIs.quest_book, 59, 232, 59 + 14, 232 + 14,
+                    241, 282,
+                    261, 302);
+        }
+        
         // delete character button
         {
-            if (selectedCharacter != -1 && mouseX >= 70 && mouseY >= 232 && mouseX <= 70 + 14 && mouseY <= 232 + 14) { // mouse over
+            if (selectedCharacter != -1 && mouseX >= 81 && mouseY >= 232 && mouseX <= 81 + 14 && mouseY <= 232 + 14) { // mouse over
                 hoveredButton = 53;
 
                 hoveredText = Arrays.asList(
@@ -363,7 +391,7 @@ public class CharacterSelectorUI extends GuiScreen {
                 );
             }
 
-            renderer.drawRect(Textures.UIs.character_selection, 70, 232, 70 + 14, 232 + 14,
+            renderer.drawRect(Textures.UIs.character_selection, 81, 232, 81 + 14, 232 + 14,
                     (selectedCharacter != -1) ? 168 : 211,
                     102,
                     (selectedCharacter != -1) ? 182 : 225,

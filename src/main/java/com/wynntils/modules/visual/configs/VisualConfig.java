@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.visual.configs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -124,6 +127,9 @@ public class VisualConfig extends SettingsClass {
 
         @Setting(displayName = "Custom Character Selector", description = "Should the custom character selector be enabled?")
         public boolean enabled = true;
+        
+        @Setting
+        public Map<Integer, Integer> swappedCharacters = new HashMap<>();
 
     }
 
