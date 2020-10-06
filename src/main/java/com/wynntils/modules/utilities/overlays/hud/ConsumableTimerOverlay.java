@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.overlays.hud;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.overlays.Overlay;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -57,7 +56,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
     public static void addConsumable(ItemStack stack) {
         if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for the nbt data
-        if (stack.getItem() != Items.DIAMOND_AXE && stack.getItem() != Items.POTIONITEM) return; // foods and scrolls have DIAMOND_AXE as their items
+        if (stack.getItem() != Items.DIAMOND_AXE && stack.getItem() != Items.POTIONITEM && stack.getItem() != Items.SPLASH_POTION) return; // foods and scrolls have DIAMOND_AXE as their items
 
         // vanilla potions needs a special verification, they DON'T start with dark aqua
         if (!stack.getDisplayName().startsWith(DARK_AQUA.toString())) {
@@ -120,7 +119,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
         // crafted items
         String name;
-        if (stack.getItem() == Items.POTIONITEM)
+        if (stack.getItem() == Items.POTIONITEM || stack.getItem() == Items.SPLASH_POTION)
             name = LIGHT_PURPLE + "Ⓛ Potion";
         else if (stack.getItemDamage() >= 69 && stack.getItemDamage() <= 75) // food, 69 <= damage <= 75
             name = GOLD + "Ⓐ Food";
