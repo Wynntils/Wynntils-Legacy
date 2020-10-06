@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -259,12 +259,11 @@ public class ItemIdentificationOverlay implements Listener {
 
         // Quality lore
         String quality = item.getTier().asLore();
+        int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
+        if (rollAmount != 0) quality += " [" + rollAmount + "]";
 
-        // adds reroll amount if the item is not identified
+        // adds reroll price if the item
         if (UtilitiesConfig.Identifications.INSTANCE.showRerollPrice && !item.isIdentified()) {
-            int rollAmount = (wynntils.hasKey("rerollAmount") ? wynntils.getInteger("rerollAmount") : 0);
-            if (rollAmount != 0) quality += " [" + rollAmount + "]";
-
             quality += GREEN + " ["
                     + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount))
                     + EmeraldSymbols.E + "]";
