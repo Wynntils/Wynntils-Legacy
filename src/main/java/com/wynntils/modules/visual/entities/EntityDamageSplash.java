@@ -15,7 +15,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.WeakHashMap;
@@ -87,7 +86,6 @@ public class EntityDamageSplash extends FakeEntity {
 
                 scale(scale, scale, scale);
 
-                disableLighting();
                 alphaFunc(516, 0.1F);
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
