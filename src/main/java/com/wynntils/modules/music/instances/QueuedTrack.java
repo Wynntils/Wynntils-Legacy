@@ -9,15 +9,16 @@ import java.io.File;
 public class QueuedTrack {
 
     File track;
-    boolean fadeIn, fadeOut, fastSwitch, repeat, lockQueue;
+    boolean fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet;
 
-    public QueuedTrack(File track, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue) {
+    public QueuedTrack(File track, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue, boolean quiet) {
         this.track = track;
         this.fadeIn = fadeIn;
         this.fadeOut = fadeOut;
         this.fastSwitch = fastSwitch;
         this.repeat = repeat;
         this.lockQueue = lockQueue;
+        this.quiet = quiet;
     }
 
     public boolean isFadeIn() {
@@ -38,6 +39,10 @@ public class QueuedTrack {
 
     public boolean isLockQueue() {
         return lockQueue;
+    }
+
+    public boolean isQuiet() {
+        return quiet;
     }
 
     public File getTrack() {

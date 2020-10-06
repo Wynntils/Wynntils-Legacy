@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.music.configs;
@@ -23,8 +23,11 @@ public class MusicConfig extends SettingsClass {
     @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should Wynncraft's jukebox be replaced with an offline version?\n\n§8This is a useful feature if you usually lag but it's not as precise as Wynncraft's music player with 86.7% precision.\n\n§8Type `/toggle music` to avoid duplicate music being played.", order = 1)
     public boolean replaceJukebox = false;
 
-    @Setting(displayName = "Class Selection Music", description = "Should the class selection music be played?", order = 2)
+    @Setting(displayName = "Class Selection Music", description = "Should the character selection music be played?", order = 2)
     public boolean classSelectionMusic = true;
+
+    @Setting(displayName = "Quieter Character Selector", description = "Should Character selector music be played more quietly?", order = 3)
+    public boolean characterSelectorQuiet = true;
 
     @Setting(displayName = "Off Focus Volume Offset", description = "How loud should soundtracks be when Minecraft is not focused on?")
     @Setting.Limitations.FloatLimit(max = 0f, min= -32f, precision = 1f)

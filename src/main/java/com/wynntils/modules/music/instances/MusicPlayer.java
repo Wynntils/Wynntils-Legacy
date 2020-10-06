@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.music.instances;
@@ -26,8 +26,8 @@ public class MusicPlayer {
     Thread musicThread = null;
     AdvancedPlayer player = null;
 
-    public void play(File f, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue) {
-        QueuedTrack track = new QueuedTrack(f, fadeIn, fadeOut, fastSwitch, repeat, lockQueue);
+    public void play(File f, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue, boolean quiet) {
+        QueuedTrack track = new QueuedTrack(f, fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
         if (STATUS.getCurrentSong() != null && (STATUS.getCurrentSong().isLockQueue() || STATUS.getCurrentSong().equals(track))) return;
         if (STATUS.getNextSong() != null && STATUS.getNextSong().equals(track)) return;
 
@@ -38,11 +38,11 @@ public class MusicPlayer {
     }
 
     public void play(File f, boolean fastSwitch) {
-        play(f, true, true, fastSwitch, true, false);
+        play(f, true, true, fastSwitch, true, false, false);
     }
 
     public void play(File f, boolean fastSwitch, boolean lockQueue) {
-        play(f, true, true, fastSwitch, true, lockQueue);
+        play(f, true, true, fastSwitch, true, lockQueue, false);
     }
 
     public void update() {
@@ -87,7 +87,7 @@ public class MusicPlayer {
 
         // update the volume
         float baseVolume = -36 + (36 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-        float expectedGain = Display.isActive() ? baseVolume : Math.max(-30, baseVolume + MusicConfig.INSTANCE.focusOffset);
+        float expectedGain = (Display.isActive() && !STATUS.isCurrentQuiet()) ? baseVolume : Math.max(-30, baseVolume + MusicConfig.INSTANCE.focusOffset);
 
         if (STATUS.getCurrentGain() > expectedGain) {
             STATUS.setCurrentGain(Math.max(STATUS.getCurrentGain() - 0.2f, expectedGain));
@@ -100,6 +100,7 @@ public class MusicPlayer {
 
     public void stop() {
         STATUS.setStopping(true);
+        STATUS.setNextSong(null);
     }
 
     private void setGain(float gain) {
@@ -113,8 +114,8 @@ public class MusicPlayer {
     private void clear() {
         if (!isActive()) return;
 
-        STATUS.setNextSong(null);
         STATUS.setCurrentSong(null);
+        STATUS.setNextSong(null);
     }
 
     private void kill() {

@@ -4,8 +4,6 @@
 
 package com.wynntils.modules.music.instances;
 
-import java.io.File;
-
 public class PlayerStatus {
 
     private boolean paused = false;
@@ -34,6 +32,10 @@ public class PlayerStatus {
 
     public boolean isStopping() {
         return stopping;
+    }
+
+    public boolean isCurrentQuiet() {
+        return currentSong != null && currentSong.isQuiet();
     }
 
     public void setCurrentSong(QueuedTrack currentSong) {

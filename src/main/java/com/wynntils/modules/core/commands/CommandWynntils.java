@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.core.commands;
@@ -167,7 +167,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("regionCompleted"), true, false, true, false, true);
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("regionCompleted"), true, false, true, false, true, false);
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

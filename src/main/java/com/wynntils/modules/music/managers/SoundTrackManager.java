@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.music.managers;
@@ -74,7 +74,7 @@ public class SoundTrackManager {
      * @param repeat if the song should repeat until changed
      * @param lockQueue no more songs will be allowed until the provided ends
      */
-    private static void playSong(MusicProfile song, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue) {
+    private static void playSong(MusicProfile song, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet) {
         if (!MusicConfig.INSTANCE.enabled || song == null) return;
 
         // updates the song list if possible
@@ -87,7 +87,7 @@ public class SoundTrackManager {
         if (downloadedMusics.containsKey(song.getAsHash())) {
             if (!downloadedMusics.get(song.getAsHash()).getFile().isPresent()) return; // available to play (downloaded)
 
-            player.play(downloadedMusics.get(song.getAsHash()).getFile().get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue);
+            player.play(downloadedMusics.get(song.getAsHash()).getFile().get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
             return;
         }
 
@@ -98,7 +98,7 @@ public class SoundTrackManager {
             if (!success) return;
 
             downloadedMusics.replace(toDownload.getAsHash(), new MusicProfile(new File(musicFolder, toDownload.getName())));
-            playSong(song, fastSwitch, fadeIn, fadeOut, repeat, lockQueue);
+            playSong(song, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet);
         });
     }
 
@@ -112,7 +112,7 @@ public class SoundTrackManager {
      * @param repeat if the song should repeat until changed
      * @param lockQueue no more songs will be allowed until the provided ends
      */
-    public static void findTrack(String fullName, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue) {
+    public static void findTrack(String fullName, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet) {
         if (!MusicConfig.INSTANCE.enabled || fullName == null) return;
 
         MusicProfile selected = null;
@@ -123,7 +123,7 @@ public class SoundTrackManager {
             break;
         }
 
-        playSong(selected, fastSwitch, fadeIn, fadeOut, repeat, lockQueue);
+        playSong(selected, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet);
     }
 
     /**
@@ -133,8 +133,20 @@ public class SoundTrackManager {
      * @param fastSwitch if it should fast switch to the song
      */
     public static void findTrack(String fullName, boolean fastSwitch) {
-        findTrack(fullName, fastSwitch, true, true, true, false);
+        findTrack(fullName, fastSwitch, true, true, true, false, false);
     }
+
+    /**
+     * Tries to fiend a song track based on it's name
+     *
+     * @param fullName the track name
+     * @param fastSwitch if it should fast switch to the song
+     * @param quiet if the song should use default or offocus volume
+     */
+    public static void findTrack(String fullName, boolean fastSwitch, boolean quiet) {
+        findTrack(fullName, fastSwitch, true, true, true, false, quiet);
+    }
+
 
     /**
      * Tries to find a song track based on the provied Territory Name
@@ -185,7 +197,7 @@ public class SoundTrackManager {
         } else if (firstWord.isPresent()) { selected = firstWord.get();
         } else if (lessPossible.isPresent()) { selected = lessPossible.get(); }
 
-       playSong(selected, false, false, true, true, false);
+       playSong(selected, false, false, true, true, false, false);
     }
 
 }

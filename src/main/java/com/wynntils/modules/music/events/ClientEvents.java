@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.music.events;
@@ -38,26 +38,24 @@ public class ClientEvents implements Listener {
         SoundTrackManager.getPlayer().stop();
     }
 
-    // class selection
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void worldLeft(WynnWorldEvent.Leave e) {
+        SoundTrackManager.getPlayer().stop();
+    }
+
+    // character selection
     @SubscribeEvent
-    public void classChange(WynnClassChangeEvent e) {
-        if (e.getNewClass() != ClassType.NONE || Reference.onWorld) return;
+    public void characterChange(WynnClassChangeEvent e) {
+        if (e.getNewClass() == ClassType.NONE && Reference.onWorld) return; // character selection
 
         SoundTrackManager.getPlayer().stop();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void openClassSelection(GuiOverlapEvent.ChestOverlap.InitGui e) {
+    public void openCharacterSelection(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
 
-        SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("characterSelector"), true);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void closeClassSelection(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        if (!MusicConfig.INSTANCE.classSelectionMusic || !e.getGui().getLowerInv().getName().contains("Select a Class")) return;
-
-        SoundTrackManager.getPlayer().getStatus().setStopping(true);
+        SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("characterSelector"), true, MusicConfig.INSTANCE.characterSelectorQuiet);
     }
 
     // special tracks
