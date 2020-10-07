@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 
 public class SpellEvent extends Event {
+
     public static class Cast extends SpellEvent {
 
         private final String spell;
@@ -101,4 +102,5 @@ public class SpellEvent extends Event {
             super(mobTotem);
         }
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -26,6 +26,9 @@ import java.util.List;
 
 public class ChangelogUI extends GuiScreen {
 
+    private static final CustomColor SCROLL_BACKGROUND = new CustomColor(191, 159, 110);
+    private static final CustomColor SCROLL_ACTIVE = new CustomColor(248, 207, 145);
+
     ScreenRenderer renderer = new ScreenRenderer();
 
     GuiScreen previousGui;
@@ -36,9 +39,6 @@ public class ChangelogUI extends GuiScreen {
     int scrollbarSize;
 
     boolean major;
-
-    private static CustomColor scrollBackground = new CustomColor(191, 159, 110);
-    private static CustomColor scrollActive = new CustomColor(248, 207, 145);
 
     public ChangelogUI(List<String> changelogContent, boolean major) {
         this(null, changelogContent, major);
@@ -117,8 +117,8 @@ public class ChangelogUI extends GuiScreen {
         renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? "B" + Reference.BUILD_NUMBER : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
         // scrollbar
-        renderer.drawRect(scrollBackground, (int)middleX + 119, (int)middleY - 80, (int)middleX + 119 + 5, (int)middleY + 40);
-        renderer.drawRect(scrollActive, (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
+        renderer.drawRect(SCROLL_BACKGROUND, (int)middleX + 119, (int)middleY - 80, (int)middleX + 119 + 5, (int)middleY + 40);
+        renderer.drawRect(SCROLL_ACTIVE, (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
 
         // text area
         ScreenRenderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
