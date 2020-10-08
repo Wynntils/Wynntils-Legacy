@@ -118,14 +118,23 @@ public class OverlayEvents implements Listener {
         ItemStack is = e.getSlotIn().getStack();
         int slot = e.getSlotId();
         
+        if (CharacterReorderManager.isReordering()) e.setCanceled(true); // don't let user click out while reordering
+        
         // reorder toggle button
         if (slot == 17) {
             e.setCanceled(true);
             CharacterReorderManager.toggleReordering();
-            if (!CharacterReorderManager.isReordering() && VisualConfig.CharacterSelector.INSTANCE.enabled) { // stopped reordering, re-enable custom UI
-                WindowedResolution res = new WindowedResolution(480, 254);
-                fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
-                fakeCharacterSelector.setWorldAndResolution(Minecraft.getMinecraft(), e.getGui().width, e.getGui().height);
+            if (!CharacterReorderManager.isReordering()) { // stopped reordering
+                if (selectedSlot != -1) { // reset selected slot
+                    characterStacks.get(selectedSlot).getEnchantmentTagList().removeTag(0);
+                    selectedSlot = -1;
+                }
+                
+                if (VisualConfig.CharacterSelector.INSTANCE.enabled) { // re-enable custom ui
+                    WindowedResolution res = new WindowedResolution(480, 254);
+                    fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
+                    fakeCharacterSelector.setWorldAndResolution(Minecraft.getMinecraft(), e.getGui().width, e.getGui().height);
+                }
             }
             return;
         }
