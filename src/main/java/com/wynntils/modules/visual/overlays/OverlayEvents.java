@@ -92,8 +92,15 @@ public class OverlayEvents implements Listener {
         
         if (!receivedItems && e.getGui().inventorySlots.getSlot(8).getHasStack()) { // only populate stack list once items are present
             for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-                if (!s.getHasStack() || 
-                        (!s.getStack().getDisplayName().contains("Select This Character") && !s.getStack().getDisplayName().contains("Deleting"))) continue; // not a character icon
+                if (!s.getHasStack()) continue;
+                if (!s.getStack().getDisplayName().contains("Select This Character") && !s.getStack().getDisplayName().contains("Deleting")) { // not a character stack
+                    if (VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.containsKey(s.slotNumber)) { // character was swapped, is now deleted
+                        CharacterReorderManager.removeSwappedSlot(s.slotNumber);
+                        characterStacks.clear(); // cancel list population, must be redone
+                        return;
+                    }
+                    continue; // don't add to list
+                }
                 int slot = s.slotNumber;
                 if (VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.containsKey(s.slotNumber)) {
                     slot = VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.get(s.slotNumber);

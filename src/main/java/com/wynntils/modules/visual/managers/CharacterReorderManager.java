@@ -49,6 +49,19 @@ public class CharacterReorderManager {
         VisualConfig.CharacterSelector.INSTANCE.saveSettings(VisualModule.getModule());
     }
     
+    public static void removeSwappedSlot(int slot) {
+        // to remove the slot, we have to update the other slot it's swapped with
+        int destinationSlot = VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.get(slot);
+        int swappedSlot = CharacterReorderManager.getSwappedSlot(slot);
+        if (swappedSlot == destinationSlot)
+            VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.remove(swappedSlot);
+        else
+            VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.put(swappedSlot, destinationSlot);
+        VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.remove(slot);
+        
+        VisualConfig.CharacterSelector.INSTANCE.saveSettings(VisualModule.getModule());
+    }
+    
     public static int getSwappedSlot(int slot) {
         for(Entry<Integer, Integer> entry : VisualConfig.CharacterSelector.INSTANCE.swappedCharacters.entrySet()) {
             if (entry.getValue() == slot) {
