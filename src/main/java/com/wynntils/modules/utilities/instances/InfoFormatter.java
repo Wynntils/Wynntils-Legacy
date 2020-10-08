@@ -107,6 +107,13 @@ public class InfoFormatter {
             DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
             return date.format(formatter);
         }, "clock");
+        
+        // The wall clock time, formatted to 24h format
+        registerFormatter((input) -> {
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            return date.format(formatter);
+        }, "clockm");
 
         // Current mana
         registerFormatter((input) ->
