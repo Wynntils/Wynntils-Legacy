@@ -237,6 +237,7 @@ public class RichProfile {
         if (joinSecret != null) {
             richPresenceSecrets.join = toBytes(joinSecret.toString(), 128);
             richPresenceParty.id = toBytes(joinSecret.id, 128);
+            richPresenceParty.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
             DiscordPartySize partySize = new DiscordPartySize();
             partySize.current_size = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             partySize.max_size = 15;
@@ -287,6 +288,7 @@ public class RichProfile {
         if (joinSecret != null) {
             richPresenceSecrets.join = toBytes(joinSecret.toString(), 128);
             richPresenceParty.id = toBytes(joinSecret.id, 128);
+            richPresenceParty.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
             DiscordPartySize partySize = new DiscordPartySize();
             partySize.current_size = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             partySize.max_size = 15;
@@ -335,6 +337,7 @@ public class RichProfile {
         if (joinSecret != null) {
             richPresenceSecrets.join = toBytes(joinSecret.toString(), 128);
             richPresenceParty.id = toBytes(joinSecret.id, 128);
+            richPresenceParty.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
             DiscordPartySize partySize = new DiscordPartySize();
             partySize.current_size = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             partySize.max_size = 15;
@@ -385,6 +388,7 @@ public class RichProfile {
         if (joinSecret != null) {
             richPresenceSecrets.join = toBytes(joinSecret.toString(), 128);
             richPresenceParty.id = toBytes(joinSecret.id, 128);
+            richPresenceParty.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
             DiscordPartySize partySize = new DiscordPartySize();
             partySize.current_size = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
             partySize.max_size = 15;
@@ -426,11 +430,13 @@ public class RichProfile {
             if (joinSecret != null) {
                 lastStructure.secrets.join = toBytes(joinSecret.toString(), 128);
                 lastStructure.party.id = toBytes(joinSecret.id, 128);
+                lastStructure.party.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
                 lastStructure.party.size.current_size = PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size();
                 lastStructure.party.size.max_size = 15;
             } else {
                 lastStructure.secrets.join = toBytes(null, 128);
                 lastStructure.party.id = toBytes(null, 128);
+                lastStructure.party.privacy = EDiscordActivityPartyPrivacy.DiscordActivityParty_Privacy_Private;
                 lastStructure.party.size.current_size = 0;
                 lastStructure.party.size.max_size = 0;
             }
