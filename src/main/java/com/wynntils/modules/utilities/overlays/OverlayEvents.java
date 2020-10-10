@@ -594,8 +594,9 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onMusicStart(MusicPlayerEvent.Playback.Start e) {
-        GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
-                .replace("%np%", e.getSongName()));
+        if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange)
+            GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
+                    .replace("%np%", e.getSongName()));
     }
 
     @SubscribeEvent
