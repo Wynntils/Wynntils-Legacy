@@ -155,7 +155,7 @@ public class LootRunManager {
     }
     
     public static List<MapIcon> getMapPathWaypoints() {
-        if (mapPath != null)
+        if (mapPath != null && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
             return Arrays.asList(new MapPathWaypointIcon(mapPath));
         else
             return new ArrayList<>();
