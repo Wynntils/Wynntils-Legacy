@@ -7,6 +7,7 @@ package com.wynntils.modules.map.instances;
 import com.google.gson.*;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.map.configs.MapConfig;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -68,6 +69,14 @@ public class PathWaypointProfile {
         posZ = other.posZ;
         sizeX = other.sizeX;
         sizeZ = other.sizeZ;
+    }
+    
+    public PathWaypointProfile(LootRunPath lootrun) {
+        name = "Lootrun path";
+        color = MapConfig.LootRun.INSTANCE.activePathColour;
+        this.points = new ArrayList<>(lootrun.getPoints().size());
+        lootrun.getPoints().forEach(c -> points.add(new PathPoint((int) c.x, (int) c.z)));
+        recalculateBounds();
     }
 
     public PathPoint getPoint(int index) {

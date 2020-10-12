@@ -12,6 +12,9 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.LootRunPath;
+import com.wynntils.modules.map.instances.PathWaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -20,6 +23,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +38,7 @@ public class LootRunManager {
 
     private static LootRunPath activePath = null;
     private static LootRunPath recordingPath = null;
+    private static PathWaypointProfile mapPath = null;
 
     public static void setup() {
         // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
@@ -68,6 +73,7 @@ public class LootRunManager {
 
     public static void hide() {
         activePath = null;
+        updateMapPath();
     }
 
     public static boolean loadFromFile(String lootRunName) {
@@ -77,6 +83,7 @@ public class LootRunManager {
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            updateMapPath();
 
             reader.close();
         } catch (Exception ex) {
@@ -132,6 +139,7 @@ public class LootRunManager {
     public static void clear() {
         activePath = null;
         recordingPath = null;
+        updateMapPath();
     }
 
     public static LootRunPath getActivePath() {
@@ -140,6 +148,17 @@ public class LootRunManager {
 
     public static LootRunPath getRecordingPath() {
         return recordingPath;
+    }
+    
+    public static PathWaypointProfile getMapPath() {
+        return mapPath;
+    }
+    
+    public static List<MapIcon> getMapPathWaypoints() {
+        if (mapPath != null)
+            return Arrays.asList(new MapPathWaypointIcon(mapPath));
+        else
+            return new ArrayList<>();
     }
 
     public static boolean isRecording() {
@@ -191,6 +210,13 @@ public class LootRunManager {
         if (recordingPath != null) {
             PointRenderer.drawLines(recordingPath.getSmoothPointsByChunk(), MapConfig.LootRun.INSTANCE.recordingPathColour);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
+        }
+    }
+    
+    private static void updateMapPath() {
+        mapPath = null;
+        if (activePath != null) {
+            mapPath = new PathWaypointProfile(activePath);
         }
     }
 

@@ -16,6 +16,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.*;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -80,6 +81,8 @@ public class WorldMapUI extends GuiMovementScreen {
         List<MapIcon> pathWpMapIcons = MapIcon.getPathWaypoints();
         // Handles guild / party / friends
         List<MapIcon> friendsIcons = MapIcon.getPlayers();
+        // Handles lootrun path waypoints
+        List<MapIcon> lootrunWpMapIcons = LootRunManager.getMapPathWaypoints();
         // Handles compass
         compassIcon = new WorldMapIcon(MapIcon.getCompass());
 
@@ -90,7 +93,8 @@ public class WorldMapUI extends GuiMovementScreen {
             wpMapIcons,
             pathWpMapIcons,
             mapLabels,
-            friendsIcons
+            friendsIcons,
+            lootrunWpMapIcons
         )) {
             if (i.isEnabled(false)) {
                 WorldMapIcon icon;
