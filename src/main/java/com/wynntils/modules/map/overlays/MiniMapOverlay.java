@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.MapCompassIcon;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -183,6 +184,7 @@ public class MiniMapOverlay extends Overlay {
                 MapIcon.getWaypoints().forEach(consumer);
                 MapIcon.getPathWaypoints().forEach(consumer);
                 MapIcon.getPlayers().forEach(consumer);
+                LootRunManager.getMapPathWaypoints().forEach(consumer);
 
                 MapIcon compassIcon = MapIcon.getCompass();
 
