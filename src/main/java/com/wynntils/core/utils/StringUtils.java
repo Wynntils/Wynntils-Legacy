@@ -16,10 +16,16 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 public class StringUtils {
+    
+    private static final Pattern STX_PATTERN = Pattern.compile("([\\d\\.]+)stx");
+    private static final Pattern LE_PATTERN = Pattern.compile("([\\d\\.]+)le");
+    private static final Pattern EB_PATTERN = Pattern.compile("([\\d\\.]+)eb");
+    private static final Pattern E_PATTERN = Pattern.compile("(\\d+)($|\\s)");
 
     /**
      * Removes the characters 'À' ('\u00c0') and '\u058e' that is sometimes added in Wynn APIs and
@@ -356,6 +362,43 @@ public class StringUtils {
         return (0x2474 <= character && character <= 0x247C)
             || (0x247D <= character && character <= 0x247F);
     }
+    
+    public static int convertEmeraldPrice(String input) {
+        input = input.toLowerCase();
+        int emeralds = 0;
+        
+        // stx
+        Matcher m = STX_PATTERN.matcher(input);
+        while (m.find()) {
+            emeralds += Float.parseFloat(m.group(1)) * 64 * 64 * 64;
+        }
+        
+        // le
+        m = LE_PATTERN.matcher(input);
+        while (m.find()) {
+            emeralds += Float.parseFloat(m.group(1)) * 64 * 64;
+        }
+        
+        // eb
+        m = EB_PATTERN.matcher(input);
+        while (m.find()) {
+            emeralds += Float.parseFloat(m.group(1)) * 64;;
+        }
+        
+        // standard numbers/emeralds
+        m = E_PATTERN.matcher(input);
+        while (m.find()) {
+            emeralds += Integer.parseInt(m.group(1));
+        }
+        
+        // account for tax if flagged
+        if (input.contains("-t")) {
+            emeralds = Math.round(emeralds / 1.05F);
+        }
+        
+        return emeralds;
+    }
+    
     /**
      * @param count the number
      * @return The formatted shortened string

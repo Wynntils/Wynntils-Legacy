@@ -11,6 +11,7 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
@@ -89,6 +90,8 @@ public class ClientEvents implements Listener {
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
+    
+    private static boolean priceInput = false;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -256,16 +259,33 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onPostChatEvent(ChatEvent.Post e) {
+        if (e.getMessage().getUnformattedText().matches("Type the price in emeralds or type 'cancel' to cancel:")) {
+            priceInput = true;
+            if (UtilitiesConfig.Market.INSTANCE.openChatMarket)
+                scheduledGuiScreen = new ChatGUI();
+        }
+        
         if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
-            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)|price in emeralds) or type 'cancel' to cancel:")) {
+            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)) or type 'cancel' to cancel:")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
+        
         if (UtilitiesConfig.Bank.INSTANCE.openChatBankSearch) {
             if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
+    }
+    
+    @SubscribeEvent
+    public void onSendMessage(ClientChatEvent e) {
+        if (!priceInput) return;
+        
+        priceInput = false;        
+        int price = StringUtils.convertEmeraldPrice(e.getMessage());
+        if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
+            e.setMessage("" + price);
     }
 
     @SubscribeEvent
