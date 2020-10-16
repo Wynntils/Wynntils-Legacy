@@ -126,6 +126,7 @@ public class SmartFontRenderer extends FontRenderer {
         boolean obfuscated = false;
         boolean italic = false;
         boolean bold = false;
+        if (shadow == TextShadow.OUTLINE && this.getUnicodeFlag()) shadow = TextShadow.NORMAL; // disable outline for unicode font
 
         for (int index = 0; index < text.length(); index++) {
 
