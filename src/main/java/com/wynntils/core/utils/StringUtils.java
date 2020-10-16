@@ -21,11 +21,11 @@ import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 
 public class StringUtils {
-    
-    private static final Pattern STX_PATTERN = Pattern.compile("([\\d\\.]+)stx");
-    private static final Pattern LE_PATTERN = Pattern.compile("([\\d\\.]+)le");
-    private static final Pattern EB_PATTERN = Pattern.compile("([\\d\\.]+)eb");
-    private static final Pattern E_PATTERN = Pattern.compile("(\\d+)($|\\s)");
+
+    private static final Pattern STX_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(s|stx|stacks)");
+    private static final Pattern LE_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(l|le)");
+    private static final Pattern EB_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(b|eb)");
+    private static final Pattern E_PATTERN = Pattern.compile("(\\d+)($|\\s|\\s*e|\\s*em)(?![^\\d\\s-])");
 
     /**
      * Removes the characters 'À' ('\u00c0') and '\u058e' that is sometimes added in Wynn APIs and
@@ -37,10 +37,10 @@ public class StringUtils {
     public static String normalizeBadString(String input) {
         if (input == null) return "";
         return input
-            .trim()
-            .replace("ÀÀÀ", " ").replace("À", "").replace("\u058e", "")
-            .replace('\u2019', '\'')
-            .trim();
+                .trim()
+                .replace("ÀÀÀ", " ").replace("À", "").replace("\u058e", "")
+                .replace('\u2019', '\'')
+                .trim();
     }
 
     public static String firstCharToUpper(String[] array) {
@@ -70,7 +70,7 @@ public class StringUtils {
 
         String result = builder.toString();
 
-        return result.substring(0, result.length() -1);
+        return result.substring(0, result.length() - 1);
     }
 
     // ported from a really really old C# code because im lazy, don't judge -SHCM
@@ -85,9 +85,7 @@ public class StringUtils {
                 if (returning.toString().endsWith(endIN)) {
                     return (keepStartAndEndIN ? (startIN + returning) : returning.toString().replace(endIN, ""));
                 }
-            }
-            else
-            {
+            } else {
                 read.append(chr);
                 if (read.toString().endsWith(startIN))
                     collecting = true;
@@ -104,7 +102,7 @@ public class StringUtils {
         StringBuilder result = new StringBuilder();
         int length = 0;
 
-        for (String string: stringArray) {
+        for (String string : stringArray) {
             if (length + string.length() >= max) {
                 result.append('|');
                 length = 0;
@@ -136,8 +134,8 @@ public class StringUtils {
         return result.toString().split("\\|");
     }
 
-    private static Map<String, CustomColor> registeredColors = new HashMap<>();
-    private static Map<Integer, CustomColor> registeredHexColors = new HashMap<>();
+    private static final Map<String, CustomColor> registeredColors = new HashMap<>();
+    private static final Map<Integer, CustomColor> registeredHexColors = new HashMap<>();
 
     /**
      * Generates a Color based in the input string
@@ -171,16 +169,16 @@ public class StringUtils {
 
     public static String millisToString(long duration) {
         long millis = duration % 1000,
-            second = (duration / 1000) % 60,
-            minute = (duration / (1000 * 60)) % 60,
-            hour = (duration / (1000 * 60 * 60));
+                second = (duration / 1000) % 60,
+                minute = (duration / (1000 * 60)) % 60,
+                hour = (duration / (1000 * 60 * 60));
 
         return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
     public static String millisToLongString(long duration) {
         long minute = (duration / (1000 * 60)) % 60,
-             hour = (duration / (1000 * 60 * 60));
+                hour = (duration / (1000 * 60 * 60));
 
         if (minute == 0 && hour == 0) return "Seconds Ago";
 
@@ -191,7 +189,7 @@ public class StringUtils {
 
     public static String timeLeft(long duration) {
         long minute = (duration / (1000 * 60)) % 60,
-             second = (duration / 1000) % 60;
+                second = (duration / 1000) % 60;
 
         return String.format("%02d:%02d", minute, second);
     }
@@ -200,7 +198,7 @@ public class StringUtils {
      * @return `true` if `c` is a valid Unicode code point (in [0, 0x10FFFF] and not a surrogate)
      */
     public static boolean isValidCodePoint(int c) {
-                                            /* low surrogates */             /* high surrogates */
+        /* low surrogates */             /* high surrogates */
         return 0 <= c && c <= 0x10FFFF && !(0xD800 <= c && c <= 0xDBFF) && !(0xDC00 <= c && c <= 0xDFFF);
     }
 
@@ -252,10 +250,10 @@ public class StringUtils {
 
     public static boolean isWynnic(int c) {
         return (
-            (0x249C <= c && c <= 0x24B5) ||
-            (0x2474 <= c && c <= 0x247C) ||
-            (0x247D <= c && c <= 0x247F) ||
-            (0xFF10 <= c && c <= 0xFF12)
+                (0x249C <= c && c <= 0x24B5) ||
+                        (0x2474 <= c && c <= 0x247C) ||
+                        (0x247D <= c && c <= 0x247F) ||
+                        (0xFF10 <= c && c <= 0xFF12)
         );
     }
 
@@ -275,13 +273,20 @@ public class StringUtils {
         }
 
         switch (wynnic) {
-            case 0x247D: return "10";
-            case 0x247E: return "50";
-            case 0x247F: return "100";
-            case 0xFF10: return ".";
-            case 0xFF11: return "!";
-            case 0xFF12: return "?";
-            default: return "";
+            case 0x247D:
+                return "10";
+            case 0x247E:
+                return "50";
+            case 0x247F:
+                return "100";
+            case 0xFF10:
+                return ".";
+            case 0xFF11:
+                return "!";
+            case 0xFF12:
+                return "?";
+            default:
+                return "";
         }
     }
 
@@ -360,45 +365,45 @@ public class StringUtils {
 
     public static boolean isWynnicNumber(char character) {
         return (0x2474 <= character && character <= 0x247C)
-            || (0x247D <= character && character <= 0x247F);
+                || (0x247D <= character && character <= 0x247F);
     }
-    
+
     public static int convertEmeraldPrice(String input) {
         input = input.toLowerCase();
         int emeralds = 0;
-        
+
         // stx
         Matcher m = STX_PATTERN.matcher(input);
         while (m.find()) {
             emeralds += Float.parseFloat(m.group(1)) * 64 * 64 * 64;
         }
-        
+
         // le
         m = LE_PATTERN.matcher(input);
         while (m.find()) {
             emeralds += Float.parseFloat(m.group(1)) * 64 * 64;
         }
-        
+
         // eb
         m = EB_PATTERN.matcher(input);
         while (m.find()) {
-            emeralds += Float.parseFloat(m.group(1)) * 64;;
+            emeralds += Float.parseFloat(m.group(1)) * 64;
         }
-        
+
         // standard numbers/emeralds
         m = E_PATTERN.matcher(input);
         while (m.find()) {
             emeralds += Integer.parseInt(m.group(1));
         }
-        
+
         // account for tax if flagged
         if (input.contains("-t")) {
             emeralds = Math.round(emeralds / 1.05F);
         }
-        
+
         return emeralds;
     }
-    
+
     /**
      * @param count the number
      * @return The formatted shortened string
