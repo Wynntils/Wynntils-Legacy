@@ -64,6 +64,7 @@ public class ScreenRenderer {
             } finally {
                 fontRenderer.onResourceManagerReload(mc.getResourceManager());
             }
+        fontRenderer.setUnicodeFlag(Minecraft.getMinecraft().fontRenderer.getUnicodeFlag());
         if (itemRenderer == null)
             itemRenderer = Minecraft.getMinecraft().getRenderItem();
     }
