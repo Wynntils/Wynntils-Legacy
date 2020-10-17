@@ -17,7 +17,6 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
-import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
@@ -26,6 +25,9 @@ public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
 
+    @Setting(displayName = "Use Unicode Font", description = "Should the unicode font be used for overlays?", order = 0)
+    public boolean useUnicode = false;
+    
     @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 

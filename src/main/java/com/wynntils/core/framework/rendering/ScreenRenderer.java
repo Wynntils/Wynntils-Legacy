@@ -7,6 +7,8 @@ package com.wynntils.core.framework.rendering;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -64,7 +66,7 @@ public class ScreenRenderer {
             } finally {
                 fontRenderer.onResourceManagerReload(mc.getResourceManager());
             }
-        fontRenderer.setUnicodeFlag(Minecraft.getMinecraft().fontRenderer.getUnicodeFlag());
+        fontRenderer.setUnicodeFlag(OverlayConfig.INSTANCE.useUnicode);
         if (itemRenderer == null)
             itemRenderer = Minecraft.getMinecraft().getRenderItem();
     }
