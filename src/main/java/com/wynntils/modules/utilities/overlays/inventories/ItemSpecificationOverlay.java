@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.SkillPoint;
@@ -15,6 +20,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -23,15 +29,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class ItemSpecificationOverlay implements Listener {
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
-        if (!UtilitiesConfig.Items.INSTANCE.transportationSpecification && !UtilitiesConfig.Items.INSTANCE.keySpecification) return;
 
         for (Slot s : gui.inventorySlots.inventorySlots) {
             ItemStack stack = s.getStack();
@@ -40,6 +41,14 @@ public class ItemSpecificationOverlay implements Listener {
             List<String> lore = ItemUtils.getLore(stack);
             if (lore.isEmpty()) continue;
             String name = StringUtils.normalizeBadString(stack.getDisplayName());
+            
+            // name and lore fixing
+            stack.setStackDisplayName(name);
+            List<String> fixedLore = new ArrayList<>();
+            for (String line : lore) {
+                fixedLore.add(StringUtils.normalizeBadString(line));
+            }
+            ItemUtils.replaceLore(stack, fixedLore);
 
             String destinationName = null;
             CustomColor color = null;
