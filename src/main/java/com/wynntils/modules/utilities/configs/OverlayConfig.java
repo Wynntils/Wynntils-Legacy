@@ -24,9 +24,6 @@ import net.minecraft.util.text.TextFormatting;
 public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
-
-    @Setting(displayName = "Use Unicode Font", description = "Should the unicode font be used for overlays?", order = 0)
-    public boolean useUnicode = false;
     
     @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
