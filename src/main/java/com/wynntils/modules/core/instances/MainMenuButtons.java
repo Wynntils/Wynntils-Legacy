@@ -32,6 +32,8 @@ public class MainMenuButtons {
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
 
     private static WynncraftButton lastButton = null;
+    
+    private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
@@ -47,7 +49,10 @@ public class MainMenuButtons {
             buttonList.add(lastButton);
 
             // little pling when finished loading
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+            if (!alreadyLoaded) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+                alreadyLoaded = true;
+            }
             return;
         }
 
