@@ -82,28 +82,29 @@ public class SmartFontRenderer extends FontRenderer {
 
             // rendering shadows
             float originPosX = posX; float originPosY = posY;
+            float offset = (this.getUnicodeFlag() ? 0.5f : 1f);
             switch (shadow) {
                 case OUTLINE:
                     GlStateManager.color(red * (1 - 0.8f), green * (1 - 0.8f), blue * (1 - 0.8f), 1);
-                    posX = originPosX-1;
+                    posX = originPosX - offset;
                     posY = originPosY;
                     renderChar(c);
-                    posX = originPosX+1;
+                    posX = originPosX + offset;
                     posY = originPosY;
                     renderChar(c);
                     posX = originPosX;
-                    posY = originPosY-1;
+                    posY = originPosY - offset;
                     renderChar(c);
                     posX = originPosX;
-                    posY = originPosY+1;
+                    posY = originPosY + offset;
                     renderChar(c);
                     posX = originPosX;
                     posY = originPosY;
                     break;
                 case NORMAL:
                     GlStateManager.color(red * (1 - 0.8f), green * (1 - 0.8f), blue * (1 - 0.8f), 1);
-                    posX = originPosX+1;
-                    posY = originPosY+1;
+                    posX = originPosX + offset;
+                    posY = originPosY + offset;
                     renderChar(c);
                     posX = originPosX;
                     posY = originPosY;
@@ -126,7 +127,6 @@ public class SmartFontRenderer extends FontRenderer {
         boolean obfuscated = false;
         boolean italic = false;
         boolean bold = false;
-        if (shadow == TextShadow.OUTLINE && this.getUnicodeFlag()) shadow = TextShadow.NORMAL; // disable outline for unicode font
 
         for (int index = 0; index < text.length(); index++) {
 
@@ -189,26 +189,27 @@ public class SmartFontRenderer extends FontRenderer {
 
             float x = posX;
             float y = posY;
+            float offset = (this.getUnicodeFlag() ? 0.5f : 1f);
             float alpha = ((color >> 24) & 0xFF) / 255F;
             this.setColor(0F, 0F, 0F, alpha);
 
             // rendering shadows
             switch (shadow) {
                 case OUTLINE:
-                    posX -= 1;
+                    posX -= offset;
                     renderChar(character);
-                    posX += bold ? 3 : 2;
+                    posX += bold ? offset*3 : offset*2;
                     renderChar(character);
-                    posX -= bold ? 2 : 1;
-                    posY -= 1;
+                    posX -= bold ? offset*2 : offset;
+                    posY -= offset;
                     renderChar(character);
-                    posY += 2;
+                    posY += offset*2;
                     renderChar(character);
-                    posY -= 1;
+                    posY -= offset;
                     break;
                 case NORMAL:
-                    posX = x + 1;
-                    posY = y + 1;
+                    posX = x + offset;
+                    posY = y + offset;
                     renderChar(character);
                     break;
                 default:
@@ -226,11 +227,11 @@ public class SmartFontRenderer extends FontRenderer {
             float charLength = renderChar(character, italic);
 
             if (bold) {
-                posX += 1;
+                posX += offset;
                 renderChar(character);
-                posX -= 1;
+                posX -= offset;
 
-                charLength += 1;
+                charLength += offset;
             }
 
             posX += charLength + CHAR_SPACING;

@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -40,8 +41,8 @@ public abstract class InfoOverlay extends Overlay {
         // Determine width of largest string
         int width = 0;
         for (String line : lines) {
-            if (mc.fontRenderer.getStringWidth(line) > width) {
-                width = mc.fontRenderer.getStringWidth(line);
+            if (ScreenRenderer.fontRenderer.getStringWidth(line) > width) {
+                width = ScreenRenderer.fontRenderer.getStringWidth(line);
             }
         }
 

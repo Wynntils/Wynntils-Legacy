@@ -56,9 +56,9 @@ public class ActionBarOverlay extends Overlay {
         // Order:
         // Powder % | RLR | Sprint | and if there is nothing more coordinates
         if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
-            drawString(lCoord, (-ScreenRenderer.mc.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            drawString(lCoord, (-ScreenRenderer.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.fontRenderer.getStringWidth(middleCoord) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-            drawString(rCoord, (ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            drawString(rCoord, (ScreenRenderer.fontRenderer.getStringWidth(middleCoord) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             y -= 11;
             staticSize.y = 21;
             growth = OverlayGrowFrom.MIDDLE_CENTRE;
@@ -87,9 +87,9 @@ public class ActionBarOverlay extends Overlay {
         // breaks if it's rendering an item name or if doesn't have preference
         if (!preference && renderItemName()) return;
 
-        drawString(l, (-ScreenRenderer.mc.fontRenderer.getStringWidth(l) - ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+        drawString(l, (-ScreenRenderer.fontRenderer.getStringWidth(l) - ScreenRenderer.fontRenderer.getStringWidth(middle) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
         drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-        drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+        drawString(r, (ScreenRenderer.fontRenderer.getStringWidth(middle) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
     }
 
     private boolean renderItemName() {

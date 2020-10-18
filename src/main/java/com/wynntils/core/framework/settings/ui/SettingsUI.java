@@ -196,7 +196,7 @@ public class SettingsUI extends UI {
                 if (setting.isSearched) {
                     int y = (int) (setting.position.getDrawingY() + 4.5f + fontRenderer.FONT_HEIGHT * 0.8f);
                     int x = setting.position.getDrawingX() + 43;
-                    render.drawRect(CommonColors.BLACK, x, y, x + (int) (fontRenderer.getStringWidth(name) * 0.8f) + 1, y + 1);
+                    render.drawRect(CommonColors.BLACK, x, y, x + (int) (ScreenRenderer.fontRenderer.getStringWidth(name) * 0.8f) + 1, y + 1);
                 }
             }
             setting.position.offsetX -= settings.position.offsetX;
