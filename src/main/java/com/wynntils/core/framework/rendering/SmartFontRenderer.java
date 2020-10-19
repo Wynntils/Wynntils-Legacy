@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SmartFontRenderer extends FontRenderer {
 
@@ -200,17 +200,21 @@ public class SmartFontRenderer extends FontRenderer {
                     renderChar(character);
                     posX += bold ? offset*3 : offset*2;
                     renderChar(character);
-                    posX -= bold ? offset*2 : offset;
-                    posY -= offset;
-                    renderChar(character);
-                    posY += offset*2;
-                    renderChar(character);
-                    posY -= offset;
+                    for (int i = 0; i < (bold ? 2 : 1); i++) {
+                        posX -= offset;
+                        posY -= offset;
+                        renderChar(character);
+                        posY += offset * 2;
+                        renderChar(character);
+                        posY -= offset;
+                    }
                     break;
                 case NORMAL:
-                    posX = x + offset;
                     posY = y + offset;
-                    renderChar(character);
+                    for (int i = 0; i < (bold ? 2 : 1); i++) {
+                        posX += offset;
+                        renderChar(character);
+                    }
                     break;
                 default:
             }
