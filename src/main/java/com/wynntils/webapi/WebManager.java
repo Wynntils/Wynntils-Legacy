@@ -21,6 +21,7 @@ import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -57,6 +58,7 @@ public class WebManager {
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static Collection<ItemProfile> directItems = new ArrayList<>();
     private static HashMap<String, String> translatedReferences = new HashMap<>();
+    private static HashMap<ItemType, String[]> materialTypes = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
@@ -198,6 +200,10 @@ public class WebManager {
 
     public static Collection<ItemProfile> getDirectItems() {
         return directItems;
+    }
+    
+    public static HashMap<ItemType, String[]> getMaterialTypes() {
+        return materialTypes;
     }
 
     public static ArrayList<DiscoveryProfile> getDiscoveries() {
@@ -436,6 +442,8 @@ public class WebManager {
                 items = citems;
 
                 translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
+                Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>(){}.getType();
+                materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
                 IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
                 return true;
             })

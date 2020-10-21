@@ -27,6 +27,7 @@ import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -563,11 +564,101 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private static int accessoryDestinationSlot = -1;
+    
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
+        if(!Reference.onWorld) return;
+        
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory == Minecraft.getMinecraft().player.inventory) {
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode())) {
+                e.setCanceled(true);
+                return;
+            }
         }
+        
+        if (UtilitiesConfig.INSTANCE.shiftClickAccessories && e.getGui().isShiftKeyDown() && e.getGui().getSlotUnderMouse() != null && ModCore.mc().player.inventory.getItemStack().isEmpty() && e.getGui().getSlotUnderMouse().inventory == ModCore.mc().player.inventory) {
+            if (e.getSlotId() >= 9 && e.getSlotId() <= 12) { // taking off accessory
+                // check if hotbar has open slot; if so, no action required
+                for (int i = 36; i < 45; i++) {
+                    if (!e.getGui().inventorySlots.getSlot(i).getHasStack()) return;
+                }
+                
+                // move accessory into inventory
+                e.setCanceled(true);
+                
+                // find first open slot
+                int openSlot = 0;
+                for (int i = 14; i < 36; i++) {
+                    if (!e.getGui().inventorySlots.getSlot(i).getHasStack()) {
+                        openSlot = i;
+                        break;
+                    }
+                }
+                if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
+                accessoryDestinationSlot = openSlot;
+                
+            } else { // putting on accessory
+                // verify it's an accessory
+                ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
+                if (item != ItemType.RING && item != ItemType.BRACELET && item != ItemType.NECKLACE) return;
+                
+                // check if the appropriate slot is open (snow layer = empty)
+                int openSlot = 0;
+                switch (item) {
+                    case RING:
+                        if (e.getGui().inventorySlots.getSlot(9).getHasStack() && e.getGui().inventorySlots.getSlot(9).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 9; // first ring slot
+                        else if (e.getGui().inventorySlots.getSlot(10).getHasStack() && e.getGui().inventorySlots.getSlot(10).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 10; // second ring slot
+                        break;
+                    case BRACELET:
+                        if (e.getGui().inventorySlots.getSlot(11).getHasStack() && e.getGui().inventorySlots.getSlot(11).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 11; // bracelet slot
+                        break;
+                    case NECKLACE:
+                        if (e.getGui().inventorySlots.getSlot(12).getHasStack() && e.getGui().inventorySlots.getSlot(12).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 12; // necklace slot
+                        break;
+                    default:
+                        return;
+                }
+                if (openSlot == 0) return;
+                accessoryDestinationSlot = openSlot;
+                
+                e.setCanceled(true); // only cancel after finding open slot
+            }
+                
+            // pick up accessory
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+            ModCore.mc().getConnection().sendPacket(packet);
+        }
+    }
+    
+    @SubscribeEvent
+    public void handleAccessoryMovement(TickEvent.ClientTickEvent e) {
+        if (!Reference.onWorld || accessoryDestinationSlot == -1) return;
+
+        // inventory was closed
+        if (!(ModCore.mc().currentScreen instanceof InventoryReplacer)) {
+            accessoryDestinationSlot = -1;
+            return;
+        }
+        InventoryReplacer gui = (InventoryReplacer) ModCore.mc().currentScreen;
+        
+        // no item picked up
+        if (ModCore.mc().player.inventory.getItemStack().isEmpty()) return;
+        
+        // destination slot was filled in the meantime
+        if (gui.inventorySlots.getSlot(accessoryDestinationSlot).getHasStack() &&
+                !gui.inventorySlots.getSlot(accessoryDestinationSlot).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER))) {
+            accessoryDestinationSlot = -1;
+            return;
+        }
+        
+        // move accessory
+        gui.handleMouseClick(gui.inventorySlots.getSlot(accessoryDestinationSlot), accessoryDestinationSlot, 0, ClickType.PICKUP);
+        accessoryDestinationSlot = -1;
     }
 
     private boolean bankPageConfirmed = false;

@@ -5,6 +5,9 @@
 package com.wynntils.core.utils;
 
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -18,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class ItemUtils {
 
@@ -98,6 +102,27 @@ public class ItemUtils {
             toReturn.append(x);
         }
         return toReturn.toString();
+    }
+    
+    public static ItemType getItemType(ItemStack item) {
+        for (Entry<ItemType, String[]> e : WebManager.getMaterialTypes().entrySet()) {
+            for (String id : e.getValue()) {
+                if (id.matches("[A-Za-z_:]+")) {
+                    if (Item.getByNameOrId(id).equals(item.getItem())) return e.getKey();
+                } else {
+                    int damageValue = 0;
+
+                    String[] values = id.split(":");
+                    int i = Integer.parseInt(values[0]);
+                    if (values.length == 2) {
+                        damageValue = Integer.parseInt(values[1]);
+                    }
+
+                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) return e.getKey();
+                }
+            }
+        }
+        return null;
     }
 
     private static final Item EMERALD_BLOCK = Item.getItemFromBlock(Blocks.EMERALD_BLOCK);
