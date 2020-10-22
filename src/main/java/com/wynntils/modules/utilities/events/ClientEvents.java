@@ -585,8 +585,6 @@ public class ClientEvents implements Listener {
                 }
                 
                 // move accessory into inventory
-                e.setCanceled(true);
-                
                 // find first open slot
                 int openSlot = 0;
                 for (int i = 14; i < 36; i++) {
@@ -597,6 +595,8 @@ public class ClientEvents implements Listener {
                 }
                 if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
                 accessoryDestinationSlot = openSlot;
+                
+                e.setCanceled(true);
                 
             } else { // putting on accessory
                 // verify it's an accessory
