@@ -104,6 +104,12 @@ public class ItemUtils {
         return toReturn.toString();
     }
     
+    /**
+     * Determines the equipment type of the given item.
+     * 
+     * @param item
+     * @return The ItemType of the item, or null if invalid or not an equipment piece
+     */
     public static ItemType getItemType(ItemStack item) {
         for (Entry<ItemType, String[]> e : WebManager.getMaterialTypes().entrySet()) {
             for (String id : e.getValue()) {
