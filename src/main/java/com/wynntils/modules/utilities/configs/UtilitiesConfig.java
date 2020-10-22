@@ -81,6 +81,9 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have a badge above their heads?")
     public boolean renderLeaderboardBadges = true;
+    
+    @Setting(displayName = "Shift-click Accessories", description = "Allow accessories to be shift-clicked on and off?")
+    public boolean shiftClickAccessories = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
