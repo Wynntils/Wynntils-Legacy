@@ -65,6 +65,8 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+
 import org.lwjgl.opengl.Display;
 
 import java.time.*;
@@ -637,6 +639,7 @@ public class ClientEvents implements Listener {
     
     @SubscribeEvent
     public void handleAccessoryMovement(TickEvent.ClientTickEvent e) {
+        if (e.phase != Phase.END) return;
         if (!Reference.onWorld || accessoryDestinationSlot == -1) return;
 
         // inventory was closed
