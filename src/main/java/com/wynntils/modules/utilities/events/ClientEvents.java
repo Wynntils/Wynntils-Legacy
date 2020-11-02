@@ -25,6 +25,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
@@ -313,7 +314,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onSlotSet(PacketEvent<SPacketSetSlot> e) {
         if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof SkillPointLoadoutUI)) return;
+        if (!(Minecraft.getMinecraft().currentScreen instanceof SkillPointLoadoutUI || Minecraft.getMinecraft().currentScreen instanceof GearViewerUI)) return;
 
         e.setCanceled(true); // stops wynncraft from adding pouch to gui
     }

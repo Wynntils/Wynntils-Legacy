@@ -13,6 +13,7 @@ import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
+import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -80,6 +81,8 @@ public class KeyManager {
         });
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+        
+        CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", true, GearViewerUI::openGearViewer);
     }
 
     public static KeyHolder getFavoriteTradeKey() {
