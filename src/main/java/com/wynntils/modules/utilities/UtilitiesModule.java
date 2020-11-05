@@ -49,6 +49,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemSpecificationOverlay());
         registerEvents(new ServerUptimeOverlay());
         registerEvents(new BankOverlay());
+        registerEvents(new ServerSelectorOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);

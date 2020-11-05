@@ -201,7 +201,7 @@ public class WebManager {
     public static Collection<ItemProfile> getDirectItems() {
         return directItems;
     }
-    
+
     public static HashMap<ItemType, String[]> getMaterialTypes() {
         return materialTypes;
     }
@@ -629,6 +629,26 @@ public class WebManager {
         }
 
         return result;
+    }
+
+    public static boolean blockHeroBetaStable() {
+        if (apiUrls == null) return true;
+        return apiUrls.get("BlockHeroBetaStable").equalsIgnoreCase("true");
+    }
+
+    public static boolean warnHeroBetaStable() {
+        if (apiUrls == null) return true;
+        return apiUrls.get("WarnHeroBetaStable").equalsIgnoreCase("true");
+    }
+
+    public static boolean blockHeroBetaCuttingEdge() {
+        if (apiUrls == null) return true;
+        return apiUrls.get("BlockHeroBetaCuttingEdge").equalsIgnoreCase("true");
+    }
+
+    public static boolean warnHeroBetaCuttingEdge() {
+        if (apiUrls == null) return true;
+        return apiUrls.get("WarnHeroBetaCuttingEdge").equalsIgnoreCase("true");
     }
 
     /**
