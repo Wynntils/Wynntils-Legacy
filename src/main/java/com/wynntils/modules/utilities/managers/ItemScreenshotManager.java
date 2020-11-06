@@ -27,6 +27,7 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
@@ -49,7 +50,7 @@ public class ItemScreenshotManager {
         
         FontRenderer fr = ModCore.mc().fontRenderer;
         int width = 0;
-        int height = 8;
+        int height = 16;
         
         // calculate width of tooltip
         for (String s : tooltip) {
@@ -60,24 +61,42 @@ public class ItemScreenshotManager {
         
         // calculate height of tooltip
         if (tooltip.size() > 1) height += 2 + (tooltip.size() - 1) * 10;
-        height += 8;
+        
+        // account for text wrapping
+        if (width > gui.width/2 + 8) {
+            int wrappedWidth = 0;
+            int wrappedLines = 0;
+            for (String s : tooltip) {
+                List<String> wrappedLine = fr.listFormattedStringToWidth(s, gui.width/2);
+                for (String ws : wrappedLine) {
+                    wrappedLines++;
+                    int w = fr.getStringWidth(ws);
+                    if (w > wrappedWidth) wrappedWidth = w;
+                }
+            }
+            width = wrappedWidth + 8;
+            height = 16 + (2 + (wrappedLines - 1) * 10);
+        }
         
         // calculate scale of tooltip to fit it to the framebuffer
-        float scale = (float) gui.height/height;
+        float scaleh = (float) gui.height/height;
+        float scalew = (float) gui.width/width;
         
         // draw tooltip to framebuffer, create image from it
         GlStateManager.pushMatrix();
-        Framebuffer fb = new Framebuffer((int) (gui.width*(1/scale)), (int) (gui.height*(1/scale)), true);
+        Framebuffer fb = new Framebuffer((int) (gui.width*(1/scalew)*2), (int) (gui.height*(1/scaleh)*2), true);
         fb.bindFramebuffer(false);
-        GlStateManager.scale(scale, scale, scale);
-        GuiUtils.drawHoveringText(tooltip, -8, 8, gui.width, gui.height, -1, fr);
-        BufferedImage bi = createScreenshot(width, height, fb);
+        GlStateManager.scale(scalew, scaleh, 1);
+        GuiUtils.drawHoveringText(tooltip, -8, 8, gui.width, gui.height, gui.width/2, fr);
+        BufferedImage bi = createScreenshot(width*2, height*2);
         fb.unbindFramebuffer();
         GlStateManager.popMatrix();
         
         // copy to clipboard
         ClipboardImage ci = new ClipboardImage(bi);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ci, null);
+        
+        ModCore.mc().player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
     }
     
     private static void removeItemLore(List<String> tooltip) {
@@ -94,7 +113,7 @@ public class ItemScreenshotManager {
         tooltip.removeAll(temp);
     }
     
-    private static BufferedImage createScreenshot(int width, int height, Framebuffer framebufferIn) {
+    private static BufferedImage createScreenshot(int width, int height) {
         // create pixel arrays
         int i = width * height;
         IntBuffer pixelBuffer = BufferUtils.createIntBuffer(i);
