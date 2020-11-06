@@ -497,6 +497,11 @@ public class ClientEvents implements Listener {
 
             return;
         }
+        
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
+            return;
+        }
 
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
@@ -539,6 +544,11 @@ public class ClientEvents implements Listener {
 
             return;
         }
+        
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
+            return;
+        }
 
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
@@ -556,6 +566,11 @@ public class ClientEvents implements Listener {
                 checkLockState(e.getGui().getSlotUnderMouse().getSlotIndex());
             }
 
+            return;
+        }
+        
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
             return;
         }
 

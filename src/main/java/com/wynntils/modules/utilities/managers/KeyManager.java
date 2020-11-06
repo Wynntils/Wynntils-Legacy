@@ -30,6 +30,7 @@ public class KeyManager {
     private static KeyHolder zoomInKey;
     private static KeyHolder zoomOutKey;
     private static KeyHolder stopwatchKey;
+    private static KeyHolder itemScreenshotKey;
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", true, () -> {
@@ -80,6 +81,8 @@ public class KeyManager {
         });
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", true, StopWatchOverlay::start);
+        
+        itemScreenshotKey = CoreModule.getModule().registerKeyBinding("Screenshot Current Item", Keyboard.KEY_F4, "Wynntils", true, () -> {});
     }
 
     public static KeyHolder getFavoriteTradeKey() {
@@ -104,6 +107,10 @@ public class KeyManager {
 
     public static KeyHolder getStopwatchKey() {
         return stopwatchKey;
+    }
+    
+    public static KeyHolder getItemScreenshotKey() {
+        return itemScreenshotKey;
     }
 
 }
