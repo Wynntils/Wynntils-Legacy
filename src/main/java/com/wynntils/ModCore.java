@@ -94,13 +94,13 @@ public class ModCore {
         FMLCommonHandler.instance().registerCrashCallable(new ICrashCallable() {
             @Override
             public String getLabel() {
-                return "Wynntils Version";
+                return "Wynntils Details";
             }
 
             @Override
             public String call() {
                 UpdateStream stream = CoreDBConfig.INSTANCE == null ? null : CoreDBConfig.INSTANCE.updateStream;
-                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env");
+                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env") + (Reference.onBeta ? " (This crash occured on the Hero Beta)" : "");
             }
         });
 

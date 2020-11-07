@@ -50,6 +50,7 @@ public class Utils {
     @SuppressWarnings("unchecked")
     private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
     public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
+    public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers: Page \\d+");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
@@ -141,6 +142,15 @@ public class Utils {
     public static boolean isCharacterInfoPage(GuiScreen gui) {
         if (!(gui instanceof GuiContainer)) return false;
         Matcher m = CHAR_INFO_PAGE_TITLE.matcher(((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
+    }
+
+    /**
+     * @return true if the GuiScreen is the server selection, false otherwise
+     */
+    public static boolean isServerSelector(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = SERVER_SELECTOR_TITLE.matcher(((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName());
         return m.find();
     }
 
