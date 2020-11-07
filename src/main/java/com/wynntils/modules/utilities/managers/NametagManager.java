@@ -159,9 +159,8 @@ public class NametagManager {
                 }
             }
 
-            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
-                LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
-
+            LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
+            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && leader != null) {
                 double horizontalShift = -(((leader.rankSize() - 1) * 21f) / 2);
 
                 // TODO limit max badges to 3 and switch between them by time

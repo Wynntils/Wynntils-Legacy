@@ -4,7 +4,6 @@
 
 package com.wynntils.webapi;
 
-import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.wynntils.ModCore;
@@ -33,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -360,7 +360,7 @@ public class WebManager {
                     onReceive.accept(result);
                     return true;
                 })
-        );
+        , true);
     }
 
     /**
