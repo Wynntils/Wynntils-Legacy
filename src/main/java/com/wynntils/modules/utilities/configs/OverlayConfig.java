@@ -24,7 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 public class OverlayConfig extends SettingsClass {
     public static OverlayConfig INSTANCE;
 
-    
+
     @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
     public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
@@ -33,6 +33,9 @@ public class OverlayConfig extends SettingsClass {
 
     @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
+
+    @Setting(displayName = "Replace Direction on Action Bar", description = "Should the direction on the action bar be swapped for the Y coordinate?")
+    public boolean replaceDirection = false;
 
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
     public static class Health extends SettingsClass {
