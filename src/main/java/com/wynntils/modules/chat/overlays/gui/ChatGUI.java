@@ -22,9 +22,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ChatGUI extends GuiChat {
@@ -37,8 +35,7 @@ public class ChatGUI extends GuiChat {
 
     private Map<ChatTab, ChatButton> tabButtons = new HashMap<>();
     private ChatButton addTab = null;
-    private WynncraftLanguage currentLanguage = WynncraftLanguage.NORMAL;
-    private List<ChatButton> languageButtons = new ArrayList<>();
+    private Map<WynncraftLanguage, ChatButton> languageButtons = new HashMap<>();
 
     public ChatGUI() {
 
@@ -72,8 +69,8 @@ public class ChatGUI extends GuiChat {
         } else if (button instanceof ChatButton) {
             ChatButton chatButton = (ChatButton) button;
             if (chatButton.getLanguage() != null) {
-                this.currentLanguage = chatButton.getLanguage();
-                this.languageButtons.forEach(ChatButton::unselect);
+                ChatOverlay.getChat().setCurrentLanguage(chatButton.getLanguage());
+                this.languageButtons.values().forEach(ChatButton::unselect);
                 chatButton.setSelected(true);
             }
         }
@@ -84,7 +81,7 @@ public class ChatGUI extends GuiChat {
             ChatOverlay.getChat().switchTabs(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? -1 : +1);
         }
         boolean backspace = typedChar == '\u0008';
-        Pair<String, Character> output = this.currentLanguage.replace(this.inputField.getText(), typedChar);
+        Pair<String, Character> output = ChatOverlay.getChat().getCurrentLanguage().replace(this.inputField.getText(), typedChar);
         if (output.b != '\u0008' && backspace) {
             keyCode = 0; // no key code
         }
@@ -105,8 +102,9 @@ public class ChatGUI extends GuiChat {
             this.tabButtons.put(tab, addButton(new ChatButton(buttonId++, 20 + tabX++ * 40, this.height - 45, 37, 13, getDisplayName(tab), ChatOverlay.getChat().getCurrentTab() == tab, tab)));
         }
         addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
-        languageButtons.add(addButton(new ChatButton(buttonId, 20, this.height - 28, 37, 13, "Normal", true, WynncraftLanguage.NORMAL)));
-        languageButtons.add(addButton(new ChatButton(buttonId, 60, this.height - 28, 37, 13, "Wynnic", false, WynncraftLanguage.WYNNIC)));
+        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId, 20, this.height - 28, 37, 13, "Normal", false, WynncraftLanguage.NORMAL)));
+        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId, 60, this.height - 28, 37, 13, "Wynnic", false, WynncraftLanguage.WYNNIC)));
+        languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.instances.ChatTab;
+import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.TabManager;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,7 @@ public class ChatOverlay extends GuiNewChat {
     private boolean isScrolled;
 
     private int currentTab = 0;
+    private WynncraftLanguage currentLanguage = WynncraftLanguage.NORMAL;
 
     public ChatOverlay() {
         super(Minecraft.getMinecraft());
@@ -402,6 +404,14 @@ public class ChatOverlay extends GuiNewChat {
 
     public int getCurrentTabId() {
         return currentTab;
+    }
+
+    public void setCurrentLanguage(WynncraftLanguage language) {
+        this.currentLanguage = language;
+    }
+
+    public WynncraftLanguage getCurrentLanguage() {
+        return this.currentLanguage;
     }
 
     public static class GroupedChatLine extends ChatLine {
