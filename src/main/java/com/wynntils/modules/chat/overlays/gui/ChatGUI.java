@@ -79,6 +79,8 @@ public class ChatGUI extends GuiChat {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (inputField.getText().isEmpty() && keyCode == Keyboard.KEY_TAB) {
             ChatOverlay.getChat().switchTabs(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? -1 : +1);
+            tabButtons.values().stream().forEach(ChatButton::unselect);
+            tabButtons.get(ChatOverlay.getChat().getCurrentTab()).setSelected(true);
         }
         boolean backspace = typedChar == '\u0008';
         Pair<String, Character> output = ChatOverlay.getChat().getCurrentLanguage().replace(this.inputField.getText(), typedChar);
