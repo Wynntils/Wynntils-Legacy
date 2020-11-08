@@ -49,9 +49,9 @@ public class ChatGUI extends GuiChat {
         for (Map.Entry<ChatTab, ChatButton> tabButton : tabButtons.entrySet()) {
             if (tabButton.getValue().isMouseOver()) {
                 if (mouseButton == 1) {
-                    mc.displayGuiScreen(new TabGUI(tabButton.getKey().getOrderNb()));
+                    mc.displayGuiScreen(new TabGUI(TabManager.getAvailableTabs().indexOf(tabButton.getKey())));
                 } else {
-                    ChatOverlay.getChat().setCurrentTab(tabButton.getKey().getOrderNb());
+                    ChatOverlay.getChat().setCurrentTab(TabManager.getAvailableTabs().indexOf(tabButton.getKey()));
                     tabButtons.values().stream().forEach(ChatButton::unselect);
                     tabButton.getValue().setSelected(true);
                 }
