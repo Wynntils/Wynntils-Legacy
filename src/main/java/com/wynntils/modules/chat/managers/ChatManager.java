@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
@@ -520,6 +521,196 @@ public class ChatManager {
             }
         }
         return false;
+    }
+
+    public static Pair<String, Boolean> applyUpdatesToServer(String message) {
+        String after = message;
+
+        boolean cancel = false;
+
+        if (ChatConfig.INSTANCE.useBrackets) {
+            if (message.contains("{")) {
+                StringBuilder newString = new StringBuilder();
+                boolean isWynnic = false;
+                boolean isNumber = false;
+                boolean invalidNumber = false;
+                int number = 0;
+                StringBuilder oldNumber = new StringBuilder();
+                for (char character : message.toCharArray()) {
+                    if (character == '{') {
+                        isWynnic = true;
+                        isNumber = false;
+                        number = 0;
+                        oldNumber = new StringBuilder();
+                    } else if (isWynnic && character == '}') {
+                        isWynnic = false;
+                    } else if (isWynnic) {
+                        if (Character.isDigit(character) && !invalidNumber) {
+                            if (oldNumber.toString().endsWith(".")) {
+                                invalidNumber = true;
+                                isNumber = false;
+                                newString.append(oldNumber);
+                                newString.append(character);
+                                oldNumber = new StringBuilder();
+                                number = 0;
+                                continue;
+                            }
+                            number = number * 10 + Integer.parseInt(Character.toString(character));
+                            oldNumber.append(character);
+                            if (number >= 400) {
+                                invalidNumber = true;
+                                isNumber = false;
+                                newString.append(oldNumber);
+                                oldNumber = new StringBuilder();
+                                number = 0;
+                            } else {
+                                isNumber = true;
+                            }
+                        } else if (character == ',' && isNumber) {
+                            oldNumber.append(character);
+                        } else if (character == '.' && isNumber) {
+                            oldNumber.append('.');
+                        } else {
+                            if (isNumber) {
+                                if (1 <= number && number <= 9) {
+                                    newString.append((char) (number + 0x2473));
+                                } else if (number == 10 || number == 50 || number == 100) {
+                                    switch (number) {
+                                        case 10:
+                                            newString.append('⑽');
+                                            break;
+                                        case 50:
+                                            newString.append('⑾');
+                                            break;
+                                        case 100:
+                                            newString.append('⑿');
+                                            break;
+                                    }
+                                } else if (1 <= number && number <= 399) {
+                                    int hundreds = number / 100;
+                                    for (int hundred = 1; hundred <= hundreds; hundred++) {
+                                        newString.append('⑿');
+                                    }
+
+                                    int tens = (number % 100) / 10;
+                                    if (1 <= tens && tens <= 3) {
+                                        for (int ten = 1; ten <= tens; ten++) {
+                                            newString.append('⑽');
+                                        }
+                                    } else if (4 == tens) {
+                                        newString.append("⑽⑾");
+                                    } else if (5 <= tens && tens <= 8) {
+                                        newString.append('⑾');
+                                        for (int ten = 1; ten <= tens - 5; ten++) {
+                                            newString.append('⑽');
+                                        }
+                                    } else if (9 == tens) {
+                                        newString.append("⑽⑿");
+                                    }
+
+                                    int ones = number % 10;
+                                    if (1 <= ones) {
+                                        newString.append((char) (ones + 0x2473));
+                                    }
+                                } else {
+                                    newString.append(number);
+                                }
+                                number = 0;
+                                isNumber = false;
+                                if (oldNumber.toString().endsWith(",")) {
+                                    newString.append(',');
+                                }
+                                if (oldNumber.toString().endsWith(".")) {
+                                    newString.append('０');
+                                }
+                                oldNumber = new StringBuilder();
+                            }
+
+                            if (invalidNumber && !Character.isDigit(character)) {
+                                invalidNumber = false;
+                            }
+
+                            if (!Character.toString(character).matches(nonTranslatable)) {
+                                if (Character.toString(character).matches("[a-z]")) {
+                                    newString.append((char) ((character) + 0x243B));
+                                } else if (Character.toString(character).matches("[A-Z]")) {
+                                    newString.append((char) ((character) + 0x245B));
+                                } else if (character == '.') {
+                                    newString.append('０');
+                                } else if (character == '!') {
+                                    newString.append('１');
+                                } else if (character == '?') {
+                                    newString.append('２');
+                                }
+                            } else {
+                                newString.append(character);
+                            }
+                        }
+                    } else {
+                        newString.append(character);
+                    }
+                }
+
+                if (isNumber) {
+                    if (1 <= number && number <= 9) {
+                        newString.append((char) (number + 0x2473));
+                    } else if (number == 10 || number == 50 || number == 100) {
+                        switch (number) {
+                            case 10:
+                                newString.append('⑽');
+                                break;
+                            case 50:
+                                newString.append('⑾');
+                                break;
+                            case 100:
+                                newString.append('⑿');
+                                break;
+                        }
+                    } else if (1 <= number && number <= 399) {
+                        int hundreds = number / 100;
+                        for (int hundred = 1; hundred <= hundreds; hundred++) {
+                            newString.append('⑿');
+                        }
+
+                        int tens = (number % 100) / 10;
+                        if (1 <= tens && tens <= 3) {
+                            for (int ten = 1; ten <= tens; ten++) {
+                                newString.append('⑽');
+                            }
+                        } else if (4 == tens) {
+                            newString.append("⑽⑾");
+                        } else if (5 <= tens && tens <= 8) {
+                            newString.append('⑾');
+                            for (int ten = 1; ten <= tens - 5; ten++) {
+                                newString.append('⑽');
+                            }
+                        } else if (9 == tens) {
+                            newString.append("⑽⑿");
+                        }
+
+                        int ones = number % 10;
+                        if (1 <= ones) {
+                            newString.append((char) (ones + 0x2473));
+                        }
+                    } else {
+                        newString.append(number);
+                    }
+
+                    if (oldNumber.toString().endsWith(",")) {
+                        newString.append(',');
+                    }
+                    if (oldNumber.toString().endsWith(".")) {
+                        newString.append('０');
+                    }
+                }
+
+                after = newString.toString();
+
+            }
+            // TODO: use <> for Gavel's language
+        }
+
+        return new Pair<>(after, cancel);
     }
 
     private static class ChapterReader implements Runnable {
