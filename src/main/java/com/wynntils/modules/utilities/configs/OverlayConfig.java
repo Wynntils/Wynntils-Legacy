@@ -34,7 +34,7 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
 
-    @Setting(displayName = "Replace Direction on Action Bar", description = "Should the direction on the action bar be swapped for the Y coordinate?")
+    @Setting(displayName = "Replace Direction on Action Bar", description = "Should the action bar display the Y coordinate instead of the player's direction?")
     public boolean replaceDirection = false;
 
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
