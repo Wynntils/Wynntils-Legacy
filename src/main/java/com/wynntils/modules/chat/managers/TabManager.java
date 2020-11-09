@@ -8,7 +8,9 @@ import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.instances.ChatTab;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class TabManager {
 
@@ -72,7 +74,7 @@ public class TabManager {
     }
 
     public static int deleteTab(int id) {
-        if (id > availableTabs.size()) return 0;
+        if (id >= availableTabs.size()) return 0;
 
         availableTabs.remove(id);
         saveConfigs();
