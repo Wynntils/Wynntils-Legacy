@@ -112,6 +112,8 @@ public class ChatGUI extends GuiChat {
         languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId, this.width - 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
         if (ChatConfig.INSTANCE.useBrackets) {
             languageButtons.values().forEach((button) -> button.visible = false);
+        } else {
+            this.inputField.width = this.width - 28;
         }
         languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
     }
